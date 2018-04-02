@@ -1,0 +1,36 @@
+.igz-navigation-tabs {
+    background-color: @white;
+    height: 56px;
+    padding-top: 7px;
+
+    .navigation-tab {
+        float: left;
+        height: 32px;
+        padding: 15px 24px 0;
+        font-family: @font-family-sans-serif;
+        color: @greyish-purple;
+        font-size: 14px;
+        text-align: center;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        box-sizing: content-box;
+
+        &.active, &.active:hover {
+            background-color: @pale-grey-three;
+            color: @dark-sky-blue;
+            border-bottom: 2px solid @dark-sky-blue;
+        }
+
+        &:hover {
+            background-color: @pale-grey-three;
+        }
+
+        &.active {
+            background-color: @white;
+        }
+
+        @media screen and (max-width: 940px) {
+            padding: 15px 12px 0;
+        }
+    }
+}

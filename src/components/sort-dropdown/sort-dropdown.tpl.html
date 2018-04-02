@@ -1,0 +1,16 @@
+<div class="igz-browser-sort-dropdown dropdown" data-dropdown
+     data-is-open="$ctrl.isOpen">
+    <div class="igz-action-item" data-dropdown-toggle>
+        <span class="action-icon igz-icon-sort"></span>
+    </div>
+    <ul class="dropdown-menu dropdown-list"
+        data-ng-if="$ctrl.isOpen">
+        <li class="dropdown-menu-item"
+            data-ng-repeat="option in $ctrl.sortOptions"
+            data-ng-click="$ctrl.toggleSortingOrder(option)">
+            <span class="item-name"
+                  data-ng-class="$ctrl.getItemClass(option.active)">{{option.label}}</span>
+            <span class="igz-icon-sort-{{option.desc ? 'down' : 'up'}}" data-ng-show="option.active"></span>
+        </li>
+    </ul>
+</div>
