@@ -1,0 +1,30 @@
+<div class="igz-slider-input-block clearfix">
+    <div class="igz-slider-input-title igz-col-50">
+        <div class="igz-slider-input-title-text">
+            <i data-ng-if="$ctrl.sliderConfig.iconType" data-ng-class="($ctrl.sliderConfig.iconType | lowercase)"></i>
+            {{$ctrl.sliderConfig.name}}&nbsp;
+            <i data-ng-if="$ctrl.sliderConfig.labelHelpIcon" class="igz-icon-help-round"></i>
+        </div>
+    </div>
+
+    <div class="igz-col-16"></div>
+
+    <div class="igz-slider-input-current-value igz-col-18">
+        <div class="igz-slider-input-current-value-text">{{$ctrl.sliderConfig.valueLabel}}</div>
+    </div>
+
+    <div class="igz-slider-input-units-dropdown igz-col-16"
+         data-ng-if="$ctrl.measureUnits">
+        <igz-default-dropdown data-values-array="$ctrl.measureUnits"
+                              data-selected-item="$ctrl.selectedItem"
+                              data-item-select-callback="$ctrl.changeTrafficUnit(item)"></igz-default-dropdown>
+    </div>
+
+    <div class="igz-slider-input-rz-slider igz-col-100">
+        <rzslider class="rzslider"
+                  data-rz-slider-model="$ctrl.sliderConfig.value"
+                  data-rz-slider-options="$ctrl.sliderConfig.options">
+        </rzslider>
+    </div>
+</div>
+
