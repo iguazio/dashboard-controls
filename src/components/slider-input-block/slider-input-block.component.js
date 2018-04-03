@@ -8,7 +8,7 @@
                 sliderConfig: '<',
                 sliderBlockUpdatingBroadcast: '@'
             },
-            templateUrl: 'common/slider-input-block/slider-input-block.tpl.html',
+            templateUrl: 'slider-input-block/slider-input-block.tpl.html',
             controller: IgzSliderInputBlockController
         });
 
