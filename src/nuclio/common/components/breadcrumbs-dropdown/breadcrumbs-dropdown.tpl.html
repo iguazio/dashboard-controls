@@ -1,0 +1,19 @@
+<div class="ncl-breadcrumbs-dropdown dropdown" data-ng-class="{'open': $ctrl.showDropdownList}">
+    <span class="breadcrumb-toggle" data-ng-click="$ctrl.showDropdown()">
+        {{$ctrl.title}}
+        <span class="igz-icon-dropdown"></span>
+    </span>
+    <div class="dropdown-menu">
+        <div class="search-input">
+            <input type="text" placeholder="{{$ctrl.placeholder}}"
+                   data-ng-model="$ctrl.searchText">
+            <span class="igz-icon-search"></span>
+        </div>
+        <ul class="dropdown-list" data-ng-scrollbars>
+            <li data-ng-repeat="item in $ctrl.itemsList | filter: $ctrl.searchText">
+                <a class="item-name" data-ng-click="$ctrl.showDetails($event, item)">{{item.name}}</a>
+                <span class="igz-icon-tick" data-ng-show="$ctrl.title === item.name"></span>
+            </li>
+        </ul>
+    </div>
+</div>

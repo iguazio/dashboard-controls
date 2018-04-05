@@ -24,19 +24,16 @@ module.exports = {
     app_files: {
         js: [
             'src/*.js',
-            'src/components/**/*.js',
-            '!src/components/**/*.spec.js',
-            'src/services/**/*.js',
-            '!src/services/**/*.spec.js',
-            'src/directives/**/*.js',
-            '!src/directives/**/*.spec.js'
+            'src/igz_controls/**/*.js',
+            '!src/igz_controls/**/*.spec.js',
+            'src/nuclio/**/*.js',
+            '!src/nuclio/**/*.spec.js'
         ],
         less_files: [
-            'src/**/*.less',
-            'src/components/**/*.less'
+            'src/**/*.less'
         ],
         templates: [
-            'src/components/**/*.tpl.html'
+            'src/**/*.tpl.html'
         ],
         templates_module_name: 'iguazio.dashboard-controls.templates'
     },
