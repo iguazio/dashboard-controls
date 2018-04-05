@@ -15,6 +15,7 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var runSequence = require('run-sequence');
 var eslint = require('gulp-eslint');
+var imagemin = require('gulp-imagemin');
 var minifyHtml = require('gulp-htmlmin');
 var ngHtml2Js = require('gulp-ng-html2js');
 var merge2 = require('merge2');
@@ -81,6 +82,31 @@ gulp.task('app.js', function () {
 });
 
 /**
+ * Copy all fonts to the build directory
+ */
+gulp.task('fonts', function () {
+    var distFolder = config.assets_dir + '/fonts';
+
+    return gulp.src(config.source_dir + '/igz_controls/fonts/**/*')
+        .pipe(gulp.dest(distFolder));
+});
+
+/**
+ * Optimize all images and copy them to the build directory
+ */
+gulp.task('images', function () {
+    var distFolder = config.assets_dir + '/images';
+
+    return gulp.src(config.source_dir + '/igz_controls/images/**/*')
+        .pipe(imagemin({
+            optimizationLevel: 3,
+            progressive: true,
+            interlaced: true
+        }))
+        .pipe(gulp.dest(distFolder));
+});
+
+/**
  * Lint source code
  */
 gulp.task('lint', function () {
@@ -91,7 +117,7 @@ gulp.task('lint', function () {
 });
 
 gulp.task('inject-version', function () {
-    exec('git describe --tags --abbrev=40', function (err, stdout, stderr) {
+    exec('git describe --tags --abbrev=40', function (err, stdout) {
         buildVersion = stdout;
     });
 });
@@ -104,5 +130,5 @@ gulp.task('inject-version', function () {
  * Base build task
  */
 gulp.task('build', function (next) {
-    runSequence('lint', 'clean', 'inject-version', ['app.less', 'app.js'], next);
+    runSequence('lint', 'clean', 'inject-version', ['app.less', 'app.js', 'fonts', 'images'], next);
 });
