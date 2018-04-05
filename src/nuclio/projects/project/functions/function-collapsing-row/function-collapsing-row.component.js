@@ -86,7 +86,6 @@
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
-                    capability: 'nuclio.functions.delete',
                     confirm: {
                         message: 'Delete Function “' + ctrl.function.metadata.name + '”?',
                         description: 'Deleted function cannot be restored.',

@@ -15,7 +15,7 @@
         });
 
     function IgzActionMenuController($scope, $element, $document, $rootScope, lodash, ConfigService,
-                                     PreventDropdownCutOffService, LoginService) {
+                                     PreventDropdownCutOffService) {
         var ctrl = this;
 
         ctrl.isMenuShown = false;
@@ -39,8 +39,12 @@
          */
         function onInit() {
             ctrl.actions = lodash.filter(ctrl.actions, function (action) {
-                return !lodash.has(action, 'capability') || LoginService.hasCapabilities(action.capability);
+                return !lodash.has(action, 'visible') || action.visible;
             });
+            ctrl.shortcuts = lodash.filter(ctrl.shortcuts, function (shortcut) {
+                return !lodash.has(shortcut, 'visible') || shortcut.visible;
+            });
+
             ctrl.actions.forEach(function (action) {
 
                 if (!angular.isFunction(action.handler)) {

@@ -11,7 +11,7 @@
         });
 
     function IgzNewProjectDialogController($scope, lodash, moment, EventHelperService, FormValidationService,
-                                           LoginService, NuclioProjectsDataService) {
+                                           NuclioProjectsDataService) {
         var ctrl = this;
 
         ctrl.data = {};
@@ -60,7 +60,7 @@
                     // sets default `created_by` and `created_date` if they are not defined
                     lodash.defaultsDeep(ctrl.data, {
                         spec: {
-                            created_by: LoginService.getUsername(),
+                            created_by: 'admin',
                             created_date: moment().toISOString()
                         }
                     });

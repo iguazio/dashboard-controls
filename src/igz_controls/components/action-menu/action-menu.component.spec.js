@@ -18,21 +18,24 @@ describe('igzActionMenu component:', function () {
                     id: 'default',
                     icon: 'download',
                     active: true,
-                    callback: false
+                    callback: false,
+                    visible: true
                 },
                 {
                     label: 'Delete',
                     id: 'delete',
                     icon: 'trash',
                     active: true,
-                    callback: false
+                    callback: false,
+                    visible: true
                 },
                 {
                     label: 'Clone',
                     id: 'clone',
                     icon: 'multidoc',
                     active: true,
-                    callback: false
+                    callback: false,
+                    visible: true
                 },
                 {
                     label: 'Snapshot',
@@ -41,21 +44,24 @@ describe('igzActionMenu component:', function () {
                     active: true,
                     callback: function () {
                         $rootScope.$broadcast('passed');
-                    }
+                    },
+                    visible: true
                 },
                 {
                     label: 'Properties',
                     id: 'default',
                     icon: 'note',
                     active: true,
-                    callback: false
+                    callback: false,
+                    visible: true
                 },
                 {
                     label: 'Info',
                     id: 'toggleInfoPanel',
                     icon: 'info',
                     active: true,
-                    callback: false
+                    callback: false,
+                    visible: true
                 }
             ],
             onFireAction: function () {

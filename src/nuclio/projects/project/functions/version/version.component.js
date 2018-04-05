@@ -76,23 +76,19 @@
             ctrl.navigationTabsConfig = [
                 {
                     tabName: 'Code',
-                    uiRoute: 'app.project.function.edit.code',
-                    capability: 'nuclio.functions.versions.code'
+                    uiRoute: 'app.project.function.edit.code'
                 },
                 {
                     tabName: 'Configuration',
-                    uiRoute: 'app.project.function.edit.configuration',
-                    capability: 'nuclio.functions.versions.configuration'
+                    uiRoute: 'app.project.function.edit.configuration'
                 },
                 {
                     tabName: 'Trigger',
-                    uiRoute: 'app.project.function.edit.trigger',
-                    capability: 'nuclio.functions.versions.trigger'
+                    uiRoute: 'app.project.function.edit.trigger'
                 },
                 {
                     tabName: 'Monitoring',
-                    uiRoute: 'app.project.function.edit.monitoring',
-                    capability: 'nuclio.functions.versions.monitoring'
+                    uiRoute: 'app.project.function.edit.monitoring'
                 }
             ];
 

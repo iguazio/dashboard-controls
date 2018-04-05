@@ -12,7 +12,7 @@
             transclude: true
         });
 
-    function IgzActionPanel($scope, $rootScope, lodash, LoginService) {
+    function IgzActionPanel($scope, $rootScope, lodash) {
         var ctrl = this;
 
         var checkedItemsCount = 0;
@@ -34,9 +34,11 @@
         function onInit() {
             $scope.$on('action-checkbox-all_checked-items-count-change', onUpdateCheckedItemsCount);
             $scope.$on('action-checkbox-all_check-all', onUpdateCheckedItemsCount);
+
             ctrl.actions = lodash.filter(ctrl.actions, function (action) {
-                return !lodash.has(action, 'capability') || LoginService.hasCapabilities(action.capability);
+                return !lodash.has(action, 'visible') || action.visible;
             });
+
             angular.forEach(ctrl.actions, function (action) {
                 if (!angular.isFunction(action.handler)) {
                     action.handler = defaultAction;
