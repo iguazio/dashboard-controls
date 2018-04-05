@@ -4,8 +4,7 @@
      'ng-hide': !$ctrl.isItemVisible($ctrl.action),
      'divider': $ctrl.action.id === 'divider'}"
      data-ng-click="$ctrl.onClickAction($event)"
-     data-ng-if="$ctrl.template !== 'additional'"
-     data-igz-capability-enforcer="{{$ctrl.action.capability}}">
+     data-ng-if="$ctrl.template !== 'additional'">
 
     <div data-tooltip="{{$ctrl.action.label}}"
          data-tooltip-popup-delay="1000"

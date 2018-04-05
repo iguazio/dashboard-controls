@@ -13,7 +13,7 @@
         });
 
     function NclProjectsTableRowController($scope, $state, lodash, moment, ngDialog, ActionCheckboxAllService, DialogsService,
-                                           LoginService, NuclioProjectsDataService) {
+                                           NuclioProjectsDataService) {
         var ctrl = this;
 
         ctrl.$onInit = onInit;
@@ -34,7 +34,7 @@
             // initialize `checked` status to `false`
             lodash.defaultsDeep(ctrl.project, {
                 spec: {
-                    created_by: LoginService.getUsername(),
+                    created_by: 'admin',
                     created_date: moment().toISOString()
                 },
                 ui: {

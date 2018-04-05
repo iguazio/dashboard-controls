@@ -21,8 +21,7 @@
             <div class="shortcuts-header">Shortcuts</div>
             <div class="shortcuts-item"
                  data-ng-repeat="shortcut in $ctrl.shortcuts"
-                 data-ng-click="$ctrl.showDetails($event, shortcut.state)"
-                 data-igz-capability-enforcer="{{shortcut.capability}}">
+                 data-ng-click="$ctrl.showDetails($event, shortcut.state)">
                 {{shortcut.label}}
             </div>
         </div>

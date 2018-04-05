@@ -4,8 +4,6 @@ describe('nclProjects component: ', function () {
     var $q;
     var ngDialog;
     var ctrl;
-    var hasCapabilitiesResult;
-    var LoginService;
     var NuclioProjectsDataService;
     var mockData;
     var projects;
@@ -13,13 +11,12 @@ describe('nclProjects component: ', function () {
     beforeEach(function () {
         module('iguazio.app');
 
-        inject(function (_$rootScope_, _$componentController_, _$q_, _ngDialog_, _NuclioProjectsDataService_, _LoginService_) {
+        inject(function (_$rootScope_, _$componentController_, _$q_, _ngDialog_, _NuclioProjectsDataService_) {
             $rootScope = _$rootScope_;
             $componentController = _$componentController_;
             $q = _$q_;
             ngDialog = _ngDialog_;
             NuclioProjectsDataService = _NuclioProjectsDataService_;
-            LoginService = _LoginService_;
 
             mockData = {
                 'my-project-1': {
@@ -82,10 +79,6 @@ describe('nclProjects component: ', function () {
                 }
             ];
 
-            hasCapabilitiesResult = true;
-            spyOn(LoginService, 'hasCapabilities').and.callFake(function () {
-                return hasCapabilitiesResult;
-            });
             spyOn(NuclioProjectsDataService, 'getProjects').and.callFake(function () {
                 return $q.when(mockData);
             });
@@ -100,29 +93,11 @@ describe('nclProjects component: ', function () {
         $q = null;
         ngDialog = null;
         ctrl = null;
-        hasCapabilitiesResult = null;
-        LoginService = null;
         NuclioProjectsDataService = null;
         mockData = null;
     });
 
     describe('$onInit(): ', function () {
-        it('should set "ctrl.readOnly" to the "false" if session has "nuclio.projects.edit" capability', function () {
-            hasCapabilitiesResult = true;
-
-            ctrl.$onInit();
-
-            expect(ctrl.readOnly).toBeFalsy();
-        });
-
-        it('should set "ctrl.readOnly" to the "true" if session does not have "nuclio.projects.edit" capability', function () {
-            hasCapabilitiesResult = false;
-
-            ctrl.$onInit();
-
-            expect(ctrl.readOnly).toBeTruthy();
-        });
-
         it('should initialize projects actions array', function () {
             var expectedActions = [
                 {
@@ -130,7 +105,6 @@ describe('nclProjects component: ', function () {
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
-                    capability: 'nuclio.projects.delete',
                     confirm: {
                         message: 'Delete selected projects?',
                         yesLabel: 'Yes, Delete',
@@ -142,8 +116,7 @@ describe('nclProjects component: ', function () {
                     label: 'Edit',
                     id: 'edit',
                     icon: 'igz-icon-properties',
-                    active: true,
-                    capability: 'nuclio.projects.edit'
+                    active: true
                 }
             ];
 
@@ -170,8 +143,7 @@ describe('nclProjects component: ', function () {
                     label: 'Edit',
                     id: 'edit',
                     icon: 'igz-icon-properties',
-                    active: true,
-                    capability: 'nuclio.projects.edit'
+                    active: true
                 }
             };
             ctrl.projects[0].ui = {
@@ -205,7 +177,6 @@ describe('nclProjects component: ', function () {
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
-                    capability: 'nuclio.projects.delete',
                     confirm: {
                         message: 'Delete selected projects?',
                         yesLabel: 'Yes, Delete',

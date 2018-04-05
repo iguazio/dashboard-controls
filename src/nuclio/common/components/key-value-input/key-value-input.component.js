@@ -182,15 +182,13 @@
                     label: 'Edit',
                     id: 'edit',
                     icon: 'igz-icon-edit',
-                    active: true,
-                    capability: 'nuclio.functions.versions.edit'
+                    active: true
                 },
                 {
                     label: 'Delete',
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
-                    capability: 'nuclio.functions.versions.delete',
                     confirm: {
                         message: 'Are you sure you want to delete selected item?',
                         yesLabel: 'Yes, Delete',

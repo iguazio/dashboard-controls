@@ -8,7 +8,7 @@
         });
 
     function NclProjectsController($scope, $q, $state, lodash, ngDialog, ActionCheckboxAllService, CommonTableService,
-                                   LoginService, NuclioProjectsDataService, ValidatingPatternsService) {
+                                   NuclioProjectsDataService, ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -29,7 +29,6 @@
         };
         ctrl.nameValidationPattern = ValidatingPatternsService.name;
         ctrl.projects = [];
-        ctrl.readOnly = true;
         ctrl.searchStates = {};
         ctrl.searchKeys = [
             'attr.name'
@@ -62,7 +61,6 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.readOnly = !LoginService.hasCapabilities('nuclio.projects.edit');
 
             // initializes projects actions array
             ctrl.actions = initActions();
@@ -248,7 +246,6 @@
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
-                    capability: 'nuclio.projects.delete',
                     confirm: {
                         message: 'Delete selected projects?',
                         yesLabel: 'Yes, Delete',
@@ -260,8 +257,7 @@
                     label: 'Edit',
                     id: 'edit',
                     icon: 'igz-icon-properties',
-                    active: true,
-                    capability: 'nuclio.projects.edit'
+                    active: true
                 }
             ];
         }
