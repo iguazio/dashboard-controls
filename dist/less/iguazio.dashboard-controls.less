@@ -4393,7 +4393,9 @@ body {
 @ncl-silver: #c9c9cd;
 @ncl-grey: #acaab3;
 @ncl-greyish-purple: #898593;
+@ncl-dark-greyish-blue: #9997a0;
 @ncl-dusk-three: #474056;
+@ncl-dark-grey: #0a0a0a;
 @ncl-black: #000000;
 @ncl-orangish: #f9794f;
 @ncl-dark-orange: #ef7a51;
@@ -6203,6 +6205,83 @@ ncl-functions {
         }
     }
 }
+.tab-content-wrapper {
+    min-width: 946px;
+    padding: 24px 41px;
+
+    .section-wrapper {
+        padding: 18px 39px 0 23px;
+    }
+
+    .code-entry-section {
+        margin-bottom: 20px;
+        background-color: @ncl-white;
+        border: 1px solid @ncl-pale-grey-two;
+
+        .code-entry-row {
+            display: flex;
+            margin-bottom: 24px;
+
+            .code-entry-col {
+                margin-right: 16px;
+
+                .col-label {
+                    margin-bottom: 2px;
+                    font-size: 14px;
+                    color: @ncl-dusk-three;
+                }
+            }
+
+            .code-entry-type-col {
+                width: 22%;
+            }
+
+            .code-entry-runtime-col {
+                width: 22%;
+            }
+
+            .code-entry-handler-col {
+                width: 56%;
+            }
+
+            .code-entry-button-col {
+                min-width: 128px;
+
+                .upload-button {
+                    height: 36px;
+                    width: 128px;
+                    margin: 21px 0 0 0;
+                    padding: 0;
+
+                    i {
+                        display: inline-block;
+                        font-size: 16px;
+                        margin-left: 20px;
+                        vertical-align: middle;
+                    }
+                    span {
+                        margin-left: 4px;
+                        letter-spacing: 1px;
+                        vertical-align: middle;
+                    }
+                }
+            }
+
+            .code-entry-url-col {
+                width: 100%;
+                margin-right: 160px;
+            }
+        }
+    }
+
+    .code-edit-section {
+        .code-editor {
+            height: 500px;
+            width: 100%;
+        }
+    }
+}
+
 .ncl-version-configuration {
     > .igz-scrollable-container {
         padding: 24px 25px 22px 41px;
@@ -6320,83 +6399,6 @@ ncl-functions {
         }
     }
 }
-.tab-content-wrapper {
-    min-width: 946px;
-    padding: 24px 41px;
-
-    .section-wrapper {
-        padding: 18px 39px 0 23px;
-    }
-
-    .code-entry-section {
-        margin-bottom: 20px;
-        background-color: @ncl-white;
-        border: 1px solid @ncl-pale-grey-two;
-
-        .code-entry-row {
-            display: flex;
-            margin-bottom: 24px;
-
-            .code-entry-col {
-                margin-right: 16px;
-
-                .col-label {
-                    margin-bottom: 2px;
-                    font-size: 14px;
-                    color: @ncl-dusk-three;
-                }
-            }
-
-            .code-entry-type-col {
-                width: 22%;
-            }
-
-            .code-entry-runtime-col {
-                width: 22%;
-            }
-
-            .code-entry-handler-col {
-                width: 56%;
-            }
-
-            .code-entry-button-col {
-                min-width: 128px;
-
-                .upload-button {
-                    height: 36px;
-                    width: 128px;
-                    margin: 21px 0 0 0;
-                    padding: 0;
-
-                    i {
-                        display: inline-block;
-                        font-size: 16px;
-                        margin-left: 20px;
-                        vertical-align: middle;
-                    }
-                    span {
-                        margin-left: 4px;
-                        letter-spacing: 1px;
-                        vertical-align: middle;
-                    }
-                }
-            }
-
-            .code-entry-url-col {
-                width: 100%;
-                margin-right: 160px;
-            }
-        }
-    }
-
-    .code-edit-section {
-        .code-editor {
-            height: 500px;
-            width: 100%;
-        }
-    }
-}
-
 .ncl-edit-version-execution-result {
     margin: 17px 24px;
     padding: 16px 13px 0;
@@ -6627,7 +6629,7 @@ ncl-functions {
         margin-bottom: 23px;
 
         .field-label {
-            font-family: Roboto, sans-serif;
+            font-family: @font-family-sans-serif;
             font-size: 14px;
             font-weight: 500;
             text-align: left;
@@ -6661,12 +6663,12 @@ ncl-functions {
             .file-block {
                 height: 32px;
                 border-radius: 2px;
-                background-color: #f2f2f5;
-                border: solid 1px #e1e0e5;
+                background-color: @ncl-light-grayish-blue;
+                border: solid 1px @ncl-pale-grey;
 
                 .file-name {
                     height: 14px;
-                    font-family: Roboto, sans-serif;
+                    font-family: @font-family-sans-serif;
                     font-size: 14px;
                     line-height: 1.38;
                 }
@@ -6679,18 +6681,18 @@ ncl-functions {
 
                 .progress {
                     position: absolute;
-                    background-color: #fff;
+                    background-color: @ncl-white;
                     display: inline-block;
                     width: 95px;
                     height: 6px;
-                    border: 1px solid #e1e0e5;
+                    border: 1px solid @ncl-pale-grey;
                     border-radius: 2px;
                     top: 13px;
                     right: 28px;
 
                     .progress-bar {
                         border-radius: 2px;
-                        background-color: #28afe4;
+                        background-color: @ncl-dark-sky-blue;
                     }
                 }
 
@@ -6727,7 +6729,7 @@ ncl-functions {
 
                     .progress-percents {
                         margin-left: 15px;
-                        color: #0a0a0a;
+                        color: @ncl-dark-grey;
                     }
 
                     .file-name {
@@ -6772,7 +6774,7 @@ ncl-functions {
 
                         .uploaded-file-directory {
                             margin-left: 8px;
-                            color: #9997a0;
+                            color: @ncl-dark-greyish-blue;
                         }
                     }
                 }
@@ -6807,19 +6809,17 @@ ncl-functions {
             border-radius: 50%;
             color: @ncl-dusk-three;
         }
+
         .active {
+            .nclBlack(0.1);
             background-color: @ncl-silver;
-            box-shadow: inset 0px 2px 3px 0 rgba(0, 0, 0, 0.1);
+            box-shadow: inset 0px 2px 3px 0 @color;
         }
 
         .menu-dropdown {
             margin-top: 4px;
             right: -18px;
         }
-    }
-
-    .file-selection-button {
-        display: none;
     }
 }
 .ncl-version-configuration-data-bindings {
@@ -6896,6 +6896,42 @@ ncl-functions {
         }
     }
 }
+.ncl-version-configuration-runtime-attributes {
+    .row:not(.key-value-row) {
+        display: flex;
+        justify-content: space-between;
+
+        &:not(:last-child) {
+            margin-top: 10px;
+            margin-bottom: 25px;
+        }
+
+        > div {
+            flex: 0.65;
+
+            &:not(:last-child) {
+                margin-right: 16px;
+            }
+
+            .label {
+                padding: 0;
+                margin-bottom: 5px;
+            }
+
+            &.arguments-input {
+                flex-grow: 2;
+            }
+        }
+    }
+
+    .row {
+        &.key-value-row {
+            .label {
+                margin-bottom: 15px;
+            }
+        }
+    }
+}
 @desktop-middle: 1550px;
 
 .ncl-version-configuration-resources {
@@ -6959,42 +6995,6 @@ ncl-functions {
                         margin-right: 54px;
                     }
                 }
-            }
-        }
-    }
-}
-.ncl-version-configuration-runtime-attributes {
-    .row:not(.key-value-row) {
-        display: flex;
-        justify-content: space-between;
-
-        &:not(:last-child) {
-            margin-top: 10px;
-            margin-bottom: 25px;
-        }
-
-        > div {
-            flex: 0.65;
-
-            &:not(:last-child) {
-                margin-right: 16px;
-            }
-
-            .label {
-                padding: 0;
-                margin-bottom: 5px;
-            }
-
-            &.arguments-input {
-                flex-grow: 2;
-            }
-        }
-    }
-
-    .row {
-        &.key-value-row {
-            .label {
-                margin-bottom: 15px;
             }
         }
     }

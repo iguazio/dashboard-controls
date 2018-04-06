@@ -9,7 +9,7 @@
                 onFireAction: '<?',
                 onClickShortcut: '<?',
                 isMenuShown: '<?',
-                icon: '@?'
+                iconClass: '@?'
             },
             templateUrl: 'igz_controls/components/action-menu/action-menu.tpl.html',
             controller: IgzActionMenuController
@@ -62,7 +62,7 @@
                 }
             });
 
-            ctrl.icon = lodash.defaultTo(ctrl.icon, 'igz-icon-context-menu');
+            ctrl.iconClass = lodash.defaultTo(ctrl.icon, 'igz-icon-context-menu');
 
             $scope.$on('close-all-action-menus', closeActionMenu);
         }

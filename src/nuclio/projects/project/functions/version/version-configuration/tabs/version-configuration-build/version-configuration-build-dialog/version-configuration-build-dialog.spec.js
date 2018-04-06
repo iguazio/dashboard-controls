@@ -41,11 +41,18 @@ describe('nclVersionConfigurationBuildDialog component:', function () {
 
     describe('uploadFile(): ', function () {
         it('should close dialog calling closeDialog() method and pass file object in this method', function () {
+            var file = {
+                lastModified: 1521202971211,
+                name: 'filename.exe',
+                size: 220280032,
+                type: 'application/x-msdownload'
+            };
+
             spyOn(ctrl, 'closeDialog');
 
-            ctrl.uploadFile();
+            ctrl.uploadFile(file);
 
-            expect(ctrl.closeDialog).toHaveBeenCalled();
+            expect(ctrl.closeDialog).toHaveBeenCalledWith(file);
         });
     });
 });

@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('iguazio.app')
+    angular.module('iguazio.dashboard-controls')
         .component('nclVersionConfigurationBuild', {
             templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-build/version-configuration-build.tpl.html',
             controller: NclVersionConfigurationBuildController
@@ -11,21 +11,8 @@
         var ctrl = this;
 
         ctrl.version = {};
-        ctrl.actions = [
-            {
-                id: 'script',
-                label: 'Script',
-                icon: 'ncl-icon-script',
-                active: true
-            },
-            {
-                id: 'file',
-                label: 'File',
-                icon: 'ncl-icon-file',
-                active: true
-            }
-        ];
-        ctrl.uploadType = '';
+        ctrl.actions = initActions();
+        var uploadType = '';
         ctrl.script = {
             uploading: false,
             uploaded: false,
@@ -43,11 +30,11 @@
 
         ctrl.$onInit = onInit;
 
+        ctrl.deleteFile = deleteFile;
+        ctrl.getFileConfig = getFileConfig;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.onFireAction = onFireAction;
         ctrl.uploadFile = uploadFile;
-        ctrl.deleteFile = deleteFile;
-        ctrl.abortUploading = abortUploading;
 
         //
         // Hook methods
@@ -78,19 +65,26 @@
         }
 
         /**
+         * Returns uploading file config object
+         * @return {Object}
+         */
+        function getFileConfig() {
+            return ctrl[uploadType];
+        }
+
+        /**
          * According to given action name calls proper action handler
          * @param {string} fileType - a type of uploading file
+         * @returns {boolean} if file of this fileType already uploaded
          */
         function onFireAction(fileType) {
 
             // this if is a temporary solution as at the moment we don't know the maximum quantity of the uploading files
-            if (fileType === 'file' && ctrl.file.uploaded) {
-                return false;
-            } else if (fileType === 'script' && ctrl.script.uploaded) {
+            if ((fileType === 'file' && ctrl.file.uploaded) || (fileType === 'script' && ctrl.script.uploaded)) {
                 return false;
             }
 
-            ctrl.uploadType = fileType;
+            uploadType = fileType;
 
             ngDialog.open({
                 template: '<ncl-version-configuration-build-dialog data-close-dialog="closeThisDialog(file)"></ncl-version-configuration-build-dialog>',
@@ -108,8 +102,7 @@
          * @param {Object} file - selected file
          */
         function uploadFile(file) {
-            var uploadType = ctrl.uploadType;
-            var uploadingData = ctrl[uploadType];
+            var uploadingData = getFileConfig();
 
             Upload.upload({
                 url: '', // TODO
@@ -120,13 +113,10 @@
                     uploadingData.uploaded = true;
                     uploadingData.name = response.config.data.file.name;
                     uploadingData.progress = '100%';
-                } else {
-                    return false;
                 }
             }, function (response) { // on error
                 uploadingData.uploading = false;
                 uploadingData.uploaded = false;
-                // TODO
             }, function (load) { // on progress
                 if (!lodash.isNil(load.config.data.file)) {
                     var progressPercentage = parseInt(100.0 * load.loaded / load.total);
@@ -140,10 +130,6 @@
             uploadingData.uploading = false;
         }
 
-        function abortUploading() {
-            // TODO
-        }
-
         /**
          * Delete file button handler
          * @param {string} type - type of file
@@ -155,8 +141,32 @@
                 progress: '0%',
                 icon: 'ncl-icon-' + type,
                 name: ''
-            }
-            // TODO
+            };
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Initializes actions
+         * @returns {Object[]} - list of actions
+         */
+        function initActions() {
+            return [
+                {
+                    id: 'script',
+                    label: 'Script',
+                    icon: 'ncl-icon-script',
+                    active: true
+                },
+                {
+                    id: 'file',
+                    label: 'File',
+                    icon: 'ncl-icon-file',
+                    active: true
+                }
+            ];
         }
     }
 }());

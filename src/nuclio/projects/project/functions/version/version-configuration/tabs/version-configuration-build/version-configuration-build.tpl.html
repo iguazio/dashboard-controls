@@ -1,6 +1,6 @@
 <div class="ncl-version-configuration-build">
     <igz-action-menu data-actions="$ctrl.actions"
-                     data-icon="ncl-icon-paperclip"
+                     data-icon-class="ncl-icon-paperclip"
                      data-on-fire-action="$ctrl.onFireAction">
     </igz-action-menu>
     <div class="title">Build</div>
@@ -37,22 +37,22 @@
                 <div class="uploading-files">
                     <div class="uploading-proccess-wrapper"
                          data-ng-class="{'one-file-uploaded': $ctrl.file.uploaded || $ctrl.script.uploaded}"
-                         data-ng-if="$ctrl[$ctrl.uploadType].uploading && $ctrl[$ctrl.uploadType].name">
+                         data-ng-if="$ctrl.getFileConfig().uploading && $ctrl.getFileConfig().name">
                         <div class="file-block uploading text-ellipsis"
                              data-ng-class="{'uploading-file': $ctrl.file.uploading}">
-                            <span class="{{$ctrl[$ctrl.uploadType].icon}}"></span>
+                            <span class="{{$ctrl.getFileConfig().icon}}"></span>
                             <button class="build-close-button">
                                 <span class="ncl-icon-close"></span>
                             </button>
                             <span class="file-name">
-                                {{$ctrl[$ctrl.uploadType].name}}
+                                {{$ctrl.getFileConfig().name}}
                             </span>
                             <div class="progress">
                                 <div class="progress-bar"
                                      role="progressbar"
                                      aria-valuemin="0"
                                      aria-valuemax="100"
-                                     data-ng-style="{'width': $ctrl[$ctrl.uploadType].progress}">
+                                     data-ng-style="{'width': $ctrl.getFileConfig().progress}">
                                 </div>
                             </div>
                         </div>

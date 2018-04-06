@@ -42,7 +42,6 @@ describe('nclVersionConfigurationBuild component:', function () {
            ctrl.$onInit();
 
            expect(ctrl.version.spec).toEqual(spec);
-
        });
     });
 
@@ -95,7 +94,7 @@ describe('nclVersionConfigurationBuild component:', function () {
             ctrl.onFireAction('file');
 
             expect(ngDialog.open).toHaveBeenCalled();
-            expect(ctrl.uploadFile).toHaveBeenCalled();
+            expect(ctrl.uploadFile).toHaveBeenCalledWith(data.value);
         });
     });
 
