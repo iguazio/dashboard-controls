@@ -6,5 +6,172 @@
             font-size: 14px;
             font-weight: 500;
         }
+
+        .build-command-field .textarea-field {
+            height: 177px;
+        }
+    }
+
+    .files-field {
+        margin-bottom: 1px;
+
+        .uploading-files {
+            margin-top: -6px;
+            display: flex;
+
+            .file-block {
+                height: 32px;
+                border-radius: 2px;
+                background-color: #f2f2f5;
+                border: solid 1px #e1e0e5;
+
+                .file-name {
+                    height: 14px;
+                    font-family: Roboto, sans-serif;
+                    font-size: 14px;
+                    line-height: 1.38;
+                }
+
+                .progress {
+                    background-color: #fff;
+                    display: inline-block;
+                    width: 95px;
+                    height: 6px;
+                    float: right;
+                    margin: 7px 15px 0 0;
+                    border: 1px solid #e1e0e5;
+                    border-radius: 2px;
+
+                    .progress-bar {
+                        border-radius: 2px;
+                        background-color: #28afe4;
+                    }
+                }
+
+                .build-close-button {
+                    width: 10px;
+                    height: 10px;
+                    border: none;
+                    outline: none;
+                    background: none;
+                    margin-top: 3px;
+                    font-size: 10px;
+                    float: right;
+                    margin-right: 9px;
+                }
+
+                .ncl-icon-file {
+                    font-size: 20px;
+                }
+
+                .ncl-icon-script,
+                .ncl-icon-file,
+                .ncl-icon-close {
+                    color: @ncl-greyish-purple;
+                }
+            }
+
+            .uploading-proccess-wrapper {
+                width: 100%;
+                flex-grow: 2.5;
+
+                .uploading {
+                    padding: 6px 8px;
+
+                    .progress-percents {
+                        margin-left: 15px;
+                        color: #0a0a0a;
+                    }
+
+                    .file-name {
+                        margin-left: 8px;
+                        color: #28afe4;
+                    }
+
+                    .ncl-icon-script {
+                        font-size: 12px;
+                    }
+                }
+
+                .uploading-file {
+                    padding: 3px 8px;
+
+                    .file-name {
+                        vertical-align: top;
+                        display: inline-block;
+                        margin: 4px;
+                        margin-left: 9px;
+                    }
+                }
+            }
+
+            .one-file-uploaded {
+                margin-right: 16px;
+            }
+
+            .uploaded-wrapper {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+
+                .uploaded {
+                    flex-grow: 1;
+                    padding: 6px 8px;
+
+                    .file-name {
+                        margin-left: 9px;
+                        color: #474056;
+
+                        .uploaded-file-directory {
+                            margin-left: 8px;
+                            color: #9997a0;
+                        }
+                    }
+                }
+
+                .uploaded-file {
+                    padding: 3px 8px;
+
+                    .file-name {
+                        margin: 4px 4px 4px 9px;
+                        vertical-align: top;
+                        display: inline-block;
+                    }
+
+                    .build-close-button {
+                        margin-top: 6px;
+                    }
+                }
+            }
+        }
+    }
+
+    .igz-action-menu {
+        float: right;
+
+        .menu-button {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            margin: -10px -15px 0 0;
+            border-radius: 50%;
+            color: @ncl-dusk-three;
+        }
+        .active {
+            background-color: @ncl-silver;
+            box-shadow: inset 0px 2px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-dropdown {
+            margin-top: 4px;
+            right: -18px;
+        }
+    }
+
+    .file-selection-button {
+        display: none;
     }
 }

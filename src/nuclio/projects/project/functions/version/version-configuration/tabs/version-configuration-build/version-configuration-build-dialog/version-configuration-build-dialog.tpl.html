@@ -1,0 +1,33 @@
+<div class="close-button ncl-icon-close" data-ng-click="$ctrl.onClose()"></div>
+
+<div class="title">
+    <span>
+        Attach file
+    </span>
+</div>
+
+<div class="main-content ">
+    <form name="attachFileForm" novalidate >
+        <div class="field-group">
+            <div class="field-label">
+                Remote path
+            </div>
+            <igz-validating-input-field data-field-type="input"
+                                        data-placeholder-text="Type path..."></igz-validating-input-field>
+        </div>
+    </form>
+</div>
+
+<div class="buttons">
+    <div class="secondary-button"
+         tabindex="0"
+         data-ng-click="$ctrl.onClose()"
+         data-ng-keydown="$ctrl.onClose($event)">
+        Cancel
+    </div>
+    <div class="primary-button"
+         tabindex="0"
+         ngf-select="$ctrl.uploadFile($file)">
+        Browse
+    </div>
+</div>
