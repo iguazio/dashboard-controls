@@ -38,7 +38,7 @@
                     <div class="uploading-proccess-wrapper"
                          data-ng-class="{'one-file-uploaded': $ctrl.file.uploaded || $ctrl.script.uploaded}"
                          data-ng-if="$ctrl[$ctrl.uploadType].uploading && $ctrl[$ctrl.uploadType].name">
-                        <div class="file-block uploading"
+                        <div class="file-block uploading text-ellipsis"
                              data-ng-class="{'uploading-file': $ctrl.file.uploading}">
                             <span class="{{$ctrl[$ctrl.uploadType].icon}}"></span>
                             <button class="build-close-button">
@@ -60,7 +60,7 @@
 
                     <div class="uploaded-wrapper"
                          data-ng-if="$ctrl.file.uploaded|| $ctrl.script.uploaded">
-                        <div class="file-block uploaded"
+                        <div class="file-block uploaded text-ellipsis"
                              data-ng-if="$ctrl.script.uploaded"
                              data-ng-class="{'one-file-uploaded': $ctrl.file.uploaded}">
                             <span class="ncl-icon-script"></span>
@@ -74,7 +74,7 @@
                             </button>
                         </div>
 
-                        <div class="file-block uploaded uploaded-file"
+                        <div class="file-block uploaded text-ellipsis uploaded-file"
                              data-ng-if="$ctrl.file.uploaded">
                             <span class="ncl-icon-file"></span>
                             <span class="file-name">

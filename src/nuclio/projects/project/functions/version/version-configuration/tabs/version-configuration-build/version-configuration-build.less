@@ -3,8 +3,23 @@
         margin-bottom: 23px;
 
         .field-label {
+            font-family: Roboto, sans-serif;
             font-size: 14px;
             font-weight: 500;
+            text-align: left;
+            color: @ncl-dusk-three;
+        }
+
+        .validating-input-field {
+            .input-field {
+                padding: 0 10px 0 17px;
+            }
+
+            .input-placeholder {
+                left: 18px;
+                font-style: italic;
+                font-size: 14px;
+            }
         }
 
         .build-command-field .textarea-field {
@@ -32,15 +47,22 @@
                     line-height: 1.38;
                 }
 
+                .ncl-icon-script,
+                .ncl-icon-file,
+                .file-name {
+                    display: inline-block;
+                }
+
                 .progress {
+                    position: absolute;
                     background-color: #fff;
                     display: inline-block;
                     width: 95px;
                     height: 6px;
-                    float: right;
-                    margin: 7px 15px 0 0;
                     border: 1px solid #e1e0e5;
                     border-radius: 2px;
+                    top: 13px;
+                    right: 28px;
 
                     .progress-bar {
                         border-radius: 2px;
@@ -49,6 +71,8 @@
                 }
 
                 .build-close-button {
+                    position: absolute;
+                    right: 13px;
                     width: 10px;
                     height: 10px;
                     border: none;
@@ -56,8 +80,6 @@
                     background: none;
                     margin-top: 3px;
                     font-size: 10px;
-                    float: right;
-                    margin-right: 9px;
                 }
 
                 .ncl-icon-file {
@@ -76,7 +98,8 @@
                 flex-grow: 2.5;
 
                 .uploading {
-                    padding: 6px 8px;
+                    position: relative;
+                    padding: 6px 130px 6px 8px;
 
                     .progress-percents {
                         margin-left: 15px;
@@ -85,7 +108,8 @@
 
                     .file-name {
                         margin-left: 8px;
-                        color: #28afe4;
+                        color: @ncl-dark-sky-blue;
+                        text-overflow: ellipsis;
                     }
 
                     .ncl-icon-script {
@@ -94,11 +118,10 @@
                 }
 
                 .uploading-file {
-                    padding: 3px 8px;
+                    padding: 3px 55px 3px 8px;
 
                     .file-name {
                         vertical-align: top;
-                        display: inline-block;
                         margin: 4px;
                         margin-left: 9px;
                     }
@@ -115,12 +138,13 @@
                 justify-content: space-between;
 
                 .uploaded {
+                    position: relative;
                     flex-grow: 1;
-                    padding: 6px 8px;
+                    padding: 6px 40px 6px 8px;
 
                     .file-name {
                         margin-left: 9px;
-                        color: #474056;
+                        color: @ncl-dusk-three;
 
                         .uploaded-file-directory {
                             margin-left: 8px;
@@ -130,16 +154,15 @@
                 }
 
                 .uploaded-file {
-                    padding: 3px 8px;
+                    padding: 3px 55px 3px 8px;
 
                     .file-name {
                         margin: 4px 4px 4px 9px;
                         vertical-align: top;
-                        display: inline-block;
                     }
 
                     .build-close-button {
-                        margin-top: 6px;
+                        top: 6px;
                     }
                 }
             }

@@ -25,7 +25,7 @@
                 active: true
             }
         ];
-        ctrl.uploadType = 'script';
+        ctrl.uploadType = '';
         ctrl.script = {
             uploading: false,
             uploaded: false,
