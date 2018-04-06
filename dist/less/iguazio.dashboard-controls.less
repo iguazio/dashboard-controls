@@ -2581,21 +2581,6 @@ ncl-projects {
         color: @ncl-dusk-three;
     }
 }
-.action-checkbox-all {
-    text-align: center;
-
-    .check-item {
-        cursor: pointer;
-        color: @checkbox-unchecked;
-        font-size: 16px;
-        line-height: 1;
-        vertical-align: middle;
-
-        &.igz-icon-checkbox-checked {
-            color: @dark-sky-blue;
-        }
-    }
-}
 .action-checkbox {
     line-height: 16px;
     text-align: center;
@@ -2609,6 +2594,21 @@ ncl-projects {
         &.igz-icon-checkbox-unchecked {
             color: @checkbox-unchecked;
         }
+
+        &.igz-icon-checkbox-checked {
+            color: @dark-sky-blue;
+        }
+    }
+}
+.action-checkbox-all {
+    text-align: center;
+
+    .check-item {
+        cursor: pointer;
+        color: @checkbox-unchecked;
+        font-size: 16px;
+        line-height: 1;
+        vertical-align: middle;
 
         &.igz-icon-checkbox-checked {
             color: @dark-sky-blue;
@@ -2925,126 +2925,6 @@ ncl-projects {
         position: fixed;
         margin: -2px 0 0 -1px;
         z-index: 10;
-    }
-}
-
-.number-input {
-    min-width: 115px;
-    font-family: @font-family-sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    height: 36px;
-    position: relative;
-    background-color: @white;
-    border: solid 1px @pale-grey;
-    border-radius: 2px;
-    color: @dusk-three;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 0 38px 0 11px;
-    z-index: 3;
-
-    &:not(.disabled) {
-        &:focus.ng-invalid:not(.ng-pristine), &.ng-invalid.ng-touched {
-            background-color: #fbe5e8;
-            border: solid 1px @darkish-pink;
-            box-shadow: none;
-            outline: none;
-        }
-
-        &:hover, &:focus {
-            outline: 0;
-            border: solid 1px @dark-sky-blue;
-        }
-
-        &.invalid:not(.pristine) {
-            background-color: #fbe5e8;
-            border: solid 1px @darkish-pink;
-            box-shadow: none;
-        }
-
-        &:focus.ng-valid, &:focus.ng-pristine {
-            border: solid 1px @dark-sky-blue;
-            box-shadow: none;
-            outline: none;
-        }
-    }
-
-    &.additional-left-padding {
-        padding-left: 22px;
-    }
-
-    .input-field {
-        border: none;
-        outline: 0;
-        padding: 0;
-        text-align: left;
-        background-color: transparent;
-        max-width: 60%;
-    }
-
-    .additional-left-block {
-        .prefix-unit {
-            color: @dusk-three;
-            font-size: 14px;
-            font-weight: 700;
-            padding-right: 7px;
-        }
-    }
-
-    .suffix-unit {
-        color: @dusk-three;
-        font-size: 14px;
-        font-weight: 400;
-        padding-left: 3px;
-    }
-
-    .arrow-block {
-        font-size: 11px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        height: 100%;
-        position: absolute;
-        right: 10px;
-        top: 1px;
-
-        .igz-icon-dropup, .igz-icon-dropdown {
-            .duskThree(0.54);
-            color: @color;
-            cursor: pointer;
-            display: block;
-            line-height: 11px;
-
-            &:hover {
-                color: @dusk-three;
-            }
-        }
-    }
-
-    &.disabled {
-        background-color: white;
-        opacity: 0.5;
-
-        .suffix-unit {
-            opacity: 0.5;
-        }
-
-        .igz-icon-dropup, .igz-icon-dropdown {
-            &, &:hover {
-                .duskThree(0.54);
-                color: @color;
-                opacity: 0.5;
-                cursor: default;
-            }
-        }
-    }
-}
-
-.step3, .step4 {
-    .additional-right-padding {
-        padding-right: 50px;
     }
 }
 
@@ -3439,6 +3319,126 @@ ncl-projects {
         }
     }
 }
+.number-input {
+    min-width: 115px;
+    font-family: @font-family-sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    height: 36px;
+    position: relative;
+    background-color: @white;
+    border: solid 1px @pale-grey;
+    border-radius: 2px;
+    color: @dusk-three;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 38px 0 11px;
+    z-index: 3;
+
+    &:not(.disabled) {
+        &:focus.ng-invalid:not(.ng-pristine), &.ng-invalid.ng-touched {
+            background-color: #fbe5e8;
+            border: solid 1px @darkish-pink;
+            box-shadow: none;
+            outline: none;
+        }
+
+        &:hover, &:focus {
+            outline: 0;
+            border: solid 1px @dark-sky-blue;
+        }
+
+        &.invalid:not(.pristine) {
+            background-color: #fbe5e8;
+            border: solid 1px @darkish-pink;
+            box-shadow: none;
+        }
+
+        &:focus.ng-valid, &:focus.ng-pristine {
+            border: solid 1px @dark-sky-blue;
+            box-shadow: none;
+            outline: none;
+        }
+    }
+
+    &.additional-left-padding {
+        padding-left: 22px;
+    }
+
+    .input-field {
+        border: none;
+        outline: 0;
+        padding: 0;
+        text-align: left;
+        background-color: transparent;
+        max-width: 60%;
+    }
+
+    .additional-left-block {
+        .prefix-unit {
+            color: @dusk-three;
+            font-size: 14px;
+            font-weight: 700;
+            padding-right: 7px;
+        }
+    }
+
+    .suffix-unit {
+        color: @dusk-three;
+        font-size: 14px;
+        font-weight: 400;
+        padding-left: 3px;
+    }
+
+    .arrow-block {
+        font-size: 11px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+        position: absolute;
+        right: 10px;
+        top: 1px;
+
+        .igz-icon-dropup, .igz-icon-dropdown {
+            .duskThree(0.54);
+            color: @color;
+            cursor: pointer;
+            display: block;
+            line-height: 11px;
+
+            &:hover {
+                color: @dusk-three;
+            }
+        }
+    }
+
+    &.disabled {
+        background-color: white;
+        opacity: 0.5;
+
+        .suffix-unit {
+            opacity: 0.5;
+        }
+
+        .igz-icon-dropup, .igz-icon-dropdown {
+            &, &:hover {
+                .duskThree(0.54);
+                color: @color;
+                opacity: 0.5;
+                cursor: default;
+            }
+        }
+    }
+}
+
+.step3, .step4 {
+    .additional-right-padding {
+        padding-right: 50px;
+    }
+}
+
 @unfocused: #5a82a2;
 
 .search-input {
@@ -3616,65 +3616,6 @@ ncl-projects {
         }
     }
 }
-.igz-browser-sort-dropdown {
-    .dropdown-menu {
-        left: auto;
-        margin: 0;
-        padding: 10px 0;
-        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
-        top: 39px;
-        right: -1px;
-        color: @dusk-three;
-        width: 139px;
-        min-width: 139px;
-
-        &.dropdown-list {
-            font-size: 13px;
-            font-weight: 500;
-            text-align: left;
-            list-style: none;
-            max-height: 192px;
-            border: none;
-            box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
-
-            .dropdown-menu-item {
-                font-family: @font-family-sans-serif;
-                font-size: 13px;
-                font-weight: 500;
-                line-height: 32px;
-                position: relative;
-                height: 32px;
-
-                > .item-name {
-                    display: inline-block;
-                    width: 93px;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    margin-left: 15px;
-                    color: @dusk-three;
-                    vertical-align:top;
-                    text-decoration: none;
-                    height: 32px;
-
-                    &.active-item {
-                        font-weight: bold;
-                    }
-                }
-
-                .igz-icon-sort-up, .igz-icon-sort-down:before {
-                    margin-right: 18px;
-                }
-
-                &:hover {
-                    height: 32px;
-                    background-color: @pale-grey-two;
-                }
-            }
-        }
-    }
-}
-
 .igz-slider-input-block {
 
     .igz-slider-input-title {
@@ -3780,6 +3721,65 @@ ncl-projects {
         }
     }
 }
+.igz-browser-sort-dropdown {
+    .dropdown-menu {
+        left: auto;
+        margin: 0;
+        padding: 10px 0;
+        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+        top: 39px;
+        right: -1px;
+        color: @dusk-three;
+        width: 139px;
+        min-width: 139px;
+
+        &.dropdown-list {
+            font-size: 13px;
+            font-weight: 500;
+            text-align: left;
+            list-style: none;
+            max-height: 192px;
+            border: none;
+            box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+
+            .dropdown-menu-item {
+                font-family: @font-family-sans-serif;
+                font-size: 13px;
+                font-weight: 500;
+                line-height: 32px;
+                position: relative;
+                height: 32px;
+
+                > .item-name {
+                    display: inline-block;
+                    width: 93px;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    margin-left: 15px;
+                    color: @dusk-three;
+                    vertical-align:top;
+                    text-decoration: none;
+                    height: 32px;
+
+                    &.active-item {
+                        font-weight: bold;
+                    }
+                }
+
+                .igz-icon-sort-up, .igz-icon-sort-down:before {
+                    margin-right: 18px;
+                }
+
+                &:hover {
+                    height: 32px;
+                    background-color: @pale-grey-two;
+                }
+            }
+        }
+    }
+}
+
 .splash-screen {
     position: absolute;
     z-index: 996;
@@ -4479,6 +4479,66 @@ body {
         border: solid 1px @ncl-pale-grey;
     }
 }
+.ncl-projects-sort-dropdown {
+    .dropdown-menu {
+        .nclBlack(0.25);
+        left: auto;
+        top: 39px;
+        right: -1px;
+        margin: 0;
+        padding: 10px 0;
+        box-shadow: 0 4px 10px 0 @color;
+        color: @ncl-dusk-three;
+        width: 139px;
+        min-width: 139px;
+
+        &.dropdown-list {
+            max-height: 192px;
+            font-size: 13px;
+            font-weight: 500;
+            text-align: left;
+            list-style: none;
+            border: none;
+            box-shadow: 0 4px 10px 0 @color;
+
+            .dropdown-menu-item {
+                position: relative;
+                height: 32px;
+                font-family: @font-family-sans-serif;
+                font-size: 13px;
+                font-weight: 500;
+                line-height: 32px;
+
+                > .item-name {
+                    display: inline-block;
+                    width: 93px;
+                    height: 32px;
+                    margin-left: 15px;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    vertical-align:top;
+                    text-decoration: none;
+                    color: @ncl-dusk-three;
+
+                    &.active-item {
+                        font-weight: bold;
+                    }
+                }
+
+                .igz-icon-sort-up, .igz-icon-sort-down:before {
+                    margin-right: 18px;
+                }
+
+                &:hover {
+                    height: 32px;
+                    background-color: @ncl-pale-grey-two;
+                }
+            }
+        }
+    }
+}
+
 .projects-welcome-page {
     height: 100%;
     display: flex;
@@ -4554,66 +4614,6 @@ body {
         }
     }
 }
-.ncl-projects-sort-dropdown {
-    .dropdown-menu {
-        .nclBlack(0.25);
-        left: auto;
-        top: 39px;
-        right: -1px;
-        margin: 0;
-        padding: 10px 0;
-        box-shadow: 0 4px 10px 0 @color;
-        color: @ncl-dusk-three;
-        width: 139px;
-        min-width: 139px;
-
-        &.dropdown-list {
-            max-height: 192px;
-            font-size: 13px;
-            font-weight: 500;
-            text-align: left;
-            list-style: none;
-            border: none;
-            box-shadow: 0 4px 10px 0 @color;
-
-            .dropdown-menu-item {
-                position: relative;
-                height: 32px;
-                font-family: @font-family-sans-serif;
-                font-size: 13px;
-                font-weight: 500;
-                line-height: 32px;
-
-                > .item-name {
-                    display: inline-block;
-                    width: 93px;
-                    height: 32px;
-                    margin-left: 15px;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    vertical-align:top;
-                    text-decoration: none;
-                    color: @ncl-dusk-three;
-
-                    &.active-item {
-                        font-weight: bold;
-                    }
-                }
-
-                .igz-icon-sort-up, .igz-icon-sort-down:before {
-                    margin-right: 18px;
-                }
-
-                &:hover {
-                    height: 32px;
-                    background-color: @ncl-pale-grey-two;
-                }
-            }
-        }
-    }
-}
-
 // Style rules for actions bar
 .border-top > .igz-info-page-actions-bar {
     border-top: 1px solid @pale-grey-two;
@@ -5295,43 +5295,6 @@ ncl-breadcrumbs {
         }
     }
 }
-.ncl-edit-item {
-    width: 100%;
-    padding: 6px 0;
-
-    .title-field-row {
-        display: flex;
-
-        .name-field {
-            margin-right: 14px;
-            width: 178px;
-        }
-
-        .class-field {
-            margin-right: 14px;
-            width: 154px;
-        }
-
-        &:last-child {
-            padding-bottom: 0;
-        }
-    }
-
-    .attribute-field {
-        margin-right: 14px;
-        padding: 8px 0 6px;
-
-        .field-label {
-            text-transform: capitalize;
-        }
-    }
-
-    .no-class-selected {
-        line-height: 48px;
-        .nclDuskThree(0.64);
-        color: @color;
-    }
-}
 .ncl-collapsing-row {
     margin-bottom: 9px;
 
@@ -5425,6 +5388,43 @@ ncl-breadcrumbs {
         visibility: hidden;
         align-items: flex-start;
         line-height: 51px;
+    }
+}
+.ncl-edit-item {
+    width: 100%;
+    padding: 6px 0;
+
+    .title-field-row {
+        display: flex;
+
+        .name-field {
+            margin-right: 14px;
+            width: 178px;
+        }
+
+        .class-field {
+            margin-right: 14px;
+            width: 154px;
+        }
+
+        &:last-child {
+            padding-bottom: 0;
+        }
+    }
+
+    .attribute-field {
+        margin-right: 14px;
+        padding: 8px 0 6px;
+
+        .field-label {
+            text-transform: capitalize;
+        }
+    }
+
+    .no-class-selected {
+        line-height: 48px;
+        .nclDuskThree(0.64);
+        color: @color;
     }
 }
 .ncl-key-value-input {
@@ -5990,83 +5990,6 @@ ncl-functions {
         }
     }
 }
-.tab-content-wrapper {
-    min-width: 946px;
-    padding: 24px 41px;
-
-    .section-wrapper {
-        padding: 18px 39px 0 23px;
-    }
-
-    .code-entry-section {
-        margin-bottom: 20px;
-        background-color: @ncl-white;
-        border: 1px solid @ncl-pale-grey-two;
-
-        .code-entry-row {
-            display: flex;
-            margin-bottom: 24px;
-
-            .code-entry-col {
-                margin-right: 16px;
-
-                .col-label {
-                    margin-bottom: 2px;
-                    font-size: 14px;
-                    color: @ncl-dusk-three;
-                }
-            }
-
-            .code-entry-type-col {
-                width: 22%;
-            }
-
-            .code-entry-runtime-col {
-                width: 22%;
-            }
-
-            .code-entry-handler-col {
-                width: 56%;
-            }
-
-            .code-entry-button-col {
-                min-width: 128px;
-
-                .upload-button {
-                    height: 36px;
-                    width: 128px;
-                    margin: 21px 0 0 0;
-                    padding: 0;
-
-                    i {
-                        display: inline-block;
-                        font-size: 16px;
-                        margin-left: 20px;
-                        vertical-align: middle;
-                    }
-                    span {
-                        margin-left: 4px;
-                        letter-spacing: 1px;
-                        vertical-align: middle;
-                    }
-                }
-            }
-
-            .code-entry-url-col {
-                width: 100%;
-                margin-right: 160px;
-            }
-        }
-    }
-
-    .code-edit-section {
-        .code-editor {
-            height: 500px;
-            width: 100%;
-        }
-    }
-}
-
 .ncl-version-configuration {
     > .igz-scrollable-container {
         padding: 24px 25px 22px 41px;
@@ -6184,6 +6107,83 @@ ncl-functions {
         }
     }
 }
+.tab-content-wrapper {
+    min-width: 946px;
+    padding: 24px 41px;
+
+    .section-wrapper {
+        padding: 18px 39px 0 23px;
+    }
+
+    .code-entry-section {
+        margin-bottom: 20px;
+        background-color: @ncl-white;
+        border: 1px solid @ncl-pale-grey-two;
+
+        .code-entry-row {
+            display: flex;
+            margin-bottom: 24px;
+
+            .code-entry-col {
+                margin-right: 16px;
+
+                .col-label {
+                    margin-bottom: 2px;
+                    font-size: 14px;
+                    color: @ncl-dusk-three;
+                }
+            }
+
+            .code-entry-type-col {
+                width: 22%;
+            }
+
+            .code-entry-runtime-col {
+                width: 22%;
+            }
+
+            .code-entry-handler-col {
+                width: 56%;
+            }
+
+            .code-entry-button-col {
+                min-width: 128px;
+
+                .upload-button {
+                    height: 36px;
+                    width: 128px;
+                    margin: 21px 0 0 0;
+                    padding: 0;
+
+                    i {
+                        display: inline-block;
+                        font-size: 16px;
+                        margin-left: 20px;
+                        vertical-align: middle;
+                    }
+                    span {
+                        margin-left: 4px;
+                        letter-spacing: 1px;
+                        vertical-align: middle;
+                    }
+                }
+            }
+
+            .code-entry-url-col {
+                width: 100%;
+                margin-right: 160px;
+            }
+        }
+    }
+
+    .code-edit-section {
+        .code-editor {
+            height: 500px;
+            width: 100%;
+        }
+    }
+}
+
 .ncl-edit-version-execution-result {
     margin: 17px 24px;
     padding: 16px 13px 0;
@@ -6329,84 +6329,6 @@ ncl-functions {
         }
     }
 }
-.function-from-scratch-content {
-    .splash-screen {
-        top: 0;
-    }
-
-    .title-wrapper {
-        width: 50%;
-        padding-right: 48px;
-        text-align: right;
-
-        .title {
-            color: @ncl-dusk-three;
-            font-size: 16px;
-            font-weight: bold;
-            margin-right: 570px;
-        }
-    }
-
-    .function-configuration {
-        margin: 28px 0 0 0;
-
-        .configuration-form {
-            display: flex;
-
-            .function-name-wrapper {
-                width: 50%;
-                padding-right: 48px;
-
-                .function-name {
-                    width: 687px;
-                    float: right;
-
-                    .input-label {
-                        font-size: 14px;
-                        font-weight: 600;
-                        color: @ncl-dusk-three;
-                    }
-
-                    igz-validating-input-field {
-                        margin-left: 2px;
-                    }
-                }
-            }
-
-            .function-runtime-wrapper {
-                width: 50%;
-
-                .function-runtime {
-                    width: 552px;
-
-                    .input-label {
-                        font-size: 14px;
-                        font-weight: 600;
-                        color: @ncl-dusk-three;
-                    }
-
-                    igz-default-dropdown {
-                        .default-dropdown {
-                            background-color: @ncl-white;
-
-                            .default-dropdown-field {
-                                &:focus {
-                                    background-color: inherit;
-                                }
-                            }
-                        }
-                    }
-
-                    .bottom-bar {
-                        display: flex;
-                        justify-content: flex-end;
-                        margin-top: 48px;
-                    }
-                }
-            }
-        }
-    }
-}
 .function-from-template-content {
     padding: 0 72px 0 63px;
 
@@ -6525,13 +6447,81 @@ ncl-functions {
         }
     }
 }
-.ncl-version-configuration-build {
-    .build-field {
-        margin-bottom: 23px;
+.function-from-scratch-content {
+    .splash-screen {
+        top: 0;
+    }
 
-        .field-label {
-            font-size: 14px;
-            font-weight: 500;
+    .title-wrapper {
+        width: 50%;
+        padding-right: 48px;
+        text-align: right;
+
+        .title {
+            color: @ncl-dusk-three;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 570px;
+        }
+    }
+
+    .function-configuration {
+        margin: 28px 0 0 0;
+
+        .configuration-form {
+            display: flex;
+
+            .function-name-wrapper {
+                width: 50%;
+                padding-right: 48px;
+
+                .function-name {
+                    width: 687px;
+                    float: right;
+
+                    .input-label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: @ncl-dusk-three;
+                    }
+
+                    igz-validating-input-field {
+                        margin-left: 2px;
+                    }
+                }
+            }
+
+            .function-runtime-wrapper {
+                width: 50%;
+
+                .function-runtime {
+                    width: 552px;
+
+                    .input-label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: @ncl-dusk-three;
+                    }
+
+                    igz-default-dropdown {
+                        .default-dropdown {
+                            background-color: @ncl-white;
+
+                            .default-dropdown-field {
+                                &:focus {
+                                    background-color: inherit;
+                                }
+                            }
+                        }
+                    }
+
+                    .bottom-bar {
+                        display: flex;
+                        justify-content: flex-end;
+                        margin-top: 48px;
+                    }
+                }
+            }
         }
     }
 }
@@ -6615,6 +6605,16 @@ ncl-functions {
         }
     }
 }
+.ncl-version-configuration-build {
+    .build-field {
+        margin-bottom: 23px;
+
+        .field-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+    }
+}
 .ncl-version-configuration-data-bindings {
     .ncl-version-binding {
         .common-table-header {
@@ -6689,42 +6689,6 @@ ncl-functions {
         }
     }
 }
-.ncl-version-configuration-runtime-attributes {
-    .row:not(.key-value-row) {
-        display: flex;
-        justify-content: space-between;
-
-        &:not(:last-child) {
-            margin-top: 10px;
-            margin-bottom: 25px;
-        }
-
-        > div {
-            flex: 0.65;
-
-            &:not(:last-child) {
-                margin-right: 16px;
-            }
-
-            .label {
-                padding: 0;
-                margin-bottom: 5px;
-            }
-
-            &.arguments-input {
-                flex-grow: 2;
-            }
-        }
-    }
-
-    .row {
-        &.key-value-row {
-            .label {
-                margin-bottom: 15px;
-            }
-        }
-    }
-}
 @desktop-middle: 1550px;
 
 .ncl-version-configuration-resources {
@@ -6788,6 +6752,42 @@ ncl-functions {
                         margin-right: 54px;
                     }
                 }
+            }
+        }
+    }
+}
+.ncl-version-configuration-runtime-attributes {
+    .row:not(.key-value-row) {
+        display: flex;
+        justify-content: space-between;
+
+        &:not(:last-child) {
+            margin-top: 10px;
+            margin-bottom: 25px;
+        }
+
+        > div {
+            flex: 0.65;
+
+            &:not(:last-child) {
+                margin-right: 16px;
+            }
+
+            .label {
+                padding: 0;
+                margin-bottom: 5px;
+            }
+
+            &.arguments-input {
+                flex-grow: 2;
+            }
+        }
+    }
+
+    .row {
+        &.key-value-row {
+            .label {
+                margin-bottom: 15px;
             }
         }
     }

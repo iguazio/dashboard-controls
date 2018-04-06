@@ -11,6 +11,7 @@
                 isDisabled: '<?',
                 validationValue: '<',
                 validationValueUnit: '<',
+                allowEmptyField: '<?',
                 disableZeroValue: '<?',
                 updateNumberInputCallback: '&?',
                 defaultValue: '@',
@@ -81,6 +82,10 @@
          * @returns {boolean}
          */
         function checkInvalidation() {
+            if (lodash.isNil(ctrl.currentValue) && !ctrl.allowEmptyField) {
+                return true;
+            }
+
             return ctrl.isShowFieldInvalidState(ctrl.formObject, ctrl.inputName);
         }
 
