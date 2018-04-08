@@ -57,7 +57,7 @@
                 if ($scope.newProjectForm.$valid) {
                     ctrl.isLoadingState = true;
 
-                    // sets default `created_by` and `created_date` if they are not defined
+                    // TODO sets default `created_by` and `created_date` if they are not defined
                     lodash.defaultsDeep(ctrl.data, {
                         spec: {
                             created_by: 'admin',

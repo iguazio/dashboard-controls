@@ -50,6 +50,7 @@
             <li class="list-item" tabindex="0"
                 data-ng-repeat="item in $ctrl.getValuesArray() track by $index"
                 data-ng-click="$ctrl.selectItem(item)" data-ng-keydown="$ctrl.onItemKeydown($event, item)"
+                data-ng-class="{'list-item-description': $ctrl.getDescription(item)}"
                 data-ng-show="item.visible"
                 data-tooltip="{{$ctrl.getTooltip(item)}}"
                 data-tooltip-placement="left"

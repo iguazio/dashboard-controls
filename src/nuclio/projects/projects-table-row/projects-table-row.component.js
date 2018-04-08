@@ -30,7 +30,7 @@
         function onInit() {
 
             // initialize `deleteProject`, `editProjects` actions and assign them to `ui` property of current project
-            // sets default `created_by` and `created_date` if they are not defined
+            // TODO sets default `created_by` and `created_date` if they are not defined
             // initialize `checked` status to `false`
             lodash.defaultsDeep(ctrl.project, {
                 spec: {
