@@ -17,6 +17,9 @@
 
         ctrl.numberInputCallback = numberInputCallback;
 
+        ctrl.minReplicas = ctrl.version.spec.minReplicas;
+        ctrl.maxReplicas = ctrl.version.spec.maxReplicas;
+
         //
         // Hook methods
         //
@@ -83,8 +86,9 @@
          * @param {string} field
          */
         function numberInputCallback(newData, field) {
+            ctrl[field] = newData;
             if (ctrl.resourcesForm.$valid) {
-                lodash.set(ctrl.version, field, newData);
+                lodash.set(ctrl.version.spec, field, newData);
             }
         }
     }
