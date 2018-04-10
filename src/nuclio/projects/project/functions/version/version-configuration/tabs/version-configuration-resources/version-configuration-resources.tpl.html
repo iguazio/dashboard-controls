@@ -25,27 +25,28 @@
                     <div class="inputs">
                         <igz-number-input data-form-object="$ctrl.resourcesForm"
                                           data-input-name="minReplicas"
-                                          data-current-value="$ctrl.version.spec.minReplicas"
+                                          data-current-value="$ctrl.minReplicas"
+                                          data-default-value="0"
                                           data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
-                                          data-update-number-input-field="spec.minReplicas"
+                                          data-update-number-input-field="minReplicas"
                                           data-placeholder=""
                                           data-decimal-number="0"
                                           data-value-step="1"
-                                          data-max-value="$ctrl.version.spec.maxReplicas"
-                                          data-disable-zero-value="true"></igz-number-input>
+                                          data-min-value="0"
+                                          data-max-value="$ctrl.maxReplicas"></igz-number-input>
                         <div class="values-label">
                             min
                         </div>
                         <igz-number-input data-form-object="$ctrl.resourcesForm"
                                           data-input-name="maxReplicas"
-                                          data-current-value="$ctrl.version.spec.maxReplicas"
+                                          data-current-value="$ctrl.maxReplicas"
+                                          data-default-value="0"
                                           data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
-                                          data-update-number-input-field="spec.maxReplicas"
+                                          data-update-number-input-field="maxReplicas"
                                           data-placeholder=""
                                           data-decimal-number="0"
                                           data-value-step="1"
-                                          data-min-value="$ctrl.version.spec.minReplicas"
-                                          data-disable-zero-value="true"></igz-number-input>
+                                          data-min-value="0"></igz-number-input>
                         <div class="values-label">
                             max
                         </div>

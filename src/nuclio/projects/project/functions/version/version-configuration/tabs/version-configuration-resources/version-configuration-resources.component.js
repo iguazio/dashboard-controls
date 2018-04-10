@@ -71,6 +71,8 @@
                     name: 'GB'
                 }
             ];
+            ctrl.minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
+            ctrl.maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
         }
 
         //
@@ -83,8 +85,9 @@
          * @param {string} field
          */
         function numberInputCallback(newData, field) {
+            ctrl[field] = newData;
             if (ctrl.resourcesForm.$valid) {
-                lodash.set(ctrl.version, field, newData);
+                lodash.set(ctrl.version.spec, field, newData);
             }
         }
     }
