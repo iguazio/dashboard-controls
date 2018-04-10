@@ -17,9 +17,6 @@
 
         ctrl.numberInputCallback = numberInputCallback;
 
-        ctrl.minReplicas = ctrl.version.spec.minReplicas;
-        ctrl.maxReplicas = ctrl.version.spec.maxReplicas;
-
         //
         // Hook methods
         //
@@ -74,6 +71,8 @@
                     name: 'GB'
                 }
             ];
+            ctrl.minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
+            ctrl.maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
         }
 
         //
