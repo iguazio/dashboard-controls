@@ -1,4 +1,8 @@
 <div class="ncl-version-configuration-build">
+    <igz-action-menu data-actions="$ctrl.actions"
+                     data-icon-class="ncl-icon-paperclip"
+                     data-on-fire-action="$ctrl.onFireAction">
+    </igz-action-menu>
     <div class="title">Build</div>
     <form name="$ctrl.buildForm" class="build-wrapper">
         <div class="igz-row">
@@ -11,22 +15,79 @@
                                             data-form-object="$ctrl.buildForm"
                                             data-validation-is-required="true"
                                             data-placeholder-text="Type ..."
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData)"
                                             data-update-data-field="baseImageName">
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-100 build-field">
                 <div class="field-label">Build command</div>
-                <igz-validating-input-field data-field-type="input"
+                <igz-validating-input-field data-field-type="textarea"
                                             data-input-name="Commands"
                                             data-input-value="$ctrl.version.build.Commands"
                                             data-is-focused="false"
                                             data-form-object="$ctrl.buildForm"
                                             data-validation-is-required="true"
                                             data-placeholder-text="Type ..."
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-update-data-field="Commands">
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData)"
+                                            data-update-data-field="Commands"
+                                            class="build-command-field">
                 </igz-validating-input-field>
+            </div>
+            <div class="igz-col-100 build-field files-field">
+                <div class="uploading-files">
+                    <div class="uploading-proccess-wrapper"
+                         data-ng-class="{'one-file-uploaded': $ctrl.file.uploaded || $ctrl.script.uploaded}"
+                         data-ng-if="$ctrl.getFileConfig().uploading && $ctrl.getFileConfig().name">
+                        <div class="file-block uploading text-ellipsis"
+                             data-ng-class="{'uploading-file': $ctrl.file.uploading}">
+                            <span class="{{$ctrl.getFileConfig().icon}}"></span>
+                            <button class="build-close-button">
+                                <span class="ncl-icon-close"></span>
+                            </button>
+                            <span class="file-name">
+                                {{$ctrl.getFileConfig().name}}
+                            </span>
+                            <div class="progress">
+                                <div class="progress-bar"
+                                     role="progressbar"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100"
+                                     data-ng-style="{'width': $ctrl.getFileConfig().progress}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="uploaded-wrapper"
+                         data-ng-if="$ctrl.file.uploaded|| $ctrl.script.uploaded">
+                        <div class="file-block uploaded text-ellipsis"
+                             data-ng-if="$ctrl.script.uploaded"
+                             data-ng-class="{'one-file-uploaded': $ctrl.file.uploaded}">
+                            <span class="ncl-icon-script"></span>
+                            <span class="file-name">
+                                {{$ctrl.script.name}}
+                                <span class="uploaded-file-directory">(/usr/bin/mybinary)</span>
+                            </span>
+                            <button class="build-close-button"
+                                    data-ng-click="$ctrl.deleteFile('script')">
+                                <span class="ncl-icon-close"></span>
+                            </button>
+                        </div>
+
+                        <div class="file-block uploaded text-ellipsis uploaded-file"
+                             data-ng-if="$ctrl.file.uploaded">
+                            <span class="ncl-icon-file"></span>
+                            <span class="file-name">
+                                {{$ctrl.file.name}}
+                                <span class="uploaded-file-directory">(/usr/bin/mybinary)</span>
+                            </span>
+                            <button class="build-close-button"
+                                    data-ng-click="$ctrl.deleteFile('file')">
+                                <span class="ncl-icon-close"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
