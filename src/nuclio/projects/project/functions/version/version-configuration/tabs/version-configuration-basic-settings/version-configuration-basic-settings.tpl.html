@@ -37,6 +37,8 @@
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="timeout.min"
                                                     data-form-object="$ctrl.basicSettingsForm"
+                                                    data-validation-is-required="true"
+                                                    data-validation-pattern="$ctrl.validationPatterns.digits"
                                                     data-placeholder-text="Min..."></igz-validating-input-field>
                         <div class="values-label">
                             min
@@ -49,6 +51,8 @@
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="timeout.sec"
                                                     data-form-object="$ctrl.basicSettingsForm"
+                                                    data-validation-is-required="true"
+                                                    data-validation-pattern="$ctrl.validationPatterns.digits"
                                                     data-placeholder-text="Sec..."></igz-validating-input-field>
                         <div class="values-label">
                             sec

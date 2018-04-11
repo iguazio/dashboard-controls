@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationBasicSettingsController
         });
 
-    function NclVersionConfigurationBasicSettingsController(lodash) {
+    function NclVersionConfigurationBasicSettingsController(lodash, ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.enableEdit = false;
@@ -21,6 +21,8 @@
         };
 
         ctrl.$onInit = onInit;
+
+        ctrl.validationPatterns = ValidatingPatternsService;
 
         ctrl.inputValueCallback = inputValueCallback;
 

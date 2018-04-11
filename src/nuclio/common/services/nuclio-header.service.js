@@ -35,10 +35,10 @@
 
             if (!lodash.isNil(subtitles.function)) {
                 mainHeaderTitle.function = subtitles.function;
-            }
 
-            if (!lodash.isNil(subtitles.version)) {
-                mainHeaderTitle.version = subtitles.version;
+                if (!lodash.isNil(subtitles.version)) {
+                    mainHeaderTitle.version = subtitles.version;
+                }
             }
 
             $rootScope.$broadcast('update-main-header-title', mainHeaderTitle);
