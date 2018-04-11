@@ -17,4 +17,9 @@
             {{$ctrl.project.spec.created_date | date: 'MMM dd, yyyy'}}
         </div>
     </div>
+    <div class="common-table-cell actions-menu">
+        <igz-action-menu data-actions="$ctrl.actions"
+                         data-on-fire-action="$ctrl.onFireAction">
+        </igz-action-menu>
+    </div>
 </div>
