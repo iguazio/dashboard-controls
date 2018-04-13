@@ -35,8 +35,6 @@
         ];
         ctrl.isTestResultShown = false;
 
-        // TODO
-
         ctrl.$onInit = onInit;
 
         ctrl.createTestEvent = createTestEvent;
@@ -104,6 +102,7 @@
          * Opens new test event dialog
          */
         function createTestEvent() {
+
             // delete when this function will be implemented
             ctrl.testEventNumber++;
 
