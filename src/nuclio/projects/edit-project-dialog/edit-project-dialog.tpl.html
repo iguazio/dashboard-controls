@@ -13,7 +13,7 @@
                 Project Name
             </div>
             <div class="field-input">
-                <div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(editProjectForm, 'name')">
+                <div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(editProjectForm, 'spec.displayName')">
                     The inputs you provided are invalid or incorrect
                 </div>
                 <div class="error" data-ng-show="$ctrl.nameTakenError">
@@ -24,6 +24,8 @@
                                             data-input-value="$ctrl.data.spec.displayName"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-is-focused="true"
+                                            data-validation-is-required="true"
+                                            data-validation-pattern="$ctrl.nameValidationPattern"
                                             data-form-object="editProjectForm"
                                             data-placeholder-text="Project name..."></igz-validating-input-field>
             </div>

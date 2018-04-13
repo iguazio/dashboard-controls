@@ -12,7 +12,7 @@
             controller: IgzEditProjectDialogController
         });
 
-    function IgzEditProjectDialogController($scope, $rootScope, lodash, EventHelperService, FormValidationService,
+    function IgzEditProjectDialogController($scope, lodash, EventHelperService, FormValidationService,
                                             NuclioProjectsDataService) {
         var ctrl = this;
 
@@ -20,6 +20,7 @@
         ctrl.isLoadingState = false;
         ctrl.nameTakenError = false;
         ctrl.serverError = '';
+        ctrl.nameValidationPattern = /^.{1,128}$/;
 
         ctrl.$onInit = onInit;
 
@@ -68,7 +69,7 @@
                             ctrl.serverError =
                                 status === 400                   ? 'Missing mandatory fields'                         :
                                 status === 403                   ? 'You do not have permissions to update project'    :
-                                status === 405                   ? 'Failed to create a project'                     :
+                                status === 405                   ? 'Failed to create a project'                       :
                                 lodash.inRange(status, 500, 599) ? 'Server error'                                     :
                                                                    'Unknown error occurred. Retry later';
                         })

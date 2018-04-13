@@ -16,9 +16,12 @@
                                            NuclioProjectsDataService) {
         var ctrl = this;
 
+        ctrl.actions = {};
+
         ctrl.$onInit = onInit;
 
         ctrl.showDetails = showDetails;
+        ctrl.onFireAction = onFireAction;
 
         //
         // Hook method
@@ -43,11 +46,21 @@
                     edit: editProject
                 }
             });
+
+            ctrl.actions = initActions();
         }
 
         //
         // Public method
         //
+
+        /**
+         * According to given action name calls proper action handler
+         * @param {string} actionType - a type of action
+         */
+        function onFireAction(actionType) {
+            ctrl.actionHandlerCallback({actionType: actionType, checkedItems: [ctrl.project]});
+        }
 
         /**
          * Handles mouse click on a project name
@@ -85,6 +98,34 @@
 
                     return DialogsService.alert(lodash.get(errorMessages, error.status, errorMessages.default));
                 });
+        }
+
+        /**
+         * Initializes actions
+         * @returns {Object[]} - list of actions
+         */
+        function initActions() {
+            return [
+                {
+                    label: 'Delete',
+                    id: 'delete',
+                    icon: 'igz-icon-trash',
+                    active: true,
+                    confirm: {
+                        message: 'Delete project “' + ctrl.project.spec.displayName + '“?',
+                        yesLabel: 'Yes, Delete',
+                        noLabel: 'Cancel',
+                        description: 'Deleted project cannot be restored.',
+                        type: 'nuclio_alert'
+                    }
+                },
+                {
+                    label: 'Edit',
+                    id: 'edit',
+                    icon: 'igz-icon-properties',
+                    active: true
+                }
+            ];
         }
 
         /**
