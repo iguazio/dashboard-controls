@@ -12,7 +12,7 @@
             controller: NclVersionController
         });
 
-    function NclVersionController($rootScope, $state, $stateParams, DialogsService, NuclioHeaderService, NuclioFunctionsDataService, NuclioProjectsDataService) {
+    function NclVersionController($rootScope, $state, $stateParams, lodash, DialogsService, NuclioHeaderService, NuclioFunctionsDataService, NuclioProjectsDataService) {
         var ctrl = this;
 
         ctrl.actions = [
@@ -36,25 +36,6 @@
         ctrl.isTestResultShown = false;
 
         // TODO
-        ctrl.selectedTestEvent = '';
-        ctrl.testEvents = [
-            {
-                id: 'firstTestEvent',
-                name: 'First test event'
-            },
-            {
-                id: 'secondTestEvent',
-                name: 'Second test event'
-            },
-            {
-                id: 'otherTestEvent',
-                name: 'Other test event'
-            },
-            {
-                id: 'toBeContinued',
-                name: 'To be continued ...'
-            }
-        ];
 
         ctrl.$onInit = onInit;
 
@@ -91,6 +72,11 @@
                     uiRoute: 'app.project.function.edit.monitoring'
                 }
             ];
+            ctrl.testEvents = [];
+            ctrl.selectedTestEvent = lodash.isEmpty(ctrl.testEvents) ? null : ctrl.testEvents[0].id;
+
+            // delete when createTestEvent will be implemented
+            ctrl.testEventNumber = 0;
 
             NuclioProjectsDataService.getProject($stateParams.projectId)
                 .then(function (project) {
@@ -118,9 +104,15 @@
          * Opens new test event dialog
          */
         function createTestEvent() {
+            // delete when this function will be implemented
+            ctrl.testEventNumber++;
 
-            // TODO
-            DialogsService.alert('This functionality is not implemented yet.');
+            var newTestEvent = {
+                id: 'EventId' + ctrl.testEventNumber,
+                name: 'EventName ' + ctrl.testEventNumber
+            };
+            ctrl.testEvents.push(newTestEvent);
+            ctrl.selectedTestEvent = newTestEvent.id;
         }
 
         /**
