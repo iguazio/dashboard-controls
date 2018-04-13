@@ -22,6 +22,7 @@
 
         ctrl.onFireAction = onFireAction;
         ctrl.toggleItem = toggleItem;
+        ctrl.onCollapse = onCollapse;
 
         //
         // Hook methods
@@ -58,6 +59,15 @@
          */
         function toggleItem() {
             ctrl.item.enable = !ctrl.item.enable;
+        }
+
+        /**
+         * Changes item's expanded state
+         */
+        function onCollapse() {
+            if (ctrl.item.ui.expandable) {
+                ctrl.item.ui.expanded = !ctrl.item.ui.expanded;
+            }
         }
 
         //

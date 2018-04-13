@@ -1,5 +1,5 @@
 <div class="ncl-edit-item" data-ng-keydown="$ctrl.onSubmitForm($event)">
-    <form name="editItemForm"
+    <form name="$ctrl.editItemForm"
           novalidate
           autocomplete="off">
         <div class="igz-row title-field-row">
@@ -8,12 +8,15 @@
                                             data-input-name="itemName"
                                             data-input-value="$ctrl.item.name"
                                             data-is-focused="false"
-                                            data-form-object="editItemForm"
+                                            data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
                                             data-placeholder-text="Type name..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="name">
                 </igz-validating-input-field>
+                <div class="error" data-ng-show="$ctrl.isShowFieldInvalidState($ctrl.editItemForm, 'itemName')">
+                    The inputs you provided are invalid or incorrect
+                </div>
             </div>
             <div class="igz-col-12-5 class-field">
                 <igz-default-dropdown data-select-property-only="id"
@@ -37,7 +40,7 @@
                                             data-input-name="itemURL"
                                             data-input-value="$ctrl.item.url"
                                             data-is-focused="false"
-                                            data-form-object="editItemForm"
+                                            data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
                                             data-placeholder-text="Type URL..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -52,7 +55,7 @@
                                             data-input-name="item_{{attribute.name}}"
                                             data-input-value="$ctrl.getAttrValue(attribute.name)"
                                             data-is-focused="false"
-                                            data-form-object="editItemForm"
+                                            data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
                                             data-placeholder-text="Type {{attribute.name}}..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"

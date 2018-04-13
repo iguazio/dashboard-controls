@@ -2,7 +2,7 @@
     <div class="title-block common-table-row" data-ng-class="{'collapsed': !$ctrl.item.ui.expanded}">
         <div class="common-table-cell row-collapse">
             <span class="collapse-icon"
-                  data-ng-click="$ctrl.item.ui.expanded = !$ctrl.item.ui.expanded"
+                  data-ng-click="$ctrl.onCollapse()"
                   data-ng-class="{'collapsed igz-icon-right': !$ctrl.item.ui.expanded, 'igz-icon-down': $ctrl.item.ui.expanded}"></span>
         </div>
 
