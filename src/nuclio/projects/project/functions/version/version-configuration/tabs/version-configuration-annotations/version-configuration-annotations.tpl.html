@@ -5,11 +5,24 @@
             <div class="key-header">Key</div>
             <div class="value-header">Value</div>
         </div>
-        <div class="igz-scrollable-container"
+        <div data-ng-if="!$ctrl.isScrollNeeded()">
+            <div class="table-body" data-ng-repeat="annotation in $ctrl.annotations">
+                <ncl-key-value-input class="new-label-input"
+                                     data-list-class="ncl-version-configuration-annotations"
+                                     data-row-data="annotation"
+                                     data-use-type="false"
+                                     data-item-index="$index"
+                                     data-action-handler-callback="$ctrl.handleAction(actionType, index)"
+                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+            </div>
+        </div>
+        <div data-ng-if="$ctrl.isScrollNeeded()"
+             class="igz-scrollable-container scrollable-annotations"
              data-ng-scrollbars
              data-ng-scrollbars-config="$ctrl.scrollConfig">
             <div class="table-body" data-ng-repeat="annotation in $ctrl.annotations">
                 <ncl-key-value-input class="new-label-input"
+                                     data-list-class="scrollable-annotations"
                                      data-row-data="annotation"
                                      data-use-type="false"
                                      data-item-index="$index"

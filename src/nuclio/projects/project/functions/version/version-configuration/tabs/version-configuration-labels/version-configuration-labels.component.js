@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationLabelsController
         });
 
-    function NclVersionConfigurationLabelsController($element, lodash, PreventDropdownCutOffService) {
+    function NclVersionConfigurationLabelsController($element, $timeout, lodash, PreventDropdownCutOffService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {
@@ -26,6 +26,7 @@
         ctrl.addNewLabel = addNewLabel;
         ctrl.handleAction = handleAction;
         ctrl.onChangeData = onChangeData;
+        ctrl.isScrollNeeded = isScrollNeeded;
 
         //
         // Hook methods
@@ -90,6 +91,10 @@
             ctrl.labels[index] = label;
 
             updateLabels();
+        }
+
+        function isScrollNeeded() {
+            return ctrl.labels.length > 10;
         }
 
         //

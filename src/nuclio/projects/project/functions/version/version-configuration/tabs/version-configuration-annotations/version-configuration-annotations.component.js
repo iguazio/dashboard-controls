@@ -26,6 +26,7 @@
         ctrl.addNewAnnotation = addNewAnnotation;
         ctrl.handleAction = handleAction;
         ctrl.onChangeData = onChangeData;
+        ctrl.isScrollNeeded = isScrollNeeded;
 
         //
         // Hook methods
@@ -90,6 +91,10 @@
             ctrl.annotations[index] = label;
 
             updateAnnotations();
+        }
+
+        function isScrollNeeded() {
+            return ctrl.annotations.length > 10;
         }
 
         //

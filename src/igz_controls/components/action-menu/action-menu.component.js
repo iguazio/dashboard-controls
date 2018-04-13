@@ -9,13 +9,14 @@
                 onFireAction: '<?',
                 onClickShortcut: '<?',
                 isMenuShown: '<?',
-                iconClass: '@?'
+                iconClass: '@?',
+                listClass: '<?'
             },
             templateUrl: 'igz_controls/components/action-menu/action-menu.tpl.html',
             controller: IgzActionMenuController
         });
 
-    function IgzActionMenuController($scope, $element, $document, $rootScope, lodash, ConfigService,
+    function IgzActionMenuController($scope, $element, $document, $rootScope, $timeout, lodash, ConfigService,
                                      PreventDropdownCutOffService) {
         var ctrl = this;
 
@@ -107,6 +108,14 @@
                 $rootScope.$broadcast('close-all-action-menus');
                 ctrl.isMenuShown = true;
                 attachDocumentEvent();
+
+                if (angular.isDefined(ctrl.listClass)) {
+                    checkOpeningSide(ctrl.listClass);
+                } else {
+                    $timeout(function () {
+                        angular.element('.menu-dropdown').css('visibility', 'visible');
+                    });
+                }
             } else {
                 detachDocumentEvent();
                 ctrl.isMenuShown = false;
@@ -168,6 +177,33 @@
                     closeActionMenu();
                 }
             });
+        }
+
+        function checkOpeningSide(elementClass) {
+            var parentalBlock = document.getElementsByClassName(elementClass)[0];
+            var parentalRect = parentalBlock.getBoundingClientRect();
+            var dropdown;
+            var dropdownBottom;
+
+            $timeout(function () {
+                dropdown = $element.context.getElementsByClassName('menu-dropdown')[0];
+                dropdownBottom = dropdown.getBoundingClientRect().bottom;
+            });
+
+            if (lodash.includes(elementClass, 'scrollable')) {
+                var parentalHeight = parentalBlock.clientHeight;
+                var parentalTop = parentalRect.top;
+
+                $timeout(function () {
+                    (dropdownBottom - parentalTop) > parentalHeight ? dropdown.classList.add('upward-menu') : dropdown.style.visibility = 'visible';
+                });
+            } else {
+                var parentalBottom = parentalRect.bottom;
+
+                $timeout(function () {
+                    dropdownBottom > parentalBottom ? dropdown.classList.add('upward-menu') : dropdown.style.visibility = 'visible';
+                });
+            }
         }
     }
 }());

@@ -26,6 +26,7 @@
         ctrl.addNewVariable = addNewVariable;
         ctrl.handleAction = handleAction;
         ctrl.onChangeData = onChangeData;
+        ctrl.isScrollNeeded = isScrollNeeded;
 
         //
         // Hook methods
@@ -79,6 +80,10 @@
          */
         function onChangeData(variable, index) {
             ctrl.variables[index] = variable;
+        }
+
+        function isScrollNeeded() {
+            return ctrl.variables.length > 10;
         }
     }
 }());
