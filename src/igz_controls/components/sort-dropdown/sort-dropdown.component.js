@@ -5,6 +5,7 @@
         .component('igzSortDropdown', {
             bindings: {
                 sortOptions: '<',
+                reverseSorting: '<',
                 updateDataCallback: '<'
             },
             templateUrl: 'igz_controls/components/sort-dropdown/sort-dropdown.tpl.html',

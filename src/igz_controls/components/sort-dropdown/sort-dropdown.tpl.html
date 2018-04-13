@@ -10,7 +10,7 @@
             data-ng-click="$ctrl.toggleSortingOrder(option)">
             <span class="item-name"
                   data-ng-class="$ctrl.getItemClass(option.active)">{{option.label}}</span>
-            <span class="igz-icon-sort-{{option.desc ? 'down' : 'up'}}" data-ng-show="option.active"></span>
+            <span class="igz-icon-sort-{{$ctrl.reverseSorting ? 'down' : 'up'}}" data-ng-show="option.active"></span>
         </li>
     </ul>
 </div>

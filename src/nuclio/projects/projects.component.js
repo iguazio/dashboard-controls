@@ -7,13 +7,13 @@
             controller: NclProjectsController
         });
 
-    function NclProjectsController($scope, $q, $state, lodash, ngDialog, ActionCheckboxAllService, CommonTableService,
-                                   NuclioProjectsDataService, ValidatingPatternsService) {
+    function NclProjectsController($filter, $rootScope, $scope, $q, $state, lodash, ngDialog, ActionCheckboxAllService,
+                                   CommonTableService, NuclioProjectsDataService, ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.actions = [];
-        ctrl.activeFilters = [];
         ctrl.checkedItemsCount = 0;
+        ctrl.filtersCounter = 0;
         ctrl.isFiltersShowed = {
             value: false,
             changeValue: function (newVal) {
@@ -24,30 +24,50 @@
         ctrl.isSplashShowed = {
             value: true
         };
-        ctrl.filter = {
-            name: ''
-        };
         ctrl.nameValidationPattern = ValidatingPatternsService.name;
         ctrl.projects = [];
         ctrl.searchStates = {};
         ctrl.searchKeys = [
-            'attr.name'
+            'spec.displayName',
+            'spec.description'
         ];
         ctrl.selectedProject = {};
-        ctrl.sortedColumnName = 'name';
+        ctrl.sortOptions = [
+            {
+                label: 'Name',
+                value: 'displayName',
+                active: true
+            },
+            {
+                label: 'Description',
+                value: 'description',
+                active: false
+            },
+            {
+                label: 'Created by',
+                value: 'created_by',
+                active: false
+            },
+            {
+                label: 'Created date',
+                value: 'created_date',
+                active: false
+            }
+        ];
+        ctrl.sortedColumnName = 'displayName';
 
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
 
         ctrl.isColumnSorted = CommonTableService.isColumnSorted;
 
-        ctrl.clearFilterInput = clearFilterInput;
-        ctrl.getActiveFilters = getActiveFilters;
         ctrl.updateProjects = updateProjects;
         ctrl.handleAction = handleAction;
         ctrl.isProjectsListEmpty = isProjectsListEmpty;
         ctrl.onApplyFilters = onApplyFilters;
+        ctrl.onSortOptionsChange = onSortOptionsChange;
         ctrl.onResetFilters = onResetFilters;
+        ctrl.onUpdateFiltersCounter = onUpdateFiltersCounter;
         ctrl.openNewProjectDialog = openNewProjectDialog;
         ctrl.refreshProjects = refreshProjects;
         ctrl.sortTableByColumn = sortTableByColumn;
@@ -84,24 +104,6 @@
         //
         // Public methods
         //
-
-        /**
-         * Clears filter's field by name
-         * @param {string} filterName - name of the filter
-         */
-        function clearFilterInput(filterName) {
-
-            // TODO
-        }
-
-        /**
-         * Gets active filters object
-         * @returns {Object} - an object with active filters
-         */
-        function getActiveFilters() {
-
-            // TODO
-        }
 
         /**
          * Updates current projects
@@ -167,16 +169,47 @@
          * Updates projects list depends on filters value
          */
         function onApplyFilters() {
+            $rootScope.$broadcast('search-input_refresh-search');
+        }
 
-            // TODO
+        /**
+         * Sorts the table by column name depends on selected value in sort dropdown
+         * @param {Object} option
+         */
+        function onSortOptionsChange(option) {
+            var previousElement = lodash.find(ctrl.sortOptions, ['active', true]);
+            var newElement = lodash.find(ctrl.sortOptions, ['label', option.label]);
+
+            // change state of selected element, and of previous element
+            previousElement.active = false;
+            newElement.active = true;
+
+            // if previous value is equal to new value, then change sorting predicate
+            if (previousElement.label === newElement.label) {
+                newElement.desc = !option.desc;
+            }
+
+            ctrl.isReverseSorting = newElement.desc;
+            ctrl.sortedColumnName = newElement.value;
+
+            ctrl.sortTableByColumn(ctrl.sortedColumnName);
         }
 
         /**
          * Handles on reset filters event
          */
         function onResetFilters() {
+            $rootScope.$broadcast('search-input_reset');
 
-            // TODO
+            ctrl.filtersCounter = 0;
+        }
+
+        /**
+         * Handles on update filters counter
+         * @param {string} searchQuery
+         */
+        function onUpdateFiltersCounter(searchQuery) {
+            ctrl.filtersCounter = lodash.isEmpty(searchQuery) ? 0 : 1;
         }
 
         /**
@@ -210,8 +243,16 @@
          * @param {boolean} isJustSorting - if it is needed just to sort data without changing reverse
          */
         function sortTableByColumn(columnName, isJustSorting) {
+            if (!isJustSorting) {
 
-            // TODO
+                // changes the order of sorting the column
+                ctrl.isReverseSorting = (columnName === ctrl.sortedColumnName) ? !ctrl.isReverseSorting : false;
+            }
+
+            // saves the name of sorted column
+            ctrl.sortedColumnName = columnName;
+
+            ctrl.projects = $filter('orderBy')(ctrl.projects, 'spec.' + columnName, ctrl.isReverseSorting);
         }
 
         /**
