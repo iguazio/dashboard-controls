@@ -7,12 +7,13 @@
             controller: FunctionsController
         });
 
-    function FunctionsController($q, $scope, $state, $stateParams, $timeout, lodash, HeaderService, NuclioHeaderService,
-                                 NuclioProjectsDataService, NuclioFunctionsDataService) {
+    function FunctionsController($filter, $q, $rootScope, $scope, $state, $stateParams, $timeout, lodash, CommonTableService,
+                                 NuclioHeaderService, NuclioProjectsDataService, NuclioFunctionsDataService) {
         var ctrl = this;
         var title = {}; // breadcrumbs config
 
         ctrl.actions = [];
+        ctrl.filtersCounter = 0;
         ctrl.functions = [];
         ctrl.isFiltersShowed = {
             value: false,
@@ -20,40 +21,59 @@
                 this.value = newVal;
             }
         };
+        ctrl.isReverseSorting = false;
         ctrl.isSplashShowed = {
             value: true
         };
         ctrl.project = {};
+        ctrl.searchStates = {};
+        ctrl.searchKeys = [
+            'metadata.name',
+            'spec.description'
+        ];
         ctrl.sortOptions = [
             {
                 label: 'Name',
-                value: 'name',
-                active: true,
-                desc: false
+                value: 'metadata.name',
+                active: true
             },
             {
                 label: 'Description',
-                value: 'description',
-                active: false,
-                desc: false
+                value: 'spec.description',
+                active: false
             },
             {
                 label: 'Status',
-                value: 'status',
-                active: false,
-                desc: false
+                value: 'status.state',
+                active: false
+            },
+            {
+                label: 'Replicas',
+                value: 'spec.replicas',
+                active: false
+            },
+            {
+                label: 'Runtime',
+                value: 'spec.runtime',
+                active: false
             }
         ];
+        ctrl.sortedColumnName = 'metadata.name';
 
         ctrl.$onInit = onInit;
+
+        ctrl.isColumnSorted = CommonTableService.isColumnSorted;
 
         ctrl.getVersions = getVersions;
         ctrl.handleAction = handleAction;
         ctrl.isFunctionsListEmpty = isFunctionsListEmpty;
         ctrl.onApplyFilters = onApplyFilters;
+        ctrl.onSortOptionsChange = onSortOptionsChange;
         ctrl.onResetFilters = onResetFilters;
+        ctrl.onUpdateFiltersCounter = onUpdateFiltersCounter;
         ctrl.openNewFunctionScreen = openNewFunctionScreen;
         ctrl.refreshFunctions = refreshFunctions;
+        ctrl.sortTableByColumn = sortTableByColumn;
         ctrl.toggleFilters = toggleFilters;
 
         //
@@ -96,13 +116,6 @@
         //
         // Public methods
         //
-
-        /**
-         * Applies the current set of filters so further requests to retrieve a page of results will use these filters
-         */
-        function onApplyFilters() {
-            // TODO
-        }
 
         /**
          * Gets list of function versions
@@ -156,10 +169,50 @@
         }
 
         /**
-         * Applies the current set of filters so further requests to retrieve a page of results will use these filters
+         * Updates functions list depends on filters value
+         */
+        function onApplyFilters() {
+            $rootScope.$broadcast('search-input_refresh-search');
+        }
+
+        /**
+         * Sorts the table by column name depends on selected value in sort dropdown
+         * @param {Object} option
+         */
+        function onSortOptionsChange(option) {
+            var previousElement = lodash.find(ctrl.sortOptions, ['active', true]);
+            var newElement = lodash.find(ctrl.sortOptions, ['label', option.label]);
+
+            // change state of selected element, and of previous element
+            previousElement.active = false;
+            newElement.active = true;
+
+            // if previous value is equal to new value, then change sorting predicate
+            if (previousElement.label === newElement.label) {
+                newElement.desc = !option.desc;
+            }
+
+            ctrl.isReverseSorting = newElement.desc;
+            ctrl.sortedColumnName = newElement.value;
+
+            ctrl.sortTableByColumn(ctrl.sortedColumnName);
+        }
+
+        /**
+         * Handles on reset filters event
          */
         function onResetFilters() {
-            // TODO
+            $rootScope.$broadcast('search-input_reset');
+
+            ctrl.filtersCounter = 0;
+        }
+
+        /**
+         * Handles on update filters counter
+         * @param {string} searchQuery
+         */
+        function onUpdateFiltersCounter(searchQuery) {
+            ctrl.filtersCounter = lodash.isEmpty(searchQuery) ? 0 : 1;
         }
 
         /**
@@ -201,6 +254,24 @@
                     ctrl.isSplashShowed.value = false;
                 }
             });
+        }
+
+        /**
+         * Sorts the table by column name
+         * @param {string} columnName - name of column
+         * @param {boolean} isJustSorting - if it is needed just to sort data without changing reverse
+         */
+        function sortTableByColumn(columnName, isJustSorting) {
+            if (!isJustSorting) {
+
+                // changes the order of sorting the column
+                ctrl.isReverseSorting = (columnName === ctrl.sortedColumnName) ? !ctrl.isReverseSorting : false;
+            }
+
+            // saves the name of sorted column
+            ctrl.sortedColumnName = columnName;
+
+            ctrl.functions = $filter('orderBy')(ctrl.functions, columnName, ctrl.isReverseSorting);
         }
 
         /**

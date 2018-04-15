@@ -7,9 +7,10 @@
                 dataSet: '<',
                 searchKeys: '<',
                 searchStates: '<',
+                placeholder: '@',
+                liveSearch: '<?',
                 searchCallback: '&?',
                 isSearchHierarchically: '@?',
-                placeholder: '@',
                 type: '@?',
                 ruleType: '@?',
                 searchType: '@?'
@@ -38,10 +39,15 @@
         function onInit() {
             ctrl.searchStates.searchNotFound = false;
             ctrl.searchStates.searchInProgress = false;
+
             if (angular.isUndefined(ctrl.searchType)) {
                 ctrl.searchType = 'infoPage';
             }
-            $scope.$watch('$ctrl.searchQuery', onChangeSearchQuery);
+
+            if (angular.isUndefined(ctrl.liveSearch) || ctrl.liveSearch) {
+                $scope.$watch('$ctrl.searchQuery', onChangeSearchQuery);
+            }
+
             $scope.$on('search-input_refresh-search', onDataChanged);
             $scope.$on('search-input_reset', resetSearch);
         }

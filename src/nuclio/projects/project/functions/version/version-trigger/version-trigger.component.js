@@ -89,7 +89,13 @@
                 lodash.remove(ctrl.triggers, ['id', selectedItem.id]);
                 lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
             } else if (actionType === 'edit') {
-                lodash.find(ctrl.triggers, ['id', selectedItem.id]).ui.editModeActive = true;
+                var item = lodash.find(ctrl.triggers, ['id', selectedItem.id]);
+
+                lodash.assign(item.ui, {
+                    editModeActive: true,
+                    expanded: true,
+                    expandable: false
+                });
             } else if (actionType === 'update') {
                 if (!lodash.isEmpty(selectedItem.id)) {
                     lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);

@@ -24,14 +24,14 @@
                 <div class="igz-action-panel">
                     <div class="actions-list">
                         <igz-action-item-refresh data-refresh="$ctrl.refreshProjects()"></igz-action-item-refresh>
-                        <ncl-projects-sort-dropdown class="igz-component pull-left"
-                                                    data-sort-options="$ctrl.sortOptions"
-                                                    data-update-data-callback="$ctrl.onOptionsChange(newOptions)"
-                                                    data-tooltip="Sort"
-                                                    data-tooltip-append-to-body="true"
-                                                    data-tooltip-placement="bottom"
-                                                    data-tooltip-popup-delay="1000">
-                        </ncl-projects-sort-dropdown>
+                        <igz-sort-dropdown class="igz-component pull-left"
+                                           data-sort-options="$ctrl.sortOptions"
+                                           data-reverse-sorting="$ctrl.isReverseSorting"
+                                           data-update-data-callback="$ctrl.onSortOptionsChange"
+                                           data-tooltip="Sort"
+                                           data-tooltip-append-to-body="true"
+                                           data-tooltip-placement="top">
+                        </igz-sort-dropdown>
                     </div>
                 </div>
             </div>
@@ -51,9 +51,9 @@
                                              data-items-count="$ctrl.projects.length">
                     </igz-action-checkbox-all>
                     <div class="igz-row common-table-cells-container">
-                        <div class="igz-col-25 common-table-cell sortable item-name"
-                             data-ng-class="$ctrl.isColumnSorted('name', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
-                             data-ng-click="$ctrl.sortTableByColumn('name')">Name
+                        <div class="igz-col-25 common-table-cell sortable name"
+                             data-ng-class="$ctrl.isColumnSorted('displayName', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                             data-ng-click="$ctrl.sortTableByColumn('displayName')">Name
                             <span class="sort-arrow"></span>
                             <div data-igz-resizable-table-column data-col-class="common-table-cell.name"></div>
                         </div>
@@ -112,12 +112,12 @@
                            data-change-state-callback="$ctrl.isFiltersShowed.changeValue(newVal)"
                            data-toggle-method="$ctrl.toggleFilters()">
 
-        <!-- todo -->
         <igz-search-input class="info-page-filters-item igz-component"
                           data-data-set="$ctrl.projects"
                           data-search-keys="$ctrl.searchKeys"
+                          data-search-callback="$ctrl.onUpdateFiltersCounter(searchQuery)"
                           data-placeholder="Search projects..."
-                          data-search-callback="$ctrl.onChangeSearchQuery(searchQuery)"
+                          data-live-search="false"
                           data-search-states="$ctrl.searchStates">
         </igz-search-input>
     </igz-info-page-filters>
