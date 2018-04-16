@@ -179,6 +179,10 @@
             });
         }
 
+        /**
+         * Checks how to open drop-down menu in key-value list
+         * @param {string} elementClass - class of parental block of key-value list
+         */
         function checkOpeningSide(elementClass) {
             var parentalBlock = document.getElementsByClassName(elementClass)[0];
             var parentalRect = parentalBlock.getBoundingClientRect();
