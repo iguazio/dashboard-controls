@@ -8,7 +8,8 @@
                 changeDataCallback: '&',
                 itemIndex: '<',
                 rowData: '<',
-                useType: '<'
+                useType: '<',
+                listClass: '@?'
             },
             templateUrl: 'nuclio/common/components/key-value-input/key-value-input.tpl.html',
             controller: NclKeyValueInputController

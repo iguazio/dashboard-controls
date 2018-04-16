@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationLabelsController
         });
 
-    function NclVersionConfigurationLabelsController($element, lodash, PreventDropdownCutOffService) {
+    function NclVersionConfigurationLabelsController($element, $timeout, lodash, PreventDropdownCutOffService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {
@@ -25,6 +25,7 @@
 
         ctrl.addNewLabel = addNewLabel;
         ctrl.handleAction = handleAction;
+        ctrl.isScrollNeeded = isScrollNeeded;
         ctrl.onChangeData = onChangeData;
 
         //
@@ -90,6 +91,14 @@
             ctrl.labels[index] = label;
 
             updateLabels();
+        }
+
+        /**
+         * Returns true if scrollbar is necessary
+         * @return {boolean}
+         */
+        function isScrollNeeded() {
+            return ctrl.labels.length > 10;
         }
 
         //

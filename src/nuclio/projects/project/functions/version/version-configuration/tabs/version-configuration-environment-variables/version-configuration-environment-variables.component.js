@@ -25,6 +25,7 @@
 
         ctrl.addNewVariable = addNewVariable;
         ctrl.handleAction = handleAction;
+        ctrl.isScrollNeeded = isScrollNeeded;
         ctrl.onChangeData = onChangeData;
 
         //
@@ -79,6 +80,14 @@
          */
         function onChangeData(variable, index) {
             ctrl.variables[index] = variable;
+        }
+
+        /**
+         * Returns true if scrollbar is necessary
+         * @return {boolean}
+         */
+        function isScrollNeeded() {
+            return ctrl.variables.length > 10;
         }
     }
 }());
