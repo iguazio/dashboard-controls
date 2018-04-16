@@ -196,6 +196,8 @@
 
                 $timeout(function () {
                     (dropdownBottom - parentalTop) > parentalHeight ? dropdown.classList.add('upward-menu') : dropdown.style.visibility = 'visible';
+
+                    angular.element('.' + elementClass + ' .mCSB_container').css({'height': 'auto'});
                 });
             } else {
                 var parentalBottom = parentalRect.bottom;
