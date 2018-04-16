@@ -13,8 +13,9 @@
             </div>
             <div class="actions-bar-left actions-buttons-block">
                 <div class="actions-bar-left test-events-dropdown-block">
-                    <igz-default-dropdown data-select-property-only="id"
-                                          data-placeholder="Select a test event..."
+                    <igz-default-dropdown data-is-disabled="!$ctrl.selectedTestEvent"
+                                          data-select-property-only="id"
+                                          data-placeholder="No test events…"
                                           data-values-array="$ctrl.testEvents"
                                           data-selected-item="$ctrl.selectedTestEvent"
                                           data-item-select-callback="$ctrl.onSelectTestEvent(item)">
