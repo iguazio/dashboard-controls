@@ -89,7 +89,13 @@
                 lodash.remove(ctrl.bindings, ['id', selectedItem.id]);
                 lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
             } else if (actionType === 'edit') {
-                lodash.find(ctrl.bindings, ['id', selectedItem.id]).ui.editModeActive = true;
+                var item = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
+
+                lodash.assign(item.ui, {
+                    editModeActive: true,
+                    expanded: true,
+                    expandable: false
+                });
             } else if (actionType === 'update') {
                 if (!lodash.isEmpty(selectedItem.id)) {
                     lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);

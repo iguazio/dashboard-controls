@@ -8,17 +8,15 @@
                            data-reset-filters="$ctrl.onResetFilters()"
                            data-change-state-callback="$ctrl.isFiltersShowed.changeValue(newVal)"
                            data-toggle-method="$ctrl.toggleFilters()">
-        <div class="info-page-filters-item">
-            <input type="text"
-                   class="info-page-filters-text-input igz-component"
-                   placeholder="Filter by tags and attributes or by keyboard"
-                   tabindex="0"
-                   data-ng-model="$ctrl.filter">
-            <span class="igz-icon-search"></span>
-            <span class="clear-button igz-icon-close"
-                  data-ng-show="$ctrl.filter">
-           </span>
-        </div>
+
+        <igz-search-input class="info-page-filters-item igz-component"
+                          data-data-set="$ctrl.functions"
+                          data-search-keys="$ctrl.searchKeys"
+                          data-search-callback="$ctrl.onUpdateFiltersCounter(searchQuery)"
+                          data-placeholder="Search projects..."
+                          data-live-search="false"
+                          data-search-states="$ctrl.searchStates">
+        </igz-search-input>
     </igz-info-page-filters>
 
     <!--actions bar-->
@@ -44,7 +42,8 @@
                         <igz-action-item-refresh data-refresh="$ctrl.refreshFunctions()"></igz-action-item-refresh>
                         <igz-sort-dropdown class="igz-component pull-left"
                                            data-sort-options="$ctrl.sortOptions"
-                                           data-update-data-callback="$ctrl.onOptionsChange"
+                                           data-reverse-sorting="$ctrl.isReverseSorting"
+                                           data-update-data-callback="$ctrl.onSortOptionsChange"
                                            data-tooltip="Sort"
                                            data-tooltip-append-to-body="true"
                                            data-tooltip-placement="top">
@@ -67,23 +66,33 @@
                                          data-items-count="$ctrl.getVersions().length">
                 </igz-action-checkbox-all>
                 <div class="igz-row common-table-cells-container">
-                    <div class="igz-col-25 common-table-cell">
-                        Name
+                    <div class="igz-col-25 common-table-cell sortable"
+                         data-ng-class="$ctrl.isColumnSorted('metadata.name', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('metadata.name')">Name
+                        <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-25 common-table-cell">
-                        Description
+                    <div class="igz-col-25 common-table-cell sortable"
+                         data-ng-class="$ctrl.isColumnSorted('spec.description', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('spec.description')">Description
+                        <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-10 common-table-cell">
-                        Status
+                    <div class="igz-col-10 common-table-cell sortable"
+                         data-ng-class="$ctrl.isColumnSorted('status.state', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('status.state')">Status
+                        <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-10 common-table-cell">
-                        Replicas
+                    <div class="igz-col-10 common-table-cell sortable"
+                         data-ng-class="$ctrl.isColumnSorted('spec.replicas', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('spec.replicas')">Replicas
+                        <span class="sort-arrow"></span>
                     </div>
                     <div class="igz-col-10 common-table-cell">
                         Invocation per sec
                     </div>
-                    <div class="igz-col-10 common-table-cell">
-                        Runtime
+                    <div class="igz-col-10 common-table-cell sortable"
+                         data-ng-class="$ctrl.isColumnSorted('spec.runtime', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('spec.runtime')">Runtime
+                        <span class="sort-arrow"></span>
                     </div>
                     <div class="igz-col-10 common-table-cell">
                         Last modified
@@ -105,10 +114,12 @@
                              data-ng-hide="$ctrl.searchStates.searchNotFound && $ctrl.searchStates.searchInProgress"
                              data-ng-model="$ctrl.data.working.ui.children">
                             <div class="data-lifecycle-layers" data-ng-repeat="function in $ctrl.functions">
-                                <ncl-function-collapsing-row data-function="function"
-                                                             data-project="$ctrl.project"
-                                                             data-action-handler-callback="$ctrl.handleAction(actionType, checkedItems)">
-                                </ncl-function-collapsing-row>
+                                <div data-igz-show-hide-search-item="function">
+                                    <ncl-function-collapsing-row data-function="function"
+                                                                 data-project="$ctrl.project"
+                                                                 data-action-handler-callback="$ctrl.handleAction(actionType, checkedItems)">
+                                    </ncl-function-collapsing-row>
+                                </div>
                             </div>
                         </div>
                     </div>

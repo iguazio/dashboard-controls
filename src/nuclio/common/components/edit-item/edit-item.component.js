@@ -12,7 +12,7 @@
             controller: NclEditItemController
         });
 
-    function NclEditItemController($document, $element, $scope, lodash, FunctionsService) {
+    function NclEditItemController($document, $element, $scope, lodash, FunctionsService, FormValidationService) {
         var ctrl = this;
 
         ctrl.classList = [];
@@ -20,6 +20,9 @@
 
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
+
+        ctrl.isShowFieldError = FormValidationService.isShowFieldError;
+        ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
 
         ctrl.getAttrValue = getAttrValue;
         ctrl.inputValueCallback = inputValueCallback;
@@ -36,7 +39,12 @@
          */
         function onInit() {
             $scope.$on('deploy-function-version', ctrl.onSubmitForm);
-            $document.on('click', onSubmitForm);
+            $document.on('click', function (event) {
+                if (!lodash.isNil(ctrl.editItemForm)) {
+                    onSubmitForm(event);
+                }
+            });
+
             ctrl.classList  = FunctionsService.getClassesList(ctrl.type);
             if (!lodash.isEmpty(ctrl.item.kind)) {
                 ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
@@ -85,12 +93,24 @@
          * @param {Object} item - item class\kind
          */
         function onSelectClass(item) {
+            var nameDirty = ctrl.editItemForm.itemName.$dirty;
+            var nameInvalid = ctrl.editItemForm.itemName.$invalid;
+
             ctrl.item.kind = item.id;
             ctrl.selectedClass = item;
             ctrl.item.attributes = {};
+
             lodash.each(item.attributes, function (attribute) {
                 lodash.set(ctrl.item.attributes, attribute.name, '');
             });
+
+            // set form pristine to not validate new form fields
+            ctrl.editItemForm.$setPristine();
+
+            // if itemName is invalid - set it dirty to show validation message
+            if (nameDirty && nameInvalid) {
+                ctrl.editItemForm.itemName.$setDirty();
+            }
         }
 
         //
@@ -105,7 +125,17 @@
         function onSubmitForm(event) {
             if (angular.isUndefined(event.keyCode) || event.keyCode === '13') {
                 if (event.target !== $element[0] && $element.find(event.target).length === 0) {
-                    ctrl.onSubmitCallback({item: ctrl.item});
+                    if (ctrl.editItemForm.$invalid) {
+                        ctrl.item.ui.expandable = false;
+                        ctrl.editItemForm.itemName.$setDirty();
+
+                        // set form as submitted
+                        ctrl.editItemForm.$setSubmitted();
+                    } else {
+                        ctrl.item.ui.expandable = true;
+
+                        ctrl.onSubmitCallback({item: ctrl.item});
+                    }
                 }
             }
         }
