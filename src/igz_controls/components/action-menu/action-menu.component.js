@@ -184,14 +184,15 @@
          * @param {string} elementClass - class of parental block of key-value list
          */
         function checkOpeningSide(elementClass) {
-            var parentalBlock = document.getElementsByClassName(elementClass)[0];
+            var parentalBlock = $(document).find('.' + elementClass)[0];
             var parentalRect = parentalBlock.getBoundingClientRect();
             var dropdown;
             var dropdownBottom;
 
             $timeout(function () {
-                dropdown = $element.context.getElementsByClassName('menu-dropdown')[0];
+                dropdown = angular.element($element).find('.menu-dropdown')[0];
                 dropdownBottom = dropdown.getBoundingClientRect().bottom;
+                dropdown = angular.element(dropdown);
             });
 
             if (lodash.includes(elementClass, 'scrollable')) {
@@ -199,7 +200,7 @@
                 var parentalTop = parentalRect.top;
 
                 $timeout(function () {
-                    (dropdownBottom - parentalTop) > parentalHeight ? dropdown.classList.add('upward-menu') : dropdown.style.visibility = 'visible';
+                    (dropdownBottom - parentalTop) > parentalHeight ? dropdown.addClass('upward-menu') : dropdown.css({'visibility': 'visible'});
 
                     angular.element('.' + elementClass + ' .mCSB_container').css({'height': 'auto'});
                 });
@@ -207,7 +208,7 @@
                 var parentalBottom = parentalRect.bottom;
 
                 $timeout(function () {
-                    dropdownBottom > parentalBottom ? dropdown.classList.add('upward-menu') : dropdown.style.visibility = 'visible';
+                    dropdownBottom > parentalBottom ? dropdown.addClass('upward-menu') : dropdown.css({'visibility': 'visible'});
                 });
             }
         }

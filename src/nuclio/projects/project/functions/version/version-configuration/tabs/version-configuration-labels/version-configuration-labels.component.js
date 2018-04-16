@@ -25,8 +25,8 @@
 
         ctrl.addNewLabel = addNewLabel;
         ctrl.handleAction = handleAction;
-        ctrl.onChangeData = onChangeData;
         ctrl.isScrollNeeded = isScrollNeeded;
+        ctrl.onChangeData = onChangeData;
 
         //
         // Hook methods
@@ -93,6 +93,10 @@
             updateLabels();
         }
 
+        /**
+         * Returns true if scrollbar is necessary
+         * @return {boolean}
+         */
         function isScrollNeeded() {
             return ctrl.labels.length > 10;
         }

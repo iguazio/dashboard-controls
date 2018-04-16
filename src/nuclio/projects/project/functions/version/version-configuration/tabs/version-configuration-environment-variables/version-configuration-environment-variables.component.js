@@ -25,8 +25,8 @@
 
         ctrl.addNewVariable = addNewVariable;
         ctrl.handleAction = handleAction;
-        ctrl.onChangeData = onChangeData;
         ctrl.isScrollNeeded = isScrollNeeded;
+        ctrl.onChangeData = onChangeData;
 
         //
         // Hook methods
@@ -82,6 +82,10 @@
             ctrl.variables[index] = variable;
         }
 
+        /**
+         * Returns true if scrollbar is necessary
+         * @return {boolean}
+         */
         function isScrollNeeded() {
             return ctrl.variables.length > 10;
         }

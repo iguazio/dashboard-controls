@@ -25,8 +25,8 @@
 
         ctrl.addNewAnnotation = addNewAnnotation;
         ctrl.handleAction = handleAction;
-        ctrl.onChangeData = onChangeData;
         ctrl.isScrollNeeded = isScrollNeeded;
+        ctrl.onChangeData = onChangeData;
 
         //
         // Hook methods
@@ -93,6 +93,10 @@
             updateAnnotations();
         }
 
+        /**
+         * Returns true if scrollbar is necessary
+         * @return {boolean}
+         */
         function isScrollNeeded() {
             return ctrl.annotations.length > 10;
         }
