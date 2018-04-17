@@ -75,10 +75,8 @@
         }
 
         /**
-         * Update data callback
          * Update spec.buildCommands value
          * @param {string} newData
-         * @param {string} field
          */
         function inputValueCallback(newData) {
             ctrl.version.spec.build.Commands = newData.replace('\r', '\n').split('\n');
