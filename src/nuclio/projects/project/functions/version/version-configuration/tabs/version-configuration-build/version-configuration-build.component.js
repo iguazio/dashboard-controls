@@ -9,10 +9,20 @@
 
     function NclVersionConfigurationBuildController($scope, $timeout, lodash, ngDialog, Upload) {
         var ctrl = this;
+        var uploadType = '';
 
         ctrl.version = {};
+        ctrl.datasetTypesList = [
+            {
+                value: 'alpine',
+                name: 'Alpine',
+            },
+            {
+                value: 'jessie',
+                name: 'Jessie',
+            }
+        ];
         ctrl.actions = initActions();
-        var uploadType = '';
         ctrl.script = {
             uploading: false,
             uploaded: false,
@@ -33,6 +43,7 @@
         ctrl.deleteFile = deleteFile;
         ctrl.getFileConfig = getFileConfig;
         ctrl.inputValueCallback = inputValueCallback;
+        ctrl.onBaseImageChange = onBaseImageChange;
         ctrl.onFireAction = onFireAction;
         ctrl.uploadFile = uploadFile;
 
@@ -56,12 +67,19 @@
         //
 
         /**
-         * Update data callback
+         * Update spec.build.baseImage value
+         * @param {Object} item
+         */
+        function onBaseImageChange(item) {
+            ctrl.version.spec.build.baseImage = item.value;
+        }
+
+        /**
+         * Update spec.buildCommands value
          * @param {string} newData
-         * @param {string} field
          */
         function inputValueCallback(newData) {
-            ctrl.version.spec.build.commands = newData.replace('\r', '\n').split('\n');
+            ctrl.version.spec.build.Commands = newData.replace('\r', '\n').split('\n');
         }
 
         /**
