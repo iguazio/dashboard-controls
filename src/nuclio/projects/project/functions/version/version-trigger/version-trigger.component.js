@@ -37,9 +37,7 @@
 
             // get trigger list
             ctrl.triggers = [];
-            lodash.forOwn(ctrl.version.spec.triggers, function (value, key) {
-                value.id = key;
-                value.name = key;
+            lodash.forOwn(ctrl.version.spec.triggers, function (value) {
                 ctrl.triggers.push(value);
             });
         }
@@ -53,17 +51,19 @@
          * @returns {Promise}
          */
         function createTrigger(event) {
-            ctrl.triggers.push({
-                id: '',
-                name: '',
-                kind: '',
-                url: '',
-                attributes: {},
-                ui: {
-                    editModeActive: true,
-                    expanded: true
-                }
-            });
+            if (!isTriggerInEditMode()) {
+                ctrl.triggers.push({
+                    id: '',
+                    name: '',
+                    kind: '',
+                    url: '',
+                    attributes: {},
+                    ui: {
+                        editModeActive: true,
+                        expanded: true
+                    }
+                });
+            }
             event.stopPropagation();
         }
 
@@ -85,30 +85,52 @@
          * @returns {Promise}
          */
         function handleAction(actionType, selectedItem) {
+            var item = lodash.find(ctrl.triggers, ['id', selectedItem.id]);
             if (actionType === 'delete') {
                 lodash.remove(ctrl.triggers, ['id', selectedItem.id]);
                 lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
             } else if (actionType === 'edit') {
-                var item = lodash.find(ctrl.triggers, ['id', selectedItem.id]);
-
-                lodash.assign(item.ui, {
-                    editModeActive: true,
-                    expanded: true,
-                    expandable: false
-                });
+                if (!isTriggerInEditMode()) {
+                    lodash.assign(item.ui, {
+                        editModeActive: true,
+                        expanded: true,
+                        expandable: false
+                    });
+                }
             } else if (actionType === 'update') {
                 if (!lodash.isEmpty(selectedItem.id)) {
                     lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
                 }
+
+                lodash.assign(item, {
+                    id: selectedItem.name
+                });
+
                 var triggerItem = {
                     kind: selectedItem.kind,
                     url: selectedItem.url,
-                    attributes: selectedItem.attributes
+                    attributes: selectedItem.attributes,
+                    id: selectedItem.id,
+                    name: selectedItem.name
                 };
                 lodash.set(ctrl.version, 'spec.triggers.' + selectedItem.name, triggerItem);
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }
+        }
+
+        /**
+         * Check if trigger is in edit mode
+         * @returns {boolean}
+         */
+        function isTriggerInEditMode() {
+            var triggerInEditMode = false;
+            ctrl.triggers.forEach(function (trigger) {
+                if (trigger.ui.editModeActive) {
+                    triggerInEditMode = true;
+                }
+            });
+            return triggerInEditMode;
         }
     }
 }());
