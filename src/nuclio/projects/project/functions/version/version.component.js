@@ -12,7 +12,7 @@
             controller: NclVersionController
         });
 
-    function NclVersionController($rootScope, $state, $stateParams, lodash, DialogsService, NuclioHeaderService, NuclioFunctionsDataService, NuclioProjectsDataService) {
+    function NclVersionController($rootScope, $state, $stateParams, lodash, ConfigService, DialogsService, NuclioHeaderService, NuclioFunctionsDataService, NuclioProjectsDataService) {
         var ctrl = this;
 
         ctrl.actions = [
@@ -33,6 +33,7 @@
                 name: 'Export function'
             }
         ];
+        ctrl.isDemoMode = ConfigService.isDemoMode();
         ctrl.isTestResultShown = false;
 
         ctrl.$onInit = onInit;
@@ -64,12 +65,14 @@
                 {
                     tabName: 'Trigger',
                     uiRoute: 'app.project.function.edit.trigger'
-                },
-                {
-                    tabName: 'Monitoring',
-                    uiRoute: 'app.project.function.edit.monitoring'
                 }
             ];
+            if (ctrl.isDemoMode) {
+                ctrl.navigationTabsConfig.push({
+                    tabName: 'Monitoring',
+                    uiRoute: 'app.project.function.edit.monitoring'
+                });
+            }
             ctrl.testEvents = [];
             ctrl.selectedTestEvent = lodash.isEmpty(ctrl.testEvents) ? null : ctrl.testEvents[0].id;
 

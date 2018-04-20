@@ -10,8 +10,10 @@
             controller: NclVersionConfigurationResourcesController
         });
 
-    function NclVersionConfigurationResourcesController(lodash) {
+    function NclVersionConfigurationResourcesController(lodash, ConfigService) {
         var ctrl = this;
+
+        ctrl.isDemoMode = ConfigService.isDemoMode();
 
         ctrl.$onInit = onInit;
 
