@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('nuclio.app')
+    angular.module('iguazio.dashboard-controls')
         .component('nclMonaco', {
             bindings: {
                 runtime: '<',
