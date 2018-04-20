@@ -3,7 +3,7 @@
 
     require.config({ paths: { 'vs': '/assets/monaco-editor/min/vs' } });
 
-    angular.module('nuclio.app')
+    angular.module('iguazio.dashboard-controls')
         .directive('igzMonacoEditor', function ($interval) {
             console.log('in igzMonacoEditor');
             function link(scope, element, attrs) {
