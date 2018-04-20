@@ -5505,6 +5505,20 @@ ncl-breadcrumbs {
         }
     }
 }
+.ncl-monaco {
+    > div {
+        height: 100%;
+        border: 1px solid #e1e0e5
+    }
+
+    .monaco-editor {
+        .monaco-editor-background {
+            margin-left: 20px;
+        }
+    }
+}
+
+
 .ncl-navigation-tabs {
     background: @pale-white;
     height: 55px;
@@ -5952,6 +5966,84 @@ ncl-functions {
         }
     }
 }
+.function-from-scratch-content {
+    .splash-screen {
+        top: 0;
+    }
+
+    .title-wrapper {
+        width: 50%;
+        padding-right: 48px;
+        text-align: right;
+
+        .title {
+            color: @ncl-dusk-three;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 570px;
+        }
+    }
+
+    .function-configuration {
+        margin: 28px 0 0 0;
+
+        .configuration-form {
+            display: flex;
+
+            .function-name-wrapper {
+                width: 50%;
+                padding-right: 48px;
+
+                .function-name {
+                    width: 687px;
+                    float: right;
+
+                    .input-label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: @ncl-dusk-three;
+                    }
+
+                    igz-validating-input-field {
+                        margin-left: 2px;
+                    }
+                }
+            }
+
+            .function-runtime-wrapper {
+                width: 50%;
+
+                .function-runtime {
+                    width: 552px;
+
+                    .input-label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: @ncl-dusk-three;
+                    }
+
+                    igz-default-dropdown {
+                        .default-dropdown {
+                            background-color: @ncl-white;
+
+                            .default-dropdown-field {
+                                &:focus {
+                                    background-color: inherit;
+                                }
+                            }
+                        }
+                    }
+
+                    .bottom-bar {
+                        display: flex;
+                        justify-content: flex-end;
+                        margin-top: 48px;
+                    }
+                }
+            }
+        }
+    }
+}
 .function-from-template-content {
     padding: 0 72px 0 63px;
 
@@ -6070,84 +6162,6 @@ ncl-functions {
         }
     }
 }
-.function-from-scratch-content {
-    .splash-screen {
-        top: 0;
-    }
-
-    .title-wrapper {
-        width: 50%;
-        padding-right: 48px;
-        text-align: right;
-
-        .title {
-            color: @ncl-dusk-three;
-            font-size: 16px;
-            font-weight: bold;
-            margin-right: 570px;
-        }
-    }
-
-    .function-configuration {
-        margin: 28px 0 0 0;
-
-        .configuration-form {
-            display: flex;
-
-            .function-name-wrapper {
-                width: 50%;
-                padding-right: 48px;
-
-                .function-name {
-                    width: 687px;
-                    float: right;
-
-                    .input-label {
-                        font-size: 14px;
-                        font-weight: 600;
-                        color: @ncl-dusk-three;
-                    }
-
-                    igz-validating-input-field {
-                        margin-left: 2px;
-                    }
-                }
-            }
-
-            .function-runtime-wrapper {
-                width: 50%;
-
-                .function-runtime {
-                    width: 552px;
-
-                    .input-label {
-                        font-size: 14px;
-                        font-weight: 600;
-                        color: @ncl-dusk-three;
-                    }
-
-                    igz-default-dropdown {
-                        .default-dropdown {
-                            background-color: @ncl-white;
-
-                            .default-dropdown-field {
-                                &:focus {
-                                    background-color: inherit;
-                                }
-                            }
-                        }
-                    }
-
-                    .bottom-bar {
-                        display: flex;
-                        justify-content: flex-end;
-                        margin-top: 48px;
-                    }
-                }
-            }
-        }
-    }
-}
 .ncl-function-version-row {
     .actions-menu {
         visibility: hidden;
@@ -6170,9 +6184,34 @@ ncl-functions {
 .tab-content-wrapper {
     min-width: 946px;
     padding: 24px 41px;
+    height: 100%;
+    margin-bottom: 24px;
 
     .section-wrapper {
         padding: 18px 39px 0 23px;
+    }
+
+    .ncl-edit-version-code {
+        height: 100%;
+        display: flex;
+        flex-flow: column;
+
+        .code-entry-section {
+            flex: 0 1 auto;
+        }
+
+        .code-edit-section {
+            flex: 1 1 auto;
+            display: flex;
+
+            ncl-monaco {
+                width: 100%;
+
+                .ncl-monaco {
+                    height: 100%;
+                }
+            }
+        }
     }
 
     .code-entry-section {
@@ -6203,7 +6242,11 @@ ncl-functions {
             }
 
             .code-entry-handler-col {
-                width: 56%;
+                width: 41%;
+            }
+
+            .code-entry-theme-col {
+                width: 15%;
             }
 
             .code-entry-button-col {
@@ -6353,14 +6396,15 @@ ncl-functions {
                         padding: 0;
                     }
                 }
-
-                &.runtime-attributes {
-                    visibility: hidden;
-                }
             }
         }
     }
+
+    .invisible-block {
+        visibility: hidden;
+    }
 }
+
 .ncl-edit-version-execution-result {
     margin: 17px 24px;
     padding: 16px 13px 0;
@@ -6942,9 +6986,15 @@ ncl-functions {
                 margin-right: 16px;
             }
 
-            .label {
-                padding: 0;
-                margin-bottom: 5px;
+            .runtime {
+                height: 36px;
+                border-radius: 2px;
+                padding: 9px 0 0 14px;
+                text-transform: capitalize;
+                font-family: @font-family-sans-serif;
+                font-size: 14px;
+                text-align: left;
+                color: @ncl-dusk-three;
             }
 
             &.arguments-input {

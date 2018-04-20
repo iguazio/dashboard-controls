@@ -1,9 +1,34 @@
 .tab-content-wrapper {
     min-width: 946px;
     padding: 24px 41px;
+    height: 100%;
+    margin-bottom: 24px;
 
     .section-wrapper {
         padding: 18px 39px 0 23px;
+    }
+
+    .ncl-edit-version-code {
+        height: 100%;
+        display: flex;
+        flex-flow: column;
+
+        .code-entry-section {
+            flex: 0 1 auto;
+        }
+
+        .code-edit-section {
+            flex: 1 1 auto;
+            display: flex;
+
+            ncl-monaco {
+                width: 100%;
+
+                .ncl-monaco {
+                    height: 100%;
+                }
+            }
+        }
     }
 
     .code-entry-section {
@@ -34,7 +59,11 @@
             }
 
             .code-entry-handler-col {
-                width: 56%;
+                width: 41%;
+            }
+
+            .code-entry-theme-col {
+                width: 15%;
             }
 
             .code-entry-button-col {
