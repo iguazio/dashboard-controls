@@ -41,7 +41,11 @@
             ctrl.annotations = lodash.map(annotations, function (value, key) {
                 return {
                     name: key,
-                    value: value
+                    value: value,
+                    ui: {
+                        editModeActive: false,
+                        isFormValid: false
+                    }
                 };
             });
         }
@@ -62,11 +66,18 @@
         /**
          * Adds new annotation
          */
-        function addNewAnnotation() {
-            ctrl.annotations.push({
-                name: '',
-                value: ''
-            });
+        function addNewAnnotation(event) {
+            if (ctrl.annotations.length < 1 || lodash.last(ctrl.annotations).ui.isFormValid) {
+                ctrl.annotations.push({
+                    name: '',
+                    value: '',
+                    ui: {
+                        editModeActive: true,
+                        isFormValid: false
+                    }
+                });
+                event.stopPropagation();
+            }
         }
 
         /**

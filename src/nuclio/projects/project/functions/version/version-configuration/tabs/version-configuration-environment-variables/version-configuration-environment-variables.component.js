@@ -36,7 +36,18 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.variables = lodash.get(ctrl.version, 'spec.env', []);
+            var variables = lodash.get(ctrl.version, 'spec.env', []);
+
+            ctrl.variables = lodash.map(variables, function (value, key) {
+                return {
+                    name: key,
+                    value: value,
+                    ui: {
+                        editModeActive: false,
+                        isFormValid: false
+                    }
+                }
+            });
         }
 
         /**
@@ -55,11 +66,18 @@
         /**
          * Adds new variable
          */
-        function addNewVariable() {
-            ctrl.variables.push({
-                name: '',
-                value: ''
-            });
+        function addNewVariable(event) {
+            if (ctrl.variables.length < 1 || lodash.last(ctrl.variables).ui.isFormValid) {
+                ctrl.variables.push({
+                    name: '',
+                    value: '',
+                    ui: {
+                        editModeActive: true,
+                        isFormValid: false
+                    }
+                });
+                event.stopPropagation();
+            }
         }
 
         /**
@@ -70,7 +88,10 @@
         function handleAction(actionType, index) {
             if (actionType === 'delete') {
                 ctrl.variables.splice(index, 1);
+
+                updateVariables();
             }
+
         }
 
         /**
@@ -80,6 +101,8 @@
          */
         function onChangeData(variable, index) {
             ctrl.variables[index] = variable;
+
+            updateVariables();
         }
 
         /**
@@ -88,6 +111,19 @@
          */
         function isScrollNeeded() {
             return ctrl.variables.length > 10;
+        }
+
+        /**
+         * Updates function`s variables
+         */
+        function updateVariables() {
+            var newVariables = {};
+
+            lodash.forEach(ctrl.variables, function (variable) {
+                lodash.set(newVariables, variable.name, variable.value);
+            });
+
+            lodash.set(ctrl.version, 'spec.env', newVariables);
         }
     }
 }());

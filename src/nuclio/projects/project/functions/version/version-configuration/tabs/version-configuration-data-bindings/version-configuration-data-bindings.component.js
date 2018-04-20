@@ -38,9 +38,7 @@
 
             // get bindings list
             ctrl.bindings = [];
-            lodash.forOwn(ctrl.version.spec.dataBinding, function (value, key) {
-                value.id = key;
-                value.name = key;
+            lodash.forOwn(ctrl.version.spec.dataBindings, function (value) {
                 ctrl.bindings.push(value);
             });
         }
@@ -54,17 +52,19 @@
          * @param {Event} event
          */
         function createBinding(event) {
-            ctrl.bindings.push({
-                id: '',
-                name: '',
-                kind: '',
-                url: '',
-                attributes: {},
-                ui: {
-                    editModeActive: true,
-                    expanded: true
-                }
-            });
+            if (!isBindingInEditMode()) {
+                ctrl.bindings.push({
+                    id: '',
+                    name: '',
+                    kind: '',
+                    url: '',
+                    attributes: {},
+                    ui: {
+                        editModeActive: true,
+                        expanded: true
+                    }
+                });
+            }
             event.stopPropagation();
         }
 
@@ -85,31 +85,53 @@
          * @param {Array} selectedItem - an object of selected binding
          */
         function handleAction(actionType, selectedItem) {
+            var item = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
             if (actionType === 'delete') {
                 lodash.remove(ctrl.bindings, ['id', selectedItem.id]);
                 lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
             } else if (actionType === 'edit') {
-                var item = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
-
-                lodash.assign(item.ui, {
-                    editModeActive: true,
-                    expanded: true,
-                    expandable: false
-                });
+                if (!isBindingInEditMode()) {
+                    lodash.assign(item.ui, {
+                        editModeActive: true,
+                        expanded: true,
+                        expandable: false
+                    });
+                }
             } else if (actionType === 'update') {
                 if (!lodash.isEmpty(selectedItem.id)) {
                     lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
                 }
+
+                lodash.assign(item, {
+                    id: selectedItem.name
+                });
+
                 var bindingItem = {
                     kind: selectedItem.kind,
                     url: selectedItem.url,
-                    attributes: selectedItem.attributes
+                    attributes: selectedItem.attributes,
+                    id: selectedItem.id,
+                    name: selectedItem.name
                 };
                 lodash.set(ctrl.version, 'spec.dataBindings.' + selectedItem.name, bindingItem);
                 selectedItem.id = selectedItem.name;
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }
+        }
+
+        /**
+         * Check if binding is in edit mode
+         * @returns {boolean}
+         */
+        function isBindingInEditMode() {
+            var bindingInEditMode = false;
+            ctrl.bindings.forEach(function (binding) {
+                if (binding.ui.editModeActive) {
+                    bindingInEditMode = true;
+                }
+            });
+            return bindingInEditMode;
         }
     }
 }());

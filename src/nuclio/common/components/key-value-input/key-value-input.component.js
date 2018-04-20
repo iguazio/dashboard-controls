@@ -15,14 +15,14 @@
             controller: NclKeyValueInputController
         });
 
-    function NclKeyValueInputController($document, $element, $scope, lodash) {
+    function NclKeyValueInputController($document, $element, $scope, lodash, EventHelperService) {
         var ctrl = this;
 
         ctrl.data = {};
-        ctrl.editMode = false;
         ctrl.typesList = [];
 
         ctrl.$onInit = onInit;
+        ctrl.$onDestroy = onDestroy;
 
         ctrl.getInputValue = getInputValue;
         ctrl.getType = getType;
@@ -39,12 +39,21 @@
          */
         function onInit() {
             ctrl.data = lodash.cloneDeep(ctrl.rowData);
+            ctrl.editMode = ctrl.data.ui.editModeActive;
 
             ctrl.actions = initActions();
             ctrl.typesList = getTypesList();
 
             $document.on('click', saveChanges);
             $document.on('keypress', saveChanges);
+        }
+
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            $document.off('click', saveChanges);
+            $document.off('keypress', saveChanges);
         }
 
         //
@@ -205,15 +214,22 @@
          * @param {Event} event
          */
         function saveChanges(event) {
-            if ($element.find(event.target).length === 0 || event.which === 13) {
-                $scope.$evalAsync(function () {
-                    ctrl.editMode = false;
+            if ($element.find(event.target).length === 0 || event.keyCode === EventHelperService.ENTER) {
+                ctrl.keyValueInputForm.$submitted = true;
+                if (ctrl.keyValueInputForm.$valid) {
+                    ctrl.data.ui = {
+                        editModeActive: false,
+                        isFormValid: true
+                    };
+                    $scope.$evalAsync(function () {
+                        ctrl.editMode = false;
 
-                    $document.off('click', saveChanges);
-                    $document.off('keypress', saveChanges);
+                        $document.off('click', saveChanges);
+                        $document.off('keypress', saveChanges);
 
-                    ctrl.changeDataCallback({newData: ctrl.data, index: ctrl.itemIndex});
-                });
+                        ctrl.changeDataCallback({newData: ctrl.data, index: ctrl.itemIndex});
+                    });
+                }
             }
         }
     }

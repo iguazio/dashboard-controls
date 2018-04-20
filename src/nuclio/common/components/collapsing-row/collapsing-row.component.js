@@ -35,7 +35,8 @@
             lodash.defaultsDeep(ctrl.item, {
                 ui: {
                     editModeActive: false,
-                    expanded: false
+                    expanded: false,
+                    expandable: true
                 }
             });
 

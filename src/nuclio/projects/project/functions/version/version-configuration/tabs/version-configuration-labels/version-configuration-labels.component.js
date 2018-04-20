@@ -41,7 +41,11 @@
             ctrl.labels = lodash.map(labels, function (value, key) {
                 return {
                     name: key,
-                    value: value
+                    value: value,
+                    ui: {
+                        editModeActive: false,
+                        isFormValid: false
+                    }
                 }
             });
         }
@@ -62,11 +66,18 @@
         /**
          * Adds new label
          */
-        function addNewLabel() {
-            ctrl.labels.push({
-                name: '',
-                value: ''
-            });
+        function addNewLabel(event) {
+            if (ctrl.labels.length < 1 || lodash.last(ctrl.labels).ui.isFormValid) {
+                ctrl.labels.push({
+                    name: '',
+                    value: '',
+                    ui: {
+                        editModeActive: true,
+                        isFormValid: false
+                    }
+                });
+                event.stopPropagation();
+            }
         }
 
         /**

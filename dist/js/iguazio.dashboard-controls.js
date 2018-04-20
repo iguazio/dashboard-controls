@@ -5132,9 +5132,7 @@
 
             // get trigger list
             ctrl.triggers = [];
-            lodash.forOwn(ctrl.version.spec.triggers, function (value, key) {
-                value.id = key;
-                value.name = key;
+            lodash.forOwn(ctrl.version.spec.triggers, function (value) {
                 ctrl.triggers.push(value);
             });
         }
@@ -5148,17 +5146,19 @@
          * @returns {Promise}
          */
         function createTrigger(event) {
-            ctrl.triggers.push({
-                id: '',
-                name: '',
-                kind: '',
-                url: '',
-                attributes: {},
-                ui: {
-                    editModeActive: true,
-                    expanded: true
-                }
-            });
+            if (!isTriggerInEditMode()) {
+                ctrl.triggers.push({
+                    id: '',
+                    name: '',
+                    kind: '',
+                    url: '',
+                    attributes: {},
+                    ui: {
+                        editModeActive: true,
+                        expanded: true
+                    }
+                });
+            }
             event.stopPropagation();
         }
 
@@ -5180,30 +5180,52 @@
          * @returns {Promise}
          */
         function handleAction(actionType, selectedItem) {
+            var item = lodash.find(ctrl.triggers, ['id', selectedItem.id]);
             if (actionType === 'delete') {
                 lodash.remove(ctrl.triggers, ['id', selectedItem.id]);
                 lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
             } else if (actionType === 'edit') {
-                var item = lodash.find(ctrl.triggers, ['id', selectedItem.id]);
-
-                lodash.assign(item.ui, {
-                    editModeActive: true,
-                    expanded: true,
-                    expandable: false
-                });
+                if (!isTriggerInEditMode()) {
+                    lodash.assign(item.ui, {
+                        editModeActive: true,
+                        expanded: true,
+                        expandable: false
+                    });
+                }
             } else if (actionType === 'update') {
                 if (!lodash.isEmpty(selectedItem.id)) {
                     lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
                 }
+
+                lodash.assign(item, {
+                    id: selectedItem.name
+                });
+
                 var triggerItem = {
                     kind: selectedItem.kind,
                     url: selectedItem.url,
-                    attributes: selectedItem.attributes
+                    attributes: selectedItem.attributes,
+                    id: selectedItem.id,
+                    name: selectedItem.name
                 };
                 lodash.set(ctrl.version, 'spec.triggers.' + selectedItem.name, triggerItem);
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }
+        }
+
+        /**
+         * Check if trigger is in edit mode
+         * @returns {boolean}
+         */
+        function isTriggerInEditMode() {
+            var triggerInEditMode = false;
+            ctrl.triggers.forEach(function (trigger) {
+                if (trigger.ui.editModeActive) {
+                    triggerInEditMode = true;
+                }
+            });
+            return triggerInEditMode;
         }
     }
 })();
@@ -5252,7 +5274,11 @@
             ctrl.annotations = lodash.map(annotations, function (value, key) {
                 return {
                     name: key,
-                    value: value
+                    value: value,
+                    ui: {
+                        editModeActive: false,
+                        isFormValid: false
+                    }
                 };
             });
         }
@@ -5273,11 +5299,18 @@
         /**
          * Adds new annotation
          */
-        function addNewAnnotation() {
-            ctrl.annotations.push({
-                name: '',
-                value: ''
-            });
+        function addNewAnnotation(event) {
+            if (ctrl.annotations.length < 1 || lodash.last(ctrl.annotations).ui.isFormValid) {
+                ctrl.annotations.push({
+                    name: '',
+                    value: '',
+                    ui: {
+                        editModeActive: true,
+                        isFormValid: false
+                    }
+                });
+                event.stopPropagation();
+            }
         }
 
         /**
@@ -5626,9 +5659,7 @@
 
             // get bindings list
             ctrl.bindings = [];
-            lodash.forOwn(ctrl.version.spec.dataBinding, function (value, key) {
-                value.id = key;
-                value.name = key;
+            lodash.forOwn(ctrl.version.spec.dataBindings, function (value) {
                 ctrl.bindings.push(value);
             });
         }
@@ -5642,17 +5673,19 @@
          * @param {Event} event
          */
         function createBinding(event) {
-            ctrl.bindings.push({
-                id: '',
-                name: '',
-                kind: '',
-                url: '',
-                attributes: {},
-                ui: {
-                    editModeActive: true,
-                    expanded: true
-                }
-            });
+            if (!isBindingInEditMode()) {
+                ctrl.bindings.push({
+                    id: '',
+                    name: '',
+                    kind: '',
+                    url: '',
+                    attributes: {},
+                    ui: {
+                        editModeActive: true,
+                        expanded: true
+                    }
+                });
+            }
             event.stopPropagation();
         }
 
@@ -5673,31 +5706,53 @@
          * @param {Array} selectedItem - an object of selected binding
          */
         function handleAction(actionType, selectedItem) {
+            var item = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
             if (actionType === 'delete') {
                 lodash.remove(ctrl.bindings, ['id', selectedItem.id]);
                 lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
             } else if (actionType === 'edit') {
-                var item = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
-
-                lodash.assign(item.ui, {
-                    editModeActive: true,
-                    expanded: true,
-                    expandable: false
-                });
+                if (!isBindingInEditMode()) {
+                    lodash.assign(item.ui, {
+                        editModeActive: true,
+                        expanded: true,
+                        expandable: false
+                    });
+                }
             } else if (actionType === 'update') {
                 if (!lodash.isEmpty(selectedItem.id)) {
                     lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
                 }
+
+                lodash.assign(item, {
+                    id: selectedItem.name
+                });
+
                 var bindingItem = {
                     kind: selectedItem.kind,
                     url: selectedItem.url,
-                    attributes: selectedItem.attributes
+                    attributes: selectedItem.attributes,
+                    id: selectedItem.id,
+                    name: selectedItem.name
                 };
                 lodash.set(ctrl.version, 'spec.dataBindings.' + selectedItem.name, bindingItem);
                 selectedItem.id = selectedItem.name;
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }
+        }
+
+        /**
+         * Check if binding is in edit mode
+         * @returns {boolean}
+         */
+        function isBindingInEditMode() {
+            var bindingInEditMode = false;
+            ctrl.bindings.forEach(function (binding) {
+                if (binding.ui.editModeActive) {
+                    bindingInEditMode = true;
+                }
+            });
+            return bindingInEditMode;
         }
     }
 })();
@@ -5741,7 +5796,18 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.variables = lodash.get(ctrl.version, 'spec.env', []);
+            var variables = lodash.get(ctrl.version, 'spec.env', []);
+
+            ctrl.variables = lodash.map(variables, function (value, key) {
+                return {
+                    name: key,
+                    value: value,
+                    ui: {
+                        editModeActive: false,
+                        isFormValid: false
+                    }
+                };
+            });
         }
 
         /**
@@ -5760,11 +5826,18 @@
         /**
          * Adds new variable
          */
-        function addNewVariable() {
-            ctrl.variables.push({
-                name: '',
-                value: ''
-            });
+        function addNewVariable(event) {
+            if (ctrl.variables.length < 1 || lodash.last(ctrl.variables).ui.isFormValid) {
+                ctrl.variables.push({
+                    name: '',
+                    value: '',
+                    ui: {
+                        editModeActive: true,
+                        isFormValid: false
+                    }
+                });
+                event.stopPropagation();
+            }
         }
 
         /**
@@ -5775,6 +5848,8 @@
         function handleAction(actionType, index) {
             if (actionType === 'delete') {
                 ctrl.variables.splice(index, 1);
+
+                updateVariables();
             }
         }
 
@@ -5785,6 +5860,8 @@
          */
         function onChangeData(variable, index) {
             ctrl.variables[index] = variable;
+
+            updateVariables();
         }
 
         /**
@@ -5793,6 +5870,19 @@
          */
         function isScrollNeeded() {
             return ctrl.variables.length > 10;
+        }
+
+        /**
+         * Updates function`s variables
+         */
+        function updateVariables() {
+            var newVariables = {};
+
+            lodash.forEach(ctrl.variables, function (variable) {
+                lodash.set(newVariables, variable.name, variable.value);
+            });
+
+            lodash.set(ctrl.version, 'spec.env', newVariables);
         }
     }
 })();
@@ -5841,7 +5931,11 @@
             ctrl.labels = lodash.map(labels, function (value, key) {
                 return {
                     name: key,
-                    value: value
+                    value: value,
+                    ui: {
+                        editModeActive: false,
+                        isFormValid: false
+                    }
                 };
             });
         }
@@ -5862,11 +5956,18 @@
         /**
          * Adds new label
          */
-        function addNewLabel() {
-            ctrl.labels.push({
-                name: '',
-                value: ''
-            });
+        function addNewLabel(event) {
+            if (ctrl.labels.length < 1 || lodash.last(ctrl.labels).ui.isFormValid) {
+                ctrl.labels.push({
+                    name: '',
+                    value: '',
+                    ui: {
+                        editModeActive: true,
+                        isFormValid: false
+                    }
+                });
+                event.stopPropagation();
+            }
         }
 
         /**
@@ -7564,7 +7665,8 @@
             lodash.defaultsDeep(ctrl.item, {
                 ui: {
                     editModeActive: false,
-                    expanded: false
+                    expanded: false,
+                    expandable: true
                 }
             });
 
@@ -7779,7 +7881,7 @@
 (function () {
     'use strict';
 
-    NclKeyValueInputController.$inject = ['$document', '$element', '$scope', 'lodash'];
+    NclKeyValueInputController.$inject = ['$document', '$element', '$scope', 'lodash', 'EventHelperService'];
     angular.module('iguazio.dashboard-controls').component('nclKeyValueInput', {
         bindings: {
             actionHandlerCallback: '&',
@@ -7793,14 +7895,14 @@
         controller: NclKeyValueInputController
     });
 
-    function NclKeyValueInputController($document, $element, $scope, lodash) {
+    function NclKeyValueInputController($document, $element, $scope, lodash, EventHelperService) {
         var ctrl = this;
 
         ctrl.data = {};
-        ctrl.editMode = false;
         ctrl.typesList = [];
 
         ctrl.$onInit = onInit;
+        ctrl.$onDestroy = onDestroy;
 
         ctrl.getInputValue = getInputValue;
         ctrl.getType = getType;
@@ -7817,12 +7919,21 @@
          */
         function onInit() {
             ctrl.data = lodash.cloneDeep(ctrl.rowData);
+            ctrl.editMode = ctrl.data.ui.editModeActive;
 
             ctrl.actions = initActions();
             ctrl.typesList = getTypesList();
 
             $document.on('click', saveChanges);
             $document.on('keypress', saveChanges);
+        }
+
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            $document.off('click', saveChanges);
+            $document.off('keypress', saveChanges);
         }
 
         //
@@ -7972,15 +8083,22 @@
          * @param {Event} event
          */
         function saveChanges(event) {
-            if ($element.find(event.target).length === 0 || event.which === 13) {
-                $scope.$evalAsync(function () {
-                    ctrl.editMode = false;
+            if ($element.find(event.target).length === 0 || event.keyCode === EventHelperService.ENTER) {
+                ctrl.keyValueInputForm.$submitted = true;
+                if (ctrl.keyValueInputForm.$valid) {
+                    ctrl.data.ui = {
+                        editModeActive: false,
+                        isFormValid: true
+                    };
+                    $scope.$evalAsync(function () {
+                        ctrl.editMode = false;
 
-                    $document.off('click', saveChanges);
-                    $document.off('keypress', saveChanges);
+                        $document.off('click', saveChanges);
+                        $document.off('keypress', saveChanges);
 
-                    ctrl.changeDataCallback({ newData: ctrl.data, index: ctrl.itemIndex });
-                });
+                        ctrl.changeDataCallback({ newData: ctrl.data, index: ctrl.itemIndex });
+                    });
+                }
             }
         }
     }
@@ -9708,7 +9826,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('nuclio/common/components/key-value-input/key-value-input.tpl.html',
-    '<div class="ncl-key-value-input"><form name="$ctrl.keyValueInputForm" class="input-wrapper"><igz-validating-input-field class="input-key" data-ng-class="{\'use-type\': $ctrl.useType}" data-field-type="input" data-read-only="!$ctrl.editMode" data-is-focused="$ctrl.editMode" data-input-name="key" data-input-value="$ctrl.data.name" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="name" data-form-object="$ctrl.keyValueInputForm" data-placeholder-text="Type key"></igz-validating-input-field><igz-default-dropdown class="input-type" data-ng-if="$ctrl.useType" data-read-only="!$ctrl.editMode" data-form-object="$ctrl.keyValueInputForm" data-select-property-only="id" data-input-name="type" data-values-array="$ctrl.typesList" data-selected-item="$ctrl.getType()" data-placeholder="Select type..." data-item-select-callback="$ctrl.onTypeChanged(item, isItemChanged)"></igz-default-dropdown><igz-validating-input-field class="input-value" data-ng-class="{\'use-type\': $ctrl.useType}" data-field-type="input" data-read-only="!$ctrl.editMode" data-input-name="value" data-input-value="$ctrl.getInputValue()" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="value" data-form-object="$ctrl.keyValueInputForm" data-validation-is-required="false" data-placeholder-text="Type value..."></igz-validating-input-field><div class="three-dot-menu"><igz-action-menu data-actions="$ctrl.actions" data-on-fire-action="$ctrl.onFireAction" data-list-class="$ctrl.listClass"></igz-action-menu></div></form></div>');
+    '<div class="ncl-key-value-input"><form name="$ctrl.keyValueInputForm" class="input-wrapper"><igz-validating-input-field class="input-key" data-ng-class="{\'use-type\': $ctrl.useType}" data-field-type="input" data-read-only="!$ctrl.editMode" data-is-focused="$ctrl.editMode" data-input-name="key" data-input-value="$ctrl.data.name" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="name" data-form-object="$ctrl.keyValueInputForm" data-validation-is-required="true" data-placeholder-text="Type key"></igz-validating-input-field><igz-default-dropdown class="input-type" data-ng-if="$ctrl.useType" data-read-only="!$ctrl.editMode" data-form-object="$ctrl.keyValueInputForm" data-select-property-only="id" data-input-name="type" data-values-array="$ctrl.typesList" data-selected-item="$ctrl.getType()" data-placeholder="Select type..." data-item-select-callback="$ctrl.onTypeChanged(item, isItemChanged)"></igz-default-dropdown><igz-validating-input-field class="input-value" data-ng-class="{\'use-type\': $ctrl.useType}" data-field-type="input" data-read-only="!$ctrl.editMode" data-input-name="value" data-input-value="$ctrl.getInputValue()" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="value" data-form-object="$ctrl.keyValueInputForm" data-validation-is-required="true" data-placeholder-text="Type value..."></igz-validating-input-field><div class="three-dot-menu"><igz-action-menu data-actions="$ctrl.actions" data-on-fire-action="$ctrl.onFireAction" data-list-class="$ctrl.listClass"></igz-action-menu></div></form></div>');
 }]);
 })();
 
@@ -9912,7 +10030,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-annotations/version-configuration-annotations.tpl.html',
-    '<div class="ncl-version-configuration-annotations"><div class="title">Annotations</div><form name="$ctrl.annotationsForm" class="annotations-wrapper"><div class="table-headers"><div class="key-header">Key</div><div class="value-header">Value</div></div><div data-ng-if="!$ctrl.isScrollNeeded()"><div class="table-body" data-ng-repeat="annotation in $ctrl.annotations"><ncl-key-value-input class="new-label-input" data-list-class="ncl-version-configuration-annotations" data-row-data="annotation" data-use-type="false" data-item-index="$index" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div data-ng-if="$ctrl.isScrollNeeded()" class="igz-scrollable-container scrollable-annotations" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="annotation in $ctrl.annotations"><ncl-key-value-input class="new-label-input" data-list-class="scrollable-annotations" data-row-data="annotation" data-use-type="false" data-item-index="$index" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-label-button" data-ng-click="$ctrl.addNewAnnotation()"><span class="igz-icon-add-round"></span>Create a new annotation</div></form></div>');
+    '<div class="ncl-version-configuration-annotations"><div class="title">Annotations</div><form name="$ctrl.annotationsForm" class="annotations-wrapper"><div class="table-headers"><div class="key-header">Key</div><div class="value-header">Value</div></div><div data-ng-if="!$ctrl.isScrollNeeded()"><div class="table-body" data-ng-repeat="annotation in $ctrl.annotations"><ncl-key-value-input class="new-label-input" data-list-class="ncl-version-configuration-annotations" data-row-data="annotation" data-use-type="false" data-item-index="$index" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div data-ng-if="$ctrl.isScrollNeeded()" class="igz-scrollable-container scrollable-annotations" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="annotation in $ctrl.annotations"><ncl-key-value-input class="new-label-input" data-list-class="scrollable-annotations" data-row-data="annotation" data-use-type="false" data-item-index="$index" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-annotation-button" data-ng-click="$ctrl.addNewAnnotation($event)"><span class="igz-icon-add-round"></span>Create a new annotation</div></form></div>');
 }]);
 })();
 
@@ -9960,7 +10078,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-environment-variables/version-configuration-environment-variables.tpl.html',
-    '<div class="ncl-version-configuration-environment-variables"><div class="title">Environment Variables</div><form name="$ctrl.environmentVariablesForm" class="resources-wrapper"><div class="table-headers"><div class="key-header use-type">Key</div><div class="type-header">Type</div><div class="value-header use-type">Info</div></div><div data-ng-if="!$ctrl.isScrollNeeded()" class="igz-scrollable-container"><div class="table-body" data-ng-repeat="variable in $ctrl.variables"><ncl-key-value-input class="new-label-input" data-list-class="ncl-version-configuration-environment-variables" data-row-data="variable" data-item-index="$index" data-use-type="true" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div data-ng-if="$ctrl.isScrollNeeded()" class="igz-scrollable-container scrollable-environment-variables" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="variable in $ctrl.variables"><ncl-key-value-input class="new-label-input" data-list-class="scrollable-environment-variables" data-row-data="variable" data-item-index="$index" data-use-type="true" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-label-button" data-ng-click="$ctrl.addNewVariable()"><span class="igz-icon-add-round"></span>Create a new environment variable</div></form></div>');
+    '<div class="ncl-version-configuration-environment-variables"><div class="title">Environment Variables</div><form name="$ctrl.environmentVariablesForm" class="resources-wrapper"><div class="table-headers"><div class="key-header use-type">Key</div><div class="type-header">Type</div><div class="value-header use-type">Info</div></div><div data-ng-if="!$ctrl.isScrollNeeded()" class="igz-scrollable-container"><div class="table-body" data-ng-repeat="variable in $ctrl.variables"><ncl-key-value-input class="new-label-input" data-list-class="ncl-version-configuration-environment-variables" data-row-data="variable" data-item-index="$index" data-use-type="true" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div data-ng-if="$ctrl.isScrollNeeded()" class="igz-scrollable-container scrollable-environment-variables" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="variable in $ctrl.variables"><ncl-key-value-input class="new-label-input" data-list-class="scrollable-environment-variables" data-row-data="variable" data-item-index="$index" data-use-type="true" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-variable-button" data-ng-click="$ctrl.addNewVariable($event)"><span class="igz-icon-add-round"></span>Create a new environment variable</div></form></div>');
 }]);
 })();
 
@@ -9972,7 +10090,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-labels/version-configuration-labels.tpl.html',
-    '<div class="ncl-version-configuration-labels"><div class="title">Labels</div><form name="$ctrl.labelsForm" class="labels-wrapper"><div class="table-headers"><div class="key-header">Key</div><div class="value-header">Value</div></div><div data-ng-if="!$ctrl.isScrollNeeded()"><div class="table-body" data-ng-repeat="label in $ctrl.labels"><ncl-key-value-input class="new-label-input" data-list-class="ncl-version-configuration-labels" data-row-data="label" data-item-index="$index" data-use-type="false" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div data-ng-if="$ctrl.isScrollNeeded()" class="igz-scrollable-container scrollable-labels" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="label in $ctrl.labels"><ncl-key-value-input class="new-label-input" data-list-class="scrollable-labels" data-row-data="label" data-item-index="$index" data-use-type="false" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-label-button" data-ng-click="$ctrl.addNewLabel()"><span class="igz-icon-add-round"></span>Create a new label</div></form></div>');
+    '<div class="ncl-version-configuration-labels"><div class="title">Labels</div><form name="$ctrl.labelsForm" class="labels-wrapper"><div class="table-headers"><div class="key-header">Key</div><div class="value-header">Value</div></div><div data-ng-if="!$ctrl.isScrollNeeded()"><div class="table-body" data-ng-repeat="label in $ctrl.labels"><ncl-key-value-input class="new-label-input" data-list-class="ncl-version-configuration-labels" data-row-data="label" data-item-index="$index" data-use-type="false" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div data-ng-if="$ctrl.isScrollNeeded()" class="igz-scrollable-container scrollable-labels" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="label in $ctrl.labels"><ncl-key-value-input class="new-label-input" data-list-class="scrollable-labels" data-row-data="label" data-item-index="$index" data-use-type="false" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-label-button" data-ng-click="$ctrl.addNewLabel($event)"><span class="igz-icon-add-round"></span>Create a new label</div></form></div>');
 }]);
 })();
 
