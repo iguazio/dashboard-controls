@@ -13,7 +13,7 @@
     function NclVersionConfigurationResourcesController(lodash, ConfigService) {
         var ctrl = this;
 
-        ctrl.isDemoMode = ConfigService.isDemoMode();
+        ctrl.isDemoMode = ConfigService.isDemoMode;
 
         ctrl.$onInit = onInit;
 

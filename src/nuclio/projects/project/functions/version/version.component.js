@@ -33,7 +33,7 @@
                 name: 'Export function'
             }
         ];
-        ctrl.isDemoMode = ConfigService.isDemoMode();
+        ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isTestResultShown = false;
 
         ctrl.$onInit = onInit;
@@ -67,7 +67,7 @@
                     uiRoute: 'app.project.function.edit.trigger'
                 }
             ];
-            if (ctrl.isDemoMode) {
+            if (ctrl.isDemoMode()) {
                 ctrl.navigationTabsConfig.push({
                     tabName: 'Monitoring',
                     uiRoute: 'app.project.function.edit.monitoring'
