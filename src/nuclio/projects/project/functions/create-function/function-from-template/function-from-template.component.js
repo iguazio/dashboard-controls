@@ -166,6 +166,14 @@
                             }
 
                             ctrl.toggleSplashScreen({value: false});
+
+                            $state.go('app.project.function.edit.code', {
+                                isNewFunction: false,
+                                id: ctrl.project.metadata.name,
+                                functionId: ctrl.functionData.metadata.name,
+                                projectNamespace: ctrl.project.metadata.namespace,
+                                functionData: ctrl.functionData
+                            });
                         }
                     })
                     .catch(function (error) {
@@ -176,8 +184,6 @@
                             }
 
                             ctrl.toggleSplashScreen({value: false});
-
-                            $state.go('app.project.functions');
                         }
                     });
             }, 2000);

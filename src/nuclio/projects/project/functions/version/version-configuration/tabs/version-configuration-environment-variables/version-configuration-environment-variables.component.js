@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationEnvironmentVariablesController
         });
 
-    function NclVersionConfigurationEnvironmentVariablesController($element, lodash, PreventDropdownCutOffService) {
+    function NclVersionConfigurationEnvironmentVariablesController($element, $stateParams, lodash, PreventDropdownCutOffService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {
@@ -36,18 +36,11 @@
          * Initialization method
          */
         function onInit() {
-            var variables = lodash.get(ctrl.version, 'spec.env', []);
+            if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
+                ctrl.version = $stateParams.functionData;
+            }
 
-            ctrl.variables = lodash.map(variables, function (value, key) {
-                return {
-                    name: key,
-                    value: value,
-                    ui: {
-                        editModeActive: false,
-                        isFormValid: false
-                    }
-                }
-            });
+            ctrl.variables = lodash.get(ctrl.version, 'spec.env', []);
         }
 
         /**
@@ -91,7 +84,6 @@
 
                 updateVariables();
             }
-
         }
 
         /**
@@ -117,13 +109,7 @@
          * Updates function`s variables
          */
         function updateVariables() {
-            var newVariables = {};
-
-            lodash.forEach(ctrl.variables, function (variable) {
-                lodash.set(newVariables, variable.name, variable.value);
-            });
-
-            lodash.set(ctrl.version, 'spec.env', newVariables);
+            lodash.set(ctrl.version, 'spec.env', ctrl.variables);
         }
     }
 }());

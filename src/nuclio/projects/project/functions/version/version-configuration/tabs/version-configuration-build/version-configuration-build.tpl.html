@@ -9,7 +9,9 @@
             <div class="igz-col-100 build-field">
                 <div class="field-label">Build base image</div>
                 <igz-default-dropdown data-is-required="true"
+                                      data-select-property-only="value"
                                       data-values-array="$ctrl.datasetTypesList"
+                                      data-selected-item="$ctrl.version.spec.build.baseImage"
                                       data-item-select-callback="$ctrl.onBaseImageChange(item)"
                                       data-placeholder="Select ..."
                                       data-form-object="$ctrl.buildForm"
@@ -18,8 +20,8 @@
             <div class="igz-col-100 build-field">
                 <div class="field-label">Build commands</div>
                 <igz-validating-input-field data-field-type="textarea"
-                                            data-input-name="Commands"
-                                            data-input-value="$ctrl.version.build.Commands"
+                                            data-input-name="commands"
+                                            data-input-value="$ctrl.version.spec.build.commands"
                                             data-is-focused="false"
                                             data-form-object="$ctrl.buildForm"
                                             data-validation-is-required="true"

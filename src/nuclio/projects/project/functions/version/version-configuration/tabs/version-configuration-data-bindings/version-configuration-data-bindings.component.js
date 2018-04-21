@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationDataBindingsController
         });
 
-    function NclVersionConfigurationDataBindingsController(lodash, DialogsService) {
+    function NclVersionConfigurationDataBindingsController($stateParams, lodash, DialogsService) {
         var ctrl = this;
 
         ctrl.isCreateModeActive = false;
@@ -30,15 +30,15 @@
          * Initialization method
          */
         function onInit() {
-            lodash.defaultsDeep(ctrl.version, {
-                spec: {
-                    dataBindings: {}
-                }
-            });
+            if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
+                ctrl.version = $stateParams.functionData;
+            }
 
             // get bindings list
             ctrl.bindings = [];
-            lodash.forOwn(ctrl.version.spec.dataBindings, function (value) {
+            lodash.forOwn(ctrl.version.spec.dataBindings, function (value, key) {
+                value.id = key;
+                value.name = key;
                 ctrl.bindings.push(value);
             });
         }
@@ -52,19 +52,17 @@
          * @param {Event} event
          */
         function createBinding(event) {
-            if (!isBindingInEditMode()) {
-                ctrl.bindings.push({
-                    id: '',
-                    name: '',
-                    kind: '',
-                    url: '',
-                    attributes: {},
-                    ui: {
-                        editModeActive: true,
-                        expanded: true
-                    }
-                });
-            }
+            ctrl.bindings.push({
+                id: '',
+                name: '',
+                kind: '',
+                url: '',
+                attributes: {},
+                ui: {
+                    editModeActive: true,
+                    expanded: true
+                }
+            });
             event.stopPropagation();
         }
 
@@ -85,53 +83,25 @@
          * @param {Array} selectedItem - an object of selected binding
          */
         function handleAction(actionType, selectedItem) {
-            var item = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
             if (actionType === 'delete') {
                 lodash.remove(ctrl.bindings, ['id', selectedItem.id]);
                 lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
             } else if (actionType === 'edit') {
-                if (!isBindingInEditMode()) {
-                    lodash.assign(item.ui, {
-                        editModeActive: true,
-                        expanded: true,
-                        expandable: false
-                    });
-                }
+                lodash.find(ctrl.bindings, ['id', selectedItem.id]).ui.editModeActive = true;
             } else if (actionType === 'update') {
                 if (!lodash.isEmpty(selectedItem.id)) {
                     lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
                 }
-
-                lodash.assign(item, {
-                    id: selectedItem.name
-                });
-
                 var bindingItem = {
                     kind: selectedItem.kind,
                     url: selectedItem.url,
-                    attributes: selectedItem.attributes,
-                    id: selectedItem.id,
-                    name: selectedItem.name
+                    attributes: selectedItem.attributes
                 };
                 lodash.set(ctrl.version, 'spec.dataBindings.' + selectedItem.name, bindingItem);
                 selectedItem.id = selectedItem.name;
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }
-        }
-
-        /**
-         * Check if binding is in edit mode
-         * @returns {boolean}
-         */
-        function isBindingInEditMode() {
-            var bindingInEditMode = false;
-            ctrl.bindings.forEach(function (binding) {
-                if (binding.ui.editModeActive) {
-                    bindingInEditMode = true;
-                }
-            });
-            return bindingInEditMode;
         }
     }
 }());

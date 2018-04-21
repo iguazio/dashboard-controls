@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('FunctionsService', FunctionsService);
 
-    function FunctionsService() {
+    function FunctionsService($stateParams) {
         return {
             getClassesList: getClassesList,
             getHandler: getHandler,
@@ -69,18 +69,8 @@
                         name: 'Cron',
                         attributes: [
                             {
-                                name: 'event',
-                                type: 'object',
-                                attributes: [
-                                    {
-                                        name: 'body',
-                                        type: 'string'
-                                    },
-                                    {
-                                        name: 'headers',
-                                        type: 'map'
-                                    }
-                                ]
+                                name: 'interval',
+                                type: 'string'
                             }
                         ]
                     },
@@ -163,22 +153,8 @@
                 ],
                 binding: [
                     {
-                        id: 'kafka',
-                        name: 'Kafka',
-                        attributes: [
-                            {
-                                name: 'topic',
-                                pattern: 'string'
-                            },
-                            {
-                                name: 'partitions',
-                                pattern: 'array'
-                            }
-                        ]
-                    },
-                    {
-                        id: 'azure',
-                        name: 'Azure Event hub',
+                        id: 'v3io',
+                        name: 'V3io',
                         attributes: [
                             {
                                 name: 'secret',
@@ -198,7 +174,7 @@
          * @returns {string} handler
          */
         function getHandler(runtime) {
-            return runtime === 'golang' ? 'main:Handler' : 'main:handler'
+            return runtime === 'golang' ? 'main:Handler' : runtime === 'java' ? 'Handler' : 'main:handler';
         }
 
         /**

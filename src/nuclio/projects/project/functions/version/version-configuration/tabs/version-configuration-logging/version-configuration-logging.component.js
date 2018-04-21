@@ -34,7 +34,7 @@
          * @param {Object} item
          */
         function setPriority(item) {
-            lodash.set(ctrl.version, 'spec.loggerSinks.level', item.type);
+            lodash.set(ctrl.version, 'spec.loggerSinks[0].level', item.type);
         }
     }
 }());
