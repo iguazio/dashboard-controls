@@ -12,8 +12,10 @@
             controller: NclVersionController
         });
 
-    function NclVersionController($rootScope, $state, $stateParams, lodash, ConfigService, DialogsService, NuclioHeaderService, NuclioFunctionsDataService, NuclioProjectsDataService) {
+    function NclVersionController($interval, $rootScope, $state, $stateParams, lodash, ConfigService, DialogsService, NuclioHeaderService,
+                                  NuclioFunctionsDataService, NuclioProjectsDataService) {
         var ctrl = this;
+        var interval = null;
 
         ctrl.actions = [
             {
@@ -35,6 +37,30 @@
         ];
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isTestResultShown = false;
+        ctrl.isSplashShowed = {
+            value: false
+        };
+
+        // TODO
+        ctrl.selectedTestEvent = '';
+        ctrl.testEvents = [
+            {
+                id: 'firstTestEvent',
+                name: 'First test event'
+            },
+            {
+                id: 'secondTestEvent',
+                name: 'Second test event'
+            },
+            {
+                id: 'otherTestEvent',
+                name: 'Other test event'
+            },
+            {
+                id: 'toBeContinued',
+                name: 'To be continued ...'
+            }
+        ];
 
         ctrl.$onInit = onInit;
 
@@ -53,6 +79,10 @@
          * Initialization method
          */
         function onInit() {
+            if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
+                ctrl.version = $stateParams.functionData;
+            }
+
             ctrl.navigationTabsConfig = [
                 {
                     tabName: 'Code',
@@ -67,6 +97,7 @@
                     uiRoute: 'app.project.function.edit.trigger'
                 }
             ];
+
             if (ctrl.isDemoMode()) {
                 ctrl.navigationTabsConfig.push({
                     tabName: 'Monitoring',
@@ -122,9 +153,13 @@
          */
         function deployVersion() {
             $rootScope.$broadcast('deploy-function-version');
-            NuclioFunctionsDataService.updateFunction(ctrl.version).then(function (response) {
-                $state.go('app.project.functions');
-            });
+
+            NuclioFunctionsDataService.updateFunction(ctrl.version)
+                .then(function (response) {
+                    $state.go('app.project.functions', {
+                        projectId: ctrl.project.metadata.name
+                    });
+                });
         }
 
         /**

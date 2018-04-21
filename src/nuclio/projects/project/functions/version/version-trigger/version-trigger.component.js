@@ -10,7 +10,7 @@
             controller: NclVersionTriggerController
         });
 
-    function NclVersionTriggerController(lodash, DialogsService) {
+    function NclVersionTriggerController($stateParams, lodash, DialogsService) {
         var ctrl = this;
 
         ctrl.isCreateModeActive = false;
@@ -29,15 +29,16 @@
          * Initialization method
          */
         function onInit() {
-            lodash.defaultsDeep(ctrl.version, {
-                spec: {
-                    triggers: {}
-                }
-            });
+            if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
+                ctrl.version = $stateParams.functionData;
+            }
 
             // get trigger list
             ctrl.triggers = [];
-            lodash.forOwn(ctrl.version.spec.triggers, function (value) {
+            lodash.forOwn(ctrl.version.spec.triggers, function (value, key) {
+                value.id = key;
+                value.name = key;
+
                 ctrl.triggers.push(value);
             });
         }

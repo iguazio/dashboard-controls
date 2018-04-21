@@ -140,7 +140,8 @@
          */
         function updateFunction(functionDetails) {
             var headers = {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'x-nuclio-function-namespace': functionDetails.metadata.namespace
             };
             var config = {
                 method: 'post',

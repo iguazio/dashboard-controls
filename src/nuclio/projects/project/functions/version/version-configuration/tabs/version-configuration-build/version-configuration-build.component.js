@@ -3,15 +3,17 @@
 
     angular.module('iguazio.dashboard-controls')
         .component('nclVersionConfigurationBuild', {
+            bindings: {
+                version: '<'
+            },
             templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-build/version-configuration-build.tpl.html',
             controller: NclVersionConfigurationBuildController
         });
 
-    function NclVersionConfigurationBuildController($scope, $timeout, lodash, ngDialog, Upload) {
+    function NclVersionConfigurationBuildController($stateParams, $scope, $timeout, lodash, ngDialog, Upload) {
         var ctrl = this;
         var uploadType = '';
 
-        ctrl.version = {};
         ctrl.datasetTypesList = [
             {
                 value: 'alpine',
@@ -55,11 +57,9 @@
          * Initialization method
          */
         function onInit() {
-            lodash.defaultsDeep(ctrl.version, {
-                spec: {
-                    build: {}
-                }
-            });
+            if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
+                ctrl.version = $stateParams.functionData;
+            }
         }
 
         //
@@ -79,7 +79,7 @@
          * @param {string} newData
          */
         function inputValueCallback(newData) {
-            ctrl.version.spec.build.Commands = newData.replace('\r', '\n').split('\n');
+            ctrl.version.spec.build.commands = newData.replace('\r', '\n').split('\n');
         }
 
         /**

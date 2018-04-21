@@ -39,7 +39,7 @@
          */
         function onInit() {
             ctrl.data = lodash.cloneDeep(ctrl.rowData);
-            ctrl.editMode = ctrl.data.ui.editModeActive;
+            ctrl.editMode = lodash.get(ctrl.data, 'ui.editModeActive', false);
 
             ctrl.actions = initActions();
             ctrl.typesList = getTypesList();

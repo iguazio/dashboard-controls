@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationController
         });
 
-    function NclVersionConfigurationController(lodash) {
+    function NclVersionConfigurationController($stateParams, lodash) {
         var ctrl = this;
 
         ctrl.scrollConfig = {
@@ -31,30 +31,9 @@
          * Initialization method
          */
         function onInit() {
-            if (angular.isUndefined(ctrl.version)) {
-                ctrl.version = {};
+            if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
+                ctrl.version = $stateParams.functionData;
             }
-
-            lodash.defaultsDeep(ctrl.version, {
-                metadata: {
-                    name: '',
-                    namespace: '',
-                    labels: {},
-                    annotations: {}
-                },
-                spec: {
-                    description: '',
-                    timeoutSeconds: 0,
-                    runtime: '',
-                    env: [],
-                    loggerSinks: {
-                        level: 'debug',
-                        sink: ''
-                    },
-                    minReplicas: 0,
-                    maxReplicas: 1
-                }
-            });
         }
     }
 }());
