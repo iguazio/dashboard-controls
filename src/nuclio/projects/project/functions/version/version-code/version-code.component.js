@@ -155,6 +155,9 @@
          * @returns {Array}
          */
         function getRuntimes() {
+
+            // language identifiers for monaco editor are taken from:
+            // https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers
             return [
                 {
                     id: 'golang',
