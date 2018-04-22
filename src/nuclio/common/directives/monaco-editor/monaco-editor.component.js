@@ -5,7 +5,7 @@
 
     angular.module('iguazio.dashboard-controls')
         .directive('igzMonacoEditor', function ($interval) {
-            console.log('in igzMonacoEditor');
+            // console.log('in igzMonacoEditor');
             function link(scope, element, attrs) {
                 var editorElement = element[0];
                 require(['vs/editor/editor.main'], function () {
