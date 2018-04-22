@@ -8,6 +8,7 @@
             // console.log('in igzMonacoEditor');
             function link(scope, element, attrs) {
                 var editorElement = element[0];
+                var interval = null;
                 require(['vs/editor/editor.main'], function () {
                     var editorContext = {
                         scope: scope,
@@ -64,13 +65,13 @@
                     editorContext.editor = window.monaco.editor.create(editorElement, {
                         value: scope.codeFile.code,
                         language: scope.codeFile.language,
-                        theme: 'custom-vs',
-                        fontFamily: 'Roboto, sans-serif',
-                        lineNumbersMinChars: 2,
-                        lineHeight: 30,
-                        lineDecorationsWidth: 5,
-                        automaticLayout: true,
-                        scrollBeyondLastLine: false
+                        theme: 'vs',
+                        // fontFamily: 'Roboto, sans-serif',
+                        // lineNumbersMinChars: 2,
+                        // lineHeight: 30,
+                        // lineDecorationsWidth: 5,
+                        automaticLayout: true
+                        // scrollBeyondLastLine: false
                     });
 
                     // TODO - look up api docs to find a suitable event to handle as the onDidChangeModelContent event only seems to fire for certain changes!
@@ -80,11 +81,18 @@
                     //   scope.code = editor.getValue();
                     //   scope.$apply();
                     // }
-                    $interval(editorContext.updateScope.bind(editorContext), 1000); // TODO - need to clear the interval when the directive is torn down
+                    interval = $interval(editorContext.updateScope.bind(editorContext), 1000);
 
                     // set up watch for codeFile changes to reflect updates
                     scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
                     scope.$watch('editorTheme', editorContext.onThemeChanged.bind(editorContext));
+
+                    scope.$on('$destroy', function () {
+                        if (interval !== null) {
+                            $interval.cancel(interval);
+                            interval = null;
+                        }
+                    });
                 });
             }
 

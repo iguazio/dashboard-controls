@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclMonaco', {
             bindings: {
-                runtime: '<',
+                language: '<',
                 functionSourceCode: '<',
                 onChangeSourceCodeCallback: '&',
                 selectedTheme: '<'
@@ -28,7 +28,7 @@
          */
         function onInit() {
             $scope.selectedCodeFile = {
-                language: ctrl.runtime,
+                language: ctrl.language,
                 code: atob(ctrl.functionSourceCode)
             };
 
@@ -44,10 +44,10 @@
          * @param {Object} changes
          */
         function onChanges(changes) {
-            if (angular.isDefined(changes.runtime) && angular.isDefined(changes.functionSourceCode)) {
-                if (!changes.runtime.isFirstChange() && !changes.functionSourceCode.isFirstChange()) {
+            if (angular.isDefined(changes.language) && angular.isDefined(changes.functionSourceCode)) {
+                if (!changes.language.isFirstChange() && !changes.functionSourceCode.isFirstChange()) {
                     $scope.selectedCodeFile = {
-                        language: changes.runtime.currentValue,
+                        language: changes.language.currentValue,
                         code: atob(changes.functionSourceCode.currentValue)
                     };
                 }
