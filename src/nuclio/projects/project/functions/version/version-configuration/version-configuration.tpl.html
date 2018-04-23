@@ -32,7 +32,8 @@
                         class="configuration-block"
                         data-version="$ctrl.version"></ncl-version-configuration-build>
             </div>
-            <div class="row">
+            <div data-ng-if="$ctrl.isDemoMode()"
+                 class="row">
                 <ncl-version-configuration-logging
                         class="configuration-block"
                         data-version="$ctrl.version"></ncl-version-configuration-logging>

@@ -15,7 +15,7 @@
             controller: NclFunctionVersionRowController
         });
 
-    function NclFunctionVersionRowController($state, lodash, NuclioHeaderService, FunctionsService) {
+    function NclFunctionVersionRowController($state, lodash, ConfigService, NuclioHeaderService, FunctionsService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -27,6 +27,7 @@
 
         ctrl.$onInit = onInit;
 
+        ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.onFireAction = onFireAction;
         ctrl.showDetails = showDetails;
         ctrl.onSelectRow = onSelectRow;

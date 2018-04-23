@@ -17,21 +17,6 @@
                 id: 'online',
                 visible: true,
                 name: 'Edit online'
-            },
-            {
-                id: 'upload',
-                visible: true,
-                name: 'Upload archive'
-            },
-            {
-                id: 's3',
-                visible: true,
-                name: 'S3 URL'
-            },
-            {
-                id: 'repository',
-                visible: true,
-                name: 'Git repository'
             }
         ];
         ctrl.themesArray = [

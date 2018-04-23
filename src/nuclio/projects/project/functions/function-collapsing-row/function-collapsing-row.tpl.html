@@ -21,13 +21,15 @@
             <div class="igz-col-10 common-table-cell">
                 {{$ctrl.function.spec.replicas}}
             </div>
-            <div class="igz-col-10 common-table-cell">
+            <div data-ng-if="$ctrl.isDemoMode()"
+                 class="igz-col-10 common-table-cell">
                 {{$ctrl.function.spec.invocation || 0}}
             </div>
             <div class="igz-col-10 common-table-cell">
                 {{$ctrl.function.spec.runtime}}
             </div>
-            <div class="igz-col-10 common-table-cell">
+            <div data-ng-if="$ctrl.isDemoMode()"
+                 class="igz-col-10 common-table-cell">
                 {{$ctrl.function.attr.last_modified | date:"MMM dd, yyyy"}}
             </div>
         </div>

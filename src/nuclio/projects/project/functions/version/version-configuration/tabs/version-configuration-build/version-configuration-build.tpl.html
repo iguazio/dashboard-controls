@@ -1,5 +1,6 @@
 <div class="ncl-version-configuration-build">
-    <igz-action-menu data-actions="$ctrl.actions"
+    <igz-action-menu data-ng-if="$ctrl.isDemoMode()"
+                     data-actions="$ctrl.actions"
                      data-icon-class="ncl-icon-paperclip"
                      data-on-fire-action="$ctrl.onFireAction">
     </igz-action-menu>
@@ -21,10 +22,9 @@
                 <div class="field-label">Build commands</div>
                 <igz-validating-input-field data-field-type="textarea"
                                             data-input-name="commands"
-                                            data-input-value="$ctrl.version.spec.build.commands"
+                                            data-input-value="$ctrl.buildCommands"
                                             data-is-focused="false"
                                             data-form-object="$ctrl.buildForm"
-                                            data-validation-is-required="true"
                                             data-placeholder-text="Type ..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData)"
                                             data-update-data-field="Commands"

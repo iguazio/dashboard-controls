@@ -12,7 +12,7 @@
             <div class="actions-bar-left actions-buttons-block">
                 <button class="ncl-new-entity-button"
                         data-ng-click="$ctrl.openNewProjectDialog()"
-                        data-tooltip="Start by creating a project"
+                        data-tooltip="Create a project"
                         data-tooltip-placement="bottom"
                         data-tooltip-append-to-body="true"
                         data-tooltip-popup-delay="100"
@@ -63,15 +63,18 @@
                             <span class="sort-arrow"></span>
                             <div data-igz-resizable-table-column data-col-class="common-table-cell.description"></div>
                         </div>
-                        <div class="igz-col-25 common-table-cell sortable created-by"
+                        <div data-ng-if="$ctrl.isDemoMode()"
+                             class="igz-col-25 common-table-cell sortable created-by"
                              data-ng-class="$ctrl.isColumnSorted('created_by', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                              data-ng-click="$ctrl.sortTableByColumn('created_by')">Created by
                             <span class="sort-arrow"></span>
                             <div data-igz-resizable-table-column data-col-class="common-table-cell.created-by"></div>
                         </div>
-                        <div class="igz-col-25 common-table-cell sortable created-date"
+                        <div data-ng-if="$ctrl.isDemoMode()"
+                             class="igz-col-25 common-table-cell sortable created-date"
                              data-ng-class="$ctrl.isColumnSorted('created_date', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
-                             data-ng-click="$ctrl.sortTableByColumn('created_date')">Created date
+                             data-ng-click="$ctrl.sortTableByColumn('created_date')">
+                            Created date
                             <span class="sort-arrow"></span>
                             <div data-igz-resizable-table-column data-col-class="common-table-cell.created-date"></div>
                         </div>

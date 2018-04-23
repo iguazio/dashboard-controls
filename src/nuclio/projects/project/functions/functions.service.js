@@ -23,88 +23,6 @@
             var classesList = {
                 trigger: [
                     {
-                        id: 'kafka',
-                        name: 'Kafka',
-                        attributes: [
-                            {
-                                name: 'topic',
-                                pattern: 'string'
-                            },
-                            {
-                                name: 'partitions',
-                                pattern: 'array'
-                            }
-                        ]
-                    },
-                    {
-                        id: 'rabbit_mq',
-                        name: 'RabbitMQ',
-                        attributes: [
-                            {
-                                name: 'exchangeName',
-                                pattern: 'string'
-                            },
-                            {
-                                name: 'queueName',
-                                pattern: 'string'
-                            },
-                            {
-                                name: 'topic',
-                                pattern: 'array'
-                            }
-                        ]
-                    },
-                    {
-                        id: 'nats',
-                        name: 'Nats',
-                        attributes: [
-                            {
-                                name: 'topic',
-                                pattern: 'string'
-                            }
-                        ]
-                    },
-                    {
-                        id: 'cron',
-                        name: 'Cron',
-                        attributes: [
-                            {
-                                name: 'interval',
-                                type: 'string'
-                            }
-                        ]
-                    },
-                    {
-                        id: 'eventhub',
-                        name: 'Eventhub',
-                        attributes: [
-                            {
-                                name: 'sharedAccessKeyName',
-                                pattern: 'string'
-                            },
-                            {
-                                name: 'sharedAccessKeyValue',
-                                pattern: 'string'
-                            },
-                            {
-                                name: 'namespace',
-                                pattern: 'string'
-                            },
-                            {
-                                name: 'eventHubName',
-                                pattern: 'string'
-                            },
-                            {
-                                name: 'consumerGroup',
-                                pattern: 'string'
-                            },
-                            {
-                                name: 'partitions',
-                                pattern: 'array'
-                            }
-                        ]
-                    },
-                    {
                         id: 'http',
                         name: 'HTTP',
                         attributes: [
@@ -121,32 +39,6 @@
                                         type: 'array'
                                     }
                                 ]
-                            }
-                        ]
-                    },
-                    {
-                        id: 'kinesis',
-                        name: 'Kinesis',
-                        attributes: [
-                            {
-                                name: 'accessKeyID',
-                                pattern: 'string'
-                            },
-                            {
-                                name: 'secretAccessKey',
-                                pattern: 'string'
-                            },
-                            {
-                                name: 'regionName',
-                                pattern: 'string'
-                            },
-                            {
-                                name: 'streamName',
-                                pattern: 'string'
-                            },
-                            {
-                                name: 'shards',
-                                pattern: 'string'
                             }
                         ]
                     }

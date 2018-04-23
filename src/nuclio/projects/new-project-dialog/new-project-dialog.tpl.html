@@ -46,24 +46,6 @@
                                             data-placeholder-text="Type description..."></igz-validating-input-field>
             </div>
         </div>
-        <div class="field-group">
-            <div class="field-label">
-                Namespace
-            </div>
-            <div class="field-input">
-                <div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(newProjectForm, 'metadata.namespace')">
-                    The inputs you provided are invalid or incorrect
-                </div>
-                <igz-validating-input-field data-field-type="input"
-                                            data-input-name="metadata.namespace"
-                                            data-input-value="$ctrl.data.metadata.namespace"
-                                            data-form-object="newProjectForm"
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-validation-is-required="true"
-                                            data-validation-pattern="$ctrl.namespaceValidationPattern"
-                                            data-placeholder-text="Type description..."></igz-validating-input-field>
-            </div>
-        </div>
     </form>
 </div>
 

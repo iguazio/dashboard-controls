@@ -60,6 +60,8 @@
         function onInit() {
             ctrl.defaultValue = Number.isNaN(Number(ctrl.defaultValue)) ? null : Number(ctrl.defaultValue);
             resizeInput();
+
+            ctrl.currentValue = lodash.defaultTo(ctrl.currentValue, ctrl.disableZeroValue ? 1 : 0);
         }
 
         /**

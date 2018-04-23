@@ -10,10 +10,10 @@
             controller: NclVersionConfigurationBasicSettingsController
         });
 
-    function NclVersionConfigurationBasicSettingsController(lodash, ValidatingPatternsService) {
+    function NclVersionConfigurationBasicSettingsController(lodash, ConfigService, ValidatingPatternsService) {
         var ctrl = this;
 
-        ctrl.enableEdit = false;
+        ctrl.enableFunction = false;
         ctrl.enableTimeout = false;
         ctrl.timeout = {
             min: 0,
@@ -22,9 +22,11 @@
 
         ctrl.$onInit = onInit;
 
+        ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.validationPatterns = ValidatingPatternsService;
 
-        ctrl.inputValueCallback = inputValueCallback;
+        ctrl.inputValueCallback = inputValueCallback
+        ctrl.updateEnableStatus = updateEnableStatus;
 
         //
         // Hook methods
@@ -34,12 +36,16 @@
          * Initialization method
          */
         function onInit() {
-            var timeoutSeconds = lodash.get(ctrl.version, 'spec.timeoutSeconds');
+            if (ctrl.isDemoMode()) {
+                var timeoutSeconds = lodash.get(ctrl.version, 'spec.timeoutSeconds');
 
-            if (lodash.isNumber(timeoutSeconds)) {
-                ctrl.timeout.min = Math.floor(timeoutSeconds / 60);
-                ctrl.timeout.sec = Math.floor(timeoutSeconds % 60);
+                if (lodash.isNumber(timeoutSeconds)) {
+                    ctrl.timeout.min = Math.floor(timeoutSeconds / 60);
+                    ctrl.timeout.sec = Math.floor(timeoutSeconds % 60);
+                }
             }
+
+            ctrl.enableFunction = !lodash.get(ctrl.version, 'spec.disable', false);
         }
 
         //
@@ -59,6 +65,13 @@
             } else {
                 lodash.set(ctrl.version, field, newData);
             }
+        }
+
+        /**
+         * Switches enable/disable function status
+         */
+        function updateEnableStatus() {
+            lodash.set(ctrl.version, 'spec.disable', !ctrl.enableFunction);
         }
     }
 }());

@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationBuildController
         });
 
-    function NclVersionConfigurationBuildController($stateParams, $scope, $timeout, lodash, ngDialog, Upload) {
+    function NclVersionConfigurationBuildController($stateParams, $scope, $timeout, lodash, ngDialog, Upload, ConfigService) {
         var ctrl = this;
         var uploadType = '';
 
@@ -45,6 +45,7 @@
         ctrl.deleteFile = deleteFile;
         ctrl.getFileConfig = getFileConfig;
         ctrl.inputValueCallback = inputValueCallback;
+        ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.onBaseImageChange = onBaseImageChange;
         ctrl.onFireAction = onFireAction;
         ctrl.uploadFile = uploadFile;
@@ -60,6 +61,10 @@
             if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
                 ctrl.version = $stateParams.functionData;
             }
+
+            ctrl.buildCommands = lodash.get(ctrl.version, 'spec.build.commands', []);
+
+            ctrl.buildCommands = ctrl.buildCommands.join('\n');
         }
 
         //
@@ -79,6 +84,7 @@
          * @param {string} newData
          */
         function inputValueCallback(newData) {
+            ctrl.buildCommands = newData;
             ctrl.version.spec.build.commands = newData.replace('\r', '\n').split('\n');
         }
 

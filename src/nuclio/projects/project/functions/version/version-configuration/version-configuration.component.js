@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationController
         });
 
-    function NclVersionConfigurationController($stateParams, lodash) {
+    function NclVersionConfigurationController($stateParams, lodash, ConfigService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {
@@ -22,6 +22,8 @@
         };
 
         ctrl.$onInit = onInit;
+
+        ctrl.isDemoMode = ConfigService.isDemoMode;
 
         //
         // Hook methods

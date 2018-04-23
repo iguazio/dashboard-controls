@@ -24,6 +24,7 @@
 
         ctrl.validationPatterns = ValidatingPatternsService;
 
+        ctrl.cancelCreating = cancelCreating;
         ctrl.createFunction = createFunction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isTemplateSelected = isTemplateSelected;
@@ -45,6 +46,19 @@
         //
         // Public methods
         //
+
+        /**
+         * Cancels creating a function
+         */
+        function cancelCreating(event) {
+            event.preventDefault();
+
+            DialogsService.confirm('Leaving this page will discard your changes.',
+                'Leave', 'Don\'t leave')
+                .then(function () {
+                    $state.go('app.projects');
+                });
+        }
 
         /**
          * Callback handler for 'create function' button
