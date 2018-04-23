@@ -58,6 +58,7 @@
          * Initialization method
          */
         function onInit() {
+            lodash.defaultTo(ctrl.defaultValue, '');
             ctrl.defaultValue = Number.isNaN(Number(ctrl.defaultValue)) ? null : Number(ctrl.defaultValue);
             resizeInput();
         }
