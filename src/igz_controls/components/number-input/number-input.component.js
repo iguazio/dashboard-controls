@@ -35,7 +35,7 @@
 
         ctrl.numberInputValid = true;
         ctrl.numberInputChanged = false;
-        ctrl.precision = Number(ctrl.precision);
+        ctrl.precision = Number(ctrl.precision) || 0;
         ctrl.placeholder = ctrl.placeholder || '';
 
         ctrl.$onInit = onInit;
