@@ -18,7 +18,6 @@
         ctrl.isLoadingState = false;
         ctrl.nameTakenError = false;
         ctrl.nameValidationPattern = /^.{1,128}$/;
-        ctrl.namespaceValidationPattern = /^.{1,128}$/;
         ctrl.serverError = '';
 
         ctrl.$onInit = onInit;
@@ -128,7 +127,7 @@
         function getBlankData() {
             return {
                 metadata: {
-                    namespace: ''
+                    namespace: 'nuclio'
                 },
                 spec: {
                     displayName: '',

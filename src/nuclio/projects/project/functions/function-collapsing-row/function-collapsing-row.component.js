@@ -12,7 +12,7 @@
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController(lodash, NuclioFunctionsDataService) {
+    function NclFunctionCollapsingRowController(lodash, ConfigService, NuclioFunctionsDataService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -20,6 +20,7 @@
 
         ctrl.$onInit = onInit;
 
+        ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isFunctionShowed = isFunctionShowed;
         ctrl.handleAction = handleAction;
         ctrl.onFireAction = onFireAction;

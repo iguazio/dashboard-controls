@@ -123,7 +123,7 @@
             var newLabels = {};
 
             lodash.forEach(ctrl.labels, function (label) {
-                lodash.set(newLabels, label.name, label.value);
+                newLabels[label.name] = label.value;
             });
 
             lodash.set(ctrl.version, 'metadata.labels', newLabels);

@@ -12,7 +12,7 @@
             controller: NclProjectsTableRowController
         });
 
-    function NclProjectsTableRowController($scope, $state, lodash, moment, ngDialog, ActionCheckboxAllService, DialogsService,
+    function NclProjectsTableRowController($scope, $state, lodash, moment, ngDialog, ActionCheckboxAllService, ConfigService, DialogsService,
                                            NuclioProjectsDataService) {
         var ctrl = this;
 
@@ -20,6 +20,7 @@
 
         ctrl.$onInit = onInit;
 
+        ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.showDetails = showDetails;
         ctrl.onFireAction = onFireAction;
 

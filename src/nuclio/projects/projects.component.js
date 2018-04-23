@@ -8,7 +8,7 @@
         });
 
     function NclProjectsController($filter, $rootScope, $scope, $q, $state, lodash, ngDialog, ActionCheckboxAllService,
-                                   CommonTableService, NuclioProjectsDataService, ValidatingPatternsService) {
+                                   CommonTableService, ConfigService, NuclioProjectsDataService, ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -63,6 +63,7 @@
 
         ctrl.updateProjects = updateProjects;
         ctrl.handleAction = handleAction;
+        ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isProjectsListEmpty = isProjectsListEmpty;
         ctrl.onApplyFilters = onApplyFilters;
         ctrl.onSortOptionsChange = onSortOptionsChange;

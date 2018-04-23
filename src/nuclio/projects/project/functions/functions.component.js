@@ -8,7 +8,7 @@
         });
 
     function FunctionsController($filter, $q, $rootScope, $scope, $state, $stateParams, $timeout, lodash, CommonTableService,
-                                 NuclioHeaderService, NuclioProjectsDataService, NuclioFunctionsDataService) {
+                                 ConfigService, NuclioHeaderService, NuclioProjectsDataService, NuclioFunctionsDataService) {
         var ctrl = this;
         var title = {}; // breadcrumbs config
 
@@ -66,6 +66,7 @@
 
         ctrl.getVersions = getVersions;
         ctrl.handleAction = handleAction;
+        ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isFunctionsListEmpty = isFunctionsListEmpty;
         ctrl.onApplyFilters = onApplyFilters;
         ctrl.onSortOptionsChange = onSortOptionsChange;

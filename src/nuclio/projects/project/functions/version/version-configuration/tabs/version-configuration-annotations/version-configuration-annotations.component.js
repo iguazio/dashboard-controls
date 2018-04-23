@@ -127,7 +127,7 @@
             var newAnnotations = {};
 
             lodash.forEach(ctrl.annotations, function (annotation) {
-                lodash.set(newAnnotations, annotation.name, annotation.value);
+                newAnnotations[annotation.name] = annotation.value;
             });
 
             lodash.set(ctrl.version, 'metadata.annotations', newAnnotations);

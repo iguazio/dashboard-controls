@@ -62,7 +62,8 @@
     <igz-info-page-content class="igz-component">
         <div class="common-table">
             <div class="common-table-header">
-                <igz-action-checkbox-all class="common-table-cell check-all-rows"
+                <igz-action-checkbox-all data-ng-class="{'invisible': !$ctrl.isDemoMode()}"
+                                         class="common-table-cell check-all-rows"
                                          data-items-count="$ctrl.getVersions().length">
                 </igz-action-checkbox-all>
                 <div class="igz-row common-table-cells-container">
@@ -86,7 +87,8 @@
                          data-ng-click="$ctrl.sortTableByColumn('spec.replicas')">Replicas
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-10 common-table-cell">
+                    <div data-ng-if="$ctrl.isDemoMode()"
+                         class="igz-col-10 common-table-cell">
                         Invocation per sec
                     </div>
                     <div class="igz-col-10 common-table-cell sortable"
@@ -94,7 +96,8 @@
                          data-ng-click="$ctrl.sortTableByColumn('spec.runtime')">Runtime
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-10 common-table-cell">
+                    <div data-ng-if="$ctrl.isDemoMode()"
+                         class="igz-col-10 common-table-cell">
                         Last modified
                     </div>
                 </div>
