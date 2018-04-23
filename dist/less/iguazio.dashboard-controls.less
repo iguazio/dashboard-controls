@@ -4973,6 +4973,126 @@ body {
     }
 }
 
+.igz-info-page-content-wrapper {
+    position: absolute;
+    top: 56px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding-top: 0;
+    transition: @igz-basic-transition;
+
+    &.upper-pane-opened {
+        top: 216px;
+    }
+
+    &.filters-opened {
+        right: 377px;
+    }
+
+    &.info-pane-opened {
+        right: 379px;
+    }
+
+    .igz-info-page-content {
+        min-width: 946px;
+        max-width: 100%;
+        padding: 40px 25px;
+        background-color: @pale-white;
+    }
+}
+
+igz-info-page-actions-bar {
+    .igz-info-page-actions-bar .actions-content-block {
+        margin-left: 14px;
+    }
+}
+
+igz-info-page-content {
+    @data-access-policy-borders: @primary-border;
+
+    .container-data-access-policy-table, .data-lifecycle-table {
+        &.common-table {
+            .common-table-header {
+                position: relative;
+                height: 49px;
+                line-height: 48px;
+
+                .common-table-cell {
+                    margin-top: -1px;
+                    height: 49px;
+
+                    &.selected {
+                        background-color: @pale-grey;
+                        border: 1px solid @pale-grey;
+                    }
+
+                    &:last-child {
+                        margin-right: 0;
+                    }
+
+                    &.actions-menu {
+                        width: 0;
+                    }
+
+                    &.check-all-rows {
+                        padding-left: 30px;
+
+                        .action-checkbox-all {
+                            padding-top: 2px;
+                        }
+                    }
+                }
+
+                .common-table-cells-container {
+                    margin-right: 45px;
+
+                    .common-table-cell {
+                        height: 49px;
+                        padding: 0 15px;
+                        border-right: solid 1px @pale-grey;
+
+                        &:first-child {
+                            padding-left: 7px;
+                        }
+                    }
+                }
+            }
+
+            .common-table-body {
+                margin-top: 7px;
+
+                .common-table-cell {
+                    &.actions-menu {
+                        width: 45px;
+                    }
+                }
+            }
+
+            .data-access-policy-layers, .data-lifecycle-layers {
+                &:last-child {
+                    margin-bottom: 20px;
+                }
+            }
+        }
+
+        .sortable-empty {
+            background-color: #fdfdfd;
+            color: #252d36;
+            font-size: 14px;
+            font-weight: 400;
+            font-family: 'Open Sans', sans-serif;
+            border-bottom: @data-access-policy-borders;
+            border-left: @data-access-policy-borders;
+            border-right: @data-access-policy-borders;
+            padding-left: 70px;
+            height: 40px;
+            line-height: 38px;
+        }
+    }
+}
+
+
 .info-page-filters-bookmark {
     background-color: #ffffff;
     border-bottom-right-radius: 4px;
@@ -5314,126 +5434,6 @@ body {
         }
     }
 }
-.igz-info-page-content-wrapper {
-    position: absolute;
-    top: 56px;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    padding-top: 0;
-    transition: @igz-basic-transition;
-
-    &.upper-pane-opened {
-        top: 216px;
-    }
-
-    &.filters-opened {
-        right: 377px;
-    }
-
-    &.info-pane-opened {
-        right: 379px;
-    }
-
-    .igz-info-page-content {
-        min-width: 946px;
-        max-width: 100%;
-        padding: 40px 25px;
-        background-color: @pale-white;
-    }
-}
-
-igz-info-page-actions-bar {
-    .igz-info-page-actions-bar .actions-content-block {
-        margin-left: 14px;
-    }
-}
-
-igz-info-page-content {
-    @data-access-policy-borders: @primary-border;
-
-    .container-data-access-policy-table, .data-lifecycle-table {
-        &.common-table {
-            .common-table-header {
-                position: relative;
-                height: 49px;
-                line-height: 48px;
-
-                .common-table-cell {
-                    margin-top: -1px;
-                    height: 49px;
-
-                    &.selected {
-                        background-color: @pale-grey;
-                        border: 1px solid @pale-grey;
-                    }
-
-                    &:last-child {
-                        margin-right: 0;
-                    }
-
-                    &.actions-menu {
-                        width: 0;
-                    }
-
-                    &.check-all-rows {
-                        padding-left: 30px;
-
-                        .action-checkbox-all {
-                            padding-top: 2px;
-                        }
-                    }
-                }
-
-                .common-table-cells-container {
-                    margin-right: 45px;
-
-                    .common-table-cell {
-                        height: 49px;
-                        padding: 0 15px;
-                        border-right: solid 1px @pale-grey;
-
-                        &:first-child {
-                            padding-left: 7px;
-                        }
-                    }
-                }
-            }
-
-            .common-table-body {
-                margin-top: 7px;
-
-                .common-table-cell {
-                    &.actions-menu {
-                        width: 45px;
-                    }
-                }
-            }
-
-            .data-access-policy-layers, .data-lifecycle-layers {
-                &:last-child {
-                    margin-bottom: 20px;
-                }
-            }
-        }
-
-        .sortable-empty {
-            background-color: #fdfdfd;
-            color: #252d36;
-            font-size: 14px;
-            font-weight: 400;
-            font-family: 'Open Sans', sans-serif;
-            border-bottom: @data-access-policy-borders;
-            border-left: @data-access-policy-borders;
-            border-right: @data-access-policy-borders;
-            padding-left: 70px;
-            height: 40px;
-            line-height: 38px;
-        }
-    }
-}
-
-
 ncl-breadcrumbs {
     .ncl-header-subtitle {
         color: #898593;
@@ -5802,6 +5802,20 @@ ncl-breadcrumbs {
         }
     }
 }
+.ncl-monaco {
+    > div {
+        height: 100%;
+        border: 1px solid #e1e0e5
+    }
+
+    .monaco-editor {
+        .monaco-editor-background {
+            margin-left: 20px;
+        }
+    }
+}
+
+
 .ncl-navigation-tabs {
     background: @pale-white;
     height: 55px;
@@ -5827,20 +5841,6 @@ ncl-breadcrumbs {
         }
     }
 }
-.ncl-monaco {
-    > div {
-        height: 100%;
-        border: 1px solid #e1e0e5
-    }
-
-    .monaco-editor {
-        .monaco-editor-background {
-            margin-left: 20px;
-        }
-    }
-}
-
-
 .ncl-search-input {
     position: relative;
     color: @ncl-silver;
@@ -6267,6 +6267,84 @@ ncl-functions {
         }
     }
 }
+.function-from-scratch-content {
+    .splash-screen {
+        top: 0;
+    }
+
+    .title-wrapper {
+        width: 50%;
+        padding-right: 48px;
+        text-align: right;
+
+        .title {
+            color: @ncl-dusk-three;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 570px;
+        }
+    }
+
+    .function-configuration {
+        margin: 28px 0 0 0;
+
+        .configuration-form {
+            display: flex;
+
+            .function-name-wrapper {
+                width: 50%;
+                padding-right: 48px;
+
+                .function-name {
+                    width: 687px;
+                    float: right;
+
+                    .input-label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: @ncl-dusk-three;
+                    }
+
+                    igz-validating-input-field {
+                        margin-left: 2px;
+                    }
+                }
+            }
+
+            .function-runtime-wrapper {
+                width: 50%;
+
+                .function-runtime {
+                    width: 552px;
+
+                    .input-label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: @ncl-dusk-three;
+                    }
+
+                    igz-default-dropdown {
+                        .default-dropdown {
+                            background-color: @ncl-white;
+
+                            .default-dropdown-field {
+                                &:focus {
+                                    background-color: inherit;
+                                }
+                            }
+                        }
+                    }
+
+                    .bottom-bar {
+                        display: flex;
+                        justify-content: flex-end;
+                        margin-top: 48px;
+                    }
+                }
+            }
+        }
+    }
+}
 .function-from-template-content {
     padding: 0 72px 0 63px;
 
@@ -6382,84 +6460,6 @@ ncl-functions {
             justify-content: flex-end;
             margin-top: 2px;
             padding-right: 30px;
-        }
-    }
-}
-.function-from-scratch-content {
-    .splash-screen {
-        top: 0;
-    }
-
-    .title-wrapper {
-        width: 50%;
-        padding-right: 48px;
-        text-align: right;
-
-        .title {
-            color: @ncl-dusk-three;
-            font-size: 16px;
-            font-weight: bold;
-            margin-right: 570px;
-        }
-    }
-
-    .function-configuration {
-        margin: 28px 0 0 0;
-
-        .configuration-form {
-            display: flex;
-
-            .function-name-wrapper {
-                width: 50%;
-                padding-right: 48px;
-
-                .function-name {
-                    width: 687px;
-                    float: right;
-
-                    .input-label {
-                        font-size: 14px;
-                        font-weight: 600;
-                        color: @ncl-dusk-three;
-                    }
-
-                    igz-validating-input-field {
-                        margin-left: 2px;
-                    }
-                }
-            }
-
-            .function-runtime-wrapper {
-                width: 50%;
-
-                .function-runtime {
-                    width: 552px;
-
-                    .input-label {
-                        font-size: 14px;
-                        font-weight: 600;
-                        color: @ncl-dusk-three;
-                    }
-
-                    igz-default-dropdown {
-                        .default-dropdown {
-                            background-color: @ncl-white;
-
-                            .default-dropdown-field {
-                                &:focus {
-                                    background-color: inherit;
-                                }
-                            }
-                        }
-                    }
-
-                    .bottom-bar {
-                        display: flex;
-                        justify-content: flex-end;
-                        margin-top: 48px;
-                    }
-                }
-            }
         }
     }
 }
