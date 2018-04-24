@@ -58,10 +58,8 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.defaultValue = Number.isNaN(Number(ctrl.defaultValue)) ? null : Number(ctrl.defaultValue);
+            ctrl.defaultValue = lodash.defaultTo(ctrl.defaultValue, '');
             resizeInput();
-
-            ctrl.currentValue = lodash.defaultTo(ctrl.currentValue, ctrl.disableZeroValue ? 1 : 0);
         }
 
         /**
@@ -86,6 +84,8 @@
         function checkInvalidation() {
             if (lodash.isNil(ctrl.currentValue) && !ctrl.allowEmptyField) {
                 return true;
+            } else if (ctrl.isFocused) {
+                onCurrentValueChange();
             }
 
             return ctrl.isShowFieldInvalidState(ctrl.formObject, ctrl.inputName);
@@ -100,6 +100,10 @@
             if (angular.isDefined(ctrl.formObject)) {
                 ctrl.formObject[ctrl.inputName].$setViewValue(ctrl.currentValue.toString());
                 ctrl.formObject[ctrl.inputName].$render();
+            }
+
+            if (ctrl.currentValue <= ctrl.minValue) {
+                ctrl.currentValue = Number(ctrl.defaultValue);
             }
 
             // if value becomes zero - clear the input field
@@ -139,6 +143,7 @@
          */
         function onChangeInput() {
             ctrl.numberInputChanged = true;
+            onCurrentValueChange();
             resizeInput();
         }
 
@@ -181,11 +186,6 @@
          * Resets the input to default value if it is invalid
          */
         function validateCurrentValue() {
-            ctrl.numberInputValid = ctrl.checkInvalidation();
-            if (ctrl.numberInputValid) {
-                ctrl.currentValue = Number(ctrl.defaultValue);
-            }
-
             if (angular.isFunction(ctrl.updateNumberInputCallback)) {
                 ctrl.updateNumberInputCallback({newData: ctrl.currentValue, field: angular.isDefined(ctrl.updateNumberInputField) ? ctrl.updateNumberInputField : ctrl.inputName});
             }
