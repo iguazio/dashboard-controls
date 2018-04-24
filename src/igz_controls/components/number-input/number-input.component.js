@@ -144,6 +144,7 @@
          */
         function onChangeInput() {
             ctrl.numberInputChanged = true;
+            onCurrentValueChange();
             resizeInput();
         }
 
@@ -186,11 +187,6 @@
          * Resets the input to default value if it is invalid
          */
         function validateCurrentValue() {
-            ctrl.numberInputValid = ctrl.checkInvalidation();
-            if (ctrl.numberInputValid) {
-                ctrl.currentValue = Number(ctrl.defaultValue);
-            }
-
             if (angular.isFunction(ctrl.updateNumberInputCallback)) {
                 ctrl.updateNumberInputCallback({
                     newData: lodash.isNil(ctrl.currentValue) ? ctrl.defaultValue : Number(ctrl.currentValue),
