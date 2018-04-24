@@ -34,7 +34,7 @@
                  data-ng-if="!$ctrl.isClassSelected()">Please select a class
             </div>
             <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected()">
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.url)">
                 <div class="field-label">URL</div>
                 <igz-validating-input-field data-field-type="input"
                                             data-input-name="itemURL"
@@ -48,6 +48,21 @@
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.maxWorkers)">
+                <div class="field-label">Max workers</div>
+                <igz-validating-input-field data-field-type="input"
+                                            data-input-name="itemMaxWorkers"
+                                            data-input-value="$ctrl.item.maxWorkers"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-pattern="$ctrl.numberValidationPattern"
+                                            data-validation-is-required="true"
+                                            data-placeholder-text="Type max workers..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="maxWorkers">
+                </igz-validating-input-field>
+            </div>
+            <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected()"
                  data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
                 <div class="field-label">{{attribute.name}}</div>
@@ -56,6 +71,7 @@
                                             data-input-value="$ctrl.getAttrValue(attribute.name)"
                                             data-is-focused="false"
                                             data-form-object="$ctrl.editItemForm"
+                                            data-validation-pattern="$ctrl.getValidationPattern(attribute.pattern)"
                                             data-validation-is-required="true"
                                             data-placeholder-text="Type {{attribute.name}}..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"

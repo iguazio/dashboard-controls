@@ -36,10 +36,12 @@
             // get trigger list
             ctrl.triggers = [];
             lodash.forOwn(ctrl.version.spec.triggers, function (value, key) {
-                value.id = key;
-                value.name = key;
+                var trigger = angular.copy(value);
 
-                ctrl.triggers.push(value);
+                trigger.id = key;
+                trigger.name = key;
+
+                ctrl.triggers.push(trigger);
             });
         }
 
@@ -57,7 +59,6 @@
                     id: '',
                     name: '',
                     kind: '',
-                    url: '',
                     attributes: {},
                     ui: {
                         editModeActive: true,
@@ -109,12 +110,32 @@
 
                 var triggerItem = {
                     kind: selectedItem.kind,
-                    url: selectedItem.url,
-                    attributes: selectedItem.attributes,
-                    id: selectedItem.id,
-                    name: selectedItem.name
+                    attributes: selectedItem.attributes
                 };
+
+                if (angular.isDefined(selectedItem.url)) {
+                    lodash.assign(triggerItem, {
+                        url: selectedItem.url
+                    });
+                }
+
+                if (angular.isDefined(selectedItem.maxWorkers)) {
+                    lodash.assign(triggerItem, {
+                        maxWorkers: Number(selectedItem.maxWorkers)
+                    });
+                }
+
                 lodash.set(ctrl.version, 'spec.triggers.' + selectedItem.name, triggerItem);
+
+                // get trigger list
+                ctrl.triggers = [];
+                lodash.forOwn(ctrl.version.spec.triggers, function (value, key) {
+                    var triggersItem = angular.copy(value);
+                    triggersItem.id = key;
+                    triggersItem.name = key;
+
+                    ctrl.triggers.push(triggersItem);
+                });
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }

@@ -12,7 +12,7 @@
             controller: NclEditItemController
         });
 
-    function NclEditItemController($document, $element, $scope, lodash, FunctionsService, FormValidationService) {
+    function NclEditItemController($document, $element, $scope, lodash, ConverterService, FunctionsService, FormValidationService) {
         var ctrl = this;
 
         ctrl.classList = [];
@@ -21,10 +21,17 @@
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
 
+        ctrl.numberValidationPattern = /^\d+$/;
+        ctrl.arrayIntValidationPattern = /^[-,0-9]+$/;
+        ctrl.arrayStrValidationPattern = /^.{1,128}$/;
+        ctrl.stringValidationPattern = /^.{1,128}$/;
+
         ctrl.isShowFieldError = FormValidationService.isShowFieldError;
         ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
+        ctrl.isNil = lodash.isNil;
 
         ctrl.getAttrValue = getAttrValue;
+        ctrl.getValidationPattern = getValidationPattern;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isClassSelected = isClassSelected;
         ctrl.onSubmitForm = onSubmitForm;
@@ -72,6 +79,17 @@
         }
 
         /**
+         * Gets validation patterns depends on type of attribute
+         * @param {string} pattern
+         * @returns {RegExp}
+         */
+        function getValidationPattern(pattern) {
+            return pattern === 'number'   ? ctrl.numberValidationPattern   :
+                   pattern === 'arrayInt' ? ctrl.arrayIntValidationPattern :
+                   pattern === 'arrayStr' ? ctrl.arrayStrValidationPattern : ctrl.stringValidationPattern;
+        }
+
+        /**
          * Update data callback
          * @param {string} newData
          * @param {string} field
@@ -93,12 +111,22 @@
          * @param {Object} item - item class\kind
          */
         function onSelectClass(item) {
+            ctrl.item = lodash.omit(ctrl.item, ['maxWorkers', 'url']);
+
             var nameDirty = ctrl.editItemForm.itemName.$dirty;
             var nameInvalid = ctrl.editItemForm.itemName.$invalid;
 
             ctrl.item.kind = item.id;
             ctrl.selectedClass = item;
             ctrl.item.attributes = {};
+
+            if (!lodash.isNil(item.url)) {
+                ctrl.item.url = '';
+            }
+
+            if (!lodash.isNil(item.maxWorkers)) {
+                ctrl.item.maxWorkers = '';
+            }
 
             lodash.each(item.attributes, function (attribute) {
                 lodash.set(ctrl.item.attributes, attribute.name, '');
@@ -133,6 +161,20 @@
                         ctrl.editItemForm.$setSubmitted();
                     } else {
                         ctrl.item.ui.expandable = true;
+
+                        lodash.forEach(ctrl.selectedClass.attributes, function (attribute) {
+                            if (attribute.pattern === 'number') {
+                                lodash.set(ctrl.item, 'attributes[' + attribute.name + ']', Number(ctrl.item.attributes[attribute.name]));
+                            }
+
+                            if (attribute.pattern === 'arrayStr' && !lodash.isArray(ctrl.item.attributes[attribute.name])) {
+                                ctrl.item.attributes[attribute.name] = ctrl.item.attributes[attribute.name].split(',');
+                            }
+
+                            if (attribute.pattern === 'arrayInt' && !lodash.isArray(ctrl.item.attributes[attribute.name])) {
+                                ctrl.item.attributes[attribute.name] = ConverterService.toNumberArray(ctrl.item.attributes[attribute.name]);
+                            }
+                        });
 
                         ctrl.onSubmitCallback({item: ctrl.item});
                     }
