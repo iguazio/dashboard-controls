@@ -104,7 +104,7 @@
             }
 
             if (ctrl.currentValue <= ctrl.minValue) {
-                ctrl.currentValue = ctrl.defaultValue;
+                ctrl.currentValue = ctrl.minValue;
             }
 
             // if value becomes zero - clear the input field
@@ -124,6 +124,10 @@
             if (angular.isDefined(ctrl.formObject)) {
                 ctrl.formObject[ctrl.inputName].$setViewValue(ctrl.currentValue.toString());
                 ctrl.formObject[ctrl.inputName].$render();
+            }
+
+            if (ctrl.currentValue <= ctrl.minValue) {
+                ctrl.currentValue = ctrl.minValue;
             }
 
             resizeInput();
