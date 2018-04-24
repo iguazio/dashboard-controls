@@ -58,7 +58,8 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.defaultValue = Number.isNaN(Number(ctrl.defaultValue)) ? null : Number(ctrl.defaultValue);
+            ctrl.allowEmptyField = lodash.defaultTo(ctrl.allowEmptyField, false);
+            ctrl.defaultValue = lodash.defaultTo(ctrl.defaultValue, null);
             resizeInput();
 
             ctrl.currentValue = lodash.defaultTo(ctrl.currentValue, ctrl.disableZeroValue ? 1 : 0);
@@ -100,6 +101,10 @@
             if (angular.isDefined(ctrl.formObject)) {
                 ctrl.formObject[ctrl.inputName].$setViewValue(ctrl.currentValue.toString());
                 ctrl.formObject[ctrl.inputName].$render();
+            }
+
+            if (ctrl.currentValue <= ctrl.minValue) {
+                ctrl.currentValue = ctrl.defaultValue;
             }
 
             // if value becomes zero - clear the input field
@@ -187,7 +192,10 @@
             }
 
             if (angular.isFunction(ctrl.updateNumberInputCallback)) {
-                ctrl.updateNumberInputCallback({newData: ctrl.currentValue, field: angular.isDefined(ctrl.updateNumberInputField) ? ctrl.updateNumberInputField : ctrl.inputName});
+                ctrl.updateNumberInputCallback({
+                    newData: lodash.isNil(ctrl.currentValue) ? ctrl.defaultValue : Number(ctrl.currentValue),
+                    field: angular.isDefined(ctrl.updateNumberInputField) ? ctrl.updateNumberInputField : ctrl.inputName
+                });
             }
         }
     }
