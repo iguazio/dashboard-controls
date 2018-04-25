@@ -24,10 +24,12 @@
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
 
+        ctrl.closeDropdown = closeDropdown;
         ctrl.getInputValue = getInputValue;
         ctrl.getType = getType;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.onFireAction = onFireAction;
+        ctrl.openDropdown = openDropdown;
         ctrl.onTypeChanged = onTypeChanged;
 
         //
@@ -100,9 +102,9 @@
                 });
 
                 if (keyValueData.length > 1) {
-                    lodash.assign(lodash.get(ctrl.data, getValueField()), {
-                        key: keyValueData[1]
-                    });
+                    var data = lodash.get(ctrl.data, getValueField());
+
+                    data.key = keyValueData[1];
                 }
             } else {
                 ctrl.data[field] = newData;
@@ -146,6 +148,30 @@
                     lodash.set(ctrl.data, 'value', '');
                 }
             }
+        }
+
+        /**
+         * On open default dropdown
+         */
+        function openDropdown() {
+            var parent = angular.element(document).find('.' + ctrl.listClass)[0];
+            var dropdown = angular.element(document).find('.' + ctrl.listClass + ' .default-dropdown-container')[0];
+            var parentRect = parent.getBoundingClientRect();
+            var dropdownRect = dropdown.getBoundingClientRect();
+
+            parent = angular.element(parent);
+
+            if (dropdownRect.bottom > parentRect.bottom) {
+                parent.css({'padding-bottom': dropdownRect.bottom - parentRect.bottom + 'px'});
+            }
+        }
+
+        /**
+         * On close default dropdown
+         */
+        function closeDropdown() {
+            var parent = angular.element(angular.element(document).find('.' + ctrl.listClass)[0]);
+            parent.css({'padding-bottom': '0px'});
         }
 
         //

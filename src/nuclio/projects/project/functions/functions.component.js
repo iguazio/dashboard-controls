@@ -233,27 +233,20 @@
         function refreshFunctions() {
             ctrl.isSplashShowed.value = true;
 
-            NuclioFunctionsDataService.getFunctions(ctrl.project.metadata.namespace).then(function (result) {
+            NuclioFunctionsDataService.getFunctions(ctrl.project.metadata.namespace, ctrl.project.metadata.name).then(function (result) {
                 ctrl.functions = lodash.toArray(result.data);
 
-                if (lodash.isEmpty(ctrl.functions)) {
-                    ctrl.isSplashShowed.value = false;
+                // TODO: unmock versions data
+                lodash.forEach(ctrl.functions, function (functionItem) {
+                    lodash.set(functionItem, 'versions', [{
+                        name: '$LATEST',
+                        invocation: '30',
+                        last_modified: '2018-02-05T17:07:48.509Z'
+                    }]);
+                    lodash.set(functionItem, 'spec.version', 1);
+                });
 
-                    $state.go('app.project.create-function');
-                } else {
-
-                    // TODO: unmock versions data
-                    lodash.forEach(ctrl.functions, function (functionItem) {
-                        lodash.set(functionItem, 'versions', [{
-                            name: '$LATEST',
-                            invocation: '30',
-                            last_modified: '2018-02-05T17:07:48.509Z'
-                        }]);
-                        lodash.set(functionItem, 'spec.version', 1);
-                    });
-
-                    ctrl.isSplashShowed.value = false;
-                }
+                ctrl.isSplashShowed.value = false;
             });
         }
 

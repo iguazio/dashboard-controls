@@ -12,29 +12,12 @@
             controller: NclVersionController
         });
 
-    function NclVersionController($interval, $rootScope, $state, $stateParams, lodash, ConfigService, DialogsService, NuclioHeaderService,
+    function NclVersionController($interval, $rootScope, $state, $stateParams, $timeout, lodash, ConfigService, DialogsService, NuclioHeaderService,
                                   NuclioFunctionsDataService, NuclioProjectsDataService) {
         var ctrl = this;
         var interval = null;
 
-        ctrl.actions = [
-            {
-                id: 'newVersion',
-                name: 'Publish new version'
-            },
-            {
-                id: 'createAlias',
-                name: 'Create alias'
-            },
-            {
-                id: 'deleteFunction',
-                name: 'Delete function'
-            },
-            {
-                id: 'exportFunction',
-                name: 'Export function'
-            }
-        ];
+        ctrl.action = null;
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isTestResultShown = false;
         ctrl.isSplashShowed = {
@@ -70,6 +53,7 @@
         ctrl.onSelectTestEvent = onSelectTestEvent;
         ctrl.runVersionTest = runVersionTest;
         ctrl.toggleTestResult = toggleTestResult;
+        ctrl.onSelectAction = onSelectAction;
 
         //
         // Hook method
@@ -83,25 +67,45 @@
                 ctrl.version = $stateParams.functionData;
             }
 
+            ctrl.actions = [
+                {
+                    id: 'deleteFunction',
+                    name: 'Delete function',
+                    dialog: {
+                        message: {
+                            message: 'Delete function “' + ctrl.version.metadata.name + '”?',
+                            description: 'Deleted function cannot be restored.'
+                        },
+                        yesLabel: 'Yes, Delete',
+                        noLabel: 'Cancel',
+                        type: 'nuclio_alert'
+                    }
+                }
+            ];
+
             ctrl.navigationTabsConfig = [
                 {
                     tabName: 'Code',
-                    uiRoute: 'app.project.function.edit.code'
+                    uiRoute: 'app.project.function.edit.code',
+                    isNewFunction: $stateParams.isNewFunction
                 },
                 {
                     tabName: 'Configuration',
-                    uiRoute: 'app.project.function.edit.configuration'
+                    uiRoute: 'app.project.function.edit.configuration',
+                    isNewFunction: $stateParams.isNewFunction
                 },
                 {
-                    tabName: 'Trigger',
-                    uiRoute: 'app.project.function.edit.trigger'
+                    tabName: 'Triggers',
+                    uiRoute: 'app.project.function.edit.trigger',
+                    isNewFunction: $stateParams.isNewFunction
                 }
             ];
 
             if (ctrl.isDemoMode()) {
                 ctrl.navigationTabsConfig.push({
                     tabName: 'Monitoring',
-                    uiRoute: 'app.project.function.edit.monitoring'
+                    uiRoute: 'app.project.function.edit.monitoring',
+                    isNewFunction: $stateParams.isNewFunction
                 });
             }
             ctrl.testEvents = [];
@@ -153,13 +157,16 @@
          */
         function deployVersion() {
             $rootScope.$broadcast('deploy-function-version');
+            ctrl.isSplashShowed.value = true;
 
-            NuclioFunctionsDataService.updateFunction(ctrl.version)
-                .then(function (response) {
-                    $state.go('app.project.functions', {
-                        projectId: ctrl.project.metadata.name
-                    });
-                });
+            if (!lodash.isEmpty($stateParams.functionData)) {
+                ctrl.version = $stateParams.functionData;
+            }
+
+            ctrl.version = lodash.omit(ctrl.version, 'status');
+
+            NuclioFunctionsDataService.updateFunction(ctrl.version, ctrl.project.metadata.name)
+                .then(pullFunctionState);
         }
 
         /**
@@ -213,6 +220,99 @@
          */
         function toggleTestResult() {
             ctrl.isTestResultShown = !ctrl.isTestResultShown;
+
+            $timeout(resizeVersionView);
+        }
+
+        /**
+         * Resize view after test result is closed
+         */
+        function resizeVersionView() {
+            var clientHeight = document.documentElement.clientHeight;
+            var headerBottom = angular.element(document).find('.ncl-navigation-tabs')[0];
+            var contentView = angular.element(document).find('.ncl-edit-version-view')[0];
+            var contentBlock = angular.element(document).find('.ncl-version')[0];
+            var headerRect = headerBottom.getBoundingClientRect();
+            var contentBlockRect = contentBlock.getBoundingClientRect();
+            var contentHeight = clientHeight - headerRect.bottom;
+            var contentBlockHeight = contentBlockRect.bottom - contentBlockRect.top;
+
+            contentView = angular.element(contentView);
+            contentBlock = angular.element(contentBlock);
+
+            if (contentBlockHeight < contentHeight) {
+                contentView.css({'height': contentHeight + 'px'});
+                contentBlock.css({'height': contentHeight + 'px'});
+            }
+        }
+
+        /**
+         * Pulls function status.
+         * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
+         */
+        function pullFunctionState() {
+            interval = $interval(function () {
+                NuclioFunctionsDataService.getFunction(ctrl.version.metadata, ctrl.project.metadata.name)
+                    .then(function (response) {
+                        if (response.status.state === 'ready') {
+                            if (!lodash.isNil(interval)) {
+                                $interval.cancel(interval);
+                                interval = null;
+                            }
+
+                            ctrl.isSplashShowed.value = false;
+
+                            $state.go('app.project.functions', {
+                                projectId: ctrl.project.metadata.name
+                            });
+                        } else if (response.status.state === 'error') {
+                            if (!lodash.isNil(interval)) {
+                                $interval.cancel(interval);
+                                interval = null;
+                            }
+
+                            ctrl.isSplashShowed.value = false;
+
+                            DialogsService.alert('Failed to deploy function "' + ctrl.version.metadata.name + '".')
+                                .then(function () {
+                                    $state.go('app.project.functions', {
+                                        projectId: ctrl.project.metadata.name
+                                    });
+                                });
+                        }
+                    })
+                    .catch(function (error) {
+                        if (error.status !== 404) {
+                            if (!lodash.isNil(interval)) {
+                                $interval.cancel(interval);
+                                interval = null;
+                            }
+
+                            ctrl.isSplashShowed.value = false;
+                        }
+                    });
+            }, 2000);
+        }
+
+        /**
+         * Called when action is selected
+         * @param {Object} item - selected action
+         */
+        function onSelectAction(item) {
+            ctrl.action = item.id;
+            if (item.id === 'deleteFunction') {
+                DialogsService.confirm(item.dialog.message, item.dialog.yesLabel, item.dialog.noLabel, item.dialog.type)
+                    .then(function () {
+                        ctrl.isSplashShowed.value = true;
+
+                        NuclioFunctionsDataService.deleteFunction(ctrl.version.metadata).then(function () {
+                            $state.go('app.project.functions');
+                        });
+                    })
+                    .catch(function () {
+                        ctrl.action = ctrl.actions[0].id;
+                    });
+            }
         }
     }
 }());

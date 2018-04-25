@@ -35,11 +35,12 @@
             }
 
             // get bindings list
-            ctrl.bindings = [];
-            lodash.forOwn(ctrl.version.spec.dataBindings, function (value, key) {
-                value.id = key;
-                value.name = key;
-                ctrl.bindings.push(value);
+            ctrl.bindings = lodash.map(ctrl.version.spec.dataBindings, function (value, key) {
+                var bindingsItem = angular.copy(value);
+                bindingsItem.id = key;
+                bindingsItem.name = key;
+
+                return bindingsItem;
             });
         }
 
@@ -56,7 +57,6 @@
                 id: '',
                 name: '',
                 kind: '',
-                url: '',
                 attributes: {},
                 ui: {
                     editModeActive: true,
@@ -94,11 +94,24 @@
                 }
                 var bindingItem = {
                     kind: selectedItem.kind,
-                    url: selectedItem.url,
                     attributes: selectedItem.attributes
                 };
+
+                if (angular.isDefined(selectedItem.url)) {
+                    bindingItem.url = selectedItem.url;
+                }
+
                 lodash.set(ctrl.version, 'spec.dataBindings.' + selectedItem.name, bindingItem);
                 selectedItem.id = selectedItem.name;
+
+                // get bindings list
+                ctrl.bindings = lodash.map(ctrl.version.spec.dataBindings, function (value, key) {
+                    var bindingsItem = angular.copy(value);
+                    bindingsItem.id = key;
+                    bindingsItem.name = key;
+
+                    return bindingsItem;
+                });
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }

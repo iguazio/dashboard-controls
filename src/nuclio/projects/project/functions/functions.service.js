@@ -23,22 +23,128 @@
             var classesList = {
                 trigger: [
                     {
-                        id: 'http',
-                        name: 'HTTP',
+                        id: 'kafka',
+                        name: 'Kafka',
+                        url: 'string',
                         attributes: [
                             {
-                                name: 'ingresses',
-                                type: 'map',
-                                attributes: [
-                                    {
-                                        name: 'host',
-                                        type: 'string'
-                                    },
-                                    {
-                                        name: 'paths',
-                                        type: 'array'
-                                    }
-                                ]
+                                name: 'topic',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'partitions',
+                                pattern: 'arrayInt'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'rabbit_mq',
+                        name: 'RabbitMQ',
+                        url: 'string',
+                        attributes: [
+                            {
+                                name: 'exchangeName',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'queueName',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'topics',
+                                pattern: 'arrayStr'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'nats',
+                        name: 'Nats',
+                        url: 'string',
+                        attributes: [
+                            {
+                                name: 'topic',
+                                pattern: 'string'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'cron',
+                        name: 'Cron',
+                        attributes: [
+                            {
+                                name: 'interval',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'schedule',
+                                pattern: 'string'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'eventhub',
+                        name: 'Eventhub',
+                        attributes: [
+                            {
+                                name: 'sharedAccessKeyName',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'sharedAccessKeyValue',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'namespace',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'eventHubName',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'consumerGroup',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'partitions',
+                                pattern: 'arrayInt'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'http',
+                        name: 'HTTP',
+                        maxWorkers: 'number',
+                        attributes: [
+                            {
+                                name: 'port',
+                                pattern: 'number'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'kinesis',
+                        name: 'Kinesis',
+                        attributes: [
+                            {
+                                name: 'accessKeyID',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'secretAccessKey',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'regionName',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'streamName',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'shards',
+                                pattern: 'string'
                             }
                         ]
                     }
@@ -47,6 +153,7 @@
                     {
                         id: 'v3io',
                         name: 'V3io',
+                        url: 'string',
                         attributes: [
                             {
                                 name: 'secret',
