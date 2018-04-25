@@ -12,7 +12,7 @@
             controller: NclVersionController
         });
 
-    function NclVersionController($interval, $rootScope, $state, $stateParams, lodash, ConfigService, DialogsService, NuclioHeaderService,
+    function NclVersionController($interval, $rootScope, $state, $stateParams, $timeout, lodash, ConfigService, DialogsService, NuclioHeaderService,
                                   NuclioFunctionsDataService, NuclioProjectsDataService) {
         var ctrl = this;
         var interval = null;
@@ -220,6 +220,30 @@
          */
         function toggleTestResult() {
             ctrl.isTestResultShown = !ctrl.isTestResultShown;
+
+            $timeout(resizeVersionView);
+        }
+
+        /**
+         * Resize view after test result is closed
+         */
+        function resizeVersionView() {
+            var clientHeight = document.documentElement.clientHeight;
+            var headerBottom = angular.element(document).find('.ncl-navigation-tabs')[0];
+            var contentView = angular.element(document).find('.ncl-edit-version-view')[0];
+            var contentBlock = angular.element(document).find('.ncl-version')[0];
+            var headerRect = headerBottom.getBoundingClientRect();
+            var contentBlockRect = contentBlock.getBoundingClientRect();
+            var contentHeight = clientHeight - headerRect.bottom;
+            var contentBlockHeight = contentBlockRect.bottom - contentBlockRect.top;
+
+            contentView = angular.element(contentView);
+            contentBlock = angular.element(contentBlock);
+
+            if (contentBlockHeight < contentHeight) {
+                contentView.css({'height': contentHeight + 'px'});
+                contentBlock.css({'height': contentHeight + 'px'});
+            }
         }
 
         /**

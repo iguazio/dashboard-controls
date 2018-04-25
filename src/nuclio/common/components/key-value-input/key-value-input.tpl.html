@@ -18,11 +18,14 @@
                               data-read-only="!$ctrl.editMode"
                               data-form-object="$ctrl.keyValueInputForm"
                               data-select-property-only="id"
+                              data-prevent-drop-up="true"
                               data-input-name="type"
                               data-values-array="$ctrl.typesList"
                               data-selected-item="$ctrl.getType()"
                               data-placeholder="Select type..."
-                              data-item-select-callback="$ctrl.onTypeChanged(item, isItemChanged)"></igz-default-dropdown>
+                              data-item-select-callback="$ctrl.onTypeChanged(item, isItemChanged)"
+                              data-on-open-dropdown="$ctrl.openDropdown"
+                              data-on-close-dropdown="$ctrl.closeDropdown()"></igz-default-dropdown>
 
         <igz-validating-input-field class="input-value"
                                     data-ng-class="{'use-type': $ctrl.useType}"

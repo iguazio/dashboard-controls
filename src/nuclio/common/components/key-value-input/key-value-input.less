@@ -50,6 +50,10 @@
                     &[readonly]:focus, &:not(:focus) {
                         border-right: 1px solid @ncl-pale-grey;
                     }
+
+                    &.invalid:not(:focus) {
+                        border-right: 1px solid @ncl-darkish-pink;
+                    }
                 }
             }
 
@@ -77,6 +81,10 @@
                 .input-field {
                     &[readonly]:focus, &:not(:focus) {
                         border-left: 1px solid @ncl-pale-grey;
+                    }
+
+                    &.invalid:not(:focus) {
+                        border-left: 1px solid @ncl-darkish-pink;
                     }
                 }
             }
