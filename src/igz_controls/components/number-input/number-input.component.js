@@ -103,10 +103,6 @@
                 ctrl.formObject[ctrl.inputName].$render();
             }
 
-            if (ctrl.currentValue <= ctrl.minValue) {
-                ctrl.currentValue = ctrl.defaultValue;
-            }
-
             // if value becomes zero - clear the input field
             if (ctrl.currentValue === 0 && ctrl.disableZeroValue) {
                 ctrl.currentValue = null;
