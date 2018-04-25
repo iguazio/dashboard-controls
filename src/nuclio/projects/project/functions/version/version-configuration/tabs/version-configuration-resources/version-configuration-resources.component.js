@@ -87,9 +87,9 @@
          * @param {string} field
          */
         function numberInputCallback(newData, field) {
-            ctrl[field] = newData;
+            ctrl[field] = Number(newData);
             if (ctrl.resourcesForm.$valid) {
-                lodash.set(ctrl.version.spec, field, newData);
+                lodash.set(ctrl.version.spec, field, Number(newData));
             }
         }
     }

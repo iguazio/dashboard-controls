@@ -86,22 +86,26 @@
             ctrl.navigationTabsConfig = [
                 {
                     tabName: 'Code',
-                    uiRoute: 'app.project.function.edit.code'
+                    uiRoute: 'app.project.function.edit.code',
+                    isNewFunction: $stateParams.isNewFunction
                 },
                 {
                     tabName: 'Configuration',
-                    uiRoute: 'app.project.function.edit.configuration'
+                    uiRoute: 'app.project.function.edit.configuration',
+                    isNewFunction: $stateParams.isNewFunction
                 },
                 {
                     tabName: 'Trigger',
-                    uiRoute: 'app.project.function.edit.trigger'
+                    uiRoute: 'app.project.function.edit.trigger',
+                    isNewFunction: $stateParams.isNewFunction
                 }
             ];
 
             if (ctrl.isDemoMode()) {
                 ctrl.navigationTabsConfig.push({
                     tabName: 'Monitoring',
-                    uiRoute: 'app.project.function.edit.monitoring'
+                    uiRoute: 'app.project.function.edit.monitoring',
+                    isNewFunction: $stateParams.isNewFunction
                 });
             }
             ctrl.testEvents = [];
@@ -153,13 +157,14 @@
          */
         function deployVersion() {
             $rootScope.$broadcast('deploy-function-version');
+            ctrl.isSplashShowed.value = true;
+
+            if (!lodash.isEmpty($stateParams.functionData)) {
+                ctrl.version = $stateParams.functionData;
+            }
 
             NuclioFunctionsDataService.updateFunction(ctrl.version)
-                .then(function (response) {
-                    $state.go('app.project.functions', {
-                        projectId: ctrl.project.metadata.name
-                    });
-                });
+                .then(pullFunctionState);
         }
 
         /**
@@ -213,6 +218,54 @@
          */
         function toggleTestResult() {
             ctrl.isTestResultShown = !ctrl.isTestResultShown;
+        }
+
+        /**
+         * Pulls function status.
+         * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
+         */
+        function pullFunctionState() {
+            interval = $interval(function () {
+                NuclioFunctionsDataService.getFunction(ctrl.version.metadata)
+                    .then(function (response) {
+                        if (response.status.state === 'ready') {
+                            if (!lodash.isNil(interval)) {
+                                $interval.cancel(interval);
+                                interval = null;
+                            }
+
+                            ctrl.isSplashShowed.value = false;
+
+                            $state.go('app.project.functions', {
+                                projectId: ctrl.project.metadata.name
+                            });
+                        } else if (response.status.state === 'error') {
+                            if (!lodash.isNil(interval)) {
+                                $interval.cancel(interval);
+                                interval = null;
+                            }
+
+                            ctrl.isSplashShowed.value = false;
+
+                            DialogsService.alert('Failed to deploy function "' + ctrl.version.metadata.name + '".')
+                                .then(function () {
+                                    $state.go('app.project.functions', {
+                                        projectId: ctrl.project.metadata.name
+                                    });
+                                });
+                        }
+                    })
+                    .catch(function (error) {
+                        if (error.status !== 404) {
+                            if (!lodash.isNil(interval)) {
+                                $interval.cancel(interval);
+                                interval = null;
+                            }
+
+                            ctrl.isSplashShowed.value = false;
+                        }
+                    });
+            }, 2000);
         }
     }
 }());

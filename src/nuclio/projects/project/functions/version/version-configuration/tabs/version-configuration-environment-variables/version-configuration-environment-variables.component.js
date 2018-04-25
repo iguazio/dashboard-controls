@@ -40,7 +40,17 @@
                 ctrl.version = $stateParams.functionData;
             }
 
-            ctrl.variables = lodash.get(ctrl.version, 'spec.env', []);
+            ctrl.variables = lodash.chain(ctrl.version)
+                .get('spec.env', [])
+                .map(function (variable) {
+                    variable.ui = {
+                        editModeActive: false,
+                        isFormValid: true
+                    };
+
+                    return variable;
+                })
+                .value();
         }
 
         /**
@@ -60,7 +70,7 @@
          * Adds new variable
          */
         function addNewVariable(event) {
-            if (ctrl.variables.length < 1 || lodash.last(ctrl.variables).ui.isFormValid) {
+            if (ctrl.variables.length < 1 || lodash.chain(ctrl.variables).last().get('ui.isFormValid', true).value()) {
                 ctrl.variables.push({
                     name: '',
                     value: '',
@@ -109,6 +119,10 @@
          * Updates function`s variables
          */
         function updateVariables() {
+            ctrl.variables = lodash.map(ctrl.variables, function (variable) {
+                return lodash.omit(variable, 'ui');
+            });
+
             lodash.set(ctrl.version, 'spec.env', ctrl.variables);
         }
     }

@@ -153,6 +153,7 @@
                     {
                         id: 'v3io',
                         name: 'V3io',
+                        url: 'string',
                         attributes: [
                             {
                                 name: 'secret',
