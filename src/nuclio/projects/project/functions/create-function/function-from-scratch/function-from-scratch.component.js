@@ -49,11 +49,9 @@
         function cancelCreating(event) {
             event.preventDefault();
 
-            DialogsService.confirm('Leaving this page will discard your changes.',
-                'Leave', 'Don\'t leave')
-                .then(function () {
-                    $state.go('app.projects');
-                });
+            $state.go('app.project.functions', {
+                projectId: ctrl.project.metadata.name
+            });
         }
 
         /**

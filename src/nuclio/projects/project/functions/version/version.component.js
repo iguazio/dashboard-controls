@@ -28,13 +28,23 @@
             },
             {
                 id: 'deleteFunction',
-                name: 'Delete function'
+                name: 'Delete function',
+                dialog: {
+                    message: {
+                        message: 'Delete function “' + ctrl.version.metadata.name + '”?',
+                        description: 'Deleted function cannot be restored.'
+                    },
+                    yesLabel: 'Yes, Delete',
+                    noLabel: 'Cancel',
+                    type: 'nuclio_alert'
+                }
             },
             {
                 id: 'exportFunction',
                 name: 'Export function'
             }
         ];
+        ctrl.action = null;
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isTestResultShown = false;
         ctrl.isSplashShowed = {
@@ -70,6 +80,7 @@
         ctrl.onSelectTestEvent = onSelectTestEvent;
         ctrl.runVersionTest = runVersionTest;
         ctrl.toggleTestResult = toggleTestResult;
+        ctrl.onSelectAction = onSelectAction;
 
         //
         // Hook method
@@ -266,6 +277,25 @@
                         }
                     });
             }, 2000);
+        }
+
+        /**
+         * Called when action is selected
+         * @param {Object} item - selected action
+         */
+        function onSelectAction(item) {
+            ctrl.action = item.id;
+            if (item.id === 'deleteFunction') {
+                DialogsService.confirm(item.dialog.message, item.dialog.yesLabel, item.dialog.noLabel, item.dialog.type)
+                    .then(function () {
+                        NuclioFunctionsDataService.deleteFunction(ctrl.version.metadata).then(function () {
+                            $state.go('app.project.functions');
+                        });
+                    })
+                    .catch(function () {
+                        ctrl.action = ctrl.actions[0].id;
+                    });
+            }
         }
     }
 }());
