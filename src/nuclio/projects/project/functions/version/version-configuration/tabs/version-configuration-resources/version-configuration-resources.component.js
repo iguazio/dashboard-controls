@@ -73,8 +73,8 @@
                     name: 'GB'
                 }
             ];
-            ctrl.minReplicas = lodash.chain(ctrl.version).get('spec.minReplicas').defaultTo(0).value();
-            ctrl.maxReplicas = lodash.chain(ctrl.version).get('spec.maxReplicas').defaultTo(0).value();
+            ctrl.minReplicas = lodash.chain(ctrl.version).get('spec.minReplicas').defaultTo(1).value();
+            ctrl.maxReplicas = lodash.chain(ctrl.version).get('spec.maxReplicas').defaultTo(1).value();
         }
 
         //
@@ -87,9 +87,9 @@
          * @param {string} field
          */
         function numberInputCallback(newData, field) {
-            ctrl[field] = newData;
+            ctrl[field] = Number(newData);
             if (ctrl.resourcesForm.$valid) {
-                lodash.set(ctrl.version.spec, field, newData);
+                lodash.set(ctrl.version.spec, field, Number(newData));
             }
         }
     }

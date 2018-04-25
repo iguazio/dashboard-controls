@@ -20,6 +20,8 @@
 
         ctrl.$onInit = onInit;
 
+        ctrl.isNil = lodash.isNil;
+
         ctrl.onFireAction = onFireAction;
         ctrl.toggleItem = toggleItem;
         ctrl.onCollapse = onCollapse;

@@ -53,11 +53,9 @@
         function cancelCreating(event) {
             event.preventDefault();
 
-            DialogsService.confirm('Leaving this page will discard your changes.',
-                'Leave', 'Don\'t leave')
-                .then(function () {
-                    $state.go('app.projects');
-                });
+            $state.go('app.project.functions', {
+                projectId: ctrl.project.metadata.name
+            });
         }
 
         /**
@@ -70,15 +68,13 @@
             if (ctrl.functionFromTemplateForm.$valid && !lodash.isNil(ctrl.selectedTemplate)) {
                 lodash.set(ctrl, 'functionData.metadata.namespace', ctrl.project.metadata.namespace);
 
-                NuclioFunctionsDataService.createFunction(ctrl.functionData)
-                    .then(function () {
-                        ctrl.toggleSplashScreen({value: true});
-
-                        pullFunctionState();
-                    })
-                    .catch(function () {
-                        DialogsService.alert('Oops: Unknown error occurred');
-                    });
+                $state.go('app.project.function.edit.code', {
+                    isNewFunction: true,
+                    id: ctrl.project.metadata.name,
+                    functionId: ctrl.functionData.metadata.name,
+                    projectNamespace: ctrl.project.metadata.namespace,
+                    functionData: ctrl.functionData
+                });
             }
         }
 
@@ -163,44 +159,6 @@
                 .finally(function () {
                     ctrl.toggleSplashScreen({value: false});
                 });
-        }
-
-        /**
-         * Pulls function status.
-         * Periodically sends request to get function's  state, until state will not be 'ready' or 'error'
-         */
-        function pullFunctionState() {
-            interval = $interval(function () {
-                NuclioFunctionsDataService.getFunction(ctrl.functionData.metadata)
-                    .then(function (response) {
-                        if (lodash.includes(['ready', 'error'], response.data.status.state)) {
-                            if (!lodash.isNil(interval)) {
-                                $interval.cancel(interval);
-                                interval = null;
-                            }
-
-                            ctrl.toggleSplashScreen({value: false});
-
-                            $state.go('app.project.function.edit.code', {
-                                isNewFunction: false,
-                                id: ctrl.project.metadata.name,
-                                functionId: ctrl.functionData.metadata.name,
-                                projectNamespace: ctrl.project.metadata.namespace,
-                                functionData: ctrl.functionData
-                            });
-                        }
-                    })
-                    .catch(function (error) {
-                        if (error.status !== 404) {
-                            if (!lodash.isNil(interval)) {
-                                $interval.cancel(interval);
-                                interval = null;
-                            }
-
-                            ctrl.toggleSplashScreen({value: false});
-                        }
-                    });
-            }, 2000);
         }
     }
 }());

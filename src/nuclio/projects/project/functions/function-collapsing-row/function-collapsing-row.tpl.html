@@ -8,7 +8,8 @@
                   data-ng-class="{'collapsed igz-icon-right': $ctrl.isCollapsed, 'igz-icon-down': !$ctrl.isCollapsed}"></span>
         </div>
 
-        <div class="igz-row common-table-cells-container">
+        <div class="igz-row common-table-cells-container"
+             data-ng-click="$ctrl.onSelectRow($event)">
             <div class="igz-col-25 common-table-cell function-name">
                 {{$ctrl.function.metadata.name}}
             </div>
