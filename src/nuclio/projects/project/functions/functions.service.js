@@ -144,7 +144,7 @@
                             },
                             {
                                 name: 'shards',
-                                pattern: 'string'
+                                pattern: 'arrayStr'
                             }
                         ]
                     }
