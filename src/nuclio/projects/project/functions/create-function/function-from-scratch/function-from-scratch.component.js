@@ -196,6 +196,7 @@
                 },
                 spec: {
                     description: '',
+                    disable: false,
                     timeoutSeconds: 0,
                     triggers: {},
                     env: [],
@@ -208,7 +209,7 @@
                     build: {
                         functionSourceCode: ctrl.selectedRuntime.sourceCode
                     },
-                    minReplicas: 0,
+                    minReplicas: 1,
                     maxReplicas: 1
                 }
             };

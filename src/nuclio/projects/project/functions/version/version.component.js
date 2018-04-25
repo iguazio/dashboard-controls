@@ -17,33 +17,6 @@
         var ctrl = this;
         var interval = null;
 
-        ctrl.actions = [
-            {
-                id: 'newVersion',
-                name: 'Publish new version'
-            },
-            {
-                id: 'createAlias',
-                name: 'Create alias'
-            },
-            {
-                id: 'deleteFunction',
-                name: 'Delete function',
-                dialog: {
-                    message: {
-                        message: 'Delete function “' + ctrl.version.metadata.name + '”?',
-                        description: 'Deleted function cannot be restored.'
-                    },
-                    yesLabel: 'Yes, Delete',
-                    noLabel: 'Cancel',
-                    type: 'nuclio_alert'
-                }
-            },
-            {
-                id: 'exportFunction',
-                name: 'Export function'
-            }
-        ];
         ctrl.action = null;
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isTestResultShown = false;
@@ -94,6 +67,22 @@
                 ctrl.version = $stateParams.functionData;
             }
 
+            ctrl.actions = [
+                {
+                    id: 'deleteFunction',
+                    name: 'Delete function',
+                    dialog: {
+                        message: {
+                            message: 'Delete function “' + ctrl.version.metadata.name + '”?',
+                            description: 'Deleted function cannot be restored.'
+                        },
+                        yesLabel: 'Yes, Delete',
+                        noLabel: 'Cancel',
+                        type: 'nuclio_alert'
+                    }
+                }
+            ];
+
             ctrl.navigationTabsConfig = [
                 {
                     tabName: 'Code',
@@ -106,7 +95,7 @@
                     isNewFunction: $stateParams.isNewFunction
                 },
                 {
-                    tabName: 'Trigger',
+                    tabName: 'Triggers',
                     uiRoute: 'app.project.function.edit.trigger',
                     isNewFunction: $stateParams.isNewFunction
                 }
@@ -174,7 +163,9 @@
                 ctrl.version = $stateParams.functionData;
             }
 
-            NuclioFunctionsDataService.updateFunction(ctrl.version)
+            ctrl.version = lodash.omit(ctrl.version, 'status');
+
+            NuclioFunctionsDataService.updateFunction(ctrl.version, ctrl.project.metadata.name)
                 .then(pullFunctionState);
         }
 
@@ -237,7 +228,7 @@
          */
         function pullFunctionState() {
             interval = $interval(function () {
-                NuclioFunctionsDataService.getFunction(ctrl.version.metadata)
+                NuclioFunctionsDataService.getFunction(ctrl.version.metadata, ctrl.project.metadata.name)
                     .then(function (response) {
                         if (response.status.state === 'ready') {
                             if (!lodash.isNil(interval)) {
@@ -288,6 +279,8 @@
             if (item.id === 'deleteFunction') {
                 DialogsService.confirm(item.dialog.message, item.dialog.yesLabel, item.dialog.noLabel, item.dialog.type)
                     .then(function () {
+                        ctrl.isSplashShowed.value = true;
+
                         NuclioFunctionsDataService.deleteFunction(ctrl.version.metadata).then(function () {
                             $state.go('app.project.functions');
                         });

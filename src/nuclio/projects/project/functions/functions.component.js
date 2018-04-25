@@ -233,7 +233,7 @@
         function refreshFunctions() {
             ctrl.isSplashShowed.value = true;
 
-            NuclioFunctionsDataService.getFunctions(ctrl.project.metadata.namespace).then(function (result) {
+            NuclioFunctionsDataService.getFunctions(ctrl.project.metadata.namespace, ctrl.project.metadata.name).then(function (result) {
                 ctrl.functions = lodash.toArray(result.data);
 
                 // TODO: unmock versions data

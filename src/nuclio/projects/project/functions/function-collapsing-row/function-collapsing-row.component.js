@@ -12,18 +12,22 @@
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController(lodash, ConfigService, NuclioFunctionsDataService) {
+    function NclFunctionCollapsingRowController($state, lodash, NuclioFunctionsDataService, NuclioHeaderService) {
         var ctrl = this;
 
         ctrl.actions = [];
-        ctrl.isCollapsed = false;
+        ctrl.isCollapsed = true;
+        ctrl.title = {
+            project: ctrl.project.spec.displayName,
+            function: ctrl.function.metadata.name
+        };
 
         ctrl.$onInit = onInit;
 
-        ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isFunctionShowed = isFunctionShowed;
         ctrl.handleAction = handleAction;
         ctrl.onFireAction = onFireAction;
+        ctrl.onSelectRow = onSelectRow;
 
         //
         // Hook methods
@@ -104,6 +108,28 @@
          */
         function deleteFunction() {
             return NuclioFunctionsDataService.deleteFunction(ctrl.function.metadata);
+        }
+
+        /**
+         * Handles mouse click on a table row and navigates to Code page of latest version
+         * @param {MouseEvent} event
+         * @param {string} state - absolute state name or relative state path
+         */
+        function onSelectRow(event, state) {
+            if (!angular.isString(state)) {
+                state = 'app.project.function.edit.code';
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            $state.go(state, {
+                id: ctrl.project.metadata.name,
+                functionId: ctrl.function.metadata.name,
+                projectNamespace: ctrl.project.metadata.namespace
+            });
+
+            NuclioHeaderService.updateMainHeader('Projects', ctrl.title, $state.current.name);
         }
     }
 }());

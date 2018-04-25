@@ -24,10 +24,11 @@
          * @param {Object} functionData
          * @returns {Promise}
          */
-        function createFunction(functionData) {
+        function createFunction(functionData, projectName) {
             var headers = {
                 'Content-Type': 'application/json',
-                'x-nuclio-function-namespace': functionData.metadata.namespace
+                'x-nuclio-function-namespace': functionData.metadata.namespace,
+                'x-nuclio-project-name': projectName
             };
 
             var config = {
@@ -46,11 +47,13 @@
          * @param {Object} functionData
          * @returns {Promise}
          */
-        function getFunction(functionData) {
+        function getFunction(functionData, projectName) {
             var headers = {
                 'Content-Type': 'application/json',
-                'x-nuclio-function-namespace': functionData.namespace
+                'x-nuclio-function-namespace': functionData.namespace,
+                'x-nuclio-project-name': projectName
             };
+
             var config = {
                 method: 'get',
                 headers: headers,
@@ -119,9 +122,10 @@
          * @param {string} namespace
          * @returns {Promise}
          */
-        function getFunctions(namespace) {
+        function getFunctions(namespace, projectName) {
             var headers = {
-                'x-nuclio-function-namespace': namespace
+                'x-nuclio-function-namespace': namespace,
+                'x-nuclio-project-name': projectName
             };
             var config = {
                 method: 'get',
@@ -138,10 +142,11 @@
          * @param {Object} functionDetails
          * @returns {Promise}
          */
-        function updateFunction(functionDetails) {
+        function updateFunction(functionDetails, projectName) {
             var headers = {
                 'Content-Type': 'application/json',
-                'x-nuclio-function-namespace': functionDetails.metadata.namespace
+                'x-nuclio-function-namespace': functionDetails.metadata.namespace,
+                'x-nuclio-project-name': projectName
             };
             var config = {
                 method: 'post',
