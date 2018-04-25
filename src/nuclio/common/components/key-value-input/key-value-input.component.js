@@ -102,9 +102,9 @@
                 });
 
                 if (keyValueData.length > 1) {
-                    lodash.assign(lodash.get(ctrl.data, getValueField()), {
-                        key: keyValueData[1]
-                    });
+                    var data = lodash.get(ctrl.data, getValueField());
+
+                    data.key = keyValueData[1];
                 }
             } else {
                 ctrl.data[field] = newData;

@@ -94,12 +94,10 @@
         function selectRuntimeValue(item) {
             ctrl.selectedRuntime = item;
 
-            lodash.assign(ctrl.version, {
-                spec: {
-                    runtime: item.id,
-                    build: {
-                        functionSourceCode: item.sourceCode
-                    }
+            lodash.assign(ctrl.version.spec, {
+                runtime: item.id,
+                build: {
+                    functionSourceCode: item.sourceCode
                 }
             });
         }

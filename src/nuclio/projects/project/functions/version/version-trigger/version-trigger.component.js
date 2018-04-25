@@ -34,14 +34,12 @@
             }
 
             // get trigger list
-            ctrl.triggers = [];
-            lodash.forOwn(ctrl.version.spec.triggers, function (value, key) {
-                var trigger = angular.copy(value);
+            ctrl.triggers = lodash.map(ctrl.version.spec.triggers, function (value, key) {
+                var triggersItem = angular.copy(value);
+                triggersItem.id = key;
+                triggersItem.name = key;
 
-                trigger.id = key;
-                trigger.name = key;
-
-                ctrl.triggers.push(trigger);
+                return triggersItem;
             });
         }
 
@@ -104,9 +102,7 @@
                     lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
                 }
 
-                lodash.assign(item, {
-                    id: selectedItem.name
-                });
+                item.id = selectedItem.name;
 
                 var triggerItem = {
                     kind: selectedItem.kind,
@@ -114,27 +110,22 @@
                 };
 
                 if (angular.isDefined(selectedItem.url)) {
-                    lodash.assign(triggerItem, {
-                        url: selectedItem.url
-                    });
+                    triggerItem.url = selectedItem.url;
                 }
 
                 if (angular.isDefined(selectedItem.maxWorkers)) {
-                    lodash.assign(triggerItem, {
-                        maxWorkers: Number(selectedItem.maxWorkers)
-                    });
+                    triggerItem.maxWorkers = Number(selectedItem.maxWorkers);
                 }
 
                 lodash.set(ctrl.version, 'spec.triggers.' + selectedItem.name, triggerItem);
 
                 // get trigger list
-                ctrl.triggers = [];
-                lodash.forOwn(ctrl.version.spec.triggers, function (value, key) {
+                ctrl.triggers = lodash.map(ctrl.version.spec.triggers, function (value, key) {
                     var triggersItem = angular.copy(value);
                     triggersItem.id = key;
                     triggersItem.name = key;
 
-                    ctrl.triggers.push(triggersItem);
+                    return triggersItem;
                 });
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
