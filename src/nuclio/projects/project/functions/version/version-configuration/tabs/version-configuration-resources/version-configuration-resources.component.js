@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationResourcesController
         });
 
-    function NclVersionConfigurationResourcesController(lodash, ConfigService) {
+    function NclVersionConfigurationResourcesController($timeout, lodash, ConfigService) {
         var ctrl = this;
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
@@ -88,9 +88,12 @@
          */
         function numberInputCallback(newData, field) {
             ctrl[field] = newData;
-            if (ctrl.resourcesForm.$valid) {
-                lodash.set(ctrl.version.spec, field, newData);
-            }
+            $timeout(function () {
+                if (ctrl.resourcesForm.$valid) {
+                    lodash.set(ctrl.version.spec, 'minReplicas', ctrl.minReplicas);
+                    lodash.set(ctrl.version.spec, 'maxReplicas', ctrl.maxReplicas);
+                }
+            })
         }
     }
 }());
