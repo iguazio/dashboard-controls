@@ -1,0 +1,72 @@
+<div class="test-event-wrapper">
+    <div class="header">
+        <div class="title">{{$ctrl.titleText}}</div>
+        <div class="close-button igz-icon-close"
+             data-ng-click="$ctrl.closeEventDialog()"></div>
+    </div>
+
+    <div class="content">
+        <form name="$ctrl.testEventForm" class="event-form">
+            <div class="field-wrapper">
+                <div class="field-label">Name</div>
+                <div class="field-content">
+                    <igz-validating-input-field data-field-type="input"
+                                                data-input-name="name"
+                                                data-input-model-options="$ctrl.inputModelOptions"
+                                                data-input-value="$ctrl.workingCopy.spec.displayName"
+                                                data-validation-is-required="true"
+                                                data-form-object="$ctrl.testEventForm"
+                                                data-update-data-callback="$ctrl.inputValueCallback(newData, 'name')"
+                                                data-placeholder-text="Type a name of event">
+                    </igz-validating-input-field>
+                </div>
+            </div>
+            <div class="field-wrapper">
+                <div class="field-label">Method</div>
+                <div class="field-content">
+                    <igz-default-dropdown data-values-array="$ctrl.methods"
+                                          data-selected-item="$ctrl.selectedMethod"
+                                          data-item-select-callback="$ctrl.onSelectMethod(item, isItemChanged, field)"
+                                          data-is-required="true"
+                                          data-form-object="$ctrl.testEventForm">
+                    </igz-default-dropdown>
+                </div>
+            </div>
+            <div class="field-wrapper">
+                <div class="field-label">Content type</div>
+                <div class="field-content">
+                    <igz-default-dropdown data-values-array="$ctrl.headers"
+                                          data-selected-item="$ctrl.selectedHeader"
+                                          data-item-select-callback="$ctrl.onSelectHeader(item, isItemChanged, field)"
+                                          data-is-required="true"
+                                          data-form-object="$ctrl.testEventForm">
+                    </igz-default-dropdown>
+                </div>
+            </div>
+            <div class="field-wrapper">
+                <div class="field-label">Body</div>
+                <div class="field-content">
+                    <textarea class="event-body"
+                              data-ng-model="$ctrl.workingCopy.spec.body"
+                              data-form-object="$ctrl.testEventForm"
+                              placeholder="Type a body of event"></textarea>
+                </div>
+            </div>
+        </form>
+        <div class="event-error" data-ng-if="$ctrl.isDeployFailed">
+            {{$ctrl.errorText}}
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <div class="ncl-secondary-button" data-ng-click="$ctrl.closeEventDialog()">Cancel</div>
+        <div class="ncl-primary-button"
+             tabindex="0"
+             data-ng-click="$ctrl.applyChanges()"
+             data-ng-keydown="$ctrl.applyChanges($event)"
+             data-ng-hide="$ctrl.isLoadingState">
+            {{$ctrl.buttonText}}
+        </div>
+        <div class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">Loading...</div>
+    </div>
+</div>
