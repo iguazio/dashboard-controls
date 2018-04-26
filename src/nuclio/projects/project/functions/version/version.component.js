@@ -235,7 +235,10 @@
             ctrl.version = lodash.omit(ctrl.version, 'status');
 
             ctrl.isDeployResultShown = true;
-            ctrl.rowIsCollapsed.deployBlock = true;
+            lodash.assign(ctrl.rowIsCollapsed, {
+                deployBlock: true,
+                deployBody: false
+            });
 
             NuclioFunctionsDataService.updateFunction(ctrl.version, ctrl.project.metadata.name)
                 .then(pullFunctionState);
@@ -355,10 +358,6 @@
          */
         function onRowCollapse(row) {
             ctrl.rowIsCollapsed[row] = !ctrl.rowIsCollapsed[row];
-
-            if (!ctrl.rowIsCollapsed.deployBlock) {
-                ctrl.rowIsCollapsed.deployBody = false;
-            }
 
             $timeout(resizeVersionView);
         }
