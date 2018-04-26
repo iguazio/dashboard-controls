@@ -22,6 +22,7 @@
         /**
          * Gets function details
          * @param {Object} functionData
+         * @param {string} projectName - the name of the project containing the function
          * @returns {Promise}
          */
         function createFunction(functionData, projectName) {
@@ -45,6 +46,7 @@
         /**
          * Gets function details
          * @param {Object} functionData
+         * @param {string} projectName - the name of the project containing the function
          * @returns {Promise}
          */
         function getFunction(functionData, projectName) {
@@ -120,6 +122,7 @@
         /**
          * Gets functions list
          * @param {string} namespace
+         * @param {string} projectName - the name of the project containing the function
          * @returns {Promise}
          */
         function getFunctions(namespace, projectName) {
@@ -140,6 +143,7 @@
         /**
          * Update existing function with new data
          * @param {Object} functionDetails
+         * @param {string} projectName - the name of the project containing the function
          * @returns {Promise}
          */
         function updateFunction(functionDetails, projectName) {

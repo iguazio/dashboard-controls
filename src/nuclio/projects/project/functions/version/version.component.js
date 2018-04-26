@@ -174,7 +174,7 @@
                             // update test events list
                             NuclioEventService.getEvents(ctrl.version)
                                 .then(function (response) {
-                                    convertTestEventsData(response.data)
+                                    convertTestEventsData(response.data);
 
                                     ctrl.isSplashShowed.value = false;
                                 })
@@ -189,7 +189,7 @@
 
         /**
          * Opens a function event dialog
-         * @param {boolean} createEvent - if value 'false' then open dialog to edit exisitng event, otherwise open dialog
+         * @param {boolean} createEvent - if value 'false' then open dialog to edit existing event, otherwise open dialog
          * to create new event.
          */
         function openFunctionEventDialog(createEvent) {
@@ -209,8 +209,8 @@
                 .closePromise
                 .then(function (data) {
 
-                    // check if event was doployed or failed
-                    // if yes, then push newest crwated event to events drop-down
+                    // check if event was deployed or failed
+                    // if yes, then push newest created event to events drop-down
                     if (data.value) {
                         ctrl.isSplashShowed.value = true;
 
@@ -239,10 +239,9 @@
                 }
 
                 ctrl.version = lodash.omit(ctrl.version, 'status');
-
                 ctrl.isTestResultShown = false;
-
                 ctrl.isDeployResultShown = true;
+
                 lodash.assign(ctrl.rowIsCollapsed, {
                     deployBlock: true,
                     deployBody: false
@@ -420,18 +419,6 @@
             ctrl.selectedFunctionEvent = ctrl.functionEvents[0];
         }
 
-        /**
-         * Sets deploying results
-         * @param {string} value
-         */
-        function setDeployResult(value) {
-            ctrl.deployResult = {
-                status: {
-                    state: value
-                }
-            };
-        }
-
         //
         // Private methods
         //
@@ -454,6 +441,18 @@
             } else {
                 ctrl.isDeployDisabled = args.isDisabled;
             }
+        }
+
+        /**
+         * Sets deploying results
+         * @param {string} value
+         */
+        function setDeployResult(value) {
+            ctrl.deployResult = {
+                status: {
+                    state: value
+                }
+            };
         }
     }
 }());
