@@ -34,7 +34,7 @@
         ctrl.functionEvents = [];
         ctrl.rowIsCollapsed = {
             statusCode: false,
-            headers: true,
+            headers: false,
             body: false,
             deployBlock: false,
             deployBody: true
@@ -66,11 +66,8 @@
                 ctrl.version = $stateParams.functionData;
             }
 
-            ctrl.deployResult = {
-                status: {
-                    state: 'ready'
-                }
-            };
+            setDeployResult('ready');
+
             ctrl.isFunctionDeployed = !$stateParams.isNewFunction;
             ctrl.actions = [
                 {
@@ -229,11 +226,7 @@
         function deployVersion() {
             $rootScope.$broadcast('deploy-function-version');
 
-            ctrl.deployResult = {
-                status: {
-                    state: 'building'
-                }
-            };
+            setDeployResult('building');
 
             if (!lodash.isEmpty($stateParams.functionData)) {
                 ctrl.version = $stateParams.functionData;
@@ -363,6 +356,10 @@
         function onRowCollapse(row) {
             ctrl.rowIsCollapsed[row] = !ctrl.rowIsCollapsed[row];
 
+            if (!ctrl.rowIsCollapsed[row] && row === 'deployBlock') {
+                ctrl.rowIsCollapsed.deployBody = false;
+            }
+
             $timeout(resizeVersionView);
         }
 
@@ -428,6 +425,18 @@
             });
 
             ctrl.selectedFunctionEvent = ctrl.functionEvents[0];
+        }
+
+        /**
+         * Sets deploying results
+         * @param {string} value
+         */
+        function setDeployResult(value) {
+            ctrl.deployResult = {
+                status: {
+                    state: value
+                }
+            };
         }
     }
 }());

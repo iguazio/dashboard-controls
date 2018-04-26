@@ -153,6 +153,7 @@
                 </div>
                 <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.rowIsCollapsed.deployBody">
                     <div class="value-row"
+                         data-ng-if="$ctrl.deployResult.status.logs"
                          data-ng-class="{'in-progress': $ctrl.deployResult.status.state === 'building',
                                          'failed'     : $ctrl.deployResult.status.state === 'error'}">
                         <div data-ng-repeat="log in $ctrl.deployResult.status.logs">{{log.message}}</div>
