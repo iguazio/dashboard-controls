@@ -54,7 +54,8 @@
             event.preventDefault();
 
             $state.go('app.project.functions', {
-                projectId: ctrl.project.metadata.name
+                projectId: ctrl.project.metadata.name,
+                createCancelled: true
             });
         }
 

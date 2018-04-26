@@ -53,17 +53,18 @@
          * @param {Event} event
          */
         function createBinding(event) {
-            ctrl.bindings.push({
-                id: '',
-                name: '',
-                kind: '',
-                attributes: {},
-                ui: {
-                    editModeActive: true,
-                    expanded: true
-                }
-            });
-            event.stopPropagation();
+            if (!isBindingInEditMode()) {
+                ctrl.bindings.push({
+                    id: '',
+                    name: '',
+                    kind: '',
+                    attributes: {},
+                    ui: {
+                        editModeActive: true,
+                    }
+                });
+                event.stopPropagation();
+            }
         }
 
         /**
@@ -74,7 +75,6 @@
             ctrl.handleAction('update', item);
 
             item.ui.editModeActive = false;
-            item.ui.expanded = false;
         }
 
         /**
@@ -86,39 +86,58 @@
             if (actionType === 'delete') {
                 lodash.remove(ctrl.bindings, ['id', selectedItem.id]);
                 lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
-            } else if (actionType === 'edit') {
+            } else if (actionType === 'edit' && !isBindingInEditMode()) {
                 lodash.find(ctrl.bindings, ['id', selectedItem.id]).ui.editModeActive = true;
             } else if (actionType === 'update') {
-                if (!lodash.isEmpty(selectedItem.id)) {
-                    lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
+                var currentBinding = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
+
+                if (angular.isDefined(currentBinding)) {
+                    if (!lodash.isEmpty(selectedItem.id)) {
+                        lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
+                    }
+
+                    var bindingItem = {
+                        kind: selectedItem.kind,
+                        attributes: selectedItem.attributes
+                    };
+
+                    if (angular.isDefined(selectedItem.url)) {
+                        bindingItem.url = selectedItem.url;
+                    }
+
+                    if (angular.isDefined(selectedItem.secret)) {
+                        bindingItem.secret = selectedItem.secret;
+                    }
+
+                    lodash.set(ctrl.version, 'spec.dataBindings.' + selectedItem.name, bindingItem);
+                    selectedItem.id = selectedItem.name;
+
+                    // get bindings list
+                    ctrl.bindings = lodash.map(ctrl.version.spec.dataBindings, function (value, key) {
+                        var bindingsItem = angular.copy(value);
+                        bindingsItem.id = key;
+                        bindingsItem.name = key;
+
+                        return bindingsItem;
+                    });
                 }
-                var bindingItem = {
-                    kind: selectedItem.kind,
-                    attributes: selectedItem.attributes
-                };
-
-                if (angular.isDefined(selectedItem.url)) {
-                    bindingItem.url = selectedItem.url;
-                }
-
-                if (angular.isDefined(selectedItem.secret)) {
-                    bindingItem.secret = selectedItem.secret;
-                }
-
-                lodash.set(ctrl.version, 'spec.dataBindings.' + selectedItem.name, bindingItem);
-                selectedItem.id = selectedItem.name;
-
-                // get bindings list
-                ctrl.bindings = lodash.map(ctrl.version.spec.dataBindings, function (value, key) {
-                    var bindingsItem = angular.copy(value);
-                    bindingsItem.id = key;
-                    bindingsItem.name = key;
-
-                    return bindingsItem;
-                });
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }
+        }
+
+        /**
+         * Check if trigger is in edit mode
+         * @returns {boolean}
+         */
+        function isBindingInEditMode() {
+            var bindingInEditMode = false;
+            ctrl.bindings.forEach(function (binding) {
+                if (binding.ui.editModeActive) {
+                    bindingInEditMode = true;
+                }
+            });
+            return bindingInEditMode;
         }
     }
 }());

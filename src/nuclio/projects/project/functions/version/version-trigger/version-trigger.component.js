@@ -60,11 +60,11 @@
                     attributes: {},
                     ui: {
                         editModeActive: true,
-                        expanded: true
+                        expandable: false
                     }
                 });
+                event.stopPropagation();
             }
-            event.stopPropagation();
         }
 
         /**
@@ -75,7 +75,6 @@
             ctrl.handleAction('update', item);
 
             item.ui.editModeActive = false;
-            item.ui.expanded = false;
         }
 
         /**
@@ -93,7 +92,6 @@
                 if (!isTriggerInEditMode()) {
                     lodash.assign(item.ui, {
                         editModeActive: true,
-                        expanded: true,
                         expandable: false
                     });
                 }

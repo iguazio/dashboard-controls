@@ -143,7 +143,6 @@
             return $q.all(promises).then(function () {
                 if (actionType === 'delete') {
                     lodash.forEach(checkedItems, function (checkedItem) {
-                        lodash.remove(ctrl.projects, ['metadata.name', checkedItem.metadata.name]);
 
                         // unchecks deleted project
                         if (checkedItem.ui.checked) {
