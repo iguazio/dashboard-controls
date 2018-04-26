@@ -2898,6 +2898,21 @@ ncl-projects {
         color: @ncl-dusk-three;
     }
 }
+.action-checkbox-all {
+    text-align: center;
+
+    .check-item {
+        cursor: pointer;
+        color: @checkbox-unchecked;
+        font-size: 16px;
+        line-height: 1;
+        vertical-align: middle;
+
+        &.igz-icon-checkbox-checked {
+            color: @dark-sky-blue;
+        }
+    }
+}
 .action-checkbox {
     line-height: 16px;
     text-align: center;
@@ -2911,21 +2926,6 @@ ncl-projects {
         &.igz-icon-checkbox-unchecked {
             color: @checkbox-unchecked;
         }
-
-        &.igz-icon-checkbox-checked {
-            color: @dark-sky-blue;
-        }
-    }
-}
-.action-checkbox-all {
-    text-align: center;
-
-    .check-item {
-        cursor: pointer;
-        color: @checkbox-unchecked;
-        font-size: 16px;
-        line-height: 1;
-        vertical-align: middle;
 
         &.igz-icon-checkbox-checked {
             color: @dark-sky-blue;
@@ -3767,6 +3767,111 @@ ncl-projects {
     }
 }
 
+.igz-slider-input-block {
+
+    .igz-slider-input-title {
+        float: left;
+        display: table;
+        min-height: 30px;
+        line-height: 1;
+        color: @dusk-three;
+        font-size: 14px;
+        font-weight: 400;
+        text-align: left;
+        cursor: default;
+
+        .igz-slider-input-title-text {
+            display: table-cell;
+            vertical-align: middle;
+
+            .igz-icon-help-round {
+                font-size: 10px;
+            }
+        }
+    }
+
+    // Custom styles for third-party library slider
+    .igz-slider-input-rz-slider {
+        float: left;
+        min-height: 16px;
+        line-height: 16px;
+
+        .rzslider {
+            margin: 0;
+            height: 8px;
+
+            .rz-bar-wrapper {
+                height: auto;
+                margin: 0;
+                padding: 0;
+
+                .rz-bar {
+                    background-color: @slider-bar;
+                    height: 3px;
+
+                    &.rz-selection {
+                        background-color: @dark-sky-blue;
+                    }
+                }
+            }
+
+            .rz-bubble {
+                display: none;
+            }
+
+            .rz-pointer {
+                height: 14px;
+                width: 14px;
+                top: -6px;
+                background-color: @dark-sky-blue;
+                box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.25);
+                outline: 0;
+
+                &:after {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    // Current value
+    .igz-slider-input-current-value {
+        float: left;
+        min-height: 30px;
+        line-height: 30px;
+
+        .igz-slider-input-current-value-text {
+            color: #252d36;
+            font-size: 13px;
+            font-weight: 400;
+            background-color: @white;
+            text-align: right;
+            margin-right: 4px;
+        }
+    }
+
+    // Units dropdown
+    .igz-slider-input-units-dropdown {
+        float: left;
+
+        .default-dropdown {
+            height: 30px;
+
+            .default-dropdown-field {
+                border: none;
+                background-color: @white;
+
+                .dropdown-selected-item {
+                    padding-left: 0;
+                }
+
+                .dropdown-arrow {
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+}
 @unfocused: #5a82a2;
 
 .search-input {
@@ -3941,111 +4046,6 @@ ncl-projects {
             font-size: 10px;
             line-height: 15px;
             padding-right: 8px;
-        }
-    }
-}
-.igz-slider-input-block {
-
-    .igz-slider-input-title {
-        float: left;
-        display: table;
-        min-height: 30px;
-        line-height: 1;
-        color: @dusk-three;
-        font-size: 14px;
-        font-weight: 400;
-        text-align: left;
-        cursor: default;
-
-        .igz-slider-input-title-text {
-            display: table-cell;
-            vertical-align: middle;
-
-            .igz-icon-help-round {
-                font-size: 10px;
-            }
-        }
-    }
-
-    // Custom styles for third-party library slider
-    .igz-slider-input-rz-slider {
-        float: left;
-        min-height: 16px;
-        line-height: 16px;
-
-        .rzslider {
-            margin: 0;
-            height: 8px;
-
-            .rz-bar-wrapper {
-                height: auto;
-                margin: 0;
-                padding: 0;
-
-                .rz-bar {
-                    background-color: @slider-bar;
-                    height: 3px;
-
-                    &.rz-selection {
-                        background-color: @dark-sky-blue;
-                    }
-                }
-            }
-
-            .rz-bubble {
-                display: none;
-            }
-
-            .rz-pointer {
-                height: 14px;
-                width: 14px;
-                top: -6px;
-                background-color: @dark-sky-blue;
-                box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.25);
-                outline: 0;
-
-                &:after {
-                    display: none;
-                }
-            }
-        }
-    }
-
-    // Current value
-    .igz-slider-input-current-value {
-        float: left;
-        min-height: 30px;
-        line-height: 30px;
-
-        .igz-slider-input-current-value-text {
-            color: #252d36;
-            font-size: 13px;
-            font-weight: 400;
-            background-color: @white;
-            text-align: right;
-            margin-right: 4px;
-        }
-    }
-
-    // Units dropdown
-    .igz-slider-input-units-dropdown {
-        float: left;
-
-        .default-dropdown {
-            height: 30px;
-
-            .default-dropdown-field {
-                border: none;
-                background-color: @white;
-
-                .dropdown-selected-item {
-                    padding-left: 0;
-                }
-
-                .dropdown-arrow {
-                    margin-right: 0;
-                }
-            }
         }
     }
 }
@@ -4410,7 +4410,10 @@ ncl-projects {
     }
 
     &.disabled {
-        display: none;
+        background-color: @ncl-pale-grey;
+        border: solid 1px @ncl-pale-grey;
+        box-shadow: none;
+        cursor: default;
     }
 }
 
@@ -4445,6 +4448,13 @@ ncl-projects {
         border-radius: 2px;
         background-color: @ncl-white;
         padding: 8px 16px;
+    }
+
+    &.disabled {
+        background-color: @ncl-pale-grey;
+        border: solid 1px @ncl-pale-grey;
+        box-shadow: none;
+        cursor: default;
     }
 }
 
@@ -4487,7 +4497,10 @@ ncl-projects {
     }
 
     &.disabled {
-        display: none;
+        background-color: @ncl-pale-grey;
+        border: solid 1px @ncl-pale-grey;
+        box-shadow: none;
+        cursor: default;
     }
 }
 .ngdialog {
@@ -5434,6 +5447,19 @@ igz-info-page-content {
         }
     }
 }
+ncl-functions {
+    .search-input-not-found {
+        height: 48px;
+        background-color: @ncl-light-grey;
+        border: solid 1px @ncl-pale-grey;
+        font-size: 14px;
+        color: @ncl-dusk-three;
+    }
+
+    .invisible {
+        visibility: hidden;
+    }
+}
 ncl-breadcrumbs {
     .ncl-header-subtitle {
         color: #898593;
@@ -5448,6 +5474,101 @@ ncl-breadcrumbs {
             color: #474056;
             font-weight: bold;
         }
+    }
+}
+.ncl-collapsing-row {
+    margin-bottom: 9px;
+
+    .title-block.common-table-row {
+        border: 1px solid @ncl-pale-grey;
+        box-shadow: none;
+        min-height: 49px;
+
+        &.collapsed {
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+
+            &:hover {
+                box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+            }
+        }
+
+        &:hover {
+            .common-table-cells-container {
+                background-color: @ncl-white;
+            }
+
+            .actions-menu {
+                visibility: visible;
+                background-color: @ncl-white;
+            }
+        }
+    }
+
+    .row-collapse {
+        width: 40px;
+        justify-content: center;
+        align-items: flex-start;
+        line-height: 51px;
+
+        .collapse-icon {
+            background-color: transparent;
+            position: absolute;
+
+            &.igz-icon-right, &.igz-icon-down {
+                font-size: 12px;
+                .nclDuskThree(0.64);
+                color: @color;
+
+                &:hover {
+                    color: @ncl-dusk-three;
+                }
+            }
+        }
+    }
+
+    .item-row {
+        line-height: 48px;
+        display: flex;
+
+        .item-name {
+            font-weight: bold;
+            width: 192px;
+        }
+
+        .item-class {
+            width: 168px;
+            padding-left: 16px;
+            text-transform: capitalize;
+        }
+
+        .field-label {
+            text-transform: capitalize;
+        }
+    }
+
+    .item-info-row {
+        line-height: 30px;
+    }
+
+    .expanded-item-info-block {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        padding: 10px 0;
+    }
+
+    .collapsed-item-info-block {
+        padding-left: 16px;
+        white-space: nowrap;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .actions-menu {
+        visibility: hidden;
+        align-items: flex-start;
+        line-height: 51px;
     }
 }
 .ncl-breadcrumbs-dropdown {
@@ -5564,101 +5685,6 @@ ncl-breadcrumbs {
                 background-color: @pale-grey-two;
             }
         }
-    }
-}
-.ncl-collapsing-row {
-    margin-bottom: 9px;
-
-    .title-block.common-table-row {
-        border: 1px solid @ncl-pale-grey;
-        box-shadow: none;
-        min-height: 49px;
-
-        &.collapsed {
-            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-
-            &:hover {
-                box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
-            }
-        }
-
-        &:hover {
-            .common-table-cells-container {
-                background-color: @ncl-white;
-            }
-
-            .actions-menu {
-                visibility: visible;
-                background-color: @ncl-white;
-            }
-        }
-    }
-
-    .row-collapse {
-        width: 40px;
-        justify-content: center;
-        align-items: flex-start;
-        line-height: 51px;
-
-        .collapse-icon {
-            background-color: transparent;
-            position: absolute;
-
-            &.igz-icon-right, &.igz-icon-down {
-                font-size: 12px;
-                .nclDuskThree(0.64);
-                color: @color;
-
-                &:hover {
-                    color: @ncl-dusk-three;
-                }
-            }
-        }
-    }
-
-    .item-row {
-        line-height: 48px;
-        display: flex;
-
-        .item-name {
-            font-weight: bold;
-            width: 192px;
-        }
-
-        .item-class {
-            width: 168px;
-            padding-left: 16px;
-            text-transform: capitalize;
-        }
-
-        .field-label {
-            text-transform: capitalize;
-        }
-    }
-
-    .item-info-row {
-        line-height: 30px;
-    }
-
-    .expanded-item-info-block {
-        width: 100%;
-        height: 100%;
-        top: 0;
-        padding: 10px 0;
-    }
-
-    .collapsed-item-info-block {
-        padding-left: 16px;
-        white-space: nowrap;
-        width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .actions-menu {
-        visibility: hidden;
-        align-items: flex-start;
-        line-height: 51px;
     }
 }
 .ncl-edit-item {
@@ -5810,6 +5836,20 @@ ncl-breadcrumbs {
         }
     }
 }
+.ncl-monaco {
+    > div {
+        height: 100%;
+        border: 1px solid #e1e0e5
+    }
+
+    .monaco-editor {
+        .monaco-editor-background {
+            margin-left: 20px;
+        }
+    }
+}
+
+
 .ncl-navigation-tabs {
     background: @pale-white;
     height: 55px;
@@ -5835,20 +5875,6 @@ ncl-breadcrumbs {
         }
     }
 }
-.ncl-monaco {
-    > div {
-        height: 100%;
-        border: 1px solid #e1e0e5
-    }
-
-    .monaco-editor {
-        .monaco-editor-background {
-            margin-left: 20px;
-        }
-    }
-}
-
-
 .ncl-search-input {
     position: relative;
     color: @ncl-silver;
@@ -5917,19 +5943,6 @@ ncl-breadcrumbs {
 
     input::-ms-clear {
         display: none;
-    }
-}
-ncl-functions {
-    .search-input-not-found {
-        height: 48px;
-        background-color: @ncl-light-grey;
-        border: solid 1px @ncl-pale-grey;
-        font-size: 14px;
-        color: @ncl-dusk-three;
-    }
-
-    .invisible {
-        visibility: hidden;
     }
 }
 .new-function-wrapper {
@@ -6244,7 +6257,6 @@ ncl-functions {
         }
 
         .button-dropdown {
-            min-width: 100%;
             width: 100%;
             margin: 0;
             background-color: @ncl-white;
@@ -6490,7 +6502,7 @@ ncl-functions {
         }
     }
 }
-.test-event-wrapper {
+.function-event-wrapper {
     width: 600px;
     margin-bottom: -23px;
 

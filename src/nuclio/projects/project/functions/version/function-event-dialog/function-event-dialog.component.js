@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('iguazio.dashboard-controls')
-        .component('nclTestEventDialog', {
+        .component('nclFunctionEventDialog', {
             bindings: {
                 closeDialog: '&',
                 createEvent: '<',
@@ -10,11 +10,11 @@
                 version: '<'
 
             },
-            templateUrl: 'nuclio/projects/project/functions/version/test-event-dialog/test-event-dialog.tpl.html',
-            controller: NclTestEventDialogController
+            templateUrl: 'nuclio/projects/project/functions/version/function-event-dialog/function-event-dialog.tpl.html',
+            controller: NclFunctionEventDialogController
         });
 
-    function NclTestEventDialogController($scope, lodash, EventHelperService, NuclioEventService) {
+    function NclFunctionEventDialogController($timeout, lodash, EventHelperService, NuclioEventService) {
         var ctrl = this;
 
         ctrl.inputModelOptions = {
@@ -23,10 +23,11 @@
             }
         };
         ctrl.buttonText = 'Create';
-        ctrl.errorText = 'Error occurred while creating the new test event.';
-        ctrl.titleText = 'Create test event';
+        ctrl.errorText = 'Error occurred while creating the new function event.';
+        ctrl.titleText = 'Create function event';
         ctrl.isLoadingState = false;
         ctrl.isDeployFailed = false;
+        ctrl.isFormChanged = false;
         ctrl.methods = [
             {
                 id: 'POST',
@@ -75,6 +76,7 @@
         ctrl.applyChanges = applyChanges;
         ctrl.closeEventDialog = closeEventDialog;
         ctrl.inputValueCallback = inputValueCallback;
+        ctrl.onChangeBody = onChangeBody;
         ctrl.onSelectHeader = onSelectHeader;
         ctrl.onSelectMethod = onSelectMethod;
 
@@ -89,12 +91,11 @@
 
             // check if dialog was opened to create or edit test event.
             if (!ctrl.createEvent) {
-                ctrl.titleText = 'Edit test event';
+                ctrl.titleText = 'Edit function event';
                 ctrl.buttonText = 'Apply';
-                ctrl.errorText = 'Error occurred while updating the test event.';
+                ctrl.errorText = 'Error occurred while updating the function event.';
             }
 
-            ctrl.selectedEvent = ctrl.createEvent ? {} : ctrl.selectedEvent;
             lodash.defaultsDeep(ctrl.selectedEvent, {
                 metadata: {
                     namespace: lodash.get(ctrl.version, 'metadata.namespace'),
@@ -122,7 +123,6 @@
             ctrl.selectedHeader = lodash.find(ctrl.headers, ['id' , lodash.get(ctrl.selectedEvent, 'spec.attributes.headers.Content-Type')]);
         }
 
-
         //
         // Public methods
         //
@@ -132,19 +132,19 @@
          * @param {Event} event - JS event object
          */
         function applyChanges(event) {
+            ctrl.functionEventForm.$submitted = true;
 
-            ctrl.testEventForm.$submitted = true;
-
-            if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) && ctrl.testEventForm.$valid) {
+            if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) &&
+                (ctrl.functionEventForm.$valid && ctrl.isFormChanged)) {
 
                 // show "Loading..." button
                 ctrl.isLoadingState = true;
 
                 NuclioEventService.deployEvent(ctrl.workingCopy, ctrl.createEvent)
-                    .then(function (response) {
+                    .then(function () {
                         ctrl.isDeployFailed = false;
 
-                        ctrl.closeDialog({isEventDeployed: true})
+                        ctrl.closeDialog({isEventDeployed: true});
                     })
                     .catch(function () {
                         ctrl.isDeployFailed = true;
@@ -158,7 +158,7 @@
          */
         function closeEventDialog() {
             if (!ctrl.isLoadingState) {
-                ctrl.closeDialog({isEventDeployed: false})
+                ctrl.closeDialog({isEventDeployed: false});
             }
         }
 
@@ -169,23 +169,53 @@
          */
         function inputValueCallback(newData, field) {
             lodash.set(ctrl.workingCopy, 'spec.displayName', newData);
+
+            $timeout(function () {
+
+                // compare original object and working object to get know if fields was changed and check is form valid
+                ctrl.isFormChanged = !lodash.isEqual(ctrl.workingCopy, ctrl.selectedEvent) && lodash.isEmpty(ctrl.functionEventForm.$error);
+            });
         }
 
         /**
          * Callback from method drop-down
+         * Sets new selected method
          * @param {Object} item - new selected item
          */
         function onSelectMethod(item) {
             lodash.set(ctrl.workingCopy, 'spec.attributes.method', item.id);
+
+            $timeout(function () {
+
+                // compare original object and working object to get know if fields was changed and check is form valid
+                ctrl.isFormChanged = !lodash.isEqual(ctrl.workingCopy, ctrl.selectedEvent) && lodash.isEmpty(ctrl.functionEventForm.$error);
+            });
         }
 
         /**
          * Callback from Content Type drop-down
+         * Sets new selected header
          * @param {Object} item - new selected item
          */
         function onSelectHeader(item) {
             lodash.set(ctrl.workingCopy, 'spec.attributes.headers.Content-Type', item.id);
+
+            $timeout(function () {
+
+                // compare original object and working object to get know if fields was changed and check is form valid
+                ctrl.isFormChanged = !lodash.isEqual(ctrl.workingCopy, ctrl.selectedEvent) && lodash.isEmpty(ctrl.functionEventForm.$error);
+            });
         }
 
+        /**
+         * Callback from body field.
+         */
+        function onChangeBody() {
+            $timeout(function () {
+
+                // compare original object and working object to get know if fields was changed and check is form valid
+                ctrl.isFormChanged = !lodash.isEqual(ctrl.workingCopy, ctrl.selectedEvent) && lodash.isEmpty(ctrl.functionEventForm.$error);
+            });
+        }
     }
 }());

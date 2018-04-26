@@ -49,8 +49,6 @@
                 'Content-Type': 'application/json'
             };
 
-            console.log(eventData);
-
             var config = {
                 data: eventData,
                 method: method,
@@ -71,7 +69,6 @@
                 'x-nuclio-function-event-namespace': functionData.metadata.namespace,
                 'x-nuclio-function-name': functionData.metadata.name
             };
-            console.log(headers);
 
             var config = {
                 method: 'get',
@@ -101,7 +98,7 @@
                 url: NuclioClientService.buildUrlWithPath('function_invocations')
             };
 
-            // return NuclioClientService.makeRequest(config);
+            return NuclioClientService.makeRequest(config);
         }
     }
 }());

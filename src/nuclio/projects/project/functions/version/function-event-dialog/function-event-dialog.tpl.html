@@ -1,4 +1,4 @@
-<div class="test-event-wrapper">
+<div class="function-event-wrapper">
     <div class="header">
         <div class="title">{{$ctrl.titleText}}</div>
         <div class="close-button igz-icon-close"
@@ -6,7 +6,7 @@
     </div>
 
     <div class="content">
-        <form name="$ctrl.testEventForm" class="event-form">
+        <form name="$ctrl.functionEventForm" class="event-form">
             <div class="field-wrapper">
                 <div class="field-label">Name</div>
                 <div class="field-content">
@@ -15,7 +15,7 @@
                                                 data-input-model-options="$ctrl.inputModelOptions"
                                                 data-input-value="$ctrl.workingCopy.spec.displayName"
                                                 data-validation-is-required="true"
-                                                data-form-object="$ctrl.testEventForm"
+                                                data-form-object="$ctrl.functionEventForm"
                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, 'name')"
                                                 data-placeholder-text="Type a name of event">
                     </igz-validating-input-field>
@@ -28,7 +28,7 @@
                                           data-selected-item="$ctrl.selectedMethod"
                                           data-item-select-callback="$ctrl.onSelectMethod(item, isItemChanged, field)"
                                           data-is-required="true"
-                                          data-form-object="$ctrl.testEventForm">
+                                          data-form-object="$ctrl.functionEventForm">
                     </igz-default-dropdown>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                                           data-selected-item="$ctrl.selectedHeader"
                                           data-item-select-callback="$ctrl.onSelectHeader(item, isItemChanged, field)"
                                           data-is-required="true"
-                                          data-form-object="$ctrl.testEventForm">
+                                          data-form-object="$ctrl.functionEventForm">
                     </igz-default-dropdown>
                 </div>
             </div>
@@ -48,7 +48,8 @@
                 <div class="field-content">
                     <textarea class="event-body"
                               data-ng-model="$ctrl.workingCopy.spec.body"
-                              data-form-object="$ctrl.testEventForm"
+                              data-ng-change="$ctrl.onChangeBody()"
+                              data-form-object="$ctrl.functionEventForm"
                               placeholder="Type a body of event"></textarea>
                 </div>
             </div>
@@ -62,6 +63,7 @@
         <div class="ncl-secondary-button" data-ng-click="$ctrl.closeEventDialog()">Cancel</div>
         <div class="ncl-primary-button"
              tabindex="0"
+             data-ng-class="{'disabled' : !$ctrl.isFormChanged}"
              data-ng-click="$ctrl.applyChanges()"
              data-ng-keydown="$ctrl.applyChanges($event)"
              data-ng-hide="$ctrl.isLoadingState">
