@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationLabelsController
         });
 
-    function NclVersionConfigurationLabelsController($element, $timeout, lodash, PreventDropdownCutOffService) {
+    function NclVersionConfigurationLabelsController($element, $rootScope, $timeout, lodash, PreventDropdownCutOffService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {
@@ -46,7 +46,8 @@
                             value: value,
                             ui: {
                                 editModeActive: false,
-                                isFormValid: false
+                                isFormValid: false,
+                                name: 'label'
                             }
                         }
                     }
@@ -79,7 +80,8 @@
                     value: '',
                     ui: {
                         editModeActive: true,
-                        isFormValid: false
+                        isFormValid: false,
+                        name: 'label'
                     }
                 });
                 event.stopPropagation();
@@ -137,6 +139,9 @@
 
             var newLabels = {};
             lodash.forEach(ctrl.labels, function (label) {
+                if (!label.ui.isFormValid) {
+                    $rootScope.$broadcast('change-state-deploy-button', {component: label.ui.name, isDisabled: true});
+                }
                 newLabels[label.name] = label.value;
             });
             newLabels = lodash.merge(newLabels, nuclioLabels);

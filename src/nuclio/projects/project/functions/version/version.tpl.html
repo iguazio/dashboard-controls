@@ -52,7 +52,7 @@
             </div>
             <div class="actions-bar-left actions-buttons-block">
                 <button class="ncl-new-entity-button"
-                        data-ng-class="{'disabled': $ctrl.deployResult.status.state === 'building'}"
+                        data-ng-class="{'disabled': $ctrl.deployResult.status.state === 'building' || $ctrl.isDeployDisabled}"
                         data-ng-click="$ctrl.deployResult.status.state === 'building' || $ctrl.deployVersion()"
                         data-tooltip="Deploy a version"
                         data-tooltip-placement="bottom"

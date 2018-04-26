@@ -10,12 +10,13 @@
             controller: NclVersionConfigurationResourcesController
         });
 
-    function NclVersionConfigurationResourcesController($timeout, lodash, ConfigService) {
+    function NclVersionConfigurationResourcesController($timeout, $rootScope, lodash, ConfigService) {
         var ctrl = this;
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
 
         ctrl.$onInit = onInit;
+        ctrl.$onDestroy = onDestroy;
 
         ctrl.numberInputCallback = numberInputCallback;
 
@@ -76,6 +77,9 @@
             ctrl.minReplicas = lodash.chain(ctrl.version).get('spec.minReplicas').defaultTo(1).value();
             ctrl.maxReplicas = lodash.chain(ctrl.version).get('spec.maxReplicas').defaultTo(1).value();
         }
+        function onDestroy() {
+            $rootScope.$broadcast('change-state-deploy-button', {component: 'resources', isDisabled: false});
+        }
 
         //
         // Public methods
@@ -92,6 +96,9 @@
                 if (ctrl.resourcesForm.$valid) {
                     lodash.set(ctrl.version.spec, 'minReplicas', ctrl.minReplicas);
                     lodash.set(ctrl.version.spec, 'maxReplicas', ctrl.maxReplicas);
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'resources', isDisabled: false})
+                } else {
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'resources', isDisabled: true})
                 }
             })
         }

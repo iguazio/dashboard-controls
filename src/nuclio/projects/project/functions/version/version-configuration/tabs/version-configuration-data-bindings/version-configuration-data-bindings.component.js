@@ -10,13 +10,14 @@
             controller: NclVersionConfigurationDataBindingsController
         });
 
-    function NclVersionConfigurationDataBindingsController($stateParams, lodash, DialogsService) {
+    function NclVersionConfigurationDataBindingsController($rootScope, $stateParams, lodash, DialogsService) {
         var ctrl = this;
 
         ctrl.isCreateModeActive = false;
         ctrl.bindings = [];
 
         ctrl.$onInit = onInit;
+        ctrl.$onDestroy = onDestroy;
 
         ctrl.createBinding = createBinding;
         ctrl.editBindingCallback = editBindingCallback;
@@ -44,6 +45,13 @@
             });
         }
 
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            $rootScope.$broadcast('change-state-deploy-button', {component: 'binding', isDisabled: false});
+        }
+
         //
         // Public methods
         //
@@ -64,6 +72,7 @@
                     }
                 });
                 event.stopPropagation();
+                $rootScope.$broadcast('change-state-deploy-button', {component: 'binding', isDisabled: true});
             }
         }
 
@@ -75,6 +84,8 @@
             ctrl.handleAction('update', item);
 
             item.ui.editModeActive = false;
+
+            $rootScope.$broadcast('change-state-deploy-button', {component: 'binding', isDisabled: false});
         }
 
         /**

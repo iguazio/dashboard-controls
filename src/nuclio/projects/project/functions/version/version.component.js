@@ -40,6 +40,7 @@
             deployBody: true
         };
 
+        ctrl.isDeployDisabled = false;
 
         ctrl.$onInit = onInit;
 
@@ -108,6 +109,7 @@
             }
             ctrl.functionEvents = [];
             ctrl.selectedFunctionEvent = lodash.isEmpty(ctrl.functionEvents) ? null : ctrl.functionEvents[0];
+            ctrl.requiredComponents = {};
 
             $q.all({
                 project: NuclioProjectsDataService.getProject($stateParams.projectId),
@@ -131,6 +133,8 @@
             }).catch(function () {
                 DialogsService.alert('Oops: Unknown error occurred');
             });
+
+            $scope.$on('change-state-deploy-button', changeStateDeployButton);
         }
 
         //
@@ -224,26 +228,28 @@
          * Deploys changed version
          */
         function deployVersion() {
-            $rootScope.$broadcast('deploy-function-version');
+            if (!ctrl.isDeployDisabled) {
+                $rootScope.$broadcast('deploy-function-version');
 
-            setDeployResult('building');
+                setDeployResult('building');
 
-            if (!lodash.isEmpty($stateParams.functionData)) {
-                ctrl.version = $stateParams.functionData;
+                if (!lodash.isEmpty($stateParams.functionData)) {
+                    ctrl.version = $stateParams.functionData;
+                }
+
+                ctrl.version = lodash.omit(ctrl.version, 'status');
+
+                ctrl.isTestResultShown = false;
+
+                ctrl.isDeployResultShown = true;
+                lodash.assign(ctrl.rowIsCollapsed, {
+                    deployBlock: true,
+                    deployBody: false
+                });
+
+                NuclioFunctionsDataService.updateFunction(ctrl.version, ctrl.project.metadata.name)
+                    .then(pullFunctionState);
             }
-
-            ctrl.version = lodash.omit(ctrl.version, 'status');
-
-            ctrl.isTestResultShown = false;
-
-            ctrl.isDeployResultShown = true;
-            lodash.assign(ctrl.rowIsCollapsed, {
-                deployBlock: true,
-                deployBody: false
-            });
-
-            NuclioFunctionsDataService.updateFunction(ctrl.version, ctrl.project.metadata.name)
-                .then(pullFunctionState);
         }
 
         /**
@@ -436,6 +442,30 @@
                     state: value
                 }
             };
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Disable deploy button if forms invalid
+         * @param {object} event
+         * @param {object} args[
+         */
+        function changeStateDeployButton(event, args) {
+            if (args.component) {
+                ctrl.requiredComponents[args.component] = args.isDisabled;
+                ctrl.isDeployDisabled = false;
+
+                lodash.forOwn(ctrl.requiredComponents, function (value, key) {
+                    if (ctrl.requiredComponents[key] === true) {
+                        ctrl.isDeployDisabled = true;
+                    }
+                });
+            } else {
+                ctrl.isDeployDisabled = args.isDisabled;
+            }
         }
     }
 }());

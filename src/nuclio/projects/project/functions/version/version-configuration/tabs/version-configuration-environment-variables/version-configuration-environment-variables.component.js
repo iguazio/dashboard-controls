@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationEnvironmentVariablesController
         });
 
-    function NclVersionConfigurationEnvironmentVariablesController($element, $stateParams, lodash, PreventDropdownCutOffService) {
+    function NclVersionConfigurationEnvironmentVariablesController($element, $rootScope, $stateParams, lodash, PreventDropdownCutOffService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {
@@ -45,7 +45,8 @@
                 .map(function (variable) {
                     variable.ui = {
                         editModeActive: false,
-                        isFormValid: true
+                        isFormValid: true,
+                        name: 'variable'
                     };
 
                     return variable;
@@ -76,7 +77,8 @@
                     value: '',
                     ui: {
                         editModeActive: true,
-                        isFormValid: false
+                        isFormValid: false,
+                        name: 'variable'
                     }
                 });
                 event.stopPropagation();
@@ -119,11 +121,14 @@
          * Updates function`s variables
          */
         function updateVariables() {
-            ctrl.variables = lodash.map(ctrl.variables, function (variable) {
+            var variables = lodash.map(ctrl.variables, function (variable) {
+                if (!variable.ui.isFormValid) {
+                    $rootScope.$broadcast('change-state-deploy-button', {component: variable.ui.name, isDisabled: true})
+                }
                 return lodash.omit(variable, 'ui');
             });
 
-            lodash.set(ctrl.version, 'spec.env', ctrl.variables);
+            lodash.set(ctrl.version, 'spec.env', variables);
         }
     }
 }());

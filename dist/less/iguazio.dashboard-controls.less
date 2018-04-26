@@ -2936,154 +2936,6 @@ ncl-projects {
         }
     }
 }
-.igz-action-menu {
-    opacity: 1;
-    position: relative;
-
-    .menu-button {
-        color: @icon-color-secondary;
-        cursor: pointer;
-        font-size: 18px;
-        height: 19px;
-        text-align: center;
-        transition: @igz-basic-transition-color;
-        width: 30px;
-
-        &.active,
-        &:hover {
-            color: @dusk-three;
-        }
-    }
-
-    .menu-dropdown {
-        visibility: hidden;
-        background-color: @white;
-        border: 1px solid @primary-border;
-        border-radius: 2px;
-        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
-        color: black;
-        font-family: @font-family-sans-serif;
-        font-size: 13px;
-        font-weight: 500;
-        line-height: normal;
-        margin-top: 9px;
-        min-width: 129px;
-        padding: 8px 0 0;
-        position: absolute;
-        right: 3px;
-        z-index: 10;
-
-        .actions-list {
-            cursor: default;
-            padding-bottom: 8px;
-
-            .tooltip {
-                // !important used to overwrite third-party's inline style
-                display: none !important;
-            }
-        }
-
-        .igz-action-item {
-            color: @dusk-three;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 400;
-            line-height: 32px;
-            padding: 0 18px;
-            text-align: left;
-            white-space: nowrap;
-
-            &:hover,
-            &.subtemplate-show {
-                background-color: @pale-grey-two;
-            }
-
-            &.inactive {
-                color: @icon-color-base;
-                pointer-events: none;
-            }
-
-            .action-icon {
-                .duskThree(0.64);
-                color: @color;
-                display: inline-block;
-                padding-right: 14px;
-
-                &:before {
-                    font-size: 16px;
-                    position: relative;
-                    text-align: center;
-                    width: 20px;
-                    top: 2px;
-                }
-            }
-
-            .action-label {
-                display: inline-block;
-            }
-        }
-
-        .shortcuts-list {
-            padding-bottom: 8px;
-
-            &:not(.first-block) {
-                border-top: 1px solid #f5f5f5;
-                padding-top: 8px;
-            }
-        }
-
-        .shortcuts-header {
-            font-family: @font-family-sans-serif;
-            color: #d9d9d9;
-            line-height: 24px;
-            font-size: 13px;
-            font-weight: 400;
-            padding: 0 15px 4px 22px;
-            text-align: left;
-        }
-
-        .shortcuts-item {
-            color: @dusk-three;
-            cursor: pointer;
-            font-weight: 400;
-            white-space: nowrap;
-            line-height: 32px;
-            padding: 0 26px 0 32px;
-            text-align: left;
-            transition: @igz-basic-transition-color;
-
-            &:hover {
-                background-color: @pale-grey-two;
-            }
-
-        }
-
-    }
-
-    &.small-action-menu {
-        .menu-button {
-            .duskThree(0.64);
-            color: @color;
-            width: auto;
-            font-size: 12px;
-            display: inline-block;
-            height: auto;
-            margin: 0;
-            vertical-align: sub;
-        }
-
-        .menu-dropdown {
-            margin: 0;
-        }
-    }
-
-    .upward-menu {
-        visibility: visible;
-        top: -65px;
-        right: 15px;
-    }
-}
-
 .igz-action-panel {
     left: 0;
     line-height: 1;
@@ -3253,6 +3105,154 @@ ncl-projects {
         position: fixed;
         margin: -2px 0 0 -1px;
         z-index: 10;
+    }
+}
+
+.igz-action-menu {
+    opacity: 1;
+    position: relative;
+
+    .menu-button {
+        color: @icon-color-secondary;
+        cursor: pointer;
+        font-size: 18px;
+        height: 19px;
+        text-align: center;
+        transition: @igz-basic-transition-color;
+        width: 30px;
+
+        &.active,
+        &:hover {
+            color: @dusk-three;
+        }
+    }
+
+    .menu-dropdown {
+        visibility: hidden;
+        background-color: @white;
+        border: 1px solid @primary-border;
+        border-radius: 2px;
+        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+        color: black;
+        font-family: @font-family-sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: normal;
+        margin-top: 9px;
+        min-width: 129px;
+        padding: 8px 0 0;
+        position: absolute;
+        right: 3px;
+        z-index: 10;
+
+        .actions-list {
+            cursor: default;
+            padding-bottom: 8px;
+
+            .tooltip {
+                // !important used to overwrite third-party's inline style
+                display: none !important;
+            }
+        }
+
+        .igz-action-item {
+            color: @dusk-three;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 32px;
+            padding: 0 18px;
+            text-align: left;
+            white-space: nowrap;
+
+            &:hover,
+            &.subtemplate-show {
+                background-color: @pale-grey-two;
+            }
+
+            &.inactive {
+                color: @icon-color-base;
+                pointer-events: none;
+            }
+
+            .action-icon {
+                .duskThree(0.64);
+                color: @color;
+                display: inline-block;
+                padding-right: 14px;
+
+                &:before {
+                    font-size: 16px;
+                    position: relative;
+                    text-align: center;
+                    width: 20px;
+                    top: 2px;
+                }
+            }
+
+            .action-label {
+                display: inline-block;
+            }
+        }
+
+        .shortcuts-list {
+            padding-bottom: 8px;
+
+            &:not(.first-block) {
+                border-top: 1px solid #f5f5f5;
+                padding-top: 8px;
+            }
+        }
+
+        .shortcuts-header {
+            font-family: @font-family-sans-serif;
+            color: #d9d9d9;
+            line-height: 24px;
+            font-size: 13px;
+            font-weight: 400;
+            padding: 0 15px 4px 22px;
+            text-align: left;
+        }
+
+        .shortcuts-item {
+            color: @dusk-three;
+            cursor: pointer;
+            font-weight: 400;
+            white-space: nowrap;
+            line-height: 32px;
+            padding: 0 26px 0 32px;
+            text-align: left;
+            transition: @igz-basic-transition-color;
+
+            &:hover {
+                background-color: @pale-grey-two;
+            }
+
+        }
+
+    }
+
+    &.small-action-menu {
+        .menu-button {
+            .duskThree(0.64);
+            color: @color;
+            width: auto;
+            font-size: 12px;
+            display: inline-block;
+            height: auto;
+            margin: 0;
+            vertical-align: sub;
+        }
+
+        .menu-dropdown {
+            margin: 0;
+        }
+    }
+
+    .upward-menu {
+        visibility: visible;
+        top: -65px;
+        right: 15px;
     }
 }
 
@@ -5588,6 +5588,50 @@ ncl-breadcrumbs {
         }
     }
 }
+.ncl-edit-item {
+    width: 100%;
+    padding: 6px 0;
+
+    .title-field-row {
+        display: flex;
+
+        .name-field {
+            margin-right: 14px;
+            width: 178px;
+
+            .error {
+                color: @ncl-darkish-pink;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+        }
+
+        .class-field {
+            margin-right: 14px;
+            width: 154px;
+        }
+
+        &:last-child {
+            padding-bottom: 0;
+        }
+    }
+
+    .attribute-field {
+        margin-right: 14px;
+        padding: 8px 0 6px;
+
+        .field-label {
+            text-transform: capitalize;
+        }
+    }
+
+    .no-class-selected {
+        line-height: 48px;
+        .nclDuskThree(0.64);
+        color: @color;
+    }
+}
+
 .ncl-collapsing-row {
     margin-bottom: 9px;
 
@@ -5683,50 +5727,6 @@ ncl-breadcrumbs {
         line-height: 51px;
     }
 }
-.ncl-edit-item {
-    width: 100%;
-    padding: 6px 0;
-
-    .title-field-row {
-        display: flex;
-
-        .name-field {
-            margin-right: 14px;
-            width: 178px;
-
-            .error {
-                color: @ncl-darkish-pink;
-                font-size: 12px;
-                white-space: nowrap;
-            }
-        }
-
-        .class-field {
-            margin-right: 14px;
-            width: 154px;
-        }
-
-        &:last-child {
-            padding-bottom: 0;
-        }
-    }
-
-    .attribute-field {
-        margin-right: 14px;
-        padding: 8px 0 6px;
-
-        .field-label {
-            text-transform: capitalize;
-        }
-    }
-
-    .no-class-selected {
-        line-height: 48px;
-        .nclDuskThree(0.64);
-        color: @color;
-    }
-}
-
 .ncl-key-value-input {
     .input-wrapper {
         width: 100%;
@@ -5956,7 +5956,6 @@ ncl-functions {
 }
 .new-function-wrapper {
     position: relative;
-    min-width: 1650px;
 
     .new-function-header {
         width: 100%;
@@ -5973,12 +5972,10 @@ ncl-functions {
 
         .new-function-type {
             display: flex;
+            justify-content: center;
 
             .function-from-scratch-wrapper {
-                width: 50%;
-                display: flex;
-                justify-content: flex-end;
-                padding-right: 48px;
+                padding: 0 24px;
 
                 .function-from-scratch {
                     width: 503px;
@@ -6043,6 +6040,8 @@ ncl-functions {
             }
 
             .function-from-template-wrapper {
+                padding: 0 24px;
+
                 .function-from-template {
                     width: 503px;
                     height: 254px;
@@ -6470,15 +6469,12 @@ ncl-functions {
     }
 
     .title-wrapper {
-        width: 50%;
-        padding-right: 48px;
-        text-align: right;
+        margin-left: 50px;
 
         .title {
             color: @ncl-dusk-three;
             font-size: 16px;
             font-weight: bold;
-            margin-right: 570px;
         }
     }
 
@@ -6490,12 +6486,10 @@ ncl-functions {
 
             .function-name-wrapper {
                 width: 50%;
-                padding-right: 48px;
+                padding-right: 24px;
+                padding-left: 80px;
 
                 .function-name {
-                    width: 687px;
-                    float: right;
-
                     .input-label {
                         font-size: 14px;
                         font-weight: 600;
@@ -6510,10 +6504,10 @@ ncl-functions {
 
             .function-runtime-wrapper {
                 width: 50%;
+                padding-left: 24px;
+                padding-right: 10%;
 
                 .function-runtime {
-                    width: 552px;
-
                     .input-label {
                         font-size: 14px;
                         font-weight: 600;
@@ -6552,8 +6546,7 @@ ncl-functions {
             width: 50%;
             display: flex;
             justify-content: flex-end;
-            padding-right: 37px;
-            margin: 0 10px 8px 0;
+            margin-bottom: 8px;
 
             .function-name {
                 width: 100%;

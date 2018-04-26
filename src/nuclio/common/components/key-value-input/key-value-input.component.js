@@ -15,7 +15,7 @@
             controller: NclKeyValueInputController
         });
 
-    function NclKeyValueInputController($document, $element, $scope, lodash, EventHelperService) {
+    function NclKeyValueInputController($document, $element, $rootScope, $scope, lodash, EventHelperService) {
         var ctrl = this;
 
         ctrl.data = {};
@@ -57,6 +57,8 @@
         function onDestroy() {
             $document.off('click', saveChanges);
             $document.off('keypress', saveChanges);
+
+            $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.data.ui.name, isDisabled: false});
         }
 
         //
@@ -242,8 +244,11 @@
                 if (ctrl.keyValueInputForm.$valid) {
                     ctrl.data.ui = {
                         editModeActive: false,
-                        isFormValid: true
+                        isFormValid: true,
+                        name: ctrl.data.ui.name
                     };
+                    $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.data.ui.name, isDisabled: false});
+
                     $scope.$evalAsync(function () {
                         ctrl.editMode = false;
 
@@ -252,6 +257,13 @@
 
                         ctrl.changeDataCallback({newData: ctrl.data, index: ctrl.itemIndex});
                     });
+                } else {
+                    ctrl.data.ui = {
+                        editModeActive: true,
+                        isFormValid: false,
+                        name: ctrl.data.ui.name
+                    };
+                    $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.data.ui.name, isDisabled: true});
                 }
             }
         }
