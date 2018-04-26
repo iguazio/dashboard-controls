@@ -25,6 +25,7 @@
         ctrl.$onDestroy = onDestroy;
 
         ctrl.closeDropdown = closeDropdown;
+        ctrl.onEditInput = onEditInput;
         ctrl.getInputValue = getInputValue;
         ctrl.getType = getType;
         ctrl.inputValueCallback = inputValueCallback;
@@ -116,16 +117,8 @@
          * @param {string} actionType - a type of action
          */
         function onFireAction(actionType) {
-            if (actionType === 'edit') {
-                ctrl.editMode = true;
-
-                $document.on('click', saveChanges);
-                $document.on('keypress', saveChanges);
-            } else {
-                ctrl.actionHandlerCallback({actionType: actionType, index: ctrl.itemIndex});
-
-                ctrl.editMode = false;
-            }
+            ctrl.actionHandlerCallback({actionType: actionType, index: ctrl.itemIndex});
+            ctrl.editMode = false;
         }
 
         /**
@@ -174,6 +167,16 @@
             parent.css({'padding-bottom': '0px'});
         }
 
+        /**
+         * Enables edit mode
+         */
+        function onEditInput() {
+            ctrl.editMode = true;
+
+            $document.on('click', saveChanges);
+            $document.on('keypress', saveChanges);
+        }
+
         //
         // Private method
         //
@@ -205,7 +208,7 @@
          */
         function getValueField() {
             return !ctrl.useType || ctrl.getType() === 'value' ? 'value' :
-                ctrl.getType() === 'configmap'              ? 'valueFrom.configMapKeyRef' : 'valueFrom.secretKeyRef';
+                   ctrl.getType() === 'configmap'              ? 'valueFrom.configMapKeyRef' : 'valueFrom.secretKeyRef';
         }
 
         /**
@@ -214,12 +217,6 @@
          */
         function initActions() {
             return [
-                {
-                    label: 'Edit',
-                    id: 'edit',
-                    icon: 'igz-icon-edit',
-                    active: true
-                },
                 {
                     label: 'Delete',
                     id: 'delete',
