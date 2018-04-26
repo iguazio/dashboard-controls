@@ -154,9 +154,26 @@
                         id: 'v3io',
                         name: 'V3io',
                         url: 'string',
+                        secret: 'string'
+                    },
+                    {
+                        id: 'eventhub',
+                        name: 'Eventhub',
                         attributes: [
                             {
-                                name: 'secret',
+                                name: 'sharedAccessKeyName',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'sharedAccessKeyValue',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'namespace',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'eventHubName',
                                 pattern: 'string'
                             }
                         ]

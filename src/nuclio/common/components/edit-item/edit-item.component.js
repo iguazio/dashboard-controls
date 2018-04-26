@@ -111,7 +111,7 @@
          * @param {Object} item - item class\kind
          */
         function onSelectClass(item) {
-            ctrl.item = lodash.omit(ctrl.item, ['maxWorkers', 'url']);
+            ctrl.item = lodash.omit(ctrl.item, ['maxWorkers', 'url', 'secret']);
 
             var nameDirty = ctrl.editItemForm.itemName.$dirty;
             var nameInvalid = ctrl.editItemForm.itemName.$invalid;
@@ -126,6 +126,10 @@
 
             if (!lodash.isNil(item.maxWorkers)) {
                 ctrl.item.maxWorkers = '';
+            }
+
+            if (!lodash.isNil(item.secret)) {
+                ctrl.item.secret = '';
             }
 
             lodash.each(item.attributes, function (attribute) {

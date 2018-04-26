@@ -101,6 +101,10 @@
                     bindingItem.url = selectedItem.url;
                 }
 
+                if (angular.isDefined(selectedItem.secret)) {
+                    bindingItem.secret = selectedItem.secret;
+                }
+
                 lodash.set(ctrl.version, 'spec.dataBindings.' + selectedItem.name, bindingItem);
                 selectedItem.id = selectedItem.name;
 
