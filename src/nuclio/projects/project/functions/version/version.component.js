@@ -356,7 +356,7 @@
         function onRowCollapse(row) {
             ctrl.rowIsCollapsed[row] = !ctrl.rowIsCollapsed[row];
 
-            if (!ctrl.rowIsCollapsed[row] && row === 'deployBlock') {
+            if (!ctrl.rowIsCollapsed.deployBlock) {
                 ctrl.rowIsCollapsed.deployBody = false;
             }
 
