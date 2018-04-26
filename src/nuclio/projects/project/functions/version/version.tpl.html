@@ -9,37 +9,45 @@
                                       data-placeholder="ACTIONS"
                                       data-values-array="$ctrl.actions"
                                       data-selected-item="$ctrl.action"
+                                      data-is-disabled="!$ctrl.isFunctionDeployed"
                                       data-item-select-callback="$ctrl.onSelectAction(item)">
                 </igz-default-dropdown>
             </div>
             <div class="actions-bar-left actions-buttons-block">
                 <div class="actions-bar-left test-events-dropdown-block">
-                    <igz-default-dropdown data-is-disabled="!$ctrl.selectedTestEvent"
-                                          data-select-property-only="id"
-                                          data-placeholder="No test events…"
-                                          data-values-array="$ctrl.testEvents"
-                                          data-selected-item="$ctrl.selectedTestEvent"
-                                          data-item-select-callback="$ctrl.onSelectTestEvent(item)">
+                    <igz-default-dropdown data-placeholder="No function events…"
+                                          data-values-array="$ctrl.functionEvents"
+                                          data-selected-item="$ctrl.selectedFunctionEvent"
+                                          data-is-disabled="!$ctrl.isFunctionDeployed || !$ctrl.selectedFunctionEvent"
+                                          data-item-select-callback="$ctrl.onSelectFunctionEvent(item)">
                     </igz-default-dropdown>
                 </div>
                 <div class="actions-bar-right">
-                        <div class="ncl-grouped-buttons">
-                            <button type="button" class="test-version-button"
-                                    data-ng-click="$ctrl.runVersionTest()"
-                                    data-ng-class="{'disabled' : !$ctrl.selectedTestEvent}">TEST</button>
-                            <button type="button" class="test-version-button-arrow dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                <span class="igz-icon-dropdown"></span>
-                            </button>
-                            <ul class="button-dropdown dropdown-menu">
-                                <li>
-                                    <a class="icon-font-group" href="#" data-ng-click="$ctrl.createTestEvent()">Create test event</a>
-                                </li>
-                                <li data-ng-class="{'disabled' : !$ctrl.selectedTestEvent}">
-                                    <a class="icon-font-layer" href="#" data-ng-click="$ctrl.editTestEvent()">Edit test event</a>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="ncl-grouped-buttons">
+                        <button type="button" class="test-version-button"
+                                data-ng-click="$ctrl.invokeFunction()"
+                                data-ng-class="{'disabled' : !$ctrl.isFunctionDeployed || !$ctrl.selectedFunctionEvent}">TEST
+                        </button>
+                        <button type="button" class="test-version-button-arrow dropdown-toggle" data-toggle="dropdown"
+                                data-ng-class="{'disabled' : !$ctrl.isFunctionDeployed}"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            <span class="igz-icon-dropdown"></span>
+                        </button>
+                        <ul class="button-dropdown dropdown-menu">
+                            <li>
+                                <a class="icon-font-group" href="#" data-ng-click="$ctrl.openFunctionEventDialog(true)">Create
+                                    function event</a>
+                            </li>
+                            <li data-ng-if="$ctrl.selectedFunctionEvent">
+                                <a class="icon-font-layer" href="#" data-ng-click="$ctrl.openFunctionEventDialog(false)">Edit
+                                    test event</a>
+                            </li>
+                            <li data-ng-if="$ctrl.selectedFunctionEvent">
+                                <a class="icon-font-layer" href="#" data-ng-click="$ctrl.deleteFunctionEvent()">Delete event</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="actions-bar-left actions-buttons-block">
@@ -55,9 +63,60 @@
             </div>
         </div>
     </igz-info-page-actions-bar>
-    <ncl-version-execution-result data-ng-if="$ctrl.isTestResultShown"
-                                       data-test-result="$ctrl.testResult"
-                                       data-toggle-method="$ctrl.toggleTestResult()"></ncl-version-execution-result>
+
+    <!-- test result block -->
+    <div data-ng-if="$ctrl.isTestResultShown"
+         class="ncl-edit-version-execution-result">
+        <div class="btn-close igz-icon-close" data-ng-click="$ctrl.toggleTestResult()"></div>
+        <div class="ncl-execution-result-status"
+             data-ng-class="{'succeeded': $ctrl.testResult.status.state === 'Succeeded'}">
+        <span class="result-status-icon"
+              data-ng-class="$ctrl.testResult.status.state === 'Succeeded' ? 'igz-icon-tick-round' : 'igz-icon-block'"></span>
+            Execution results: {{$ctrl.testResult.status.state}}
+        </div>
+        <div class="ncl-execution-result-block">
+            <div class="collapsed-block-title"
+                 data-ng-click="$ctrl.isStatusCodeCollapsed = !$ctrl.isStatusCodeCollapsed"
+                 data-ng-class="{'collapsed': $ctrl.isStatusCodeCollapsed}">
+            <span class="icon-collapsed"
+                  data-ng-class="$ctrl.isStatusCodeCollapsed ? 'igz-icon-right' : 'igz-icon-down'"></span>
+                Status code
+            </div>
+            <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.isStatusCodeCollapsed">
+                <div class="value-row">
+                    {{$ctrl.testResult.status.code}}
+                </div>
+            </div>
+        </div>
+        <div class="ncl-execution-result-block">
+            <div class="collapsed-block-title" data-ng-click="$ctrl.isHeadersCollapsed = !$ctrl.isHeadersCollapsed"
+                 data-ng-class="{'collapsed': $ctrl.isHeadersCollapsed}">
+            <span class="icon-collapsed"
+                  data-ng-class="$ctrl.isHeadersCollapsed ? 'igz-icon-right' : 'igz-icon-down'"></span>
+                Headers
+            </div>
+            <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.isHeadersCollapsed">
+                <div class="label-value-row" data-ng-repeat="(headerName, headerValue) in $ctrl.testResult.headers">
+                    <div class="label-cell">{{headerName}}</div>
+                    <div class="value-cell">{{headerValue}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="ncl-execution-result-block">
+            <div class="collapsed-block-title" data-ng-click="$ctrl.isBodyCollapsed = !$ctrl.isBodyCollapsed"
+                 data-ng-class="{'collapsed': $ctrl.isBodyCollapsed}">
+            <span class="icon-collapsed"
+                  data-ng-class="$ctrl.isBodyCollapsed ? 'igz-icon-right' : 'igz-icon-down'"></span>
+                Body
+            </div>
+            <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.isBodyCollapsed">
+                <div class="value-row">
+                    {{$ctrl.testResult.body}}
+                </div>
+            </div>
+        </div>
+    </div>
+
     <ncl-navigation-tabs data-tab-items="$ctrl.navigationTabsConfig"></ncl-navigation-tabs>
     <section class="ncl-edit-version-view" data-igz-extend-background data-ui-view="version"></section>
 </div>
