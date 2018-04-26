@@ -15,7 +15,7 @@
             controller: NclKeyValueInputController
         });
 
-    function NclKeyValueInputController($document, $element, $rootScope, $scope, lodash, EventHelperService) {
+    function NclKeyValueInputController($document, $element, $rootScope, $scope, $timeout, lodash, EventHelperService) {
         var ctrl = this;
 
         ctrl.data = {};
@@ -149,16 +149,18 @@
          * On open default dropdown
          */
         function openDropdown() {
-            var parent = angular.element(document).find('.' + ctrl.listClass)[0];
-            var dropdown = angular.element(document).find('.' + ctrl.listClass + ' .default-dropdown-container')[0];
-            var parentRect = parent.getBoundingClientRect();
-            var dropdownRect = dropdown.getBoundingClientRect();
+            $timeout(function () {
+                var parent = angular.element(document).find('.' + ctrl.listClass)[0];
+                var dropdown = angular.element(document).find('.' + ctrl.listClass + ' .default-dropdown-container')[0];
+                var parentRect = parent.getBoundingClientRect();
+                var dropdownRect = dropdown.getBoundingClientRect();
 
-            parent = angular.element(parent);
+                parent = angular.element(parent);
 
-            if (dropdownRect.bottom > parentRect.bottom) {
-                parent.css({'padding-bottom': dropdownRect.bottom - parentRect.bottom + 'px'});
-            }
+                if (dropdownRect.bottom > parentRect.bottom) {
+                    parent.css({'padding-bottom': dropdownRect.bottom - parentRect.bottom + 'px'});
+                }
+            });
         }
 
         /**

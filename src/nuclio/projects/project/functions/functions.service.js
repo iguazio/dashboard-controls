@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('FunctionsService', FunctionsService);
 
-    function FunctionsService($stateParams) {
+    function FunctionsService() {
         return {
             getClassesList: getClassesList,
             getHandler: getHandler,

@@ -26,7 +26,8 @@
                     <div class="ncl-grouped-buttons">
                         <button type="button" class="test-version-button"
                                 data-ng-click="$ctrl.invokeFunction()"
-                                data-ng-class="{'disabled' : !$ctrl.isFunctionDeployed || !$ctrl.selectedFunctionEvent}">TEST
+`                                data-ng-class="{'disabled' : !$ctrl.isFunctionDeployed || !$ctrl.selectedFunctionEvent}">
+                            TEST
                         </button>
                         <button type="button" class="test-version-button-arrow dropdown-toggle" data-toggle="dropdown"
                                 data-ng-class="{'disabled' : !$ctrl.isFunctionDeployed}"
@@ -40,11 +41,13 @@
                                     function event</a>
                             </li>
                             <li data-ng-if="$ctrl.selectedFunctionEvent">
-                                <a class="icon-font-layer" href="#" data-ng-click="$ctrl.openFunctionEventDialog(false)">Edit
+                                <a class="icon-font-layer" href="#"
+                                   data-ng-click="$ctrl.openFunctionEventDialog(false)">Edit
                                     test event</a>
                             </li>
                             <li data-ng-if="$ctrl.selectedFunctionEvent">
-                                <a class="icon-font-layer" href="#" data-ng-click="$ctrl.deleteFunctionEvent()">Delete event</a>
+                                <a class="icon-font-layer" href="#" data-ng-click="$ctrl.deleteFunctionEvent()">Delete
+                                    event</a>
                             </li>
                         </ul>
                     </div>
@@ -64,62 +67,6 @@
             </div>
         </div>
     </igz-info-page-actions-bar>
-
-    <div data-ng-if="$ctrl.isTestResultShown"
-         class="ncl-edit-version-execution-result">
-        <div class="igz-scrollable-container"
-             data-ng-scrollbars
-             data-ng-scrollbars-config="$ctrl.scrollConfig">
-            <div class="btn-close igz-icon-close" data-ng-click="$ctrl.toggleTestResult()"></div>
-            <div class="ncl-execution-result-status"
-                 data-ng-class="{'succeeded': $ctrl.testResult.status.state === 'Succeeded'}">
-        <span class="result-status-icon"
-              data-ng-class="$ctrl.testResult.status.state === 'Succeeded' ? 'igz-icon-tick-round' : 'igz-icon-block'"></span>
-                Execution results: {{$ctrl.testResult.status.state}}
-            </div>
-            <div class="ncl-execution-result-block">
-                <div class="collapsed-block-title"
-                     data-ng-click="$ctrl.onRowCollapse('statusCode')"
-                     data-ng-class="{'collapsed': $ctrl.rowIsCollapsed.statusCode}">
-            <span class="icon-collapsed"
-                  data-ng-class="$ctrl.rowIsCollapsed.statusCode ? 'igz-icon-right' : 'igz-icon-down'"></span>
-                    Status code
-                </div>
-                <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.rowIsCollapsed.statusCode">
-                    <div class="value-row">
-                        {{$ctrl.testResult.status.code}}
-                    </div>
-                </div>
-            </div>
-            <div class="ncl-execution-result-block">
-                <div class="collapsed-block-title" data-ng-click="$ctrl.onRowCollapse('headers')"
-                     data-ng-class="{'collapsed': $ctrl.rowIsCollapsed.headers}">
-            <span class="icon-collapsed"
-                  data-ng-class="$ctrl.rowIsCollapsed.headers ? 'igz-icon-right' : 'igz-icon-down'"></span>
-                    Headers
-                </div>
-                <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.rowIsCollapsed.headers">
-                    <div class="label-value-row" data-ng-repeat="(headerName, headerValue) in $ctrl.testResult.headers">
-                        <div class="label-cell">{{headerName}}</div>
-                        <div class="value-cell">{{headerValue}}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="ncl-execution-result-block">
-                <div class="collapsed-block-title" data-ng-click="$ctrl.onRowCollapse('body')"
-                     data-ng-class="{'collapsed': $ctrl.rowIsCollapsed.body}">
-            <span class="icon-collapsed"
-                  data-ng-class="$ctrl.rowIsCollapsed.body ? 'igz-icon-right' : 'igz-icon-down'"></span>
-                    Body
-                </div>
-                <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.rowIsCollapsed.body">
-                    <div class="value-row">
-                        {"metadata":{"name":"name","namespace":"nuclio"}}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div data-ng-if="$ctrl.isDeployResultShown"
          class="ncl-edit-version-execution-result deploy-result"
@@ -157,6 +104,70 @@
                          data-ng-class="{'in-progress': $ctrl.deployResult.status.state === 'building',
                                          'failed'     : $ctrl.deployResult.status.state === 'error'}">
                         <div data-ng-repeat="log in $ctrl.deployResult.status.logs">{{log.message}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div data-ng-if="$ctrl.isTestResultShown"
+         class="ncl-edit-version-execution-result">
+        <div class="igz-scrollable-container"
+             data-ng-scrollbars
+             data-ng-scrollbars-config="$ctrl.scrollConfig">
+            <div class="btn-close igz-icon-close" data-ng-click="$ctrl.toggleTestResult()"></div>
+
+            <div class="ncl-execution-result-status"
+                 data-ng-class="{'succeeded': $ctrl.isInvocationSuccess}">
+                <span class="result-status-icon"
+                      data-ng-class="$ctrl.isInvocationSuccess ? 'igz-icon-tick-round' : 'igz-icon-block'">
+                </span>
+                Execution results: {{$ctrl.testResult.status.state}}
+            </div>
+
+            <div class="ncl-execution-result-block">
+                <div class="collapsed-block-title"
+                     data-ng-click="$ctrl.onRowCollapse('statusCode')"
+                     data-ng-class="{'collapsed': $ctrl.rowIsCollapsed.statusCode}">
+                    <span class="icon-collapsed"
+                          data-ng-class="$ctrl.rowIsCollapsed.statusCode ? 'igz-icon-right' : 'igz-icon-down'">
+                    </span>
+                    Status code
+                </div>
+                <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.rowIsCollapsed.statusCode">
+                    <div class="value-row">
+                        {{$ctrl.testResult.status.code}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="ncl-execution-result-block">
+                <div class="collapsed-block-title" data-ng-click="$ctrl.onRowCollapse('headers')"
+                     data-ng-class="{'collapsed': $ctrl.rowIsCollapsed.headers}">
+                    <span class="icon-collapsed"
+                          data-ng-class="$ctrl.rowIsCollapsed.headers ? 'igz-icon-right' : 'igz-icon-down'">
+                    </span>
+                    Headers
+                </div>
+                <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.rowIsCollapsed.headers">
+                    <div class="label-value-row" data-ng-repeat="(headerName, headerValue) in $ctrl.testResult.headers">
+                        <div class="label-cell">{{headerName}}</div>
+                        <div class="value-cell">{{headerValue}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ncl-execution-result-block">
+                <div class="collapsed-block-title" data-ng-click="$ctrl.onRowCollapse('body')"
+                     data-ng-class="{'collapsed': $ctrl.rowIsCollapsed.body}">
+                    <span class="icon-collapsed"
+                          data-ng-class="$ctrl.rowIsCollapsed.body ? 'igz-icon-right' : 'igz-icon-down'">
+                    </span>
+                    Body
+                </div>
+                <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.rowIsCollapsed.body">
+                    <div class="value-row">
+                        {{$ctrl.testResult.body}}
                     </div>
                 </div>
             </div>

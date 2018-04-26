@@ -21,6 +21,7 @@
         ctrl.action = null;
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isTestResultShown = false;
+        ctrl.isInvocationSuccess = false;
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -31,6 +32,7 @@
             value: false
         };
         ctrl.selectedFunctionEvent = null;
+        ctrl.testResult = {};
         ctrl.functionEvents = [];
         ctrl.rowIsCollapsed = {
             statusCode: false,
@@ -182,7 +184,7 @@
 
                             ctrl.isSplashShowed.value = false;
                         });
-                })
+                });
         }
 
         /**
@@ -220,8 +222,7 @@
                                 ctrl.isSplashShowed.value = false;
                             })
                     }
-                })
-
+                });
         }
 
         /**
@@ -276,39 +277,26 @@
          */
         function invokeFunction() {
             if (!lodash.isNil(ctrl.selectedFunctionEvent)) {
+                ctrl.isTestResultShown = false;
+
                 NuclioEventService.invokeFunction(ctrl.selectedFunctionEvent.eventData)
                     .then(function (response) {
-
-                        // TODO
-                        ctrl.testResult = response.data
+                        ctrl.testResult = {
+                            status: {
+                                state: response.xhrStatus,
+                                code: response.status
+                            },
+                            headers: response.config.headers,
+                            body: response.data
+                        };
+                        ctrl.isDeployResultShown = false;
+                        ctrl.isTestResultShown = true;
+                        ctrl.isInvocationSuccess = lodash.startsWith(response.status, '2');
                     })
                     .catch(function () {
+                        ctrl.isTestResultShown = false;
 
-                        // TODO: replace with real data
-                        lodash.defauldDeeps(ctrl.testResult, {
-                            status: {
-                                state: 'Succeeded',
-                                code: 'Lorem'
-                            },
-                            headers: {
-                                'Access-control-allow-origin': '*',
-                                'Date': '2018-02-05T17:07:48.509Z',
-                                'x-nuclio-logs': [],
-                                'Server': 'nuclio',
-                                'Content-Length': 5,
-                                'Content-Type': 'text/plain; charset=utf-8'
-                            },
-                            body: {
-                                'metadata': {
-                                    'name': 'name',
-                                    'namespace': 'nuclio'
-                                }
-                            }
-                        });
-
-                        ctrl.isDeployResultShown = false;
-
-                        ctrl.isTestResultShown = true;
+                        DialogsService.alert('Oops: Unknown error occurred');
                     });
             }
         }

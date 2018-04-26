@@ -14,7 +14,6 @@
     function FunctionFromScratchController($interval, $state, $stateParams, lodash, DialogsService, FunctionsService,
                                            NuclioFunctionsDataService, NuclioProjectsDataService, ValidatingPatternsService) {
         var ctrl = this;
-        var interval = null;
 
         ctrl.functionData = {};
         ctrl.runtimes = [];
@@ -60,10 +59,11 @@
          * Creates function with defined data.
          */
         function createFunction() {
-            ctrl.toggleSplashScreen({value: true});
 
             // create function only when form is valid
             if (ctrl.functionFromScratchForm.$valid) {
+                ctrl.toggleSplashScreen({value: true});
+
                 lodash.set(ctrl, 'functionData.metadata.namespace', ctrl.project.metadata.namespace);
 
                 $state.go('app.project.function.edit.code', {
