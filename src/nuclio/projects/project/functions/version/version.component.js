@@ -20,9 +20,18 @@
         ctrl.action = null;
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isTestResultShown = false;
+        ctrl.scrollConfig = {
+            axis: 'y',
+            advanced: {
+                updateOnContentResize: true
+            }
+        };
         ctrl.isSplashShowed = {
             value: false
         };
+        ctrl.isStatusCodeCollapse = false;
+        ctrl.isHeadersCollapsed = false;
+        ctrl.isBodyCollapsed = false;
 
         // TODO
         ctrl.selectedTestEvent = '';
@@ -53,6 +62,7 @@
         ctrl.onSelectTestEvent = onSelectTestEvent;
         ctrl.runVersionTest = runVersionTest;
         ctrl.toggleTestResult = toggleTestResult;
+        ctrl.onRowCollapse = onRowCollapse;
         ctrl.onSelectAction = onSelectAction;
 
         //
@@ -225,28 +235,6 @@
         }
 
         /**
-         * Resize view after test result is closed
-         */
-        function resizeVersionView() {
-            var clientHeight = document.documentElement.clientHeight;
-            var headerBottom = angular.element(document).find('.ncl-navigation-tabs')[0];
-            var contentView = angular.element(document).find('.ncl-edit-version-view')[0];
-            var contentBlock = angular.element(document).find('.ncl-version')[0];
-            var headerRect = headerBottom.getBoundingClientRect();
-            var contentBlockRect = contentBlock.getBoundingClientRect();
-            var contentHeight = clientHeight - headerRect.bottom;
-            var contentBlockHeight = contentBlockRect.bottom - contentBlockRect.top;
-
-            contentView = angular.element(contentView);
-            contentBlock = angular.element(contentBlock);
-
-            if (contentBlockHeight < contentHeight) {
-                contentView.css({'height': contentHeight + 'px'});
-                contentBlock.css({'height': contentHeight + 'px'});
-            }
-        }
-
-        /**
          * Pulls function status.
          * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
          */
@@ -295,6 +283,16 @@
         }
 
         /**
+         * Called when row is collapsed/expanded
+         * @param {string} row - name of expanded/collapsed row
+         */
+        function onRowCollapse(row) {
+            ctrl[row] = !ctrl[row];
+
+            $timeout(resizeVersionView);
+        }
+
+        /**
          * Called when action is selected
          * @param {Object} item - selected action
          */
@@ -312,6 +310,32 @@
                     .catch(function () {
                         ctrl.action = ctrl.actions[0].id;
                     });
+            }
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Resize view after test result is closed
+         */
+        function resizeVersionView() {
+            var clientHeight = document.documentElement.clientHeight;
+            var headerBottom = angular.element(document).find('.ncl-navigation-tabs')[0];
+            var contentView = angular.element(document).find('.ncl-edit-version-view')[0];
+            var contentBlock = angular.element(document).find('.ncl-version')[0];
+            var headerRect = headerBottom.getBoundingClientRect();
+            var contentBlockRect = contentBlock.getBoundingClientRect();
+            var contentHeight = clientHeight - headerRect.bottom;
+            var contentBlockHeight = contentBlockRect.bottom - contentBlockRect.top;
+
+            contentView = angular.element(contentView);
+            contentBlock = angular.element(contentBlock);
+
+            if (contentBlockHeight < contentHeight) {
+                contentView.css({'height': contentHeight + 'px'});
+                contentBlock.css({'height': contentHeight + 'px'});
             }
         }
     }
