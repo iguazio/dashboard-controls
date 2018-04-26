@@ -36,10 +36,20 @@
         ctrl.isClassSelected = isClassSelected;
         ctrl.onSubmitForm = onSubmitForm;
         ctrl.onSelectClass = onSelectClass;
+        ctrl.convertFromCamelCase = convertFromCamelCase;
 
         //
         // Hook methods
         //
+
+        /**
+         * Converts attribute names in class list from camel case
+         * @param {String} string whitch must be converted
+         */
+
+        function convertFromCamelCase(str) {
+            return str.replace(/([a-z])([A-Z])/g, '$1 $2');
+        }
 
         /**
          * Initialization method

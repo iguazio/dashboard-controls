@@ -58,7 +58,7 @@
                     },
                     {
                         id: 'nats',
-                        name: 'Nats',
+                        name: 'NATS',
                         url: 'string',
                         attributes: [
                             {

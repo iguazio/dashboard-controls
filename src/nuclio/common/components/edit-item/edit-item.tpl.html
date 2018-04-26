@@ -80,7 +80,7 @@
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected()"
                  data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
-                <div class="field-label">{{attribute.name}}</div>
+                <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div>
                 <igz-validating-input-field data-field-type="input"
                                             data-input-name="item_{{attribute.name}}"
                                             data-input-value="$ctrl.getAttrValue(attribute.name)"
