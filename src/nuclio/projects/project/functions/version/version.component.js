@@ -21,11 +21,24 @@
         ctrl.action = null;
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isTestResultShown = false;
+        ctrl.scrollConfig = {
+            axis: 'y',
+            advanced: {
+                updateOnContentResize: true
+            }
+        };
         ctrl.isSplashShowed = {
             value: false
         };
         ctrl.selectedFunctionEvent = null;
         ctrl.functionEvents = [];
+        ctrl.rowIsCollapsed = {
+            statusCode: false,
+            headers: false,
+            body: false,
+            deployBlock: false,
+            deployBody: true
+        };
 
 
         ctrl.$onInit = onInit;
@@ -34,8 +47,11 @@
         ctrl.openFunctionEventDialog = openFunctionEventDialog;
         ctrl.deployVersion = deployVersion;
         ctrl.onSelectFunctionEvent = onSelectFunctionEvent;
+        ctrl.getDeployStatusState = getDeployStatusState;
         ctrl.invokeFunction = invokeFunction;
+        ctrl.toggleDeployResult = toggleDeployResult;
         ctrl.toggleTestResult = toggleTestResult;
+        ctrl.onRowCollapse = onRowCollapse;
         ctrl.onSelectAction = onSelectAction;
 
         //
@@ -49,6 +65,8 @@
             if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
                 ctrl.version = $stateParams.functionData;
             }
+
+            setDeployResult('ready');
 
             ctrl.isFunctionDeployed = !$stateParams.isNewFunction;
             ctrl.actions = [
@@ -208,7 +226,7 @@
         function deployVersion() {
             $rootScope.$broadcast('deploy-function-version');
 
-            ctrl.isSplashShowed.value = true;
+            setDeployResult('building');
 
             if (!lodash.isEmpty($stateParams.functionData)) {
                 ctrl.version = $stateParams.functionData;
@@ -216,8 +234,25 @@
 
             ctrl.version = lodash.omit(ctrl.version, 'status');
 
+            ctrl.isDeployResultShown = true;
+            lodash.assign(ctrl.rowIsCollapsed, {
+                deployBlock: true,
+                deployBody: false
+            });
+
             NuclioFunctionsDataService.updateFunction(ctrl.version, ctrl.project.metadata.name)
                 .then(pullFunctionState);
+        }
+
+        /**
+         * Gets current status state
+         * @param {string} state
+         * @returns {string}
+         */
+        function getDeployStatusState(state) {
+            return state === 'ready'    ? 'Successfully deployed' :
+                   state === 'error'    ? 'Failed to deploy'      :
+                   state === 'building' ? 'Deploying...'          : '';
         }
 
         /**
@@ -278,25 +313,12 @@
         }
 
         /**
-         * Resize view after test result is closed
+         * Shows/hides deploy version result
          */
-        function resizeVersionView() {
-            var clientHeight = document.documentElement.clientHeight;
-            var headerBottom = angular.element(document).find('.ncl-navigation-tabs')[0];
-            var contentView = angular.element(document).find('.ncl-edit-version-view')[0];
-            var contentBlock = angular.element(document).find('.ncl-version')[0];
-            var headerRect = headerBottom.getBoundingClientRect();
-            var contentBlockRect = contentBlock.getBoundingClientRect();
-            var contentHeight = clientHeight - headerRect.bottom;
-            var contentBlockHeight = contentBlockRect.bottom - contentBlockRect.top;
+        function toggleDeployResult() {
+            ctrl.isDeployResultShown = !ctrl.isDeployResultShown;
 
-            contentView = angular.element(contentView);
-            contentBlock = angular.element(contentBlock);
-
-            if (contentBlockHeight < contentHeight) {
-                contentView.css({'height': contentHeight + 'px'});
-                contentBlock.css({'height': contentHeight + 'px'});
-            }
+            $timeout(resizeVersionView);
         }
 
         /**
@@ -307,35 +329,15 @@
             interval = $interval(function () {
                 NuclioFunctionsDataService.getFunction(ctrl.version.metadata, ctrl.project.metadata.name)
                     .then(function (response) {
-                        if (response.status.state === 'ready') {
+                        if (response.status.state === 'ready' || response.status.state === 'error') {
                             if (!lodash.isNil(interval)) {
                                 $interval.cancel(interval);
                                 interval = null;
                             }
-
-                            ctrl.isFunctionDeployed = true;
-                            ctrl.isSplashShowed.value = false;
-
-                            $state.go('app.project.function.edit.code', {
-                                isNewFunction: false,
-                                id: ctrl.project.metadata.name
-                            });
-
-                        } else if (response.status.state === 'error') {
-                            if (!lodash.isNil(interval)) {
-                                $interval.cancel(interval);
-                                interval = null;
-                            }
-
-                            ctrl.isSplashShowed.value = false;
-
-                            DialogsService.alert('Failed to deploy function "' + ctrl.version.metadata.name + '".')
-                                .then(function () {
-                                    $state.go('app.project.functions', {
-                                        projectId: ctrl.project.metadata.name
-                                    });
-                                });
                         }
+
+                        ctrl.isFunctionDeployed = true;
+                        ctrl.deployResult = response;
                     })
                     .catch(function (error) {
                         if (error.status !== 404) {
@@ -348,6 +350,16 @@
                         }
                     });
             }, 2000);
+        }
+
+        /**
+         * Called when row is collapsed/expanded
+         * @param {string} row - name of expanded/collapsed row
+         */
+        function onRowCollapse(row) {
+            ctrl.rowIsCollapsed[row] = !ctrl.rowIsCollapsed[row];
+
+            $timeout(resizeVersionView);
         }
 
         /**
@@ -372,6 +384,32 @@
             }
         }
 
+        //
+        // Private methods
+        //
+
+        /**
+         * Resize view after test result is closed
+         */
+        function resizeVersionView() {
+            var clientHeight = document.documentElement.clientHeight;
+            var headerBottom = angular.element(document).find('.ncl-navigation-tabs')[0];
+            var contentView = angular.element(document).find('.ncl-edit-version-view')[0];
+            var contentBlock = angular.element(document).find('.ncl-version')[0];
+            var headerRect = headerBottom.getBoundingClientRect();
+            var contentBlockRect = contentBlock.getBoundingClientRect();
+            var contentHeight = clientHeight - headerRect.bottom;
+            var contentBlockHeight = contentBlockRect.bottom - contentBlockRect.top;
+
+            contentView = angular.element(contentView);
+            contentBlock = angular.element(contentBlock);
+
+            if (contentBlockHeight < contentHeight) {
+                contentView.css({'height': contentHeight + 'px'});
+                contentBlock.css({'height': contentHeight + 'px'});
+            }
+        }
+
         /**
          * Converts event to structure that needed for drop-down
          * @param {Array} events -  array of events
@@ -386,6 +424,18 @@
             });
 
             ctrl.selectedFunctionEvent = ctrl.functionEvents[0];
+        }
+
+        /**
+         * Sets deploying results
+         * @param {string} value
+         */
+        function setDeployResult(value) {
+            ctrl.deployResult = {
+                status: {
+                    state: value
+                }
+            };
         }
     }
 }());
