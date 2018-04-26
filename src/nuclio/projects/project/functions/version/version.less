@@ -135,6 +135,15 @@
             .igz-scrollable-container {
                 height: 230px;
             }
+
+            &.deploy-result {
+                max-height: none;
+
+                .igz-scrollable-container {
+                    max-height: 260px;
+                    height: auto;
+                }
+            }
         }
     }
 
@@ -149,6 +158,27 @@
             max-height: 420px;
         }
 
+        &.deploy-result {
+            .ncl-execution-result-status {
+                &.collapsed {
+                    margin-bottom: 12px;
+                }
+            }
+
+            .icon-collabled.general-content {
+                .duskThree(0.64);
+                position: absolute;
+                right: 23px;
+                top: 5px;
+                color: @color;
+                cursor: pointer;
+            }
+
+            .btn-close {
+                margin-right: 53px;
+            }
+        }
+
         .ncl-execution-result-status {
             color: @ncl-darkish-pink;
             line-height: 24px;
@@ -160,6 +190,11 @@
 
             &.succeeded {
                 color: @ncl-green-aquamarine;
+            }
+
+            &.in-progress {
+                color: @ncl-pale-orange;
+                margin-bottom: 12px;
             }
 
             .result-status-icon {
@@ -181,6 +216,10 @@
                 cursor: pointer;
                 margin: 8px 0;
                 line-height: 16px;
+
+                &.collapsed {
+                    margin-bottom: 12px;
+                }
 
                 .icon-collapsed {
                     .duskThree(0.64);

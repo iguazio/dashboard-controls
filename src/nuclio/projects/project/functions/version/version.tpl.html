@@ -112,6 +112,42 @@
         </div>
     </div>
 
+    <div data-ng-if="$ctrl.isDeployResultShown"
+         class="ncl-edit-version-execution-result deploy-result">
+        <div class="igz-scrollable-container"
+             data-ng-scrollbars
+             data-ng-scrollbars-config="$ctrl.scrollConfig">
+            <div class="btn-close igz-icon-close"
+                 data-ng-if="$ctrl.deployResult.status.state !== 'building'"
+                 data-ng-click="$ctrl.toggleDeployResult()"></div>
+            <div class="icon-collabled general-content"
+                 data-ng-class="$ctrl.isDeployBlockCollapsed ? 'igz-icon-right' : 'igz-icon-down'"
+                 data-ng-click="$ctrl.onRowCollapse('isDeployBlockCollapsed')"></div>
+            <div class="ncl-execution-result-status"
+                 data-ng-class="{'succeeded'  : $ctrl.deployResult.status.state === 'ready',
+                                 'in-progress': $ctrl.deployResult.status.state === 'building',
+                                 'collapsed'  : $ctrl.isDeployBlockCollapsed}">
+        <span class="result-status-icon"
+              data-ng-class="{'igz-icon-tick-round': $ctrl.deployResult.status.state === 'ready' || $ctrl.deployResult.status.state === 'building',
+                              'igz-icon-block'     : $ctrl.deployResult.status.state === 'error'}"></span>
+                {{$ctrl.getDeployStatusState($ctrl.deployResult.status.state)}}
+            </div>
+            <div class="ncl-execution-result-block collapsed-block-content-wrapper" data-collapse="$ctrl.isDeployBlockCollapsed">
+                <div class="collapsed-block-title" data-ng-click="$ctrl.onRowCollapse('isDeployBodyCollapsed')"
+                     data-ng-class="{'collapsed': $ctrl.isDeployBodyCollapsed}">
+            <span class="icon-collapsed"
+                  data-ng-class="$ctrl.isDeployBodyCollapsed ? 'igz-icon-right' : 'igz-icon-down'"></span>
+                    Logs
+                </div>
+                <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.isDeployBodyCollapsed">
+                    <div class="value-row">
+                        <div data-ng-repeat="log in $ctrl.deployResult.status.logs">{{log.message}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <ncl-navigation-tabs data-tab-items="$ctrl.navigationTabsConfig"></ncl-navigation-tabs>
     <section class="ncl-edit-version-view" data-igz-extend-background data-ui-view="version"></section>
 </div>

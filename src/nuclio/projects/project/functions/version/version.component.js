@@ -59,8 +59,10 @@
         ctrl.createTestEvent = createTestEvent;
         ctrl.deployVersion = deployVersion;
         ctrl.editTestEvent = editTestEvent;
+        ctrl.getDeployStatusState = getDeployStatusState;
         ctrl.onSelectTestEvent = onSelectTestEvent;
         ctrl.runVersionTest = runVersionTest;
+        ctrl.toggleDeployResult = toggleDeployResult;
         ctrl.toggleTestResult = toggleTestResult;
         ctrl.onRowCollapse = onRowCollapse;
         ctrl.onSelectAction = onSelectAction;
@@ -189,6 +191,17 @@
         }
 
         /**
+         * Gets current status state
+         * @param {string} state
+         * @returns {string}
+         */
+        function getDeployStatusState(state) {
+            return state === 'ready'    ? 'Successfully deployed' :
+                   state === 'error'    ? 'Failed to deploy'      :
+                   state === 'building' ? 'Deploying...'          : '';
+        }
+
+        /**
          * Called when a test event is selected
          * @param {Object} item - the new data
          */
@@ -235,6 +248,15 @@
         }
 
         /**
+         * Shows/hides deploy version result
+         */
+        function toggleDeployResult() {
+            ctrl.isDeployResultShown = !ctrl.isDeployResultShown;
+
+            $timeout(resizeVersionView);
+        }
+
+        /**
          * Pulls function status.
          * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
          */
@@ -242,32 +264,26 @@
             interval = $interval(function () {
                 NuclioFunctionsDataService.getFunction(ctrl.version.metadata, ctrl.project.metadata.name)
                     .then(function (response) {
+                        ctrl.isSplashShowed.value = false;
+
                         if (response.status.state === 'ready') {
                             if (!lodash.isNil(interval)) {
                                 $interval.cancel(interval);
                                 interval = null;
                             }
 
-                            ctrl.isSplashShowed.value = false;
-
-                            $state.go('app.project.functions', {
-                                projectId: ctrl.project.metadata.name
-                            });
                         } else if (response.status.state === 'error') {
                             if (!lodash.isNil(interval)) {
                                 $interval.cancel(interval);
                                 interval = null;
                             }
 
-                            ctrl.isSplashShowed.value = false;
-
-                            DialogsService.alert('Failed to deploy function "' + ctrl.version.metadata.name + '".')
-                                .then(function () {
-                                    $state.go('app.project.functions', {
-                                        projectId: ctrl.project.metadata.name
-                                    });
-                                });
+                            DialogsService.alert('Failed to deploy function "' + ctrl.version.metadata.name + '".');
                         }
+
+                        ctrl.deployResult = response;
+                        ctrl.isDeployResultShown = true;
+                        ctrl.isDeployBlockCollapsed = false;
                     })
                     .catch(function (error) {
                         if (error.status !== 404) {
