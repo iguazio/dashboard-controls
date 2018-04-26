@@ -170,11 +170,7 @@
         function inputValueCallback(newData, field) {
             lodash.set(ctrl.workingCopy, 'spec.displayName', newData);
 
-            $timeout(function () {
-
-                // compare original object and working object to get know if fields was changed and check is form valid
-                ctrl.isFormChanged = !lodash.isEqual(ctrl.workingCopy, ctrl.selectedEvent) && lodash.isEmpty(ctrl.functionEventForm.$error);
-            });
+            isFormChanged();
         }
 
         /**
@@ -185,11 +181,7 @@
         function onSelectMethod(item) {
             lodash.set(ctrl.workingCopy, 'spec.attributes.method', item.id);
 
-            $timeout(function () {
-
-                // compare original object and working object to get know if fields was changed and check is form valid
-                ctrl.isFormChanged = !lodash.isEqual(ctrl.workingCopy, ctrl.selectedEvent) && lodash.isEmpty(ctrl.functionEventForm.$error);
-            });
+            isFormChanged();
         }
 
         /**
@@ -200,20 +192,26 @@
         function onSelectHeader(item) {
             lodash.set(ctrl.workingCopy, 'spec.attributes.headers.Content-Type', item.id);
 
-            $timeout(function () {
-
-                // compare original object and working object to get know if fields was changed and check is form valid
-                ctrl.isFormChanged = !lodash.isEqual(ctrl.workingCopy, ctrl.selectedEvent) && lodash.isEmpty(ctrl.functionEventForm.$error);
-            });
+            isFormChanged();
         }
 
         /**
          * Callback from body field.
          */
         function onChangeBody() {
-            $timeout(function () {
+            isFormChanged();
+        }
 
-                // compare original object and working object to get know if fields was changed and check is form valid
+        //
+        // Private methods
+        //
+
+        /**
+         * Compares original object and working object to get know if fields was changed
+         * Also check if form valid and set result to corresponding variable
+         */
+        function isFormChanged() {
+            $timeout(function () {
                 ctrl.isFormChanged = !lodash.isEqual(ctrl.workingCopy, ctrl.selectedEvent) && lodash.isEmpty(ctrl.functionEventForm.$error);
             });
         }
