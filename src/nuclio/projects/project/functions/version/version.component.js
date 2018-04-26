@@ -12,8 +12,9 @@
             controller: NclVersionController
         });
 
-    function NclVersionController($interval, $rootScope, $state, $stateParams, $timeout, lodash, ConfigService, DialogsService, NuclioHeaderService,
-                                  NuclioFunctionsDataService, NuclioProjectsDataService) {
+    function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $timeout, $q, lodash, ngDialog, ConfigService,
+                                  DialogsService, NuclioEventService, NuclioHeaderService, NuclioFunctionsDataService,
+                                  NuclioProjectsDataService) {
         var ctrl = this;
         var interval = null;
 
@@ -29,9 +30,8 @@
         ctrl.isSplashShowed = {
             value: false
         };
-        ctrl.isStatusCodeCollapse = false;
-        ctrl.isHeadersCollapsed = false;
-        ctrl.isBodyCollapsed = false;
+        ctrl.selectedFunctionEvent = null;
+        ctrl.functionEvents = [];
         ctrl.rowIsCollapsed = {
             statusCode: false,
             headers: true,
@@ -40,35 +40,15 @@
             deployBody: true
         };
 
-        // TODO
-        ctrl.selectedTestEvent = '';
-        ctrl.testEvents = [
-            {
-                id: 'firstTestEvent',
-                name: 'First test event'
-            },
-            {
-                id: 'secondTestEvent',
-                name: 'Second test event'
-            },
-            {
-                id: 'otherTestEvent',
-                name: 'Other test event'
-            },
-            {
-                id: 'toBeContinued',
-                name: 'To be continued ...'
-            }
-        ];
 
         ctrl.$onInit = onInit;
 
-        ctrl.createTestEvent = createTestEvent;
+        ctrl.deleteFunctionEvent = deleteFunctionEvent;
+        ctrl.openFunctionEventDialog = openFunctionEventDialog;
         ctrl.deployVersion = deployVersion;
-        ctrl.editTestEvent = editTestEvent;
+        ctrl.onSelectFunctionEvent = onSelectFunctionEvent;
         ctrl.getDeployStatusState = getDeployStatusState;
-        ctrl.onSelectTestEvent = onSelectTestEvent;
-        ctrl.runVersionTest = runVersionTest;
+        ctrl.invokeFunction = invokeFunction;
         ctrl.toggleDeployResult = toggleDeployResult;
         ctrl.toggleTestResult = toggleTestResult;
         ctrl.onRowCollapse = onRowCollapse;
@@ -91,7 +71,7 @@
                     state: 'ready'
                 }
             };
-
+            ctrl.isFunctionDeployed = !$stateParams.isNewFunction;
             ctrl.actions = [
                 {
                     id: 'deleteFunction',
@@ -111,50 +91,49 @@
             ctrl.navigationTabsConfig = [
                 {
                     tabName: 'Code',
-                    uiRoute: 'app.project.function.edit.code',
-                    isNewFunction: $stateParams.isNewFunction
+                    uiRoute: 'app.project.function.edit.code'
                 },
                 {
                     tabName: 'Configuration',
-                    uiRoute: 'app.project.function.edit.configuration',
-                    isNewFunction: $stateParams.isNewFunction
+                    uiRoute: 'app.project.function.edit.configuration'
                 },
                 {
-                    tabName: 'Triggers',
-                    uiRoute: 'app.project.function.edit.trigger',
-                    isNewFunction: $stateParams.isNewFunction
+                    tabName: 'Trigger',
+                    uiRoute: 'app.project.function.edit.trigger'
                 }
             ];
 
             if (ctrl.isDemoMode()) {
                 ctrl.navigationTabsConfig.push({
                     tabName: 'Monitoring',
-                    uiRoute: 'app.project.function.edit.monitoring',
-                    isNewFunction: $stateParams.isNewFunction
+                    uiRoute: 'app.project.function.edit.monitoring'
                 });
             }
-            ctrl.testEvents = [];
-            ctrl.selectedTestEvent = lodash.isEmpty(ctrl.testEvents) ? null : ctrl.testEvents[0].id;
+            ctrl.functionEvents = [];
+            ctrl.selectedFunctionEvent = lodash.isEmpty(ctrl.functionEvents) ? null : ctrl.functionEvents[0];
 
-            // delete when createTestEvent will be implemented
-            ctrl.testEventNumber = 0;
+            $q.all({
+                project: NuclioProjectsDataService.getProject($stateParams.projectId),
+                events: NuclioEventService.getEvents(ctrl.version)
+            }).then(function (response) {
 
-            NuclioProjectsDataService.getProject($stateParams.projectId)
-                .then(function (project) {
-                    ctrl.project = project;
+                // set projects data
+                ctrl.project = response.project;
 
-                    // breadcrumbs config
-                    var title = {
-                        project: ctrl.project.spec.displayName,
-                        function: $stateParams.functionId,
-                        version: '$LATEST'
-                    };
+                // sets function events data
+                convertTestEventsData(response.events.data);
 
-                    NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
-                })
-                .catch(function () {
-                    DialogsService.alert('Oops: Unknown error occurred');
-                });
+                // breadcrumbs config
+                var title = {
+                    project: ctrl.project.spec.displayName,
+                    function: $stateParams.functionId,
+                    version: '$LATEST'
+                };
+
+                NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
+            }).catch(function () {
+                DialogsService.alert('Oops: Unknown error occurred');
+            });
         }
 
         //
@@ -162,19 +141,86 @@
         //
 
         /**
-         * Opens new test event dialog
+         * Deletes selected event
          */
-        function createTestEvent() {
-
-            // delete when this function will be implemented
-            ctrl.testEventNumber++;
-
-            var newTestEvent = {
-                id: 'EventId' + ctrl.testEventNumber,
-                name: 'EventName ' + ctrl.testEventNumber
+        function deleteFunctionEvent() {
+            var dialogConfig = {
+                message: {
+                    message: 'Delete event “' + ctrl.selectedFunctionEvent.name + '”?',
+                    description: 'Deleted event cannot be restored.'
+                },
+                yesLabel: 'Yes, Delete',
+                noLabel: 'Cancel',
+                type: 'nuclio_alert'
             };
-            ctrl.testEvents.push(newTestEvent);
-            ctrl.selectedTestEvent = newTestEvent.id;
+
+            DialogsService.confirm(dialogConfig.message, dialogConfig.yesLabel, dialogConfig.noLabel, dialogConfig.type)
+                .then(function () {
+                    var eventData = {
+                        metadata: {
+                            name: ctrl.selectedFunctionEvent.eventData.metadata.name,
+                            namespace: ctrl.selectedFunctionEvent.eventData.metadata.namespace
+                        }
+                    };
+
+                    ctrl.isSplashShowed.value = true;
+
+                    NuclioEventService.deleteEvent(eventData)
+                        .then(function () {
+
+                            // update test events list
+                            NuclioEventService.getEvents(ctrl.version)
+                                .then(function (response) {
+                                    convertTestEventsData(response.data)
+
+                                    ctrl.isSplashShowed.value = false;
+                                })
+                        })
+                        .catch(function () {
+                            DialogsService.alert('Oops: Unknown error occurred while deleting event');
+
+                            ctrl.isSplashShowed.value = false;
+                        });
+                })
+        }
+
+        /**
+         * Opens a function event dialog
+         * @param {boolean} createEvent - if value 'false' then open dialog to edit exisitng event, otherwise open dialog
+         * to create new event.
+         */
+        function openFunctionEventDialog(createEvent) {
+            ngDialog.open({
+                template: '<ncl-function-event-dialog data-create-event="ngDialogData.createEvent" ' +
+                'data-selected-event="ngDialogData.selectedEvent" data-version="ngDialogData.version" ' +
+                'data-close-dialog="closeThisDialog(isEventDeployed)"></ncl-test-event-dialog>',
+                plain: true,
+                scope: $scope,
+                data: {
+                    createEvent: createEvent,
+                    selectedEvent: createEvent ? {} : lodash.get(ctrl.selectedFunctionEvent, 'eventData', {}),
+                    version: ctrl.version
+                },
+                className: 'ngdialog-theme-iguazio settings-dialog-wrapper'
+            })
+                .closePromise
+                .then(function (data) {
+
+                    // check if event was doployed or failed
+                    // if yes, then push newest crwated event to events drop-down
+                    if (data.value) {
+                        ctrl.isSplashShowed.value = true;
+
+                        // update test events list
+                        NuclioEventService.getEvents(ctrl.version)
+                            .then(function (response) {
+                                convertTestEventsData(response.data);
+
+                                ctrl.isSplashShowed.value = false;
+                            })
+                    }
+                })
+
         }
 
         /**
@@ -203,15 +249,6 @@
         }
 
         /**
-         * Opens edit test event dialog
-         */
-        function editTestEvent() {
-
-            // TODO
-            DialogsService.alert('This functionality is not implemented yet.');
-        }
-
-        /**
          * Gets current status state
          * @param {string} state
          * @returns {string}
@@ -226,37 +263,48 @@
          * Called when a test event is selected
          * @param {Object} item - the new data
          */
-        function onSelectTestEvent(item) {
-            ctrl.selectedTestEvent = item.id;
+        function onSelectFunctionEvent(item) {
+            ctrl.selectedFunctionEvent = item;
         }
 
         /**
          * Calls version test
          */
-        function runVersionTest() {
+        function invokeFunction() {
+            if (!lodash.isNil(ctrl.selectedFunctionEvent)) {
+                NuclioEventService.invokeFunction(ctrl.selectedFunctionEvent.eventData)
+                    .then(function (response) {
 
-            // TODO
-            ctrl.testResult = {
-                status: {
-                    state: 'Succeeded',
-                    code: 'Lorem'
-                },
-                headers: {
-                    'Access-control-allow-origin': '*',
-                    'Date': '2018-02-05T17:07:48.509Z',
-                    'x-nuclio-logs': [],
-                    'Server': 'nuclio',
-                    'Content-Length': 5,
-                    'Content-Type': 'text/plain; charset=utf-8'
-                },
-                data: {
-                    'metadata': {
-                        'name': 'name',
-                        'namespace': 'nuclio'
-                    }
-                }
-            };
-            ctrl.isTestResultShown = true;
+                        // TODO
+                        ctrl.testResult = response.data
+                    })
+                    .catch(function () {
+
+                        // TODO: replace with real data
+                        lodash.defauldDeeps(ctrl.testResult, {
+                            status: {
+                                state: 'Succeeded',
+                                code: 'Lorem'
+                            },
+                            headers: {
+                                'Access-control-allow-origin': '*',
+                                'Date': '2018-02-05T17:07:48.509Z',
+                                'x-nuclio-logs': [],
+                                'Server': 'nuclio',
+                                'Content-Length': 5,
+                                'Content-Type': 'text/plain; charset=utf-8'
+                            },
+                            body: {
+                                'metadata': {
+                                    'name': 'name',
+                                    'namespace': 'nuclio'
+                                }
+                            }
+                        });
+
+                        ctrl.isTestResultShown = true;
+                    });
+            }
         }
 
         /**
@@ -292,6 +340,7 @@
                             }
                         }
 
+                        ctrl.isFunctionDeployed = true;
                         ctrl.deployResult = response;
                     })
                     .catch(function (error) {
@@ -323,6 +372,7 @@
          */
         function onSelectAction(item) {
             ctrl.action = item.id;
+
             if (item.id === 'deleteFunction') {
                 DialogsService.confirm(item.dialog.message, item.dialog.yesLabel, item.dialog.noLabel, item.dialog.type)
                     .then(function () {
@@ -362,6 +412,22 @@
                 contentView.css({'height': contentHeight + 'px'});
                 contentBlock.css({'height': contentHeight + 'px'});
             }
+        }
+
+        /**
+         * Converts event to structure that needed for drop-down
+         * @param {Array} events -  array of events
+         */
+        function convertTestEventsData(events) {
+            ctrl.functionEvents = lodash.map(events, function (event) {
+                return {
+                    id: event.metadata.name,
+                    name: event.spec.displayName,
+                    eventData: event
+                }
+            });
+
+            ctrl.selectedFunctionEvent = ctrl.functionEvents[0];
         }
     }
 }());

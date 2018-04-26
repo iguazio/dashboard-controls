@@ -9,37 +9,45 @@
                                       data-placeholder="ACTIONS"
                                       data-values-array="$ctrl.actions"
                                       data-selected-item="$ctrl.action"
+                                      data-is-disabled="!$ctrl.isFunctionDeployed"
                                       data-item-select-callback="$ctrl.onSelectAction(item)">
                 </igz-default-dropdown>
             </div>
             <div class="actions-bar-left actions-buttons-block">
                 <div class="actions-bar-left test-events-dropdown-block">
-                    <igz-default-dropdown data-is-disabled="!$ctrl.selectedTestEvent"
-                                          data-select-property-only="id"
-                                          data-placeholder="No test events…"
-                                          data-values-array="$ctrl.testEvents"
-                                          data-selected-item="$ctrl.selectedTestEvent"
-                                          data-item-select-callback="$ctrl.onSelectTestEvent(item)">
+                    <igz-default-dropdown data-placeholder="No function events…"
+                                          data-values-array="$ctrl.functionEvents"
+                                          data-selected-item="$ctrl.selectedFunctionEvent"
+                                          data-is-disabled="!$ctrl.isFunctionDeployed || !$ctrl.selectedFunctionEvent"
+                                          data-item-select-callback="$ctrl.onSelectFunctionEvent(item)">
                     </igz-default-dropdown>
                 </div>
                 <div class="actions-bar-right">
-                        <div class="ncl-grouped-buttons">
-                            <button type="button" class="test-version-button"
-                                    data-ng-click="$ctrl.runVersionTest()"
-                                    data-ng-class="{'disabled' : !$ctrl.selectedTestEvent}">TEST</button>
-                            <button type="button" class="test-version-button-arrow dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                <span class="igz-icon-dropdown"></span>
-                            </button>
-                            <ul class="button-dropdown dropdown-menu">
-                                <li>
-                                    <a class="icon-font-group" href="#" data-ng-click="$ctrl.createTestEvent()">Create test event</a>
-                                </li>
-                                <li data-ng-class="{'disabled' : !$ctrl.selectedTestEvent}">
-                                    <a class="icon-font-layer" href="#" data-ng-click="$ctrl.editTestEvent()">Edit test event</a>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="ncl-grouped-buttons">
+                        <button type="button" class="test-version-button"
+                                data-ng-click="$ctrl.invokeFunction()"
+                                data-ng-class="{'disabled' : !$ctrl.isFunctionDeployed || !$ctrl.selectedFunctionEvent}">TEST
+                        </button>
+                        <button type="button" class="test-version-button-arrow dropdown-toggle" data-toggle="dropdown"
+                                data-ng-class="{'disabled' : !$ctrl.isFunctionDeployed}"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            <span class="igz-icon-dropdown"></span>
+                        </button>
+                        <ul class="button-dropdown dropdown-menu">
+                            <li>
+                                <a class="icon-font-group" href="#" data-ng-click="$ctrl.openFunctionEventDialog(true)">Create
+                                    function event</a>
+                            </li>
+                            <li data-ng-if="$ctrl.selectedFunctionEvent">
+                                <a class="icon-font-layer" href="#" data-ng-click="$ctrl.openFunctionEventDialog(false)">Edit
+                                    test event</a>
+                            </li>
+                            <li data-ng-if="$ctrl.selectedFunctionEvent">
+                                <a class="icon-font-layer" href="#" data-ng-click="$ctrl.deleteFunctionEvent()">Delete event</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="actions-bar-left actions-buttons-block">
