@@ -32,6 +32,13 @@
         ctrl.isStatusCodeCollapse = false;
         ctrl.isHeadersCollapsed = false;
         ctrl.isBodyCollapsed = false;
+        ctrl.rowIsCollapsed = {
+            statusCode: false,
+            headers: true,
+            body: false,
+            deployBlock: false,
+            deployBody: true
+        };
 
         // TODO
         ctrl.selectedTestEvent = '';
@@ -78,6 +85,12 @@
             if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
                 ctrl.version = $stateParams.functionData;
             }
+
+            ctrl.deployResult = {
+                status: {
+                    state: 'ready'
+                }
+            };
 
             ctrl.actions = [
                 {
@@ -169,13 +182,21 @@
          */
         function deployVersion() {
             $rootScope.$broadcast('deploy-function-version');
-            ctrl.isSplashShowed.value = true;
+
+            ctrl.deployResult = {
+                status: {
+                    state: 'building'
+                }
+            };
 
             if (!lodash.isEmpty($stateParams.functionData)) {
                 ctrl.version = $stateParams.functionData;
             }
 
             ctrl.version = lodash.omit(ctrl.version, 'status');
+
+            ctrl.isDeployResultShown = true;
+            ctrl.rowIsCollapsed.deployBlock = true;
 
             NuclioFunctionsDataService.updateFunction(ctrl.version, ctrl.project.metadata.name)
                 .then(pullFunctionState);
@@ -264,26 +285,14 @@
             interval = $interval(function () {
                 NuclioFunctionsDataService.getFunction(ctrl.version.metadata, ctrl.project.metadata.name)
                     .then(function (response) {
-                        ctrl.isSplashShowed.value = false;
-
-                        if (response.status.state === 'ready') {
+                        if (response.status.state === 'ready' || response.status.state === 'error') {
                             if (!lodash.isNil(interval)) {
                                 $interval.cancel(interval);
                                 interval = null;
                             }
-
-                        } else if (response.status.state === 'error') {
-                            if (!lodash.isNil(interval)) {
-                                $interval.cancel(interval);
-                                interval = null;
-                            }
-
-                            DialogsService.alert('Failed to deploy function "' + ctrl.version.metadata.name + '".');
                         }
 
                         ctrl.deployResult = response;
-                        ctrl.isDeployResultShown = true;
-                        ctrl.isDeployBlockCollapsed = false;
                     })
                     .catch(function (error) {
                         if (error.status !== 404) {
@@ -303,7 +312,7 @@
          * @param {string} row - name of expanded/collapsed row
          */
         function onRowCollapse(row) {
-            ctrl[row] = !ctrl[row];
+            ctrl.rowIsCollapsed[row] = !ctrl.rowIsCollapsed[row];
 
             $timeout(resizeVersionView);
         }

@@ -154,6 +154,18 @@
         border: solid 1px @ncl-green-aquamarine;
         position: relative;
 
+        &.failed {
+            .nclDarkishPink(0.1);
+            background-color: @color;
+            border: solid 1px @ncl-darkish-pink;
+        }
+
+        &.in-progress {
+            .nclSunflowerYellow(0.1);
+            background-color: @color;
+            border: solid 1px @ncl-sunflower-yellow;
+        }
+
         .igz-scrollable-container {
             max-height: 420px;
         }
@@ -252,6 +264,16 @@
                     padding-left: 16px;
                     border: solid 1px #c7e0d9;
                     line-height: 36px;
+
+                    &.failed {
+                        .nclDarkishPink(0.3);
+                        border: solid 1px @color;
+                    }
+
+                    &.in-progress {
+                        .nclSunflowerYellow(0.4);
+                        border: solid 1px @color;
+                    }
                 }
 
                 .label-value-row {
