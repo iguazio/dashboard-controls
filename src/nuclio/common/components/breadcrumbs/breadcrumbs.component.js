@@ -7,10 +7,15 @@
             controller: NclBreadcrumbsController
         });
 
-    function NclBreadcrumbsController($timeout, $element, $rootScope, $scope, $state, $window, NavigationTabsService, lodash) {
+    function NclBreadcrumbsController($timeout, $element, $rootScope, $scope, $state, $stateParams, $window, lodash, NavigationTabsService, DialogsService) {
         var ctrl = this;
 
         ctrl.mainHeaderTitle = {};
+        ctrl.dialogParams = {
+            message: 'You have unsaved changes. Leaving this page will discard your changes.',
+            yesLabel: 'Leave',
+            noLabel: 'Don\'t leave'
+        };
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
@@ -47,14 +52,28 @@
          * Changes state when the main header title is clicked
          */
         function goToProjectsList() {
-            $state.go('app.projects');
+            if (lodash.includes(ctrl.mainHeaderTitle.state, 'app.project.function.edit') && $stateParams.isNewFunction) {
+                DialogsService.confirm(ctrl.dialogParams.message, ctrl.dialogParams.yesLabel, ctrl.dialogParams.noLabel, ctrl.dialogParams.type)
+                    .then(function () {
+                        $state.go('app.projects');
+                    });
+            } else {
+                $state.go('app.projects');
+            }
         }
 
         /**
          * Changes state when the Project subtitle is clicked
          */
         function goToFunctionsList() {
-            $state.go('app.project.functions');
+            if (lodash.includes(ctrl.mainHeaderTitle.state, 'app.project.function.edit') && $stateParams.isNewFunction) {
+                DialogsService.confirm(ctrl.dialogParams.message, ctrl.dialogParams.yesLabel, ctrl.dialogParams.noLabel, ctrl.dialogParams.type)
+                    .then(function () {
+                        $state.go('app.project.functions');
+                    });
+            } else {
+                $state.go('app.project.functions');
+            }
         }
 
         //

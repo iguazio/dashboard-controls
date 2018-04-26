@@ -7,7 +7,7 @@
                 <igz-validating-input-field data-field-type="input"
                                             data-input-name="itemName"
                                             data-input-value="$ctrl.item.name"
-                                            data-is-focused="false"
+                                            data-is-focused="true"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
                                             data-placeholder-text="Type name..."
@@ -21,6 +21,7 @@
             <div class="igz-col-12-5 class-field">
                 <igz-default-dropdown data-select-property-only="id"
                                       data-placeholder="Select class..."
+                                      data-prevent-drop-up="true"
                                       data-values-array="$ctrl.classList"
                                       data-selected-item="$ctrl.item.kind"
                                       data-item-select-callback="$ctrl.onSelectClass(item)">
@@ -63,9 +64,23 @@
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.secret)">
+                <div class="field-label">Secret</div>
+                <igz-validating-input-field data-field-type="input"
+                                            data-input-name="itemSecret"
+                                            data-input-value="$ctrl.item.secret"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-is-required="true"
+                                            data-placeholder-text="Type secret..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="secret">
+                </igz-validating-input-field>
+            </div>
+            <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected()"
                  data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
-                <div class="field-label">{{attribute.name}}</div>
+                <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div>
                 <igz-validating-input-field data-field-type="input"
                                             data-input-name="item_{{attribute.name}}"
                                             data-input-value="$ctrl.getAttrValue(attribute.name)"

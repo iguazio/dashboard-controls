@@ -91,6 +91,9 @@
                          data-ng-click="$ctrl.sortTableByColumn('spec.runtime')">Runtime
                         <span class="sort-arrow"></span>
                     </div>
+                    <div class="igz-col-10 common-table-cell">
+                        Invocation URL
+                    </div>
                     <div data-ng-if="$ctrl.isDemoMode()"
                          class="igz-col-10 common-table-cell">
                         Last modified
@@ -115,6 +118,8 @@
                                 <div data-igz-show-hide-search-item="function">
                                     <ncl-function-collapsing-row data-function="function"
                                                                  data-project="$ctrl.project"
+                                                                 data-external-address="$ctrl.externalIPAddress"
+                                                                 data-functions-list="$ctrl.functions"
                                                                  data-action-handler-callback="$ctrl.handleAction(actionType, checkedItems)">
                                     </ncl-function-collapsing-row>
                                 </div>

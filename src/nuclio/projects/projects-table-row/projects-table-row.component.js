@@ -91,6 +91,9 @@
          */
         function deleteProject() {
             NuclioProjectsDataService.deleteProject(ctrl.project)
+                .then(function () {
+                    lodash.remove(ctrl.projectsList, ['metadata.name', ctrl.project.metadata.name]);
+                })
                 .catch(function (error) {
                     var errorMessages = {
                         403: 'You do not have permissions to delete this project.',

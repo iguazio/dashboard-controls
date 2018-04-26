@@ -21,6 +21,7 @@
         ctrl.action = null;
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isTestResultShown = false;
+        ctrl.isInvocationSuccess = false;
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -31,6 +32,7 @@
             value: false
         };
         ctrl.selectedFunctionEvent = null;
+        ctrl.testResult = {};
         ctrl.functionEvents = [];
         ctrl.rowIsCollapsed = {
             statusCode: false,
@@ -40,6 +42,7 @@
             deployBody: true
         };
 
+        ctrl.isDeployDisabled = false;
 
         ctrl.$onInit = onInit;
 
@@ -108,6 +111,7 @@
             }
             ctrl.functionEvents = [];
             ctrl.selectedFunctionEvent = lodash.isEmpty(ctrl.functionEvents) ? null : ctrl.functionEvents[0];
+            ctrl.requiredComponents = {};
 
             $q.all({
                 project: NuclioProjectsDataService.getProject($stateParams.projectId),
@@ -131,6 +135,8 @@
             }).catch(function () {
                 DialogsService.alert('Oops: Unknown error occurred');
             });
+
+            $scope.$on('change-state-deploy-button', changeStateDeployButton);
         }
 
         //
@@ -178,7 +184,7 @@
 
                             ctrl.isSplashShowed.value = false;
                         });
-                })
+                });
         }
 
         /**
@@ -216,32 +222,34 @@
                                 ctrl.isSplashShowed.value = false;
                             })
                     }
-                })
-
+                });
         }
 
         /**
          * Deploys changed version
          */
         function deployVersion() {
-            $rootScope.$broadcast('deploy-function-version');
+            if (!ctrl.isDeployDisabled) {
+                $rootScope.$broadcast('deploy-function-version');
 
-            setDeployResult('building');
+                setDeployResult('building');
 
-            if (!lodash.isEmpty($stateParams.functionData)) {
-                ctrl.version = $stateParams.functionData;
+                if (!lodash.isEmpty($stateParams.functionData)) {
+                    ctrl.version = $stateParams.functionData;
+                }
+
+                ctrl.version = lodash.omit(ctrl.version, 'status');
+                ctrl.isTestResultShown = false;
+                ctrl.isDeployResultShown = true;
+
+                lodash.assign(ctrl.rowIsCollapsed, {
+                    deployBlock: true,
+                    deployBody: false
+                });
+
+                NuclioFunctionsDataService.updateFunction(ctrl.version, ctrl.project.metadata.name)
+                    .then(pullFunctionState);
             }
-
-            ctrl.version = lodash.omit(ctrl.version, ['status', 'spec.image']);
-
-            ctrl.isDeployResultShown = true;
-            lodash.assign(ctrl.rowIsCollapsed, {
-                deployBlock: true,
-                deployBody: false
-            });
-
-            NuclioFunctionsDataService.updateFunction(ctrl.version, ctrl.project.metadata.name)
-                .then(pullFunctionState);
         }
 
         /**
@@ -268,37 +276,26 @@
          */
         function invokeFunction() {
             if (!lodash.isNil(ctrl.selectedFunctionEvent)) {
+                ctrl.isTestResultShown = false;
+
                 NuclioEventService.invokeFunction(ctrl.selectedFunctionEvent.eventData)
                     .then(function (response) {
-
-                        // TODO
-                        ctrl.testResult = response.data
+                        ctrl.testResult = {
+                            status: {
+                                state: response.xhrStatus,
+                                code: response.status
+                            },
+                            headers: response.config.headers,
+                            body: response.data
+                        };
+                        ctrl.isDeployResultShown = false;
+                        ctrl.isTestResultShown = true;
+                        ctrl.isInvocationSuccess = lodash.startsWith(response.status, '2');
                     })
                     .catch(function () {
+                        ctrl.isTestResultShown = false;
 
-                        // TODO: replace with real data
-                        lodash.defauldDeeps(ctrl.testResult, {
-                            status: {
-                                state: 'Succeeded',
-                                code: 'Lorem'
-                            },
-                            headers: {
-                                'Access-control-allow-origin': '*',
-                                'Date': '2018-02-05T17:07:48.509Z',
-                                'x-nuclio-logs': [],
-                                'Server': 'nuclio',
-                                'Content-Length': 5,
-                                'Content-Type': 'text/plain; charset=utf-8'
-                            },
-                            body: {
-                                'metadata': {
-                                    'name': 'name',
-                                    'namespace': 'nuclio'
-                                }
-                            }
-                        });
-
-                        ctrl.isTestResultShown = true;
+                        DialogsService.alert('Oops: Unknown error occurred');
                     });
             }
         }
@@ -359,7 +356,7 @@
         function onRowCollapse(row) {
             ctrl.rowIsCollapsed[row] = !ctrl.rowIsCollapsed[row];
 
-            $timeout(resizeVersionView);
+            $timeout(resizeVersionView, 350);
         }
 
         /**
@@ -393,21 +390,17 @@
          */
         function resizeVersionView() {
             var clientHeight = document.documentElement.clientHeight;
-            var headerBottom = angular.element(document).find('.ncl-navigation-tabs')[0];
+            var navigationTabs = angular.element(document).find('.ncl-navigation-tabs')[0];
             var contentView = angular.element(document).find('.ncl-edit-version-view')[0];
             var contentBlock = angular.element(document).find('.ncl-version')[0];
-            var headerRect = headerBottom.getBoundingClientRect();
-            var contentBlockRect = contentBlock.getBoundingClientRect();
-            var contentHeight = clientHeight - headerRect.bottom;
-            var contentBlockHeight = contentBlockRect.bottom - contentBlockRect.top;
+            var navigationRect = navigationTabs.getBoundingClientRect();
+            var contentHeight = clientHeight - navigationRect.bottom;
 
             contentView = angular.element(contentView);
             contentBlock = angular.element(contentBlock);
 
-            if (contentBlockHeight < contentHeight) {
-                contentView.css({'height': contentHeight + 'px'});
-                contentBlock.css({'height': contentHeight + 'px'});
-            }
+            contentView.css({'height': contentHeight + 'px'});
+            contentBlock.css({'height': contentHeight + 'px'});
         }
 
         /**
@@ -424,6 +417,30 @@
             });
 
             ctrl.selectedFunctionEvent = ctrl.functionEvents[0];
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Disable deploy button if forms invalid
+         * @param {object} event
+         * @param {object} args[
+         */
+        function changeStateDeployButton(event, args) {
+            if (args.component) {
+                ctrl.requiredComponents[args.component] = args.isDisabled;
+                ctrl.isDeployDisabled = false;
+
+                lodash.forOwn(ctrl.requiredComponents, function (value, key) {
+                    if (ctrl.requiredComponents[key] === true) {
+                        ctrl.isDeployDisabled = true;
+                    }
+                });
+            } else {
+                ctrl.isDeployDisabled = args.isDisabled;
+            }
         }
 
         /**

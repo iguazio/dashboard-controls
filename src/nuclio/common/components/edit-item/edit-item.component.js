@@ -36,10 +36,20 @@
         ctrl.isClassSelected = isClassSelected;
         ctrl.onSubmitForm = onSubmitForm;
         ctrl.onSelectClass = onSelectClass;
+        ctrl.convertFromCamelCase = convertFromCamelCase;
 
         //
         // Hook methods
         //
+
+        /**
+         * Converts attribute names in class list from camel case
+         * @param {String} string whitch must be converted
+         */
+
+        function convertFromCamelCase(str) {
+            return str.replace(/([a-z])([A-Z])/g, '$1 $2');
+        }
 
         /**
          * Initialization method
@@ -111,7 +121,7 @@
          * @param {Object} item - item class\kind
          */
         function onSelectClass(item) {
-            ctrl.item = lodash.omit(ctrl.item, ['maxWorkers', 'url']);
+            ctrl.item = lodash.omit(ctrl.item, ['maxWorkers', 'url', 'secret']);
 
             var nameDirty = ctrl.editItemForm.itemName.$dirty;
             var nameInvalid = ctrl.editItemForm.itemName.$invalid;
@@ -126,6 +136,10 @@
 
             if (!lodash.isNil(item.maxWorkers)) {
                 ctrl.item.maxWorkers = '';
+            }
+
+            if (!lodash.isNil(item.secret)) {
+                ctrl.item.secret = '';
             }
 
             lodash.each(item.attributes, function (attribute) {

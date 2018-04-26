@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationLabelsController
         });
 
-    function NclVersionConfigurationLabelsController($element, $timeout, lodash, PreventDropdownCutOffService) {
+    function NclVersionConfigurationLabelsController($element, $rootScope, $timeout, lodash, PreventDropdownCutOffService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {
@@ -36,18 +36,25 @@
          * Initialization method
          */
         function onInit() {
-            var labels =  lodash.get(ctrl.version, 'metadata.labels', []);
+            var labels = lodash.get(ctrl.version, 'metadata.labels', []);
 
-            ctrl.labels = lodash.map(labels, function (value, key) {
-                return {
-                    name: key,
-                    value: value,
-                    ui: {
-                        editModeActive: false,
-                        isFormValid: false
+            ctrl.labels = lodash.chain(labels)
+                .map(function (value, key) {
+                    if (!lodash.includes(key, 'nuclio.io/')) {
+                        return {
+                            name: key,
+                            value: value,
+                            ui: {
+                                editModeActive: false,
+                                isFormValid: false,
+                                name: 'label'
+                            }
+                        }
                     }
-                }
-            });
+                })
+                .compact()
+                .value();
+            ctrl.labels = lodash.compact(ctrl.labels);
         }
 
         /**
@@ -73,7 +80,8 @@
                     value: '',
                     ui: {
                         editModeActive: true,
-                        isFormValid: false
+                        isFormValid: false,
+                        name: 'label'
                     }
                 });
                 event.stopPropagation();
@@ -120,11 +128,23 @@
          * Updates function`s labels
          */
         function updateLabels() {
-            var newLabels = {};
+            var labels = lodash.get(ctrl.version, 'metadata.labels', []);
 
+            var nuclioLabels = [];
+            lodash.forEach(labels, function (value, key) {
+                if (lodash.includes(key, 'nuclio.io/')) {
+                    nuclioLabels[key] = value;
+                }
+            });
+
+            var newLabels = {};
             lodash.forEach(ctrl.labels, function (label) {
+                if (!label.ui.isFormValid) {
+                    $rootScope.$broadcast('change-state-deploy-button', {component: label.ui.name, isDisabled: true});
+                }
                 newLabels[label.name] = label.value;
             });
+            newLabels = lodash.merge(newLabels, nuclioLabels);
 
             lodash.set(ctrl.version, 'metadata.labels', newLabels);
         }

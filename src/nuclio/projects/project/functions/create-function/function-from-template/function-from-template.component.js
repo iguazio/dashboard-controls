@@ -12,13 +12,12 @@
         });
 
     function FunctionFromTemplateController($interval, $state, $stateParams, $q, lodash, DialogsService, FunctionsService,
-                                            ValidatingPatternsService, NuclioFunctionsDataService, NuclioProjectsDataService) {
+                                            ValidatingPatternsService, NuclioFunctionsDataService) {
         var ctrl = this;
-        var interval = null;
 
         ctrl.functionData = {};
         ctrl.selectedTemplate = '';
-        ctrl.templates = [];
+        ctrl.templates = {};
 
         ctrl.$onInit = onInit;
 
@@ -54,7 +53,8 @@
             event.preventDefault();
 
             $state.go('app.project.functions', {
-                projectId: ctrl.project.metadata.name
+                projectId: ctrl.project.metadata.name,
+                createCancelled: true
             });
         }
 
@@ -66,6 +66,8 @@
 
             // create function only when form is valid
             if (ctrl.functionFromTemplateForm.$valid && !lodash.isNil(ctrl.selectedTemplate)) {
+                ctrl.toggleSplashScreen({value: true});
+
                 lodash.set(ctrl, 'functionData.metadata.namespace', ctrl.project.metadata.namespace);
 
                 $state.go('app.project.function.edit.code', {
@@ -103,15 +105,29 @@
         /**
          * Selects template.
          * Sets new template as selected
-         * @param {Object} templateName - template to be set
+         * @param {Object} templateName - name of the template to be set
          */
         function selectTemplate(templateName) {
             if (!lodash.isEqual(templateName, ctrl.selectedTemplate)) {
                 ctrl.selectedTemplate = templateName;
 
+                // set new runtime
                 lodash.set(ctrl, 'functionData.spec.runtime', ctrl.templates[ctrl.selectedTemplate].spec.runtime);
+
+                // set new resources
+                lodash.set(ctrl, 'functionData.spec.resources', ctrl.templates[ctrl.selectedTemplate].spec.resources);
+
+                // set new handler
+                lodash.set(ctrl, 'functionData.spec.handler',
+                    FunctionsService.getHandler(ctrl.templates[ctrl.selectedTemplate].spec.runtime));
+
+                // set new functionSourceCode
                 lodash.set(ctrl, 'functionData.spec.build.functionSourceCode',
                     ctrl.templates[ctrl.selectedTemplate].spec.build.functionSourceCode);
+
+                // set new build commands
+                lodash.set(ctrl, 'functionData.spec.build.commands',
+                    ctrl.templates[ctrl.selectedTemplate].spec.build.commands);
             }
         }
 
@@ -134,8 +150,9 @@
 
             // gets all available function templates
             NuclioFunctionsDataService.getTemplates()
-                .then(function (repsonse) {
-                    ctrl.templates = repsonse.data;
+                .then(function (response) {
+                    convertFunctionTemplates(response.data)
+
                     ctrl.selectedTemplate = getSelectedTemplate();
                     var selectedTemplate = ctrl.templates[ctrl.selectedTemplate];
 
@@ -145,20 +162,34 @@
                             namespace: ''
                         },
                         spec: {
+                            resources: selectedTemplate.spec.resources,
                             handler: FunctionsService.getHandler(selectedTemplate.spec.runtime),
                             runtime: selectedTemplate.spec.runtime,
                             build: {
-                                functionSourceCode: selectedTemplate.spec.build.functionSourceCode
+                                functionSourceCode: selectedTemplate.spec.build.functionSourceCode,
+                                commands: selectedTemplate.spec.build.commands
                             }
                         }
                     };
                 })
-                .catch(function () {
+                .catch(function (error) {
                     DialogsService.alert('Oops: Unknown error occurred');
                 })
                 .finally(function () {
                     ctrl.toggleSplashScreen({value: false});
                 });
+        }
+
+        /**
+         * Converts function template to be more readable
+         * @param {Object} templates - templates to be convert
+         */
+        function convertFunctionTemplates(templates) {
+            lodash.forOwn(templates, function (value, key) {
+                var title = key.split(':')[0] + ' (' + value.spec.runtime + ')';
+
+                ctrl.templates[title] = value;
+            });
         }
     }
 }());

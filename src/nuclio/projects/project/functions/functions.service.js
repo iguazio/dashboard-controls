@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('FunctionsService', FunctionsService);
 
-    function FunctionsService($stateParams) {
+    function FunctionsService() {
         return {
             getClassesList: getClassesList,
             getHandler: getHandler,
@@ -58,7 +58,7 @@
                     },
                     {
                         id: 'nats',
-                        name: 'Nats',
+                        name: 'NATS',
                         url: 'string',
                         attributes: [
                             {
@@ -154,9 +154,26 @@
                         id: 'v3io',
                         name: 'V3io',
                         url: 'string',
+                        secret: 'string'
+                    },
+                    {
+                        id: 'eventhub',
+                        name: 'Eventhub',
                         attributes: [
                             {
-                                name: 'secret',
+                                name: 'sharedAccessKeyName',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'sharedAccessKeyValue',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'namespace',
+                                pattern: 'string'
+                            },
+                            {
+                                name: 'eventHubName',
                                 pattern: 'string'
                             }
                         ]

@@ -10,13 +10,14 @@
             controller: NclVersionTriggerController
         });
 
-    function NclVersionTriggerController($stateParams, lodash, DialogsService) {
+    function NclVersionTriggerController($rootScope, $stateParams, lodash, DialogsService) {
         var ctrl = this;
 
         ctrl.isCreateModeActive = false;
         ctrl.triggers = [];
 
         ctrl.$onInit = onInit;
+        ctrl.$onDestroy = onDestroy;
         ctrl.createTrigger = createTrigger;
         ctrl.editTriggerCallback = editTriggerCallback;
         ctrl.handleAction = handleAction;
@@ -43,6 +44,13 @@
             });
         }
 
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: false});
+        }
+
         //
         // Public methods
         //
@@ -60,11 +68,12 @@
                     attributes: {},
                     ui: {
                         editModeActive: true,
-                        expanded: true
+                        expandable: false
                     }
                 });
+                $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: true});
+                event.stopPropagation();
             }
-            event.stopPropagation();
         }
 
         /**
@@ -75,7 +84,8 @@
             ctrl.handleAction('update', item);
 
             item.ui.editModeActive = false;
-            item.ui.expanded = false;
+
+            $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: false});
         }
 
         /**
@@ -93,7 +103,6 @@
                 if (!isTriggerInEditMode()) {
                     lodash.assign(item.ui, {
                         editModeActive: true,
-                        expanded: true,
                         expandable: false
                     });
                 }

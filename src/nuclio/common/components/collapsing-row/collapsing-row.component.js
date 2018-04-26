@@ -37,7 +37,6 @@
             lodash.defaultsDeep(ctrl.item, {
                 ui: {
                     editModeActive: false,
-                    expanded: false,
                     expandable: true
                 }
             });
@@ -67,9 +66,10 @@
         /**
          * Changes item's expanded state
          */
-        function onCollapse() {
-            if (ctrl.item.ui.expandable) {
-                ctrl.item.ui.expanded = !ctrl.item.ui.expanded;
+        function onCollapse(event) {
+            if (!ctrl.item.ui.editModeActive) {
+                ctrl.actionHandlerCallback({actionType: 'edit', selectedItem: ctrl.item})
+                event.stopPropagation();
             }
         }
 
@@ -83,12 +83,6 @@
          */
         function initActions() {
             return [
-                {
-                    label: 'Edit',
-                    id: 'edit',
-                    icon: 'igz-icon-edit',
-                    active: true
-                },
                 {
                     label: 'Delete',
                     id: 'delete',

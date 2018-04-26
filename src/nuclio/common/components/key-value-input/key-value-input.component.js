@@ -15,7 +15,7 @@
             controller: NclKeyValueInputController
         });
 
-    function NclKeyValueInputController($document, $element, $scope, lodash, EventHelperService) {
+    function NclKeyValueInputController($document, $element, $rootScope, $scope, $timeout, lodash, EventHelperService) {
         var ctrl = this;
 
         ctrl.data = {};
@@ -25,6 +25,7 @@
         ctrl.$onDestroy = onDestroy;
 
         ctrl.closeDropdown = closeDropdown;
+        ctrl.onEditInput = onEditInput;
         ctrl.getInputValue = getInputValue;
         ctrl.getType = getType;
         ctrl.inputValueCallback = inputValueCallback;
@@ -56,6 +57,8 @@
         function onDestroy() {
             $document.off('click', saveChanges);
             $document.off('keypress', saveChanges);
+
+            $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.data.ui.name, isDisabled: false});
         }
 
         //
@@ -116,16 +119,8 @@
          * @param {string} actionType - a type of action
          */
         function onFireAction(actionType) {
-            if (actionType === 'edit') {
-                ctrl.editMode = true;
-
-                $document.on('click', saveChanges);
-                $document.on('keypress', saveChanges);
-            } else {
-                ctrl.actionHandlerCallback({actionType: actionType, index: ctrl.itemIndex});
-
-                ctrl.editMode = false;
-            }
+            ctrl.actionHandlerCallback({actionType: actionType, index: ctrl.itemIndex});
+            ctrl.editMode = false;
         }
 
         /**
@@ -154,16 +149,18 @@
          * On open default dropdown
          */
         function openDropdown() {
-            var parent = angular.element(document).find('.' + ctrl.listClass)[0];
-            var dropdown = angular.element(document).find('.' + ctrl.listClass + ' .default-dropdown-container')[0];
-            var parentRect = parent.getBoundingClientRect();
-            var dropdownRect = dropdown.getBoundingClientRect();
+            $timeout(function () {
+                var parent = angular.element(document).find('.' + ctrl.listClass)[0];
+                var dropdown = angular.element(document).find('.' + ctrl.listClass + ' .default-dropdown-container')[0];
+                var parentRect = parent.getBoundingClientRect();
+                var dropdownRect = dropdown.getBoundingClientRect();
 
-            parent = angular.element(parent);
+                parent = angular.element(parent);
 
-            if (dropdownRect.bottom > parentRect.bottom) {
-                parent.css({'padding-bottom': dropdownRect.bottom - parentRect.bottom + 'px'});
-            }
+                if (dropdownRect.bottom > parentRect.bottom) {
+                    parent.css({'padding-bottom': dropdownRect.bottom - parentRect.bottom + 'px'});
+                }
+            });
         }
 
         /**
@@ -172,6 +169,16 @@
         function closeDropdown() {
             var parent = angular.element(angular.element(document).find('.' + ctrl.listClass)[0]);
             parent.css({'padding-bottom': '0px'});
+        }
+
+        /**
+         * Enables edit mode
+         */
+        function onEditInput() {
+            ctrl.editMode = true;
+
+            $document.on('click', saveChanges);
+            $document.on('keypress', saveChanges);
         }
 
         //
@@ -205,7 +212,7 @@
          */
         function getValueField() {
             return !ctrl.useType || ctrl.getType() === 'value' ? 'value' :
-                ctrl.getType() === 'configmap'              ? 'valueFrom.configMapKeyRef' : 'valueFrom.secretKeyRef';
+                   ctrl.getType() === 'configmap'              ? 'valueFrom.configMapKeyRef' : 'valueFrom.secretKeyRef';
         }
 
         /**
@@ -214,12 +221,6 @@
          */
         function initActions() {
             return [
-                {
-                    label: 'Edit',
-                    id: 'edit',
-                    icon: 'igz-icon-edit',
-                    active: true
-                },
                 {
                     label: 'Delete',
                     id: 'delete',
@@ -245,8 +246,11 @@
                 if (ctrl.keyValueInputForm.$valid) {
                     ctrl.data.ui = {
                         editModeActive: false,
-                        isFormValid: true
+                        isFormValid: true,
+                        name: ctrl.data.ui.name
                     };
+                    $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.data.ui.name, isDisabled: false});
+
                     $scope.$evalAsync(function () {
                         ctrl.editMode = false;
 
@@ -255,6 +259,13 @@
 
                         ctrl.changeDataCallback({newData: ctrl.data, index: ctrl.itemIndex});
                     });
+                } else {
+                    ctrl.data.ui = {
+                        editModeActive: true,
+                        isFormValid: false,
+                        name: ctrl.data.ui.name
+                    };
+                    $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.data.ui.name, isDisabled: true});
                 }
             }
         }

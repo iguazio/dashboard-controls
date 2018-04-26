@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationAnnotationsController
         });
 
-    function NclVersionConfigurationAnnotationsController($element, $stateParams, lodash, PreventDropdownCutOffService) {
+    function NclVersionConfigurationAnnotationsController($element, $rootScope, $stateParams, lodash, PreventDropdownCutOffService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {
@@ -48,7 +48,8 @@
                     value: value,
                     ui: {
                         editModeActive: false,
-                        isFormValid: false
+                        isFormValid: false,
+                        name: 'annotation'
                     }
                 };
             });
@@ -77,7 +78,8 @@
                     value: '',
                     ui: {
                         editModeActive: true,
-                        isFormValid: false
+                        isFormValid: false,
+                        name: 'annotation'
                     }
                 });
                 event.stopPropagation();
@@ -127,6 +129,9 @@
             var newAnnotations = {};
 
             lodash.forEach(ctrl.annotations, function (annotation) {
+                if (!annotation.ui.isFormValid) {
+                    $rootScope.$broadcast('change-state-deploy-button', {component: annotation.ui.name, isDisabled: true})
+                }
                 newAnnotations[annotation.name] = annotation.value;
             });
 
