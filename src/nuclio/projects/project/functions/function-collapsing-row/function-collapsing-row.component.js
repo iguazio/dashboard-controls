@@ -7,13 +7,14 @@
                 function: '<',
                 project: '<',
                 functionsList: '<',
-                actionHandlerCallback: '&'
+                actionHandlerCallback: '&',
+                externalAddress: '<'
             },
             templateUrl: 'nuclio/projects/project/functions/function-collapsing-row/function-collapsing-row.tpl.html',
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController($state, lodash, NuclioFunctionsDataService, NuclioHeaderService, DialogsService) {
+    function NclFunctionCollapsingRowController($state, lodash, NuclioClientService, NuclioFunctionsDataService, NuclioHeaderService, DialogsService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -22,6 +23,7 @@
             project: ctrl.project.spec.displayName,
             function: ctrl.function.metadata.name
         };
+        ctrl.invocationURL = '';
 
         ctrl.$onInit = onInit;
 
@@ -43,6 +45,8 @@
                     delete: deleteFunction
                 }
             });
+
+            ctrl.invocationURL = lodash.isNil(ctrl.function.status.httpPort) ? 'Not yet deployed' : 'http://' + ctrl.externalAddress + ':' + ctrl.function.status.httpPort;
 
             ctrl.actions = initActions();
         }

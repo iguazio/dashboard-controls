@@ -8,7 +8,7 @@
         });
 
     function FunctionsController($filter, $q, $rootScope, $scope, $state, $stateParams, $timeout, lodash, CommonTableService,
-                                 ConfigService, NuclioHeaderService, NuclioProjectsDataService, NuclioFunctionsDataService) {
+                                 ConfigService, NuclioClientService, NuclioHeaderService, NuclioProjectsDataService, NuclioFunctionsDataService) {
         var ctrl = this;
         var title = {}; // breadcrumbs config
 
@@ -59,6 +59,7 @@
             }
         ];
         ctrl.sortedColumnName = 'metadata.name';
+        ctrl.externalIPAddress = '';
 
         ctrl.$onInit = onInit;
 
@@ -98,6 +99,10 @@
 
                         NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
                     });
+
+                getExternalIPAddresses().then(function (response) {
+                    ctrl.externalIPAddress = response.data.externalIPAddresses.addresses[0];
+                });
             } else {
                 ctrl.refreshFunctions();
             }
@@ -338,6 +343,18 @@
                     };
                 }
             }
+        }
+
+        function getExternalIPAddresses() {
+            return NuclioClientService.makeRequest(
+                {
+                    method: 'GET',
+                    url: NuclioClientService.buildUrlWithPath('external_ip_addresses'),
+                    withCredentials: false
+                })
+                .then(function (response) {
+                    return response;
+                });
         }
     }
 }());

@@ -29,6 +29,9 @@
             <div class="igz-col-10 common-table-cell">
                 {{$ctrl.function.spec.runtime}}
             </div>
+            <div class="igz-col-11 common-table-cell">
+                {{$ctrl.invocationURL}}
+            </div>
             <div data-ng-if="$ctrl.isDemoMode()"
                  class="igz-col-10 common-table-cell">
                 {{$ctrl.function.attr.last_modified | date:"MMM dd, yyyy"}}

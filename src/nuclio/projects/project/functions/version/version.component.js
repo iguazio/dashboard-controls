@@ -234,6 +234,8 @@
 
             ctrl.version = lodash.omit(ctrl.version, 'status');
 
+            ctrl.isTestResultShown = false;
+
             ctrl.isDeployResultShown = true;
             lodash.assign(ctrl.rowIsCollapsed, {
                 deployBlock: true,
@@ -298,6 +300,8 @@
                             }
                         });
 
+                        ctrl.isDeployResultShown = false;
+
                         ctrl.isTestResultShown = true;
                     });
             }
@@ -359,7 +363,7 @@
         function onRowCollapse(row) {
             ctrl.rowIsCollapsed[row] = !ctrl.rowIsCollapsed[row];
 
-            $timeout(resizeVersionView);
+            $timeout(resizeVersionView, 350);
         }
 
         /**
@@ -393,21 +397,17 @@
          */
         function resizeVersionView() {
             var clientHeight = document.documentElement.clientHeight;
-            var headerBottom = angular.element(document).find('.ncl-navigation-tabs')[0];
+            var navigationTabs = angular.element(document).find('.ncl-navigation-tabs')[0];
             var contentView = angular.element(document).find('.ncl-edit-version-view')[0];
             var contentBlock = angular.element(document).find('.ncl-version')[0];
-            var headerRect = headerBottom.getBoundingClientRect();
-            var contentBlockRect = contentBlock.getBoundingClientRect();
-            var contentHeight = clientHeight - headerRect.bottom;
-            var contentBlockHeight = contentBlockRect.bottom - contentBlockRect.top;
+            var navigationRect = navigationTabs.getBoundingClientRect();
+            var contentHeight = clientHeight - navigationRect.bottom;
 
             contentView = angular.element(contentView);
             contentBlock = angular.element(contentBlock);
 
-            if (contentBlockHeight < contentHeight) {
-                contentView.css({'height': contentHeight + 'px'});
-                contentBlock.css({'height': contentHeight + 'px'});
-            }
+            contentView.css({'height': contentHeight + 'px'});
+            contentBlock.css({'height': contentHeight + 'px'});
         }
 
         /**
