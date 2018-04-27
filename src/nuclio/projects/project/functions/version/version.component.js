@@ -238,7 +238,9 @@
                     ctrl.version = $stateParams.functionData;
                 }
 
-                ctrl.version = lodash.omit(ctrl.version, ['status', 'spec.image']);
+                var versionCopy = angular.copy(ctrl.version);
+                versionCopy = lodash.omit(ctrl.version, ['status', 'spec.image']);
+
                 ctrl.isTestResultShown = false;
                 ctrl.isDeployResultShown = true;
 
@@ -247,7 +249,7 @@
                     deployBody: false
                 });
 
-                NuclioFunctionsDataService.updateFunction(ctrl.version, ctrl.project.metadata.name)
+                NuclioFunctionsDataService.updateFunction(versionCopy, ctrl.project.metadata.name)
                     .then(pullFunctionState);
             }
         }
