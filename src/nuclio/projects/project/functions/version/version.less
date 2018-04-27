@@ -1,7 +1,17 @@
 .ncl-edit-version {
+    background-color: @pale-white;
     position: relative;
     display: flex;
     flex-direction: column;
+    height: 100%;
+
+    .file-pane-viewport {
+        top: 56px;
+
+        .ui-layout-row .ui-splitbar {
+            background: @ncl-silver;
+        }
+    }
 
     .igz-info-page-actions-bar {
         position: relative;
@@ -180,7 +190,7 @@
                 .duskThree(0.64);
                 position: absolute;
                 right: 23px;
-                top: 5px;
+                top: 20px;
                 color: @color;
                 cursor: pointer;
             }

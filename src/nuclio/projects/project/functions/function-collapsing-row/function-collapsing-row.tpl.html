@@ -13,11 +13,11 @@
             <div class="igz-col-25 common-table-cell function-name">
                 {{$ctrl.function.metadata.name}}
             </div>
-            <div class="igz-col-25 common-table-cell">
+            <div class="igz-col-20 common-table-cell">
                 {{$ctrl.function.spec.description}}
             </div>
             <div class="igz-col-10 common-table-cell">
-                {{$ctrl.function.status.state}}
+                {{$ctrl.convertedStatusState}}
             </div>
             <div class="igz-col-10 common-table-cell">
                 {{$ctrl.function.spec.replicas}}
@@ -29,8 +29,11 @@
             <div class="igz-col-10 common-table-cell">
                 {{$ctrl.function.spec.runtime}}
             </div>
-            <div class="igz-col-11 common-table-cell">
-                {{$ctrl.invocationURL}}
+            <div class="igz-col-15 common-table-cell"
+                 data-tooltip="{{$ctrl.invocationURL}}"
+                 data-tooltip-append-to-body="true"
+                 data-tooltip-placement="top">
+                <span class="common-table-cell-content">{{$ctrl.invocationURL}}</span>
             </div>
             <div data-ng-if="$ctrl.isDemoMode()"
                  class="igz-col-10 common-table-cell">

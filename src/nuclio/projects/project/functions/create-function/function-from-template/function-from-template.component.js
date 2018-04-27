@@ -112,10 +112,13 @@
                 ctrl.selectedTemplate = templateName;
 
                 // set new runtime
-                lodash.set(ctrl, 'functionData.spec.runtime', ctrl.templates[ctrl.selectedTemplate].spec.runtime);
+                lodash.set(ctrl, 'functionData.spec.description', ctrl.templates[ctrl.selectedTemplate].spec.description);
 
                 // set new resources
                 lodash.set(ctrl, 'functionData.spec.resources', ctrl.templates[ctrl.selectedTemplate].spec.resources);
+
+                // set new description
+                lodash.set(ctrl, 'functionData.spec.runtime', ctrl.templates[ctrl.selectedTemplate].spec.runtime);
 
                 // set new handler
                 lodash.set(ctrl, 'functionData.spec.handler',
@@ -128,6 +131,10 @@
                 // set new build commands
                 lodash.set(ctrl, 'functionData.spec.build.commands',
                     ctrl.templates[ctrl.selectedTemplate].spec.build.commands);
+
+                // set new baseImage
+                lodash.set(ctrl, 'functionData.spec.build.baseImage',
+                    ctrl.templates[ctrl.selectedTemplate].spec.build.baseImage);
             }
         }
 
@@ -151,7 +158,7 @@
             // gets all available function templates
             NuclioFunctionsDataService.getTemplates()
                 .then(function (response) {
-                    convertFunctionTemplates(response.data)
+                    convertFunctionTemplates(response.data);
 
                     ctrl.selectedTemplate = getSelectedTemplate();
                     var selectedTemplate = ctrl.templates[ctrl.selectedTemplate];
@@ -162,6 +169,7 @@
                             namespace: ''
                         },
                         spec: {
+                            description: selectedTemplate.spec.description,
                             resources: selectedTemplate.spec.resources,
                             handler: FunctionsService.getHandler(selectedTemplate.spec.runtime),
                             runtime: selectedTemplate.spec.runtime,
@@ -172,7 +180,7 @@
                         }
                     };
                 })
-                .catch(function (error) {
+                .catch(function () {
                     DialogsService.alert('Oops: Unknown error occurred');
                 })
                 .finally(function () {

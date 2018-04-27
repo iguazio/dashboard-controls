@@ -11,8 +11,9 @@
         var ctrl = this;
 
         ctrl.mainHeaderTitle = {};
+        ctrl.versionDeployed = false;
         ctrl.dialogParams = {
-            message: 'You have unsaved changes. Leaving this page will discard your changes.',
+            message: 'Leaving this page will discard your changes.',
             yesLabel: 'Leave',
             noLabel: 'Don\'t leave'
         };
@@ -34,6 +35,7 @@
             setMainHeaderTitle();
 
             $scope.$on('update-main-header-title', setMainHeaderTitle);
+            $scope.$on('change-version-deployed-state', setVersionDeployed);
             $scope.$on('$stateChangeSuccess', onStateChangeSuccess);
         }
 
@@ -52,28 +54,14 @@
          * Changes state when the main header title is clicked
          */
         function goToProjectsList() {
-            if (lodash.includes(ctrl.mainHeaderTitle.state, 'app.project.function.edit') && $stateParams.isNewFunction) {
-                DialogsService.confirm(ctrl.dialogParams.message, ctrl.dialogParams.yesLabel, ctrl.dialogParams.noLabel, ctrl.dialogParams.type)
-                    .then(function () {
-                        $state.go('app.projects');
-                    });
-            } else {
-                $state.go('app.projects');
-            }
+            warnBeforeLeave('app.projects');
         }
 
         /**
          * Changes state when the Project subtitle is clicked
          */
         function goToFunctionsList() {
-            if (lodash.includes(ctrl.mainHeaderTitle.state, 'app.project.function.edit') && $stateParams.isNewFunction) {
-                DialogsService.confirm(ctrl.dialogParams.message, ctrl.dialogParams.yesLabel, ctrl.dialogParams.noLabel, ctrl.dialogParams.type)
-                    .then(function () {
-                        $state.go('app.project.functions');
-                    });
-            } else {
-                $state.go('app.project.functions');
-            }
+            warnBeforeLeave('app.project.functions');
         }
 
         //
@@ -113,6 +101,30 @@
                     title: toState.data.mainHeaderTitle
                 };
             }
+        }
+
+        /**
+         *
+         * @param {string} goToState - state to go
+         */
+        function warnBeforeLeave(goToState) {
+            if (lodash.includes(ctrl.mainHeaderTitle.state, 'app.project.function.edit') && $stateParams.isNewFunction && !ctrl.versionDeployed) {
+                DialogsService.confirm(ctrl.dialogParams.message, ctrl.dialogParams.yesLabel, ctrl.dialogParams.noLabel, ctrl.dialogParams.type)
+                    .then(function () {
+                        $state.go(goToState);
+                    });
+            } else {
+                $state.go(goToState);
+            }
+        }
+
+        /**
+         * Dynamically set version deployed state
+         * @param {Object} [event]
+         * @param {Object} [data]
+         */
+        function setVersionDeployed(event, data) {
+            ctrl.versionDeployed = data.isDeployed;
         }
     }
 }());
