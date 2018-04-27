@@ -39,20 +39,20 @@
             var labels = lodash.get(ctrl.version, 'metadata.labels', []);
 
             ctrl.labels = lodash.chain(labels)
+                .reject(function (value, key) {
+                    return lodash.startsWith(key, 'nuclio.io/');
+                })
                 .map(function (value, key) {
-                    if (!lodash.includes(key, 'nuclio.io/')) {
-                        return {
-                            name: key,
-                            value: value,
-                            ui: {
-                                editModeActive: false,
-                                isFormValid: false,
-                                name: 'label'
-                            }
+                    return {
+                        name: key,
+                        value: value,
+                        ui: {
+                            editModeActive: false,
+                            isFormValid: false,
+                            name: 'label'
                         }
                     }
                 })
-                .compact()
                 .value();
             ctrl.labels = lodash.compact(ctrl.labels);
         }
@@ -74,18 +74,20 @@
          * Adds new label
          */
         function addNewLabel(event) {
-            if (ctrl.labels.length < 1 || lodash.last(ctrl.labels).ui.isFormValid) {
-                ctrl.labels.push({
-                    name: '',
-                    value: '',
-                    ui: {
-                        editModeActive: true,
-                        isFormValid: false,
-                        name: 'label'
-                    }
-                });
-                event.stopPropagation();
-            }
+            $timeout(function () {
+                if (ctrl.labels.length < 1 || lodash.last(ctrl.labels).ui.isFormValid) {
+                    ctrl.labels.push({
+                        name: '',
+                        value: '',
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'label'
+                        }
+                    });
+                    event.stopPropagation();
+                }
+            }, 50);
         }
 
         /**
@@ -130,11 +132,8 @@
         function updateLabels() {
             var labels = lodash.get(ctrl.version, 'metadata.labels', []);
 
-            var nuclioLabels = [];
-            lodash.forEach(labels, function (value, key) {
-                if (lodash.includes(key, 'nuclio.io/')) {
-                    nuclioLabels[key] = value;
-                }
+            var nuclioLabels = lodash.pickBy(labels, function (value, key) {
+                return lodash.includes(key, 'nuclio.io/');
             });
 
             var newLabels = {};

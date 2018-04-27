@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationAnnotationsController
         });
 
-    function NclVersionConfigurationAnnotationsController($element, $rootScope, $stateParams, lodash, PreventDropdownCutOffService) {
+    function NclVersionConfigurationAnnotationsController($element, $rootScope, $stateParams, $timeout, lodash, PreventDropdownCutOffService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {
@@ -72,18 +72,20 @@
          * Adds new annotation
          */
         function addNewAnnotation(event) {
-            if (ctrl.annotations.length < 1 || lodash.last(ctrl.annotations).ui.isFormValid) {
-                ctrl.annotations.push({
-                    name: '',
-                    value: '',
-                    ui: {
-                        editModeActive: true,
-                        isFormValid: false,
-                        name: 'annotation'
-                    }
-                });
-                event.stopPropagation();
-            }
+            $timeout(function () {
+                if (ctrl.annotations.length < 1 || lodash.last(ctrl.annotations).ui.isFormValid) {
+                    ctrl.annotations.push({
+                        name: '',
+                        value: '',
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'annotation'
+                        }
+                    });
+                    event.stopPropagation();
+                }
+            }, 50);
         }
 
         /**

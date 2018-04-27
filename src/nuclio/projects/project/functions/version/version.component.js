@@ -43,6 +43,7 @@
         };
 
         ctrl.isDeployDisabled = false;
+        ctrl.isLayoutCollapsed = true;
 
         ctrl.$onInit = onInit;
 
@@ -51,6 +52,7 @@
         ctrl.deployVersion = deployVersion;
         ctrl.onSelectFunctionEvent = onSelectFunctionEvent;
         ctrl.getDeployStatusState = getDeployStatusState;
+        ctrl.checkValidDeployState = checkValidDeployState;
         ctrl.invokeFunction = invokeFunction;
         ctrl.toggleDeployResult = toggleDeployResult;
         ctrl.toggleTestResult = toggleTestResult;
@@ -98,7 +100,7 @@
                     uiRoute: 'app.project.function.edit.configuration'
                 },
                 {
-                    tabName: 'Trigger',
+                    tabName: 'Triggers',
                     uiRoute: 'app.project.function.edit.trigger'
                 }
             ];
@@ -137,6 +139,8 @@
             });
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
+
+            ctrl.isLayoutCollapsed = true;
         }
 
         //
@@ -230,6 +234,7 @@
          */
         function deployVersion() {
             if (!ctrl.isDeployDisabled) {
+                ctrl.isFunctionDeployed = false;
                 $rootScope.$broadcast('deploy-function-version');
 
                 setDeployResult('building');
@@ -249,6 +254,8 @@
                     deployBody: false
                 });
 
+                ctrl.isLayoutCollapsed = false;
+
                 NuclioFunctionsDataService.updateFunction(versionCopy, ctrl.project.metadata.name)
                     .then(pullFunctionState);
             }
@@ -263,6 +270,16 @@
             return state === 'ready'    ? 'Successfully deployed' :
                    state === 'error'    ? 'Failed to deploy'      :
                    state === 'building' ? 'Deploying...'          : '';
+        }
+
+        /**
+         * Checks if state of deploy is valid
+         * @returns {boolean}
+         */
+        function checkValidDeployState() {
+            var validStates = ['building', 'waitingForResourceConfiguration', 'waitingForBuild', 'configuringResources'];
+
+            return lodash.includes(validStates, ctrl.deployResult.status.state);
         }
 
         /**
@@ -282,22 +299,22 @@
 
                 NuclioEventService.invokeFunction(ctrl.selectedFunctionEvent.eventData)
                     .then(function (response) {
+                        return $q.reject(response);
+                    })
+                    .catch(function (invocationData) {
                         ctrl.testResult = {
                             status: {
-                                state: response.xhrStatus,
-                                code: response.status
+                                state: invocationData.xhrStatus,
+                                code: invocationData.status
                             },
-                            headers: response.config.headers,
-                            body: response.data
+                            headers: invocationData.config.headers,
+                            body: invocationData.data
                         };
                         ctrl.isDeployResultShown = false;
                         ctrl.isTestResultShown = true;
-                        ctrl.isInvocationSuccess = lodash.startsWith(response.status, '2');
-                    })
-                    .catch(function () {
-                        ctrl.isTestResultShown = false;
+                        ctrl.isInvocationSuccess = lodash.startsWith(invocationData.status, '2');
 
-                        DialogsService.alert('Oops: Unknown error occurred');
+                        ctrl.isTestResultShown = true;
                     });
             }
         }
@@ -333,6 +350,7 @@
                                 $interval.cancel(interval);
                                 interval = null;
                             }
+                            $rootScope.$broadcast('change-version-deployed-state', {component: 'version', isDeployed: true});
                         }
 
                         ctrl.isFunctionDeployed = true;
@@ -427,19 +445,15 @@
 
         /**
          * Disable deploy button if forms invalid
-         * @param {object} event
-         * @param {object} args[
+         * @param {Object} event
+         * @param {Object} args
          */
         function changeStateDeployButton(event, args) {
             if (args.component) {
                 ctrl.requiredComponents[args.component] = args.isDisabled;
                 ctrl.isDeployDisabled = false;
 
-                lodash.forOwn(ctrl.requiredComponents, function (value, key) {
-                    if (ctrl.requiredComponents[key] === true) {
-                        ctrl.isDeployDisabled = true;
-                    }
-                });
+                ctrl.isDeployDisabled = lodash.some(ctrl.requiredComponents);
             } else {
                 ctrl.isDeployDisabled = args.isDisabled;
             }

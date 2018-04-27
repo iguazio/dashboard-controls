@@ -351,9 +351,6 @@
                     method: 'GET',
                     url: NuclioClientService.buildUrlWithPath('external_ip_addresses'),
                     withCredentials: false
-                })
-                .then(function (response) {
-                    return response;
                 });
         }
     }

@@ -11,12 +11,12 @@
                 <div class="field-label">Name</div>
                 <div class="field-content">
                     <igz-validating-input-field data-field-type="input"
-                                                data-input-name="name"
+                                                data-input-name="displayName"
                                                 data-input-model-options="$ctrl.inputModelOptions"
                                                 data-input-value="$ctrl.workingCopy.spec.displayName"
                                                 data-validation-is-required="true"
                                                 data-form-object="$ctrl.functionEventForm"
-                                                data-update-data-callback="$ctrl.inputValueCallback(newData, 'name')"
+                                                data-update-data-callback="$ctrl.inputValueCallback(newData, 'displayName')"
                                                 data-placeholder-text="Type a name of event">
                     </igz-validating-input-field>
                 </div>
@@ -30,6 +30,19 @@
                                           data-is-required="true"
                                           data-form-object="$ctrl.functionEventForm">
                     </igz-default-dropdown>
+                </div>
+            </div>
+            <div class="field-wrapper">
+                <div class="field-label">Path</div>
+                <div class="field-content">
+                    <igz-validating-input-field data-field-type="input"
+                                                data-input-name="x-nuclio-path"
+                                                data-input-model-options="$ctrl.inputModelOptions"
+                                                data-input-value="$ctrl.workingCopy.spec.attributes.headers['x-nuclio-path']"
+                                                data-form-object="$ctrl.functionEventForm"
+                                                data-update-data-callback="$ctrl.inputValueCallback(newData, 'x-nuclio-path')"
+                                                data-placeholder-text="Type a path">
+                    </igz-validating-input-field>
                 </div>
             </div>
             <div class="field-wrapper">

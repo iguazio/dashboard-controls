@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationBasicSettingsController
         });
 
-    function NclVersionConfigurationBasicSettingsController(lodash, ConfigService, ValidatingPatternsService) {
+    function NclVersionConfigurationBasicSettingsController($rootScope, $timeout, lodash, ConfigService, ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.enableFunction = false;
@@ -63,7 +63,14 @@
 
                 lodash.set(ctrl.version, 'spec.timeoutSeconds', ctrl.timeout.min * 60 + ctrl.timeout.sec);
             } else {
-                lodash.set(ctrl.version, field, newData);
+                $timeout(function () {
+                    if (ctrl.basicSettingsForm.$valid) {
+                        $rootScope.$broadcast('change-state-deploy-button', {component: 'settings', isDisabled: false});
+                        lodash.set(ctrl.version, field, newData);
+                    } else {
+                        $rootScope.$broadcast('change-state-deploy-button', {component: 'settings', isDisabled: true});
+                    }
+                });
             }
         }
 

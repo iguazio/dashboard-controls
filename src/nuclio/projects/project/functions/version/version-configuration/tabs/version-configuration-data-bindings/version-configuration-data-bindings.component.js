@@ -97,8 +97,10 @@
             if (actionType === 'delete') {
                 lodash.remove(ctrl.bindings, ['id', selectedItem.id]);
                 lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
-            } else if (actionType === 'edit' && !isBindingInEditMode()) {
-                lodash.find(ctrl.bindings, ['id', selectedItem.id]).ui.editModeActive = true;
+            } else if (actionType === 'edit') {
+                if (!isBindingInEditMode()) {
+                    lodash.find(ctrl.bindings, ['id', selectedItem.id]).ui.editModeActive = true;
+                }
             } else if (actionType === 'update') {
                 var currentBinding = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
 

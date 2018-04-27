@@ -21,6 +21,8 @@
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="metadata.namespace"
                                             data-form-object="$ctrl.basicSettingsForm"
+                                            data-validation-is-required="true"
+                                            data-validation-pattern="$ctrl.validationPatterns.name"
                                             data-placeholder-text="Type a namespace..."></igz-validating-input-field>
             </div>
             <div data-ng-if="$ctrl.isDemoMode()"

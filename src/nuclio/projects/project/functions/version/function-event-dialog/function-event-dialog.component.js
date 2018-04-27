@@ -109,7 +109,8 @@
                     attributes: {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'x-nuclio-path': ''
                         }
                     },
                     body: ''
@@ -168,7 +169,7 @@
          * @param {string} field - field which was changed
          */
         function inputValueCallback(newData, field) {
-            lodash.set(ctrl.workingCopy, 'spec.displayName', newData);
+            lodash.set(ctrl.workingCopy.spec, field === 'x-nuclio-path' ? 'attributes.headers["x-nuclio-path"]' : field, newData);
 
             isFormChanged();
         }

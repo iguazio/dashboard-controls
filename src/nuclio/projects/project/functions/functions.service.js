@@ -152,7 +152,7 @@
                 binding: [
                     {
                         id: 'v3io',
-                        name: 'V3io',
+                        name: 'v3io',
                         url: 'string',
                         secret: 'string'
                     },
