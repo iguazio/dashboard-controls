@@ -1,6 +1,6 @@
 {
     "name": "iguazio.dashboard-controls",
-    "version": "0.0.32",
+    "version": "0.0.33",
     "main": "dist/js/iguazio.dashboard-controls.js",
     "description": "",
     "repository": {

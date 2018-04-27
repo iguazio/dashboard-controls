@@ -78,7 +78,7 @@
          */
         function getProjects() {
             var headers = {
-                'x-nuclio-project-namespace': '*'
+                'x-nuclio-project-namespace': 'nuclio'
             };
 
             return NuclioClientService.makeRequest(
@@ -100,7 +100,7 @@
          */
         function getProject(id) {
             var headers = {
-                'x-nuclio-project-namespace': '*'
+                'x-nuclio-project-namespace': 'nuclio'
             };
 
             return NuclioClientService.makeRequest(
