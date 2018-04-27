@@ -100,11 +100,19 @@
                                 Logs
                             </div>
                             <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.rowIsCollapsed.deployBody">
-                                <div class="value-row"
+                                <div class="value-row log-panel igz-scrollable-container"
+                                     data-ng-scrollbars
+                                     data-ng-scrollbars-config="$ctrl.loggerScrollConfig"
                                      data-ng-if="$ctrl.deployResult.status.logs"
                                      data-ng-class="{'in-progress': $ctrl.checkValidDeployState(),
                                                      'failed'     : $ctrl.deployResult.status.state === 'error'}">
-                                    <div data-ng-repeat="log in $ctrl.deployResult.status.logs">{{log.message}}</div>
+                                    <div class="log-entry" data-ng-repeat="log in $ctrl.deployResult.status.logs track by $index">
+                                        <span class="log-entry-time">[{{log.time | date:'HH:mm:ss.sss'}}]</span>
+                                        <span class="log-entry-level-{{log.level}}">&nbsp;({{$ctrl.getLogLevel(log.level)}})</span>
+                                        <span class="log-entry-message">&nbsp;{{log.message}}</span>
+                                        <span class="log-entry-error" data-ng-if="log.err">&nbsp;{{log.err}}</span>
+                                        <span class="log-entry-params">&nbsp;{{$ctrl.getLogParams(log)}}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

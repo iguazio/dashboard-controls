@@ -283,6 +283,52 @@
                         .nclSunflowerYellow(0.4);
                         border: solid 1px @color;
                     }
+
+                    &.log-panel {
+                        font-family: "Source Code Pro", "Courier New", monospace;
+                        background-color: #0a0a0a;
+                        color: #e0e0e0;
+                        padding: 5px;
+                        max-height: 280px;
+                        white-space: normal;
+                        resize: vertical;
+
+                        .log-entry {
+                            line-height: 1;
+
+                            .log-entry-time {
+                                color: #a9a9a9;
+                            }
+
+                            .log-entry-level-debug{
+                                color: @dusty-blue;
+                            }
+
+                            .log-entry-level-info {
+                                color: @cloudy-blue;
+                            }
+
+                            .log-entry-level-warn{
+                                color: @ncl-sunflower-yellow;
+                            }
+
+                            .log-entry-level-error {
+                                color: @ncl-darkish-pink;
+                            }
+
+                            .log-entry-message {
+                                font-weight: 600;
+                            }
+
+                            .log-entry-error {
+                                color: @ncl-darkish-pink;
+                            }
+
+                            .log-entry-params {
+
+                            }
+                        }
+                    }
                 }
 
                 .label-value-row {
@@ -294,7 +340,7 @@
 
                     .label-cell {
                         color: @ncl-greyish-purple;
-                        width: 172px;
+                        width: 185px;
                     }
                     .value-cell {
                         width: auto;
