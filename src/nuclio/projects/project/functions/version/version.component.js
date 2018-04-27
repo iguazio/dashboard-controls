@@ -238,7 +238,7 @@
                     ctrl.version = $stateParams.functionData;
                 }
 
-                ctrl.version = lodash.omit(ctrl.version, 'status');
+                ctrl.version = lodash.omit(ctrl.version, ['status', 'spec.image']);
                 ctrl.isTestResultShown = false;
                 ctrl.isDeployResultShown = true;
 
