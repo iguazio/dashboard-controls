@@ -45,8 +45,7 @@
             statusCode: false,
             headers: false,
             body: false,
-            deployBlock: false,
-            deployBody: true
+            deployBlock: false
         };
 
         ctrl.isDeployDisabled = false;
@@ -252,16 +251,12 @@
                     ctrl.version = $stateParams.functionData;
                 }
 
-                var versionCopy = angular.copy(ctrl.version);
-                versionCopy = lodash.omit(ctrl.version, ['status', 'spec.image']);
+                var versionCopy = lodash.omit(ctrl.version, ['status', 'spec.image']);
 
                 ctrl.isTestResultShown = false;
                 ctrl.isDeployResultShown = true;
 
-                lodash.assign(ctrl.rowIsCollapsed, {
-                    deployBlock: true,
-                    deployBody: false
-                });
+                ctrl.rowIsCollapsed.deployBlock = true;
 
                 ctrl.isLayoutCollapsed = false;
 
@@ -335,7 +330,8 @@
                         ctrl.testResult = {
                             status: {
                                 state: invocationData.xhrStatus,
-                                code: invocationData.status
+                                statusCode: invocationData.status,
+                                statusText: invocationData.statusText
                             },
                             headers: invocationData.config.headers,
                             body: invocationData.data
@@ -381,10 +377,13 @@
                                 interval = null;
                             }
                             $rootScope.$broadcast('change-version-deployed-state', {component: 'version', isDeployed: true});
+                            ctrl.isFunctionDeployed = true;
                         }
 
-                        ctrl.isFunctionDeployed = true;
                         ctrl.deployResult = response;
+                        $timeout(function () {
+                            angular.element('.log-panel').mCustomScrollbar('scrollTo', 'bottom');
+                        });
                     })
                     .catch(function (error) {
                         if (error.status !== 404) {
