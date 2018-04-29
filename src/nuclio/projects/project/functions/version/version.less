@@ -1,17 +1,7 @@
 .ncl-edit-version {
-    background-color: @pale-white;
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 100%;
-
-    .file-pane-viewport {
-        top: 56px;
-
-        .ui-layout-row .ui-splitbar {
-            background: @ncl-silver;
-        }
-    }
 
     .igz-info-page-actions-bar {
         position: relative;
@@ -158,7 +148,7 @@
 
     .ncl-edit-version-execution-result {
         margin: 17px 24px;
-        padding: 16px 13px 0;
+        padding: 16px 13px;
         background-color: @ncl-light-green;
         border: solid 1px @ncl-green-aquamarine;
         position: relative;
@@ -180,12 +170,6 @@
         }
 
         &.deploy-result {
-            .ncl-execution-result-status {
-                &.collapsed {
-                    margin-bottom: 12px;
-                }
-            }
-
             .icon-collapsed.general-content {
                 .duskThree(0.64);
                 position: absolute;
@@ -198,12 +182,52 @@
             .btn-close {
                 margin-right: 53px;
             }
+
+            .log-panel {
+                font-family: "Source Code Pro", "Courier New", monospace;
+                font-size: 14px;
+                line-height: 1.1;
+                background-color: #0a0a0a;
+                color: #e0e0e0;
+                padding: 5px;
+                margin: 5px 0 0 4px;
+                min-height: 280px;
+                max-height: 280px;
+                white-space: pre-wrap;
+
+                .log-entry {
+                    .log-entry-time {
+                        color: #a9a9a9;
+                    }
+
+                    .log-entry-level-debug{
+                        color: @dusty-blue;
+                    }
+
+                    .log-entry-level-info {
+                        color: @cloudy-blue;
+                    }
+
+                    .log-entry-level-warn{
+                        color: @ncl-sunflower-yellow;
+                    }
+
+                    .log-entry-level-error {
+                        color: @ncl-darkish-pink;
+                    }
+
+                    .log-entry-message {
+                        font-weight: 600;
+                    }
+                }
+            }
         }
 
         .ncl-execution-result-status {
             color: @ncl-darkish-pink;
             line-height: 24px;
             font-size: 14px;
+            font-weight: 700;
             font-family: @font-family-sans-serif;
             align-items: center;
             display: flex;
@@ -215,7 +239,6 @@
 
             &.in-progress {
                 color: @ncl-pale-orange;
-                margin-bottom: 12px;
             }
 
             .result-status-icon {
@@ -269,7 +292,7 @@
                 }
 
                 .value-row {
-                    margin: 5px 10px 14px 24px;
+                    margin: 5px 16px 14px 24px;
                     padding-left: 16px;
                     border: solid 1px #c7e0d9;
                     line-height: 36px;
@@ -282,52 +305,6 @@
                     &.in-progress {
                         .nclSunflowerYellow(0.4);
                         border: solid 1px @color;
-                    }
-
-                    &.log-panel {
-                        font-family: "Source Code Pro", "Courier New", monospace;
-                        background-color: #0a0a0a;
-                        color: #e0e0e0;
-                        padding: 5px;
-                        max-height: 280px;
-                        white-space: normal;
-                        resize: vertical;
-
-                        .log-entry {
-                            line-height: 1;
-
-                            .log-entry-time {
-                                color: #a9a9a9;
-                            }
-
-                            .log-entry-level-debug{
-                                color: @dusty-blue;
-                            }
-
-                            .log-entry-level-info {
-                                color: @cloudy-blue;
-                            }
-
-                            .log-entry-level-warn{
-                                color: @ncl-sunflower-yellow;
-                            }
-
-                            .log-entry-level-error {
-                                color: @ncl-darkish-pink;
-                            }
-
-                            .log-entry-message {
-                                font-weight: 600;
-                            }
-
-                            .log-entry-error {
-                                color: @ncl-darkish-pink;
-                            }
-
-                            .log-entry-params {
-
-                            }
-                        }
                     }
                 }
 
