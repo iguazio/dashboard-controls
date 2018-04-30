@@ -20,7 +20,7 @@
 
         ctrl.actions = [];
         ctrl.title = {
-            project: ctrl.project.spec.displayName,
+            project: ctrl.project,
             function: ctrl.function.metadata.name,
             version: ctrl.version.name
         };

@@ -93,7 +93,7 @@
                     .then(function (project) {
                         ctrl.project = project;
 
-                        title.project = ctrl.project.spec.displayName;
+                        title.project = ctrl.project;
 
                         ctrl.refreshFunctions();
 

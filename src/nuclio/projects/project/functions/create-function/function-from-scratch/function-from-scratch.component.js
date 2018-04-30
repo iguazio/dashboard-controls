@@ -16,6 +16,7 @@
         var ctrl = this;
 
         ctrl.functionData = {};
+        ctrl.isCreateFunctionAllowed = false;
         ctrl.runtimes = [];
         ctrl.selectedRuntime = null;
 
@@ -84,6 +85,8 @@
         function inputValueCallback(data, field) {
             if (!lodash.isNil(data)) {
                 lodash.set(ctrl, 'functionData.metadata.' + field, data);
+
+                ctrl.isCreateFunctionAllowed = !lodash.isEmpty(ctrl.functionFromScratchForm.$error);
             }
         }
 
@@ -101,6 +104,8 @@
                         functionSourceCode: item.sourceCode
                     }
                 });
+
+                ctrl.isCreateFunctionAllowed = true;
             }
         }
 

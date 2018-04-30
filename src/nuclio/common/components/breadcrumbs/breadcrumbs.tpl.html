@@ -5,27 +5,30 @@
 </span>
 
 <span class="ncl-header-subtitle"
-      data-ng-if="$ctrl.mainHeaderTitle.project && !$ctrl.mainHeaderTitle.function">
+      data-ng-if="$ctrl.mainHeaderTitle.project">
     <span class="igz-icon-right"></span>
 
     <ncl-breadcrumbs-dropdown data-state="$ctrl.mainHeaderTitle.state"
-                              data-title="$ctrl.mainHeaderTitle.project"
+                              data-title="$ctrl.mainHeaderTitle.projectName"
+                              data-project="$ctrl.mainHeaderTitle.project"
+                              data-type="projects"
                               class="ncl-bold-subtitle"></ncl-breadcrumbs-dropdown>
-</span>
-
-<span class="ncl-header-subtitle"
-      data-ng-click="$ctrl.goToFunctionsList()"
-      data-ng-if="$ctrl.mainHeaderTitle.project && $ctrl.mainHeaderTitle.function">
-    <span class="igz-icon-right"></span>
-    <span class="main-header-title">{{$ctrl.mainHeaderTitle.project}}</span>
 </span>
 
 <span class="ncl-header-subtitle"
       data-ng-if="$ctrl.mainHeaderTitle.function">
     <span class="igz-icon-right"></span>
 
-    <span data-ng-class="{'ncl-bold-subtitle': $ctrl.mainHeaderTitle && !$ctrl.mainHeaderTitle.version}">
-        {{$ctrl.mainHeaderTitle.function}}
+    <ncl-breadcrumbs-dropdown data-ng-if="$ctrl.mainHeaderTitle.version"
+                              data-state="$ctrl.mainHeaderTitle.state"
+                              data-title="$ctrl.mainHeaderTitle.function"
+                              data-project="$ctrl.mainHeaderTitle.project"
+                              data-type="functions"
+                              class="ncl-bold-subtitle"></ncl-breadcrumbs-dropdown>
+
+    <span class="ncl-bold-subtitle"
+          data-ng-if="!$ctrl.mainHeaderTitle.version">
+        Create function
     </span>
 </span>
 

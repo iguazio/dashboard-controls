@@ -136,7 +136,7 @@
 
                 // breadcrumbs config
                 var title = {
-                    project: ctrl.project.spec.displayName,
+                    project: ctrl.project,
                     function: $stateParams.functionId,
                     version: '$LATEST'
                 };

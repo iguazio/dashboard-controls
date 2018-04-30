@@ -27,6 +27,7 @@
             var mainHeaderTitle = {
                 title: title,
                 project: subtitles.project,
+                projectName: subtitles.project.spec.displayName,
                 function: null,
                 version: null,
                 state: state,
