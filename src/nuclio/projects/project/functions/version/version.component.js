@@ -79,7 +79,7 @@
                 ctrl.version = $stateParams.functionData;
             }
 
-            setDeployResult('ready');
+            setDeployResult(lodash.get(ctrl.version, 'status.state', 'ready'));
 
             ctrl.isFunctionDeployed = !$stateParams.isNewFunction;
             ctrl.actions = [
@@ -147,6 +147,14 @@
             });
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
+
+            if (ctrl.checkValidDeployState()) {
+                ctrl.isFunctionDeployed = false;
+                ctrl.isDeployResultShown = true;
+                ctrl.rowIsCollapsed.deployBlock = true;
+
+                pullFunctionState();
+            }
 
             ctrl.isLayoutCollapsed = true;
         }
@@ -342,6 +350,8 @@
 
                         ctrl.isTestResultShown = true;
                     });
+
+                $timeout(resizeVersionView, 100);
             }
         }
 
@@ -376,11 +386,14 @@
                                 $interval.cancel(interval);
                                 interval = null;
                             }
+
                             $rootScope.$broadcast('change-version-deployed-state', {component: 'version', isDeployed: true});
+
                             ctrl.isFunctionDeployed = true;
                         }
 
                         ctrl.deployResult = response;
+
                         $timeout(function () {
                             angular.element('.log-panel').mCustomScrollbar('scrollTo', 'bottom');
                         });

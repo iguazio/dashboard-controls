@@ -104,7 +104,8 @@
     </div>
 
     <div data-ng-if="$ctrl.isTestResultShown"
-         class="ncl-edit-version-execution-result">
+         class="ncl-edit-version-execution-result"
+         data-ng-class="{'failed' : !$ctrl.isInvocationSuccess}">
         <div class="igz-scrollable-container"
              data-ng-scrollbars
              data-ng-scrollbars-config="$ctrl.scrollConfig">
@@ -128,7 +129,8 @@
                     Status
                 </div>
                 <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.rowIsCollapsed.statusCode">
-                    <div class="value-row">
+                    <div class="value-row"
+                         data-ng-class="{'failed' : !$ctrl.isInvocationSuccess}">
                         {{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}
                     </div>
                 </div>
@@ -159,7 +161,8 @@
                     Body
                 </div>
                 <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.rowIsCollapsed.body">
-                    <div class="value-row" data-ng-if="$ctrl.testResult.body">
+                    <div class="value-row" data-ng-if="$ctrl.testResult.body"
+                         data-ng-class="{'failed' : !$ctrl.isInvocationSuccess}">
                         {{$ctrl.testResult.body}}
                     </div>
                     <div class="value-row" data-ng-if="!$ctrl.testResult.body">

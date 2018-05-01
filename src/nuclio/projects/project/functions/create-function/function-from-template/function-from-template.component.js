@@ -16,6 +16,7 @@
         var ctrl = this;
 
         ctrl.functionData = {};
+        ctrl.isCreateFunctionAllowed = false;
         ctrl.selectedTemplate = '';
         ctrl.templates = {};
 
@@ -88,6 +89,8 @@
         function inputValueCallback(data, field) {
             if (!lodash.isNil(data)) {
                 lodash.set(ctrl, 'functionData.metadata.' + field, data);
+
+                ctrl.isCreateFunctionAllowed = !lodash.isEmpty(ctrl.functionFromTemplateForm.$error);
             }
         }
 
