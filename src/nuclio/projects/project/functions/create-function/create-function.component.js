@@ -42,9 +42,8 @@
 
                     // breadcrumbs config
                     var title = {
-                        project: project,
-                        function: 'Create function',
-                        version: null
+                        project: project.spec.displayName,
+                        function: 'Create function'
                     };
 
                     NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);

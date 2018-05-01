@@ -5,15 +5,13 @@
         .component('nclBreadcrumbsDropdown', {
             bindings: {
                 state: '<',
-                title: '<',
-                project: '<',
-                type: '@'
+                title: '<'
             },
             templateUrl: 'nuclio/common/components/breadcrumbs-dropdown/breadcrumbs-dropdown.tpl.html',
             controller: NclBreadcrumbsDropdown
         });
 
-    function NclBreadcrumbsDropdown($document, $element, $rootScope, $scope, $state, lodash, NuclioFunctionsDataService, NuclioProjectsDataService) {
+    function NclBreadcrumbsDropdown($document, $element, $rootScope, $scope, $state, lodash, NuclioProjectsDataService) {
         var ctrl = this;
 
         ctrl.itemsList = [];
@@ -32,10 +30,8 @@
          * Initialization method
          */
         function onInit() {
-            if (ctrl.type === 'projects') {
+            if (lodash.startsWith(ctrl.state, 'app.project.functions')) {
                 NuclioProjectsDataService.getProjects().then(setNuclioItemsList);
-            } else if (ctrl.type === 'functions') {
-                NuclioFunctionsDataService.getFunctions(ctrl.project.metadata.namespace, ctrl.project.metadata.name).then(setNuclioItemsList)
             }
 
             $document.on('click', unselectDropdown);
@@ -67,26 +63,14 @@
          */
         function showDetails(event, item) {
             var params = {};
+            lodash.set(params, 'projectId', item.id);
 
             ctrl.showDropdownList = !ctrl.showDropdownList;
             ctrl.searchText = '';
 
             $document.off('click', unselectDropdown);
 
-            if (ctrl.type === 'projects') {
-                lodash.set(params, 'projectId', item.id);
-
-                $state.go('app.project.functions', params);
-            } else if (ctrl.type === 'functions') {
-                params = {
-                    isNewFunction: false,
-                    id: ctrl.project.metadata.name,
-                    functionId: item.id,
-                    projectNamespace: ctrl.project.metadata.namespace
-                };
-
-                $state.go('app.project.function.edit.code', params);
-            }
+            $state.go(ctrl.state, params);
         }
 
         //
@@ -99,36 +83,10 @@
          * @param {Object} data
          */
         function setNuclioItemsList(data) {
-            if (ctrl.type === 'projects') {
-                setProjectsItemList(data)
-            } else if (ctrl.type === 'functions') {
-                setFunctionsItemList(data.data)
-            }
-        }
-
-        /**
-         * Sets items projects list for dropdown in Nuclio breadcrumbs
-         * @param {Object} data
-         */
-        function setProjectsItemList(data) {
             ctrl.itemsList = lodash.map(data, function (item) {
                 return {
                     id: item.metadata.name,
                     name: item.spec.displayName,
-                    isNuclioState: true
-                };
-            });
-        }
-
-        /**
-         * Sets items functions list for dropdown in Nuclio breadcrumbs
-         * @param {Object} data
-         */
-        function setFunctionsItemList(data) {
-            ctrl.itemsList = lodash.map(data, function (item) {
-                return {
-                    id: item.metadata.name,
-                    name: item.metadata.name,
                     isNuclioState: true
                 };
             });

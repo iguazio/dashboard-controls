@@ -79,7 +79,7 @@
                 ctrl.version = $stateParams.functionData;
             }
 
-            setDeployResult('ready');
+            setDeployResult(lodash.isNil(ctrl.version.status) ? 'ready' : ctrl.version.status.state);
 
             ctrl.isFunctionDeployed = !$stateParams.isNewFunction;
             ctrl.actions = [
@@ -136,7 +136,7 @@
 
                 // breadcrumbs config
                 var title = {
-                    project: ctrl.project,
+                    project: ctrl.project.spec.displayName,
                     function: $stateParams.functionId,
                     version: '$LATEST'
                 };
@@ -147,6 +147,14 @@
             });
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
+
+            if (ctrl.checkValidDeployState()) {
+                ctrl.isFunctionDeployed = false;
+                ctrl.isDeployResultShown = true;
+                ctrl.rowIsCollapsed.deployBlock = true;
+
+                pullFunctionState();
+            }
 
             ctrl.isLayoutCollapsed = true;
         }
@@ -342,6 +350,8 @@
 
                         ctrl.isTestResultShown = true;
                     });
+
+                $timeout(resizeVersionView, 100);
             }
         }
 
@@ -374,13 +384,17 @@
                         if (response.status.state === 'ready' || response.status.state === 'error') {
                             if (!lodash.isNil(interval)) {
                                 $interval.cancel(interval);
+
                                 interval = null;
                             }
+
                             $rootScope.$broadcast('change-version-deployed-state', {component: 'version', isDeployed: true});
+
                             ctrl.isFunctionDeployed = true;
                         }
 
                         ctrl.deployResult = response;
+
                         $timeout(function () {
                             angular.element('.log-panel').mCustomScrollbar('scrollTo', 'bottom');
                         });
@@ -389,6 +403,7 @@
                         if (error.status !== 404) {
                             if (!lodash.isNil(interval)) {
                                 $interval.cancel(interval);
+
                                 interval = null;
                             }
 
