@@ -384,7 +384,6 @@
                         if (response.status.state === 'ready' || response.status.state === 'error') {
                             if (!lodash.isNil(interval)) {
                                 $interval.cancel(interval);
-
                                 interval = null;
                             }
 
@@ -403,7 +402,6 @@
                         if (error.status !== 404) {
                             if (!lodash.isNil(interval)) {
                                 $interval.cancel(interval);
-
                                 interval = null;
                             }
 
