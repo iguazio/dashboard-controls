@@ -60,7 +60,16 @@
             </div>
             <div class="field-wrapper">
                 <div class="field-label">Body</div>
-                <div class="field-content">
+                <div data-ng-if="$ctrl.contentType === 'application/json'"
+                     class="field-content code-edit-section">
+                    <ncl-monaco data-function-source-code="$ctrl.workingCopy.spec.body"
+                                data-selected-theme="$ctrl.bodyTheme"
+                                data-language="json"
+                                data-mini-monaco="true"
+                                data-on-change-source-code-callback="$ctrl.onChangeSourceCode(sourceCode)"></ncl-monaco>
+                </div>
+                <div data-ng-if="$ctrl.contentType === 'text/plain'"
+                     class="field-content">
                     <textarea class="event-body"
                               data-ng-model="$ctrl.workingCopy.spec.body"
                               data-ng-change="$ctrl.onChangeBody()"

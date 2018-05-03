@@ -4,10 +4,6 @@
     flex-flow: column;
     padding-bottom: 24px !important;
 
-    .mCSB_container {
-        height: 750px;
-    }
-
     .igz-scrollable-container {
         height: 100%;
 
@@ -31,10 +27,9 @@
 
     .code-edit-section {
         position: relative;
-        height: 100%;
         flex: 1 1 auto;
         display: flex;
-        min-height: 400px;
+        height: 400px;
 
         .code-editor-drop-zone {
             position: absolute;
@@ -133,6 +128,30 @@
                 width: 100%;
                 margin-right: 160px;
             }
+        }
+    }
+}
+
+@media screen and (min-height: 850px) {
+    .ncl-edit-version-code {
+        .code-edit-section {
+            height: 500px;
+        }
+    }
+}
+
+@media screen and (min-height: 900px) {
+    .ncl-edit-version-code {
+        .code-edit-section {
+            height: 600px;
+        }
+    }
+}
+
+@media screen and (min-height: 1300px) {
+    .ncl-edit-version-code {
+        .code-edit-section {
+            height: 900px;
         }
     }
 }

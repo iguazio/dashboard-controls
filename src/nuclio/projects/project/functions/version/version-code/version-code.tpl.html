@@ -23,7 +23,8 @@
                         </div>
                         <div class="code-entry-col code-entry-handler-col">
                             <div class="col-label handler">Handler</div>
-                            <igz-validating-input-field data-field-type="input"
+                            <igz-validating-input-field class="nuclio-validating-input"
+                                                        data-field-type="input"
                                                         data-input-name="handler"
                                                         data-input-value="$ctrl.version.spec.handler"
                                                         data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -68,6 +69,7 @@
                 <div class="code-editor-drop-zone"></div>
                 <ncl-monaco class="monaco-code-editor"
                             data-function-source-code="$ctrl.version.spec.build.functionSourceCode"
+                            data-mini-monaco="false"
                             data-selected-theme="$ctrl.selectedTheme.id"
                             data-language="$ctrl.selectedRuntime.language"
                             data-on-change-source-code-callback="$ctrl.onChangeSourceCode(sourceCode)"></ncl-monaco>

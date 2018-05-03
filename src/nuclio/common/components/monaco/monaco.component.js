@@ -7,7 +7,8 @@
                 language: '<',
                 functionSourceCode: '<',
                 onChangeSourceCodeCallback: '&',
-                selectedTheme: '<'
+                selectedTheme: '<',
+                miniMonaco: '<'
             },
             templateUrl: 'nuclio/common/components/monaco/monaco.tpl.html',
             controller: NclMonacoController
