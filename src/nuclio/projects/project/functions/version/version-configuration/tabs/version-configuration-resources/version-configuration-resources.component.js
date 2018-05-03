@@ -4,7 +4,8 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclVersionConfigurationResources', {
             bindings: {
-                version: '<'
+                version: '<',
+                onChangeCallback: '<'
             },
             templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-resources/version-configuration-resources.tpl.html',
             controller: NclVersionConfigurationResourcesController
@@ -96,9 +97,10 @@
                 if (ctrl.resourcesForm.$valid) {
                     lodash.set(ctrl.version.spec, 'minReplicas', ctrl.minReplicas);
                     lodash.set(ctrl.version.spec, 'maxReplicas', ctrl.maxReplicas);
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'resources', isDisabled: false})
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'resources', isDisabled: false});
+                    ctrl.onChangeCallback();
                 } else {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'resources', isDisabled: true})
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'resources', isDisabled: true});
                 }
             })
         }

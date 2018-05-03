@@ -4,7 +4,8 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclVersionConfigurationLogging', {
             bindings: {
-                version: '<'
+                version: '<',
+                onChangeCallback: '<'
             },
             templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-logging/version-configuration-logging.tpl.html',
             controller: NclVersionConfigurationLoggingController
@@ -27,6 +28,7 @@
          */
         function inputValueCallback(newData, field) {
             lodash.set(ctrl.version, field, newData);
+            ctrl.onChangeCallback();
         }
 
         /**
@@ -35,6 +37,7 @@
          */
         function setPriority(item) {
             lodash.set(ctrl.version, 'spec.loggerSinks[0].level', item.type);
+            ctrl.onChangeCallback();
         }
     }
 }());

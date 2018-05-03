@@ -10,7 +10,8 @@
             controller: NclVersionCodeController
         });
 
-    function NclVersionCodeController($element, $stateParams, $timeout, lodash, DialogsService, PreventDropdownCutOffService) {
+    function NclVersionCodeController($element, $stateParams, $timeout, lodash, DialogsService,
+                                      PreventDropdownCutOffService, VersionHelperService) {
         var ctrl = this;
         ctrl.codeEntryTypeArray = [
             {
@@ -61,6 +62,10 @@
                 ctrl.version = $stateParams.functionData;
             }
 
+            if (lodash.isNil(ctrl.version.ui.deployedVersion)) {
+                VersionHelperService.checkVersionChange(ctrl.version);
+            }
+
             ctrl.runtimeArray = getRuntimes();
             ctrl.selectedRuntime = lodash.find(ctrl.runtimeArray, ['id', ctrl.version.spec.runtime]);
             ctrl.selectedEntryType = ctrl.codeEntryTypeArray[0];
@@ -108,6 +113,7 @@
                     functionSourceCode: item.sourceCode
                 }
             });
+            VersionHelperService.checkVersionChange(ctrl.version);
         }
 
         /**
@@ -130,6 +136,7 @@
          */
         function onChangeSourceCode(sourceCode) {
             lodash.set(ctrl.version, 'spec.build.functionSourceCode', btoa(sourceCode));
+            VersionHelperService.checkVersionChange(ctrl.version);
         }
 
         /**
@@ -139,6 +146,7 @@
          */
         function inputValueCallback(newData, field) {
             lodash.set(ctrl.version, field, newData);
+            VersionHelperService.checkVersionChange(ctrl.version);
         }
 
         //

@@ -157,6 +157,11 @@
             }
 
             ctrl.isLayoutCollapsed = true;
+
+            ctrl.version.ui = {
+                deployedVersion: !lodash.isNil(ctrl.version.status) ? angular.copy(lodash.omit(ctrl.version, 'ui')) : null,
+                versionChanged: false
+            }
         }
 
         //
@@ -259,7 +264,7 @@
                     ctrl.version = $stateParams.functionData;
                 }
 
-                var versionCopy = lodash.omit(ctrl.version, ['status', 'spec.image']);
+                var versionCopy = lodash.omit(ctrl.version, ['status', 'spec.image', 'ui']);
 
                 ctrl.isTestResultShown = false;
                 ctrl.isDeployResultShown = true;
@@ -388,6 +393,14 @@
                             }
 
                             $rootScope.$broadcast('change-version-deployed-state', {component: 'version', isDeployed: true});
+
+                            if (lodash.isNil(ctrl.version.status)) {
+                                ctrl.version.status = response.status;
+                            }
+                            ctrl.version.ui = {
+                                deployedVersion: angular.copy(lodash.omit(ctrl.version, 'ui')),
+                                versionChanged: false
+                            };
 
                             ctrl.isFunctionDeployed = true;
                         }

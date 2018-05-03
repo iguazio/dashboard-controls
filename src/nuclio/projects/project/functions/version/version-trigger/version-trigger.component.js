@@ -10,7 +10,7 @@
             controller: NclVersionTriggerController
         });
 
-    function NclVersionTriggerController($rootScope, $stateParams, lodash, DialogsService) {
+    function NclVersionTriggerController($rootScope, $stateParams, lodash, DialogsService, VersionHelperService) {
         var ctrl = this;
 
         ctrl.isCreateModeActive = false;
@@ -139,6 +139,8 @@
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }
+
+            VersionHelperService.checkVersionChange(ctrl.version);
         }
 
         /**
