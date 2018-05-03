@@ -476,6 +476,8 @@
 
             contentView.css({'height': contentHeight + 'px'});
             contentBlock.css({'height': contentHeight + 'px'});
+
+            $rootScope.$broadcast('igzWatchWindowResize::resize');
         }
 
         /**
