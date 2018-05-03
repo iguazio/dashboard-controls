@@ -4,7 +4,8 @@
           autocomplete="off">
         <div class="igz-row title-field-row">
             <div class="igz-col-20 name-field">
-                <igz-validating-input-field data-field-type="input"
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
                                             data-input-name="itemName"
                                             data-input-value="$ctrl.item.name"
                                             data-is-focused="true"
@@ -37,7 +38,8 @@
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.url)">
                 <div class="field-label">URL</div>
-                <igz-validating-input-field data-field-type="input"
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
                                             data-input-name="itemURL"
                                             data-input-value="$ctrl.item.url"
                                             data-is-focused="false"
@@ -51,7 +53,8 @@
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.maxWorkers)">
                 <div class="field-label">Max workers</div>
-                <igz-validating-input-field data-field-type="input"
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
                                             data-input-name="itemMaxWorkers"
                                             data-input-value="$ctrl.item.maxWorkers"
                                             data-is-focused="false"
@@ -66,7 +69,8 @@
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.secret)">
                 <div class="field-label">Secret</div>
-                <igz-validating-input-field data-field-type="input"
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
                                             data-input-name="itemSecret"
                                             data-input-value="$ctrl.item.secret"
                                             data-is-focused="false"
@@ -81,7 +85,8 @@
                  data-ng-if="$ctrl.isClassSelected()"
                  data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
                 <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div>
-                <igz-validating-input-field data-field-type="input"
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
                                             data-input-name="item_{{attribute.name}}"
                                             data-input-value="$ctrl.getAttrValue(attribute.name)"
                                             data-is-focused="false"

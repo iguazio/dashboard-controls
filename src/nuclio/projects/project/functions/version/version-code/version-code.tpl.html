@@ -21,7 +21,8 @@
                     </div>
                     <div class="code-entry-col code-entry-handler-col">
                         <div class="col-label handler">Handler</div>
-                        <igz-validating-input-field data-field-type="input"
+                        <igz-validating-input-field class="nuclio-validating-input"
+                                                    data-field-type="input"
                                                     data-input-name="handler"
                                                     data-input-value="$ctrl.version.spec.handler"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -49,7 +50,8 @@
                 <div ng-if="$ctrl.selectedEntryType.name === 'S3 URL'" class="code-entry-row">
                     <div class="code-entry-col code-entry-url-col">
                         <div class="col-label handler">URL</div>
-                        <igz-validating-input-field data-field-type="input"
+                        <igz-validating-input-field class="nuclio-validating-input"
+                                                    data-field-type="input"
                                                     data-input-name="url"
                                                     data-input-value="$ctrl.URL"
                                                     data-update-data-callback=""
