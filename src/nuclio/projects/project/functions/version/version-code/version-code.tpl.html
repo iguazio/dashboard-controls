@@ -63,7 +63,9 @@
 
         <div data-ng-if="$ctrl.selectedEntryType.name === 'Edit online'"
              class="code-edit-section">
-            <ncl-monaco data-function-source-code="$ctrl.version.spec.build.functionSourceCode"
+            <div class="code-editor-drop-zone"></div>
+            <ncl-monaco class="monaco-code-editor"
+                        data-function-source-code="$ctrl.version.spec.build.functionSourceCode"
                         data-selected-theme="$ctrl.selectedTheme.id"
                         data-language="$ctrl.selectedRuntime.language"
                         data-on-change-source-code-callback="$ctrl.onChangeSourceCode(sourceCode)"></ncl-monaco>

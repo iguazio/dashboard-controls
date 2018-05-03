@@ -10,7 +10,7 @@
             controller: NclVersionCodeController
         });
 
-    function NclVersionCodeController($element, $stateParams, $timeout, lodash, PreventDropdownCutOffService) {
+    function NclVersionCodeController($element, $stateParams, $timeout, lodash, DialogsService, PreventDropdownCutOffService) {
         var ctrl = this;
         ctrl.codeEntryTypeArray = [
             {
@@ -43,6 +43,7 @@
         };
 
         ctrl.$onInit = onInit;
+        ctrl.$postLink = postLink;
 
         ctrl.selectEntryTypeValue = selectEntryTypeValue;
         ctrl.selectRuntimeValue = selectRuntimeValue;
@@ -64,6 +65,13 @@
             ctrl.selectedRuntime = lodash.find(ctrl.runtimeArray, ['id', ctrl.version.spec.runtime]);
             ctrl.selectedEntryType = ctrl.codeEntryTypeArray[0];
             ctrl.sourceCode = atob(ctrl.version.spec.build.functionSourceCode);
+        }
+
+        /**
+         * Post linking method
+         */
+        function postLink() {
+            $timeout(onDragNDropFile);
         }
 
         //
@@ -121,7 +129,7 @@
          * @param {string} sourceCode
          */
         function onChangeSourceCode(sourceCode) {
-            lodash.set(ctrl.version, 'spec.build.functionSourceCode', btoa(sourceCode))
+            lodash.set(ctrl.version, 'spec.build.functionSourceCode', btoa(sourceCode));
         }
 
         /**
@@ -131,6 +139,55 @@
          */
         function inputValueCallback(newData, field) {
             lodash.set(ctrl.version, field, newData);
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Extracts a file name from a provided path
+         * @param {string} path - the path including a file name (delimiters: '/' or '\' or both, can be consecutive)
+         * @param {boolean} [includeExtension=true] - set to `true` to include extension, or `false` to exclude it
+         * @param {boolean} [onlyExtension=false] - set to `true` to include extension only, or `false` to include file name
+         * @returns {string} the file name at the end of the given path with or without its extension (depending on the
+         *     value of `extension` parameter)
+         *
+         * @example
+         * ```js
+         * extractFileName('/path/to/file/file.name.ext');
+         * // => 'file.name.ext'
+         *
+         * extractFileName('\\path/to\\file/file.name.ext', false);
+         * // => 'file.name'
+         *
+         * extractFileName('file.name.ext', false);
+         * // => 'file.name'
+         *
+         * extractFileName('/path/to/////file\\\\\\\\file.name.ext', true);
+         * // => 'file.name.ext'
+         *
+         * extractFileName('/path/to/file\file.name.ext', true, true);
+         * // => 'ext'
+         *
+         * extractFileName('/path/to/file/file.name.ext', false, true);
+         * // => ''
+         *
+         * extractFileName('');
+         * // => ''
+         *
+         * extractFileName(undefined);
+         * // => ''
+         *
+         * extractFileName(null);
+         * // => ''
+         * ```
+         */
+        function extractFileName(path, includeExtension, onlyExtension) {
+            var start = path.lastIndexOf(lodash.defaultTo(onlyExtension, false) ? '.' : '/') + 1;
+            var end = lodash.defaultTo(includeExtension, true) ? path.length : path.lastIndexOf('.');
+
+            return lodash.defaultTo(path, '').replace('\\', '/').substring(start, end);
         }
 
         /**
@@ -210,6 +267,76 @@
                     visible: true
                 }
             ];
+        }
+
+        /**
+         * Tests whether a file is valid for dropping in code editor according to its MIME type and its extension
+         * @param {string} type - the MIME type of the file (e.g. 'text/plain', 'application/javascript')
+         * @param {string} extension - the extension of the file (e.g. 'txt', 'py', 'html')
+         * @returns {boolean} `true` if the file is valid for dropping in code editor, or `false` otherwise
+         */
+        function isFileDropValid(type, extension) {
+
+            // Drag'n'Drop textual files into the code editor
+            var validFileExtensions = ['.cs', '.py', '.pypy', '.go', '.sh', '.txt'];
+
+            return lodash(type).startsWith('text/') || validFileExtensions.includes(extension);
+        }
+
+        /**
+         * Sets informational background over monaco editor before dropping a file
+         */
+        function onDragNDropFile() {
+            var codeEditor = $element.find('.monaco-code-editor');
+            var nclMonaco = $element.find('.ncl-monaco');
+            var codeEditorDropZone = $element.find('.code-editor-drop-zone');
+
+            // Register event handlers for drag'n'drop of files to code editor
+            codeEditor
+                .on('dragover', null, false)
+                .on('dragenter', null, function (event) {
+                    codeEditorDropZone.addClass('dragover');
+
+                    codeEditor.css('opacity', '0.4');
+                    event.preventDefault();
+                })
+                .on('dragleave', null, function (event) {
+                    var monacoCoords = nclMonaco[0].getBoundingClientRect();
+
+                    if (event.originalEvent.pageX <= monacoCoords.left   || event.originalEvent.pageX >= monacoCoords.right ||
+                        event.originalEvent.pageY >= monacoCoords.bottom || event.originalEvent.pageY <= monacoCoords.top) {
+                        codeEditorDropZone.removeClass('dragover');
+                        codeEditor.css('opacity', '');
+                    }
+
+                    event.preventDefault();
+                })
+                .on('drop', null, function (event) {
+                    var itemType = lodash.get(event, 'originalEvent.dataTransfer.items[0].type');
+                    var file = lodash.get(event, 'originalEvent.dataTransfer.files[0]');
+                    var extension = extractFileName(file.name, true, true);
+
+                    if (isFileDropValid(itemType, extension)) {
+                        var reader = new FileReader();
+
+                        reader.onload = function (onloadEvent) {
+                            lodash.set(ctrl.version, 'spec.build.functionSourceCode', btoa(onloadEvent.target.result));
+
+                            codeEditorDropZone.removeClass('dragover');
+                            codeEditor.css('opacity', '');
+                        };
+                        reader.onerror = function () {
+                            DialogsService.alert('Could not read file...');
+                        };
+                        reader.readAsText(file);
+                    } else {
+                        codeEditorDropZone.removeClass('dragover');
+                        codeEditor.css('opacity', '');
+
+                        DialogsService.alert('Invalid file type/extension');
+                    }
+                    event.preventDefault();
+                });
         }
     }
 }());

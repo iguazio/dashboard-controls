@@ -44,10 +44,10 @@
          * @param {Object} changes
          */
         function onChanges(changes) {
-            if (angular.isDefined(changes.language) && angular.isDefined(changes.functionSourceCode)) {
-                if (!changes.language.isFirstChange() && !changes.functionSourceCode.isFirstChange()) {
+            if (angular.isDefined(changes.functionSourceCode)) {
+                if (!changes.functionSourceCode.isFirstChange()) {
                     $scope.selectedCodeFile = {
-                        language: changes.language.currentValue,
+                        language: ctrl.language,
                         code: atob(changes.functionSourceCode.currentValue)
                     };
                 }

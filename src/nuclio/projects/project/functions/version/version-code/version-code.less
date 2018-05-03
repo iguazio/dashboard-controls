@@ -18,10 +18,38 @@
         }
 
         .code-edit-section {
+            position: relative;
             flex: 1 1 auto;
             display: flex;
+            min-height: 400px;
 
-            ncl-monaco {
+            .code-editor-drop-zone {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgb(200, 200, 200);
+                outline: 3px dashed black;
+                outline-offset: -10px;
+                display: none;
+
+                &.dragover {
+                    display: block;
+
+                    &:before {
+                        content: 'Drop files here';
+                        display: inline-block;
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        font-size: xx-large;
+                    }
+                }
+            }
+
+            .monaco-code-editor {
                 width: 100%;
 
                 .ncl-monaco {
@@ -93,15 +121,6 @@
                 width: 100%;
                 margin-right: 160px;
             }
-        }
-    }
-
-    .code-edit-section {
-        min-height: 400px;
-
-        .code-editor {
-            height: 500px;
-            width: 100%;
         }
     }
 }
