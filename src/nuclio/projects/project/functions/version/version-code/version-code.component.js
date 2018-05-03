@@ -13,6 +13,14 @@
     function NclVersionCodeController($element, $stateParams, $timeout, lodash, DialogsService,
                                       PreventDropdownCutOffService, VersionHelperService) {
         var ctrl = this;
+
+        ctrl.scrollConfig = {
+            axis: 'y',
+            advanced: {
+                autoScrollOnFocus: false,
+                updateOnContentResize: true
+            }
+        };
         ctrl.codeEntryTypeArray = [
             {
                 id: 'online',
@@ -33,15 +41,6 @@
             }
         ];
         ctrl.selectedTheme = ctrl.themesArray[0];
-
-        // Config for scrollbar on code-tab view
-        ctrl.scrollConfig = {
-            axis: 'xy',
-            advanced: {
-                autoScrollOnFocus: false,
-                updateOnContentResize: true
-            }
-        };
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
