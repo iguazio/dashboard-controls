@@ -12,6 +12,14 @@
 
     function NclVersionCodeController($element, $stateParams, $timeout, lodash, PreventDropdownCutOffService) {
         var ctrl = this;
+
+        ctrl.scrollConfig = {
+            axis: 'y',
+            advanced: {
+                autoScrollOnFocus: false,
+                updateOnContentResize: true
+            }
+        };
         ctrl.codeEntryTypeArray = [
             {
                 id: 'online',
