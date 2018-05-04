@@ -157,6 +157,11 @@
             }
 
             ctrl.isLayoutCollapsed = true;
+
+            ctrl.version.ui = {
+                deployedVersion: lodash.isNil(ctrl.version.status) ? null : getVersionCopy(),
+                versionChanged: false
+            };
         }
 
         //
@@ -197,7 +202,7 @@
                                     convertTestEventsData(response.data);
 
                                     ctrl.isSplashShowed.value = false;
-                                })
+                                });
                         })
                         .catch(function () {
                             DialogsService.alert('Oops: Unknown error occurred while deleting event');
@@ -259,14 +264,14 @@
                     ctrl.version = $stateParams.functionData;
                 }
 
-                var versionCopy = lodash.omit(ctrl.version, ['status', 'spec.image']);
+                var versionCopy = lodash.omit(ctrl.version, ['status', 'spec.image', 'ui']);
 
                 ctrl.isTestResultShown = false;
                 ctrl.isDeployResultShown = true;
-
                 ctrl.rowIsCollapsed.deployBlock = true;
-
                 ctrl.isLayoutCollapsed = false;
+
+                $timeout(resizeVersionView);
 
                 NuclioFunctionsDataService.updateFunction(versionCopy, ctrl.project.metadata.name)
                     .then(pullFunctionState);
@@ -374,44 +379,6 @@
         }
 
         /**
-         * Pulls function status.
-         * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
-         */
-        function pullFunctionState() {
-            interval = $interval(function () {
-                NuclioFunctionsDataService.getFunction(ctrl.version.metadata, ctrl.project.metadata.name)
-                    .then(function (response) {
-                        if (response.status.state === 'ready' || response.status.state === 'error') {
-                            if (!lodash.isNil(interval)) {
-                                $interval.cancel(interval);
-                                interval = null;
-                            }
-
-                            $rootScope.$broadcast('change-version-deployed-state', {component: 'version', isDeployed: true});
-
-                            ctrl.isFunctionDeployed = true;
-                        }
-
-                        ctrl.deployResult = response;
-
-                        $timeout(function () {
-                            angular.element('.log-panel').mCustomScrollbar('scrollTo', 'bottom');
-                        });
-                    })
-                    .catch(function (error) {
-                        if (error.status !== 404) {
-                            if (!lodash.isNil(interval)) {
-                                $interval.cancel(interval);
-                                interval = null;
-                            }
-
-                            ctrl.isSplashShowed.value = false;
-                        }
-                    });
-            }, 2000);
-        }
-
-        /**
          * Called when row is collapsed/expanded
          * @param {string} row - name of expanded/collapsed row
          */
@@ -448,24 +415,6 @@
         //
 
         /**
-         * Resize view after test result is closed
-         */
-        function resizeVersionView() {
-            var clientHeight = document.documentElement.clientHeight;
-            var navigationTabs = angular.element(document).find('.ncl-navigation-tabs')[0];
-            var contentView = angular.element(document).find('.ncl-edit-version-view')[0];
-            var contentBlock = angular.element(document).find('.ncl-version')[0];
-            var navigationRect = navigationTabs.getBoundingClientRect();
-            var contentHeight = clientHeight - navigationRect.bottom;
-
-            contentView = angular.element(contentView);
-            contentBlock = angular.element(contentBlock);
-
-            contentView.css({'height': contentHeight + 'px'});
-            contentBlock.css({'height': contentHeight + 'px'});
-        }
-
-        /**
          * Converts event to structure that needed for drop-down
          * @param {Array} events -  array of events
          */
@@ -481,10 +430,6 @@
             ctrl.selectedFunctionEvent = ctrl.functionEvents[0];
         }
 
-        //
-        // Private methods
-        //
-
         /**
          * Disable deploy button if forms invalid
          * @param {Object} event
@@ -499,6 +444,79 @@
             } else {
                 ctrl.isDeployDisabled = args.isDisabled;
             }
+        }
+
+        /**
+         * Gets copy of ctrl.version without `ui` property
+         */
+        function getVersionCopy() {
+            return angular.copy(lodash.omit(ctrl.version, 'ui'));
+        }
+
+        /**
+         * Pulls function status.
+         * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
+         */
+        function pullFunctionState() {
+            interval = $interval(function () {
+                NuclioFunctionsDataService.getFunction(ctrl.version.metadata, ctrl.project.metadata.name)
+                    .then(function (response) {
+                        if (response.status.state === 'ready' || response.status.state === 'error') {
+                            if (!lodash.isNil(interval)) {
+                                $interval.cancel(interval);
+                                interval = null;
+                            }
+
+                            $rootScope.$broadcast('change-version-deployed-state', {component: 'version', isDeployed: true});
+
+                            if (lodash.isNil(ctrl.version.status)) {
+                                ctrl.version.status = response.status;
+                            }
+                            ctrl.version.ui = {
+                                deployedVersion: getVersionCopy(),
+                                versionChanged: false
+                            };
+
+                            ctrl.isFunctionDeployed = true;
+                        }
+
+                        ctrl.deployResult = response;
+
+                        $timeout(function () {
+                            angular.element('.log-panel').mCustomScrollbar('scrollTo', 'bottom');
+                        });
+                    })
+                    .catch(function (error) {
+                        if (error.status !== 404) {
+                            if (!lodash.isNil(interval)) {
+                                $interval.cancel(interval);
+                                interval = null;
+                            }
+
+                            ctrl.isSplashShowed.value = false;
+                        }
+                    });
+            }, 2000);
+        }
+
+        /**
+         * Resize view after test result is closed
+         */
+        function resizeVersionView() {
+            var clientHeight = document.documentElement.clientHeight;
+            var navigationTabs = angular.element(document).find('.ncl-navigation-tabs')[0];
+            var contentView = angular.element(document).find('.ncl-edit-version-view')[0];
+            var contentBlock = angular.element(document).find('.ncl-version')[0];
+            var navigationRect = navigationTabs.getBoundingClientRect();
+            var contentHeight = clientHeight - navigationRect.bottom;
+
+            contentView = angular.element(contentView);
+            contentBlock = angular.element(contentBlock);
+
+            contentView.css({'height': contentHeight + 'px'});
+            contentBlock.css({'height': contentHeight + 'px'});
+
+            $rootScope.$broadcast('igzWatchWindowResize::resize');
         }
 
         /**

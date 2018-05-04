@@ -4,7 +4,8 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclVersionConfigurationBasicSettings', {
             bindings: {
-                version: '<'
+                version: '<',
+                onChangeCallback: '<'
             },
             templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-basic-settings/version-configuration-basic-settings.tpl.html',
             controller: NclVersionConfigurationBasicSettingsController
@@ -62,11 +63,13 @@
                 lodash.set(ctrl, field, Number(newData));
 
                 lodash.set(ctrl.version, 'spec.timeoutSeconds', ctrl.timeout.min * 60 + ctrl.timeout.sec);
+                ctrl.onChangeCallback();
             } else {
                 $timeout(function () {
                     if (ctrl.basicSettingsForm.$valid) {
                         $rootScope.$broadcast('change-state-deploy-button', {component: 'settings', isDisabled: false});
                         lodash.set(ctrl.version, field, newData);
+                        ctrl.onChangeCallback();
                     } else {
                         $rootScope.$broadcast('change-state-deploy-button', {component: 'settings', isDisabled: true});
                     }
@@ -79,6 +82,7 @@
          */
         function updateEnableStatus() {
             lodash.set(ctrl.version, 'spec.disable', !ctrl.enableFunction);
+            ctrl.onChangeCallback();
         }
     }
 }());

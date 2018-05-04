@@ -6,41 +6,50 @@
             <div class="row">
                 <ncl-version-configuration-basic-settings
                         class="configuration-block"
-                        data-version="$ctrl.version"></ncl-version-configuration-basic-settings>
+                        data-version="$ctrl.version"
+                        data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-basic-settings>
                 <ncl-version-configuration-resources
                         class="configuration-block"
-                        data-version="$ctrl.version"></ncl-version-configuration-resources>
+                        data-version="$ctrl.version"
+                        data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-resources>
             </div>
             <div class="row">
                 <ncl-version-configuration-environment-variables
                         class="configuration-block"
-                        data-version="$ctrl.version"></ncl-version-configuration-environment-variables>
+                        data-version="$ctrl.version"
+                        data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-environment-variables>
             </div>
             <div class="row">
                 <ncl-version-configuration-labels
                         class="configuration-block"
-                        data-version="$ctrl.version"></ncl-version-configuration-labels>
+                        data-version="$ctrl.version"
+                        data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-labels>
                 <ncl-version-configuration-annotations
                         class="configuration-block"
-                        data-version="$ctrl.version"></ncl-version-configuration-annotations>
+                        data-version="$ctrl.version"
+                        data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-annotations>
             </div>
             <div class="row">
                 <ncl-version-configuration-data-bindings
                         class="configuration-block"
-                        data-version="$ctrl.version"></ncl-version-configuration-data-bindings>
+                        data-version="$ctrl.version"
+                        data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-data-bindings>
                 <ncl-version-configuration-build
                         class="configuration-block"
-                        data-version="$ctrl.version"></ncl-version-configuration-build>
+                        data-version="$ctrl.version"
+                        data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-build>
             </div>
             <div data-ng-if="$ctrl.isDemoMode()"
                  class="row">
                 <ncl-version-configuration-logging
                         class="configuration-block"
-                        data-version="$ctrl.version"></ncl-version-configuration-logging>
+                        data-version="$ctrl.version"
+                        data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-logging>
                 <ncl-version-configuration-runtime-attributes
                         class="configuration-block runtime-attributes"
                         data-ng-class="{'invisible-block': $ctrl.version.spec.runtime === 'shell'}"
-                        data-version="$ctrl.version"></ncl-version-configuration-runtime-attributes>
+                        data-version="$ctrl.version"
+                        data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-runtime-attributes>
             </div>
         </div>
     </div>

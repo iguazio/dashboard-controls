@@ -11,7 +11,7 @@
         var ctrl = this;
 
         ctrl.mainHeaderTitle = {};
-        ctrl.versionDeployed = false;
+        ctrl.versionDeployed = true;
         ctrl.dialogParams = {
             message: 'Leaving this page will discard your changes.',
             yesLabel: 'Leave',
@@ -108,7 +108,7 @@
          * @param {string} goToState - state to go
          */
         function warnBeforeLeave(goToState) {
-            if (lodash.includes(ctrl.mainHeaderTitle.state, 'app.project.function.edit') && $stateParams.isNewFunction && !ctrl.versionDeployed) {
+            if (lodash.includes(ctrl.mainHeaderTitle.state, 'app.project.function.edit') && !ctrl.versionDeployed) {
                 DialogsService.confirm(ctrl.dialogParams.message, ctrl.dialogParams.yesLabel, ctrl.dialogParams.noLabel, ctrl.dialogParams.type)
                     .then(function () {
                         $state.go(goToState);

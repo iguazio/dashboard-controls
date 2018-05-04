@@ -19,7 +19,8 @@
                 <div class="error" data-ng-show="$ctrl.nameTakenError">
                     Name already exists
                 </div>
-                <igz-validating-input-field data-field-type="input"
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
                                             data-input-name="spec.displayName"
                                             data-input-value="$ctrl.data.spec.displayName"
                                             data-is-focused="true"
@@ -38,7 +39,8 @@
                 <div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(newProjectForm, 'spec.description')">
                     The inputs you provided are invalid or incorrect
                 </div>
-                <igz-validating-input-field data-field-type="input"
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
                                             data-input-name="spec.description"
                                             data-input-value="$ctrl.data.spec.description"
                                             data-form-object="newProjectForm"

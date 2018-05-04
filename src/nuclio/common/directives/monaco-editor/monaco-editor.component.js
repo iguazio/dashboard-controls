@@ -66,12 +66,12 @@
                         value: scope.codeFile.code,
                         language: scope.codeFile.language,
                         theme: 'vs',
-                        // fontFamily: 'Roboto, sans-serif',
-                        // lineNumbersMinChars: 2,
-                        // lineHeight: 30,
-                        // lineDecorationsWidth: 5,
-                        automaticLayout: true
-                        // scrollBeyondLastLine: false
+                        automaticLayout: true,
+                        dragAndDrop: true,
+                        lineNumbersMinChars: scope.miniMonaco ? 2 : 5,
+                        minimap: {
+                            enabled: !scope.miniMonaco
+                        }
                     });
 
                     // TODO - look up api docs to find a suitable event to handle as the onDidChangeModelContent event only seems to fire for certain changes!
@@ -100,7 +100,8 @@
                 link: link,
                 scope: {
                     codeFile: '=codeFile',
-                    editorTheme: '=editorTheme'
+                    editorTheme: '=editorTheme',
+                    miniMonaco: '=miniMonaco'
                 }
             };
         });

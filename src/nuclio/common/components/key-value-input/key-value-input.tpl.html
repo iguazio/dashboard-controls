@@ -2,7 +2,7 @@
     <form name="$ctrl.keyValueInputForm"
           class="input-wrapper"
           data-ng-click="$ctrl.onEditInput()">
-        <igz-validating-input-field class="input-key"
+        <igz-validating-input-field class="nuclio-validating-input input-key"
                                     data-ng-class="{'use-type': $ctrl.useType}"
                                     data-field-type="input"
                                     data-input-name="key"
@@ -26,7 +26,7 @@
                               data-on-open-dropdown="$ctrl.openDropdown"
                               data-on-close-dropdown="$ctrl.closeDropdown()"></igz-default-dropdown>
 
-        <igz-validating-input-field class="input-value"
+        <igz-validating-input-field class="nuclio-validating-input input-value"
                                     data-ng-class="{'use-type': $ctrl.useType}"
                                     data-field-type="input"
                                     data-input-name="value"

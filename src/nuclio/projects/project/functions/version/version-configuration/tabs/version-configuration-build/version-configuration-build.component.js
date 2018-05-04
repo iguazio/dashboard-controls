@@ -4,7 +4,8 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclVersionConfigurationBuild', {
             bindings: {
-                version: '<'
+                version: '<',
+                onChangeCallback: '<'
             },
             templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-build/version-configuration-build.tpl.html',
             controller: NclVersionConfigurationBuildController
@@ -77,6 +78,7 @@
          */
         function onBaseImageChange(item) {
             ctrl.version.spec.build.baseImage = item.value;
+            ctrl.onChangeCallback();
         }
 
         /**
@@ -86,6 +88,7 @@
         function inputValueCallback(newData) {
             ctrl.buildCommands = newData;
             ctrl.version.spec.build.commands = newData.replace('\r', '\n').split('\n');
+            ctrl.onChangeCallback();
         }
 
         /**
@@ -166,6 +169,7 @@
                 icon: 'ncl-icon-' + type,
                 name: ''
             };
+            ctrl.onChangeCallback();
         }
 
         //

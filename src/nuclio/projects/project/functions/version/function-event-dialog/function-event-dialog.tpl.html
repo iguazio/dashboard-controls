@@ -10,7 +10,8 @@
             <div class="field-wrapper">
                 <div class="field-label">Name</div>
                 <div class="field-content">
-                    <igz-validating-input-field data-field-type="input"
+                    <igz-validating-input-field class="nuclio-validating-input"
+                                                data-field-type="input"
                                                 data-input-name="displayName"
                                                 data-input-model-options="$ctrl.inputModelOptions"
                                                 data-input-value="$ctrl.workingCopy.spec.displayName"
@@ -35,7 +36,8 @@
             <div class="field-wrapper">
                 <div class="field-label">Path</div>
                 <div class="field-content">
-                    <igz-validating-input-field data-field-type="input"
+                    <igz-validating-input-field class="nuclio-validating-input"
+                                                data-field-type="input"
                                                 data-input-name="x-nuclio-path"
                                                 data-input-model-options="$ctrl.inputModelOptions"
                                                 data-input-value="$ctrl.workingCopy.spec.attributes.headers['x-nuclio-path']"
@@ -58,7 +60,16 @@
             </div>
             <div class="field-wrapper">
                 <div class="field-label">Body</div>
-                <div class="field-content">
+                <div data-ng-if="$ctrl.contentType === 'application/json'"
+                     class="field-content code-edit-section">
+                    <ncl-monaco data-function-source-code="$ctrl.workingCopy.spec.body"
+                                data-selected-theme="$ctrl.bodyTheme"
+                                data-language="json"
+                                data-mini-monaco="true"
+                                data-on-change-source-code-callback="$ctrl.onChangeSourceCode(sourceCode)"></ncl-monaco>
+                </div>
+                <div data-ng-if="$ctrl.contentType === 'text/plain'"
+                     class="field-content">
                     <textarea class="event-body"
                               data-ng-model="$ctrl.workingCopy.spec.body"
                               data-ng-change="$ctrl.onChangeBody()"

@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationController
         });
 
-    function NclVersionConfigurationController($stateParams, lodash, ConfigService) {
+    function NclVersionConfigurationController($stateParams, lodash, ConfigService, VersionHelperService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {
@@ -25,6 +25,8 @@
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
 
+        ctrl.onConfigurationChangeCallback = onConfigurationChangeCallback;
+
         //
         // Hook methods
         //
@@ -36,6 +38,13 @@
             if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
                 ctrl.version = $stateParams.functionData;
             }
+        }
+
+        /**
+         * Checks if version's configuration was changed
+         */
+        function onConfigurationChangeCallback() {
+            VersionHelperService.checkVersionChange(ctrl.version);
         }
     }
 }());

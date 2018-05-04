@@ -4,7 +4,8 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclVersionConfigurationAnnotations', {
             bindings: {
-                version: '<'
+                version: '<',
+                onChangeCallback: '<'
             },
             templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-annotations/version-configuration-annotations.tpl.html',
             controller: NclVersionConfigurationAnnotationsController
@@ -136,8 +137,8 @@
                 }
                 newAnnotations[annotation.name] = annotation.value;
             });
-
             lodash.set(ctrl.version, 'metadata.annotations', newAnnotations);
+            ctrl.onChangeCallback();
         }
     }
 }());

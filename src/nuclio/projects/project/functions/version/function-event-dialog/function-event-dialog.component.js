@@ -25,6 +25,8 @@
         ctrl.buttonText = 'Create';
         ctrl.errorText = 'Error occurred while creating the new function event.';
         ctrl.titleText = 'Create function event';
+        ctrl.contentType = 'application/json';
+        ctrl.bodyTheme = 'vs';
         ctrl.isLoadingState = false;
         ctrl.isDeployFailed = false;
         ctrl.isFormChanged = false;
@@ -77,6 +79,7 @@
         ctrl.closeEventDialog = closeEventDialog;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.onChangeBody = onChangeBody;
+        ctrl.onChangeSourceCode = onChangeSourceCode;
         ctrl.onSelectHeader = onSelectHeader;
         ctrl.onSelectMethod = onSelectMethod;
 
@@ -192,6 +195,7 @@
          */
         function onSelectHeader(item) {
             lodash.set(ctrl.workingCopy, 'spec.attributes.headers.Content-Type', item.id);
+            ctrl.contentType = item.id;
 
             isFormChanged();
         }
@@ -200,6 +204,12 @@
          * Callback from body field.
          */
         function onChangeBody() {
+            isFormChanged();
+        }
+
+        function onChangeSourceCode(sourceCode) {
+            lodash.set(ctrl.workingCopy, 'spec.body', sourceCode);
+
             isFormChanged();
         }
 

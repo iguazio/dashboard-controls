@@ -4,7 +4,8 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclVersionConfigurationEnvironmentVariables', {
             bindings: {
-                version: '<'
+                version: '<',
+                onChangeCallback: '<'
             },
             templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-environment-variables/version-configuration-environment-variables.tpl.html',
             controller: NclVersionConfigurationEnvironmentVariablesController
@@ -131,6 +132,7 @@
             });
 
             lodash.set(ctrl.version, 'spec.env', variables);
+            ctrl.onChangeCallback();
         }
     }
 }());

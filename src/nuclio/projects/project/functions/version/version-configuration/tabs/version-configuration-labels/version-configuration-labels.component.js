@@ -4,7 +4,8 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclVersionConfigurationLabels', {
             bindings: {
-                version: '<'
+                version: '<',
+                onChangeCallback: '<'
             },
             templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-labels/version-configuration-labels.tpl.html',
             controller: NclVersionConfigurationLabelsController
@@ -39,7 +40,7 @@
             var labels = lodash.get(ctrl.version, 'metadata.labels', []);
 
             ctrl.labels = lodash.chain(labels)
-                .reject(function (value, key) {
+                .omitBy(function (value, key) {
                     return lodash.startsWith(key, 'nuclio.io/');
                 })
                 .map(function (value, key) {
@@ -146,6 +147,7 @@
             newLabels = lodash.merge(newLabels, nuclioLabels);
 
             lodash.set(ctrl.version, 'metadata.labels', newLabels);
+            ctrl.onChangeCallback();
         }
     }
 }());

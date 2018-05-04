@@ -3,5 +3,13 @@ body {
         width: 100%;
         height: 100%;
     }
+
+    .nuclio-validating-input {
+        .validating-input-field .input-field, .validating-input-field .textarea-field {
+            &:not([disabled]):not([readonly]):not(:focus):hover {
+                border: solid 1px @ncl-pale-grey;
+            }
+        }
+    }
 }
 

@@ -4,7 +4,8 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclVersionConfigurationDataBindings', {
             bindings: {
-                version: '<'
+                version: '<',
+                onChangeCallback: '<'
             },
             templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-data-bindings/version-configuration-data-bindings.tpl.html',
             controller: NclVersionConfigurationDataBindingsController
@@ -82,7 +83,6 @@
          */
         function editBindingCallback(item) {
             ctrl.handleAction('update', item);
-
             item.ui.editModeActive = false;
 
             $rootScope.$broadcast('change-state-deploy-button', {component: 'binding', isDisabled: false});
@@ -137,6 +137,7 @@
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }
+            ctrl.onChangeCallback();
         }
 
         /**
