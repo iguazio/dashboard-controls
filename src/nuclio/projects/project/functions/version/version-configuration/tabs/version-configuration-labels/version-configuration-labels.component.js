@@ -40,8 +40,8 @@
             var labels = lodash.get(ctrl.version, 'metadata.labels', []);
 
             ctrl.labels = lodash.chain(labels)
-                .pickBy(function (value, key) {
-                    return !lodash.startsWith(key, 'nuclio.io/');
+                .omitBy(function (value, key) {
+                    return lodash.startsWith(key, 'nuclio.io/');
                 })
                 .map(function (value, key) {
                     return {

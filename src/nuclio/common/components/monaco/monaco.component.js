@@ -18,7 +18,6 @@
         var ctrl = this;
 
         ctrl.$onInit = onInit;
-        ctrl.$onChanges = onChanges;
 
         //
         // Hook methods
@@ -30,29 +29,33 @@
         function onInit() {
             $scope.selectedCodeFile = {
                 language: ctrl.language,
-                code: atob(ctrl.functionSourceCode)
+                code: ctrl.functionSourceCode
             };
 
             $scope.$watch('selectedCodeFile.code', function () {
                 if (angular.isFunction(ctrl.onChangeSourceCodeCallback)) {
-                    ctrl.onChangeSourceCodeCallback({sourceCode: $scope.selectedCodeFile.code});
+                    ctrl.onChangeSourceCodeCallback({sourceCode: $scope.selectedCodeFile.code, language: ctrl.language});
                 }
             });
+
+            $scope.$on('monaco_on-change-content', setNewSourceCode);
         }
 
+        //
+        // Private method
+        //
+
         /**
-         * On changes method
-         * @param {Object} changes
+         * Sets new code data such as source code and language
+         * @param {Event} event
+         * @param {Object} data
          */
-        function onChanges(changes) {
-            if (angular.isDefined(changes.functionSourceCode)) {
-                if (!changes.functionSourceCode.isFirstChange()) {
-                    $scope.selectedCodeFile = {
-                        language: ctrl.language,
-                        code: atob(changes.functionSourceCode.currentValue)
-                    };
-                }
-            }
+        function setNewSourceCode(event, data) {
+            ctrl.language = data.language;
+            $scope.selectedCodeFile = {
+                language: data.language,
+                code: data.code
+            };
         }
     }
 }());

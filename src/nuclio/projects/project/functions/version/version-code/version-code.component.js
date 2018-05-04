@@ -10,7 +10,7 @@
             controller: NclVersionCodeController
         });
 
-    function NclVersionCodeController($element, $stateParams, $timeout, lodash, DialogsService,
+    function NclVersionCodeController($element, $rootScope, $stateParams, $timeout, lodash, DialogsService,
                                       PreventDropdownCutOffService, VersionHelperService) {
         var ctrl = this;
 
@@ -133,8 +133,20 @@
          * Changes function`s source code
          * @param {string} sourceCode
          */
-        function onChangeSourceCode(sourceCode) {
-            lodash.set(ctrl.version, 'spec.build.functionSourceCode', btoa(sourceCode));
+        function onChangeSourceCode(sourceCode, language) {
+            ctrl.selectedRuntime = lodash.chain(ctrl.runtimeArray)
+                .find(['language', language])
+                .defaultTo(ctrl.selectedRuntime)
+                .value();
+
+            lodash.assign(ctrl.version.spec, {
+                build: {
+                    functionSourceCode: btoa(sourceCode)
+                },
+                runtime: ctrl.selectedRuntime.id
+            });
+            ctrl.sourceCode = sourceCode;
+
             VersionHelperService.checkVersionChange(ctrl.version);
         }
 
@@ -178,7 +190,7 @@
          * // => 'ext'
          *
          * extractFileName('/path/to/file/file.name.ext', false, true);
-         * // => ''
+         * // => '.'
          *
          * extractFileName('');
          * // => ''
@@ -208,6 +220,7 @@
             return [
                 {
                     id: 'golang',
+                    ext: 'go',
                     name: 'Go',
                     language: 'go',
                     sourceCode: 'cGFja2FnZSBtYWluDQoNCmltcG9ydCAoDQogICAgImdpdGh1Yi5jb20vbnVjbGlvL251Y2xpby1zZGstZ28iDQo' +
@@ -217,6 +230,7 @@
                 },
                 {
                     id: 'python:2.7',
+                    ext: 'py',
                     name: 'Python 2.7',
                     language: 'python',
                     sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
@@ -224,6 +238,7 @@
                 },
                 {
                     id: 'python:3.6',
+                    ext: 'py',
                     name: 'Python 3.6',
                     language: 'python',
                     sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
@@ -231,6 +246,7 @@
                 },
                 {
                     id: 'pypy',
+                    ext: 'pypy',
                     name: 'PyPy',
                     language: 'python',
                     sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
@@ -238,6 +254,7 @@
                 },
                 {
                     id: 'dotnetcore',
+                    ext: 'cs',
                     name: '.NET Core',
                     language: 'csharp',
                     sourceCode: 'dXNpbmcgU3lzdGVtOw0KdXNpbmcgTnVjbGlvLlNkazsNCg0KcHVibGljIGNsYXNzIG1haW4NCnsNCiAgICBwdWJ' +
@@ -249,6 +266,7 @@
                 },
                 {
                     id: 'java',
+                    ext: 'java',
                     name: 'Java',
                     language: 'java',
                     sourceCode: 'aW1wb3J0IGlvLm51Y2xpby5Db250ZXh0Ow0KaW1wb3J0IGlvLm51Y2xpby5FdmVudDsNCmltcG9ydCBpby5udWN' +
@@ -260,6 +278,7 @@
                 },
                 {
                     id: 'nodejs',
+                    ext: 'js',
                     language: 'javascript',
                     sourceCode: 'ZXhwb3J0cy5oYW5kbGVyID0gZnVuY3Rpb24oY29udGV4dCwgZXZlbnQpIHsNCiAgICBjb250ZXh0LmNhbGxiYWN' +
                     'rKCcnKTsNCn07', // source code in base64
@@ -268,6 +287,7 @@
                 },
                 {
                     id: 'shell',
+                    ext: 'sh',
                     name: 'Shell',
                     language: 'shellscript',
                     sourceCode: '',
@@ -285,7 +305,7 @@
         function isFileDropValid(type, extension) {
 
             // Drag'n'Drop textual files into the code editor
-            var validFileExtensions = ['.cs', '.py', '.pypy', '.go', '.sh', '.txt'];
+            var validFileExtensions = ['cs', 'py', 'pypy', 'go', 'sh', 'txt', 'js', 'java'];
 
             return lodash(type).startsWith('text/') || validFileExtensions.includes(extension);
         }
@@ -327,7 +347,17 @@
                         var reader = new FileReader();
 
                         reader.onload = function (onloadEvent) {
-                            lodash.set(ctrl.version, 'spec.build.functionSourceCode', btoa(onloadEvent.target.result));
+                            var functionSource = {
+                                language: lodash.chain(ctrl.runtimeArray)
+                                    .find(['ext', extension])
+                                    .defaultTo({
+                                        language: 'plaintext'
+                                    })
+                                    .value()
+                                    .language,
+                                code: onloadEvent.target.result
+                            };
+                            $rootScope.$broadcast('monaco_on-change-content', functionSource);
 
                             codeEditorDropZone.removeClass('dragover');
                             codeEditor.css('opacity', '');
