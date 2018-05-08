@@ -119,6 +119,10 @@
                             {
                                 name: 'port',
                                 pattern: 'number'
+                            },
+                            {
+                                name: 'ingresses',
+                                pattern: 'object'
                             }
                         ]
                     },

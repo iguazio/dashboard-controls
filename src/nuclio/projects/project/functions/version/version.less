@@ -128,6 +128,69 @@
         }
     }
 
+    .table-headers {
+        display: flex;
+        font-size: 14px;
+        font-weight: bold;
+        font-style: normal;
+        font-stretch: normal;
+        letter-spacing: normal;
+        color: @dusk-three;
+        margin-bottom: 2px;
+
+        .key-header {
+            width: 34%;
+            margin-left: 16px;
+
+            &:not(.use-type) {
+                width: 36%;
+            }
+        }
+
+        .type-header {
+            width: 12%;
+        }
+
+        .value-header {
+            width: 52%;
+
+            &:not(.use-type) {
+                width: 61%;
+            }
+        }
+    }
+
+    .table-body:not(:last-child) {
+        margin-bottom: 5px;
+    }
+
+    .create-variable-button,
+    .create-annotation-button,
+    .create-label-button,
+    .create-binding-button,
+    .create-ingress-button {
+        display: flex;
+        align-items: center;
+        height: 36px;
+        margin-top: 7px;
+        .duskThree(0.64);
+        background-color: @ncl-white;
+        border: solid 1px @ncl-pale-grey;
+        font-size: 14px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        letter-spacing: normal;
+        text-align: left;
+        color: @color;
+
+        .igz-icon-add-round {
+            margin: 3px 8px 0 15px;
+            color: @ncl-orange;
+            font-size: 24px;
+        }
+    }
+
     @media screen and (max-height: 900px) {
         .ncl-edit-version-execution-result {
             max-height: 260px;
