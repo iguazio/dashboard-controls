@@ -40,7 +40,7 @@
                 visible: true
             }
         ];
-        ctrl.selectedTheme = ctrl.themesArray[0];
+        ctrl.selectedTheme = lodash.defaultTo(ctrl.version.ui.editorTheme, ctrl.themesArray[0]);
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
@@ -96,6 +96,7 @@
          * @param {Object} item
          */
         function selectThemeValue(item) {
+            ctrl.version.ui.editorTheme = item;
             ctrl.selectedTheme = item;
         }
 
