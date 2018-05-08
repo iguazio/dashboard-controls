@@ -12,13 +12,22 @@
             controller: NclEditItemController
         });
 
-    function NclEditItemController($document, $element, $scope, lodash, ConverterService, FunctionsService, FormValidationService) {
+    function NclEditItemController($document, $element, $rootScope, $scope, $timeout, lodash, ConverterService, FunctionsService, FormValidationService,
+                                   PreventDropdownCutOffService) {
         var ctrl = this;
 
         ctrl.classList = [];
         ctrl.selectedClass = {};
 
+        ctrl.scrollConfig = {
+            axis: 'y',
+            advanced: {
+                updateOnContentResize: true
+            }
+        };
+
         ctrl.$onInit = onInit;
+        ctrl.$postLink = postLink;
         ctrl.$onDestroy = onDestroy;
 
         ctrl.numberValidationPattern = /^\d+$/;
@@ -30,10 +39,15 @@
         ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
         ctrl.isNil = lodash.isNil;
 
+        ctrl.addNewIngress = addNewIngress;
         ctrl.getAttrValue = getAttrValue;
         ctrl.getValidationPattern = getValidationPattern;
+        ctrl.handleAction = handleAction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isClassSelected = isClassSelected;
+        ctrl.isScrollNeeded = isScrollNeeded;
+        ctrl.isHttpTrigger = isHttpTrigger;
+        ctrl.onChangeData = onChangeData;
         ctrl.onSubmitForm = onSubmitForm;
         ctrl.onSelectClass = onSelectClass;
         ctrl.convertFromCamelCase = convertFromCamelCase;
@@ -65,6 +79,32 @@
             if (!lodash.isEmpty(ctrl.item.kind)) {
                 ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
             }
+
+            if (isHttpTrigger()) {
+                ctrl.ingresses = lodash.chain(ctrl.item.attributes.ingresses)
+                    .defaultTo([])
+                    .map(function (ingress) {
+                        return {
+                            name: ingress.host,
+                            value: ingress.paths.join(','),
+                            ui: {
+                                editModeActive: false,
+                                isFormValid: true,
+                                name: 'ingress'
+                            }
+                        };
+                    })
+                    .value();
+            }
+        }
+
+        /**
+         * Post linking method
+         */
+        function postLink() {
+
+            // Bind DOM-related preventDropdownCutOff method to component's controller
+            PreventDropdownCutOffService.preventDropdownCutOff($element, '.three-dot-menu');
         }
 
         /**
@@ -77,6 +117,37 @@
         //
         // Public methods
         //
+
+        /**
+         * Adds new variable
+         */
+        function addNewIngress(event) {
+            $timeout(function () {
+                if (ctrl.ingresses.length < 1 || lodash.chain(ctrl.ingresses).last().get('ui.isFormValid', true).value()) {
+                    ctrl.ingresses.push({
+                        name: '',
+                        value: '',
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'ingress'
+                        }
+                    });
+                    event.stopPropagation();
+                }
+            }, 50);
+        }
+
+        /**
+         * Updates function`s variables
+         */
+        function updateIngresses() {
+            lodash.forEach(ctrl.ingresses, function (ingress) {
+                if (!ingress.ui.isFormValid) {
+                    $rootScope.$broadcast('change-state-deploy-button', {component: ingress.ui.name, isDisabled: true});
+                }
+            });
+        }
 
         /**
          * Returns the value of an attribute
@@ -99,6 +170,35 @@
         }
 
         /**
+         * Handler on specific action type
+         * @param {string} actionType
+         * @param {number} index - index of variable in array
+         */
+        function handleAction(actionType, index) {
+            if (actionType === 'delete') {
+                ctrl.ingresses.splice(index, 1);
+
+                updateIngresses();
+            }
+        }
+
+        /**
+         * Determine whether the item class was selected
+         * @returns {boolean}
+         */
+        function isClassSelected() {
+            return !lodash.isEmpty(ctrl.selectedClass);
+        }
+
+        /**
+         * Returns true if scrollbar is necessary
+         * @return {boolean}
+         */
+        function isScrollNeeded() {
+            return ctrl.ingresses.length > 10;
+        }
+
+        /**
          * Update data callback
          * @param {string} newData
          * @param {string} field
@@ -108,11 +208,22 @@
         }
 
         /**
-         * Determine whether the item class was selected
+         * Checks for `http` triggers
          * @returns {boolean}
          */
-        function isClassSelected() {
-            return !lodash.isEmpty(ctrl.selectedClass);
+        function isHttpTrigger() {
+            return ctrl.selectedClass.id === 'http';
+        }
+
+        /**
+         * Changes data of specific variable
+         * @param {Object} variable
+         * @param {number} index
+         */
+        function onChangeData(variable, index) {
+            ctrl.ingresses[index] = variable;
+
+            updateIngresses();
         }
 
         /**
@@ -142,7 +253,11 @@
             }
 
             lodash.each(item.attributes, function (attribute) {
-                lodash.set(ctrl.item.attributes, attribute.name, '');
+                if (attribute.name === 'ingresses') {
+                    ctrl.ingresses = [];
+                } else {
+                    lodash.set(ctrl.item.attributes, attribute.name, '');
+                }
             });
 
             // set form pristine to not validate new form fields
@@ -173,23 +288,38 @@
                         // set form as submitted
                         ctrl.editItemForm.$setSubmitted();
                     } else {
-                        ctrl.item.ui.expandable = true;
+                        $timeout(function () {
+                            ctrl.item.ui.expandable = true;
 
-                        lodash.forEach(ctrl.selectedClass.attributes, function (attribute) {
-                            if (attribute.pattern === 'number') {
-                                lodash.set(ctrl.item, 'attributes[' + attribute.name + ']', Number(ctrl.item.attributes[attribute.name]));
-                            }
+                            lodash.forEach(ctrl.selectedClass.attributes, function (attribute) {
+                                if (attribute.pattern === 'number') {
+                                    lodash.set(ctrl.item, 'attributes[' + attribute.name + ']', Number(ctrl.item.attributes[attribute.name]));
+                                }
 
-                            if (attribute.pattern === 'arrayStr' && !lodash.isArray(ctrl.item.attributes[attribute.name])) {
-                                ctrl.item.attributes[attribute.name] = ctrl.item.attributes[attribute.name].split(',');
-                            }
+                                if (attribute.pattern === 'arrayStr' && !lodash.isArray(ctrl.item.attributes[attribute.name])) {
+                                    ctrl.item.attributes[attribute.name] = ctrl.item.attributes[attribute.name].split(',');
+                                }
 
-                            if (attribute.pattern === 'arrayInt' && !lodash.isArray(ctrl.item.attributes[attribute.name])) {
-                                ctrl.item.attributes[attribute.name] = ConverterService.toNumberArray(ctrl.item.attributes[attribute.name]);
-                            }
+                                if (attribute.pattern === 'arrayInt' && !lodash.isArray(ctrl.item.attributes[attribute.name])) {
+                                    ctrl.item.attributes[attribute.name] = ConverterService.toNumberArray(ctrl.item.attributes[attribute.name]);
+                                }
+
+                                if (attribute.name === 'ingresses') {
+                                    var ingresses = lodash.defaultTo(ctrl.item.attributes[attribute.name], {});
+
+                                    lodash.forEach(ctrl.ingresses, function (ingress, key) {
+                                        ingresses[key.toString()] = {
+                                            host: ingress.name,
+                                            paths: ingress.value.split(',')
+                                        };
+                                    });
+
+                                    ctrl.item.attributes[attribute.name] = ingresses;
+                                }
+                            });
+
+                            ctrl.onSubmitCallback({item: ctrl.item});
                         });
-
-                        ctrl.onSubmitCallback({item: ctrl.item});
                     }
                 }
             }

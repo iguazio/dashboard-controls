@@ -9,7 +9,8 @@
                 itemIndex: '<',
                 rowData: '<',
                 useType: '<',
-                listClass: '@?'
+                listClass: '@?',
+                submitOnFly: '<?'
             },
             templateUrl: 'nuclio/common/components/key-value-input/key-value-input.tpl.html',
             controller: NclKeyValueInputController
@@ -45,6 +46,7 @@
             ctrl.editMode = lodash.get(ctrl.data, 'ui.editModeActive', false);
 
             ctrl.actions = initActions();
+            ctrl.submitOnFly = lodash.defaultTo(ctrl.submitOnFly, false);
             ctrl.typesList = getTypesList();
 
             $document.on('click', saveChanges);
@@ -112,6 +114,10 @@
             } else {
                 ctrl.data[field] = newData;
             }
+
+            if (ctrl.submitOnFly) {
+                saveChanges();
+            }
         }
 
         /**
@@ -141,6 +147,10 @@
                 } else {
                     ctrl.data = lodash.omit(ctrl.data, 'valueFrom');
                     lodash.set(ctrl.data, 'value', '');
+                }
+
+                if (ctrl.submitOnFly) {
+                    saveChanges();
                 }
             }
         }
@@ -238,10 +248,10 @@
 
         /**
          * Calls callback with new data
-         * @param {Event} event
+         * @param {Event} [event]
          */
         function saveChanges(event) {
-            if ($element.find(event.target).length === 0 || event.keyCode === EventHelperService.ENTER) {
+            if (angular.isUndefined(event) || $element.find(event.target).length === 0 || event.keyCode === EventHelperService.ENTER) {
                 ctrl.keyValueInputForm.$submitted = true;
                 if (ctrl.keyValueInputForm.$valid) {
                     ctrl.data.ui = {

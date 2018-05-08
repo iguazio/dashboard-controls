@@ -85,7 +85,7 @@
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected()"
+                 data-ng-if="$ctrl.isClassSelected() && attribute.name !== 'ingresses'"
                  data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
                 <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div>
                 <igz-validating-input-field class="nuclio-validating-input"
@@ -100,6 +100,46 @@
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="attributes.{{attribute.name}}">
                 </igz-validating-input-field>
+            </div>
+            <div class="igz-col-91 attribute-field ingresses-wrapper"
+                 data-ng-if="$ctrl.isClassSelected() && $ctrl.isHttpTrigger()">
+
+                <div class="table-headers">
+                    <div class="key-header">Host</div>
+                    <div class="value-header">Paths</div>
+                </div>
+                <div data-ng-if="!$ctrl.isScrollNeeded()">
+                    <div class="table-body" data-ng-repeat="ingress in $ctrl.ingresses">
+                        <ncl-key-value-input class="new-label-input"
+                                             data-list-class="ingresses-wrapper"
+                                             data-row-data="ingress"
+                                             data-use-type="false"
+                                             data-submit-on-fly="true"
+                                             data-item-index="$index"
+                                             data-action-handler-callback="$ctrl.handleAction(actionType, index)"
+                                             data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                    </div>
+                </div>
+                <div data-ng-if="$ctrl.isScrollNeeded()"
+                     class="igz-scrollable-container scrollable-ingresses"
+                     data-ng-scrollbars
+                     data-ng-scrollbars-config="$ctrl.scrollConfig">
+                    <div class="table-body" data-ng-repeat="ingress in $ctrl.ingresses">
+                        <ncl-key-value-input class="new-label-input"
+                                             data-list-class="scrollable-ingresses"
+                                             data-row-data="ingress"
+                                             data-use-type="false"
+                                             data-submit-on-fly="true"
+                                             data-item-index="$index"
+                                             data-action-handler-callback="$ctrl.handleAction(actionType, index)"
+                                             data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                    </div>
+                </div>
+                <div class="create-ingress-button"
+                     data-ng-click="$ctrl.addNewIngress($event)">
+                    <span class="igz-icon-add-round"></span>
+                    Create a new ingress
+                </div>
             </div>
         </div>
     </form>
