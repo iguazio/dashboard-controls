@@ -11,10 +11,15 @@
             controller: FunctionFromScratchController
         });
 
-    function FunctionFromScratchController($interval, $state, $stateParams, lodash, DialogsService, FunctionsService,
+    function FunctionFromScratchController($interval, $state, $stateParams, $timeout, lodash, DialogsService, FunctionsService,
                                            NuclioFunctionsDataService, NuclioProjectsDataService, ValidatingPatternsService) {
         var ctrl = this;
 
+        ctrl.inputModelOptions = {
+            debounce: {
+                'default': 0
+            }
+        };
         ctrl.functionData = {};
         ctrl.isCreateFunctionAllowed = false;
         ctrl.runtimes = [];
@@ -83,11 +88,13 @@
          * @param {string} field - field which should be filled
          */
         function inputValueCallback(data, field) {
-            if (!lodash.isNil(data)) {
-                lodash.set(ctrl, 'functionData.metadata.' + field, data);
+            $timeout(function () {
+                if (!lodash.isNil(data)) {
+                    lodash.set(ctrl, 'functionData.metadata.' + field, data);
 
-                ctrl.isCreateFunctionAllowed = !lodash.isEmpty(ctrl.functionFromScratchForm.$error);
-            }
+                    ctrl.isCreateFunctionAllowed = lodash.isEmpty(ctrl.functionFromScratchForm.$error);
+                }
+            });
         }
 
         /**

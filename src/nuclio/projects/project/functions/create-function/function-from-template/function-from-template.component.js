@@ -11,10 +11,15 @@
             controller: FunctionFromTemplateController
         });
 
-    function FunctionFromTemplateController($interval, $state, $stateParams, $q, lodash, DialogsService, FunctionsService,
+    function FunctionFromTemplateController($interval, $state, $stateParams, $timeout, $q, lodash, DialogsService, FunctionsService,
                                             ValidatingPatternsService, NuclioFunctionsDataService) {
         var ctrl = this;
 
+        ctrl.inputModelOptions = {
+            debounce: {
+                'default': 0
+            }
+        };
         ctrl.functionData = {};
         ctrl.isCreateFunctionAllowed = false;
         ctrl.selectedTemplate = '';
@@ -87,11 +92,13 @@
          * @param {string} field - field which should be filled
          */
         function inputValueCallback(data, field) {
-            if (!lodash.isNil(data)) {
-                lodash.set(ctrl, 'functionData.metadata.' + field, data);
+            $timeout(function () {
+                if (!lodash.isNil(data)) {
+                    lodash.set(ctrl, 'functionData.metadata.' + field, data);
 
-                ctrl.isCreateFunctionAllowed = !lodash.isEmpty(ctrl.functionFromTemplateForm.$error);
-            }
+                    ctrl.isCreateFunctionAllowed = lodash.isEmpty(ctrl.functionFromTemplateForm.$error);
+                }
+            });
         }
 
         /**
@@ -114,30 +121,10 @@
             if (!lodash.isEqual(templateName, ctrl.selectedTemplate)) {
                 ctrl.selectedTemplate = templateName;
 
-                // set new runtime
-                lodash.set(ctrl, 'functionData.spec.description', ctrl.templates[ctrl.selectedTemplate].spec.description);
-
-                // set new resources
-                lodash.set(ctrl, 'functionData.spec.resources', ctrl.templates[ctrl.selectedTemplate].spec.resources);
-
-                // set new description
-                lodash.set(ctrl, 'functionData.spec.runtime', ctrl.templates[ctrl.selectedTemplate].spec.runtime);
-
-                // set new handler
-                lodash.set(ctrl, 'functionData.spec.handler',
+                // assign new template to function
+                lodash.set(ctrl.functionData, 'spec', ctrl.templates[ctrl.selectedTemplate].spec);
+                lodash.set(ctrl.functionData, 'spec.handler',
                     FunctionsService.getHandler(ctrl.templates[ctrl.selectedTemplate].spec.runtime));
-
-                // set new functionSourceCode
-                lodash.set(ctrl, 'functionData.spec.build.functionSourceCode',
-                    ctrl.templates[ctrl.selectedTemplate].spec.build.functionSourceCode);
-
-                // set new build commands
-                lodash.set(ctrl, 'functionData.spec.build.commands',
-                    ctrl.templates[ctrl.selectedTemplate].spec.build.commands);
-
-                // set new baseImage
-                lodash.set(ctrl, 'functionData.spec.build.baseImage',
-                    ctrl.templates[ctrl.selectedTemplate].spec.build.baseImage);
             }
         }
 
@@ -165,23 +152,17 @@
 
                     ctrl.selectedTemplate = getSelectedTemplate();
                     var selectedTemplate = ctrl.templates[ctrl.selectedTemplate];
-
                     ctrl.functionData = {
                         metadata: {
                             name: '',
                             namespace: ''
                         },
-                        spec: {
-                            description: selectedTemplate.spec.description,
-                            resources: selectedTemplate.spec.resources,
-                            handler: FunctionsService.getHandler(selectedTemplate.spec.runtime),
-                            runtime: selectedTemplate.spec.runtime,
-                            build: {
-                                functionSourceCode: selectedTemplate.spec.build.functionSourceCode,
-                                commands: selectedTemplate.spec.build.commands
-                            }
-                        }
+                        spec: selectedTemplate.spec
                     };
+
+                    lodash.set(ctrl.functionData, 'spec.handler',
+                        FunctionsService.getHandler(selectedTemplate.spec.runtime));
+
                 })
                 .catch(function () {
                     DialogsService.alert('Oops: Unknown error occurred');

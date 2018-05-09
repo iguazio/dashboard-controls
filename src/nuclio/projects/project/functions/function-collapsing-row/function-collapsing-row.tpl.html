@@ -13,8 +13,10 @@
             <div class="igz-col-25 common-table-cell function-name">
                 {{$ctrl.function.metadata.name}}
             </div>
-            <div class="igz-col-20 common-table-cell">
-                {{$ctrl.function.spec.description}}
+            <div class="igz-col-20 common-table-cell igz-scrollable-container"
+                 data-ng-scrollbars
+                 data-ng-scrollbars-config="$ctrl.scrollConfig">
+                <span class="scrollable-content">{{$ctrl.function.spec.description}}</span>
             </div>
             <div class="igz-col-10 common-table-cell">
                 {{$ctrl.convertedStatusState}}

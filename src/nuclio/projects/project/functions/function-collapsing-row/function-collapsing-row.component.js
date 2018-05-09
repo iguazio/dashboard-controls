@@ -25,6 +25,13 @@
         };
         ctrl.invocationURL = '';
 
+        ctrl.scrollConfig = {
+            axis: 'y',
+            advanced: {
+                updateOnContentResize: true
+            }
+        };
+
         ctrl.$onInit = onInit;
 
         ctrl.isFunctionShowed = isFunctionShowed;

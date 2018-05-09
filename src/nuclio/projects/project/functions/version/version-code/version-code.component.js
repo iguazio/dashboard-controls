@@ -40,7 +40,7 @@
                 visible: true
             }
         ];
-        ctrl.selectedTheme = lodash.defaultTo(ctrl.version.ui.editorTheme, ctrl.themesArray[0]);
+        ctrl.selectedTheme = lodash.get(ctrl.version, 'ui.editorTheme', ctrl.themesArray[0]);
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
@@ -107,12 +107,9 @@
         function selectRuntimeValue(item) {
             ctrl.selectedRuntime = item;
 
-            lodash.assign(ctrl.version.spec, {
-                runtime: item.id,
-                build: {
-                    functionSourceCode: item.sourceCode
-                }
-            });
+            lodash.set(ctrl.version, 'spec.runtime', item.id);
+            lodash.set(ctrl.version, 'spec.build.functionSourceCode', item.sourceCode);
+
             VersionHelperService.checkVersionChange(ctrl.version);
         }
 
@@ -140,12 +137,9 @@
                 .defaultTo(ctrl.selectedRuntime)
                 .value();
 
-            lodash.assign(ctrl.version.spec, {
-                build: {
-                    functionSourceCode: btoa(sourceCode)
-                },
-                runtime: ctrl.selectedRuntime.id
-            });
+            lodash.set(ctrl.version, 'spec.runtime', ctrl.selectedRuntime.id);
+            lodash.set(ctrl.version, 'spec.build.functionSourceCode', btoa(sourceCode));
+
             ctrl.sourceCode = sourceCode;
 
             VersionHelperService.checkVersionChange(ctrl.version);
