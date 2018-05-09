@@ -87,7 +87,7 @@
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && attribute.type === 'input'"
                  data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
-                <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}{{attribute.allowEmpty + 'empty'}}</div>
+                <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-input-name="item_{{attribute.name}}"
@@ -121,7 +121,7 @@
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && attribute.type === 'number-input'"
                  data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
-                <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}{{!attribute.allowEmpty}}</div>
+                <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div>
                 <igz-number-input data-form-object="$ctrl.editItemForm"
                                   data-input-name="{{attribute.name}}"
                                   data-current-value="$ctrl.getAttrValue(attribute.name)"
