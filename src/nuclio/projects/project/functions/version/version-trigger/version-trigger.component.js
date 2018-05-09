@@ -67,8 +67,7 @@
                     kind: '',
                     attributes: {},
                     ui: {
-                        editModeActive: true,
-                        expandable: false
+                        editModeActive: true
                     }
                 });
                 $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: true});
@@ -82,8 +81,6 @@
          */
         function editTriggerCallback(item) {
             ctrl.handleAction('update', item);
-
-            item.ui.editModeActive = false;
 
             $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: false});
         }
@@ -100,12 +97,9 @@
                 lodash.remove(ctrl.triggers, ['id', selectedItem.id]);
                 lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
             } else if (actionType === 'edit') {
-                if (!isTriggerInEditMode()) {
-                    lodash.assign(item.ui, {
-                        editModeActive: true,
-                        expandable: false
-                    });
-                }
+                lodash.assign(item.ui, {
+                    editModeActive: true
+                });
             } else if (actionType === 'update') {
                 if (!lodash.isEmpty(selectedItem.id)) {
                     lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
@@ -128,14 +122,9 @@
 
                 lodash.set(ctrl.version, 'spec.triggers.' + selectedItem.name, triggerItem);
 
-                // get trigger list
-                ctrl.triggers = lodash.map(ctrl.version.spec.triggers, function (value, key) {
-                    var triggersItem = angular.copy(value);
-                    triggersItem.id = key;
-                    triggersItem.name = key;
-
-                    return triggersItem;
-                });
+                if (!lodash.isEqual(item, selectedItem)) {
+                    angular.copy(selectedItem, item);
+                }
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }
