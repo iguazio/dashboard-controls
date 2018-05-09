@@ -1,7 +1,8 @@
 <div class="number-input"
     data-ng-class="[{'invalid': $ctrl.checkInvalidation()},
                     {'pristine': !$ctrl.numberInputChanged},
-                    {'disabled': $ctrl.isDisabled}]">
+                    {'disabled': $ctrl.isDisabled},
+                    {'submitted': $ctrl.formObject.$submitted}]">
     <div class="additional-left-block">
         <span class="prefix-unit" data-ng-show="$ctrl.isShownUnit($ctrl.prefixUnit)">{{$ctrl.prefixUnit}}</span>
     </div>
@@ -21,6 +22,7 @@
            data-ng-blur="$ctrl.onBlurInput()"
            data-ng-change="$ctrl.onChangeInput()"
            data-ng-disabled="$ctrl.isDisabled"
+           data-ng-required="$ctrl.validationIsRequired === 'true'"
            data-igz-validate-elevation
            data-compare-val="$ctrl.validationValue"
            data-compare-val-unit="$ctrl.validationValueUnit.power"

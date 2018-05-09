@@ -85,9 +85,9 @@
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && attribute.name !== 'ingresses'"
+                 data-ng-if="$ctrl.isClassSelected() && attribute.type === 'input'"
                  data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
-                <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div>
+                <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}{{attribute.allowEmpty + 'empty'}}</div>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-input-name="item_{{attribute.name}}"
@@ -95,11 +95,44 @@
                                             data-is-focused="false"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-pattern="$ctrl.getValidationPattern(attribute.pattern)"
-                                            data-validation-is-required="true"
+                                            data-validation-is-required="{{!attribute.allowEmpty}}"
                                             data-placeholder-text="Type {{attribute.name}}..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="attributes.{{attribute.name}}">
                 </igz-validating-input-field>
+            </div>
+            <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && attribute.type === 'dropdown'"
+                 data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
+                <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div>
+                <igz-default-dropdown data-select-property-only="id"
+                                      data-placeholder="Seek to..."
+                                      data-values-array="attribute.values"
+                                      data-form-object="$ctrl.editItemForm"
+                                      data-is-required="true"
+                                      data-prevent-drop-up="true"
+                                      data-input-name="{{attribute.name}}"
+                                      data-selected-item="$ctrl.getAttrValue(attribute.name)"
+                                      data-item-select-callback="$ctrl.onSelectDropdownValue(item, field)"
+                                      data-item-select-field="attributes.{{attribute.name}}">
+
+                </igz-default-dropdown>
+            </div>
+            <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && attribute.type === 'number-input'"
+                 data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
+                <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}{{!attribute.allowEmpty}}</div>
+                <igz-number-input data-form-object="$ctrl.editItemForm"
+                                  data-input-name="{{attribute.name}}"
+                                  data-current-value="$ctrl.getAttrValue(attribute.name)"
+                                  data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
+                                  data-update-number-input-field="attributes.{{attribute.name}}"
+                                  data-placeholder=""
+                                  data-decimal-number="0"
+                                  data-value-step="1"
+                                  data-suffix-unit="{{attribute.unit}}"
+                                  data-validation-is-required="{{!attribute.allowEmpty}}"
+                                  data-min-value="0"></igz-number-input>
             </div>
             <div class="igz-col-91 attribute-field ingresses-wrapper"
                  data-ng-if="$ctrl.isClassSelected() && $ctrl.isHttpTrigger()">

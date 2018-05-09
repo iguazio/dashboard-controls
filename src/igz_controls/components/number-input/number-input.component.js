@@ -24,6 +24,7 @@
                 prefixUnit: '@',
                 suffixUnit: '@',
                 valueStep: '@',
+                validationIsRequired: '@?',
                 updateNumberInputField: '@?'
             },
             templateUrl: 'igz_controls/components/number-input/number-input.tpl.html',

@@ -40,6 +40,7 @@
         ctrl.isNil = lodash.isNil;
 
         ctrl.addNewIngress = addNewIngress;
+        ctrl.convertFromCamelCase = convertFromCamelCase;
         ctrl.getAttrValue = getAttrValue;
         ctrl.getValidationPattern = getValidationPattern;
         ctrl.handleAction = handleAction;
@@ -50,7 +51,8 @@
         ctrl.onChangeData = onChangeData;
         ctrl.onSubmitForm = onSubmitForm;
         ctrl.onSelectClass = onSelectClass;
-        ctrl.convertFromCamelCase = convertFromCamelCase;
+        ctrl.onSelectDropdownValue = onSelectDropdownValue;
+        ctrl.numberInputCallback = numberInputCallback;
 
         //
         // Hook methods
@@ -269,6 +271,24 @@
             }
         }
 
+        /**
+         * Sets new selected value from dropdown
+         * @param {Object} item
+         * @param {string} field
+         */
+        function onSelectDropdownValue(item, field) {
+            lodash.set(ctrl.item, field, item.id);
+        }
+
+        /**
+         * Changes value from number input
+         * @param {number} item
+         * @param {string} field
+         */
+        function numberInputCallback(item, field) {
+            lodash.set(ctrl.item, field, item);
+        }
+
         //
         // Private methods
         //
@@ -293,7 +313,8 @@
 
                             lodash.forEach(ctrl.selectedClass.attributes, function (attribute) {
                                 if (attribute.pattern === 'number') {
-                                    lodash.set(ctrl.item, 'attributes[' + attribute.name + ']', Number(ctrl.item.attributes[attribute.name]));
+                                    lodash.set(ctrl.item, 'attributes[' + attribute.name + ']', attribute.allowEmpty ?
+                                        ctrl.item.attributes[attribute.name] : Number(ctrl.item.attributes[attribute.name]));
                                 }
 
                                 if (attribute.pattern === 'arrayStr' && !lodash.isArray(ctrl.item.attributes[attribute.name])) {
