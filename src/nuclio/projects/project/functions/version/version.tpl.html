@@ -79,11 +79,11 @@
              data-ng-class="{'succeeded'  : $ctrl.deployResult.status.state === 'ready',
                              'in-progress': $ctrl.checkValidDeployState(),
                              'collapsed'  : $ctrl.rowIsCollapsed.deployBlock}">
-        <span class="result-status-icon"
-              data-ng-class="{'igz-icon-tick-round': $ctrl.deployResult.status.state === 'ready',
-                              'igz-icon-properties': $ctrl.checkValidDeployState(),
-                              'igz-icon-block'     : $ctrl.deployResult.status.state === 'error'}"></span>
-            {{$ctrl.getDeployStatusState($ctrl.deployResult.status.state)}}
+            <span class="result-status-icon"
+                  data-ng-class="{'igz-icon-tick-round' : $ctrl.deployResult.status.state === 'ready',
+                                  'igz-icon-properties' : $ctrl.checkValidDeployState(),
+                                  'igz-icon-block'      : $ctrl.deployResult.status.state === 'error'}"></span>
+            <span class="result-state">{{$ctrl.getDeployStatusState($ctrl.deployResult.status.state)}}</span>
         </div>
         <div class="ncl-execution-result-block collapsed-block-content-wrapper" data-collapse="$ctrl.rowIsCollapsed.deployBlock">
             <div class="collapsed-block-title without-collapse">Logs</div>
@@ -116,7 +116,7 @@
             <span class="result-status-icon"
                   data-ng-class="$ctrl.isInvocationSuccess ? 'igz-icon-tick-round' : 'igz-icon-block'">
             </span>
-                Execution results: {{$ctrl.testResult.status.statusText}}
+                <span class="result-state">Execution results: {{$ctrl.testResult.status.statusText}}</span>
             </div>
 
             <div class="ncl-execution-result-block">
