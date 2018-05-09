@@ -107,14 +107,9 @@
         function selectRuntimeValue(item) {
             ctrl.selectedRuntime = item;
 
-            // lodash.assign(ctrl.version.spec, {
-            //     runtime: item.id,
-            //     build: {
-            //         functionSourceCode: item.sourceCode
-            //     }
-            // });
             lodash.set(ctrl.version, 'spec.runtime', item.id);
             lodash.set(ctrl.version, 'spec.build.functionSourceCode', item.sourceCode);
+
             VersionHelperService.checkVersionChange(ctrl.version);
         }
 
