@@ -2,18 +2,28 @@
     <div class="title">Resources</div>
     <form name="$ctrl.resourcesForm" class="resources-wrapper">
         <div class="row">
-            <!-- TODO -->
-            <div data-ng-if="$ctrl.isDemoMode()"
-                 class="sliders-block">
+            <div class="sliders-block">
                 <div class="slider-row">
                     <igz-slider-input-block data-slider-config="$ctrl.memorySliderConfig"
-                                            data-measure-units="$ctrl.defaultMeasureUnits"
-                                            data-slider-block-updating-broadcast=""></igz-slider-input-block>
+                                            data-measure-units="$ctrl.defaultMemoryMeasureUnits"
+                                            data-slider-block-updating-broadcast=""
+                                            data-on-change-callback="$ctrl.sliderInputCallback"
+                                            data-update-slider-input="spec.resources.limits.memory"></igz-slider-input-block>
                 </div>
                 <div class="slider-row">
                     <igz-slider-input-block data-slider-config="$ctrl.cpuSliderConfig"
                                             data-measure-units="null"
-                                            data-slider-block-updating-broadcast=""></igz-slider-input-block>
+                                            data-slider-block-updating-broadcast=""
+                                            data-on-change-callback="$ctrl.sliderInputCallback"
+                                            data-update-slider-input="spec.resources.limits.cpu"></igz-slider-input-block>
+                </div>
+                <div class="slider-row">
+                    <igz-slider-input-block data-slider-config="$ctrl.targetCpuSliderConfig"
+                                            data-measure-units="null"
+                                            data-slider-block-updating-broadcast=""
+                                            data-on-change-callback="$ctrl.sliderInputCallback"
+                                            data-update-slider-input="spec.targetCPU"
+                                            data-allow-full-range="true"></igz-slider-input-block>
                 </div>
             </div>
 
