@@ -54,8 +54,6 @@
 
         /**
          * Inits data for sliders
-         * @param memoryValue
-         * @param cpuValue
          */
         function initSliders() {
             var memoryBytes = parseInt(lodash.get(ctrl.version.spec.resources, 'limits.memory', Math.pow(1024, 2) * 128));
@@ -143,7 +141,7 @@
 
         /**
          * Update limits callback
-         * @param {string} newValue
+         * @param {number} newValue
          * @param {string} field
          */
         function sliderInputCallback(newValue, field) {
@@ -166,7 +164,7 @@
 
         /**
          * Creates array of memory slider steps
-         * @returns {array}
+         * @returns {Array}
          */
         function initMemorySteps() {
             var stepsArray = [];
