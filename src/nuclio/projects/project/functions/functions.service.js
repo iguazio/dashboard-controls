@@ -42,7 +42,7 @@
                         ]
                     },
                     {
-                        id: 'rabbit_mq',
+                        id: 'rabbit-mq',
                         name: 'RabbitMQ',
                         url: 'string',
                         attributes: [
