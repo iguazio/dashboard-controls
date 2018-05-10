@@ -5,14 +5,15 @@
         .component('nclCollapsingRow', {
             bindings: {
                 actionHandlerCallback: '&',
-                item: '<'
+                item: '<',
+                type: '@'
             },
             templateUrl: 'nuclio/common/components/collapsing-row/collapsing-row.tpl.html',
             controller: NclCollapsingRowController,
             transclude: true
         });
 
-    function NclCollapsingRowController($timeout, lodash) {
+    function NclCollapsingRowController($timeout, lodash, FunctionsService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -40,6 +41,12 @@
                     expandable: true
                 }
             });
+
+            ctrl.classList  = FunctionsService.getClassesList(ctrl.type);
+            if (!lodash.isEmpty(ctrl.item.kind)) {
+                ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
+                ctrl.item.ui.className = ctrl.selectedClass.name;
+            }
 
             ctrl.actions = initActions();
         }

@@ -29,11 +29,15 @@
                         attributes: [
                             {
                                 name: 'topic',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'partitions',
-                                pattern: 'arrayInt'
+                                pattern: 'arrayInt',
+                                type: 'input',
+                                allowEmpty: false
                             }
                         ]
                     },
@@ -44,15 +48,21 @@
                         attributes: [
                             {
                                 name: 'exchangeName',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'queueName',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'topics',
-                                pattern: 'arrayStr'
+                                pattern: 'arrayStr',
+                                type: 'input',
+                                allowEmpty: false
                             }
                         ]
                     },
@@ -63,7 +73,9 @@
                         attributes: [
                             {
                                 name: 'topic',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             }
                         ]
                     },
@@ -73,11 +85,15 @@
                         attributes: [
                             {
                                 name: 'interval',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'schedule',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             }
                         ]
                     },
@@ -87,27 +103,39 @@
                         attributes: [
                             {
                                 name: 'sharedAccessKeyName',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'sharedAccessKeyValue',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'namespace',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'eventHubName',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'consumerGroup',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'partitions',
-                                pattern: 'arrayInt'
+                                pattern: 'arrayInt',
+                                type: 'input',
+                                allowEmpty: false
                             }
                         ]
                     },
@@ -118,11 +146,63 @@
                         attributes: [
                             {
                                 name: 'port',
-                                pattern: 'number'
+                                pattern: 'number',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'ingresses',
-                                pattern: 'object'
+                                pattern: 'object',
+                                type: 'key-value'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'v3ioStream',
+                        name: 'v3io stream',
+                        url: 'string',
+                        attributes: [
+                            {
+                                name: 'partitions',
+                                pattern: 'arrayInt',
+                                type: 'input',
+                                allowEmpty: false
+                            },
+                            {
+                                name: 'numContainerWorkers',
+                                pattern: 'number',
+                                type: 'number-input',
+                                allowEmpty: true
+                            },
+                            {
+                                name: 'seekTo',
+                                values: [
+                                    {
+                                        id: 'earliest',
+                                        name: 'Earliest',
+                                        visible: true
+                                    },
+                                    {
+                                        id: 'latest',
+                                        name: 'Latest',
+                                        visible: true
+                                    }
+                                ],
+                                pattern: 'string',
+                                type: 'dropdown'
+                            },
+                            {
+                                name: 'readBatchSize',
+                                pattern: 'number',
+                                type: 'number-input',
+                                allowEmpty: false
+                            },
+                            {
+                                name: 'pollingIntervalMs',
+                                unit: 'ms',
+                                pattern: 'number',
+                                type: 'number-input',
+                                allowEmpty: false
                             }
                         ]
                     },
@@ -132,23 +212,33 @@
                         attributes: [
                             {
                                 name: 'accessKeyID',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'secretAccessKey',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'regionName',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'streamName',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'shards',
-                                pattern: 'arrayStr'
+                                pattern: 'arrayStr',
+                                type: 'input',
+                                allowEmpty: false
                             }
                         ]
                     }
@@ -166,19 +256,27 @@
                         attributes: [
                             {
                                 name: 'sharedAccessKeyName',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'sharedAccessKeyValue',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'namespace',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             },
                             {
                                 name: 'eventHubName',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             }
                         ]
                     }

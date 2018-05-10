@@ -40,6 +40,7 @@
         ctrl.isNil = lodash.isNil;
 
         ctrl.addNewIngress = addNewIngress;
+        ctrl.convertFromCamelCase = convertFromCamelCase;
         ctrl.getAttrValue = getAttrValue;
         ctrl.getValidationPattern = getValidationPattern;
         ctrl.handleAction = handleAction;
@@ -50,7 +51,8 @@
         ctrl.onChangeData = onChangeData;
         ctrl.onSubmitForm = onSubmitForm;
         ctrl.onSelectClass = onSelectClass;
-        ctrl.convertFromCamelCase = convertFromCamelCase;
+        ctrl.onSelectDropdownValue = onSelectDropdownValue;
+        ctrl.numberInputCallback = numberInputCallback;
 
         //
         // Hook methods
@@ -78,6 +80,7 @@
             ctrl.classList  = FunctionsService.getClassesList(ctrl.type);
             if (!lodash.isEmpty(ctrl.item.kind)) {
                 ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
+                ctrl.item.ui.className = ctrl.selectedClass.name;
             }
 
             if (isHttpTrigger()) {
@@ -239,6 +242,7 @@
             ctrl.item.kind = item.id;
             ctrl.selectedClass = item;
             ctrl.item.attributes = {};
+            ctrl.item.ui.className = ctrl.selectedClass.name;
 
             if (!lodash.isNil(item.url)) {
                 ctrl.item.url = '';
@@ -269,6 +273,24 @@
             }
         }
 
+        /**
+         * Sets new selected value from dropdown
+         * @param {Object} item
+         * @param {string} field
+         */
+        function onSelectDropdownValue(item, field) {
+            lodash.set(ctrl.item, field, item.id);
+        }
+
+        /**
+         * Changes value from number input
+         * @param {number} item
+         * @param {string} field
+         */
+        function numberInputCallback(item, field) {
+            lodash.set(ctrl.item, field, item);
+        }
+
         //
         // Private methods
         //
@@ -296,7 +318,8 @@
 
                             lodash.forEach(ctrl.selectedClass.attributes, function (attribute) {
                                 if (attribute.pattern === 'number') {
-                                    lodash.set(ctrl.item, 'attributes[' + attribute.name + ']', Number(ctrl.item.attributes[attribute.name]));
+                                    lodash.set(ctrl.item, 'attributes[' + attribute.name + ']', attribute.allowEmpty ?
+                                        ctrl.item.attributes[attribute.name] : Number(ctrl.item.attributes[attribute.name]));
                                 }
 
                                 if (attribute.pattern === 'arrayStr' && !lodash.isArray(ctrl.item.attributes[attribute.name])) {

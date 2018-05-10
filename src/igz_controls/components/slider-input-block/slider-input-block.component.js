@@ -4,9 +4,12 @@
     angular.module('iguazio.dashboard-controls')
         .component('igzSliderInputBlock', {
             bindings: {
-                measureUnits: '<?',
+                allowFullRange: '<',
+                onChangeCallback: '<',
                 sliderConfig: '<',
-                sliderBlockUpdatingBroadcast: '@'
+                sliderBlockUpdatingBroadcast: '@',
+                measureUnits: '<?',
+                updateSliderInput: '@?'
             },
             templateUrl: 'igz_controls/components/slider-input-block/slider-input-block.tpl.html',
             controller: IgzSliderInputBlockController
@@ -50,9 +53,12 @@
 
             $scope.$on(ctrl.sliderBlockUpdatingBroadcast, setData);
 
-            // Bind needed callbacks to configuration objects with updated `ctrl.selectedData` values (for rz-slider library usage)
-            ctrl.sliderConfig.options.onEnd = setValue;
-            ctrl.sliderConfig.options.onChange = checkIfUnlimited;
+            $timeout(function () {
+
+                // Bind needed callbacks to configuration objects with updated `ctrl.selectedData` values (for rz-slider library usage)
+                ctrl.sliderConfig.options.onEnd = setValue;
+                ctrl.sliderConfig.options.onChange = checkIfUnlimited;
+            });
 
             ctrl.selectedItem = lodash.find(ctrl.measureUnits, ['name', ctrl.sliderConfig.unitLabel]);
 
@@ -84,7 +90,8 @@
          * If it's not maximum - label sets with new value.
          */
         function checkIfUnlimited() {
-            ctrl.sliderConfig.valueLabel = (ctrl.sliderConfig.value === ctrl.sliderConfig.options.ceil) ? 'U/L' : ctrl.sliderConfig.value;
+            ctrl.sliderConfig.valueLabel =
+                (ctrl.sliderConfig.value === ctrl.sliderConfig.options.ceil && !ctrl.allowFullRange) ? 'U/L' : ctrl.sliderConfig.value;
 
             $timeout(function () {
                 $rootScope.$broadcast('rzSliderForceRender');
@@ -125,8 +132,15 @@
          * Method sets new value in bytes
          */
         function setValue() {
-            ctrl.selectedData[ctrl.sliderConfig.options.id] = (ctrl.sliderConfig.value === ctrl.sliderConfig.options.ceil) ? 0 :
-                ctrl.sliderConfig.value * Math.pow(1024, ctrl.sliderConfig.pow);
+            if (!lodash.isNil(ctrl.onChangeCallback)) {
+                ctrl.onChangeCallback(ctrl.sliderConfig.value === ctrl.sliderConfig.options.ceil ?
+                    null : ctrl.sliderConfig.value * Math.pow(1024, ctrl.sliderConfig.pow), ctrl.updateSliderInput);
+            }
+
+            if (!lodash.isNil(ctrl.selectedData)) {
+                ctrl.selectedData[ctrl.sliderConfig.options.id] = (ctrl.sliderConfig.value === ctrl.sliderConfig.options.ceil) ?
+                    0 : ctrl.sliderConfig.value * Math.pow(1024, ctrl.sliderConfig.pow);
+            }
         }
     }
 }());
