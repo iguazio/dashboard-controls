@@ -159,7 +159,7 @@
                     },
                     {
                         id: 'v3ioStream',
-                        name: 'v3io Stream Trigger',
+                        name: 'v3io stream',
                         url: 'string',
                         attributes: [
                             {

@@ -80,6 +80,7 @@
             ctrl.classList  = FunctionsService.getClassesList(ctrl.type);
             if (!lodash.isEmpty(ctrl.item.kind)) {
                 ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
+                ctrl.item.ui.className = ctrl.selectedClass.name;
             }
 
             if (isHttpTrigger()) {
@@ -241,6 +242,7 @@
             ctrl.item.kind = item.id;
             ctrl.selectedClass = item;
             ctrl.item.attributes = {};
+            ctrl.item.ui.className = ctrl.selectedClass.name;
 
             if (!lodash.isNil(item.url)) {
                 ctrl.item.url = '';
