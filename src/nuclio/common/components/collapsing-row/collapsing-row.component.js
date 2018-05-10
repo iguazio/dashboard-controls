@@ -12,7 +12,7 @@
             transclude: true
         });
 
-    function NclCollapsingRowController(lodash) {
+    function NclCollapsingRowController($timeout, lodash) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -68,8 +68,14 @@
          */
         function onCollapse(event) {
             if (!ctrl.item.ui.editModeActive) {
-                ctrl.actionHandlerCallback({actionType: 'edit', selectedItem: ctrl.item})
+                ctrl.actionHandlerCallback({actionType: 'edit', selectedItem: ctrl.item});
                 event.stopPropagation();
+            } else {
+                $timeout(function () {
+                    if (ctrl.item.ui.expandable) {
+                        ctrl.item.ui.editModeActive = false;
+                    }
+                });
             }
         }
 

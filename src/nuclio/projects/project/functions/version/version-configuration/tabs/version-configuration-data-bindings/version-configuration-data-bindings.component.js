@@ -83,7 +83,6 @@
          */
         function editBindingCallback(item) {
             ctrl.handleAction('update', item);
-            item.ui.editModeActive = false;
 
             $rootScope.$broadcast('change-state-deploy-button', {component: 'binding', isDisabled: false});
         }
@@ -98,9 +97,7 @@
                 lodash.remove(ctrl.bindings, ['id', selectedItem.id]);
                 lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
             } else if (actionType === 'edit') {
-                if (!isBindingInEditMode()) {
-                    lodash.find(ctrl.bindings, ['id', selectedItem.id]).ui.editModeActive = true;
-                }
+                lodash.find(ctrl.bindings, ['id', selectedItem.id]).ui.editModeActive = true;
             } else if (actionType === 'update') {
                 var currentBinding = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
 
@@ -125,14 +122,9 @@
                     lodash.set(ctrl.version, 'spec.dataBindings.' + selectedItem.name, bindingItem);
                     selectedItem.id = selectedItem.name;
 
-                    // get bindings list
-                    ctrl.bindings = lodash.map(ctrl.version.spec.dataBindings, function (value, key) {
-                        var bindingsItem = angular.copy(value);
-                        bindingsItem.id = key;
-                        bindingsItem.name = key;
-
-                        return bindingsItem;
-                    });
+                    if (!lodash.isEqual(currentBinding, selectedItem)) {
+                        angular.copy(selectedItem, currentBinding);
+                    }
                 }
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');

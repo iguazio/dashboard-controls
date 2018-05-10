@@ -279,17 +279,20 @@
          * @param {MouseEvent} event
          */
         function onSubmitForm(event) {
+            ctrl.item.ui.expandable = !ctrl.editItemForm.$invalid;
+
             if (angular.isUndefined(event.keyCode) || event.keyCode === '13') {
-                if (event.target !== $element[0] && $element.find(event.target).length === 0) {
+                if (event.target !== $element[0] && $element.find(event.target).length === 0 && !event.target.closest('ncl-edit-item')) {
                     if (ctrl.editItemForm.$invalid) {
-                        ctrl.item.ui.expandable = false;
                         ctrl.editItemForm.itemName.$setDirty();
 
                         // set form as submitted
                         ctrl.editItemForm.$setSubmitted();
                     } else {
                         $timeout(function () {
-                            ctrl.item.ui.expandable = true;
+                            if (!lodash.includes(event.target.parentElement.classList, 'row-collapse')) {
+                                ctrl.item.ui.editModeActive = false;
+                            }
 
                             lodash.forEach(ctrl.selectedClass.attributes, function (attribute) {
                                 if (attribute.pattern === 'number') {
