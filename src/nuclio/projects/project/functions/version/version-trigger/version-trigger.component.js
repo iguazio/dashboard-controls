@@ -97,9 +97,7 @@
                 lodash.remove(ctrl.triggers, ['id', selectedItem.id]);
                 lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
             } else if (actionType === 'edit') {
-                lodash.assign(item.ui, {
-                    editModeActive: true
-                });
+                item.ui.editModeActive = true;
             } else if (actionType === 'update') {
                 if (!lodash.isEmpty(selectedItem.id)) {
                     lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
