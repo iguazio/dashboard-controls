@@ -31,7 +31,7 @@
         ctrl.$onDestroy = onDestroy;
 
         ctrl.numberValidationPattern = /^\d+$/;
-        ctrl.arrayIntValidationPattern = /^[-,0-9]+$/;
+        ctrl.arrayIntValidationPattern = /^(\d+[-,]?)*\d$/;
         ctrl.arrayStrValidationPattern = /^.{1,128}$/;
         ctrl.stringValidationPattern = /^.{1,128}$/;
 

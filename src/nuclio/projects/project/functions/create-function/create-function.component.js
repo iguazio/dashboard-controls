@@ -42,7 +42,8 @@
 
                     // breadcrumbs config
                     var title = {
-                        project: project.spec.displayName,
+                        project: project,
+                        projectName: project.spec.displayName,
                         function: 'Create function'
                     };
 

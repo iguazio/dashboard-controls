@@ -8,7 +8,8 @@
                 functionSourceCode: '<',
                 onChangeSourceCodeCallback: '&',
                 selectedTheme: '<',
-                miniMonaco: '<'
+                miniMonaco: '<',
+                readOnly: '<'
             },
             templateUrl: 'nuclio/common/components/monaco/monaco.tpl.html',
             controller: NclMonacoController

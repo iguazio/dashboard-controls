@@ -23,6 +23,7 @@
 
         ctrl.goToProjectsList = goToProjectsList;
         ctrl.goToFunctionsList = goToFunctionsList;
+        ctrl.goToFunctionScreen = goToFunctionScreen;
 
         //
         // Hook methods
@@ -62,6 +63,10 @@
          */
         function goToFunctionsList() {
             warnBeforeLeave('app.project.functions');
+        }
+
+        function goToFunctionScreen() {
+            $state.go('app.project.function.edit.code');
         }
 
         //

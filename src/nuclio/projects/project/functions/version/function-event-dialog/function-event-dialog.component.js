@@ -124,7 +124,8 @@
             ctrl.workingCopy = angular.copy(ctrl.selectedEvent);
 
             ctrl.selectedMethod = lodash.find(ctrl.methods, ['id' , lodash.get(ctrl.selectedEvent, 'spec.attributes.method')]);
-            ctrl.selectedHeader = lodash.find(ctrl.headers, ['id' , lodash.get(ctrl.selectedEvent, 'spec.attributes.headers.Content-Type')]);
+            ctrl.contentType = lodash.get(ctrl.selectedEvent, 'spec.attributes.headers.Content-Type');
+            ctrl.selectedHeader = lodash.find(ctrl.headers, ['id' , ctrl.contentType]);
         }
 
         //
@@ -145,10 +146,15 @@
                 ctrl.isLoadingState = true;
 
                 NuclioEventService.deployEvent(ctrl.workingCopy, ctrl.createEvent)
-                    .then(function () {
+                    .then(function (response) {
                         ctrl.isDeployFailed = false;
 
-                        ctrl.closeDialog({isEventDeployed: true});
+                        ctrl.closeDialog({
+                            result: {
+                                isEventDeployed: true,
+                                selectedEvent: ctrl.createEvent ? response.data : ctrl.selectedEvent
+                            }
+                        });
                     })
                     .catch(function () {
                         ctrl.isDeployFailed = true;
@@ -162,7 +168,12 @@
          */
         function closeEventDialog() {
             if (!ctrl.isLoadingState) {
-                ctrl.closeDialog({isEventDeployed: false});
+                ctrl.closeDialog({
+                    result: {
+                        isEventDeployed: false,
+                        selectedEvent: ctrl.selectedEvent
+                    }
+                });
             }
         }
 

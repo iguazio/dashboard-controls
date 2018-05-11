@@ -5,9 +5,27 @@
         cursor: pointer;
         font-weight: bold;
 
-        .igz-icon-dropdown {
-            margin-left: 8px;
-            font-size: 11px;
+        .igz-icon-right {
+            display: block;
+            margin: 1.5px 0 0 7px;
+        }
+
+        .breadcrumb-arrow {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin: 0 8px;
+            border-radius: 50%;
+            background-color: transparent;
+        }
+
+        .ncl-dropdown-expanded {
+            background-color: @ncl-pale-grey;
+            transform: rotate(90deg);
+
+            .igz-icon-right {
+                color: @ncl-dusk-three;
+            }
         }
     }
 

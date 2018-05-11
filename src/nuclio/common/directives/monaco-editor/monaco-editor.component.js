@@ -71,7 +71,8 @@
                         lineNumbersMinChars: scope.miniMonaco ? 2 : 5,
                         minimap: {
                             enabled: !scope.miniMonaco
-                        }
+                        },
+                        readOnly: scope.readOnly
                     });
 
                     // TODO - look up api docs to find a suitable event to handle as the onDidChangeModelContent event only seems to fire for certain changes!
@@ -101,7 +102,8 @@
                 scope: {
                     codeFile: '=codeFile',
                     editorTheme: '=editorTheme',
-                    miniMonaco: '=miniMonaco'
+                    miniMonaco: '=miniMonaco',
+                    readOnly: '=readOnly'
                 }
             };
         });
