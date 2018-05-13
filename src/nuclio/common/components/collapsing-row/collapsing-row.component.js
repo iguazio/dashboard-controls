@@ -6,7 +6,8 @@
             bindings: {
                 actionHandlerCallback: '&',
                 item: '<',
-                type: '@'
+                type: '@',
+                listClass: '@?'
             },
             templateUrl: 'nuclio/common/components/collapsing-row/collapsing-row.tpl.html',
             controller: NclCollapsingRowController,

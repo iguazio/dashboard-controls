@@ -1,3 +1,4 @@
+/* eslint max-statements: ["error", 100] */
 (function () {
     'use strict';
 
@@ -12,11 +13,12 @@
             controller: NclVersionController
         });
 
-    function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $timeout, $q, lodash, ngDialog, ConfigService,
-                                  DialogsService, NuclioEventService, NuclioHeaderService, NuclioFunctionsDataService,
-                                  NuclioProjectsDataService) {
+    function NclVersionController($filter, $interval, $scope, $rootScope, $state, $stateParams, $timeout, $q, lodash,
+                                  ngDialog, YAML, ConfigService, DialogsService, NuclioEventService, NuclioHeaderService,
+                                  NuclioFunctionsDataService, NuclioProjectsDataService) {
         var ctrl = this;
         var interval = null;
+        var eventContentType = '';
 
         ctrl.action = null;
         ctrl.isDemoMode = ConfigService.isDemoMode;
@@ -61,6 +63,7 @@
         ctrl.getLogLevel = getLogLevel;
         ctrl.getLogParams = getLogParams;
         ctrl.checkValidDeployState = checkValidDeployState;
+        ctrl.checkEventContentType = checkEventContentType;
         ctrl.invokeFunction = invokeFunction;
         ctrl.toggleDeployResult = toggleDeployResult;
         ctrl.toggleTestResult = toggleTestResult;
@@ -83,6 +86,10 @@
 
             ctrl.isFunctionDeployed = !$stateParams.isNewFunction;
             ctrl.actions = [
+                {
+                    id: 'exportFunction',
+                    name: 'Export function'
+                },
                 {
                     id: 'deleteFunction',
                     name: 'Delete function',
@@ -120,6 +127,7 @@
                 });
             }
             ctrl.functionEvents = [];
+            ctrl.functionEvents = $filter('orderBy')(ctrl.functionEvents, 'name');
             ctrl.selectedFunctionEvent = lodash.isEmpty(ctrl.functionEvents) ? null : ctrl.functionEvents[0];
             ctrl.requiredComponents = {};
 
@@ -136,7 +144,8 @@
 
                 // breadcrumbs config
                 var title = {
-                    project: ctrl.project.spec.displayName,
+                    project: ctrl.project,
+                    projectName: ctrl.project.spec.displayName,
                     function: $stateParams.functionId,
                     version: '$LATEST'
                 };
@@ -221,7 +230,7 @@
             ngDialog.open({
                 template: '<ncl-function-event-dialog data-create-event="ngDialogData.createEvent" ' +
                 'data-selected-event="ngDialogData.selectedEvent" data-version="ngDialogData.version" ' +
-                'data-close-dialog="closeThisDialog(isEventDeployed)"></ncl-test-event-dialog>',
+                'data-close-dialog="closeThisDialog(result)"></ncl-test-event-dialog>',
                 plain: true,
                 scope: $scope,
                 data: {
@@ -236,13 +245,17 @@
 
                     // check if event was deployed or failed
                     // if yes, then push newest created event to events drop-down
-                    if (data.value) {
+                    if (data.value.isEventDeployed) {
                         ctrl.isSplashShowed.value = true;
 
                         // update test events list
                         NuclioEventService.getEvents(ctrl.version)
                             .then(function (response) {
                                 convertTestEventsData(response.data);
+
+                                if (!lodash.isNil(data.value.selectedEvent)) {
+                                    setEventAsSelected(data.value.selectedEvent.metadata.name);
+                                }
 
                                 ctrl.isSplashShowed.value = false;
                             })
@@ -321,6 +334,15 @@
         }
 
         /**
+         * Checks event's content type
+         * @param {string} type - type of content-type
+         * @returns {boolean}
+         */
+        function checkEventContentType(type) {
+            return eventContentType === type;
+        }
+
+        /**
          * Called when a test event is selected
          * @param {Object} item - the new data
          */
@@ -340,6 +362,14 @@
                         return $q.reject(response);
                     })
                     .catch(function (invocationData) {
+
+                        if (invocationData.config.headers['Content-Type'] === 'application/json' && lodash.isObject(invocationData.data)) {
+                            eventContentType = 'json';
+                            invocationData.data = angular.toJson(angular.fromJson(invocationData.data), ' ', 4);
+                        } else if (lodash.startsWith(invocationData.config.headers['Content-Type'], 'image/')) {
+                            eventContentType = 'image';
+                        }
+
                         ctrl.testResult = {
                             status: {
                                 state: invocationData.xhrStatus,
@@ -350,9 +380,7 @@
                             body: invocationData.data
                         };
                         ctrl.isDeployResultShown = false;
-                        ctrl.isTestResultShown = true;
                         ctrl.isInvocationSuccess = lodash.startsWith(invocationData.status, '2');
-
                         ctrl.isTestResultShown = true;
                     });
 
@@ -407,6 +435,24 @@
                     .catch(function () {
                         ctrl.action = ctrl.actions[0].id;
                     });
+            } else if (item.id === 'exportFunction') {
+                var versionYaml = {
+                    metadata: {
+                        name: ctrl.version.metadata.name
+                    },
+                    spec: ctrl.version.spec
+                };
+
+                var blob = new Blob([YAML.stringify(versionYaml, Infinity)], {
+                    type: 'application/json'
+                });
+
+                var url = URL.createObjectURL(blob);
+                var link = document.createElement('a');
+
+                link.setAttribute('href', url);
+                link.setAttribute('download', ctrl.version.metadata.name + '.yml');
+                link.click();
             }
         }
 
@@ -427,6 +473,7 @@
                 }
             });
 
+            ctrl.functionEvents = $filter('orderBy')(ctrl.functionEvents, 'name');
             ctrl.selectedFunctionEvent = ctrl.functionEvents[0];
         }
 
@@ -529,6 +576,14 @@
                     state: value
                 }
             };
+        }
+
+        /**
+         * Sets function event as selected by id
+         * @param id - id of function event to be set as selected
+         */
+        function setEventAsSelected(id) {
+            ctrl.selectedFunctionEvent = lodash.find(ctrl.functionEvents, ['id', id]);
         }
     }
 }());

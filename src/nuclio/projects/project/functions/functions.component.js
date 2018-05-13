@@ -93,16 +93,18 @@
                     .then(function (project) {
                         ctrl.project = project;
 
-                        title.project = ctrl.project.spec.displayName;
+                        title.project = ctrl.project;
+                        title.projectName = ctrl.project.spec.displayName;
 
                         ctrl.refreshFunctions();
 
                         NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
                     });
 
-                getExternalIPAddresses().then(function (response) {
-                    ctrl.externalIPAddress = response.data.externalIPAddresses.addresses[0];
-                });
+                NuclioProjectsDataService.getExternalIPAddresses()
+                    .then(function (response) {
+                        ctrl.externalIPAddress = response.data.externalIPAddresses.addresses[0];
+                    });
             } else {
                 ctrl.refreshFunctions();
             }
@@ -343,15 +345,6 @@
                     };
                 }
             }
-        }
-
-        function getExternalIPAddresses() {
-            return NuclioClientService.makeRequest(
-                {
-                    method: 'GET',
-                    url: NuclioClientService.buildUrlWithPath('external_ip_addresses'),
-                    withCredentials: false
-                });
         }
     }
 }());

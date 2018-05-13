@@ -16,12 +16,19 @@
 
         ctrl.isCreateModeActive = false;
         ctrl.bindings = [];
+        ctrl.scrollConfig = {
+            axis: 'y',
+            advanced: {
+                updateOnContentResize: true
+            }
+        };
 
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
 
         ctrl.createBinding = createBinding;
         ctrl.editBindingCallback = editBindingCallback;
+        ctrl.isScrollNeeded = isScrollNeeded;
         ctrl.handleAction = handleAction;
 
         //
@@ -41,6 +48,12 @@
                 var bindingsItem = angular.copy(value);
                 bindingsItem.id = key;
                 bindingsItem.name = key;
+
+                if (angular.isDefined(value.url) && value.kind === 'v3io') {
+                    var splittedUrl = value.url.split('/');
+                    bindingsItem.url = splittedUrl[0];
+                    lodash.set(bindingsItem, 'attributes.containerID', splittedUrl.length > 1 ? splittedUrl[1] : '');
+                }
 
                 return bindingsItem;
             });
@@ -88,6 +101,14 @@
         }
 
         /**
+         * Returns true if scrollbar is necessary
+         * @return {boolean}
+         */
+        function isScrollNeeded() {
+            return ctrl.bindings.length > 2;
+        }
+
+        /**
          * According to given action name calls proper action handler
          * @param {string} actionType - ex. `delete`
          * @param {Array} selectedItem - an object of selected binding
@@ -113,6 +134,11 @@
 
                     if (angular.isDefined(selectedItem.url)) {
                         bindingItem.url = selectedItem.url;
+
+                        if (selectedItem.kind === 'v3io') {
+                            bindingItem.url = bindingItem.url.concat('/', selectedItem.attributes.containerID);
+                            bindingItem = lodash.omit(bindingItem, 'attributes');
+                        }
                     }
 
                     if (angular.isDefined(selectedItem.secret)) {

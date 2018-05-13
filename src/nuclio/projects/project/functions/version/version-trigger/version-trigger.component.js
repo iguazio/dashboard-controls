@@ -103,8 +103,6 @@
                     lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
                 }
 
-                item.id = selectedItem.name;
-
                 var triggerItem = {
                     kind: selectedItem.kind,
                     attributes: selectedItem.attributes
@@ -119,6 +117,8 @@
                 }
 
                 lodash.set(ctrl.version, 'spec.triggers.' + selectedItem.name, triggerItem);
+
+                selectedItem.id = selectedItem.name;
 
                 if (!lodash.isEqual(item, selectedItem)) {
                     angular.copy(selectedItem, item);

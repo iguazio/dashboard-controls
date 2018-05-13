@@ -161,9 +161,12 @@
                     Body
                 </div>
                 <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.rowIsCollapsed.body">
-                    <div class="value-row" data-ng-if="$ctrl.testResult.body"
-                         data-ng-class="{'failed' : !$ctrl.isInvocationSuccess}">
+                    <div class="value-row" data-ng-if="$ctrl.testResult.body && !$ctrl.checkEventContentType('image')"
+                         data-ng-class="{'failed' : !$ctrl.isInvocationSuccess, 'json-block': $ctrl.checkEventContentType('json')}">
                         {{$ctrl.testResult.body}}
+                    </div>
+                    <div class="value-row" data-ng-if="$ctrl.testResult.body && $ctrl.checkEventContentType('image')">
+                        Displaying image not implemented yet
                     </div>
                     <div class="value-row" data-ng-if="!$ctrl.testResult.body">
                         Empty body

@@ -50,7 +50,6 @@
         ctrl.selectThemeValue = selectThemeValue;
         ctrl.onCloseDropdown = onCloseDropdown;
         ctrl.inputValueCallback = inputValueCallback;
-
         ctrl.onChangeSourceCode = onChangeSourceCode;
 
         /**
@@ -131,13 +130,7 @@
          * Changes function`s source code
          * @param {string} sourceCode
          */
-        function onChangeSourceCode(sourceCode, language) {
-            ctrl.selectedRuntime = lodash.chain(ctrl.runtimeArray)
-                .find(['language', language])
-                .defaultTo(ctrl.selectedRuntime)
-                .value();
-
-            lodash.set(ctrl.version, 'spec.runtime', ctrl.selectedRuntime.id);
+        function onChangeSourceCode(sourceCode) {
             lodash.set(ctrl.version, 'spec.build.functionSourceCode', btoa(sourceCode));
 
             ctrl.sourceCode = sourceCode;

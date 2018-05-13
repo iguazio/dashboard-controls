@@ -4,36 +4,38 @@
             {{$ctrl.mainHeaderTitle.title}}
 </span>
 
-<span class="ncl-header-subtitle"
-      data-ng-if="$ctrl.mainHeaderTitle.project && !$ctrl.mainHeaderTitle.function">
-    <span class="igz-icon-right"></span>
+<span data-ng-if="$ctrl.mainHeaderTitle.project">
+    <span class="igz-icon-right ncl-header-subtitle"></span>
+
+    <span class="main-header-title"
+          data-ng-click="$ctrl.goToFunctionsList()">{{$ctrl.mainHeaderTitle.projectName}}</span>
 
     <ncl-breadcrumbs-dropdown data-state="$ctrl.mainHeaderTitle.state"
-                              data-title="$ctrl.mainHeaderTitle.project"
-                              class="ncl-bold-subtitle"></ncl-breadcrumbs-dropdown>
+                                  data-title=""
+                                  data-project="$ctrl.mainHeaderTitle.project"
+                                  data-type="projects"></ncl-breadcrumbs-dropdown>
 </span>
 
-<span class="ncl-header-subtitle"
-      data-ng-click="$ctrl.goToFunctionsList()"
-      data-ng-if="$ctrl.mainHeaderTitle.project && $ctrl.mainHeaderTitle.function">
-    <span class="igz-icon-right"></span>
-    <span class="main-header-title">{{$ctrl.mainHeaderTitle.project}}</span>
+<span data-ng-if="$ctrl.mainHeaderTitle.function && $ctrl.mainHeaderTitle.version">
+
+    <span class="main-header-title"
+          data-ng-click="$ctrl.goToFunctionScreen()">{{$ctrl.mainHeaderTitle.function}}</span>
+
+        <ncl-breadcrumbs-dropdown data-ng-if="$ctrl.mainHeaderTitle.version"
+                                  data-state="$ctrl.mainHeaderTitle.state"
+                                  data-title=""
+                                  data-project="$ctrl.mainHeaderTitle.project"
+                                  data-type="functions"></ncl-breadcrumbs-dropdown>
+
+
 </span>
 
-<span class="ncl-header-subtitle"
-      data-ng-if="$ctrl.mainHeaderTitle.function">
-    <span class="igz-icon-right"></span>
-
-    <span data-ng-class="{'ncl-bold-subtitle': $ctrl.mainHeaderTitle && !$ctrl.mainHeaderTitle.version}">
-        {{$ctrl.mainHeaderTitle.function}}
-    </span>
+<span data-ng-if="$ctrl.mainHeaderTitle.function && !$ctrl.mainHeaderTitle.version"
+      class="ncl-bold-subtitle">
+        Create function
 </span>
 
-<span class="ncl-header-subtitle"
-      data-ng-if="$ctrl.mainHeaderTitle.version">
-    <span class="igz-icon-right"></span>
-
-    <span class="ncl-bold-subtitle">
+<span data-ng-if="$ctrl.mainHeaderTitle.version"
+      class="ncl-bold-subtitle">
         {{$ctrl.mainHeaderTitle.version}}
-    </span>
 </span>

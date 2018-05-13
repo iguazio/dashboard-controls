@@ -36,6 +36,20 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="function-import-wrapper">
+                    <div class="function-import"
+                         data-ng-click="$ctrl.selectFunctionType('import')"
+                         data-ng-class="{'selected': $ctrl.isTypeSelected('import')}">
+                        <div class="function-type-icon">
+                            <span class="ncl-icon-import icon"></span>
+                        </div>
+                        <div class="function-type-info">
+                            <div class="type-title">Import</div>
+                            <div class="type-description">Upload a YAML file as a starting point for your nuclio function</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -50,6 +64,10 @@
                                         data-toggle-splash-screen="$ctrl.toggleSplashScreen(value)"
                                         data-project="$ctrl.project">
             </ncl-function-from-template>
+            <ncl-function-import data-ng-if="$ctrl.isTypeSelected('import')"
+                                 data-toggle-splash-screen="$ctrl.toggleSplashScreen(value)"
+                                 data-project="$ctrl.project">
+            </ncl-function-import>
         </div>
     </div>
 </div>

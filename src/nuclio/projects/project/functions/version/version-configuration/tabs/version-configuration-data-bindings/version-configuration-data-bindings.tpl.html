@@ -17,11 +17,28 @@
                 </div>
 
                 <div class="common-table-body">
-                    <div class="igz-scrollable-container" data-ng-scrollbars>
+                    <div data-ng-if="!$ctrl.isScrollNeeded()"
+                         class="igz-scrollable-container">
                         <ncl-collapsing-row data-ng-repeat="binding in $ctrl.bindings"
-                                                    data-item="binding"
-                                                    data-type="binding"
-                                                    data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)">
+                                            data-item="binding"
+                                            data-type="binding"
+                                            data-list-class="ncl-version-configuration-data-bindings"
+                                            data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)">
+                            <ncl-edit-item class="common-table-cells-container edit-binding-row"
+                                           data-item="binding"
+                                           data-type="binding"
+                                           data-on-submit-callback="$ctrl.editBindingCallback(item)"></ncl-edit-item>
+                        </ncl-collapsing-row>
+                    </div>
+                    <div data-ng-if="$ctrl.isScrollNeeded()"
+                         class="igz-scrollable-container scrollable-data-bindings"
+                         data-ng-scrollbars
+                         data-ng-scrollbars-config="$ctrl.scrollConfig">
+                        <ncl-collapsing-row data-ng-repeat="binding in $ctrl.bindings"
+                                            data-item="binding"
+                                            data-type="binding"
+                                            data-list-class="scrollable-data-bindings"
+                                            data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)">
                             <ncl-edit-item class="common-table-cells-container edit-binding-row"
                                            data-item="binding"
                                            data-type="binding"

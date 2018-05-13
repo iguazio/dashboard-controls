@@ -8,6 +8,7 @@
         var service = {
             createProject: createProject,
             deleteProject: deleteProject,
+            getExternalIPAddresses: getExternalIPAddresses,
             getProject: getProject,
             getProjects: getProjects,
             updateProject: updateProject
@@ -138,6 +139,19 @@
                 })
                 .then(function (response) {
                     return response.data;
+                });
+        }
+
+        /**
+         * Gets external IP addresses for functions
+         * @returns {Promise}
+         */
+        function getExternalIPAddresses() {
+            return NuclioClientService.makeRequest(
+                {
+                    method: 'GET',
+                    url: NuclioClientService.buildUrlWithPath('external_ip_addresses'),
+                    withCredentials: false
                 });
         }
     }

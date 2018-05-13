@@ -248,7 +248,13 @@
                         id: 'v3io',
                         name: 'v3io',
                         url: 'string',
-                        secret: 'string'
+                        secret: 'string',
+                        attributes: [
+                            {
+                                name: 'containerID',
+                                pattern: 'string'
+                            }
+                        ]
                     },
                     {
                         id: 'eventhub',

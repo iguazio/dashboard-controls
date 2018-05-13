@@ -1,7 +1,14 @@
-<div class="ncl-breadcrumbs-dropdown dropdown" data-ng-class="{'open': $ctrl.showDropdownList}">
+<div class="ncl-breadcrumbs-dropdown dropdown"
+     data-ng-class="{'open': $ctrl.showDropdownList}"
+     data-ng-mouseover="$ctrl.onHoverDropdown(true)"
+     data-ng-mouseleave="$ctrl.onHoverDropdown(false)">
     <span class="breadcrumb-toggle" data-ng-click="$ctrl.showDropdown()">
         {{$ctrl.title}}
-        <span class="igz-icon-dropdown"></span>
+
+        <span class="breadcrumb-arrow"
+              data-ng-class="{'ncl-dropdown-expanded': $ctrl.showDropdownList}">
+            <span class="igz-icon-right"></span>
+        </span>
     </span>
     <div class="dropdown-menu">
         <div class="search-input">

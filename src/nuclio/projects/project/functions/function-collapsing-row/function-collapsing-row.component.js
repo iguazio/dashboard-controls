@@ -20,7 +20,8 @@
         ctrl.actions = [];
         ctrl.isCollapsed = true;
         ctrl.title = {
-            project: ctrl.project.spec.displayName,
+            project: ctrl.project,
+            projectName: ctrl.project.spec.displayName,
             function: ctrl.function.metadata.name
         };
         ctrl.invocationURL = '';
