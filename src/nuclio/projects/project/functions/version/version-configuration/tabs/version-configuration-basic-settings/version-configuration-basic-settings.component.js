@@ -26,7 +26,7 @@
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.validationPatterns = ValidatingPatternsService;
 
-        ctrl.inputValueCallback = inputValueCallback
+        ctrl.inputValueCallback = inputValueCallback;
         ctrl.updateEnableStatus = updateEnableStatus;
 
         //
@@ -59,22 +59,22 @@
          * @param {string} field
          */
         function inputValueCallback(newData, field) {
-            if (lodash.includes(field, 'timeout')) {
-                lodash.set(ctrl, field, Number(newData));
+            lodash.set(ctrl, field, lodash.includes(field, 'timeout') ? Number(newData) : newData);
 
-                lodash.set(ctrl.version, 'spec.timeoutSeconds', ctrl.timeout.min * 60 + ctrl.timeout.sec);
-                ctrl.onChangeCallback();
-            } else {
-                $timeout(function () {
-                    if (ctrl.basicSettingsForm.$valid) {
-                        $rootScope.$broadcast('change-state-deploy-button', {component: 'settings', isDisabled: false});
-                        lodash.set(ctrl.version, field, newData);
-                        ctrl.onChangeCallback();
+            $timeout(function () {
+                if (ctrl.basicSettingsForm.$valid) {
+                    if (lodash.includes(field, 'timeout')) {
+                        lodash.set(ctrl.version, 'spec.timeoutSeconds', ctrl.timeout.min * 60 + ctrl.timeout.sec);
                     } else {
-                        $rootScope.$broadcast('change-state-deploy-button', {component: 'settings', isDisabled: true});
+                        lodash.set(ctrl.version, field, newData);
                     }
-                });
-            }
+
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'settings', isDisabled: false});
+                    ctrl.onChangeCallback();
+                } else {
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'settings', isDisabled: true});
+                }
+            });
         }
 
         /**
