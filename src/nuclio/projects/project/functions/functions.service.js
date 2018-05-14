@@ -252,7 +252,9 @@
                         attributes: [
                             {
                                 name: 'containerID',
-                                pattern: 'string'
+                                pattern: 'string',
+                                type: 'input',
+                                allowEmpty: false
                             }
                         ]
                     },
