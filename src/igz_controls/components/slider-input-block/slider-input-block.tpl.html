@@ -9,8 +9,15 @@
 
     <div class="igz-col-16"></div>
 
-    <div class="igz-slider-input-current-value igz-col-18">
+    <div class="igz-slider-input-current-value igz-col-34"
+         data-ng-class="{'with-value-unit': $ctrl.valueUnit,
+                         'with-measure-units': $ctrl.measureUnits}">
         <div class="igz-slider-input-current-value-text">{{$ctrl.sliderConfig.valueLabel}}</div>
+    </div>
+
+    <div class="igz-slider-input-unit-label"
+         data-ng-if="!$ctrl.measureUnits">
+        <div class="igz-slider-input-current-value-text">{{$ctrl.valueUnit}}</div>
     </div>
 
     <div class="igz-slider-input-units-dropdown igz-col-16"

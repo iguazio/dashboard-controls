@@ -20,6 +20,7 @@
         ctrl.$onDestroy = onDestroy;
 
         ctrl.initSliders = initSliders;
+        ctrl.onSliderChanging = onSliderChanging;
         ctrl.numberInputCallback = numberInputCallback;
         ctrl.sliderInputCallback = sliderInputCallback;
 
@@ -35,10 +36,6 @@
 
             ctrl.minReplicas = lodash.chain(ctrl.version).get('spec.minReplicas').defaultTo(1).value();
             ctrl.maxReplicas = lodash.chain(ctrl.version).get('spec.maxReplicas').defaultTo(1).value();
-            ctrl.limits = lodash.get(ctrl.version, 'spec.resources.limits', {
-                cpu: 1,
-                memory: 128
-            });
         }
 
         /**
@@ -56,21 +53,31 @@
          * Inits data for sliders
          */
         function initSliders() {
+            var maxMemoryValueInMB = 4096;
             var memoryBytes = parseInt(lodash.get(ctrl.version.spec.resources, 'limits.memory', Math.pow(1024, 2) * 128));
-            var memoryValue = memoryBytes / Math.pow(1024, 2);
+            var memoryValue = lodash.round(memoryBytes / Math.pow(1024, 2));
             var cpuValue = lodash.get(ctrl.version.spec.resources, 'limits.cpu', 1);
             var targetCPUvalue = lodash.get(ctrl.version, 'spec.targetCPU', 75);
 
+            if (memoryValue <= maxMemoryValueInMB) {
+                ctrl.memoryValueUnit = 'MB';
+            } else {
+                memoryValue = lodash.round(memoryValue / 1024);
+                ctrl.memoryValueUnit = 'GB';
+            }
+
+            ctrl.targetValueUnit = '%';
             ctrl.memorySliderConfig = {
                 name: 'Memory',
                 value: memoryValue,
                 valueLabel: memoryValue,
+                valueUnit: ctrl.memoryValueUnit,
                 pow: 2,
-                unitLabel: 'MB',
+                unitLabel: '',
                 labelHelpIcon: false,
                 options: {
                     floor: 128,
-                    ceil: 33280,
+                    ceil: 33,
                     stepsArray: initMemorySteps(),
                     showSelectionBar: false,
                     onChange: null,
@@ -96,7 +103,7 @@
                 }
             };
             ctrl.targetCpuSliderConfig = {
-                name: 'TargetCPU',
+                name: 'Target CPU',
                 value: targetCPUvalue,
                 valueLabel: targetCPUvalue,
                 pow: 0,
@@ -118,6 +125,31 @@
                     name: 'MB'
                 }
             ];
+        }
+
+        /**
+         * Handles all slider changes
+         * @param {number} newValue
+         * @param {string} field
+         */
+        function onSliderChanging(newValue, field) {
+            if (lodash.includes(field, 'memory')) {
+                var rangeInGB = {
+                    start: 5,
+                    end: 33
+                };
+
+                // there are two ranges:
+                // 128 - 4096 MB
+                // 5 - 32 GB
+                if (lodash.inRange(newValue, rangeInGB.start, rangeInGB.end)) {
+                    ctrl.memorySliderConfig.pow = 3;
+                    ctrl.memoryValueUnit = 'GB';
+                } else {
+                    ctrl.memorySliderConfig.pow = 2;
+                    ctrl.memoryValueUnit = 'MB';
+                }
+            }
         }
 
         /**
@@ -180,9 +212,13 @@
                     limit: 1024,
                     step: 256
                 },
+                thirdLimit: {
+                    limit: 4096,
+                    step: 512
+                },
                 lastLimit: {
                     limit: 33280,
-                    step: 512
+                    step: 1024
                 }
             };
             stepsArray.push(value);
@@ -192,15 +228,20 @@
                 // if value suits limit - increase value on current step
                 // step will be 128 if value < 512
                 // 256 if value < 1024
-                // and 512 from 1024 to 32 * 1024
+                // 512 if value < 4096
+                // and 1024 from 1024 to 32 * 1024
                 if (value < limits.firstLimit.limit) {
                     value += limits.firstLimit.step;
                 } else if (value < limits.secondLimit.limit) {
                     value += limits.secondLimit.step;
+                } else if (value < limits.thirdLimit.limit) {
+                    value += limits.thirdLimit.step;
                 } else {
                     value += limits.lastLimit.step;
                 }
-                stepsArray.push(value);
+
+                // converts value to GB if it greater than 4096MB
+                stepsArray.push(value <= limits.thirdLimit.limit ? value : value / 1024);
             }
             return stepsArray;
         }

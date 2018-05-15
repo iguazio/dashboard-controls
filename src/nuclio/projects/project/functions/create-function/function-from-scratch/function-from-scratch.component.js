@@ -222,6 +222,13 @@
                     build: {
                         functionSourceCode: ctrl.selectedRuntime.sourceCode
                     },
+                    resources: {
+                        limits: {
+                            cpu: '1',
+                            memory: '134217728'
+                        }
+                    },
+                    targetCPU: 75,
                     minReplicas: 1,
                     maxReplicas: 1
                 }

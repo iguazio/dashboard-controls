@@ -6,9 +6,11 @@
             bindings: {
                 allowFullRange: '<',
                 onChangeCallback: '<',
+                onSliderChanging: '<?',
                 sliderConfig: '<',
                 sliderBlockUpdatingBroadcast: '@',
                 measureUnits: '<?',
+                valueUnit: '<?',
                 updateSliderInput: '@?'
             },
             templateUrl: 'igz_controls/components/slider-input-block/slider-input-block.tpl.html',
@@ -88,10 +90,15 @@
         /**
          * Method checks current value in slider. If it's maximum available then 'U/L'(unlimited) sets in label which displays data.
          * If it's not maximum - label sets with new value.
+         * Calls onSliderChanging method if it was defined
          */
         function checkIfUnlimited() {
             ctrl.sliderConfig.valueLabel =
                 (ctrl.sliderConfig.value === ctrl.sliderConfig.options.ceil && !ctrl.allowFullRange) ? 'U/L' : ctrl.sliderConfig.value;
+
+            if (angular.isFunction(ctrl.onSliderChanging) && ctrl.sliderConfig.value !== ctrl.sliderConfig.options.ceil) {
+                ctrl.onSliderChanging(ctrl.sliderConfig.value, ctrl.updateSliderInput);
+            }
 
             $timeout(function () {
                 $rootScope.$broadcast('rzSliderForceRender');
