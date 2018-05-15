@@ -437,13 +437,15 @@
                     });
             } else if (item.id === 'exportFunction') {
                 var versionYaml = {
-                    metadata: {
-                        name: ctrl.version.metadata.name
-                    },
-                    spec: ctrl.version.spec
+                    metadata: lodash.omit(ctrl.version.metadata, 'namespace'),
+                    spec: lodash.omit(ctrl.version.spec, 'build.noBaseImagePull')
                 };
 
-                var blob = new Blob([YAML.stringify(versionYaml, Infinity)], {
+                lodash.forEach(versionYaml.spec.env, function (variable) {
+                    return lodash.omit(variable, '$$hashKey');
+                });
+
+                var blob = new Blob([YAML.stringify(angular.copy(versionYaml), Infinity)], {
                     type: 'application/json'
                 });
 
