@@ -5,8 +5,10 @@
             <div class="sliders-block">
                 <div class="slider-row">
                     <igz-slider-input-block data-slider-config="$ctrl.memorySliderConfig"
-                                            data-measure-units="$ctrl.defaultMemoryMeasureUnits"
+                                            data-measure-units="null"
+                                            data-value-unit="$ctrl.memoryValueUnit"
                                             data-slider-block-updating-broadcast=""
+                                            data-on-slider-changing="$ctrl.onSliderChanging"
                                             data-on-change-callback="$ctrl.sliderInputCallback"
                                             data-update-slider-input="spec.resources.limits.memory"></igz-slider-input-block>
                 </div>
@@ -20,6 +22,7 @@
                 <div class="slider-row">
                     <igz-slider-input-block data-slider-config="$ctrl.targetCpuSliderConfig"
                                             data-measure-units="null"
+                                            data-value-unit="$ctrl.targetValueUnit"
                                             data-slider-block-updating-broadcast=""
                                             data-on-change-callback="$ctrl.sliderInputCallback"
                                             data-update-slider-input="spec.targetCPU"
