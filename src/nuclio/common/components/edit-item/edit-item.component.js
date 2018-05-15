@@ -306,12 +306,18 @@
             if (angular.isUndefined(event.keyCode) || event.keyCode === '13') {
                 if (event.target !== $element[0] && $element.find(event.target).length === 0 && !event.target.closest('ncl-edit-item')) {
                     if (ctrl.editItemForm.$invalid) {
+                        ctrl.item.ui.isFormValid = false;
+
+                        $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.item.ui.name, isDisabled: true});
+
                         ctrl.editItemForm.itemName.$setDirty();
 
                         // set form as submitted
                         ctrl.editItemForm.$setSubmitted();
                     } else {
                         $timeout(function () {
+                            ctrl.item.ui.isFormValid = true;
+
                             if (!lodash.includes(event.target.parentElement.classList, 'row-collapse')) {
                                 ctrl.item.ui.editModeActive = false;
                             }
@@ -343,6 +349,8 @@
                                     ctrl.item.attributes[attribute.name] = ingresses;
                                 }
                             });
+
+                            $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.item.ui.name, isDisabled: false});
 
                             ctrl.onSubmitCallback({item: ctrl.item});
                         });
