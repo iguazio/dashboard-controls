@@ -49,7 +49,7 @@
                     value: value,
                     ui: {
                         editModeActive: false,
-                        isFormValid: false,
+                        isFormValid: true,
                         name: 'annotation'
                     }
                 };

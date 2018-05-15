@@ -46,7 +46,7 @@
                 .map(function (variable) {
                     variable.ui = {
                         editModeActive: false,
-                        isFormValid: false,
+                        isFormValid: true,
                         name: 'variable'
                     };
 
