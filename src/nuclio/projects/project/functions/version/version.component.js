@@ -167,10 +167,13 @@
 
             ctrl.isLayoutCollapsed = true;
 
-            ctrl.version.ui = {
-                deployedVersion: lodash.isNil(ctrl.version.status) ? null : getVersionCopy(),
-                versionChanged: false
-            };
+            lodash.merge(ctrl.version, {
+                ui: {
+                    deployedVersion: lodash.isNil(ctrl.version.status) ? null : getVersionCopy(),
+                    versionChanged: false
+                }
+            });
+            lodash.defaultTo(ctrl.version.ui.versionCode, '');
         }
 
         //
@@ -277,7 +280,7 @@
                     ctrl.version = $stateParams.functionData;
                 }
 
-                var versionCopy = lodash.omit(ctrl.version, ['status', 'spec.image', 'ui']);
+                var versionCopy = lodash.omit(ctrl.version, ['status', 'ui']);
 
                 ctrl.isTestResultShown = false;
                 ctrl.isDeployResultShown = true;
