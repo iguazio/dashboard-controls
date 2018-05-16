@@ -55,6 +55,12 @@
                     lodash.set(bindingsItem, 'attributes.containerID', splittedUrl.length > 1 ? splittedUrl[1] : '');
                 }
 
+                bindingsItem.ui = {
+                    editModeActive: false,
+                    isFormValid: true,
+                    name: 'binding'
+                };
+
                 return bindingsItem;
             });
         }
@@ -83,6 +89,8 @@
                     attributes: {},
                     ui: {
                         editModeActive: true,
+                        isFormValid: false,
+                        name: 'binding'
                     }
                 });
                 event.stopPropagation();
@@ -97,7 +105,11 @@
         function editBindingCallback(item) {
             ctrl.handleAction('update', item);
 
-            $rootScope.$broadcast('change-state-deploy-button', {component: 'binding', isDisabled: false});
+            lodash.forEach(ctrl.bindings, function (binding) {
+                if (!binding.ui.isFormValid) {
+                    $rootScope.$broadcast('change-state-deploy-button', {component: binding.ui.name, isDisabled: true});
+                }
+            });
         }
 
         /**
