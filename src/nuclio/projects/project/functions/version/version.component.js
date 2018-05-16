@@ -441,7 +441,7 @@
                     spec: lodash.omit(ctrl.version.spec, 'build.noBaseImagePull')
                 };
 
-                var blob = new Blob([YAML.stringify(versionYaml, Infinity)], {
+                var blob = new Blob([YAML.stringify(versionYaml, Infinity, 2)], {
                     type: 'application/json'
                 });
 
@@ -449,7 +449,7 @@
                 var link = document.createElement('a');
 
                 link.setAttribute('href', url);
-                link.setAttribute('download', ctrl.version.metadata.name + '.yml');
+                link.setAttribute('download', ctrl.version.metadata.name + '.yaml');
                 link.click();
             }
         }
