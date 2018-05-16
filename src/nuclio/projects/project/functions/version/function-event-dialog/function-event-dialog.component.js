@@ -92,13 +92,16 @@
          */
         function onInit() {
 
-            // check if dialog was opened to create or edit test event.
+            // check if dialog was opened to create event, or edit existing event.
+            // if ctrl.createEvent is 'true', that mean dialog was open to create new event.
+            // otherwise, for edit existing event, so need to change all corresponding labels.
             if (!ctrl.createEvent) {
                 ctrl.titleText = 'Edit function event';
                 ctrl.buttonText = 'Apply';
                 ctrl.errorText = 'Error occurred while updating the function event.';
             }
 
+            // if ctrl.selectedEvent hasn't specific fields, that means event was not deployed before, so fill it with default data
             lodash.defaultsDeep(ctrl.selectedEvent, {
                 metadata: {
                     namespace: lodash.get(ctrl.version, 'metadata.namespace'),
@@ -120,11 +123,16 @@
                 }
             });
 
-            // copy event to prevent modifying  the original object
+            // copy event to prevent modifying the original object
             ctrl.workingCopy = angular.copy(ctrl.selectedEvent);
 
+            // get method from event.
             ctrl.selectedMethod = lodash.find(ctrl.methods, ['id' , lodash.get(ctrl.selectedEvent, 'spec.attributes.method')]);
+
+            // get content type from event.
             ctrl.contentType = lodash.get(ctrl.selectedEvent, 'spec.attributes.headers.Content-Type');
+
+            //get header from event.
             ctrl.selectedHeader = lodash.find(ctrl.headers, ['id' , ctrl.contentType]);
         }
 
@@ -133,7 +141,8 @@
         //
 
         /**
-         * Disables Edit mode and sends broadcast to nested settings component
+         * Saves newly created event on beck-end.
+         * If error occurs while saving event, then dialog remains open.
          * @param {Event} event - JS event object
          */
         function applyChanges(event) {
@@ -142,22 +151,29 @@
             if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) &&
                 (ctrl.functionEventForm.$valid && ctrl.isFormChanged)) {
 
-                // show "Loading..." button
+                // show 'Loading...' button
                 ctrl.isLoadingState = true;
 
+                // save created event on beck-end
                 NuclioEventService.deployEvent(ctrl.workingCopy, ctrl.createEvent)
                     .then(function (response) {
                         ctrl.isDeployFailed = false;
 
+                        // close dialog with newly created or updated event data, and state of event.
                         ctrl.closeDialog({
                             result: {
-                                isEventDeployed: true,
+                                isEventDeployed: true, // If isEventDeployed is 'true' that mean - dialog was closed after creating event, not by pressing 'X' button.
                                 selectedEvent: ctrl.createEvent ? response.data : ctrl.selectedEvent
                             }
                         });
                     })
                     .catch(function () {
+
+                        // dialog remains open.
+                        // show error text
                         ctrl.isDeployFailed = true;
+
+                        // hide 'Loading...' button
                         ctrl.isLoadingState = false;
                     });
             }
@@ -167,7 +183,11 @@
          * Closes dialog
          */
         function closeEventDialog() {
+
+            // close dialog only if event is not deploying. Means event was deployed / failed / not changed
             if (!ctrl.isLoadingState) {
+
+
                 ctrl.closeDialog({
                     result: {
                         isEventDeployed: false,

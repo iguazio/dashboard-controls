@@ -15,6 +15,7 @@
                                             ValidatingPatternsService, NuclioFunctionsDataService) {
         var ctrl = this;
 
+        ctrl.functionName = '';
         ctrl.inputModelOptions = {
             debounce: {
                 'default': 0
@@ -74,7 +75,10 @@
             if (ctrl.functionFromTemplateForm.$valid && !lodash.isNil(ctrl.selectedTemplate)) {
                 ctrl.toggleSplashScreen({value: true});
 
-                lodash.set(ctrl, 'functionData.metadata.namespace', ctrl.project.metadata.namespace);
+                lodash.assign(ctrl.functionData.metadata, {
+                    name: ctrl.functionName,
+                    namespace: ctrl.project.metadata.namespace
+                });
 
                 $state.go('app.project.function.edit.code', {
                     isNewFunction: true,
@@ -94,7 +98,7 @@
         function inputValueCallback(data, field) {
             $timeout(function () {
                 if (!lodash.isNil(data)) {
-                    lodash.set(ctrl, 'functionData.metadata.' + field, data);
+                    lodash.set(ctrl, 'functionName', data);
 
                     ctrl.isCreateFunctionAllowed = lodash.isEmpty(ctrl.functionFromTemplateForm.$error);
                 }
@@ -121,10 +125,8 @@
             if (!lodash.isEqual(templateName, ctrl.selectedTemplate)) {
                 ctrl.selectedTemplate = templateName;
 
-                // assign new template to function
-                lodash.set(ctrl.functionData, 'spec', ctrl.templates[ctrl.selectedTemplate].spec);
-                lodash.set(ctrl.functionData, 'spec.handler',
-                    FunctionsService.getHandler(ctrl.templates[ctrl.selectedTemplate].spec.runtime));
+                // assign new template
+                ctrl.functionData = angular.copy(ctrl.templates[ctrl.selectedTemplate]);
             }
         }
 
@@ -152,20 +154,15 @@
 
                     ctrl.selectedTemplate = getSelectedTemplate();
                     var selectedTemplate = ctrl.templates[ctrl.selectedTemplate];
-                    ctrl.functionData = {
-                        metadata: {
-                            name: '',
-                            namespace: ''
-                        },
-                        spec: selectedTemplate.spec
-                    };
+                    ctrl.functionData = angular.copy(selectedTemplate);
 
-                    lodash.set(ctrl.functionData, 'spec.handler',
-                        FunctionsService.getHandler(selectedTemplate.spec.runtime));
-
+                    lodash.assign(ctrl.functionData.metadata, {
+                        name: ctrl.functionName,
+                        namespace: ''
+                    });
                 })
                 .catch(function () {
-                    DialogsService.alert('Oops: Unknown error occurred');
+                    DialogsService.alert('Oops: Unknown error occurred while getting function\'s templates');
                 })
                 .finally(function () {
                     ctrl.toggleSplashScreen({value: false});
