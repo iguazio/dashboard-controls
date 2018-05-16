@@ -69,8 +69,9 @@
                         automaticLayout: true,
                         dragAndDrop: true,
                         lineNumbersMinChars: scope.miniMonaco ? 2 : 5,
+                        lineNumbers: scope.miniMonaco ? 'off' : 'on', // hide line number if it's a mini-monaco
                         minimap: {
-                            enabled: !scope.miniMonaco
+                            enabled: !scope.miniMonaco // hide mini-map if it's a mini-monaco
                         },
                         readOnly: scope.readOnly
                     });

@@ -8,7 +8,7 @@
         </div>
         <div data-ng-if="!$ctrl.isScrollNeeded()"
              class="igz-scrollable-container">
-            <div class="table-body" data-ng-repeat="variable in $ctrl.variables">
+            <div class="table-body" data-ng-repeat="variable in $ctrl.variables track by $index">
                 <ncl-key-value-input class="new-label-input"
                                      data-list-class="ncl-version-configuration-environment-variables"
                                      data-row-data="variable"
@@ -22,7 +22,7 @@
              class="igz-scrollable-container scrollable-environment-variables"
              data-ng-scrollbars
              data-ng-scrollbars-config="$ctrl.scrollConfig">
-            <div class="table-body" data-ng-repeat="variable in $ctrl.variables">
+            <div class="table-body" data-ng-repeat="variable in $ctrl.variables track by $index">
                 <ncl-key-value-input class="new-label-input"
                                      data-list-class="scrollable-environment-variables"
                                      data-row-data="variable"

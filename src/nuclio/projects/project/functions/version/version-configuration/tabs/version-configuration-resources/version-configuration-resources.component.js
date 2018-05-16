@@ -34,6 +34,12 @@
         function onInit() {
             ctrl.initSliders();
 
+            if (!lodash.isNil(ctrl.version.spec.resources.limits)) {
+                ctrl.version.spec.resources.limits = lodash.mapValues(ctrl.version.spec.resources.limits, function (item) {
+                    return Number(item);
+                });
+            }
+
             ctrl.minReplicas = lodash.chain(ctrl.version).get('spec.minReplicas').defaultTo(1).value();
             ctrl.maxReplicas = lodash.chain(ctrl.version).get('spec.maxReplicas').defaultTo(1).value();
         }
@@ -177,14 +183,10 @@
          * @param {string} field
          */
         function sliderInputCallback(newValue, field) {
-            if (!lodash.isNil(newValue)) {
-                if (lodash.includes(field, 'targetCPU')) {
-                    lodash.set(ctrl.version, field, newValue);
-                } else {
-                    lodash.set(ctrl.version, field, newValue.toString());
-                }
-            } else {
+            if (lodash.isNil(newValue)) {
                 lodash.unset(ctrl.version, field);
+            } else {
+                lodash.set(ctrl.version, field, Number(newValue));
             }
 
             ctrl.onChangeCallback();

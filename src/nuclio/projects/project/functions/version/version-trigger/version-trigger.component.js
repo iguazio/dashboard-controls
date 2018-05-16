@@ -40,6 +40,12 @@
                 triggersItem.id = key;
                 triggersItem.name = key;
 
+                triggersItem.ui = {
+                    editModeActive: false,
+                    isFormValid: true,
+                    name: 'trigger'
+                };
+
                 return triggersItem;
             });
         }
@@ -67,7 +73,9 @@
                     kind: '',
                     attributes: {},
                     ui: {
-                        editModeActive: true
+                        editModeActive: true,
+                        isFormValid: false,
+                        name: 'trigger'
                     }
                 });
                 $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: true});
@@ -82,7 +90,11 @@
         function editTriggerCallback(item) {
             ctrl.handleAction('update', item);
 
-            $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: false});
+            lodash.forEach(ctrl.triggers, function (trigger) {
+                if (!trigger.ui.isFormValid) {
+                    $rootScope.$broadcast('change-state-deploy-button', {component: trigger.ui.name, isDisabled: true});
+                }
+            });
         }
 
         /**

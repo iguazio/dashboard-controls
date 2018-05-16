@@ -126,7 +126,7 @@
         //
 
         /**
-         * Updates function`s labels
+         * Updates function`s annotations
          */
         function updateAnnotations() {
             var newAnnotations = {};
