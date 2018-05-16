@@ -441,11 +441,7 @@
                     spec: lodash.omit(ctrl.version.spec, 'build.noBaseImagePull')
                 };
 
-                lodash.forEach(versionYaml.spec.env, function (variable) {
-                    return lodash.omit(variable, '$$hashKey');
-                });
-
-                var blob = new Blob([YAML.stringify(angular.copy(versionYaml), Infinity)], {
+                var blob = new Blob([YAML.stringify(versionYaml, Infinity)], {
                     type: 'application/json'
                 });
 

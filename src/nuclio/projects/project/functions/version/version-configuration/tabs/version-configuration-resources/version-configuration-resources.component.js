@@ -183,7 +183,11 @@
          * @param {string} field
          */
         function sliderInputCallback(newValue, field) {
-            lodash.isNil(newValue) ? lodash.unset(ctrl.version, field) : lodash.set(ctrl.version, field, Number(newValue));
+            if (lodash.isNil(newValue)) {
+                lodash.unset(ctrl.version, field);
+            } else {
+                lodash.set(ctrl.version, field, Number(newValue));
+            }
 
             ctrl.onChangeCallback();
         }
