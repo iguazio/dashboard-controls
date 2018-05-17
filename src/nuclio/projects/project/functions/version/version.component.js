@@ -17,6 +17,7 @@
                                   ngDialog, YAML, ConfigService, DialogsService, NuclioEventService, NuclioHeaderService,
                                   NuclioFunctionsDataService, NuclioProjectsDataService) {
         var ctrl = this;
+        var deregisterFunction = null;
         var interval = null;
         var eventContentType = '';
 
@@ -52,6 +53,7 @@
 
         ctrl.isDeployDisabled = false;
         ctrl.isLayoutCollapsed = true;
+        ctrl.versionDeployed = true;
 
         ctrl.$onInit = onInit;
 
@@ -156,6 +158,8 @@
             });
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
+            $scope.$on('change-version-deployed-state', setVersionDeployed);
+            deregisterFunction = $scope.$on('$stateChangeStart', stateChangeStart);
 
             if (ctrl.checkValidDeployState()) {
                 ctrl.isFunctionDeployed = false;
@@ -481,7 +485,7 @@
                     id: event.metadata.name,
                     name: event.spec.displayName,
                     eventData: event
-                }
+                };
             });
 
             ctrl.functionEvents = $filter('orderBy')(ctrl.functionEvents, 'name');
@@ -525,7 +529,7 @@
                                 interval = null;
                             }
 
-                            $rootScope.$broadcast('change-version-deployed-state', {component: 'version', isDeployed: true});
+                            ctrl.versionDeployed = true;
 
                             if (lodash.isNil(ctrl.version.status)) {
                                 ctrl.version.status = response.status;
@@ -595,6 +599,34 @@
          */
         function setEventAsSelected(id) {
             ctrl.selectedFunctionEvent = lodash.find(ctrl.functionEvents, ['id', id]);
+        }
+
+        /**
+         * Dynamically set version deployed state
+         * @param {Object} [event]
+         * @param {Object} data
+         */
+        function setVersionDeployed(event, data) {
+            ctrl.versionDeployed = data.isDeployed;
+        }
+
+        /**
+         * Prevents change state if there are unsaved data
+         * @param {Event} event
+         * @param {Object} toState
+         * @param {Object} params
+         */
+        function stateChangeStart(event, toState, params) {
+            if (!lodash.includes(toState.name, 'app.project.function.edit') && !ctrl.versionDeployed) {
+                event.preventDefault();
+                DialogsService.confirm('Leaving this page will discard your changes.', 'Leave', 'Don\'t leave')
+                    .then(function () {
+
+                        // unsubscribe from broadcast event
+                        deregisterFunction();
+                        $state.go(toState.name, params);
+                    });
+            }
         }
     }
 }());
