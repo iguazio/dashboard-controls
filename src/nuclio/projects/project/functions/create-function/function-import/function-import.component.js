@@ -122,7 +122,7 @@
          * @return {boolean}
          */
         function isYamlFile(filename) {
-            return lodash.includes(filename, '.yml');
+            return lodash.includes(filename, '.yml') || lodash.includes(filename, '.yaml');
         }
     }
 }());

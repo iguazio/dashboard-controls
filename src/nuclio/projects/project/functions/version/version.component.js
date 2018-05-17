@@ -455,10 +455,43 @@
             } else if (item.id === 'exportFunction') {
                 var versionYaml = {
                     metadata: lodash.omit(ctrl.version.metadata, 'namespace'),
-                    spec: lodash.omit(ctrl.version.spec, 'build.noBaseImagePull')
+                    spec: lodash.omit(ctrl.version.spec, ['build.noBaseImagesPull', 'loggerSinks'])
                 };
 
-                var blob = new Blob([YAML.stringify(versionYaml, Infinity, 2)], {
+                var parsedVersion = YAML.stringify(versionYaml, Infinity, 2);
+
+                /*
+                First RegExp deletes all excess lines in YAML string created by issue in yaml.js package.
+                It is necessary to generate valid YAML.
+                Example:
+                -
+                  name: name
+                  value: value
+                -
+                  name: name
+                  value: value
+                Will transform in:
+                - name: name
+                  value: value
+                - name: name
+                  value: value
+                Second and Third RegExp replaces all single quotes on double quotes.
+                Example:
+                'key': 'value' -> "key": "value"
+                Fourth RegExp replaces all pairs of single quotes on one single quote.
+                It needs because property name or property value is a sting which contains single quote
+                will parsed by yaml.js package in sting with pair of single quotes.
+                Example:
+                "ke'y": "val'ue"
+                After will parse will be -> "ke''y": "val''ue"
+                This RegExp will transform it to normal view -> "ke'y": "val'ue"
+                */
+                parsedVersion = parsedVersion.replace(/(\s+\-)\s*\n\s+/g, '$1 ')
+                                             .replace(/'(.+)'(:)/g, '\"$1\"$2')
+                                             .replace(/(:\s)'(.+)'/g, '$1\"$2\"')
+                                             .replace(/'{2}/g, '\'');
+
+                var blob = new Blob([parsedVersion], {
                     type: 'application/json'
                 });
 
