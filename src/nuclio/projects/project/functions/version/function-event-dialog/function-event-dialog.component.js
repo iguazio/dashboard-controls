@@ -132,7 +132,7 @@
             // get content type from event.
             ctrl.contentType = lodash.get(ctrl.selectedEvent, 'spec.attributes.headers.Content-Type');
 
-            //get header from event.
+            // get header from event.
             ctrl.selectedHeader = lodash.find(ctrl.headers, ['id' , ctrl.contentType]);
         }
 
@@ -186,8 +186,6 @@
 
             // close dialog only if event is not deploying. Means event was deployed / failed / not changed
             if (!ctrl.isLoadingState) {
-
-
                 ctrl.closeDialog({
                     result: {
                         isEventDeployed: false,
