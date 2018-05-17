@@ -8,7 +8,7 @@
         });
 
     function NclProjectsController($filter, $rootScope, $scope, $q, $state, lodash, ngDialog, ActionCheckboxAllService,
-                                   CommonTableService, ConfigService, NuclioProjectsDataService, ValidatingPatternsService) {
+                                   CommonTableService, ConfigService, DialogsService, NuclioProjectsDataService, ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -112,15 +112,19 @@
         function updateProjects() {
             ctrl.isSplashShowed.value = true;
 
-            NuclioProjectsDataService.getProjects().then(function (response) {
-                ctrl.projects = lodash.values(response);
+            NuclioProjectsDataService.getProjects()
+                .then(function (response) {
+                    ctrl.projects = lodash.values(response);
 
-                if (lodash.isEmpty(ctrl.projects)) {
-                    $state.go('app.nuclio-welcome');
-                } else {
-                    ctrl.isSplashShowed.value = false;
-                }
-            });
+                    if (lodash.isEmpty(ctrl.projects)) {
+                        $state.go('app.nuclio-welcome');
+                    } else {
+                        ctrl.isSplashShowed.value = false;
+                    }
+                })
+                .catch(function () {
+                    DialogsService.alert('Oops: Unknown error occurred while retrieving projects');
+                });
         }
 
         /**

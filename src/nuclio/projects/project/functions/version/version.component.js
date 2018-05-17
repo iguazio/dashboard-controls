@@ -152,7 +152,7 @@
 
                 NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
             }).catch(function () {
-                DialogsService.alert('Oops: Unknown error occurred');
+                DialogsService.alert('Oops: Unknown error occurred while retrieving project or events');
             });
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
@@ -214,6 +214,9 @@
                                     convertTestEventsData(response.data);
 
                                     ctrl.isSplashShowed.value = false;
+                                })
+                                .catch(function () {
+                                    DialogsService.alert('Oops: Unknown error occurred while retrieving events');
                                 });
                         })
                         .catch(function () {
@@ -262,6 +265,9 @@
 
                                 ctrl.isSplashShowed.value = false;
                             })
+                            .catch(function () {
+                                DialogsService.alert('Oops: Unknown error occurred while retrieving events');
+                            });
                     }
                 });
         }
@@ -431,9 +437,13 @@
                     .then(function () {
                         ctrl.isSplashShowed.value = true;
 
-                        NuclioFunctionsDataService.deleteFunction(ctrl.version.metadata).then(function () {
-                            $state.go('app.project.functions');
-                        });
+                        NuclioFunctionsDataService.deleteFunction(ctrl.version.metadata)
+                            .then(function () {
+                                $state.go('app.project.functions');
+                            })
+                            .catch(function () {
+                                DialogsService.alert('Oops: Unknown error occurred while deleting function');
+                            });
                     })
                     .catch(function () {
                         ctrl.action = ctrl.actions[0].id;

@@ -13,7 +13,7 @@
             controller: NclBreadcrumbsDropdown
         });
 
-    function NclBreadcrumbsDropdown($document, $element, $rootScope, $scope, $state, $timeout, lodash, NuclioFunctionsDataService, NuclioProjectsDataService) {
+    function NclBreadcrumbsDropdown($document, $element, $rootScope, $scope, $state, $timeout, lodash, DialogsService, NuclioFunctionsDataService, NuclioProjectsDataService) {
         var ctrl = this;
 
         ctrl.itemsList = [];
@@ -35,9 +35,17 @@
          */
         function onInit() {
             if (ctrl.type === 'projects') {
-                NuclioProjectsDataService.getProjects().then(setNuclioItemsList);
+                NuclioProjectsDataService.getProjects()
+                    .then(setNuclioItemsList)
+                    .catch(function () {
+                        DialogsService.alert('Oops: Unknown error occurred while retrieving projects');
+                    });
             } else if (ctrl.type === 'functions') {
-                NuclioFunctionsDataService.getFunctions(ctrl.project.metadata.namespace, ctrl.project.metadata.name).then(setNuclioItemsList)
+                NuclioFunctionsDataService.getFunctions(ctrl.project.metadata.namespace, ctrl.project.metadata.name)
+                    .then(setNuclioItemsList)
+                    .catch(function () {
+                        DialogsService.alert('Oops: Unknown error occurred while retrieving functions');
+                    });
             }
 
             $document.on('click', unselectDropdown);

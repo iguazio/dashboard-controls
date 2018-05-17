@@ -8,7 +8,7 @@
         });
 
     function FunctionsController($filter, $q, $rootScope, $scope, $state, $stateParams, $timeout, lodash, CommonTableService,
-                                 ConfigService, NuclioClientService, NuclioHeaderService, NuclioProjectsDataService, NuclioFunctionsDataService) {
+                                 ConfigService, DialogsService, NuclioClientService, NuclioHeaderService, NuclioProjectsDataService, NuclioFunctionsDataService) {
         var ctrl = this;
         var title = {}; // breadcrumbs config
 
@@ -99,11 +99,17 @@
                         ctrl.refreshFunctions();
 
                         NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
+                    })
+                    .catch(function () {
+                        DialogsService.alert('Oops: Unknown error occurred while retrieving project');
                     });
 
                 NuclioProjectsDataService.getExternalIPAddresses()
                     .then(function (response) {
                         ctrl.externalIPAddress = response.data.externalIPAddresses.addresses[0];
+                    })
+                    .catch(function () {
+                        DialogsService.alert('Oops: Unknown error occurred while retrieving external IP address');
                     });
             } else {
                 ctrl.refreshFunctions();
@@ -234,28 +240,32 @@
         function refreshFunctions() {
             ctrl.isSplashShowed.value = true;
 
-            NuclioFunctionsDataService.getFunctions(ctrl.project.metadata.namespace, ctrl.project.metadata.name).then(function (result) {
-                ctrl.functions = lodash.toArray(result.data);
+            NuclioFunctionsDataService.getFunctions(ctrl.project.metadata.namespace, ctrl.project.metadata.name)
+                .then(function (result) {
+                    ctrl.functions = lodash.toArray(result.data);
 
-                if (lodash.isEmpty(ctrl.functions) && !$stateParams.createCancelled) {
-                    ctrl.isSplashShowed.value = false;
+                    if (lodash.isEmpty(ctrl.functions) && !$stateParams.createCancelled) {
+                        ctrl.isSplashShowed.value = false;
 
-                    $state.go('app.project.create-function');
-                } else {
+                        $state.go('app.project.create-function');
+                    } else {
 
-                    // TODO: unmock versions data
-                    lodash.forEach(ctrl.functions, function (functionItem) {
-                        lodash.set(functionItem, 'versions', [{
-                            name: '$LATEST',
-                            invocation: '30',
-                            last_modified: '2018-02-05T17:07:48.509Z'
-                        }]);
-                        lodash.set(functionItem, 'spec.version', 1);
-                    });
+                        // TODO: unmock versions data
+                        lodash.forEach(ctrl.functions, function (functionItem) {
+                            lodash.set(functionItem, 'versions', [{
+                                name: '$LATEST',
+                                invocation: '30',
+                                last_modified: '2018-02-05T17:07:48.509Z'
+                            }]);
+                            lodash.set(functionItem, 'spec.version', 1);
+                        });
 
-                    ctrl.isSplashShowed.value = false;
-                }
-            });
+                        ctrl.isSplashShowed.value = false;
+                    }
+                })
+                .catch(function () {
+                    DialogsService.alert('Oops: Unknown error occurred while retrieving functions');
+                });
         }
 
         /**

@@ -50,7 +50,7 @@
                     NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
                 })
                 .catch(function (error) {
-                    DialogsService.alert('Could not retrieve project namespace');
+                    DialogsService.alert('Oops: Unknown error occurred while retrieving project');
 
                     $state.go('app.projects');
                 })

@@ -10,7 +10,7 @@
             controller: IgzNewProjectDialogController
         });
 
-    function IgzNewProjectDialogController($scope, lodash, moment, EventHelperService, FormValidationService,
+    function IgzNewProjectDialogController($scope, lodash, moment, DialogsService, EventHelperService, FormValidationService,
                                            NuclioProjectsDataService) {
         var ctrl = this;
 
@@ -81,6 +81,8 @@
                                                                    'before creating a new one.'                       :
                                 lodash.inRange(status, 500, 599) ? 'Server error'                                     :
                                                                    'Unknown error occurred. Retry later';
+
+                            DialogsService.alert(ctrl.serverError);
                         })
                         .finally(function () {
                             ctrl.isLoadingState = false;

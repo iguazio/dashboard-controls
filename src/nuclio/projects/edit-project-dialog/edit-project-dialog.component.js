@@ -12,7 +12,7 @@
             controller: IgzEditProjectDialogController
         });
 
-    function IgzEditProjectDialogController($scope, lodash, EventHelperService, FormValidationService,
+    function IgzEditProjectDialogController($scope, lodash, DialogsService, EventHelperService, FormValidationService,
                                             NuclioProjectsDataService) {
         var ctrl = this;
 
@@ -72,6 +72,8 @@
                                 status === 405                   ? 'Failed to create a project'                       :
                                 lodash.inRange(status, 500, 599) ? 'Server error'                                     :
                                                                    'Unknown error occurred. Retry later';
+
+                            DialogsService.alert(ctrl.serverError);
                         })
                         .finally(function () {
                             ctrl.isLoadingState = false;
