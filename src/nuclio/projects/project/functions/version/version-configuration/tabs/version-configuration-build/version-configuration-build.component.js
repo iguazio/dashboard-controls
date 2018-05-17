@@ -15,16 +15,6 @@
         var ctrl = this;
         var uploadType = '';
 
-        ctrl.datasetTypesList = [
-            {
-                value: 'alpine',
-                name: 'Alpine',
-            },
-            {
-                value: 'jessie',
-                name: 'Jessie',
-            }
-        ];
         ctrl.actions = initActions();
         ctrl.script = {
             uploading: false,
@@ -47,7 +37,6 @@
         ctrl.getFileConfig = getFileConfig;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isDemoMode = ConfigService.isDemoMode;
-        ctrl.onBaseImageChange = onBaseImageChange;
         ctrl.onFireAction = onFireAction;
         ctrl.uploadFile = uploadFile;
 
@@ -73,21 +62,17 @@
         //
 
         /**
-         * Update spec.build.baseImage value
-         * @param {Object} item
-         */
-        function onBaseImageChange(item) {
-            ctrl.version.spec.build.baseImage = item.value;
-            ctrl.onChangeCallback();
-        }
-
-        /**
          * Update spec.buildCommands value
          * @param {string} newData
+         * @param {string} field
          */
-        function inputValueCallback(newData) {
-            ctrl.buildCommands = newData;
-            ctrl.version.spec.build.commands = newData.replace('\r', '\n').split('\n');
+        function inputValueCallback(newData, field) {
+            if (field === 'commands') {
+                ctrl.buildCommands = newData;
+                ctrl.version.spec.build.commands = newData.replace('\r', '\n').split('\n');
+            } else {
+                lodash.set(ctrl.version, field, newData);
+            }
             ctrl.onChangeCallback();
         }
 
