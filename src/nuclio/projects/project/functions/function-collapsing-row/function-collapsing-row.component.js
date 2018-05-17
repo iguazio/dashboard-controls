@@ -25,6 +25,16 @@
             function: ctrl.function.metadata.name
         };
         ctrl.invocationURL = '';
+        ctrl.runtimes = {
+            'golang': 'Go',
+            'python:2.7': 'Python 2.7',
+            'python:3.6': 'Python 3.6',
+            'pypy': 'Pypy',
+            'dotnetcore': '.NET Core',
+            'java': 'Java',
+            'nodejs': 'NodeJS',
+            'shell': 'Shell'
+        };
 
         ctrl.scrollConfig = {
             axis: 'y',

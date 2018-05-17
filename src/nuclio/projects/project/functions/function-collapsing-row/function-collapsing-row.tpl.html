@@ -13,10 +13,11 @@
             <div class="igz-col-25 common-table-cell function-name">
                 {{$ctrl.function.metadata.name}}
             </div>
-            <div class="igz-col-20 common-table-cell igz-scrollable-container"
-                 data-ng-scrollbars
-                 data-ng-scrollbars-config="$ctrl.scrollConfig">
-                <span class="scrollable-content">{{$ctrl.function.spec.description}}</span>
+            <div class="igz-col-20 common-table-cell"
+                 data-tooltip="{{$ctrl.function.spec.description}}"
+                 data-tooltip-append-to-body="true"
+                 data-tooltip-placement="top">
+                <span class="description-content common-table-cell-content">{{$ctrl.function.spec.description}}</span>
             </div>
             <div class="igz-col-10 common-table-cell">
                 {{$ctrl.convertedStatusState}}
@@ -29,7 +30,7 @@
                 {{$ctrl.function.spec.invocation || 0}}
             </div>
             <div class="igz-col-10 common-table-cell">
-                {{$ctrl.function.spec.runtime}}
+                {{$ctrl.runtimes[$ctrl.function.spec.runtime]}}
             </div>
             <div class="igz-col-15 common-table-cell"
                  data-tooltip="{{$ctrl.invocationURL}}"
