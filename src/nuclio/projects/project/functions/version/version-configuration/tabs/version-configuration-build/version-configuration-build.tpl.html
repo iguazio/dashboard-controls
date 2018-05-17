@@ -8,15 +8,30 @@
     <form name="$ctrl.buildForm" class="build-wrapper">
         <div class="igz-row">
             <div class="igz-col-100 build-field">
-                <div class="field-label">Build base image</div>
-                <igz-default-dropdown data-is-required="true"
-                                      data-select-property-only="value"
-                                      data-values-array="$ctrl.datasetTypesList"
-                                      data-selected-item="$ctrl.version.spec.build.baseImage"
-                                      data-item-select-callback="$ctrl.onBaseImageChange(item)"
-                                      data-placeholder="Select ..."
-                                      data-form-object="$ctrl.buildForm"
-                                      data-input-name="baseImageName"></igz-default-dropdown>
+                <div class="field-label">Base image</div>
+                <igz-validating-input-field data-field-type="input"
+                                            data-input-name="baseImage"
+                                            data-input-value="$ctrl.version.spec.build.baseImage"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.buildForm"
+                                            data-placeholder-text="Type a base image..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="spec.build.baseImage"
+                                            class="nuclio-validating-input">
+                </igz-validating-input-field>
+            </div>
+            <div class="igz-col-100 build-field">
+                <div class="field-label">Onbuild image</div>
+                <igz-validating-input-field data-field-type="input"
+                                            data-input-name="onbuildImage"
+                                            data-input-value="$ctrl.version.spec.build.onbuildImage"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.buildForm"
+                                            data-placeholder-text="Type a onbuild image..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="spec.build.onbuildImage"
+                                            class="nuclio-validating-input">
+                </igz-validating-input-field>
             </div>
             <div class="igz-col-100 build-field">
                 <div class="field-label">Build commands</div>
@@ -26,8 +41,8 @@
                                             data-is-focused="false"
                                             data-form-object="$ctrl.buildForm"
                                             data-placeholder-text="Type ..."
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData)"
-                                            data-update-data-field="Commands"
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="commands"
                                             class="nuclio-validating-input build-command-field">
                 </igz-validating-input-field>
             </div>
