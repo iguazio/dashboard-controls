@@ -3,23 +3,21 @@
          data-ng-scrollbars
          data-ng-scrollbars-config="$ctrl.scrollConfig">
         <div class="ncl-edit-version-code-wrapper">
-            <div class="section-wrapper code-entry-section">
-                <form name="$ctrl.versionCodeForm">
+            <form name="$ctrl.versionCodeForm">
+                <div class="section-wrapper code-entry-section">
                     <div class="code-entry-row">
                         <div class="code-entry-col code-entry-type-col">
                             <div class="col-label code-entry-type">Code entry type</div>
                             <igz-default-dropdown data-values-array="$ctrl.codeEntryTypeArray"
                                                   data-item-select-callback="$ctrl.selectEntryTypeValue(item, isItemChanged, field)"
-                                                  data-selected-item="$ctrl.selectedEntryType"
-                                                  data-on-close-dropdown="$ctrl.onCloseDropdown()"></igz-default-dropdown>
+                                                  data-selected-item="$ctrl.selectedEntryType"></igz-default-dropdown>
                         </div>
                         <div class="code-entry-col code-entry-runtime-col">
                             <div class="col-label runtime">Runtime</div>
                             <igz-default-dropdown data-values-array="$ctrl.runtimeArray"
                                                   data-item-select-callback="$ctrl.selectRuntimeValue(item, isItemChanged, field)"
                                                   data-selected-item="$ctrl.selectedRuntime"
-                                                  data-is-disabled="true"
-                                                  data-on-close-dropdown="$ctrl.onCloseDropdown()"></igz-default-dropdown>
+                                                  data-is-disabled="true"></igz-default-dropdown>
                         </div>
                         <div class="code-entry-col code-entry-handler-col">
                             <div class="col-label handler">Handler</div>
@@ -61,20 +59,35 @@
                             </igz-validating-input-field>
                         </div>
                     </div>
-                </form>
-            </div>
+                </div>
 
-            <div data-ng-if="$ctrl.selectedEntryType.name === 'Edit online'"
-                 class="code-edit-section">
-                <div class="code-editor-drop-zone"></div>
-                <ncl-monaco class="monaco-code-editor"
-                            data-function-source-code="$ctrl.sourceCode"
-                            data-mini-monaco="false"
-                            data-selected-theme="$ctrl.selectedTheme.id"
-                            data-language="$ctrl.selectedRuntime.language"
-                            data-on-change-source-code-callback="$ctrl.onChangeSourceCode(sourceCode, language)"
-                            data-read-only="false"></ncl-monaco>
-            </div>
+                <div data-ng-if="$ctrl.selectedEntryType.name === 'Edit online'"
+                     class="code-edit-section">
+                    <div class="code-editor-drop-zone"></div>
+                    <ncl-monaco class="monaco-code-editor"
+                                data-function-source-code="$ctrl.sourceCode"
+                                data-mini-monaco="false"
+                                data-selected-theme="$ctrl.selectedTheme.id"
+                                data-language="$ctrl.selectedRuntime.language"
+                                data-on-change-source-code-callback="$ctrl.onChangeSourceCode(sourceCode, language)"
+                                data-read-only="false"></ncl-monaco>
+                </div>
+
+                <div data-ng-if="$ctrl.selectedEntryType.name === 'Image'">
+                    <div class="field-label">Image</div>
+                    <igz-validating-input-field data-field-type="input"
+                                                data-input-name="image"
+                                                data-input-value="$ctrl.image"
+                                                data-is-focused="true"
+                                                data-form-object="$ctrl.versionCodeForm"
+                                                data-validation-is-required="true"
+                                                data-placeholder-text="Type image..."
+                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                data-update-data-field="spec.image"
+                                                class="nuclio-validating-input">
+                    </igz-validating-input-field>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -26,6 +26,11 @@
                 id: 'online',
                 visible: true,
                 name: 'Edit online'
+            },
+            {
+                id: 'image',
+                visible: true,
+                name: 'Image'
             }
         ];
         ctrl.themesArray = [
@@ -48,7 +53,6 @@
         ctrl.selectEntryTypeValue = selectEntryTypeValue;
         ctrl.selectRuntimeValue = selectRuntimeValue;
         ctrl.selectThemeValue = selectThemeValue;
-        ctrl.onCloseDropdown = onCloseDropdown;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.onChangeSourceCode = onChangeSourceCode;
 
@@ -66,8 +70,20 @@
 
             ctrl.runtimeArray = getRuntimes();
             ctrl.selectedRuntime = lodash.find(ctrl.runtimeArray, ['id', ctrl.version.spec.runtime]);
-            ctrl.selectedEntryType = ctrl.codeEntryTypeArray[0];
-            ctrl.sourceCode = atob(ctrl.version.spec.build.functionSourceCode);
+
+            var sourceCode = lodash.get(ctrl.version, 'spec.build.functionSourceCode', '');
+            if (lodash.isEmpty(sourceCode)) {
+                var savedSourceCode = lodash.get(ctrl.version, 'ui.versionCode', sourceCode);
+
+                ctrl.selectedEntryType = ctrl.codeEntryTypeArray[1];
+                ctrl.sourceCode = savedSourceCode;
+            } else {
+                ctrl.selectedEntryType = ctrl.codeEntryTypeArray[0];
+                ctrl.sourceCode = atob(sourceCode);
+
+                lodash.set(ctrl.version, 'ui.versionCode', sourceCode);
+            }
+            ctrl.image = lodash.get(ctrl.version, 'spec.image', '');
         }
 
         /**
@@ -87,7 +103,30 @@
          */
         function selectEntryTypeValue(item) {
             ctrl.selectedEntryType = item;
-            ctrl.version.spec.entryType = item.name;
+
+            if (item.id === 'image') {
+                var functionSourceCode = lodash.get(ctrl.version, 'spec.build.functionSourceCode', '');
+                lodash.merge(ctrl.version, {
+                    spec: {
+                        build: {
+                            functionSourceCode: ''
+                        }
+                    },
+                    ui: {
+                        versionCode: functionSourceCode
+                    }
+                });
+
+                if (lodash.isEmpty(ctrl.version.spec.image)) {
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: true});
+                }
+            } else {
+                var savedSourceCode = lodash.get(ctrl.version, 'ui.versionCode', '');
+                lodash.set(ctrl.version, 'spec.build.functionSourceCode', savedSourceCode);
+                ctrl.sourceCode = atob(savedSourceCode);
+
+                $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: false});
+            }
         }
 
         /**
@@ -108,22 +147,9 @@
 
             lodash.set(ctrl.version, 'spec.runtime', item.id);
             lodash.set(ctrl.version, 'spec.build.functionSourceCode', item.sourceCode);
+            lodash.set(ctrl.version, 'ui.versionCode', item.sourceCode);
 
             VersionHelperService.checkVersionChange(ctrl.version);
-        }
-
-        /**
-         * Handles on drop-down close
-         */
-        function onCloseDropdown() {
-            $timeout(function () {
-                var element = angular.element('.tab-content-wrapper');
-                var targetElement = $element.find('.default-dropdown-container');
-
-                if (targetElement.length > 0 && ctrl.selectedEntryType.name !== 'Edit online') {
-                    PreventDropdownCutOffService.resizeScrollBarContainer(element, '.default-dropdown-container');
-                }
-            }, 40);
         }
 
         /**
@@ -132,6 +158,7 @@
          */
         function onChangeSourceCode(sourceCode) {
             lodash.set(ctrl.version, 'spec.build.functionSourceCode', btoa(sourceCode));
+            lodash.set(ctrl.version, 'ui.versionCode', btoa(sourceCode));
 
             ctrl.sourceCode = sourceCode;
 
@@ -146,6 +173,10 @@
         function inputValueCallback(newData, field) {
             lodash.set(ctrl.version, field, newData);
             VersionHelperService.checkVersionChange(ctrl.version);
+
+            $timeout(function () {
+                $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: ctrl.versionCodeForm.$invalid});
+            });
         }
 
         //
