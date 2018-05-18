@@ -32,10 +32,12 @@
          * Initialization method
          */
         function onInit() {
+            var limits = lodash.get(ctrl.version.spec, 'resources.limits');
+
             ctrl.initSliders();
 
-            if (!lodash.isNil(ctrl.version.spec.resources.limits)) {
-                ctrl.version.spec.resources.limits = lodash.mapValues(ctrl.version.spec.resources.limits, function (item) {
+            if (!lodash.isNil(limits)) {
+                ctrl.version.spec.resources.limits = lodash.mapValues(limits, function (item) {
                     return Number(item);
                 });
             }
@@ -59,31 +61,46 @@
          * Inits data for sliders
          */
         function initSliders() {
+            // maximum value of memory in megabytes
             var maxMemoryValueInMB = 4096;
-            var memoryBytes = parseInt(lodash.get(ctrl.version.spec.resources, 'limits.memory', Math.pow(1024, 2) * 128));
+            // maximum value of memory in gigabytes
+            var maxMemoryValueInGB = 33;
+            // maximum value of CPU
+            var maxCPUvalue = 65;
+            var memory = lodash.get(ctrl.version.spec, 'resources.limits.memory');
+            // gets the memory value in bytes
+            var memoryBytes = parseInt(lodash.get(ctrl.version.spec, 'resources.limits.memory', Math.pow(1024, 2) * maxMemoryValueInGB));
+            // converts memory value from bytes to megabytes
             var memoryValue = lodash.round(memoryBytes / Math.pow(1024, 2));
-            var cpuValue = lodash.get(ctrl.version.spec.resources, 'limits.cpu', 1);
+            var memoryValueLabel = null;
+            // gets the cpu value
+            var cpuValue = lodash.get(ctrl.version.spec, 'resources.limits.cpu', maxCPUvalue);
+            // sets to the cpu label - cpu value if exists or U/L (unlimited) if doesn't
+            var cpuValueLabel = lodash.get(ctrl.version.spec, 'resources.limits.cpu', 'U/L');
             var targetCPUvalue = lodash.get(ctrl.version, 'spec.targetCPU', 75);
 
+            // converts memory value from megabytes to gigabytes if value too big
             if (memoryValue <= maxMemoryValueInMB) {
                 ctrl.memoryValueUnit = 'MB';
             } else {
                 memoryValue = lodash.round(memoryValue / 1024);
                 ctrl.memoryValueUnit = 'GB';
             }
+            // sets to the memory label - memory value if exists or U/L (unlimited) if doesn't
+            memoryValueLabel = angular.isDefined(memory) ? memoryValue : 'U/L';
 
             ctrl.targetValueUnit = '%';
             ctrl.memorySliderConfig = {
                 name: 'Memory',
                 value: memoryValue,
-                valueLabel: memoryValue,
+                valueLabel: memoryValueLabel,
                 valueUnit: ctrl.memoryValueUnit,
                 pow: 2,
                 unitLabel: '',
                 labelHelpIcon: false,
                 options: {
                     floor: 128,
-                    ceil: 33,
+                    ceil: maxMemoryValueInGB,
                     stepsArray: initMemorySteps(),
                     showSelectionBar: false,
                     onChange: null,
@@ -93,14 +110,14 @@
             ctrl.cpuSliderConfig = {
                 name: 'CPU',
                 value: cpuValue,
-                valueLabel: cpuValue,
+                valueLabel: cpuValueLabel,
                 pow: 0,
                 unitLabel: '',
                 labelHelpIcon: false,
                 options: {
                     floor: 1,
                     id: 'cpu',
-                    ceil: 65,
+                    ceil: maxCPUvalue,
                     step: 1,
                     precision: 1,
                     showSelectionBar: false,
