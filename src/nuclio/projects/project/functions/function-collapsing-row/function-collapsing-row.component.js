@@ -8,7 +8,8 @@
                 project: '<',
                 functionsList: '<',
                 actionHandlerCallback: '&',
-                externalAddress: '<'
+                externalAddress: '<',
+                isSplashShowed: '<'
             },
             templateUrl: 'nuclio/projects/project/functions/function-collapsing-row/function-collapsing-row.tpl.html',
             controller: NclFunctionCollapsingRowController
@@ -133,17 +134,20 @@
          * @returns {Promise}
          */
         function deleteFunction() {
-            return NuclioFunctionsDataService.deleteFunction(ctrl.function.metadata).then(function () {
-                lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
-            })
-            .catch(function (error) {
-                var errorMessages = {
-                    403: 'You do not have permissions to delete this function.',
-                    default: 'Unknown error occurred while deleting the function.'
-                };
+            ctrl.isSplashShowed.value = true;
 
-                return DialogsService.alert(lodash.get(errorMessages, error.status, errorMessages.default));
-            });
+            return NuclioFunctionsDataService.deleteFunction(ctrl.function.metadata)
+                .then(function () {
+                    lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
+                })
+                .catch(function (error) {
+                    var errorMessages = {
+                        403: 'You do not have permissions to delete this function.',
+                        default: 'Unknown error occurred while deleting the function.'
+                    };
+
+                    return DialogsService.alert(lodash.get(errorMessages, error.status, errorMessages.default));
+                });
         }
 
         /**

@@ -87,7 +87,7 @@
                 withCredentials: false
             };
 
-            return NuclioClientService.makeRequest(config);
+            return NuclioClientService.makeRequest(config, true, true);
         }
 
         /**
