@@ -7,7 +7,8 @@
             controller: CreateFunctionController
         });
 
-    function CreateFunctionController($state, $stateParams, lodash, DialogsService, NuclioHeaderService, NuclioProjectsDataService) {
+    function CreateFunctionController($element, $state, $stateParams, $timeout, lodash, DialogsService, NuclioHeaderService,
+                                      NuclioProjectsDataService) {
         var ctrl = this;
         var selectedFunctionType = 'from_scratch';
 
@@ -16,7 +17,16 @@
         };
         ctrl.project = {};
         ctrl.scrollConfig = {
-            axis: 'yx',
+            axis: 'y',
+            advanced: {
+                updateOnContentResize: true
+            },
+            callbacks: {
+                onUpdate: onContainerResize
+            }
+        };
+        ctrl.horizontalScrollConfig = {
+            axis: 'x',
             advanced: {
                 updateOnContentResize: true
             }
@@ -91,6 +101,36 @@
             if (!lodash.isEqual(functionType, selectedFunctionType)) {
                 selectedFunctionType = functionType;
             }
+        }
+
+        /**
+         * Scrollbar callback.
+         * If we create function from template, then resize templates wrapper according to inner content.
+         * Needed to place 'Create function' button on right position.
+         */
+        function onContainerResize() {
+            $timeout(function () {
+                var templatesWrapper = $element.find('.templates-wrapper');
+
+                // width of one template
+                var templateWidth = 416;
+
+                if (selectedFunctionType === 'from_template') {
+                    templatesWrapper.css('width', '100%');
+
+                    // count amount of templates in one line
+                    var elementsPerLine = Math.floor(parseInt(templatesWrapper.css('width')) / templateWidth);
+
+                    // find last template in first line
+                    var lastTemplate = $element.find('.function-template-wrapper:eq(' + (elementsPerLine - 1) + ')');
+
+                    // calculate needed width for current amount of templates
+                    var neededWidth = lastTemplate.offset().left - templatesWrapper.offset().left + templateWidth;
+
+                    // set width of templates wrapper corresponding to amount of templates
+                    templatesWrapper.css('width', neededWidth + 'px');
+                }
+            }, 50);
         }
     }
 }());
