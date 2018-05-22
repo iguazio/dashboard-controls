@@ -109,28 +109,29 @@
          * Needed to place 'Create function' button on right position.
          */
         function onContainerResize() {
-            $timeout(function () {
-                var templatesWrapper = $element.find('.templates-wrapper');
+            var templatesWrapper = $element.find('.templates-wrapper');
 
-                // width of one template
-                var templateWidth = 416;
+            // width of one template
+            var templateWidth = 416;
 
-                if (selectedFunctionType === 'from_template') {
-                    templatesWrapper.css('width', '100%');
+            if (selectedFunctionType === 'from_template') {
+                templatesWrapper.css('width', '100%');
 
-                    // count amount of templates in one line
-                    var elementsPerLine = Math.floor(parseInt(templatesWrapper.css('width')) / templateWidth);
+                // count amount of templates in one line
+                var elementsPerLine = Math.floor(parseInt(templatesWrapper.css('width')) / templateWidth);
 
-                    // find last template in first line
-                    var lastTemplate = $element.find('.function-template-wrapper:eq(' + (elementsPerLine - 1) + ')');
+                // find last template in first line
+                var template = $element.find('.function-template-wrapper:eq(' + (elementsPerLine - 1) + ')');
+
+                if (template.length !== 0) {
 
                     // calculate needed width for current amount of templates
-                    var neededWidth = lastTemplate.offset().left - templatesWrapper.offset().left + templateWidth;
+                    var neededWidth = template.offset().left - templatesWrapper.offset().left + templateWidth;
 
                     // set width of templates wrapper corresponding to amount of templates
                     templatesWrapper.css('width', neededWidth + 'px');
                 }
-            }, 50);
+            }
         }
     }
 }());
