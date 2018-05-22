@@ -30,9 +30,6 @@
          * Initialization method
          */
         function onInit() {
-            if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
-                ctrl.version = $stateParams.functionData;
-            }
 
             // get trigger list
             ctrl.triggers = lodash.map(ctrl.version.spec.triggers, function (value, key) {

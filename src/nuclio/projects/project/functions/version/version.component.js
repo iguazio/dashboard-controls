@@ -80,10 +80,6 @@
          * Initialization method
          */
         function onInit() {
-            if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
-                ctrl.version = $stateParams.functionData;
-            }
-
             setDeployResult(lodash.get(ctrl.version, 'status.state', 'ready'));
 
             ctrl.isFunctionDeployed = !$stateParams.isNewFunction;
@@ -177,7 +173,7 @@
                     versionChanged: false
                 }
             });
-            lodash.defaultTo(ctrl.version.ui.versionCode, '');
+            ctrl.version.ui.versionCode = lodash.defaultTo(ctrl.version.ui.versionCode, '');
         }
 
         //
@@ -285,10 +281,6 @@
                 $rootScope.$broadcast('deploy-function-version');
 
                 setDeployResult('building');
-
-                if (!lodash.isEmpty($stateParams.functionData)) {
-                    ctrl.version = $stateParams.functionData;
-                }
 
                 var versionCopy = lodash.omit(ctrl.version, ['status', 'ui']);
 

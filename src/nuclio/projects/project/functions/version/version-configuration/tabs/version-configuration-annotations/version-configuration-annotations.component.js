@@ -37,10 +37,6 @@
          * Initialization method
          */
         function onInit() {
-            if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
-                ctrl.version = $stateParams.functionData;
-            }
-
             var annotations =  lodash.get(ctrl.version, 'metadata.annotations', []);
 
             ctrl.annotations = lodash.map(annotations, function (value, key) {
