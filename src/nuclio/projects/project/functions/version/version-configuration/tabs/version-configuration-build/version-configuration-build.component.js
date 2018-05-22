@@ -48,10 +48,6 @@
          * Initialization method
          */
         function onInit() {
-            if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
-                ctrl.version = $stateParams.functionData;
-            }
-
             ctrl.buildCommands = lodash.get(ctrl.version, 'spec.build.commands', []);
 
             ctrl.buildCommands = ctrl.buildCommands.join('\n');

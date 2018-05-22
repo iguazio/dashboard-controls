@@ -21,24 +21,13 @@
             }
         };
 
-        ctrl.$onInit = onInit;
-
         ctrl.isDemoMode = ConfigService.isDemoMode;
 
         ctrl.onConfigurationChangeCallback = onConfigurationChangeCallback;
 
         //
-        // Hook methods
+        // Public methods
         //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-            if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
-                ctrl.version = $stateParams.functionData;
-            }
-        }
 
         /**
          * Checks if version's configuration was changed

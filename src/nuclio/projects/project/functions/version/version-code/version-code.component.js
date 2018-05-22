@@ -60,10 +60,6 @@
          * Initialization method
          */
         function onInit() {
-            if (lodash.isNil(ctrl.version) && !lodash.isEmpty($stateParams.functionData)) {
-                ctrl.version = $stateParams.functionData;
-            }
-
             if (lodash.isNil(ctrl.version.ui.deployedVersion)) {
                 VersionHelperService.checkVersionChange(ctrl.version);
             }
