@@ -22,7 +22,6 @@
 
         ctrl.$onInit = onInit;
 
-        ctrl.onHoverDropdown = onHoverDropdown;
         ctrl.showDropdown = showDropdown;
         ctrl.showDetails = showDetails;
 
@@ -70,7 +69,7 @@
             if (!ctrl.showDropdownList) {
                 ctrl.searchText = '';
 
-                $element.find('.breadcrumb-arrow').css('background-color', 'unset');
+                $element.find('.breadcrumb-arrow').css('background-color', '');
 
                 $document.off('click', unselectDropdown);
             }
@@ -103,19 +102,6 @@
                 };
 
                 $state.go('app.project.function.edit.code', params);
-            }
-        }
-
-        /**
-         * Changes breadcrumbs dropdown arrow background-color
-         * regarding mouse actions when dropdown is active
-         * @param {boolean} over - mouse state
-         */
-        function onHoverDropdown(over) {
-            var dropdownArrow = $element.find('.ncl-dropdown-expanded');
-
-            if (dropdownArrow.length > 0) {
-                angular.element('.ncl-dropdown-expanded').css('background-color', over ? '#c9c9cd' : '#e1e0e5');
             }
         }
 
@@ -177,7 +163,7 @@
 
                     $document.off('click', unselectDropdown);
 
-                    $element.find('.breadcrumb-arrow').css('background-color', 'unset');
+                    $element.find('.breadcrumb-arrow').css('background-color', '');
                 });
             }
         }

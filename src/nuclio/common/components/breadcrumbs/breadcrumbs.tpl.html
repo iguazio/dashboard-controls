@@ -1,33 +1,32 @@
-<span class="main-header-title"
-      data-ng-click="$ctrl.goToProjectsList()"
-      data-ng-class="{'disable-behavior': !$ctrl.mainHeaderTitle.project}">
-            {{$ctrl.mainHeaderTitle.title}}
+<span class="main-header-title">
+    <span class="main-header-title-text"
+          data-ng-click="$ctrl.goToProjectsList()"
+          data-ng-class="{'disable-behavior': !$ctrl.mainHeaderTitle.project}">{{$ctrl.mainHeaderTitle.title}}
+    </span>
+    <span class="igz-icon-right ncl-header-subtitle"></span>
 </span>
 
-<span data-ng-if="$ctrl.mainHeaderTitle.project">
-    <span class="igz-icon-right ncl-header-subtitle"></span>
-
-    <span class="main-header-title"
+<span class="main-header-title" data-ng-if="$ctrl.mainHeaderTitle.project">
+    <span class="main-header-title-text"
           data-ng-click="$ctrl.goToFunctionsList()">{{$ctrl.mainHeaderTitle.projectName}}</span>
 
     <ncl-breadcrumbs-dropdown data-state="$ctrl.mainHeaderTitle.state"
-                                  data-title=""
-                                  data-project="$ctrl.mainHeaderTitle.project"
-                                  data-type="projects"></ncl-breadcrumbs-dropdown>
+                              data-title=""
+                              data-project="$ctrl.mainHeaderTitle.project"
+                              data-type="projects">
+    </ncl-breadcrumbs-dropdown>
 </span>
 
-<span data-ng-if="$ctrl.mainHeaderTitle.function && $ctrl.mainHeaderTitle.version">
-
-    <span class="main-header-title"
+<span class=main-header-title data-ng-if="$ctrl.mainHeaderTitle.function && $ctrl.mainHeaderTitle.version">
+    <span class="main-header-title-text"
           data-ng-click="$ctrl.goToFunctionScreen()">{{$ctrl.mainHeaderTitle.function}}</span>
 
         <ncl-breadcrumbs-dropdown data-ng-if="$ctrl.mainHeaderTitle.version"
                                   data-state="$ctrl.mainHeaderTitle.state"
                                   data-title=""
                                   data-project="$ctrl.mainHeaderTitle.project"
-                                  data-type="functions"></ncl-breadcrumbs-dropdown>
-
-
+                                  data-type="functions">
+        </ncl-breadcrumbs-dropdown>
 </span>
 
 <span data-ng-if="$ctrl.mainHeaderTitle.function === 'Create function'"
