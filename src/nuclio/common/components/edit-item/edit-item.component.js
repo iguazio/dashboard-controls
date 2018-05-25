@@ -324,8 +324,11 @@
 
                             lodash.forEach(ctrl.selectedClass.attributes, function (attribute) {
                                 if (attribute.pattern === 'number') {
-                                    lodash.set(ctrl.item, 'attributes[' + attribute.name + ']', attribute.allowEmpty ?
-                                        ctrl.item.attributes[attribute.name] : Number(ctrl.item.attributes[attribute.name]));
+                                    var emptyValue = lodash.isNil(ctrl.item.attributes[attribute.name]) || ctrl.item.attributes[attribute.name] === '';
+                                    var numberAttribute = attribute.allowEmpty && emptyValue ?
+                                        '' : Number(ctrl.item.attributes[attribute.name]);
+
+                                    lodash.set(ctrl.item, 'attributes[' + attribute.name + ']', numberAttribute);
                                 }
 
                                 if (attribute.pattern === 'arrayStr' && !lodash.isArray(ctrl.item.attributes[attribute.name])) {
@@ -341,9 +344,12 @@
 
                                     lodash.forEach(ctrl.ingresses, function (ingress, key) {
                                         ingresses[key.toString()] = {
-                                            host: ingress.name,
                                             paths: ingress.value.split(',')
                                         };
+
+                                        if (!lodash.isEmpty(ingress.name)) {
+                                            ingresses[key.toString()].host = ingress.name;
+                                        }
                                     });
 
                                     ctrl.item.attributes[attribute.name] = ingresses;

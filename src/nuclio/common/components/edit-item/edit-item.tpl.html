@@ -132,6 +132,7 @@
                                   data-value-step="1"
                                   data-suffix-unit="{{attribute.unit}}"
                                   data-validation-is-required="{{!attribute.allowEmpty}}"
+                                  data-allow-empty-field="attribute.allowEmpty"
                                   data-min-value="0"></igz-number-input>
             </div>
             <div class="igz-col-91 attribute-field ingresses-wrapper"
@@ -145,6 +146,7 @@
                     <div class="table-body" data-ng-repeat="ingress in $ctrl.ingresses">
                         <ncl-key-value-input class="new-label-input"
                                              data-list-class="ingresses-wrapper"
+                                             data-key-optional="true"
                                              data-row-data="ingress"
                                              data-use-type="false"
                                              data-submit-on-fly="true"

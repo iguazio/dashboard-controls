@@ -43,6 +43,8 @@
                     name: 'trigger'
                 };
 
+                triggersItem.attributes = lodash.defaultTo(triggersItem.attributes, {});
+
                 return triggersItem;
             });
         }
@@ -123,6 +125,16 @@
 
                 if (angular.isDefined(selectedItem.maxWorkers)) {
                     triggerItem.maxWorkers = Number(selectedItem.maxWorkers);
+                }
+
+                if (angular.isDefined(triggerItem.attributes)) {
+                    triggerItem.attributes = lodash.omitBy(triggerItem.attributes, function (attribute) {
+                        return !lodash.isNumber(attribute) && lodash.isEmpty(attribute);
+                    });
+
+                    if (lodash.isEmpty(triggerItem.attributes)) {
+                        triggerItem = lodash.omit(triggerItem, 'attributes');
+                    }
                 }
 
                 lodash.set(ctrl.version, 'spec.triggers.' + selectedItem.name, triggerItem);
