@@ -43,6 +43,8 @@
                     name: 'trigger'
                 };
 
+                triggersItem.attributes = lodash.defaultTo(triggersItem.attributes, {});
+
                 return triggersItem;
             });
         }
