@@ -344,9 +344,12 @@
 
                                     lodash.forEach(ctrl.ingresses, function (ingress, key) {
                                         ingresses[key.toString()] = {
-                                            host: ingress.name,
                                             paths: ingress.value.split(',')
                                         };
+
+                                        if (!lodash.isEmpty(ingress.name)) {
+                                            ingresses[key.toString()].host = ingress.name;
+                                        }
                                     });
 
                                     ctrl.item.attributes[attribute.name] = ingresses;

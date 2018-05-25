@@ -9,6 +9,7 @@
                 itemIndex: '<',
                 rowData: '<',
                 useType: '<',
+                keyOptional: '<?',
                 listClass: '@?',
                 submitOnFly: '<?'
             },
