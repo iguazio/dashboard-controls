@@ -148,7 +148,7 @@
                                 name: 'port',
                                 pattern: 'number',
                                 type: 'input',
-                                allowEmpty: false
+                                allowEmpty: true
                             },
                             {
                                 name: 'ingresses',

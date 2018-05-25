@@ -63,7 +63,9 @@
             ctrl.defaultValue = lodash.defaultTo(ctrl.defaultValue, null);
             resizeInput();
 
-            ctrl.currentValue = lodash.defaultTo(ctrl.currentValue, ctrl.disableZeroValue ? 1 : 0);
+            if (!ctrl.allowEmptyField) {
+                ctrl.currentValue = lodash.defaultTo(ctrl.currentValue, ctrl.disableZeroValue ? 1 : 0);
+            }
         }
 
         /**
