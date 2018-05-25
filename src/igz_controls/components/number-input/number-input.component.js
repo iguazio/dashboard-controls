@@ -88,7 +88,7 @@
          * @returns {boolean}
          */
         function checkInvalidation() {
-            if (lodash.isNil(ctrl.currentValue) && !ctrl.allowEmptyField) {
+            if (lodash.isNil(ctrl.currentValue) || ctrl.currentValue === '' && !ctrl.allowEmptyField) {
                 return true;
             }
 
@@ -188,7 +188,7 @@
         function validateCurrentValue() {
             if (angular.isFunction(ctrl.updateNumberInputCallback)) {
                 ctrl.updateNumberInputCallback({
-                    newData: lodash.isNil(ctrl.currentValue) ? ctrl.defaultValue : Number(ctrl.currentValue),
+                    newData: lodash.isNil(ctrl.currentValue) || ctrl.currentValue === '' ? ctrl.defaultValue : Number(ctrl.currentValue),
                     field: angular.isDefined(ctrl.updateNumberInputField) ? ctrl.updateNumberInputField : ctrl.inputName
                 });
             }
