@@ -665,9 +665,15 @@
             var url = URL.createObjectURL(data);
             var link = document.createElement('a');
 
-            link.setAttribute('href', url);
-            link.setAttribute('download', ctrl.version.metadata.name + '.yaml');
+            link.href = url;
+            link.download = ctrl.version.metadata.name + '.yaml';
+            document.body.appendChild(link);
             link.click();
+
+            $timeout(function () {
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            });
         }
     }
 }());
