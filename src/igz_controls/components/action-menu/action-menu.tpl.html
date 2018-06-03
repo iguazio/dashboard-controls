@@ -10,7 +10,7 @@
 
         <div class="actions-list"
              data-ng-click="$ctrl.toggleMenu($event)">
-            <igz-action-item data-ng-repeat="action in $ctrl.actions"
+            <igz-action-item data-ng-repeat="action in $ctrl.actions track by action.id"
                              data-action="action">
             </igz-action-item>
         </div>
