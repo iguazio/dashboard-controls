@@ -26,6 +26,7 @@
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
         ctrl.$onDestroy = onDestroy;
+        ctrl.$onChanges = onChanges;
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.showDetails = showDetails;
@@ -40,32 +41,49 @@
          * Initialize method
          */
         function onInit() {
-            ctrl.actions = lodash.filter(ctrl.actions, function (action) {
-                return !lodash.has(action, 'visible') || action.visible;
-            });
-            ctrl.shortcuts = lodash.filter(ctrl.shortcuts, function (shortcut) {
-                return !lodash.has(shortcut, 'visible') || shortcut.visible;
-            });
-
-            ctrl.actions.forEach(function (action) {
-
-                if (!angular.isFunction(action.handler)) {
-                    action.handler = defaultAction;
-
-                    if (action.id === 'delete' && angular.isUndefined(action.confirm)) {
-                        action.confirm = {
-                            message: 'Are you sure you want to delete selected item?',
-                            yesLabel: 'Yes, Delete',
-                            noLabel: 'Cancel',
-                            type: 'critical_alert'
-                        };
-                    }
-                }
-            });
-
-            ctrl.iconClass = lodash.defaultTo(ctrl.icon, 'igz-icon-context-menu');
+            ctrl.iconClass = lodash.defaultTo(ctrl.iconClass, 'igz-icon-context-menu');
 
             $scope.$on('close-all-action-menus', closeActionMenu);
+        }
+
+        /**
+         * On changes hook method
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            var actions = lodash.get(changes, 'actions.currentValue');
+            var shortcuts = lodash.get(changes, 'shortcuts.currentValue');
+            var iconClass = lodash.get(changes, 'iconClass.currentValue');
+
+            if (angular.isDefined(actions)) {
+                ctrl.actions = lodash.chain(actions)
+                    .filter(function (action) {
+                        return !lodash.has(action, 'visible') || action.visible;
+                    })
+                    .map(function (action) {
+                        if (!angular.isFunction(action.handler)) {
+                            action.handler = defaultAction;
+
+                            if (action.id === 'delete' && angular.isUndefined(action.confirm)) {
+                                action.confirm = {
+                                    message: 'Are you sure you want to delete selected item?',
+                                    yesLabel: 'Yes, Delete',
+                                    noLabel: 'Cancel',
+                                    type: 'critical_alert'
+                                };
+                            }
+                        }
+
+                        return action;
+                    })
+                    .value();
+            }
+
+            if (angular.isDefined(shortcuts)) {
+                ctrl.shortcuts = lodash.filter(shortcuts, function (shortcut) {
+                    return !lodash.has(shortcut, 'visible') || shortcut.visible;
+                });
+            }
         }
 
         /**
