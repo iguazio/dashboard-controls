@@ -48,6 +48,8 @@ describe('igzNumberInput component:', function () {
 
     describe('initial state: ', function () {
         it('should be rendered with correct data', function () {
+            ctrl.$onInit();
+
             expect(Number(ctrl.precision)).toBe(0);
             expect(ctrl.placeholder).toBe('None');
         });
@@ -71,18 +73,6 @@ describe('igzNumberInput component:', function () {
             ctrl.decreaseValue();
             expect(Number(ctrl.currentValue)).toEqual(140);
         });
-
-        it('should set current value to "default value" when it is bellow 0', function () {
-            ctrl.defaultValue = 0;
-            spyOn(ctrl, 'isShowFieldInvalidState').and.returnValue(true);
-            expect(ctrl.currentValue).toEqual(stepSecondServiceObjectives.latencyTargetTimeLimit);
-            ctrl.currentValue = 0;
-            ctrl.decreaseValue();
-            expect(ctrl.currentValue).toEqual(ctrl.defaultValue);
-            ctrl.currentValue = -50;
-            ctrl.decreaseValue();
-            expect(ctrl.currentValue).toEqual(ctrl.defaultValue);
-        });
     });
 
     describe('isShownUnit(): ', function () {
@@ -102,15 +92,27 @@ describe('igzNumberInput component:', function () {
 
     describe('checkInvalidation(): ', function () {
         beforeEach(function () {
-            ctrl.formObject = {};
+            ctrl.formObject = {
+                'input_name': {
+                    $setValidity: angular.noop
+                }
+            };
             ctrl.inputName = 'input_name';
         });
 
         it('should call isShowFieldInvalidState method', function () {
             spyOn(ctrl, 'isShowFieldInvalidState').and.returnValue(true);
+
+            ctrl.currentValue = '1';
             ctrl.checkInvalidation();
 
             expect(ctrl.isShowFieldInvalidState).toHaveBeenCalled();
+        });
+
+        it('should not call isShowFieldInvalidState method and should return true if ctrl.allowEmptyField is false', function () {
+            spyOn(ctrl, 'isShowFieldInvalidState').and.returnValue(true);
+
+            expect(ctrl.isShowFieldInvalidState).not.toHaveBeenCalled();
         });
     });
 });
