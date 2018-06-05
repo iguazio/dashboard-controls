@@ -191,7 +191,7 @@
                 } else {
                     $rootScope.$broadcast('change-state-deploy-button', {component: 'resources', isDisabled: true});
                 }
-            })
+            });
         }
 
         /**
