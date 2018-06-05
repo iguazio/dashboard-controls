@@ -18,7 +18,7 @@
            max="{{$ctrl.maxValue}}"
            placeholder="{{$ctrl.placeholder}}"
            data-precision="{{$ctrl.precision}}"
-           data-ng-focus="$ctrl.inputFocused = true"
+           data-ng-focus="$ctrl.setFocus()"
            data-ng-blur="$ctrl.onBlurInput()"
            data-ng-change="$ctrl.onChangeInput()"
            data-ng-disabled="$ctrl.isDisabled"

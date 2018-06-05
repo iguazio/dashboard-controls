@@ -35,28 +35,28 @@
      * Based on `angular-money-directive` directive:
      * https://github.com/fiestah/angular-money-directive
      * Bindings properties:
-     * currentValue - one way bound value (current value)
-     * valueStep - string parameter (increment/decrement step)
-     * allowEmptyField - boolean parameter (checks if true, then input field can be empty on initialization and
-     *                   there is an ability to call updateNumberInputCallback with empty value)
-     * currentValueUnit - one way bound value (unit of current value)
-     * defaultValue - one way bound value (default value which will be set if field is empty)
-     * formObject - one way bound value, form object
-     * inputName - string parameter (name of input)
-     * isDisabled - boolean parameter (checks if true, then input is disabled)
-     * isFocused - boolean parameter (checks if true, then input is focused)
-     * maxValue - one way bound value (maximum legal value)
-     * minValue - one way bound value (minimum legal value)
-     * onChange - one way bound value (method on item changed)
-     * placeholder - string parameter (placeholder text)
-     * precision - string parameter (precision of value, ex. if presition is equal to 2 means that value will be in the form `X.XX`(ex. 2.11))
-     * prefixUnit - string parameter (prefix unit)
-     * suffixUnit - string parameter (suffix unit)
+     * currentValue - current value
+     * valueStep - increment/decrement step
+     * allowEmptyField - checks if true, then input field can be empty on initialization and
+     *                   there is an ability to call updateNumberInputCallback with empty value
+     * currentValueUnit - unit of current value
+     * defaultValue - default value which will be set if field is empty
+     * formObject - form object
+     * inputName - name of input
+     * isDisabled - checks if true, then input is disabled
+     * isFocused - checks if true, then input is focused
+     * maxValue - maximum legal value
+     * minValue - minimum legal value
+     * onChange - method on item changed
+     * placeholder - placeholder text
+     * precision - precision of value, ex. if precision is equal to 2 means that value will be in the form `X.XX`(ex. 2.11)
+     * prefixUnit - prefix unit
+     * suffixUnit - suffix unit
      * updateNumberInputCallback - callback on item added
-     * updateNumberInputField - string parameter (name of field that will be changed)
-     * validationIsRequired - string parameter (checks if true, then input field is required(marked it as invalid))
-     * validationValue - one way bound value (validation value)
-     * validationValueUnit - one way bound value (validation value unit)
+     * updateNumberInputField - name of field that will be changed
+     * validationIsRequired - checks if true, then input field is required(marked it as invalid)
+     * validationValue - validation value
+     * validationValueUnit - validation value unit
      */
     function IgzNumberInputController($timeout, $element, lodash, FormValidationService) {
         var ctrl = this;
@@ -75,6 +75,7 @@
         ctrl.isShownUnit = isShownUnit;
         ctrl.onBlurInput = onBlurInput;
         ctrl.onChangeInput = onChangeInput;
+        ctrl.setFocus = setFocus;
 
         //
         // Hook methods
@@ -177,6 +178,13 @@
             if (lodash.isNil(ctrl.currentValue) && !lodash.isNull(ctrl.defaultValue)) {
                 ctrl.currentValue = ctrl.defaultValue;
             }
+        }
+
+        /**
+         * Sets ctrl.inputFocused to true if input is focused
+         */
+        function setFocus() {
+            ctrl.inputFocused = true;
         }
 
         /**
