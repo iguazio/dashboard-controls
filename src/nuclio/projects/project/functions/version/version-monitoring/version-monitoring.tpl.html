@@ -1,3 +1,59 @@
-<div class="ncl-edit-version-monitoring ncl-version">
-    Edit version monitoring tab
+<div class="ncl-version-monitoring ncl-version">
+    <div class="igz-scrollable-container"
+         data-ng-scrollbars
+         data-ng-scrollbars-config="$ctrl.scrollConfig">
+        <div class="ncl-version-monitoring-wrapper">
+            <div class="row">
+                <div class="monitoring-block">
+                    <span class="monitoring-block-title">Invocation URL:</span>
+                    <a class="monitoring-invocation-url" href="{{$ctrl.invocationURL}}">{{$ctrl.invocationURL}}</a>
+                </div>
+                <div class="monitoring-block">
+                    <span class="monitoring-block-title">Replicas:</span>
+                    <span class="monitoring-replicas">{{$ctrl.version.spec.minReplicas}}/{{$ctrl.version.spec.maxReplicas}}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="monitoring-block ncl-monitoring-build-logger">
+                   <span class="icon-collapsed general-content"
+                        data-ng-class="$ctrl.rowIsCollapsed.buildLog ? 'igz-icon-right' : 'igz-icon-down'"
+                        data-ng-click="$ctrl.onRowCollapse('buildLog')"></span>
+                   <span class="monitoring-block-title">Build log</span>
+                   <div class="ncl-monitoring-build-logs collapsed-block-content-wrapper"
+                        data-collapse="$ctrl.rowIsCollapsed.buildLog">
+                       <div class="log-panel igz-scrollable-container"
+                            data-ng-scrollbars
+                            data-ng-scrollbars-config="$ctrl.loggerScrollConfig">
+                           <div class="log-entry"
+                                data-ng-repeat="log in $ctrl.version.ui.deployResult.status.logs track by $index">
+                               <span class="log-entry-time">[{{log.time | date:'HH:mm:ss.sss'}}]</span>
+                               <span class="log-entry-level-{{log.level}}">&nbsp;({{$ctrl.getLogLevel(log.level)}})</span>
+                               <span class="log-entry-message">&nbsp;{{log.message}}</span>
+                               <span class="log-entry-error" data-ng-if="log.err">&nbsp;{{log.err}}</span>
+                               <span class="log-entry-params">&nbsp;{{$ctrl.getLogParams(log)}}</span>
+                           </div>
+                       </div>
+                   </div>
+                </div>
+            </div>
+            <div class="row" data-ng-if="$ctrl.version.status.state === 'error'">
+                <div class="monitoring-block ncl-monitoring-error-logger">
+                    <span class="icon-collapsed general-content"
+                          data-ng-class="$ctrl.rowIsCollapsed.errorLog ? 'igz-icon-right' : 'igz-icon-down'"
+                          data-ng-click="$ctrl.onRowCollapse('errorLog')"></span>
+                    <span class="monitoring-block-title">Error</span>
+                    <div class="ncl-monitoring-error-logs collapsed-block-content-wrapper"
+                         data-collapse="$ctrl.rowIsCollapsed.errorLog">
+                        <div class="error-panel igz-scrollable-container"
+                             data-ng-scrollbars
+                             data-ng-scrollbars-config="$ctrl.errorScrollConfig">
+                            <div class="log-entry">
+                                <span class="log-entry-error"> {{$ctrl.version.status.message}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -2,7 +2,37 @@
     <div class="navigation-tab"
          data-ng-repeat="item in $ctrl.tabItems"
          data-ui-sref="{{item.uiRoute}}"
-         data-ui-sref-active="active">
+         data-ui-sref-active="active"
+         data-ng-class="{'ncl-status-monitoring': item.tabName === 'Status & Monitoring'}">
         {{item.tabName | uppercase}}
+
+        <div class="ncl-status-light"
+             data-ng-if="item.status"
+             data-ng-class="{'ncl-status-ready': item.status === 'ready',
+                             'ncl-status-error': item.status === 'error',
+                             'ncl-status-building': item.status !== 'ready' &&
+                                                    item.status !== 'error' &&
+                                                    item.status !== 'not yet deployed'}"></div>
+
+        <div class="ncl-status-tooltip"
+             data-ng-if="item.status"
+             data-ng-class="{'ncl-status-tooltip-ready': item.status === 'ready',
+                             'ncl-status-tooltip-error': item.status === 'error',
+                             'ncl-status-tooltip-building': item.status !== 'ready' &&
+                                                            item.status !== 'error' &&
+                                                            item.status !== 'not yet deployed'}">
+
+            <div class="ncl-status-icon"
+                  data-ng-if="item.status !== 'not yet deployed'"
+                  data-ng-class="{'ncl-icon-ready': item.status === 'ready',
+                                  'ncl-icon-error': item.status === 'error',
+                                  'ncl-icon-building': item.status !== 'ready' &&
+                                                       item.status !== 'error' &&
+                                                       item.status !== 'not yet deployed'}">
+            </div>
+            <div class="ncl-status-title">
+                {{item.status}}
+            </div>
+        </div>
     </div>
 </div>

@@ -115,15 +115,14 @@
                 {
                     tabName: 'Triggers',
                     uiRoute: 'app.project.function.edit.trigger'
+                },
+                {
+                    tabName: 'Status & Monitoring',
+                    uiRoute: 'app.project.function.edit.monitoring',
+                    status: lodash.isNil(ctrl.version.status) ? 'not yet deployed' : lodash.get(ctrl.version, 'status.state')
                 }
             ];
 
-            if (ctrl.isDemoMode()) {
-                ctrl.navigationTabsConfig.push({
-                    tabName: 'Monitoring',
-                    uiRoute: 'app.project.function.edit.monitoring'
-                });
-            }
             ctrl.functionEvents = [];
             ctrl.functionEvents = $filter('orderBy')(ctrl.functionEvents, 'name');
             ctrl.selectedFunctionEvent = lodash.isEmpty(ctrl.functionEvents) ? null : ctrl.functionEvents[0];
@@ -511,6 +510,8 @@
          * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
          */
         function pullFunctionState() {
+            lodash.set(lodash.find(ctrl.navigationTabsConfig, 'status'), 'status', 'building');
+
             interval = $interval(function () {
                 NuclioFunctionsDataService.getFunction(ctrl.version.metadata, ctrl.project.metadata.name)
                     .then(function (response) {
@@ -533,7 +534,11 @@
                             ctrl.isFunctionDeployed = true;
                         }
 
+                        ctrl.version.ui.deployResult = response;
+
                         ctrl.deployResult = response;
+
+                        lodash.set(lodash.find(ctrl.navigationTabsConfig, 'status'), 'status', response.status.state);
 
                         $timeout(function () {
                             angular.element('.log-panel').mCustomScrollbar('scrollTo', 'bottom');

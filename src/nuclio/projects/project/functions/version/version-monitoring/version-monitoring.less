@@ -1,0 +1,147 @@
+.ncl-version-monitoring {
+    > .igz-scrollable-container {
+        padding: 24px 25px 22px 41px;
+    }
+
+    .logs-common {
+        font-family: "Source Code Pro", "Courier New", monospace;
+        font-size: 14px;
+        line-height: 1.1;
+        text-align: left;
+        white-space: pre-wrap;
+    }
+
+    .ncl-version-monitoring-wrapper {
+        > .row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+
+            .monitoring-block {
+                padding: 16px 23px 16px;
+                background-color: @ncl-white;
+                border: solid 1px @ncl-pale-grey;
+                flex-grow: 1;
+                flex-basis: 500px;
+                overflow: hidden;
+                margin-right: 16px;
+                margin-bottom: 16px;
+
+                .icon-collapsed {
+                    .duskThree(0.64);
+                    color: @color;
+                    font-size: 12px;
+                    margin: 0 13px 0 4px;
+                }
+
+                &.without-collapse {
+                    padding: 0;
+                    padding-left: 4px;
+                    cursor: default;
+
+                    &:before {
+                        border: 0;
+                        display: none;
+                    }
+                }
+
+                .igz-scrollable-container {
+                    max-height: 500px;
+                }
+
+                .monitoring-block-title {
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: @ncl-dusk-three;
+                }
+
+                .monitoring-invocation-url {
+                    margin-left: 5px;
+                    font-family: Roboto;
+                    color: @ncl-dark-sky-blue;
+                    text-decoration: none;
+                }
+
+                .monitoring-replicas {
+                    margin-left: 5px;
+                }
+            }
+
+            .ncl-monitoring-build-logger {
+                .monitoring-block-title {
+                    margin-left: 5px;
+                }
+
+                .ncl-monitoring-build-logs {
+                    padding: 0 0 7px 4px;
+
+                    &.collapsing {
+                        transition-duration: 150ms;
+                    }
+
+                    .log-panel {
+                        .logs-common();
+                        background-color: @ncl-dark-grey;
+                        color: @ncl-very-light-grey;
+                        padding: 5px;
+                        margin: 21px 0 0 4px;
+                        min-height: 280px;
+                        max-height: 280px;
+                        height: 280px;
+
+                        .log-entry {
+                            .log-entry-time {
+                                color: @ncl-solid-grey;
+                            }
+
+                            .log-entry-level-debug{
+                                color: @dusty-blue;
+                            }
+
+                            .log-entry-level-info {
+                                color: @cloudy-blue;
+                            }
+
+                            .log-entry-level-warn{
+                                color: @ncl-sunflower-yellow;
+                            }
+
+                            .log-entry-level-error {
+                                color: @ncl-darkish-pink;
+                            }
+
+                            .log-entry-message {
+                                font-weight: 600;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .ncl-monitoring-error-logger {
+                max-height: 335px;
+
+                .monitoring-block-title {
+                    margin-left: 5px;
+                }
+
+                .ncl-monitoring-error-logs {
+                    height: 0px;
+                    padding: 0 0 7px 4px;
+
+                    &.collapsing {
+                        transition-duration: 150ms;
+                    }
+
+                    .error-panel {
+                        .logs-common();
+                        color: @ncl-dusk-three;
+                        padding: 5px;
+                        margin-left: 24px;
+                        max-height: 232px;
+                    }
+                }
+            }
+        }
+    }
+}
