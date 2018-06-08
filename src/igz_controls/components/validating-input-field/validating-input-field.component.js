@@ -49,7 +49,7 @@
                 spellcheck: '@?',
                 updateDataCallback: '&?',
                 updateDataField: '@?',
-                validationIsRequired: '@',
+                validationIsRequired: '<',
                 validationMaxLength: '@',
                 validationPattern: '<',
                 isClearIcon: '<?'
@@ -73,6 +73,7 @@
         ctrl.data = '';
         ctrl.inputFocused = false;
         ctrl.startValue = '';
+        ctrl.validationIsRequired = String(ctrl.validationIsRequired) === 'true';
 
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
