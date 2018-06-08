@@ -6,7 +6,13 @@
             <div class="row">
                 <div class="monitoring-block">
                     <span class="monitoring-block-title">Invocation URL:</span>
-                    <a class="monitoring-invocation-url" href="{{$ctrl.invocationURL}}">{{$ctrl.invocationURL}}</a>
+                    <a data-ng-if="$ctrl.version.ui.deployResult.status.state === 'ready'"
+                       class="monitoring-invocation-url"
+                       href="{{$ctrl.version.ui.invocationURL}}">
+                        {{$ctrl.version.ui.invocationURL}}
+                    </a>
+                    <span data-ng-if="$ctrl.version.ui.deployResult.status.state !== 'ready'"
+                          class="monitoring-invocation-url-invalid">Not yet deployed</span>
                 </div>
                 <div class="monitoring-block">
                     <span class="monitoring-block-title">Replicas:</span>
@@ -36,7 +42,7 @@
                    </div>
                 </div>
             </div>
-            <div class="row" data-ng-if="$ctrl.version.status.state === 'error'">
+            <div class="row" data-ng-if="$ctrl.version.ui.deployResult.status.state === 'error'">
                 <div class="monitoring-block ncl-monitoring-error-logger">
                     <span class="icon-collapsed general-content"
                           data-ng-class="$ctrl.rowIsCollapsed.errorLog ? 'igz-icon-right' : 'igz-icon-down'"
@@ -46,9 +52,9 @@
                          data-collapse="$ctrl.rowIsCollapsed.errorLog">
                         <div class="error-panel igz-scrollable-container"
                              data-ng-scrollbars
-                             data-ng-scrollbars-config="$ctrl.errorScrollConfig">
+                             data-ng-scrollbars-config="$ctrl.scrollConfig">
                             <div class="log-entry">
-                                <span class="log-entry-error"> {{$ctrl.version.status.message}}</span>
+                                <span class="log-entry-error"> {{$ctrl.version.ui.deployResult.status.message}}</span>
                             </div>
                         </div>
                     </div>

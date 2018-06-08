@@ -3,6 +3,11 @@
         padding: 24px 25px 22px 41px;
     }
 
+    .invocation-url-common {
+        margin-left: 5px;
+        font-family: Roboto;
+    }
+
     .logs-common {
         font-family: "Source Code Pro", "Courier New", monospace;
         font-size: 14px;
@@ -56,10 +61,13 @@
                 }
 
                 .monitoring-invocation-url {
-                    margin-left: 5px;
-                    font-family: Roboto;
+                    .invocation-url-common();
                     color: @ncl-dark-sky-blue;
                     text-decoration: none;
+                }
+
+                .monitoring-invocation-url-invalid {
+                    .invocation-url-common();
                 }
 
                 .monitoring-replicas {

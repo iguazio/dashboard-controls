@@ -531,6 +531,14 @@
                                 versionChanged: false
                             };
 
+                            NuclioProjectsDataService.getExternalIPAddresses()
+                                .then(function (address) {
+                                    ctrl.version.ui.invocationURL = 'http://' + address.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort;
+                                })
+                                .catch(function () {
+                                    DialogsService.alert('Oops: Unknown error occurred while retrieving external IP address');
+                                });
+
                             ctrl.isFunctionDeployed = true;
                         }
 

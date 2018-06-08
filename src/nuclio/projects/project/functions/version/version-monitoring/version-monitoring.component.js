@@ -13,7 +13,7 @@
     function NclVersionMonitoringController($rootScope, $timeout, lodash, DialogsService, NuclioProjectsDataService) {
         var ctrl = this;
 
-        ctrl.errorScrollConfig = {
+        ctrl.scrollConfig = {
             advanced: {
                 updateOnContentResize: true
             }
@@ -30,32 +30,9 @@
             errorLog: false,
         };
 
-        ctrl.$onInit = onInit;
-
         ctrl.getLogLevel = getLogLevel;
         ctrl.getLogParams = getLogParams;
         ctrl.onRowCollapse = onRowCollapse;
-
-        //
-        // Hook methods
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-            if (lodash.isNil(ctrl.version.status) || lodash.isNil(ctrl.version.status.httpPort)) {
-                ctrl.invocationURL = 'Not yet deployed';
-            } else {
-                NuclioProjectsDataService.getExternalIPAddresses()
-                    .then(function (response) {
-                        ctrl.invocationURL = 'http://' + response.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort;
-                    })
-                    .catch(function () {
-                        DialogsService.alert('Oops: Unknown error occurred while retrieving external IP address');
-                    });
-            }
-        }
 
         //
         // Public methods
