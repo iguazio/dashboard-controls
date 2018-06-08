@@ -10,7 +10,7 @@
             controller: NclVersionMonitoringController
         });
 
-    function NclVersionMonitoringController($rootScope, $timeout, lodash, DialogsService, NuclioProjectsDataService) {
+    function NclVersionMonitoringController($rootScope, $timeout, lodash) {
         var ctrl = this;
 
         ctrl.scrollConfig = {
