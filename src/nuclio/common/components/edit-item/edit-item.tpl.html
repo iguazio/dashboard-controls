@@ -95,7 +95,7 @@
                                             data-is-focused="false"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-pattern="$ctrl.getValidationPattern(attribute.pattern)"
-                                            data-validation-is-required="{{!attribute.allowEmpty}}"
+                                            data-validation-is-required="!attribute.allowEmpty"
                                             data-placeholder-text="Type {{attribute.name}}..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="attributes.{{attribute.name}}">
@@ -131,7 +131,7 @@
                                   data-decimal-number="0"
                                   data-value-step="1"
                                   data-suffix-unit="{{attribute.unit}}"
-                                  data-validation-is-required="{{!attribute.allowEmpty}}"
+                                  data-validation-is-required="!attribute.allowEmpty"
                                   data-allow-empty-field="attribute.allowEmpty"
                                   data-min-value="0"></igz-number-input>
             </div>
