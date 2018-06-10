@@ -4,7 +4,7 @@
     </div>
 
     <div class="function-configuration">
-        <form name="$ctrl.functionFromScratchForm" class="configuration-form">
+        <form name="$ctrl.functionFromScratchForm" class="configuration-form" novalidate>
             <div class="function-name-wrapper">
                 <div class="function-name">
                     <span class="input-label">Name*</span>
@@ -13,11 +13,16 @@
                                                 data-input-name="name"
                                                 data-input-value="$ctrl.functionData.metadata.name"
                                                 data-validation-is-required="true"
-                                                data-validation-pattern="ctrl.validationPatterns.functionName"
+                                                data-validation-pattern="$ctrl.validationPatterns.functionName"
+                                                data-validation-max-length="{{$ctrl.validationPatterns.getMaxLength('function.name')}}"
+                                                data-hide-counter="false"
                                                 data-input-model-options="$ctrl.inputModelOptions"
                                                 data-form-object="$ctrl.functionFromScratchForm"
                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                data-placeholder-text="Type function name"></igz-validating-input-field>
+                                                data-placeholder-text="Type function name"
+                                                data-tooltip="Name must be 1-63 characters long, consisting of digits, lower-case letters and hyphens only. It cannot start or end with a hyphen."
+                                                data-tooltip-popup-delay="500"
+                                                data-tooltip-append-to-body="true"></igz-validating-input-field>
                 </div>
             </div>
             <div class="function-runtime-wrapper">
