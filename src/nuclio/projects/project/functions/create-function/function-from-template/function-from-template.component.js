@@ -11,8 +11,8 @@
             controller: FunctionFromTemplateController
         });
 
-    function FunctionFromTemplateController($interval, $state, $stateParams, $timeout, $q, lodash, DialogsService, FunctionsService,
-                                            ValidatingPatternsService, NuclioFunctionsDataService) {
+    function FunctionFromTemplateController($state, $timeout, lodash, DialogsService, ValidatingPatternsService,
+                                            NuclioFunctionsDataService) {
         var ctrl = this;
 
         ctrl.functionName = '';

@@ -11,8 +11,7 @@
             controller: FunctionFromScratchController
         });
 
-    function FunctionFromScratchController($interval, $state, $stateParams, $timeout, lodash, DialogsService, FunctionsService,
-                                           NuclioFunctionsDataService, NuclioProjectsDataService, ValidatingPatternsService) {
+    function FunctionFromScratchController($state, $timeout, lodash, FunctionsService, ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.inputModelOptions = {

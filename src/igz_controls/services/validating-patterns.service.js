@@ -31,7 +31,7 @@
             protocolIpPortAddress: /^[a-z]{2,6}\:\/\/(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))(\:\d{1,5})?$/,
             digits: /^\+?(0|[1-9]\d*)$|^$/,
             tenantName: /^[a-zA-Z][a-zA-Z0-9_]*$/,
-            functionName: /^[a-z0-9][a-z0-9.-]{0,252}$/,
+            functionName: /^(?=[\S\s]{1,63}$)[a-z0-9]([-a-z0-9]*[a-z0-9])?$/,
 
             getMaxLength: getMaxLength
         };
@@ -53,6 +53,9 @@
                 },
                 escalation: {
                     name: 40
+                },
+                'function': {
+                    name: 63
                 },
                 group: {
                     description: 128
