@@ -86,6 +86,8 @@
                             name: 'label'
                         }
                     });
+
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'label', isDisabled: true});
                     event.stopPropagation();
                 }
             }, 50);

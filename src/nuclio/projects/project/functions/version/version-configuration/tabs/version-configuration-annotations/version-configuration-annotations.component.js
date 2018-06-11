@@ -80,6 +80,8 @@
                             name: 'annotation'
                         }
                     });
+
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'annotation', isDisabled: true});
                     event.stopPropagation();
                 }
             }, 50);

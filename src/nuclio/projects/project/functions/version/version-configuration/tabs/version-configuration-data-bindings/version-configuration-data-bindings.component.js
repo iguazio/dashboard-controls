@@ -101,12 +101,6 @@
          */
         function editBindingCallback(item) {
             ctrl.handleAction('update', item);
-
-            lodash.forEach(ctrl.bindings, function (binding) {
-                if (!binding.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: binding.ui.name, isDisabled: true});
-                }
-            });
         }
 
         /**
@@ -164,6 +158,14 @@
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }
+
+            $rootScope.$broadcast('change-state-deploy-button', {component: 'binding', isDisabled: false});
+            lodash.forEach(ctrl.bindings, function (binding) {
+                if (!binding.ui.isFormValid) {
+                    $rootScope.$broadcast('change-state-deploy-button', {component: binding.ui.name, isDisabled: true});
+                }
+            });
+
             ctrl.onChangeCallback();
         }
 
