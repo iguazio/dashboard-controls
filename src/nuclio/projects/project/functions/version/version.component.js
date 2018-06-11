@@ -288,7 +288,9 @@
                 ctrl.rowIsCollapsed.deployBlock = true;
                 ctrl.isLayoutCollapsed = false;
 
-                $timeout(resizeVersionView);
+                $timeout(function () {
+                    $rootScope.$broadcast('igzWatchWindowResize::resize');
+                });
 
                 NuclioFunctionsDataService.updateFunction(versionCopy, ctrl.project.metadata.name)
                     .then(pullFunctionState);
@@ -388,7 +390,9 @@
                         ctrl.isTestResultShown = true;
                     });
 
-                $timeout(resizeVersionView, 100);
+                $timeout(function () {
+                    $rootScope.$broadcast('igzWatchWindowResize::resize');
+                }, 100);
             }
         }
 
@@ -398,7 +402,9 @@
         function toggleTestResult() {
             ctrl.isTestResultShown = !ctrl.isTestResultShown;
 
-            $timeout(resizeVersionView);
+            $timeout(function () {
+                $rootScope.$broadcast('igzWatchWindowResize::resize');
+            });
         }
 
         /**
@@ -407,7 +413,9 @@
         function toggleDeployResult() {
             ctrl.isDeployResultShown = !ctrl.isDeployResultShown;
 
-            $timeout(resizeVersionView);
+            $timeout(function () {
+                $rootScope.$broadcast('igzWatchWindowResize::resize');
+            });
         }
 
         /**
@@ -417,7 +425,9 @@
         function onRowCollapse(row) {
             ctrl.rowIsCollapsed[row] = !ctrl.rowIsCollapsed[row];
 
-            $timeout(resizeVersionView, 350);
+            $timeout(function () {
+                $rootScope.$broadcast('igzWatchWindowResize::resize');
+            }, 350);
         }
 
         /**
@@ -563,26 +573,6 @@
                         }
                     });
             }, 2000);
-        }
-
-        /**
-         * Resize view after test result is closed
-         */
-        function resizeVersionView() {
-            var clientHeight = document.documentElement.clientHeight;
-            var navigationTabs = angular.element(document).find('.ncl-navigation-tabs')[0];
-            var contentView = angular.element(document).find('.ncl-edit-version-view')[0];
-            var contentBlock = angular.element(document).find('.ncl-version')[0];
-            var navigationRect = navigationTabs.getBoundingClientRect();
-            var contentHeight = clientHeight - navigationRect.bottom;
-
-            contentView = angular.element(contentView);
-            contentBlock = angular.element(contentBlock);
-
-            contentView.css({'height': contentHeight + 'px'});
-            contentBlock.css({'height': contentHeight + 'px'});
-
-            $rootScope.$broadcast('igzWatchWindowResize::resize');
         }
 
         /**

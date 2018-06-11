@@ -41,7 +41,7 @@
             padding-right: 8px;
         }
 
-        & .ncl-status-light {
+        .ncl-status-light {
             display: inline-block;
             width: 8px;
             height: 8px;
@@ -62,7 +62,7 @@
             }
         }
 
-        & .ncl-status-tooltip {
+        .ncl-status-tooltip {
             position: absolute;
             display: none;
             flex-wrap: nowrap;
@@ -113,7 +113,7 @@
                 }
             }
 
-            & .ncl-status-icon {
+            .ncl-status-icon {
                 width: 13px;
                 margin-right: 5px;
 
@@ -133,7 +133,7 @@
                 }
             }
 
-            & .ncl-status-title {
+            .ncl-status-title {
                 font-size: 13px;
                 font-weight: normal;
 
@@ -142,5 +142,9 @@
                 }
             }
         }
+    }
+
+    .ncl-status-monitoring:hover .ncl-status-tooltip {
+        display: flex;
     }
 }
