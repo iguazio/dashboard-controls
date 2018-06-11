@@ -66,7 +66,6 @@
          */
         function getEvents(functionData) {
             var headers = {
-                'x-nuclio-function-event-namespace': functionData.metadata.namespace,
                 'x-nuclio-function-name': functionData.metadata.name
             };
 
@@ -87,7 +86,6 @@
             var headers = {
                 'Content-Type': eventData.spec.attributes.headers['Content-Type'],
                 'x-nuclio-path': eventData.spec.attributes.headers['x-nuclio-path'],
-                'x-nuclio-function-namespace': eventData.metadata.namespace,
                 'x-nuclio-function-name': eventData.metadata.labels['nuclio.io/function-name'],
                 'x-nuclio-invoke-via': 'external-ip'
             };

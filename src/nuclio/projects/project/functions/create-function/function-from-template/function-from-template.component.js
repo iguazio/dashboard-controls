@@ -76,8 +76,7 @@
                 ctrl.toggleSplashScreen({value: true});
 
                 lodash.assign(ctrl.functionData.metadata, {
-                    name: ctrl.functionName,
-                    namespace: ctrl.project.metadata.namespace
+                    name: ctrl.functionName
                 });
 
                 $state.go('app.project.function.edit.code', {
@@ -157,8 +156,7 @@
                     ctrl.functionData = angular.copy(selectedTemplate);
 
                     lodash.assign(ctrl.functionData.metadata, {
-                        name: ctrl.functionName,
-                        namespace: ''
+                        name: ctrl.functionName
                     });
                 })
                 .catch(function () {
