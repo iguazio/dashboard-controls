@@ -42,7 +42,7 @@
         function inputValueCallback(newData, field) {
             if (field === 'attributes') {
                 ctrl.runtimeAttributes = newData;
-                ctrl.version.spec.build.runtimeAttributes = newData.replace('\r', '\n').split('\n');
+                ctrl.version.spec.build.runtimeAttributes = newData.replace(/\r/g, '\n').split('\n');
             } else {
                 lodash.set(ctrl.version, field, newData);
             }
