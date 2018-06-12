@@ -1,5 +1,5 @@
 .ncl-version-configuration-runtime-attributes {
-    .row:not(.key-value-row) {
+    .row:not(.info-row) {
         display: flex;
         justify-content: space-between;
 
@@ -15,17 +15,6 @@
                 margin-right: 16px;
             }
 
-            .runtime {
-                height: 36px;
-                border-radius: 2px;
-                padding: 9px 0 0 14px;
-                text-transform: capitalize;
-                font-family: @font-family-sans-serif;
-                font-size: 14px;
-                text-align: left;
-                color: @ncl-dusk-three;
-            }
-
             &.arguments-input {
                 flex-grow: 2;
             }
@@ -33,10 +22,22 @@
     }
 
     .row {
-        &.key-value-row {
-            .label {
-                margin-bottom: 15px;
-            }
+        .runtime {
+            height: 36px;
+            border-radius: 2px;
+            padding: 9px 0 0 14px;
+            text-transform: capitalize;
+            font-family: @font-family-sans-serif;
+            font-size: 14px;
+            text-align: left;
+            color: @ncl-dusk-three;
+        }
+
+        .textarea-field {
+            height: 177px;
+            resize: none;
+            white-space: pre;
+            overflow-x: auto;
         }
     }
 }
