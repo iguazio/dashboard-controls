@@ -1,14 +1,16 @@
 <div class="ncl-version-configuration-runtime-attributes">
     <div class="title">Runtime Attributes</div>
     <form name="$ctrl.runtimeAttributesForm" class="runtime-attributes-wrapper">
-        <div class="row">
+        <div class="row"
+             data-ng-class="{'info-row': $ctrl.version.spec.runtime !== 'shell'}">
             <div class="runtime-title">
                 <span class="label">Runtime</span>
                 <div class="runtime">
                     {{$ctrl.version.spec.runtime}}
                 </div>
             </div>
-            <div class="arguments-input">
+            <div class="arguments-input"
+                 data-ng-if="$ctrl.version.spec.runtime === 'shell'">
                 <span class="label">Arguments</span>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
@@ -20,7 +22,22 @@
                                             data-placeholder-text="Type..."></igz-validating-input-field>
             </div>
         </div>
-        <div class="row key-value-row">
+        <div class="row igz-col-100 info-row"
+             data-ng-if="$ctrl.version.spec.runtime === 'java'">
+            <span class="field-label">Repositories</span>
+            <igz-validating-input-field data-field-type="textarea"
+                                        data-input-name="attributes"
+                                        data-input-value="$ctrl.runtimeAttributes"
+                                        data-is-focused="false"
+                                        data-form-object="$ctrl.runtimeAttributesForm"
+                                        data-placeholder-text="Type ..."
+                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                        data-update-data-field="attributes"
+                                        class="nuclio-validating-input build-command-field">
+            </igz-validating-input-field>
+        </div>
+        <div class="row info-row"
+             data-ng-if="$ctrl.version.spec.runtime === 'shell'">
             <span class="label">Response headers</span>
             <div class="table-headers">
                 <div class="key-header">Key</div>
