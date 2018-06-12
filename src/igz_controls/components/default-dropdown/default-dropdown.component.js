@@ -26,7 +26,8 @@
                 nameKey: '@?',
                 placeholder: '@?',
                 readOnly: '<?',
-                selectPropertyOnly: '@?'
+                selectPropertyOnly: '@?',
+                skipSelection: '<?'
             },
             templateUrl: 'igz_controls/components/default-dropdown/default-dropdown.tpl.html',
             transclude: true,
@@ -306,13 +307,16 @@
          */
         function selectItem(item) {
             var previousItem = angular.copy(ctrl.selectedItem);
-            if (angular.isDefined(ctrl.selectPropertyOnly)) {
-                ctrl.selectedItem = lodash.get(item, ctrl.selectPropertyOnly);
-                ctrl.selectedItemDescription = item.description;
-            } else {
-                ctrl.selectedItem = item;
+
+            if (!ctrl.skipSelection) {
+                if (angular.isDefined(ctrl.selectPropertyOnly)) {
+                    ctrl.selectedItem = lodash.get(item, ctrl.selectPropertyOnly);
+                    ctrl.selectedItemDescription = item.description;
+                } else {
+                    ctrl.selectedItem = item;
+                }
+                ctrl.typedValue = ctrl.getName(item);
             }
-            ctrl.typedValue = ctrl.getName(item);
 
             if (angular.isFunction(ctrl.itemSelectCallback)) {
                 $timeout(function () {
