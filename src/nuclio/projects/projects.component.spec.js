@@ -9,7 +9,7 @@ describe('nclProjects component: ', function () {
     var projects;
 
     beforeEach(function () {
-        module('iguazio.app');
+        module('iguazio.dashboard-controls');
 
         inject(function (_$rootScope_, _$componentController_, _$q_, _ngDialog_, _NuclioProjectsDataService_) {
             $rootScope = _$rootScope_;

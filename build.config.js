@@ -23,7 +23,9 @@ module.exports = {
      */
     app_files: {
         js: [
-            'src/*.js',
+            'src/app.module.js',
+            'src/app.config.js',
+            'src/app.route.js',
             'src/igz_controls/**/*.js',
             '!src/igz_controls/**/*.spec.js',
             'src/nuclio/**/*.js',
@@ -39,12 +41,53 @@ module.exports = {
     },
 
     /**
+     * Third-party libs (files order is important)
+     */
+    vendor_files: {
+        js: [
+            'vendor/jquery/dist/jquery.js',
+            'vendor/angular/angular.js',
+            'vendor/angular-bootstrap/ui-bootstrap-tpls.js',
+            'vendor/angular-ui-router/release/angular-ui-router.js',
+            'vendor/jquery-ui/ui/core.js',
+            'vendor/jquery-ui/ui/widget.js',
+            'vendor/jquery-ui/ui/mouse.js',
+            'vendor/jquery-ui/ui/sortable.js',
+            'vendor/moment/moment.js',
+            'vendor/ng-file-upload/ng-file-upload.js',
+            'vendor/ng-file-upload/FileAPI.js',
+            'vendor/bootstrap/js/dropdown.js',
+            'vendor/ng-dialog/js/ngDialog.js',
+            'vendor/lodash/lodash.js',
+            'node_modules/monaco-editor/min/vs/loader.js'
+        ]
+    },
+
+    /**
+     * Configs used for testing
+     */
+    test_files: {
+        unit: {
+            modules: [
+                'vendor/angular-mocks/angular-mocks.js'
+            ],
+            tests: [
+                'src/**/*.spec.js'
+            ],
+            karma_config: 'tests/unit/karma.config.js'
+        }
+    },
+
+    /**
      * Config for output files
      */
     output_files: {
         app: {
             js: 'iguazio.dashboard-controls.js',
             less: 'iguazio.dashboard-controls.less'
+        },
+        vendor: {
+            js: 'vendor.js'
         }
     }
 };

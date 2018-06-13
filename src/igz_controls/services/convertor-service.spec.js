@@ -2,7 +2,7 @@ describe('ConvertorService: ', function () {
     var ConvertorService;
 
     beforeEach(function () {
-        module('iguazio.app');
+        module('iguazio.dashboard-controls');
 
         inject(function (_ConvertorService_) {
             ConvertorService = _ConvertorService_;

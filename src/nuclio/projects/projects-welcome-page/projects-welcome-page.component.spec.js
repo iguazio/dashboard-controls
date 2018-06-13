@@ -6,7 +6,7 @@ describe('nclProjectsWelcomePage component: ', function () {
     var ctrl;
 
     beforeEach(function () {
-        module('iguazio.app');
+        module('iguazio.dashboard-controls');
 
         inject(function (_$rootScope_, _$componentController_, _$q_, _ngDialog_) {
             $rootScope = _$rootScope_;

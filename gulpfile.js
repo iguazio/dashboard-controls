@@ -15,10 +15,11 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var runSequence = require('run-sequence');
 var eslint = require('gulp-eslint');
-var imagemin = require('gulp-imagemin');
+var argv = require('yargs').argv;
 var minifyHtml = require('gulp-htmlmin');
 var ngHtml2Js = require('gulp-ng-html2js');
 var merge2 = require('merge2');
+var imagemin = require('gulp-imagemin');
 var del = require('del');
 var vinylPaths = require('vinyl-paths');
 var exec = require('child_process').exec;
@@ -122,6 +123,43 @@ gulp.task('inject-version', function () {
     });
 });
 
+/**
+ * Run unit tests (Karma)
+ * Task for development environment only
+ */
+gulp.task('test-unit-run', function (done) {
+    var karmaServer = require('karma').Server;
+    var files = [__dirname + '/' + config.assets_dir + '/js/' + config.output_files.vendor.js]
+        .concat(__dirname + '/' + config.test_files.unit.modules)
+        .concat([__dirname + '/' + config.assets_dir + '/js/' + config.output_files.app.js])
+        .concat(__dirname + '/' + ((argv.spec !== undefined) ? 'src/**/' + argv.spec : config.test_files.unit.tests));
+
+    new karmaServer({
+        configFile: __dirname + '/' + config.test_files.unit.karma_config,
+        files: files,
+        action: 'run'
+    }, done).start();
+});
+
+/**
+ * Build vendor.js (include all vendor js files)
+ */
+gulp.task('vendor.js', function () {
+    var distFolder = config.assets_dir + '/js';
+
+    return gulp.src(config.vendor_files.js)
+        .pipe(concat(config.output_files.vendor.js))
+        .pipe(gulp.dest(distFolder));
+});
+
+/**
+ * Task for unit test running
+ * Task for development environment only
+ */
+gulp.task('test-unit', function (next) {
+    runSequence('build', 'test-unit-run', next);
+});
+
 //
 // ******* Task chains *******
 //
@@ -130,5 +168,5 @@ gulp.task('inject-version', function () {
  * Base build task
  */
 gulp.task('build', function (next) {
-    runSequence('lint', 'clean', 'inject-version', ['app.less', 'app.js', 'fonts', 'images'], next);
+    runSequence('lint', 'clean', 'inject-version', 'vendor.js', ['app.less', 'app.js', 'fonts', 'images'], next);
 });

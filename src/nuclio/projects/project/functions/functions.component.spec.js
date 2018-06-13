@@ -9,7 +9,7 @@ describe('nclFunctions component:', function () {
     var project;
 
     beforeEach(function () {
-        module('iguazio.app');
+        module('iguazio.dashboard-controls');
 
         inject(function (_$componentController_, _$rootScope_, _$stateParams_, _$q_, _NuclioFunctionsDataService_, _NuclioProjectsDataService_) {
             $componentController = _$componentController_;
@@ -21,13 +21,13 @@ describe('nclFunctions component:', function () {
         });
 
         project = {
-            "metadata": {
-                "name": "my-project-1",
-                "namespace": "nuclio"
+            'metadata': {
+                'name': 'my-project-1',
+                'namespace': 'nuclio'
             },
-            "spec": {
-                "displayName": "My project #1",
-                "description": "Some description"
+            'spec': {
+                'displayName': 'My project #1',
+                'description': 'Some description'
             }
         };
 
@@ -36,7 +36,7 @@ describe('nclFunctions component:', function () {
         spyOn(NuclioFunctionsDataService, 'getFunctions').and.callFake(function () {
             return {
                 then: function (callback) {
-                    return callback({
+                    callback({
                         data: {
                             myFunction1: {
                                 'metadata': {
@@ -55,11 +55,21 @@ describe('nclFunctions component:', function () {
                             }
                         }
                     });
+                    return {catch: angular.noop};
                 }
             };
         });
         spyOn(NuclioProjectsDataService, 'getProject').and.callFake(function () {
             return $q.when(project);
+        });
+        spyOn(NuclioProjectsDataService, 'getExternalIPAddresses').and.callFake(function () {
+            return $q.when({
+                data: {
+                    externalIPAddresses: {
+                        addresses: ['ip_address']
+                    }
+                }
+            });
         });
         $stateParams.projectId = '18663872';
 
@@ -81,14 +91,16 @@ describe('nclFunctions component:', function () {
 
     describe('$onInit(): ', function () {
         it('should set initial values for actions and delete function method', function () {
-
-            expect(NuclioFunctionsDataService.getFunctions).toHaveBeenCalled();
+            expect(NuclioProjectsDataService.getProject).toHaveBeenCalled();
+            expect(NuclioProjectsDataService.getExternalIPAddresses).toHaveBeenCalled();
             expect(ctrl.actions).not.toBe([]);
+            expect(ctrl.externalIPAddress).toBe('ip_address');
         });
     });
 
     describe('refreshFunctions(): ', function () {
         it('should update function list', function () {
+            ctrl.refreshFunctions();
 
             expect(NuclioFunctionsDataService.getFunctions).toHaveBeenCalled();
         });

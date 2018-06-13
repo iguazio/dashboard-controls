@@ -10,7 +10,7 @@ describe('nclProjectsTableRow component:', function () {
     var projectsList;
 
     beforeEach(function () {
-        module('iguazio.app');
+        module('iguazio.dashboard-controls');
 
         inject(function (_$componentController_, _$q_, _$rootScope_, _ActionCheckboxAllService_, _DialogsService_, _NuclioProjectsDataService_) {
             $rootScope = _$rootScope_;
