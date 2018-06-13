@@ -114,19 +114,12 @@
 
             NuclioProjectsDataService.getProjects()
                 .then(function (response) {
-                    if (lodash.isEmpty(ctrl.projects)) {
-                        ctrl.projects = lodash.values(response);
-                    } else {
-                        ctrl.projects = lodash.map(lodash.values(response), function (projectFromResponse) {
-                            var foundProject = lodash.find(ctrl.projects, function (project) {
-                                return project.metadata.name === projectFromResponse.metadata.name;
-                            });
-                            if (lodash.get(foundProject, 'ui')) {
-                                projectFromResponse.ui = foundProject.ui;
-                            }
-                            return projectFromResponse;
-                        });
-                    }
+                    ctrl.projects = lodash.map(response, function (projectFromResponse) {
+                        var foundProject = lodash.find(ctrl.projects, ['metadata.name', projectFromResponse.metadata.name]);
+                        var ui = lodash.get(foundProject, 'ui');
+                        projectFromResponse.ui = lodash.defaultTo(ui, {});
+                        return projectFromResponse;
+                    });
 
                     if (lodash.isEmpty(ctrl.projects)) {
                         $state.go('app.nuclio-welcome');
