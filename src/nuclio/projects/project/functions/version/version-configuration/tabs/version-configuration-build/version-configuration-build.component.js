@@ -16,7 +16,7 @@
         var uploadType = '';
 
         ctrl.actions = initActions();
-        ctrl.buildDependencies = '';
+        ctrl.build = {};
         ctrl.script = {
             uploading: false,
             uploaded: false,
@@ -49,12 +49,12 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.buildCommands = lodash.get(ctrl.version, 'spec.build.commands', []);
-            ctrl.buildCommands = ctrl.buildCommands.join('\n');
+            ctrl.build.commands = lodash.get(ctrl.version, 'spec.build.commands', []);
+            ctrl.build.commands = ctrl.build.commands.join('\n');
 
             if (!lodash.isNil(lodash.get(ctrl.version, 'spec.build.dependencies'))) {
-                ctrl.buildDependencies = lodash.get(ctrl.version, 'spec.build.dependencies', []);
-                ctrl.buildDependencies = ctrl.buildDependencies.join('\n');
+                ctrl.build.dependencies = lodash.get(ctrl.version, 'spec.build.dependencies', []);
+                ctrl.build.dependencies = ctrl.build.dependencies.join('\n');
             }
         }
 
@@ -69,7 +69,7 @@
          */
         function inputValueCallback(newData, field) {
             if (lodash.includes(['commands', 'dependencies'], field)) {
-                lodash.set(ctrl, 'build' + field, newData);
+                lodash.set(ctrl.build, field, newData);
                 lodash.set(ctrl.version, 'spec.build.' + field, newData.replace(/\r/g, '\n').split(/\n+/));
             } else {
                 lodash.set(ctrl.version, field, newData);
