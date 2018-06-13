@@ -25,6 +25,20 @@ var vinylPaths = require('vinyl-paths');
 var exec = require('child_process').exec;
 var buildVersion = null;
 
+/**
+ * Set up configuration
+ */
+var state = {
+    isForTesting: false
+};
+
+/**
+ * Set build for testing
+ */
+gulp.task('set-testing', function () {
+    state.isForTesting = true;
+});
+
 //
 // ******* Tasks *******
 //
@@ -56,8 +70,13 @@ gulp.task('app.less', function () {
  */
 gulp.task('app.js', function () {
     var distFolder = config.assets_dir + '/js';
+    var sourceFiles = config.app_files.js;
 
-    var js = gulp.src(config.app_files.js)
+    if (state.isForTesting) {
+        sourceFiles = config.test_files.unit.js_for_tests;
+    }
+
+    var js = gulp.src(sourceFiles)
         .pipe(cache({
             path: config.cache_file,
             transformStreams: [
@@ -157,7 +176,7 @@ gulp.task('vendor.js', function () {
  * Task for development environment only
  */
 gulp.task('test-unit', function (next) {
-    runSequence('build', 'test-unit-run', next);
+    runSequence('set-testing', 'build', 'test-unit-run', next);
 });
 
 //

@@ -24,8 +24,6 @@ module.exports = {
     app_files: {
         js: [
             'src/app.module.js',
-            'src/app.config.js',
-            'src/app.route.js',
             'src/igz_controls/**/*.js',
             '!src/igz_controls/**/*.spec.js',
             'src/nuclio/**/*.js',
@@ -68,6 +66,15 @@ module.exports = {
      */
     test_files: {
         unit: {
+            js_for_tests: [
+                'src/app.module.js',
+                'src/app.config.js',
+                'src/app.route.js',
+                'src/igz_controls/**/*.js',
+                '!src/igz_controls/**/*.spec.js',
+                'src/nuclio/**/*.js',
+                '!src/nuclio/**/*.spec.js'
+            ],
             modules: [
                 'vendor/angular-mocks/angular-mocks.js'
             ],
