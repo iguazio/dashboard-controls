@@ -29,9 +29,7 @@
                 'Content-Type': 'application/json'
             };
             var data = {
-                metadata: {
-                    namespace: project.metadata.namespace
-                },
+                metadata: {},
                 spec: project.spec
             };
 
@@ -78,15 +76,10 @@
          * @returns {Promise}
          */
         function getProjects() {
-            var headers = {
-                'x-nuclio-project-namespace': 'nuclio'
-            };
-
             return NuclioClientService.makeRequest(
                 {
                     method: 'GET',
                     url: NuclioClientService.buildUrlWithPath('projects', ''),
-                    headers: headers,
                     withCredentials: false
                 })
                 .then(function (response) {
@@ -100,15 +93,10 @@
          * @returns {Promise}
          */
         function getProject(id) {
-            var headers = {
-                'x-nuclio-project-namespace': 'nuclio'
-            };
-
             return NuclioClientService.makeRequest(
                 {
                     method: 'GET',
                     url: NuclioClientService.buildUrlWithPath('projects/', id),
-                    headers: headers,
                     withCredentials: false
                 })
                 .then(function (response) {

@@ -114,7 +114,12 @@
 
             NuclioProjectsDataService.getProjects()
                 .then(function (response) {
-                    ctrl.projects = lodash.values(response);
+                    ctrl.projects = lodash.map(response, function (projectFromResponse) {
+                        var foundProject = lodash.find(ctrl.projects, ['metadata.name', projectFromResponse.metadata.name]);
+                        var ui = lodash.get(foundProject, 'ui');
+                        projectFromResponse.ui = lodash.defaultTo(ui, {});
+                        return projectFromResponse;
+                    });
 
                     if (lodash.isEmpty(ctrl.projects)) {
                         $state.go('app.nuclio-welcome');
