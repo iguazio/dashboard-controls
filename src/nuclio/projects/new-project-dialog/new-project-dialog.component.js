@@ -10,8 +10,8 @@
             controller: IgzNewProjectDialogController
         });
 
-    function IgzNewProjectDialogController($scope, lodash, moment, DialogsService, EventHelperService, FormValidationService,
-                                           NuclioProjectsDataService) {
+    function IgzNewProjectDialogController($scope, lodash, moment, DialogsService, EventHelperService,
+                                           FormValidationService, NuclioProjectsDataService) {
         var ctrl = this;
 
         ctrl.data = {};
@@ -73,13 +73,13 @@
                             var status = lodash.get(error, 'data.errors[0].status');
 
                             ctrl.serverError =
-                                status === 400                   ? 'Missing mandatory fields'                         :
+                                status === 400                   ? 'Missing mandatory fields'                           :
                                 status === 403                   ? 'You do not have permissions to create new projects' :
                                 status === 405                   ? 'Failed to create a new project. '             +
                                                                    'The maximum number of projects is reached. '  +
                                                                    'An existing project should be deleted first ' +
-                                                                   'before creating a new one.'                       :
-                                lodash.inRange(status, 500, 599) ? 'Server error'                                     :
+                                                                   'before creating a new one.'                         :
+                                lodash.inRange(status, 500, 599) ? 'Server error'                                       :
                                                                    'Unknown error occurred. Retry later';
 
                             DialogsService.alert(ctrl.serverError);
@@ -128,9 +128,7 @@
          */
         function getBlankData() {
             return {
-                metadata: {
-                    namespace: 'nuclio'
-                },
+                metadata: {},
                 spec: {
                     displayName: '',
                     description: ''
