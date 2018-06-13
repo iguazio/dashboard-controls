@@ -79,6 +79,8 @@
                             name: 'variable'
                         }
                     });
+
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'variable', isDisabled: true});
                     event.stopPropagation();
                 }
             }, 50);

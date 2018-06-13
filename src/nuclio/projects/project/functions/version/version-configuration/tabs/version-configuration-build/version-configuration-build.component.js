@@ -65,7 +65,7 @@
         function inputValueCallback(newData, field) {
             if (field === 'commands') {
                 ctrl.buildCommands = newData;
-                ctrl.version.spec.build.commands = newData.replace('\r', '\n').split('\n');
+                ctrl.version.spec.build.commands = newData.replace(/\r/g, '\n').split(/\n+/);
             } else {
                 lodash.set(ctrl.version, field, newData);
             }

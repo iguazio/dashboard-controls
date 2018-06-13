@@ -88,12 +88,6 @@
          */
         function editTriggerCallback(item) {
             ctrl.handleAction('update', item);
-
-            lodash.forEach(ctrl.triggers, function (trigger) {
-                if (!trigger.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: trigger.ui.name, isDisabled: true});
-                }
-            });
         }
 
         /**
@@ -147,6 +141,13 @@
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }
+
+            $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: false});
+            lodash.forEach(ctrl.triggers, function (trigger) {
+                if (!trigger.ui.isFormValid) {
+                    $rootScope.$broadcast('change-state-deploy-button', {component: trigger.ui.name, isDisabled: true});
+                }
+            });
 
             VersionHelperService.checkVersionChange(ctrl.version);
         }
