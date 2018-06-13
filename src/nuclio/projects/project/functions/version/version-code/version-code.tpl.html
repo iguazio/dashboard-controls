@@ -87,6 +87,21 @@
                                                 class="nuclio-validating-input">
                     </igz-validating-input-field>
                 </div>
+
+                <div data-ng-if="$ctrl.selectedEntryType.name === 'Archive' || $ctrl.selectedEntryType.name === 'Jar'">
+                    <div class="field-label"></div>
+                    <igz-validating-input-field data-field-type="input"
+                                                data-input-name="archive"
+                                                data-input-value="$ctrl.archive"
+                                                data-is-focused="true"
+                                                data-form-object="$ctrl.versionCodeForm"
+                                                data-validation-is-required="true"
+                                                data-placeholder-text="Type path..."
+                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                data-update-data-field="spec.build.path"
+                                                class="nuclio-validating-input">
+                    </igz-validating-input-field>
+                </div>
             </form>
         </div>
     </div>

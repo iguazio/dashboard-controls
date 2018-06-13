@@ -31,6 +31,16 @@
                 id: 'image',
                 visible: true,
                 name: 'Image'
+            },
+            {
+                id: 'archive',
+                visible: true,
+                name: 'Archive'
+            },
+            {
+                id: 'jar',
+                visible: lodash.get(ctrl.version, 'spec.runtime') === 'java',
+                name: 'Jar'
             }
         ];
         ctrl.themesArray = [
@@ -80,6 +90,7 @@
                 lodash.set(ctrl.version, 'ui.versionCode', sourceCode);
             }
             ctrl.image = lodash.get(ctrl.version, 'spec.image', '');
+            ctrl.archive = lodash.get(ctrl.version, 'spec.build.path', '');
         }
 
         /**
@@ -100,7 +111,7 @@
         function selectEntryTypeValue(item) {
             ctrl.selectedEntryType = item;
 
-            if (item.id === 'image') {
+            if (lodash.includes(['image', 'archive', 'jar'], item.id)) {
                 var functionSourceCode = lodash.get(ctrl.version, 'spec.build.functionSourceCode', '');
                 lodash.merge(ctrl.version, {
                     spec: {
@@ -113,7 +124,8 @@
                     }
                 });
 
-                if (lodash.isEmpty(ctrl.version.spec.image)) {
+                if ((item.id === 'image' && lodash.isEmpty(ctrl.version.spec.image)) ||
+                    (item.id !== 'image' && lodash.isEmpty(ctrl.version.spec.build.path))) {
                     $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: true});
                 }
             } else {
