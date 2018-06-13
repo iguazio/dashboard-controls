@@ -292,7 +292,11 @@
                 $timeout(resizeVersionView);
 
                 NuclioFunctionsDataService.updateFunction(versionCopy, ctrl.project.metadata.name)
-                    .then(pullFunctionState);
+                    .then(pullFunctionState)
+                    .catch(function (error) {
+                        lodash.set(ctrl.deployResult, 'status.state', 'error');
+                        lodash.set(ctrl.deployResult, 'status.message', error.data.error);
+                    });
             }
         }
 
