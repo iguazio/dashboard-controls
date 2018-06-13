@@ -16,6 +16,7 @@
         var uploadType = '';
 
         ctrl.actions = initActions();
+        ctrl.buildDependencies = '';
         ctrl.script = {
             uploading: false,
             uploaded: false,
@@ -49,8 +50,12 @@
          */
         function onInit() {
             ctrl.buildCommands = lodash.get(ctrl.version, 'spec.build.commands', []);
-
             ctrl.buildCommands = ctrl.buildCommands.join('\n');
+
+            if (!lodash.isNil(lodash.get(ctrl.version, 'spec.build.dependencies'))) {
+                ctrl.buildDependencies = lodash.get(ctrl.version, 'spec.build.dependencies', []);
+                ctrl.buildDependencies = ctrl.buildDependencies.join('\n');
+            }
         }
 
         //
@@ -63,12 +68,13 @@
          * @param {string} field
          */
         function inputValueCallback(newData, field) {
-            if (field === 'commands') {
-                ctrl.buildCommands = newData;
-                ctrl.version.spec.build.commands = newData.replace('\r', '\n').split('\n');
+            if (lodash.includes(['commands', 'dependencies'], field)) {
+                lodash.set(ctrl, 'build' + field, newData);
+                lodash.set(ctrl.version, 'spec.build.' + field, newData.replace(/\r/g, '\n').split(/\n+/));
             } else {
                 lodash.set(ctrl.version, field, newData);
             }
+
             ctrl.onChangeCallback();
         }
 
