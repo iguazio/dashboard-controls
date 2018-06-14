@@ -232,21 +232,22 @@
          * @param {function} submitData function for submitting data
          * @returns {Promise}
          */
-        function text(content, node, submitData) {
+        function text(content, node, submitData, language) {
             var data = {
                 closeButtonText: 'Close',
                 submitButtonText: 'Save',
                 submitData: submitData,
                 label: angular.isString(node.label) ? node.label : 'Text preview:',
                 node: node,
-                content: content
+                content: content,
+                language: language
             };
 
             return ngDialog.open({
-                template: '<igz-text-edit data-label="{{ngDialogData.label}}" data-content="{{ngDialogData.content}}"' +
-                'data-submit-button-text="{{ngDialogData.submitButtonText}}" data-submit-data="ngDialogData.submitData(newContent)"' +
-                'data-close-button-text="{{ngDialogData.closeButtonText}}" data-close-dialog="closeThisDialog()" data-node="ngDialogData.node">' +
-                '</igz-text-edit>',
+                template: '<igz-text-edit data-label="{{ngDialogData.label}}" data-language="{{ngDialogData.language}}" data-content="{{ngDialogData.content}}"' +
+                          'data-submit-button-text="{{ngDialogData.submitButtonText}}" data-submit-data="ngDialogData.submitData(newContent)"' +
+                          'data-close-button-text="{{ngDialogData.closeButtonText}}" data-close-dialog="closeThisDialog()" data-node="ngDialogData.node">' +
+                          '</igz-text-edit>',
                 plain: true,
                 data: data,
                 className: 'ngdialog-theme-iguazio text-edit'
