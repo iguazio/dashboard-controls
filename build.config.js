@@ -23,7 +23,7 @@ module.exports = {
      */
     app_files: {
         js: [
-            'src/app.module.js',
+            'src/iguazio.dashboard-controls.module.js',
             'src/igz_controls/**/*.js',
             '!src/igz_controls/**/*.spec.js',
             'src/nuclio/**/*.js',
@@ -67,9 +67,9 @@ module.exports = {
     test_files: {
         unit: {
             js_for_tests: [
-                'src/app.module.js',
-                'src/app.config.js',
-                'src/app.route.js',
+                'src/iguazio.dashboard-controls.module.js',
+                'src/iguazio.dashboard-controls.config.js',
+                'src/iguazio.dashboard-controls.route.js',
                 'src/igz_controls/**/*.js',
                 '!src/igz_controls/**/*.spec.js',
                 'src/nuclio/**/*.js',
