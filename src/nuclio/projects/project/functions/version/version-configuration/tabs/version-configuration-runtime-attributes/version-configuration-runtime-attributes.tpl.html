@@ -2,7 +2,8 @@
     <div class="title">Runtime Attributes</div>
     <form name="$ctrl.runtimeAttributesForm" class="runtime-attributes-wrapper">
         <div class="row"
-             data-ng-class="{'info-row': $ctrl.version.spec.runtime !== 'shell'}">
+             data-ng-class="{'info-row': $ctrl.version.spec.runtime !== 'shell'}"
+             data-ng-if="$ctrl.version.spec.runtime !== 'java'">
             <div class="runtime-title">
                 <span class="label">Runtime</span>
                 <div class="runtime">
@@ -26,13 +27,13 @@
              data-ng-if="$ctrl.version.spec.runtime === 'java'">
             <span class="field-label">Repositories</span>
             <igz-validating-input-field data-field-type="textarea"
-                                        data-input-name="attributes"
-                                        data-input-value="$ctrl.runtimeAttributes"
+                                        data-input-name="repositories"
+                                        data-input-value="$ctrl.runtimeAttributes.repositories"
                                         data-is-focused="false"
                                         data-form-object="$ctrl.runtimeAttributesForm"
                                         data-placeholder-text="Type ..."
                                         data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                        data-update-data-field="attributes"
+                                        data-update-data-field="repositories"
                                         class="nuclio-validating-input build-command-field">
             </igz-validating-input-field>
         </div>

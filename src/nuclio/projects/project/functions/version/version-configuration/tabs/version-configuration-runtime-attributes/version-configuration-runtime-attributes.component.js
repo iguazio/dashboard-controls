@@ -17,6 +17,8 @@
         ctrl.$onInit = onInit;
         ctrl.inputValueCallback = inputValueCallback;
 
+        ctrl.runtimeAttributes = {};
+
         //
         // Hook method
         //
@@ -25,9 +27,9 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.runtimeAttributes = lodash.get(ctrl.version, 'spec.build.runtimeAttributes', []);
+            lodash.set(ctrl.runtimeAttributes, 'repositories', lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories', []));
 
-            ctrl.runtimeAttributes = ctrl.runtimeAttributes.join('\n');
+            ctrl.runtimeAttributes.repositories = ctrl.runtimeAttributes.repositories.join('\n');
         }
 
         //
@@ -40,9 +42,9 @@
          * @param {string} field
          */
         function inputValueCallback(newData, field) {
-            if (field === 'attributes') {
-                ctrl.runtimeAttributes = newData;
-                ctrl.version.spec.build.runtimeAttributes = newData.replace(/\r/g, '\n').split(/\n+/);
+            if (field === 'repositories') {
+                ctrl.runtimeAttributes.repositories = newData;
+                lodash.set(ctrl.version, 'spec.build.runtimeAttributes.repositories', newData.replace(/\r/g, '\n').split(/\n+/));
             } else {
                 lodash.set(ctrl.version, field, newData);
             }

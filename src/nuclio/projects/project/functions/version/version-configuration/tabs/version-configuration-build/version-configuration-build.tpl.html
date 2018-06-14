@@ -46,7 +46,8 @@
                                             class="nuclio-validating-input build-command-field">
                 </igz-validating-input-field>
             </div>
-            <div class="igz-col-100 build-field">
+            <div class="igz-col-100 build-field"
+                 data-ng-if="$ctrl.version.spec.runtime === 'java'">
                 <div class="field-label">Dependencies</div>
                 <igz-validating-input-field data-field-type="textarea"
                                             data-input-name="dependencies"
