@@ -294,8 +294,12 @@
                 NuclioFunctionsDataService.updateFunction(versionCopy, ctrl.project.metadata.name)
                     .then(pullFunctionState)
                     .catch(function (error) {
+                        var logs = [{
+                            err: error.data.error
+                        }];
+
                         lodash.set(ctrl.deployResult, 'status.state', 'error');
-                        lodash.set(ctrl.deployResult, 'status.message', error.data.error);
+                        lodash.set(ctrl.deployResult, 'status.logs', logs);
                     });
             }
         }

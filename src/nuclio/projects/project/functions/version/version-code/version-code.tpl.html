@@ -73,8 +73,9 @@
                                 data-read-only="false"></ncl-monaco>
                 </div>
 
-                <div data-ng-if="$ctrl.selectedEntryType.name === 'Image'">
-                    <div class="field-label">Image</div>
+                <div data-ng-if="$ctrl.selectedEntryType.name === 'Image'"
+                     class="ncl-code-entry-url">
+                    <div class="field-label">URL</div>
                     <igz-validating-input-field data-field-type="input"
                                                 data-input-name="image"
                                                 data-input-value="$ctrl.image"
@@ -88,8 +89,9 @@
                     </igz-validating-input-field>
                 </div>
 
-                <div data-ng-if="$ctrl.selectedEntryType.name === 'Archive' || $ctrl.selectedEntryType.name === 'Jar'">
-                    <div class="field-label"></div>
+                <div data-ng-if="$ctrl.selectedEntryType.name === 'Archive' || $ctrl.selectedEntryType.name === 'Jar'"
+                     class="ncl-code-entry-url">
+                    <div class="field-label">URL</div>
                     <igz-validating-input-field data-field-type="input"
                                                 data-input-name="archive"
                                                 data-input-value="$ctrl.archive"
