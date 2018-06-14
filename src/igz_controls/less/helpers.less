@@ -11,6 +11,15 @@
     user-select: none;
 }
 
+.allow-user-select {
+    -webkit-touch-callout: initial;
+    -webkit-user-select: initial;
+    -khtml-user-select: initial;
+    -moz-user-select: initial;
+    -ms-user-select: initial;
+    user-select: initial;
+}
+
 .pull-right {
     float: right !important;
 }
@@ -45,11 +54,11 @@
 
 .capitalized {
     text-transform: capitalize !important;
-};
+}
 
 .uppercase {
     text-transform: uppercase !important;
-};
+}
 
 .inactive {
     color: #4b6c8b;
@@ -133,13 +142,6 @@
     border-bottom: @h solid transparent !important;;
     border-left: none;
     border-right: @w solid @color;
-}
-
-.allow-user-select {
-    -webkit-user-select: initial;
-    -moz-user-select: initial;
-    -ms-user-select: initial;
-    user-select: initial;
 }
 
 .button(@btn-color; @btn-border-color; @btn-pressed-color) {

@@ -72,9 +72,10 @@
          */
         function resizeScrollBarContainer(currentElement, targetElement) {
             var scrollbarContainer = currentElement.closest('.mCSB_container');
+            var newHeight = currentElement.find(targetElement).offset().top + currentElement.find(targetElement).height();
 
             scrollbarContainer.css('height',
-                (currentElement.find(targetElement).offset().top + currentElement.find(targetElement).height()) + 'px')
+                (newHeight > scrollbarContainer.css('height') ? newHeight :  scrollbarContainer.css('height')) + 'px');
         }
 
         /**

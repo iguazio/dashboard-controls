@@ -7,7 +7,8 @@
     function ValidatingPatternsService(lodash) {
         return {
             boolean: /^(0|1)$/,
-            container: /^(?!.*--)(?=.*[A-Za-z])[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9]$|^[A-Za-z]$/,
+            browseAttributeName: /^[A-Za-z][A-Za-z0-9]*$/,
+            container: /^(?!.*--)(?!.*__)(?=.*[A-Za-z])[A-Za-z0-9][A-Za-z0-9-_]*[A-Za-z0-9]$|^[A-Za-z]$/,
             email: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             float: /^\d{1,9}(\.\d{1,2})?$/,
             fullName: /^[a-zA-Z][a-zA-Z- ]*$/,

@@ -2,30 +2,66 @@
 (function () {
     'use strict';
 
+    /**
+     * @name igzDefaultDropdown
+     * @description
+     * Default drop down component. This component is a toggleable menu that allows the user to choose one value from a
+     * predefined list.
+     *
+     * @param {Object|string} selectedItem - an object/string to be set by the component.
+     *     The value that will be set as selected item from predefined list.
+     *     Note: if @param enableTyping is equal to true it means that the user can mutate this value. In this case
+     *     after modifying the value the new list item will be created.
+     * @param {Array.<Object>} valuesArray - an array of objects describing the available options that user can select.
+     * @param {Object} bottomButtonCallback - callback on toggleable menu`s bottom button click.
+     * @param {string} bottomButtonText - the text of the toggleable menu`s bottom button.
+     * @param {string} dropdownType - type of the predefined dropdown (`badges-dropdown`, `priority`).
+     * @param {boolean} enableTyping - set to `true` to allow typing new value in the collapsed dropdown input.
+     * @param {Object} formObject - form object.
+     * @param {string} inputName - name of the input.
+     * @param {boolean} isDisabled - set to `true` to make this instance of the component read-only.
+     * @param {boolean} isCapitalized - set to `true` to make capitalized all text from listing and selected value.
+     * @param {boolean} isPagination - set to `true` to remove check mark from selected list`s item.
+     *     Note: only for pagination dropdown.
+     * @param {boolean} isRequired - set to `true` to make required selection of a value.
+     * @param {string} itemSelectField - name of the field that should be set from the selected value.
+     * @param {Object} itemSelectCallback - callback on selecting item from a list.
+     * @param {Object} matchPattern - pattern for validating typed value if enableTyping is `true`.
+     * @param {string} nameKey - name of the list`s item which should be shown.
+     * @param {Object} onOpenDropdown - callback on opening dropdown menu.
+     * @param {Object} onCloseDropdown - callback on closing dropdown menu.
+     * @param {boolean} readOnly - marked dropdown as `readonly`.
+     * @param {boolean} preventDropUp - set to `true` to prevent drop up the menu.
+     * @param {string} placeholder - text which should be shown if no value is selected.
+     * @param {string} selectPropertyOnly - name of the property which should be set to selectedItem.
+     *     Note: in that case ctrl.selectedItem will be a string value
+     * @param {boolean} skipSelection - make the dropdown unselectable. On selecting any item, dropdown doesn't select
+     *     it, and always shows placeholder..
+     */
     angular.module('iguazio.dashboard-controls')
         .component('igzDefaultDropdown', {
             bindings: {
+                selectedItem: '<',
+                valuesArray: '<',
                 bottomButtonCallback: '<?',
+                bottomButtonText: '@?',
+                dropdownType: '@?',
                 enableTyping: '<?',
                 formObject: '<?',
+                inputName: '@?',
                 isDisabled: '<?',
                 isCapitalized: '@?',
                 isPagination: '<?',
                 isRequired: '<?',
-                matchPattern: '<',
-                preventDropUp: '<?',
-                selectedItem: '<',
-                valuesArray: '<',
+                itemSelectField: '@?',
                 itemSelectCallback: '&?',
+                matchPattern: '<?',
+                nameKey: '@?',
                 onOpenDropdown: '<?',
                 onCloseDropdown: '&?',
-                bottomButtonText: '@?',
-                dropdownType: '@?',
-                itemSelectField: '@?',
-                inputName: '@?',
-                nameKey: '@?',
-                placeholder: '@?',
                 readOnly: '<?',
+                preventDropUp: '<?',
+                placeholder: '@?',
                 selectPropertyOnly: '@?',
                 skipSelection: '<?'
             },
