@@ -14,6 +14,8 @@
                                       PreventDropdownCutOffService, VersionHelperService) {
         var ctrl = this;
 
+        var previousEntryType = null;
+
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -91,6 +93,8 @@
             }
             ctrl.image = lodash.get(ctrl.version, 'spec.image', '');
             ctrl.archive = lodash.get(ctrl.version, 'spec.build.path', '');
+
+            previousEntryType = ctrl.selectedEntryType;
         }
 
         /**
@@ -118,11 +122,12 @@
                         build: {
                             functionSourceCode: ''
                         }
-                    },
-                    ui: {
-                        versionCode: functionSourceCode
                     }
                 });
+
+                if (previousEntryType.id === 'online') {
+                    lodash.set(ctrl.version, 'ui.versionCode', functionSourceCode);
+                }
 
                 if ((item.id === 'image' && lodash.isEmpty(ctrl.version.spec.image)) ||
                     (item.id !== 'image' && lodash.isEmpty(ctrl.version.spec.build.path))) {
@@ -135,6 +140,8 @@
 
                 $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: false});
             }
+
+            previousEntryType = ctrl.selectedEntryType;
         }
 
         /**
