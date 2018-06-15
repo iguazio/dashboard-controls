@@ -293,7 +293,15 @@
                 });
 
                 NuclioFunctionsDataService.updateFunction(versionCopy, ctrl.project.metadata.name)
-                    .then(pullFunctionState);
+                    .then(pullFunctionState)
+                    .catch(function (error) {
+                        var logs = [{
+                            err: error.data.error
+                        }];
+
+                        lodash.set(ctrl.deployResult, 'status.state', 'error');
+                        lodash.set(ctrl.deployResult, 'status.logs', logs);
+                    });
             }
         }
 
@@ -435,8 +443,6 @@
          * @param {Object} item - selected action
          */
         function onSelectAction(item) {
-            ctrl.action = item.id;
-
             if (item.id === 'deleteFunction') {
                 DialogsService.confirm(item.dialog.message, item.dialog.yesLabel, item.dialog.noLabel, item.dialog.type)
                     .then(function () {
@@ -449,9 +455,6 @@
                             .catch(function () {
                                 DialogsService.alert('Oops: Unknown error occurred while deleting function');
                             });
-                    })
-                    .catch(function () {
-                        ctrl.action = ctrl.actions[0].id;
                     });
             } else if (item.id === 'exportFunction') {
                 var versionYaml = {

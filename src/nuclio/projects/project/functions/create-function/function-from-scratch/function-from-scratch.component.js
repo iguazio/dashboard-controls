@@ -69,7 +69,11 @@
             if (ctrl.functionFromScratchForm.$valid) {
                 ctrl.toggleSplashScreen({value: true});
 
-                lodash.set(ctrl, 'functionData.metadata.namespace', ctrl.project.metadata.namespace);
+                lodash.defaultsDeep(ctrl, {
+                    functionData: {
+                        metadata: {}
+                    }
+                });
 
                 $state.go('app.project.function.edit.code', {
                     isNewFunction: true,

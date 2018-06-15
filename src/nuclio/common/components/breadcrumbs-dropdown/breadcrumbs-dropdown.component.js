@@ -89,6 +89,8 @@
 
             $document.off('click', unselectDropdown);
 
+            $element.find('.breadcrumb-arrow').css('background-color', '');
+
             if (ctrl.type === 'projects') {
                 lodash.set(params, 'projectId', item.id);
 

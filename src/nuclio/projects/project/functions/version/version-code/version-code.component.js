@@ -14,6 +14,8 @@
                                       PreventDropdownCutOffService, VersionHelperService) {
         var ctrl = this;
 
+        var previousEntryType = null;
+
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -23,7 +25,7 @@
         };
         ctrl.codeEntryTypeArray = [
             {
-                id: 'online',
+                id: 'sourceCode',
                 visible: true,
                 name: 'Edit online'
             },
@@ -31,6 +33,16 @@
                 id: 'image',
                 visible: true,
                 name: 'Image'
+            },
+            {
+                id: 'archive',
+                visible: true,
+                name: 'Archive'
+            },
+            {
+                id: 'jar',
+                visible: lodash.get(ctrl.version, 'spec.runtime') === 'java',
+                name: 'Jar'
             }
         ];
         ctrl.themesArray = [
@@ -71,15 +83,26 @@
             if (lodash.isEmpty(sourceCode)) {
                 var savedSourceCode = lodash.get(ctrl.version, 'ui.versionCode', sourceCode);
 
-                ctrl.selectedEntryType = ctrl.codeEntryTypeArray[1];
                 ctrl.sourceCode = savedSourceCode;
             } else {
-                ctrl.selectedEntryType = ctrl.codeEntryTypeArray[0];
                 ctrl.sourceCode = atob(sourceCode);
 
                 lodash.set(ctrl.version, 'ui.versionCode', sourceCode);
             }
+
+            if (lodash.has(ctrl.version, 'spec.build.codeEntryType')) {
+                ctrl.selectedEntryType = lodash.find(ctrl.codeEntryTypeArray, ['id', ctrl.version.spec.build.codeEntryType]);
+            } else {
+                ctrl.selectedEntryType = ctrl.codeEntryTypeArray[0];
+                lodash.set(ctrl.version, 'spec.build.codeEntryType', ctrl.selectedEntryType.id);
+            }
+
             ctrl.image = lodash.get(ctrl.version, 'spec.image', '');
+            ctrl.archive = lodash.get(ctrl.version, 'spec.build.path', '');
+
+            previousEntryType = ctrl.selectedEntryType;
+
+
         }
 
         /**
@@ -100,20 +123,24 @@
         function selectEntryTypeValue(item) {
             ctrl.selectedEntryType = item;
 
-            if (item.id === 'image') {
+            lodash.set(ctrl.version, 'spec.build.codeEntryType', ctrl.selectedEntryType.id);
+
+            if (lodash.includes(['image', 'archive', 'jar'], item.id)) {
                 var functionSourceCode = lodash.get(ctrl.version, 'spec.build.functionSourceCode', '');
                 lodash.merge(ctrl.version, {
                     spec: {
                         build: {
                             functionSourceCode: ''
                         }
-                    },
-                    ui: {
-                        versionCode: functionSourceCode
                     }
                 });
 
-                if (lodash.isEmpty(ctrl.version.spec.image)) {
+                if (previousEntryType.id === 'sourceCode') {
+                    lodash.set(ctrl.version, 'ui.versionCode', functionSourceCode);
+                }
+
+                if ((item.id === 'image' && lodash.isEmpty(ctrl.version.spec.image)) ||
+                    (item.id !== 'image' && lodash.isEmpty(ctrl.version.spec.build.path))) {
                     $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: true});
                 }
             } else {
@@ -123,6 +150,8 @@
 
                 $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: false});
             }
+
+            previousEntryType = ctrl.selectedEntryType;
         }
 
         /**

@@ -28,7 +28,6 @@
         function createFunction(functionData, projectName) {
             var headers = {
                 'Content-Type': 'application/json',
-                'x-nuclio-function-namespace': functionData.metadata.namespace,
                 'x-nuclio-project-name': projectName
             };
 
@@ -52,7 +51,6 @@
         function getFunction(functionData, projectName) {
             var headers = {
                 'Content-Type': 'application/json',
-                'x-nuclio-function-namespace': functionData.namespace,
                 'x-nuclio-project-name': projectName
             };
 
@@ -127,7 +125,6 @@
          */
         function getFunctions(namespace, projectName) {
             var headers = {
-                'x-nuclio-function-namespace': namespace,
                 'x-nuclio-project-name': projectName
             };
             var config = {
@@ -149,7 +146,6 @@
         function updateFunction(functionDetails, projectName) {
             var headers = {
                 'Content-Type': 'application/json',
-                'x-nuclio-function-namespace': functionDetails.metadata.namespace,
                 'x-nuclio-project-name': projectName
             };
             var config = {

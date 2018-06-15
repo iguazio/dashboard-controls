@@ -73,8 +73,9 @@
                                 data-read-only="false"></ncl-monaco>
                 </div>
 
-                <div data-ng-if="$ctrl.selectedEntryType.name === 'Image'">
-                    <div class="field-label">Image</div>
+                <div data-ng-if="$ctrl.selectedEntryType.name === 'Image'"
+                     class="ncl-code-entry-url">
+                    <div class="field-label">URL</div>
                     <igz-validating-input-field data-field-type="input"
                                                 data-input-name="image"
                                                 data-input-value="$ctrl.image"
@@ -84,6 +85,22 @@
                                                 data-placeholder-text="Type image..."
                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                 data-update-data-field="spec.image"
+                                                class="nuclio-validating-input">
+                    </igz-validating-input-field>
+                </div>
+
+                <div data-ng-if="$ctrl.selectedEntryType.name === 'Archive' || $ctrl.selectedEntryType.name === 'Jar'"
+                     class="ncl-code-entry-url">
+                    <div class="field-label">URL</div>
+                    <igz-validating-input-field data-field-type="input"
+                                                data-input-name="archive"
+                                                data-input-value="$ctrl.archive"
+                                                data-is-focused="true"
+                                                data-form-object="$ctrl.versionCodeForm"
+                                                data-validation-is-required="true"
+                                                data-placeholder-text="Type path..."
+                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                data-update-data-field="spec.build.path"
                                                 class="nuclio-validating-input">
                     </igz-validating-input-field>
                 </div>

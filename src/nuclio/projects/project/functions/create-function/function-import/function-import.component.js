@@ -69,7 +69,9 @@
             if (isYamlFile(file.name)) {
                 ctrl.toggleSplashScreen({value: true});
 
-                lodash.set(importedFunction, 'metadata.namespace', ctrl.project.metadata.namespace);
+                lodash.defaults(importedFunction, {
+                    metadata: {}
+                });
 
                 $state.go('app.project.function.edit.code', {
                     isNewFunction: true,
