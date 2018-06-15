@@ -25,7 +25,7 @@
         };
         ctrl.codeEntryTypeArray = [
             {
-                id: 'online',
+                id: 'sourceCode',
                 visible: true,
                 name: 'Edit online'
             },
@@ -83,7 +83,6 @@
             if (lodash.isEmpty(sourceCode)) {
                 var savedSourceCode = lodash.get(ctrl.version, 'ui.versionCode', sourceCode);
 
-                ctrl.selectedEntryType = ctrl.codeEntryTypeArray[1];
                 ctrl.sourceCode = savedSourceCode;
             } else {
                 ctrl.selectedEntryType = ctrl.codeEntryTypeArray[0];
@@ -91,10 +90,13 @@
 
                 lodash.set(ctrl.version, 'ui.versionCode', sourceCode);
             }
+
             ctrl.image = lodash.get(ctrl.version, 'spec.image', '');
             ctrl.archive = lodash.get(ctrl.version, 'spec.build.path', '');
 
             previousEntryType = ctrl.selectedEntryType;
+
+            lodash.set(ctrl.version, 'spec.build.codeEntryType', ctrl.selectedEntryType.id);
         }
 
         /**
@@ -115,6 +117,8 @@
         function selectEntryTypeValue(item) {
             ctrl.selectedEntryType = item;
 
+            lodash.set(ctrl.version, 'spec.build.codeEntryType', ctrl.selectedEntryType.id);
+
             if (lodash.includes(['image', 'archive', 'jar'], item.id)) {
                 var functionSourceCode = lodash.get(ctrl.version, 'spec.build.functionSourceCode', '');
                 lodash.merge(ctrl.version, {
@@ -125,7 +129,7 @@
                     }
                 });
 
-                if (previousEntryType.id === 'online') {
+                if (previousEntryType.id === 'sourceCode') {
                     lodash.set(ctrl.version, 'ui.versionCode', functionSourceCode);
                 }
 
