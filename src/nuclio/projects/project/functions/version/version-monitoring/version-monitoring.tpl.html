@@ -6,40 +6,40 @@
             <div class="row">
                 <div class="monitoring-block">
                     <span class="monitoring-block-title">Invocation URL:</span>
-                    <a data-ng-if="$ctrl.version.ui.deployResult.status.state === 'ready'"
+                    <a data-ng-if="$ctrl.version.status.state === 'ready'"
                        class="monitoring-invocation-url"
                        href="{{$ctrl.version.ui.invocationURL}}">
                         {{$ctrl.version.ui.invocationURL}}
                     </a>
-                    <span data-ng-if="$ctrl.version.ui.deployResult.status.state !== 'ready'"
-                          class="monitoring-invocation-url-invalid">Not yet deployed</span>
+                    <span data-ng-if="$ctrl.version.status.state !== 'ready'"
+                          class="monitoring-invocation-field-invalid">Not yet deployed</span>
                 </div>
-                <div class="monitoring-block">
+                <div class="monitoring-block"
+                     data-ng-if="$ctrl.isDemoMode()">
                     <span class="monitoring-block-title">Replicas:</span>
-                    <span class="monitoring-replicas">{{$ctrl.version.spec.minReplicas}}/{{$ctrl.version.spec.maxReplicas}}</span>
+                    <span data-ng-if="$ctrl.version.status.state === 'ready' && $ctrl.version.spec.maxReplicas !== 0"
+                          class="monitoring-replicas">
+                            {{$ctrl.version.status.replicas}}/{{$ctrl.version.spec.maxReplicas}}
+                    </span>
+                    <span data-ng-if="$ctrl.version.status.state === 'ready' && $ctrl.version.spec.maxReplicas === 0"
+                          class="monitoring-replicas">
+                            {{$ctrl.version.status.replicas}}/{{$ctrl.version.status.replicas}}
+                    </span>
+
+                    <span data-ng-if="$ctrl.version.status.state !== 'ready'"
+                          class="monitoring-invocation-field-invalid">Not yet deployed</span>
                 </div>
             </div>
             <div class="row">
                 <div class="monitoring-block ncl-monitoring-build-logger">
                    <span class="icon-collapsed general-content"
-                        data-ng-class="$ctrl.rowIsCollapsed.buildLog ? 'igz-icon-right' : 'igz-icon-down'"
-                        data-ng-click="$ctrl.onRowCollapse('buildLog')"></span>
-                   <span class="monitoring-block-title">Build log</span>
-                   <div class="ncl-monitoring-build-logs collapsed-block-content-wrapper"
-                        data-collapse="$ctrl.rowIsCollapsed.buildLog">
-                       <div class="log-panel igz-scrollable-container"
-                            data-ng-scrollbars
-                            data-ng-scrollbars-config="$ctrl.loggerScrollConfig">
-                           <div class="log-entry"
-                                data-ng-repeat="log in $ctrl.version.ui.deployResult.status.logs track by $index">
-                               <span class="log-entry-time">[{{log.time | date:'HH:mm:ss.sss'}}]</span>
-                               <span class="log-entry-level-{{log.level}}">&nbsp;({{$ctrl.getLogLevel(log.level)}})</span>
-                               <span class="log-entry-message">&nbsp;{{log.message}}</span>
-                               <span class="log-entry-error" data-ng-if="log.err">&nbsp;{{log.err}}</span>
-                               <span class="log-entry-params">&nbsp;{{$ctrl.getLogParams(log)}}</span>
-                           </div>
-                       </div>
-                   </div>
+                         data-ng-class="$ctrl.rowIsCollapsed.buildLog ? 'igz-icon-right' : 'igz-icon-down'"
+                         data-ng-click="$ctrl.onRowCollapse('buildLog')"></span>
+                    <span class="monitoring-block-title">Build log</span>
+                    <div class="ncl-monitoring-build-logs collapsed-block-content-wrapper"
+                         data-collapse="$ctrl.rowIsCollapsed.buildLog">
+                        <ncl-deploy-log data-log-entires="$ctrl.version.status.logs"></ncl-deploy-log>
+                    </div>
                 </div>
             </div>
             <div class="row" data-ng-if="$ctrl.version.ui.deployResult.status.state === 'error'">

@@ -31,12 +31,6 @@
                 updateOnContentResize: true
             }
         };
-        ctrl.loggerScrollConfig = {
-            advanced: {
-                updateOnContentResize: true
-            },
-            theme: 'light-thin'
-        };
         ctrl.deployResult = {};
         ctrl.isSplashShowed = {
             value: false
@@ -62,8 +56,6 @@
         ctrl.deployVersion = deployVersion;
         ctrl.onSelectFunctionEvent = onSelectFunctionEvent;
         ctrl.getDeployStatusState = getDeployStatusState;
-        ctrl.getLogLevel = getLogLevel;
-        ctrl.getLogParams = getLogParams;
         ctrl.checkValidDeployState = checkValidDeployState;
         ctrl.checkEventContentType = checkEventContentType;
         ctrl.invokeFunction = invokeFunction;
@@ -173,6 +165,15 @@
                 }
             });
             ctrl.version.ui.versionCode = lodash.defaultTo(ctrl.version.ui.versionCode, '');
+
+            NuclioProjectsDataService.getExternalIPAddresses()
+                .then(function (address) {
+                    ctrl.version.ui.invocationURL = lodash.has(ctrl.version, 'status.httpPort') ?
+                        'http://' + address.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort : '';
+                })
+                .catch(function () {
+                    DialogsService.alert('Oops: Unknown error occurred while retrieving external IP address');
+                });
         }
 
         //
@@ -314,27 +315,6 @@
             return state === 'ready'    ? 'Successfully deployed' :
                    state === 'error'    ? 'Failed to deploy'      :
                    state === 'building' ? 'Deploying...'          : '';
-        }
-
-        /**
-         * Get log level display value
-         * @param {string} level - the level model value (one of: 'debug', 'info', 'warn', 'error')
-         * @returns {string} the log level display value
-         */
-        function getLogLevel(level) {
-            return lodash.first(level).toUpperCase();
-        }
-
-        /**
-         * Get log parameters display value
-         * @param {string} logEntry - the log entry that includes the parameters
-         * @returns {string} the log level display value
-         */
-        function getLogParams(logEntry) {
-            var params = lodash.omit(logEntry, ['name', 'time', 'level', 'message', 'err']);
-            return lodash.isEmpty(params) ? '' : '[' + lodash.map(params, function (value, key) {
-                return key + ': ' + angular.toJson(value);
-            }).join(', ').replace(/\\n/g, '\n').replace(/\\"/g, '"') + ']';
         }
 
         /**
