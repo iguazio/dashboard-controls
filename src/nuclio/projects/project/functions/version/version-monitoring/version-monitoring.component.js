@@ -30,18 +30,7 @@
         };
         ctrl.isDemoMode = ConfigService.isDemoMode;
 
-        // ctrl.$onInit = onInit;
-
         ctrl.onRowCollapse = onRowCollapse;
-
-        //
-        // Hook methods
-        //
-
-        /**
-         * Initialization method
-         */
-        // function onInit() {}
 
         //
         // Public methods
