@@ -31,12 +31,6 @@
                 updateOnContentResize: true
             }
         };
-        ctrl.loggerScrollConfig = {
-            advanced: {
-                updateOnContentResize: true
-            },
-            theme: 'light-thin'
-        };
         ctrl.deployResult = {};
         ctrl.isSplashShowed = {
             value: false
@@ -62,8 +56,6 @@
         ctrl.deployVersion = deployVersion;
         ctrl.onSelectFunctionEvent = onSelectFunctionEvent;
         ctrl.getDeployStatusState = getDeployStatusState;
-        ctrl.getLogLevel = getLogLevel;
-        ctrl.getLogParams = getLogParams;
         ctrl.checkValidDeployState = checkValidDeployState;
         ctrl.checkEventContentType = checkEventContentType;
         ctrl.invokeFunction = invokeFunction;
@@ -115,15 +107,14 @@
                 {
                     tabName: 'Triggers',
                     uiRoute: 'app.project.function.edit.trigger'
+                },
+                {
+                    tabName: 'Status & Monitoring',
+                    uiRoute: 'app.project.function.edit.monitoring',
+                    status: lodash.isNil(ctrl.version.status) ? 'not yet deployed' : lodash.get(ctrl.version, 'status.state')
                 }
             ];
 
-            if (ctrl.isDemoMode()) {
-                ctrl.navigationTabsConfig.push({
-                    tabName: 'Monitoring',
-                    uiRoute: 'app.project.function.edit.monitoring'
-                });
-            }
             ctrl.functionEvents = [];
             ctrl.functionEvents = $filter('orderBy')(ctrl.functionEvents, 'name');
             ctrl.selectedFunctionEvent = lodash.isEmpty(ctrl.functionEvents) ? null : ctrl.functionEvents[0];
@@ -174,6 +165,15 @@
                 }
             });
             ctrl.version.ui.versionCode = lodash.defaultTo(ctrl.version.ui.versionCode, '');
+
+            NuclioProjectsDataService.getExternalIPAddresses()
+                .then(function (address) {
+                    ctrl.version.ui.invocationURL = lodash.has(ctrl.version, 'status.httpPort') ?
+                        'http://' + address.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort : '';
+                })
+                .catch(function () {
+                    DialogsService.alert('Oops: Unknown error occurred while retrieving external IP address');
+                });
         }
 
         //
@@ -289,7 +289,9 @@
                 ctrl.rowIsCollapsed.deployBlock = true;
                 ctrl.isLayoutCollapsed = false;
 
-                $timeout(resizeVersionView);
+                $timeout(function () {
+                    $rootScope.$broadcast('igzWatchWindowResize::resize');
+                });
 
                 NuclioFunctionsDataService.updateFunction(versionCopy, ctrl.project.metadata.name)
                     .then(pullFunctionState)
@@ -313,27 +315,6 @@
             return state === 'ready'    ? 'Successfully deployed' :
                    state === 'error'    ? 'Failed to deploy'      :
                    state === 'building' ? 'Deploying...'          : '';
-        }
-
-        /**
-         * Get log level display value
-         * @param {string} level - the level model value (one of: 'debug', 'info', 'warn', 'error')
-         * @returns {string} the log level display value
-         */
-        function getLogLevel(level) {
-            return lodash.first(level).toUpperCase();
-        }
-
-        /**
-         * Get log parameters display value
-         * @param {string} logEntry - the log entry that includes the parameters
-         * @returns {string} the log level display value
-         */
-        function getLogParams(logEntry) {
-            var params = lodash.omit(logEntry, ['name', 'time', 'level', 'message', 'err']);
-            return lodash.isEmpty(params) ? '' : '[' + lodash.map(params, function (value, key) {
-                return key + ': ' + angular.toJson(value);
-            }).join(', ').replace(/\\n/g, '\n').replace(/\\"/g, '"') + ']';
         }
 
         /**
@@ -397,7 +378,9 @@
                         ctrl.isTestResultShown = true;
                     });
 
-                $timeout(resizeVersionView, 100);
+                $timeout(function () {
+                    $rootScope.$broadcast('igzWatchWindowResize::resize');
+                }, 100);
             }
         }
 
@@ -407,7 +390,9 @@
         function toggleTestResult() {
             ctrl.isTestResultShown = !ctrl.isTestResultShown;
 
-            $timeout(resizeVersionView);
+            $timeout(function () {
+                $rootScope.$broadcast('igzWatchWindowResize::resize');
+            });
         }
 
         /**
@@ -416,7 +401,9 @@
         function toggleDeployResult() {
             ctrl.isDeployResultShown = !ctrl.isDeployResultShown;
 
-            $timeout(resizeVersionView);
+            $timeout(function () {
+                $rootScope.$broadcast('igzWatchWindowResize::resize');
+            });
         }
 
         /**
@@ -426,7 +413,9 @@
         function onRowCollapse(row) {
             ctrl.rowIsCollapsed[row] = !ctrl.rowIsCollapsed[row];
 
-            $timeout(resizeVersionView, 350);
+            $timeout(function () {
+                $rootScope.$broadcast('igzWatchWindowResize::resize');
+            }, 350);
         }
 
         /**
@@ -514,6 +503,8 @@
          * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
          */
         function pullFunctionState() {
+            lodash.set(lodash.find(ctrl.navigationTabsConfig, 'status'), 'status', 'building');
+
             interval = $interval(function () {
                 NuclioFunctionsDataService.getFunction(ctrl.version.metadata, ctrl.project.metadata.name)
                     .then(function (response) {
@@ -533,10 +524,22 @@
                                 versionChanged: false
                             };
 
+                            NuclioProjectsDataService.getExternalIPAddresses()
+                                .then(function (address) {
+                                    ctrl.version.ui.invocationURL = 'http://' + address.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort;
+                                })
+                                .catch(function () {
+                                    DialogsService.alert('Oops: Unknown error occurred while retrieving external IP address');
+                                });
+
                             ctrl.isFunctionDeployed = true;
                         }
 
+                        ctrl.version.ui.deployResult = response;
+
                         ctrl.deployResult = response;
+
+                        lodash.set(lodash.find(ctrl.navigationTabsConfig, 'status'), 'status', response.status.state);
 
                         $timeout(function () {
                             angular.element('.log-panel').mCustomScrollbar('scrollTo', 'bottom');
@@ -553,26 +556,6 @@
                         }
                     });
             }, 2000);
-        }
-
-        /**
-         * Resize view after test result is closed
-         */
-        function resizeVersionView() {
-            var clientHeight = document.documentElement.clientHeight;
-            var navigationTabs = angular.element(document).find('.ncl-navigation-tabs')[0];
-            var contentView = angular.element(document).find('.ncl-edit-version-view')[0];
-            var contentBlock = angular.element(document).find('.ncl-version')[0];
-            var navigationRect = navigationTabs.getBoundingClientRect();
-            var contentHeight = clientHeight - navigationRect.bottom;
-
-            contentView = angular.element(contentView);
-            contentBlock = angular.element(contentBlock);
-
-            contentView.css({'height': contentHeight + 'px'});
-            contentBlock.css({'height': contentHeight + 'px'});
-
-            $rootScope.$broadcast('igzWatchWindowResize::resize');
         }
 
         /**

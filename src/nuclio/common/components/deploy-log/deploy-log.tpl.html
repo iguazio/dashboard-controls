@@ -1,0 +1,15 @@
+<div class="ncl-deploy-log-wrapper">
+    <div class="log-panel igz-scrollable-container"
+         data-ng-scrollbars
+         data-ng-scrollbars-config="$ctrl.scrollConfig">
+        <div class="log-entry"
+             data-ng-repeat="log in $ctrl.logEntires track by $index">
+            <span class="log-entry-time" data-ng-if="log.time">[{{log.time | date:'HH:mm:ss.sss'}}]</span>
+            <span class="log-entry-level-{{log.level}}"
+                  data-ng-if="log.level">&nbsp;({{$ctrl.getLogLevel(log.level)}})</span>
+            <span class="log-entry-message">&nbsp;{{log.message}}</span>
+            <span class="log-entry-error" data-ng-if="log.err">&nbsp;{{log.err}}</span>
+            <span class="log-entry-params">&nbsp;{{$ctrl.getLogParams(log)}}</span>
+        </div>
+    </div>
+</div>

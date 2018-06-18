@@ -1,0 +1,38 @@
+.ncl-deploy-log-wrapper {
+    .log-panel {
+        .logs-common();
+        background-color: @ncl-dark-grey;
+        color: @ncl-very-light-grey;
+        padding: 5px;
+        margin: 21px 0 0 4px;
+        min-height: 280px;
+        max-height: 280px;
+        height: 280px;
+
+        .log-entry {
+            .log-entry-time {
+                color: @ncl-solid-grey;
+            }
+
+            .log-entry-level-debug{
+                color: @dusty-blue;
+            }
+
+            .log-entry-level-info {
+                color: @cloudy-blue;
+            }
+
+            .log-entry-level-warn{
+                color: @ncl-sunflower-yellow;
+            }
+
+            .log-entry-level-error {
+                color: @ncl-darkish-pink;
+            }
+
+            .log-entry-message {
+                font-weight: 600;
+            }
+        }
+    }
+}

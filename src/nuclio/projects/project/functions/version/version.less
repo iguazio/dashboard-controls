@@ -248,21 +248,18 @@
             }
 
             .log-panel {
-                font-family: "Source Code Pro", "Courier New", monospace;
-                font-size: 14px;
-                line-height: 1.1;
-                background-color: #0a0a0a;
-                color: #e0e0e0;
+                .logs-common();
+                background-color: @ncl-dark-grey;
+                color: @ncl-very-light-grey;
                 padding: 5px;
                 margin: 5px 0 0 4px;
                 min-height: 280px;
                 max-height: 280px;
                 height: 280px;
-                white-space: pre-wrap;
 
                 .log-entry {
                     .log-entry-time {
-                        color: #a9a9a9;
+                        color: @ncl-solid-grey;
                     }
 
                     .log-entry-level-debug{

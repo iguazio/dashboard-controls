@@ -1,3 +1,65 @@
-<div class="ncl-edit-version-monitoring ncl-version">
-    Edit version monitoring tab
+<div class="ncl-version-monitoring ncl-version">
+    <div class="igz-scrollable-container"
+         data-ng-scrollbars
+         data-ng-scrollbars-config="$ctrl.scrollConfig">
+        <div class="ncl-version-monitoring-wrapper">
+            <div class="row">
+                <div class="monitoring-block">
+                    <span class="monitoring-block-title">Invocation URL:</span>
+                    <a data-ng-if="$ctrl.version.status.state === 'ready'"
+                       class="monitoring-invocation-url"
+                       href="{{$ctrl.version.ui.invocationURL}}">
+                        {{$ctrl.version.ui.invocationURL}}
+                    </a>
+                    <span data-ng-if="$ctrl.version.status.state !== 'ready'"
+                          class="monitoring-invocation-field-invalid">Not yet deployed</span>
+                </div>
+                <div class="monitoring-block"
+                     data-ng-if="$ctrl.isDemoMode()">
+                    <span class="monitoring-block-title">Replicas:</span>
+                    <span data-ng-if="$ctrl.version.status.state === 'ready' && $ctrl.version.spec.maxReplicas !== 0"
+                          class="monitoring-replicas">
+                            {{$ctrl.version.status.replicas}}/{{$ctrl.version.spec.maxReplicas}}
+                    </span>
+                    <span data-ng-if="$ctrl.version.status.state === 'ready' && $ctrl.version.spec.maxReplicas === 0"
+                          class="monitoring-replicas">
+                            {{$ctrl.version.status.replicas}}/{{$ctrl.version.status.replicas}}
+                    </span>
+
+                    <span data-ng-if="$ctrl.version.status.state !== 'ready'"
+                          class="monitoring-invocation-field-invalid">Not yet deployed</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="monitoring-block ncl-monitoring-build-logger">
+                   <span class="icon-collapsed general-content"
+                         data-ng-class="$ctrl.rowIsCollapsed.buildLog ? 'igz-icon-right' : 'igz-icon-down'"
+                         data-ng-click="$ctrl.onRowCollapse('buildLog')"></span>
+                    <span class="monitoring-block-title">Build log</span>
+                    <div class="ncl-monitoring-build-logs collapsed-block-content-wrapper"
+                         data-collapse="$ctrl.rowIsCollapsed.buildLog">
+                        <ncl-deploy-log data-log-entires="$ctrl.version.status.logs"></ncl-deploy-log>
+                    </div>
+                </div>
+            </div>
+            <div class="row" data-ng-if="$ctrl.version.status.state === 'error'">
+                <div class="monitoring-block ncl-monitoring-error-logger">
+                    <span class="icon-collapsed general-content"
+                          data-ng-class="$ctrl.rowIsCollapsed.errorLog ? 'igz-icon-right' : 'igz-icon-down'"
+                          data-ng-click="$ctrl.onRowCollapse('errorLog')"></span>
+                    <span class="monitoring-block-title">Error</span>
+                    <div class="ncl-monitoring-error-logs collapsed-block-content-wrapper"
+                         data-collapse="$ctrl.rowIsCollapsed.errorLog">
+                        <div class="error-panel igz-scrollable-container"
+                             data-ng-scrollbars
+                             data-ng-scrollbars-config="$ctrl.scrollConfig">
+                            <div class="log-entry">
+                                <span class="log-entry-error"> {{$ctrl.version.status.message}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

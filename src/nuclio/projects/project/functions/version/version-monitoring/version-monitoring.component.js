@@ -2,32 +2,50 @@
     'use strict';
 
     angular.module('iguazio.dashboard-controls')
-        .component('nclEditVersionMonitoring', {
+        .component('nclVersionMonitoring', {
+            bindings: {
+                version: '<'
+            },
             templateUrl: 'nuclio/projects/project/functions/version/version-monitoring/version-monitoring.tpl.html',
             controller: NclVersionMonitoringController
         });
 
-    function NclVersionMonitoringController() {
+    function NclVersionMonitoringController($rootScope, $timeout, ConfigService) {
         var ctrl = this;
 
-        ctrl.$onInit = onInit;
+        ctrl.scrollConfig = {
+            advanced: {
+                updateOnContentResize: true
+            }
+        };
+        ctrl.loggerScrollConfig = {
+            advanced: {
+                updateOnContentResize: true
+            },
+            theme: 'light-thin'
+        };
+        ctrl.rowIsCollapsed = {
+            buildLog: false,
+            errorLog: false,
+        };
+        ctrl.isDemoMode = ConfigService.isDemoMode;
 
-        //
-        // Hook methods
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-        }
+        ctrl.onRowCollapse = onRowCollapse;
 
         //
         // Public methods
         //
 
-        //
-        // Private method
-        //
+        /**
+         * Called when row is collapsed/expanded
+         * @param {string} row - name of expanded/collapsed row
+         */
+        function onRowCollapse(row) {
+            ctrl.rowIsCollapsed[row] = !ctrl.rowIsCollapsed[row];
+
+            $timeout(function () {
+                $rootScope.$broadcast('igzWatchWindowResize::resize');
+            }, 350);
+        }
     }
 }());
