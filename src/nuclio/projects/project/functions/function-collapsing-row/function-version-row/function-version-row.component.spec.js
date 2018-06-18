@@ -6,7 +6,7 @@ describe('nclFunctionVersionRow component:', function () {
     var version;
 
     beforeEach(function () {
-        module('iguazio.app');
+        module('iguazio.dashboard-controls');
 
         inject(function (_$componentController_) {
             $componentController = _$componentController_;

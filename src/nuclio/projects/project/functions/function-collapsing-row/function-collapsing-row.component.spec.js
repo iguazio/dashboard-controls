@@ -4,7 +4,7 @@ describe('nclFunctionCollapsingRow component:', function () {
     var functionItem;
 
     beforeEach(function () {
-        module('iguazio.app');
+        module('iguazio.dashboard-controls');
 
         inject(function (_$componentController_) {
             $componentController = _$componentController_;
@@ -21,10 +21,19 @@ describe('nclFunctionCollapsingRow component:', function () {
                 'replicas': 1,
                 'build': {},
                 'runRegistry': 'localhost:5000'
-            }
+            },
+            'status': {}
+        };
+        var project = {
+            metadata: {
+                name: 'project',
+                namespace: 'nuclio'
+            },
+            spec: {}
         };
 
         var bindings = {
+            project: project,
             function: functionItem,
             actionHandlerCallback: angular.noop
         };

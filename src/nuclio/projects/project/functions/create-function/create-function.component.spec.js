@@ -3,13 +3,13 @@ describe('nclCreateFunction Component:', function () {
     var ctrl;
 
     beforeEach(function () {
-        module('iguazio.app');
+        module('iguazio.dashboard-controls');
 
         inject(function (_$componentController_) {
             $componentController = _$componentController_;
         });
 
-        ctrl = $componentController('nclCreateFunction', null);
+        ctrl = $componentController('nclCreateFunction', {$element: {}});
     });
 
     afterEach(function () {
