@@ -8,7 +8,7 @@ describe('nclEditProjectDialog component:', function () {
     var project;
 
     beforeEach(function () {
-        module('iguazio.app');
+        module('iguazio.dashboard-controls');
 
         inject(function (_$componentController_, _$q_, _$rootScope_, _NuclioProjectsDataService_) {
             $componentController = _$componentController_;

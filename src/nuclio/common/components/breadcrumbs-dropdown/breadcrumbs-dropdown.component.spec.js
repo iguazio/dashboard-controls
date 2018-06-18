@@ -51,13 +51,27 @@ describe('nclBreadcrumbsDropdown component:', function () {
 
             ctrl.showDropdownList = true;
             ctrl.searchText = 'some text';
-            ctrl.state = 'app.project.functions';
+            ctrl.type = 'functions';
+            ctrl.project = {
+                metadata: {
+                    name: 'project',
+                    namespace: 'nuclio'
+                },
+                spec: {}
+            };
 
-            ctrl.showDetails({}, {projectId: 'id'});
+            ctrl.showDetails({}, {id: 'id'});
+
+            $rootScope.$digest();
 
             expect(ctrl.showDropdownList).toBeFalsy();
             expect(ctrl.searchText).toEqual('');
-            expect($state.go).toHaveBeenCalledWith('app.project.functions', {projectId: 'id'});
+            expect($state.go).toHaveBeenCalledWith('app.project.function.edit.code', {
+                isNewFunction: false,
+                id: 'project',
+                functionId: 'id',
+                projectNamespace: 'nuclio'
+            });
         });
     });
 });

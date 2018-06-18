@@ -40,7 +40,7 @@
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-build>
             </div>
             <div class="row"
-                 data-ng-if="!$ctrl.isInvisibleForCurrentRuntime($ctrl.version.spec.runtime)">
+                 data-ng-if="$ctrl.isDemoMode() || $ctrl.version.spec.runtime === 'java'">
                 <ncl-version-configuration-runtime-attributes
                         class="configuration-block runtime-attributes"
                         data-ng-class="{'invisible-block': $ctrl.isInvisibleForCurrentRuntime($ctrl.version.spec.runtime)}"

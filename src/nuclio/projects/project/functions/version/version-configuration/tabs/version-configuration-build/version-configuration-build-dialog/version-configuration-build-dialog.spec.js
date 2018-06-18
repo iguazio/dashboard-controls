@@ -52,7 +52,7 @@ describe('nclVersionConfigurationBuildDialog component:', function () {
 
             ctrl.uploadFile(file);
 
-            expect(ctrl.closeDialog).toHaveBeenCalledWith(file);
+            expect(ctrl.closeDialog).toHaveBeenCalledWith({file: file});
         });
     });
 });
