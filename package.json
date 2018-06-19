@@ -46,7 +46,8 @@
         "nodejs-fs-utils": "~1.0.26",
         "run-sequence": "~1.1.0",
         "sync-exec": "0.6.2",
-        "vinyl-paths": "^2.1.0"
+        "vinyl-paths": "^2.1.0",
+        "yargs": "3.10.0"
     },
     "devDependencies": {
         "gulp-karma": "~0.0.4",

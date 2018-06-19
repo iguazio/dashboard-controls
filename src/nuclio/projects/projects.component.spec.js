@@ -206,7 +206,7 @@ describe('nclProjects component: ', function () {
         it('should open ngDialog', function () {
             spyOn(ngDialog, 'open').and.returnValue({
                 closePromise : {
-                    then : function(callback) {
+                    then : function (callback) {
                         callback({
                             value: {}
                         });

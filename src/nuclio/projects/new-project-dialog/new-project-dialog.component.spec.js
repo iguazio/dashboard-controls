@@ -38,11 +38,9 @@ describe('nclNewProjectDialog component:', function () {
     });
 
     describe('$onInit(): ', function () {
-        it('should set black data', function () {
+        it('should set blank data', function () {
             var data = {
-                metadata: {
-                    namespace: 'nuclio'
-                },
+                metadata: {},
                 spec: {
                     displayName: '',
                     description: ''
