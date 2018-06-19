@@ -9,7 +9,7 @@ describe('nclProjects component: ', function () {
     var projects;
 
     beforeEach(function () {
-        module('iguazio.app');
+        module('iguazio.dashboard-controls');
 
         inject(function (_$rootScope_, _$componentController_, _$q_, _ngDialog_, _NuclioProjectsDataService_) {
             $rootScope = _$rootScope_;
@@ -206,7 +206,7 @@ describe('nclProjects component: ', function () {
         it('should open ngDialog', function () {
             spyOn(ngDialog, 'open').and.returnValue({
                 closePromise : {
-                    then : function(callback) {
+                    then : function (callback) {
                         callback({
                             value: {}
                         });

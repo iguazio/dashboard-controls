@@ -7,7 +7,7 @@ describe('nclNewProjectDialog component:', function () {
     var scope;
 
     beforeEach(function () {
-        module('iguazio.app');
+        module('iguazio.dashboard-controls');
 
         inject(function (_$componentController_, _$q_, _$rootScope_, _NuclioProjectsDataService_) {
             $componentController = _$componentController_;
@@ -38,11 +38,9 @@ describe('nclNewProjectDialog component:', function () {
     });
 
     describe('$onInit(): ', function () {
-        it('should set black data', function () {
+        it('should set blank data', function () {
             var data = {
-                metadata: {
-                    namespace: ''
-                },
+                metadata: {},
                 spec: {
                     displayName: '',
                     description: ''

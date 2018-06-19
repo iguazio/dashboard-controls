@@ -20,7 +20,13 @@ describe('nclVersionConfigurationBuild component:', function () {
 
         scope = $rootScope.$new();
 
-        ctrl = $componentController('nclVersionConfigurationBuild', {$scope: scope});
+        var bindings = {
+            onChangeCallback: angular.noop
+        };
+
+        ctrl = $componentController('nclVersionConfigurationBuild', {$scope: scope}, bindings);
+
+        ctrl.file = {};
     });
 
     afterEach(function () {
@@ -33,15 +39,18 @@ describe('nclVersionConfigurationBuild component:', function () {
     });
 
     describe('onInit(): ', function () {
-       it('should add in ctrl.version \'spec.build\' property', function () {
-           var spec = {
-               build: {}
+       it('should set ctrl.buildCommands', function () {
+           ctrl.version = {
+               spec: {
+                   build: {
+                       commands: ['1', '2']
+                   }
+               }
            };
-           ctrl.version = {};
 
            ctrl.$onInit();
 
-           expect(ctrl.version.spec).toEqual(spec);
+           expect(ctrl.build.commands).toEqual('1\n2');
        });
     });
 
@@ -56,7 +65,7 @@ describe('nclVersionConfigurationBuild component:', function () {
                 }
             };
 
-            ctrl.inputValueCallback(commands);
+            ctrl.inputValueCallback(commands, 'commands');
 
             expect(ctrl.version.spec.build.commands).toEqual(expectedCommands);
         });
@@ -66,10 +75,9 @@ describe('nclVersionConfigurationBuild component:', function () {
         it('should set upload type to ctrl.uploadType', function () {
             var type = 'file';
             ctrl.uploadType = '';
+            ctrl.file.uploaded = true;
 
-            ctrl.onFireAction(type);
-
-            expect(ctrl.uploadType).toBe(type);
+            expect(ctrl.onFireAction(type)).toBeFalsy();
         });
 
         it('should call uploadFile()', function () {
@@ -100,26 +108,6 @@ describe('nclVersionConfigurationBuild component:', function () {
 
     describe('uploadFile(): ', function () {
         it('should set values regarding file uploading', function () {
-            var response = {
-                config: {
-                    data: {
-                        file: {
-                            lastModified: 1521202971211,
-                            name: 'filename.exe',
-                            size: 220280032,
-                            type: 'application/x-msdownload'
-                        }
-                    }
-                }
-            };
-            var expectedValue = {
-                uploading: false,
-                uploaded: true,
-                progress: '100%',
-                icon: 'ncl-icon-script',
-                name: 'filename.exe'
-            };
-
             ctrl.uploadType = 'script';
             ctrl.script = {
                 uploading: false,
@@ -129,17 +117,12 @@ describe('nclVersionConfigurationBuild component:', function () {
                 name: ''
             };
 
-            spyOn(Upload, 'upload').and.callFake(function () {
-                return {
-                    then: function (callback) {
-                        return callback(response);
-                    }
-                };
-            });
+            spyOn(Upload, 'upload').and.returnValue($q.when({}));
 
-            ctrl.uploadFile();
+            ctrl.onFireAction('file');
+            ctrl.uploadFile('file');
 
-            expect(ctrl.script).toEqual(expectedValue);
+            expect(Upload.upload).toHaveBeenCalled();
         });
     });
 
