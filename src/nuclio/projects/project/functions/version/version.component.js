@@ -166,14 +166,8 @@
             });
             ctrl.version.ui.versionCode = lodash.defaultTo(ctrl.version.ui.versionCode, '');
 
-            NuclioProjectsDataService.getExternalIPAddresses()
-                .then(function (address) {
-                    ctrl.version.ui.invocationURL = lodash.has(ctrl.version, 'status.httpPort') ?
-                        'http://' + address.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort : '';
-                })
-                .catch(function () {
-                    DialogsService.alert('Oops: Unknown error occurred while retrieving external IP address');
-                });
+            ctrl.version.ui.invocationURL = lodash.has(ctrl.version, 'status.httpPort') ?
+                'http://' + ConfigService.externalIPAddress + ':' + ctrl.version.status.httpPort : '';
         }
 
         //
@@ -524,13 +518,7 @@
                                 versionChanged: false
                             };
 
-                            NuclioProjectsDataService.getExternalIPAddresses()
-                                .then(function (address) {
-                                    ctrl.version.ui.invocationURL = 'http://' + address.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort;
-                                })
-                                .catch(function () {
-                                    DialogsService.alert('Oops: Unknown error occurred while retrieving external IP address');
-                                });
+                            ctrl.version.ui.invocationURL = 'http://' + ConfigService.externalIPAddress + ':' + ctrl.version.status.httpPort;
 
                             ctrl.isFunctionDeployed = true;
                         }

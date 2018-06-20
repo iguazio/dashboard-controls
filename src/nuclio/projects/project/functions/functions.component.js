@@ -104,13 +104,9 @@
                         DialogsService.alert('Oops: Unknown error occurred while retrieving project');
                     });
 
-                NuclioProjectsDataService.getExternalIPAddresses()
-                    .then(function (response) {
-                        ctrl.externalIPAddress = response.data.externalIPAddresses.addresses[0];
-                    })
-                    .catch(function () {
-                        DialogsService.alert('Oops: Unknown error occurred while retrieving external IP address');
-                    });
+                $timeout(function () {
+                    ctrl.externalIPAddress = ConfigService.externalIPAddress;
+                });
             } else {
                 ctrl.refreshFunctions();
             }
