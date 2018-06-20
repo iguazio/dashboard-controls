@@ -28,7 +28,8 @@
         },
         requestsChunkSize: 1,
         cacheStoragePoolId: '0',
-        defaultIntervalSec: 10 // the default interval in units of seconds that back-end uses for statistics
+        defaultIntervalSec: 10, // the default interval in units of seconds that back-end uses for statistics
+        externalIPAddress: ''
     };
 
     angular.module('iguazio.dashboard-controls')
