@@ -109,7 +109,7 @@
                     uiRoute: 'app.project.function.edit.trigger'
                 },
                 {
-                    tabName: 'Status & Monitoring',
+                    tabName: 'Status',
                     uiRoute: 'app.project.function.edit.monitoring',
                     status: lodash.isNil(ctrl.version.status) ? 'not yet deployed' : lodash.get(ctrl.version, 'status.state')
                 }
