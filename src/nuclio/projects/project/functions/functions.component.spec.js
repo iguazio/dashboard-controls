@@ -62,15 +62,6 @@ describe('nclFunctions component:', function () {
         spyOn(NuclioProjectsDataService, 'getProject').and.callFake(function () {
             return $q.when(project);
         });
-        spyOn(NuclioProjectsDataService, 'getExternalIPAddresses').and.callFake(function () {
-            return $q.when({
-                data: {
-                    externalIPAddresses: {
-                        addresses: ['ip_address']
-                    }
-                }
-            });
-        });
         $stateParams.projectId = '18663872';
 
         ctrl.$onInit();
@@ -92,9 +83,7 @@ describe('nclFunctions component:', function () {
     describe('$onInit(): ', function () {
         it('should set initial values for actions and delete function method', function () {
             expect(NuclioProjectsDataService.getProject).toHaveBeenCalled();
-            expect(NuclioProjectsDataService.getExternalIPAddresses).toHaveBeenCalled();
             expect(ctrl.actions).not.toBe([]);
-            expect(ctrl.externalIPAddress).toBe('ip_address');
         });
     });
 

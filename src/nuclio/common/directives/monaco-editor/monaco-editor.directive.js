@@ -35,6 +35,9 @@
 
                             // update the code
                             this.editor.setValue(newValue.code);
+                        },
+                        onWrapStateChanged: function onWrapStateChanged(newState) {
+                            this.editor.updateOptions({ wordWrap: newState ? 'on' : 'off' });
                         }
                     };
 
@@ -72,7 +75,8 @@
                         minimap: {
                             enabled: !scope.miniMonaco // hide mini-map if it's a mini-monaco
                         },
-                        readOnly: scope.readOnly
+                        readOnly: scope.readOnly,
+                        wordWrap: scope.wordWrap ? 'on' : 'off',
                     });
 
                     // TODO - look up api docs to find a suitable event to handle as the onDidChangeModelContent event only seems to fire for certain changes!
@@ -87,6 +91,7 @@
                     // set up watch for codeFile changes to reflect updates
                     scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
                     scope.$watch('editorTheme', editorContext.onThemeChanged.bind(editorContext));
+                    scope.$watch('wordWrap', editorContext.onWrapStateChanged.bind(editorContext));
 
                     scope.$on('$destroy', function () {
                         if (interval !== null) {
@@ -103,7 +108,8 @@
                     codeFile: '=codeFile',
                     editorTheme: '=editorTheme',
                     miniMonaco: '=miniMonaco',
-                    readOnly: '=readOnly'
+                    readOnly: '=readOnly',
+                    wordWrap: '=wordWrap'
                 }
             };
         });

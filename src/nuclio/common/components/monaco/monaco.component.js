@@ -9,7 +9,8 @@
                 onChangeSourceCodeCallback: '&',
                 selectedTheme: '<',
                 miniMonaco: '<',
-                readOnly: '<'
+                readOnly: '<',
+                wordWrap: '<'
             },
             templateUrl: 'nuclio/common/components/monaco/monaco.tpl.html',
             controller: NclMonacoController
