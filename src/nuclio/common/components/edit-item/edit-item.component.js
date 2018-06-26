@@ -81,6 +81,10 @@
             if (!lodash.isEmpty(ctrl.item.kind)) {
                 ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
                 ctrl.item.ui.className = ctrl.selectedClass.name;
+
+                $timeout(function () {
+                    validateCronClassValues();
+                })
             }
 
             if (isHttpTrigger()) {
@@ -208,6 +212,8 @@
          */
         function inputValueCallback(newData, field) {
             lodash.set(ctrl.item, field, newData);
+
+            validateCronClassValues();
         }
 
         /**
@@ -361,6 +367,32 @@
                             ctrl.onSubmitCallback({item: ctrl.item});
                         });
                     }
+                }
+            }
+        }
+
+        /**
+         * Validate interval and schedule fields
+         */
+        function validateCronClassValues() {
+            if (ctrl.item.kind === 'cron') {
+                var scheduleAttribute = lodash.find(ctrl.selectedClass.attributes, {'name': 'schedule'});
+                var intervalAttribute = lodash.find(ctrl.selectedClass.attributes, {'name': 'interval'});
+                var intervalInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_interval.$viewValue);
+                var scheduleInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_schedule.$viewValue);
+
+                if (intervalInputIsFilled === scheduleInputIsFilled) {
+
+                    // if interval and schedule fileds are filled or they are empty - makes these fields invalid
+                    ctrl.editItemForm.item_interval.$setValidity('text', false);
+                    ctrl.editItemForm.item_schedule.$setValidity('text', false);
+                } else {
+
+                    // if interval or schedule filed is filled - makes these fields valid
+                    ctrl.editItemForm.item_interval.$setValidity('text', true);
+                    ctrl.editItemForm.item_schedule.$setValidity('text', true);
+                    scheduleAttribute.allowEmpty = intervalInputIsFilled;
+                    intervalAttribute.allowEmpty = scheduleInputIsFilled;
                 }
             }
         }
