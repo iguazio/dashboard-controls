@@ -47,9 +47,11 @@
                 bindingsItem.name = key;
 
                 if (angular.isDefined(value.url) && value.kind === 'v3io') {
-                    var splittedUrl = value.url.split('/');
-                    bindingsItem.url = splittedUrl[0];
-                    lodash.set(bindingsItem, 'attributes.containerID', splittedUrl.length > 1 ? splittedUrl[1] : '');
+                    var splitUrl = value.url.split('/');
+
+                    // split on last slash: what comes before it is the URL, what comes after it is container ID
+                    bindingsItem.url = lodash.initial(splitUrl).join('');
+                    lodash.set(bindingsItem, 'attributes.containerID', splitUrl.length > 1 ? lodash.last(splitUrl) : '');
                 }
 
                 bindingsItem.ui = {
@@ -113,15 +115,23 @@
 
         /**
          * According to given action name calls proper action handler
-         * @param {string} actionType - ex. `delete`
-         * @param {Array} selectedItem - an object of selected binding
+         * @param {string} actionType - e.g. `'delete'`, `'edit'`, `'update'`
+         * @param {Array} selectedItem - an object of selected data-binding
+         * @param {string} selectedItem.id - the identifier of the data-binding
+         * @param {string} selectedItem.name - the name of the data-binding
+         * @param {string} selectedItem.kind - the kind of data-binding (e.g. 'v3io', 'eventhub')
+         * @param {string} [selectedItem.secret] - the secret of data-binding (for v3io kind)
+         * @param {string} [selectedItem.url] - the URL of the data-binding (for v3io kind)
+         * @param {Object} [selectedItem.attributes] - more custom attributes of the data-binding
+         * @param {string} [selectedItem.attributes.containerID] - the container ID (for v3io kind)
          */
         function handleAction(actionType, selectedItem) {
             if (actionType === 'delete') {
                 lodash.remove(ctrl.bindings, ['id', selectedItem.id]);
                 lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
             } else if (actionType === 'edit') {
-                lodash.find(ctrl.bindings, ['id', selectedItem.id]).ui.editModeActive = true;
+                var aBinding = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
+                aBinding.ui.editModeActive = true;
             } else if (actionType === 'update') {
                 var currentBinding = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
 
@@ -139,7 +149,7 @@
                         bindingItem.url = selectedItem.url;
 
                         if (selectedItem.kind === 'v3io') {
-                            bindingItem.url = bindingItem.url.concat('/', selectedItem.attributes.containerID);
+                            bindingItem.url = bindingItem.url + '/' + selectedItem.attributes.containerID;
                             bindingItem = lodash.omit(bindingItem, 'attributes');
                         }
                     }
