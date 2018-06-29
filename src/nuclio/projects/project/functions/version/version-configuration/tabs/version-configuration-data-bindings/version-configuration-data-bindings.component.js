@@ -50,7 +50,7 @@
                     var splitUrl = value.url.split('/');
 
                     // split on last slash: what comes before it is the URL, what comes after it is container ID
-                    bindingsItem.url = lodash.initial(splitUrl).join('');
+                    bindingsItem.url = lodash.initial(splitUrl).join('/');
                     lodash.set(bindingsItem, 'attributes.containerID', splitUrl.length > 1 ? lodash.last(splitUrl) : '');
                 }
 
