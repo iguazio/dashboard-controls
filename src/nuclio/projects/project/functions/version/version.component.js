@@ -308,7 +308,7 @@
         function getDeployStatusState(state) {
             return state === 'ready'    ? 'Successfully deployed' :
                    state === 'error'    ? 'Failed to deploy'      :
-                   state === 'building' ? 'Deploying...'          : '';
+                                          'Deploying...'          ;
         }
 
         /**
