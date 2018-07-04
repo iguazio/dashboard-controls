@@ -116,8 +116,8 @@
                 .then(function (response) {
                     ctrl.projects = lodash.map(response, function (projectFromResponse) {
                         var foundProject = lodash.find(ctrl.projects, ['metadata.name', projectFromResponse.metadata.name]);
-                        var ui = lodash.get(foundProject, 'ui');
-                        projectFromResponse.ui = lodash.defaultTo(ui, projectFromResponse.ui);
+                        var projectChecked = lodash.get(foundProject, 'ui.checked', false);
+                        lodash.set(projectFromResponse, 'ui.checked', projectChecked);
                         return projectFromResponse;
                     });
 
