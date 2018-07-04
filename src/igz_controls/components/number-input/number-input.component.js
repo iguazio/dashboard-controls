@@ -22,7 +22,7 @@
                 suffixUnit: '@?',
                 updateNumberInputCallback: '&?',
                 updateNumberInputField: '@?',
-                validationIsRequired: '@?',
+                validationIsRequired: '<?',
                 validationValue: '<?',
                 validationValueUnit: '<?'
             },
@@ -85,6 +85,7 @@
          * Initialization method
          */
         function onInit() {
+            ctrl.validationIsRequired = String(ctrl.validationIsRequired) === 'true';
             ctrl.allowEmptyField = lodash.defaultTo(ctrl.allowEmptyField, false);
             ctrl.defaultValue = lodash.defaultTo(ctrl.defaultValue, null);
             ctrl.minValue = lodash.defaultTo(ctrl.minValue, 0);
@@ -119,7 +120,7 @@
          */
         function checkInvalidation() {
             if (angular.isDefined(ctrl.formObject)) {
-                if ((lodash.isNil(ctrl.currentValue) || ctrl.currentValue === '') && ctrl.validationIsRequired === 'true') {
+                if ((lodash.isNil(ctrl.currentValue) || ctrl.currentValue === '') && ctrl.validationIsRequired) {
                     ctrl.formObject[ctrl.inputName].$setValidity('text', false);
                 } else {
                     ctrl.formObject[ctrl.inputName].$setValidity('text', true);
