@@ -76,7 +76,7 @@
                             enabled: !scope.miniMonaco // hide mini-map if it's a mini-monaco
                         },
                         readOnly: scope.readOnly,
-                        wordWrap: scope.wordWrap ? 'on' : 'off',
+                        wordWrap: scope.wordWrap ? 'on' : 'off'
                     });
 
                     // TODO - look up api docs to find a suitable event to handle as the onDidChangeModelContent event only seems to fire for certain changes!
