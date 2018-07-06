@@ -11,22 +11,22 @@
              data-ng-class="{'ncl-status-ready': item.status === 'ready',
                              'ncl-status-error': item.status === 'error',
                              'ncl-status-building': $ctrl.isFunctionBuilding(item.status)}">
-        </div>
 
-        <div class="ncl-status-tooltip"
-             data-ng-if="item.status"
-             data-ng-class="{'ncl-status-tooltip-ready': item.status === 'ready',
-                             'ncl-status-tooltip-error': item.status === 'error',
-                             'ncl-status-tooltip-building': $ctrl.isFunctionBuilding(item.status)}">
+            <div class="ncl-status-tooltip"
+                 data-ng-if="item.status"
+                 data-ng-class="{'ncl-status-tooltip-ready': item.status === 'ready',
+                                 'ncl-status-tooltip-error': item.status === 'error',
+                                 'ncl-status-tooltip-building': $ctrl.isFunctionBuilding(item.status)}">
 
-            <div class="ncl-status-icon"
-                  data-ng-if="item.status !== 'not yet deployed'"
-                  data-ng-class="{'ncl-icon-ready': item.status === 'ready',
-                                  'ncl-icon-error': item.status === 'error',
-                                  'ncl-icon-building': $ctrl.isFunctionBuilding(item.status)}">
-            </div>
-            <div class="ncl-status-title">
-                {{item.status}}
+                <div class="ncl-status-icon"
+                     data-ng-if="item.status !== 'not yet deployed'"
+                     data-ng-class="{'ncl-icon-ready': item.status === 'ready',
+                                     'ncl-icon-error': item.status === 'error',
+                                     'ncl-icon-building': $ctrl.isFunctionBuilding(item.status)}">
+                </div>
+                <div class="ncl-status-title">
+                    {{item.status}}
+                </div>
             </div>
         </div>
     </div>
