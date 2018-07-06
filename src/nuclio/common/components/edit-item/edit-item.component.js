@@ -77,7 +77,7 @@
                 }
             });
 
-            ctrl.classList  = FunctionsService.getClassesList(ctrl.type);
+            ctrl.classList = FunctionsService.getClassesList(ctrl.type);
             if (!lodash.isEmpty(ctrl.item.kind)) {
                 ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
                 ctrl.item.ui.className = ctrl.selectedClass.name;
@@ -158,7 +158,7 @@
 
         /**
          * Returns the value of an attribute
-         * @param {string} newData
+         * @param {string} attrName
          * @returns {string}
          */
         function getAttrValue(attrName) {
@@ -266,7 +266,7 @@
                 if (attribute.name === 'ingresses') {
                     ctrl.ingresses = [];
                 } else {
-                    lodash.set(ctrl.item.attributes, attribute.name, '');
+                    lodash.set(ctrl.item.attributes, attribute.name, lodash.get(attribute, 'defaultValue', ''));
                 }
             });
 
