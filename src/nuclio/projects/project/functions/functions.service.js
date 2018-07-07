@@ -195,14 +195,16 @@
                                 name: 'readBatchSize',
                                 pattern: 'number',
                                 type: 'number-input',
-                                allowEmpty: false
+                                allowEmpty: true,
+                                defaultValue: 64
                             },
                             {
                                 name: 'pollingIntervalMs',
                                 unit: 'ms',
                                 pattern: 'number',
                                 type: 'number-input',
-                                allowEmpty: false
+                                allowEmpty: true,
+                                defaultValue: 500
                             }
                         ]
                     },
