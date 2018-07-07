@@ -582,7 +582,7 @@
          * @param {Object} params
          */
         function stateChangeStart(event, toState, params) {
-            if (!lodash.includes(toState.name, 'app.project.function.edit') && !ctrl.versionDeployed) {
+            if (lodash.get($state, 'params.functionId') !== params.functionId && !ctrl.versionDeployed) {
                 event.preventDefault();
                 DialogsService.confirm('Leaving this page will discard your changes.', 'Leave', 'Don\'t leave')
                     .then(function () {
