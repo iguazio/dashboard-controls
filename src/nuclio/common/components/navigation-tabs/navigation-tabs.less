@@ -4,19 +4,6 @@
     border-top: none;
     border-bottom: 1px solid @ncl-border-color;
 
-    .ncl-status-tooltip-arrow {
-        right: 100%;
-        top: 50%;
-        border: 5px solid transparent;
-        content: " ";
-        height: 0;
-        width: 0;
-        position: absolute;
-        pointer-events: none;
-        border-color: rgba(33, 212, 172, 0);
-        margin-top: -5px;
-    }
-
     .navigation-tab {
         position: relative;
         float: left;
@@ -39,9 +26,16 @@
 
         &.ncl-status-monitoring {
             padding-right: 8px;
+
+            &:hover {
+                .ncl-status-tooltip {
+                    display: flex;
+                }
+            }
         }
 
         .ncl-status-light {
+            position: relative;
             display: inline-block;
             width: 8px;
             height: 8px;
@@ -60,93 +54,89 @@
             &.ncl-status-error {
                 background-color: @ncl-darkish-pink;
             }
-        }
 
-        .ncl-status-tooltip {
-            position: absolute;
-            display: none;
-            flex-wrap: nowrap;
-            padding: 4px 12px 22px 10px;
-            height: 24px;
-            border-radius: 2px;
-            background-color: @ncl-greyish-purple;
-            color: @ncl-white;
-            right: -54%;
-            top: 15px;
-            z-index: 1;
-
-            &:after {
-                .ncl-status-tooltip-arrow();
-                border-right-color: @ncl-greyish-purple;
-            }
-
-            &.ncl-status-tooltip-ready {
-                right: -60%;
-                padding-left: 10px;
-                background-color: @ncl-green-aquamarine;
+            .ncl-status-tooltip {
+                position: absolute;
+                left: 22px;
+                top: -10px;
+                z-index: 1;
+                display: none;
+                height: 24px;
+                padding: 4px 12px 22px 10px;
+                border-radius: 2px;
+                background-color: @ncl-greyish-purple;
+                color: @ncl-white;
 
                 &:after {
-                    .ncl-status-tooltip-arrow();
-                    border-right-color: @ncl-green-aquamarine;
+                    content: "";
+                    position: absolute;
+                    right: 100%;
+                    top: 50%;
+                    height: 0;
+                    width: 0;
+                    margin-top: -5px;
+                    border: 5px solid transparent;
+                    border-right-color: @ncl-greyish-purple;
+                    pointer-events: none;
+                }
+
+                &.ncl-status-tooltip-ready {
+                    padding-left: 10px;
+                    background-color: @ncl-green-aquamarine;
+
+                    &:after {
+                        border-right-color: @ncl-green-aquamarine;
+                    }
+                }
+
+                &.ncl-status-tooltip-building {
+                    padding-left: 10px;
+                    background-color: @ncl-sunflower-yellow;
+
+                    &:after {
+                        border-right-color: @ncl-sunflower-yellow;
+                    }
+                }
+
+                &.ncl-status-tooltip-error {
+                    padding-left: 10px;
+                    background-color: @ncl-darkish-pink;
+
+                    &:after {
+                        border-right-color: @ncl-darkish-pink;
+                    }
+                }
+
+                .ncl-status-icon {
+                    width: 13px;
+                    margin-right: 5px;
+
+                    &.ncl-icon-ready {
+                        margin-top: 3px;
+                        font-size: 10px;
+                    }
+
+                    &.ncl-icon-building {
+                        margin-top: 6px;
+                        font-size: 5px;
+                    }
+
+                    &.ncl-icon-error {
+                        margin-top: 3px;
+                        font-size: 10px;
+                    }
+                }
+
+                .ncl-status-title {
+                    font-size: 13px;
+                    font-weight: normal;
+                    white-space: nowrap;
+
+                    &::first-letter {
+                        text-transform: capitalize;
+                    }
                 }
             }
-
-            &.ncl-status-tooltip-building {
-                right: -64%;
-                padding-left: 10px;
-                background-color: @ncl-sunflower-yellow;
-
-                &:after {
-                    .ncl-status-tooltip-arrow();
-                    border-right-color: @ncl-sunflower-yellow;
-                }
-            }
-
-            &.ncl-status-tooltip-error {
-                right: -57%;
-                padding-left: 10px;
-                background-color: @ncl-darkish-pink;
-
-                &:after {
-                    .ncl-status-tooltip-arrow();
-                    border-right-color: @ncl-darkish-pink;
-                }
-            }
-
-            .ncl-status-icon {
-                width: 13px;
-                margin-right: 5px;
-
-                &.ncl-icon-ready {
-                    margin-top: 3px;
-                    font-size: 10px;
-                }
-
-                &.ncl-icon-building {
-                    margin-top: 6px;
-                    font-size: 5px;
-                }
-
-                &.ncl-icon-error {
-                    margin-top: 3px;
-                    font-size: 10px;
-                }
-            }
-
-            .ncl-status-title {
-                font-size: 13px;
-                font-weight: normal;
-
-                &::first-letter {
-                    text-transform: capitalize;
-                }
-            }
-        }
-    }
-
-    .ncl-status-monitoring:hover {
-        .ncl-status-tooltip {
-            display: flex;
         }
     }
 }
