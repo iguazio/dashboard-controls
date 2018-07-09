@@ -2,17 +2,20 @@
     "name": "iguazio.dashboard-controls",
     "version": "0.0.61",
     "main": "dist/js/iguazio.dashboard-controls.js",
-    "description": "",
+    "description": "Collection of resources (such as CSS styles, fonts and images) and AngularJs 1.x components and services to share among different Iguazio repos.",
     "repository": {
         "type": "git",
         "url": "git@github.com:iguazio/dashboard-controls.git"
     },
-    "keywords": [],
+    "bugs": {
+        "url": "https://github.com/iguazio/dashboard-controls/issues"
+    },
+    "keywords": ["Iguazio", "iguazio"],
+    "license": "Apache-2.0",
     "homepage": "https://github.com/iguazio/dashboard-controls",
     "author": {
-        "name": "Eran",
-        "email": "",
-        "url": ""
+        "name": "Eran Nussbaum",
+        "email": "erann@iguazio.com"
     },
     "dependencies": {
         "babel-core": "^6.26.0",
