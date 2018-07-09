@@ -10,7 +10,7 @@
             controller: NclVersionCodeController
         });
 
-    function NclVersionCodeController($element, $rootScope, $stateParams, $timeout, lodash, DialogsService,
+    function NclVersionCodeController($element, $rootScope, $stateParams, $timeout, lodash, ConfigService, DialogsService,
                                       PreventDropdownCutOffService, VersionHelperService) {
         var ctrl = this;
 
@@ -62,11 +62,12 @@
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
 
+        ctrl.isDemoMode = ConfigService.isDemoMode;
+        ctrl.inputValueCallback = inputValueCallback;
+        ctrl.onChangeSourceCode = onChangeSourceCode;
         ctrl.selectEntryTypeValue = selectEntryTypeValue;
         ctrl.selectRuntimeValue = selectRuntimeValue;
         ctrl.selectThemeValue = selectThemeValue;
-        ctrl.inputValueCallback = inputValueCallback;
-        ctrl.onChangeSourceCode = onChangeSourceCode;
 
         /**
          * Initialization method

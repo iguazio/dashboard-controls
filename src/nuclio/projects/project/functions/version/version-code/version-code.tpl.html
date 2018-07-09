@@ -39,7 +39,7 @@
                             </button>
                         </div>
                         <div class="code-entry-col code-entry-theme-col"
-                             data-ng-if="$ctrl.selectedEntryType.name === 'Edit online'">
+                             data-ng-if="$ctrl.selectedEntryType.name === 'Edit online' && $ctrl.isDemoMode()">
                             <div class="col-label runtime">Theme</div>
                             <igz-default-dropdown data-values-array="$ctrl.themesArray"
                                                   data-item-select-callback="$ctrl.selectThemeValue(item, isItemChanged, field)"
