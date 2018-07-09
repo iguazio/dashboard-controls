@@ -2126,6 +2126,7 @@ input[disabled] {
 // NOT in standard palette
 @checkbox-unchecked: #918c9a;
 @slider-bar: #dedce1;
+@vs-dark: #1e1e1e;
 
 
 .checkboxUnchecked(@alpha) {
@@ -4159,6 +4160,111 @@ ncl-projects {
     }
 }
 
+.splash-screen {
+    position: absolute;
+    z-index: 996;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(37, 45, 54, 0.9);
+    transform-style: preserve-3d;
+
+    // ngAnimate appearance for show/hide
+    transition: opacity linear .25s 0s;
+
+    &.ng-hide-remove {
+        opacity: 0;
+    }
+
+    .loading-splash-screen {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: @white;
+        font-size: 20px;
+        text-align: center;
+        font-weight: 500;
+        width: 217px;
+        border-radius: 6px;
+        background-image: linear-gradient(144deg, @dark-sky-blue, @lightblue), linear-gradient(@dark-sky-blue, @dark-sky-blue);
+        padding: 49px 0;
+
+        .splash-logo-wrapper {
+            position: relative;
+            text-align: center;
+
+            .loader-fading-circle {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        .loading-text {
+            padding: 31px 0 0 12px;
+            font-family: @font-family-sans-serif;
+            font-size: 20px;
+            color: @white;
+        }
+    }
+
+    .alert-splash-screen {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: @white;
+        font-size: 20px;
+        font-weight: 500;
+        width: 504px;
+        border-radius: 6px;
+        background-image: linear-gradient(144deg, @dark-sky-blue, @lightblue), linear-gradient(@dark-sky-blue, @dark-sky-blue);
+        box-shadow: none;
+        padding: 0 0 49px;
+
+        .header {
+            background: url('/assets/images/oops.png') no-repeat center;
+            margin: 47px 0 24px;
+            height: 59px;
+            background-size: contain;
+        }
+
+        .notification-text {
+            color: @white;
+            padding: 0 60px;
+            text-align: center;
+            margin: 0 0 36px;
+            line-height: 1.5;
+        }
+
+        .buttons {
+            text-align: center;
+            height: 36px;
+
+            .refresh-button {
+                margin: 0 auto;
+                padding-top: 8px;
+                height: 36px;
+                width: 124px;
+                font-size: 12px;
+                border-radius: 2px;
+                background-color: @dark-sky-blue;
+                border: solid 1px @white;
+                text-transform: uppercase;
+
+                &:hover {
+                    background-color: @bluish;
+                    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+                }
+
+                .igz-icon-refresh {
+                    font-size: 16px;
+                    margin-right: 8px;
+                    vertical-align: middle;
+                }
+            }
+        }
+    }
+}
 .validating-input-field {
     background-color: @white;
     font-family: @font-family-sans-serif;
@@ -4325,111 +4431,6 @@ ncl-projects {
 
         .textarea-field {
             padding: 7px 30px 6px 10px;
-        }
-    }
-}
-.splash-screen {
-    position: absolute;
-    z-index: 996;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(37, 45, 54, 0.9);
-    transform-style: preserve-3d;
-
-    // ngAnimate appearance for show/hide
-    transition: opacity linear .25s 0s;
-
-    &.ng-hide-remove {
-        opacity: 0;
-    }
-
-    .loading-splash-screen {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: @white;
-        font-size: 20px;
-        text-align: center;
-        font-weight: 500;
-        width: 217px;
-        border-radius: 6px;
-        background-image: linear-gradient(144deg, @dark-sky-blue, @lightblue), linear-gradient(@dark-sky-blue, @dark-sky-blue);
-        padding: 49px 0;
-
-        .splash-logo-wrapper {
-            position: relative;
-            text-align: center;
-
-            .loader-fading-circle {
-                width: 60px;
-                height: 60px;
-            }
-        }
-
-        .loading-text {
-            padding: 31px 0 0 12px;
-            font-family: @font-family-sans-serif;
-            font-size: 20px;
-            color: @white;
-        }
-    }
-
-    .alert-splash-screen {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: @white;
-        font-size: 20px;
-        font-weight: 500;
-        width: 504px;
-        border-radius: 6px;
-        background-image: linear-gradient(144deg, @dark-sky-blue, @lightblue), linear-gradient(@dark-sky-blue, @dark-sky-blue);
-        box-shadow: none;
-        padding: 0 0 49px;
-
-        .header {
-            background: url('/assets/images/oops.png') no-repeat center;
-            margin: 47px 0 24px;
-            height: 59px;
-            background-size: contain;
-        }
-
-        .notification-text {
-            color: @white;
-            padding: 0 60px;
-            text-align: center;
-            margin: 0 0 36px;
-            line-height: 1.5;
-        }
-
-        .buttons {
-            text-align: center;
-            height: 36px;
-
-            .refresh-button {
-                margin: 0 auto;
-                padding-top: 8px;
-                height: 36px;
-                width: 124px;
-                font-size: 12px;
-                border-radius: 2px;
-                background-color: @dark-sky-blue;
-                border: solid 1px @white;
-                text-transform: uppercase;
-
-                &:hover {
-                    background-color: @bluish;
-                    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
-                }
-
-                .igz-icon-refresh {
-                    font-size: 16px;
-                    margin-right: 8px;
-                    vertical-align: middle;
-                }
-            }
         }
     }
 }
@@ -5966,15 +5967,19 @@ ncl-breadcrumbs {
     }
 }
 .ncl-monaco {
-    > div {
+    .ncl-monaco-wrapper {
+        padding-top: 20px;
         height: 100%;
         border: 1px solid @ncl-pale-grey;
+        background-color: @ncl-white;
+
+        > div {
+            height: 100%;
+        }
     }
 
-    .monaco-editor {
-        .margin, .overflow-guard {
-            padding-top: 20px;
-        }
+    .ncl-monaco-dark {
+        background-color: @vs-dark;
     }
 }
 
@@ -5984,19 +5989,6 @@ ncl-breadcrumbs {
     height: 55px;
     border-top: none;
     border-bottom: 1px solid @ncl-border-color;
-
-    .ncl-status-tooltip-arrow {
-        right: 100%;
-        top: 50%;
-        border: 5px solid transparent;
-        content: " ";
-        height: 0;
-        width: 0;
-        position: absolute;
-        pointer-events: none;
-        border-color: rgba(33, 212, 172, 0);
-        margin-top: -5px;
-    }
 
     .navigation-tab {
         position: relative;
@@ -6020,9 +6012,16 @@ ncl-breadcrumbs {
 
         &.ncl-status-monitoring {
             padding-right: 8px;
+
+            &:hover {
+                .ncl-status-tooltip {
+                    display: flex;
+                }
+            }
         }
 
         .ncl-status-light {
+            position: relative;
             display: inline-block;
             width: 8px;
             height: 8px;
@@ -6041,93 +6040,89 @@ ncl-breadcrumbs {
             &.ncl-status-error {
                 background-color: @ncl-darkish-pink;
             }
-        }
 
-        .ncl-status-tooltip {
-            position: absolute;
-            display: none;
-            flex-wrap: nowrap;
-            padding: 4px 12px 22px 10px;
-            height: 24px;
-            border-radius: 2px;
-            background-color: @ncl-greyish-purple;
-            color: @ncl-white;
-            right: -54%;
-            top: 15px;
-            z-index: 1;
-
-            &:after {
-                .ncl-status-tooltip-arrow();
-                border-right-color: @ncl-greyish-purple;
-            }
-
-            &.ncl-status-tooltip-ready {
-                right: -60%;
-                padding-left: 10px;
-                background-color: @ncl-green-aquamarine;
+            .ncl-status-tooltip {
+                position: absolute;
+                left: 22px;
+                top: -10px;
+                z-index: 1;
+                display: none;
+                height: 24px;
+                padding: 4px 12px 22px 10px;
+                border-radius: 2px;
+                background-color: @ncl-greyish-purple;
+                color: @ncl-white;
 
                 &:after {
-                    .ncl-status-tooltip-arrow();
-                    border-right-color: @ncl-green-aquamarine;
+                    content: "";
+                    position: absolute;
+                    right: 100%;
+                    top: 50%;
+                    height: 0;
+                    width: 0;
+                    margin-top: -5px;
+                    border: 5px solid transparent;
+                    border-right-color: @ncl-greyish-purple;
+                    pointer-events: none;
+                }
+
+                &.ncl-status-tooltip-ready {
+                    padding-left: 10px;
+                    background-color: @ncl-green-aquamarine;
+
+                    &:after {
+                        border-right-color: @ncl-green-aquamarine;
+                    }
+                }
+
+                &.ncl-status-tooltip-building {
+                    padding-left: 10px;
+                    background-color: @ncl-sunflower-yellow;
+
+                    &:after {
+                        border-right-color: @ncl-sunflower-yellow;
+                    }
+                }
+
+                &.ncl-status-tooltip-error {
+                    padding-left: 10px;
+                    background-color: @ncl-darkish-pink;
+
+                    &:after {
+                        border-right-color: @ncl-darkish-pink;
+                    }
+                }
+
+                .ncl-status-icon {
+                    width: 13px;
+                    margin-right: 5px;
+
+                    &.ncl-icon-ready {
+                        margin-top: 3px;
+                        font-size: 10px;
+                    }
+
+                    &.ncl-icon-building {
+                        margin-top: 6px;
+                        font-size: 5px;
+                    }
+
+                    &.ncl-icon-error {
+                        margin-top: 3px;
+                        font-size: 10px;
+                    }
+                }
+
+                .ncl-status-title {
+                    font-size: 13px;
+                    font-weight: normal;
+                    white-space: nowrap;
+
+                    &::first-letter {
+                        text-transform: capitalize;
+                    }
                 }
             }
-
-            &.ncl-status-tooltip-building {
-                right: -64%;
-                padding-left: 10px;
-                background-color: @ncl-sunflower-yellow;
-
-                &:after {
-                    .ncl-status-tooltip-arrow();
-                    border-right-color: @ncl-sunflower-yellow;
-                }
-            }
-
-            &.ncl-status-tooltip-error {
-                right: -57%;
-                padding-left: 10px;
-                background-color: @ncl-darkish-pink;
-
-                &:after {
-                    .ncl-status-tooltip-arrow();
-                    border-right-color: @ncl-darkish-pink;
-                }
-            }
-
-            .ncl-status-icon {
-                width: 13px;
-                margin-right: 5px;
-
-                &.ncl-icon-ready {
-                    margin-top: 3px;
-                    font-size: 10px;
-                }
-
-                &.ncl-icon-building {
-                    margin-top: 6px;
-                    font-size: 5px;
-                }
-
-                &.ncl-icon-error {
-                    margin-top: 3px;
-                    font-size: 10px;
-                }
-            }
-
-            .ncl-status-title {
-                font-size: 13px;
-                font-weight: normal;
-
-                &::first-letter {
-                    text-transform: capitalize;
-                }
-            }
-        }
-    }
-
-    .ncl-status-monitoring:hover {
-        .ncl-status-tooltip {
-            display: flex;
         }
     }
 }
@@ -6862,79 +6857,6 @@ ncl-functions {
     }
 }
 
-.function-from-scratch-content {
-    .splash-screen {
-        top: 0;
-    }
-
-    .title-wrapper {
-        margin-left: 50px;
-
-        .title {
-            color: @ncl-dusk-three;
-            font-size: 16px;
-            font-weight: bold;
-        }
-    }
-
-    .function-configuration {
-        margin: 28px 0 0 0;
-
-        .configuration-form {
-            display: flex;
-
-            .function-name-wrapper {
-                width: 50%;
-                padding-right: 24px;
-                padding-left: 80px;
-
-                .function-name {
-                    .input-label {
-                        font-size: 14px;
-                        font-weight: 600;
-                        color: @ncl-dusk-three;
-                    }
-
-                    igz-validating-input-field {
-                        margin-left: 2px;
-                    }
-                }
-            }
-
-            .function-runtime-wrapper {
-                width: 50%;
-                padding-left: 24px;
-                padding-right: 10%;
-
-                .function-runtime {
-                    .input-label {
-                        font-size: 14px;
-                        font-weight: 600;
-                        color: @ncl-dusk-three;
-                    }
-
-                    igz-default-dropdown {
-                        .default-dropdown {
-                            background-color: @ncl-white;
-
-                            .default-dropdown-field {
-                                &:focus {
-                                    background-color: inherit;
-                                }
-                            }
-                        }
-                    }
-
-                    .bottom-bar {
-                        display: flex;
-                        justify-content: flex-end;
-                        margin-top: 48px;
-                    }
-                }
-            }
-        }
-    }
-}
 .function-from-template-content {
     padding: 0 72px 0 63px;
 
@@ -7053,6 +6975,79 @@ ncl-functions {
     }
 }
 
+.function-from-scratch-content {
+    .splash-screen {
+        top: 0;
+    }
+
+    .title-wrapper {
+        margin-left: 50px;
+
+        .title {
+            color: @ncl-dusk-three;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    }
+
+    .function-configuration {
+        margin: 28px 0 0 0;
+
+        .configuration-form {
+            display: flex;
+
+            .function-name-wrapper {
+                width: 50%;
+                padding-right: 24px;
+                padding-left: 80px;
+
+                .function-name {
+                    .input-label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: @ncl-dusk-three;
+                    }
+
+                    igz-validating-input-field {
+                        margin-left: 2px;
+                    }
+                }
+            }
+
+            .function-runtime-wrapper {
+                width: 50%;
+                padding-left: 24px;
+                padding-right: 10%;
+
+                .function-runtime {
+                    .input-label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: @ncl-dusk-three;
+                    }
+
+                    igz-default-dropdown {
+                        .default-dropdown {
+                            background-color: @ncl-white;
+
+                            .default-dropdown-field {
+                                &:focus {
+                                    background-color: inherit;
+                                }
+                            }
+                        }
+                    }
+
+                    .bottom-bar {
+                        display: flex;
+                        justify-content: flex-end;
+                        margin-top: 48px;
+                    }
+                }
+            }
+        }
+    }
+}
 .function-import-wrapper-content {
     font-family: @font-family-sans-serif;
     padding-left: 3%;
@@ -7202,6 +7197,65 @@ ncl-functions {
                 }
             }
         }
+    }
+}
+
+.ncl-version-configuration {
+    > .igz-scrollable-container {
+        padding: 24px 25px 22px 41px;
+    }
+
+    .ncl-version-configuration-wrapper {
+        > .row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+
+            .configuration-block {
+                padding: 16px 23px 16px;
+                background-color: @ncl-white;
+                border: solid 1px @ncl-pale-grey;
+                flex-grow: 1;
+                flex-basis: 500px;
+                overflow: hidden;
+                margin-right: 16px;
+                margin-bottom: 16px;
+
+                .igz-scrollable-container {
+                    max-height: 500px;
+                }
+
+                .title {
+                    font-size: 16px;
+                    font-weight: bold;
+                    font-style: normal;
+                    font-stretch: normal;
+                    letter-spacing: normal;
+                    text-align: left;
+                    color: @ncl-dusk-three;
+                    margin-bottom: 12px;
+                }
+
+                .row {
+                    .label {
+                        display: block;
+                        font-family: Roboto, sans-serif;
+                        font-size: 14px;
+                        font-weight: 500;
+                        font-style: normal;
+                        font-stretch: normal;
+                        letter-spacing: normal;
+                        text-align: left;
+                        color: @ncl-dusk-three;
+                        padding: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    .invisible-block {
+        visibility: hidden;
     }
 }
 
@@ -7364,65 +7418,6 @@ ncl-functions {
         .code-edit-section {
             height: 900px;
         }
-    }
-}
-
-.ncl-version-configuration {
-    > .igz-scrollable-container {
-        padding: 24px 25px 22px 41px;
-    }
-
-    .ncl-version-configuration-wrapper {
-        > .row {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-
-            .configuration-block {
-                padding: 16px 23px 16px;
-                background-color: @ncl-white;
-                border: solid 1px @ncl-pale-grey;
-                flex-grow: 1;
-                flex-basis: 500px;
-                overflow: hidden;
-                margin-right: 16px;
-                margin-bottom: 16px;
-
-                .igz-scrollable-container {
-                    max-height: 500px;
-                }
-
-                .title {
-                    font-size: 16px;
-                    font-weight: bold;
-                    font-style: normal;
-                    font-stretch: normal;
-                    letter-spacing: normal;
-                    text-align: left;
-                    color: @ncl-dusk-three;
-                    margin-bottom: 12px;
-                }
-
-                .row {
-                    .label {
-                        display: block;
-                        font-family: Roboto, sans-serif;
-                        font-size: 14px;
-                        font-weight: 500;
-                        font-style: normal;
-                        font-stretch: normal;
-                        letter-spacing: normal;
-                        text-align: left;
-                        color: @ncl-dusk-three;
-                        padding: 0;
-                    }
-                }
-            }
-        }
-    }
-
-    .invisible-block {
-        visibility: hidden;
     }
 }
 
