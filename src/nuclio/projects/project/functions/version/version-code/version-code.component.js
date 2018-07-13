@@ -10,8 +10,8 @@
             controller: NclVersionCodeController
         });
 
-    function NclVersionCodeController($element, $rootScope, $stateParams, $timeout, lodash, ConfigService, DialogsService,
-                                      PreventDropdownCutOffService, VersionHelperService) {
+    function NclVersionCodeController($element, $rootScope, $timeout, lodash, ConfigService, DialogsService,
+                                      VersionHelperService) {
         var ctrl = this;
 
         var previousEntryType = null;
@@ -102,8 +102,6 @@
             ctrl.archive = lodash.get(ctrl.version, 'spec.build.path', '');
 
             previousEntryType = ctrl.selectedEntryType;
-
-
         }
 
         /**
@@ -201,7 +199,10 @@
             VersionHelperService.checkVersionChange(ctrl.version);
 
             $timeout(function () {
-                $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: ctrl.versionCodeForm.$invalid});
+                $rootScope.$broadcast('change-state-deploy-button', {
+                    component: 'code',
+                    isDisabled: ctrl.versionCodeForm.$invalid
+                });
             });
         }
 

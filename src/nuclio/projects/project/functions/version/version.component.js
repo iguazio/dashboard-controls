@@ -23,8 +23,6 @@
 
         ctrl.action = null;
         ctrl.isDemoMode = ConfigService.isDemoMode;
-        ctrl.isTestResultShown = false;
-        ctrl.isInvocationSuccess = false;
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -35,9 +33,6 @@
         ctrl.isSplashShowed = {
             value: false
         };
-        ctrl.selectedFunctionEvent = null;
-        ctrl.testResult = {};
-        ctrl.functionEvents = [];
         ctrl.rowIsCollapsed = {
             statusCode: false,
             headers: false,
@@ -51,16 +46,10 @@
 
         ctrl.$onInit = onInit;
 
-        ctrl.deleteFunctionEvent = deleteFunctionEvent;
-        ctrl.openFunctionEventDialog = openFunctionEventDialog;
         ctrl.deployVersion = deployVersion;
-        ctrl.onSelectFunctionEvent = onSelectFunctionEvent;
         ctrl.getDeployStatusState = getDeployStatusState;
         ctrl.checkValidDeployState = checkValidDeployState;
-        ctrl.checkEventContentType = checkEventContentType;
-        ctrl.invokeFunction = invokeFunction;
         ctrl.toggleDeployResult = toggleDeployResult;
-        ctrl.toggleTestResult = toggleTestResult;
         ctrl.onRowCollapse = onRowCollapse;
         ctrl.onSelectAction = onSelectAction;
 
@@ -115,21 +104,12 @@
                 }
             ];
 
-            ctrl.functionEvents = [];
-            ctrl.functionEvents = $filter('orderBy')(ctrl.functionEvents, 'name');
-            ctrl.selectedFunctionEvent = lodash.isEmpty(ctrl.functionEvents) ? null : ctrl.functionEvents[0];
             ctrl.requiredComponents = {};
 
-            $q.all({
-                project: NuclioProjectsDataService.getProject($stateParams.projectId),
-                events: NuclioEventService.getEvents(ctrl.version)
-            }).then(function (response) {
+            NuclioProjectsDataService.getProject($stateParams.projectId).then(function (response) {
 
                 // set projects data
-                ctrl.project = response.project;
-
-                // sets function events data
-                convertTestEventsData(response.events.data);
+                ctrl.project = response;
 
                 // breadcrumbs config
                 var title = {
@@ -141,7 +121,7 @@
 
                 NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
             }).catch(function () {
-                DialogsService.alert('Oops: Unknown error occurred while retrieving project or events');
+                DialogsService.alert('Oops: Unknown error occurred while retrieving project');
             });
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
@@ -173,98 +153,6 @@
         //
         // Public methods
         //
-
-        /**
-         * Deletes selected event
-         */
-        function deleteFunctionEvent() {
-            var dialogConfig = {
-                message: {
-                    message: 'Delete event “' + ctrl.selectedFunctionEvent.name + '”?',
-                    description: 'Deleted event cannot be restored.'
-                },
-                yesLabel: 'Yes, Delete',
-                noLabel: 'Cancel',
-                type: 'nuclio_alert'
-            };
-
-            DialogsService.confirm(dialogConfig.message, dialogConfig.yesLabel, dialogConfig.noLabel, dialogConfig.type)
-                .then(function () {
-                    var eventData = {
-                        metadata: {
-                            name: ctrl.selectedFunctionEvent.eventData.metadata.name,
-                            namespace: ctrl.selectedFunctionEvent.eventData.metadata.namespace
-                        }
-                    };
-
-                    ctrl.isSplashShowed.value = true;
-
-                    NuclioEventService.deleteEvent(eventData)
-                        .then(function () {
-
-                            // update test events list
-                            NuclioEventService.getEvents(ctrl.version)
-                                .then(function (response) {
-                                    convertTestEventsData(response.data);
-
-                                    ctrl.isSplashShowed.value = false;
-                                })
-                                .catch(function () {
-                                    DialogsService.alert('Oops: Unknown error occurred while retrieving events');
-                                });
-                        })
-                        .catch(function () {
-                            DialogsService.alert('Oops: Unknown error occurred while deleting event');
-
-                            ctrl.isSplashShowed.value = false;
-                        });
-                });
-        }
-
-        /**
-         * Opens a function event dialog
-         * @param {boolean} createEvent - if value 'false' then open dialog to edit existing event, otherwise open
-         *     dialog to create new event.
-         */
-        function openFunctionEventDialog(createEvent) {
-            ngDialog.open({
-                template: '<ncl-function-event-dialog data-create-event="ngDialogData.createEvent" ' +
-                'data-selected-event="ngDialogData.selectedEvent" data-version="ngDialogData.version" ' +
-                'data-close-dialog="closeThisDialog(result)"></ncl-test-event-dialog>',
-                plain: true,
-                scope: $scope,
-                data: {
-                    createEvent: createEvent,
-                    selectedEvent: createEvent ? {} : lodash.get(ctrl.selectedFunctionEvent, 'eventData', {}),
-                    version: ctrl.version
-                },
-                className: 'ngdialog-theme-iguazio settings-dialog-wrapper'
-            })
-                .closePromise
-                .then(function (data) {
-
-                    // check if event was deployed or failed
-                    // if yes, then push newest created event to events drop-down
-                    if (data.value.isEventDeployed) {
-                        ctrl.isSplashShowed.value = true;
-
-                        // update test events list
-                        NuclioEventService.getEvents(ctrl.version)
-                            .then(function (response) {
-                                convertTestEventsData(response.data);
-
-                                if (!lodash.isNil(data.value.selectedEvent)) {
-                                    setEventAsSelected(data.value.selectedEvent.metadata.name);
-                                }
-
-                                ctrl.isSplashShowed.value = false;
-                            })
-                            .catch(function () {
-                                DialogsService.alert('Oops: Unknown error occurred while retrieving events');
-                            });
-                    }
-                });
-        }
 
         /**
          * Deploys changed version
@@ -319,74 +207,6 @@
             var validStates = ['building', 'waitingForResourceConfiguration', 'waitingForBuild', 'configuringResources'];
 
             return lodash.includes(validStates, ctrl.deployResult.status.state);
-        }
-
-        /**
-         * Checks event's content type
-         * @param {string} type - type of content-type
-         * @returns {boolean}
-         */
-        function checkEventContentType(type) {
-            return eventContentType === type;
-        }
-
-        /**
-         * Called when a test event is selected
-         * @param {Object} item - the new data
-         */
-        function onSelectFunctionEvent(item) {
-            ctrl.selectedFunctionEvent = item;
-        }
-
-        /**
-         * Calls version test
-         */
-        function invokeFunction() {
-            if (!lodash.isNil(ctrl.selectedFunctionEvent)) {
-                ctrl.isTestResultShown = false;
-
-                NuclioEventService.invokeFunction(ctrl.selectedFunctionEvent.eventData)
-                    .then(function (response) {
-                        return $q.reject(response);
-                    })
-                    .catch(function (invocationData) {
-
-                        if (invocationData.config.headers['Content-Type'] === 'application/json' && lodash.isObject(invocationData.data)) {
-                            eventContentType = 'json';
-                            invocationData.data = angular.toJson(angular.fromJson(invocationData.data), ' ', 4);
-                        } else if (lodash.startsWith(invocationData.config.headers['Content-Type'], 'image/')) {
-                            eventContentType = 'image';
-                        }
-
-                        ctrl.testResult = {
-                            status: {
-                                state: invocationData.xhrStatus,
-                                statusCode: invocationData.status,
-                                statusText: invocationData.statusText
-                            },
-                            headers: invocationData.config.headers,
-                            body: invocationData.data
-                        };
-                        ctrl.isDeployResultShown = false;
-                        ctrl.isInvocationSuccess = lodash.startsWith(invocationData.status, '2');
-                        ctrl.isTestResultShown = true;
-                    });
-
-                $timeout(function () {
-                    $rootScope.$broadcast('igzWatchWindowResize::resize');
-                }, 100);
-            }
-        }
-
-        /**
-         * Shows/hides test version result
-         */
-        function toggleTestResult() {
-            ctrl.isTestResultShown = !ctrl.isTestResultShown;
-
-            $timeout(function () {
-                $rootScope.$broadcast('igzWatchWindowResize::resize');
-            });
         }
 
         /**
@@ -451,23 +271,6 @@
         //
         // Private methods
         //
-
-        /**
-         * Converts event to structure that needed for drop-down
-         * @param {Array} events -  array of events
-         */
-        function convertTestEventsData(events) {
-            ctrl.functionEvents = lodash.map(events, function (event) {
-                return {
-                    id: event.metadata.name,
-                    name: event.spec.displayName,
-                    eventData: event
-                };
-            });
-
-            ctrl.functionEvents = $filter('orderBy')(ctrl.functionEvents, 'name');
-            ctrl.selectedFunctionEvent = ctrl.functionEvents[0];
-        }
 
         /**
          * Disable deploy button if forms invalid
@@ -556,14 +359,6 @@
                     state: value
                 }
             };
-        }
-
-        /**
-         * Sets function event as selected by id
-         * @param id - id of function event to be set as selected
-         */
-        function setEventAsSelected(id) {
-            ctrl.selectedFunctionEvent = lodash.find(ctrl.functionEvents, ['id', id]);
         }
 
         /**

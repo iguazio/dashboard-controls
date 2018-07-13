@@ -2,8 +2,12 @@
     <form name="$ctrl.keyValueInputForm"
           class="input-wrapper"
           data-ng-mousedown="$ctrl.onEditInput()">
+        <div class="check-row"
+             data-ng-if="$ctrl.allowSelection">
+            <igz-action-checkbox data-item="$ctrl.data"></igz-action-checkbox>
+        </div>
         <igz-validating-input-field class="nuclio-validating-input input-key"
-                                    data-ng-class="{'use-type': $ctrl.useType}"
+                                    data-ng-class="{'use-type': $ctrl.useType, 'use-checkbox': $ctrl.allowSelection}"
                                     data-field-type="input"
                                     data-input-name="key"
                                     data-input-value="$ctrl.data.name"
@@ -27,14 +31,14 @@
                               data-on-close-dropdown="$ctrl.closeDropdown()"></igz-default-dropdown>
 
         <igz-validating-input-field class="nuclio-validating-input input-value"
-                                    data-ng-class="{'use-type': $ctrl.useType}"
+                                    data-ng-class="{'use-type': $ctrl.useType, 'use-checkbox': $ctrl.allowSelection}"
                                     data-field-type="input"
                                     data-input-name="value"
                                     data-input-value="$ctrl.getInputValue()"
                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                     data-update-data-field="value"
                                     data-form-object="$ctrl.keyValueInputForm"
-                                    data-validation-is-required="true"
+                                    data-validation-is-required="!$ctrl.valueOptional"
                                     data-placeholder-text="Type value..."></igz-validating-input-field>
 
         <div class="three-dot-menu">

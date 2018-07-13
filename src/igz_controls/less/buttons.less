@@ -74,7 +74,16 @@
     }
 
     &.disabled {
-        display: none;
+        .duskThree(0.24);
+        background-color: @pale-grey-three;
+        border: solid 1px @pale-grey-three;
+        color: @color;
+        box-shadow: none;
+        cursor: default;
+
+        &:hover, &:active {
+            padding: 8px 20px;
+        }
     }
 }
 

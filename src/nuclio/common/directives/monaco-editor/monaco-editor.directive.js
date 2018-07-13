@@ -71,7 +71,7 @@
                         automaticLayout: true,
                         dragAndDrop: true,
                         lineNumbersMinChars: scope.miniMonaco ? 2 : 5,
-                        lineNumbers: scope.miniMonaco ? 'off' : 'on', // hide line number if it's a mini-monaco
+                        lineNumbers: scope.miniMonaco && !scope.showLineNumbers ? 'off' : 'on', // hide line number if it's a mini-monaco
                         minimap: {
                             enabled: !scope.miniMonaco // hide mini-map if it's a mini-monaco
                         },
@@ -108,6 +108,7 @@
                     codeFile: '=codeFile',
                     editorTheme: '=editorTheme',
                     miniMonaco: '=miniMonaco',
+                    showLineNumbers: '=showLineNumbers',
                     readOnly: '=readOnly',
                     wordWrap: '=wordWrap'
                 }
