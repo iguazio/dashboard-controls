@@ -3,6 +3,12 @@
 
     angular.module('iguazio.dashboard-controls')
         .component('nclFunctions', {
+            bindings: {
+                getExternalIpAddressesCallback: '&',
+                getProjectCallback: '&',
+                getFunctionsCallback: '&',
+                deleteFunctionCallback: '&'
+            },
             templateUrl: 'nuclio/projects/project/functions/functions.tpl.html',
             controller: FunctionsController
         });
@@ -65,6 +71,7 @@
 
         ctrl.isColumnSorted = CommonTableService.isColumnSorted;
 
+        ctrl.deleteFunction = deleteFunction;
         ctrl.getVersions = getVersions;
         ctrl.handleAction = handleAction;
         ctrl.isDemoMode = ConfigService.isDemoMode;
@@ -89,7 +96,7 @@
             if (angular.isDefined($stateParams.projectId)) {
                 ctrl.isSplashShowed.value = true;
 
-                NuclioProjectsDataService.getProject($stateParams.projectId)
+                ctrl.getProjectCallback({id: $stateParams.projectId})
                     .then(function (project) {
                         ctrl.project = project;
 
@@ -100,13 +107,31 @@
 
                         NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
                     })
-                    .catch(function () {
-                        DialogsService.alert('Oops: Unknown error occurred while retrieving project');
+                    .catch(function (error) {
+                        ctrl.isSplashShowed.value = false;
+                        var msg = 'Oops: Unknown error occurred while retrieving project';
+
+                        if (!lodash.isEmpty(error.errors)) {
+                            msg = error.errors[0].detail
+                        }
+
+                        DialogsService.alert(msg);
                     });
 
-                $timeout(function () {
-                    ctrl.externalIPAddress = ConfigService.externalIPAddress;
-                });
+                ctrl.getExternalIpAddressesCallback()
+                    .then(function (response) {
+                        ctrl.externalIPAddress = response.data.externalIPAddresses.addresses[0];
+                    })
+                    .catch(function (error) {
+                        ctrl.isSplashShowed.value = false;
+                        var msg = 'Oops: Unknown error occurred while retrieving external IP address';
+
+                        if (!lodash.isEmpty(error.errors)) {
+                            msg = error.errors[0].detail
+                        }
+
+                        DialogsService.alert(msg);
+                    });
             } else {
                 ctrl.refreshFunctions();
             }
@@ -126,6 +151,15 @@
         //
         // Public methods
         //
+
+        /**
+         * Calls callback which responsible to delete a single function
+         * @param functionData
+         * @returns {*}
+         */
+        function deleteFunction(functionData) {
+            return ctrl.deleteFunctionCallback({functionData: functionData});
+        }
 
         /**
          * Gets list of function versions
@@ -236,9 +270,9 @@
         function refreshFunctions() {
             ctrl.isSplashShowed.value = true;
 
-            NuclioFunctionsDataService.getFunctions(ctrl.project.metadata.namespace, ctrl.project.metadata.name)
+            ctrl.getFunctionsCallback({id: ctrl.project.metadata.name, namespace: ctrl.project.metadata.namespace})
                 .then(function (result) {
-                    ctrl.functions = lodash.toArray(result.data);
+                    ctrl.functions = lodash.toArray(lodash.defaultTo(result.data, result));
 
                     if (lodash.isEmpty(ctrl.functions) && !$stateParams.createCancelled) {
                         ctrl.isSplashShowed.value = false;
@@ -259,8 +293,15 @@
                         ctrl.isSplashShowed.value = false;
                     }
                 })
-                .catch(function () {
-                    DialogsService.alert('Oops: Unknown error occurred while retrieving functions');
+                .catch(function (error) {
+                    ctrl.isSplashShowed.value = false;
+                    var msg = 'Oops: Unknown error occurred while retrieving functions';
+
+                    if (!lodash.isEmpty(error.errors)) {
+                        msg = error.errors[0].detail
+                    }
+
+                    DialogsService.alert(msg);
                 });
         }
 
