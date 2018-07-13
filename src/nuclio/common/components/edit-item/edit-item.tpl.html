@@ -146,6 +146,7 @@
                     <div class="table-body" data-ng-repeat="ingress in $ctrl.ingresses">
                         <ncl-key-value-input class="new-label-input"
                                              data-list-class="ingresses-wrapper"
+                                             data-change-state-broadcast="change-state-deploy-button"
                                              data-key-optional="true"
                                              data-row-data="ingress"
                                              data-use-type="false"
@@ -162,6 +163,7 @@
                     <div class="table-body" data-ng-repeat="ingress in $ctrl.ingresses">
                         <ncl-key-value-input class="new-label-input"
                                              data-list-class="scrollable-ingresses"
+                                             data-change-state-broadcast="change-state-deploy-button"
                                              data-row-data="ingress"
                                              data-use-type="false"
                                              data-submit-on-fly="true"

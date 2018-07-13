@@ -1,0 +1,10 @@
+<div class="ncl-test-events-navigation-tabs">
+    <div class="test-events-navigation-tab"
+         data-ng-repeat="item in $ctrl.tabItems"
+         data-ng-click="$ctrl.changeActiveTab(item)"
+         data-ng-class="{'active': $ctrl.isActiveTab(item)}">
+        {{item.tabName | uppercase}}
+
+        <span class="badge" data-ng-if="item.badge">{{item.badge}}</span>
+    </div>
+</div>

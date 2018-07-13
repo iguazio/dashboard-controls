@@ -61,10 +61,16 @@
     }
 
     &.disabled {
-        background-color: @ncl-pale-grey;
-        border: solid 1px @ncl-pale-grey;
+        .nclDuskThree(0.24);
         box-shadow: none;
         cursor: default;
+        background-color: @ncl-pale-grey-three;
+        border: solid 1px @ncl-pale-grey-three;
+        color: @color;
+
+        &:hover, &:active {
+            padding: 9px 17px;
+        }
     }
 }
 

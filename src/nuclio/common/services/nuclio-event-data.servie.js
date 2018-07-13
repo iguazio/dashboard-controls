@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('NuclioEventService', NuclioEventService);
 
-    function NuclioEventService(NuclioClientService) {
+    function NuclioEventService(lodash, NuclioClientService) {
         return {
             deleteEvent: deleteEvent,
             deployEvent: deployEvent,
@@ -82,13 +82,12 @@
         /**
          * Invokes the function
          */
-        function invokeFunction(eventData) {
+        function invokeFunction(eventData, canceller) {
             var headers = {
-                'Content-Type': eventData.spec.attributes.headers['Content-Type'],
-                'x-nuclio-path': eventData.spec.attributes.headers['x-nuclio-path'],
                 'x-nuclio-function-name': eventData.metadata.labels['nuclio.io/function-name'],
-                'x-nuclio-invoke-via': 'external-ip'
+                'x-nuclio-function-namespace': eventData.metadata.namespace
             };
+            headers = lodash.merge(headers, eventData.spec.attributes.headers);
 
             var config = {
                 data: eventData.spec.body,
@@ -96,6 +95,10 @@
                 headers: headers,
                 url: NuclioClientService.buildUrlWithPath('function_invocations')
             };
+
+            if (angular.isDefined(canceller)) {
+                config.timeout = canceller.promise;
+            }
 
             return NuclioClientService.makeRequest(config);
         }
