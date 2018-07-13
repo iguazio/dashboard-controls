@@ -3,12 +3,16 @@
 
     angular.module('iguazio.dashboard-controls')
         .component('nclCreateFunction', {
+            bindings: {
+                getProjectCallback: '&',
+                getTemplatesCallback: '&',
+                templates: '<'
+            },
             templateUrl: 'nuclio/projects/project/functions/create-function/create-function.tpl.html',
             controller: CreateFunctionController
         });
 
-    function CreateFunctionController($element, $state, $stateParams, $timeout, lodash, DialogsService, NuclioHeaderService,
-                                      NuclioProjectsDataService) {
+    function CreateFunctionController($element, $state, $stateParams, $timeout, lodash, DialogsService, NuclioHeaderService) {
         var ctrl = this;
         var selectedFunctionType = 'from_scratch';
 
@@ -37,6 +41,7 @@
         ctrl.toggleSplashScreen = toggleSplashScreen;
         ctrl.isTypeSelected = isTypeSelected;
         ctrl.selectFunctionType = selectFunctionType;
+        ctrl.getFunctionTemplates = getFunctionTemplates;
 
         //
         // Hook methods
@@ -46,7 +51,7 @@
          * Initialization method
          */
         function onInit() {
-            NuclioProjectsDataService.getProject($stateParams.projectId)
+            ctrl.getProjectCallback({id: $stateParams.projectId})
                 .then(function (project) {
                     ctrl.project = project;
 
@@ -60,7 +65,13 @@
                     NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
                 })
                 .catch(function (error) {
-                    DialogsService.alert('Oops: Unknown error occurred while retrieving project');
+                    var msg = 'Oops: Unknown error occurred while retrieving project';
+
+                    if (!lodash.isEmpty(error.errors)) {
+                        msg = error.errors[0].detail
+                    }
+
+                    DialogsService.alert(msg);
 
                     $state.go('app.projects');
                 })
@@ -101,6 +112,14 @@
             if (!lodash.isEqual(functionType, selectedFunctionType)) {
                 selectedFunctionType = functionType;
             }
+        }
+
+        /**
+         * Gets list of function templates
+         * @returns {Promise}
+         */
+        function getFunctionTemplates() {
+            return ctrl.getTemplatesCallback();
         }
 
         /**

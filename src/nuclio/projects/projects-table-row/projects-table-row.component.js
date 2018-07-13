@@ -6,14 +6,16 @@
             bindings: {
                 project: '<',
                 projectsList: '<',
-                actionHandlerCallback: '&'
+                actionHandlerCallback: '&',
+                deleteProjectCallback: '&',
+                updateProjectCallback: '&'
             },
             templateUrl: 'nuclio/projects/projects-table-row/projects-table-row.tpl.html',
             controller: NclProjectsTableRowController
         });
 
-    function NclProjectsTableRowController($scope, $state, lodash, moment, ngDialog, ActionCheckboxAllService, ConfigService, DialogsService,
-                                           NuclioProjectsDataService) {
+    function NclProjectsTableRowController($scope, $state, lodash, moment, ngDialog, ActionCheckboxAllService,
+                                           ConfigService, DialogsService) {
         var ctrl = this;
 
         ctrl.actions = {};
@@ -90,17 +92,18 @@
          * Deletes project from projects list
          */
         function deleteProject() {
-            NuclioProjectsDataService.deleteProject(ctrl.project)
+            ctrl.deleteProjectCallback({project: ctrl.project})
                 .then(function () {
                     lodash.remove(ctrl.projectsList, ['metadata.name', ctrl.project.metadata.name]);
                 })
                 .catch(function (error) {
-                    var errorMessages = {
-                        403: 'You do not have permissions to delete this project.',
-                        default: 'Unknown error occurred while deleting the project.'
-                    };
+                    var msg = 'Unknown error occurred while deleting the project.';
 
-                    return DialogsService.alert(lodash.get(errorMessages, error.status, errorMessages.default));
+                    if (!lodash.isEmpty(error.data.errors)) {
+                        msg = error.data.errors[0].detail;
+                    }
+
+                    return DialogsService.alert(msg);
                 });
         }
 
@@ -138,8 +141,12 @@
         function editProject() {
             return ngDialog.openConfirm({
                 template: '<ncl-edit-project-dialog data-project="$ctrl.project" data-confirm="confirm()"' +
-                'data-close-dialog="closeThisDialog(newProject)"></ncl-edit-project-dialog>',
+                'data-close-dialog="closeThisDialog(newProject)" data-update-project-callback="ngDialogData.updateProject(project)">' +
+                '</ncl-edit-project-dialog>',
                 plain: true,
+                data: {
+                    updateProject: updateProject
+                },
                 scope: $scope,
                 className: 'ngdialog-theme-nuclio'
             })
@@ -152,6 +159,15 @@
                         ActionCheckboxAllService.changeCheckedItemsCount(-1);
                     }
                 });
+        }
+
+        /**
+         * Calls callback which responsible to update project
+         * @param {Object} project - project to update
+         * @returns {Promise}
+         */
+        function updateProject(project) {
+            return ctrl.updateProjectCallback({project})
         }
     }
 }());

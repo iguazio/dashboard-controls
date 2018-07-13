@@ -8,6 +8,7 @@
                 project: '<',
                 functionsList: '<',
                 actionHandlerCallback: '&',
+                deleteFunctionCallback: '&',
                 externalAddress: '<',
                 isSplashShowed: '<'
             },
@@ -136,17 +137,19 @@
         function deleteFunction() {
             ctrl.isSplashShowed.value = true;
 
-            return NuclioFunctionsDataService.deleteFunction(ctrl.function.metadata)
+            return ctrl.deleteFunctionCallback({functionData: ctrl.function.metadata})
                 .then(function () {
                     lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
                 })
                 .catch(function (error) {
-                    var errorMessages = {
-                        403: 'You do not have permissions to delete this function.',
-                        default: 'Unknown error occurred while deleting the function.'
-                    };
+                    ctrl.isSplashShowed.value = false;
+                    var msg = 'Unknown error occurred while deleting the function.';
 
-                    return DialogsService.alert(lodash.get(errorMessages, error.status, errorMessages.default));
+                    if (!lodash.isEmpty(error.errors)) {
+                        msg = error.errors[0].detail
+                    }
+
+                    return DialogsService.alert(msg);
                 });
         }
 

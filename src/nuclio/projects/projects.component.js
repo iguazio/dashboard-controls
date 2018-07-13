@@ -3,12 +3,19 @@
 
     angular.module('iguazio.dashboard-controls')
         .component('nclProjects', {
+            bindings: {
+                projects: '<',
+                createProjectCallback: '&',
+                deleteProjectCallback: '&',
+                updateProjectCallback: '&',
+                getProjectsCallback: '&'
+            },
             templateUrl: 'nuclio/projects/projects.tpl.html',
             controller: NclProjectsController
         });
 
     function NclProjectsController($filter, $rootScope, $scope, $q, $state, lodash, ngDialog, ActionCheckboxAllService,
-                                   CommonTableService, ConfigService, DialogsService, NuclioProjectsDataService, ValidatingPatternsService) {
+                                   CommonTableService, ConfigService, DialogsService, ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -61,7 +68,9 @@
 
         ctrl.isColumnSorted = CommonTableService.isColumnSorted;
 
+        ctrl.deleteProject = deleteProject;
         ctrl.updateProjects = updateProjects;
+        ctrl.updateProject = updateProject;
         ctrl.handleAction = handleAction;
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isProjectsListEmpty = isProjectsListEmpty;
@@ -107,29 +116,32 @@
         //
 
         /**
+         * Deletes project
+         * Call callback which responsible for deleting project
+         * @param {Object} project
+         */
+        function deleteProject(project) {
+            return ctrl.deleteProjectCallback({project: project});
+        }
+
+        /**
          * Updates current projects
          */
         function updateProjects() {
             ctrl.isSplashShowed.value = true;
 
-            NuclioProjectsDataService.getProjects()
-                .then(function (response) {
-                    ctrl.projects = lodash.map(response, function (projectFromResponse) {
-                        var foundProject = lodash.find(ctrl.projects, ['metadata.name', projectFromResponse.metadata.name]);
-                        var projectChecked = lodash.get(foundProject, 'ui.checked', false);
-                        lodash.set(projectFromResponse, 'ui.checked', projectChecked);
-                        return projectFromResponse;
-                    });
-
-                    if (lodash.isEmpty(ctrl.projects)) {
-                        $state.go('app.nuclio-welcome');
-                    } else {
-                        ctrl.isSplashShowed.value = false;
-                    }
-                })
-                .catch(function () {
-                    DialogsService.alert('Oops: Unknown error occurred while retrieving projects');
+            ctrl.getProjectsCallback()
+                .finally(function () {
+                    ctrl.isSplashShowed.value = false;
                 });
+        }
+
+        /**
+         * Calls callback to update a single project
+         * @param project
+         */
+        function updateProject(project) {
+            ctrl.updateProjectCallback({project: project});
         }
 
         /**
@@ -226,9 +238,13 @@
          */
         function openNewProjectDialog() {
             ngDialog.open({
-                template: '<ncl-new-project-dialog data-close-dialog="closeThisDialog(project)"></ncl-new-project-dialog>',
+                template: '<ncl-new-project-dialog data-close-dialog="closeThisDialog(project)" ' +
+                'data-create-project-callback="ngDialogData.createProject(project)"></ncl-new-project-dialog>',
                 plain: true,
                 scope: $scope,
+                data: {
+                    createProject: createProject
+                },
                 className: 'ngdialog-theme-nuclio'
             })
                 .closePromise
@@ -341,6 +357,18 @@
                     };
                 }
             }
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Сalls callback which responsible for creare new project.
+         * @param {Object} project
+         */
+        function createProject(project) {
+            return ctrl.createProjectCallback({project: project});
         }
     }
 }());

@@ -7,6 +7,15 @@
             bindings: {
                 project: '<',
                 version: '<',
+                createFunctionEventCallback: '&',
+                getProjectCallback: '&',
+                getFunctionCallback: '&',
+                getFunctionEventsCallback: '&',
+                getExternalIpAddressesCallback: '&',
+                deployVersionCallback: '&',
+                deleteFunctionEventCallback: '&',
+                deleteFunctionCallback: '&',
+                invokeFunctionCallback: '&',
                 onEditCallback: '&?'
             },
             templateUrl: 'nuclio/projects/project/functions/version/version.tpl.html',
@@ -14,8 +23,7 @@
         });
 
     function NclVersionController($filter, $interval, $scope, $rootScope, $state, $stateParams, $timeout, $q, lodash,
-                                  ngDialog, YAML, ConfigService, DialogsService, NuclioEventService, NuclioHeaderService,
-                                  NuclioFunctionsDataService, NuclioProjectsDataService) {
+                                  ngDialog, YAML, ConfigService, DialogsService, NuclioEventService, NuclioHeaderService) {
         var ctrl = this;
         var deregisterFunction = null;
         var interval = null;
@@ -121,8 +129,8 @@
             ctrl.requiredComponents = {};
 
             $q.all({
-                project: NuclioProjectsDataService.getProject($stateParams.projectId),
-                events: NuclioEventService.getEvents(ctrl.version)
+                project: ctrl.getProjectCallback({id: $stateParams.projectId}),
+                events: ctrl.getFunctionEventsCallback({functionData: ctrl.version})
             }).then(function (response) {
 
                 // set projects data
@@ -140,8 +148,14 @@
                 };
 
                 NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
-            }).catch(function () {
-                DialogsService.alert('Oops: Unknown error occurred while retrieving project or events');
+            }).catch(function (error) {
+                var msg = 'Oops: Unknown error occurred while retrieving project or events';
+
+                if (!lodash.isEmpty(error.errors)) {
+                    msg = error.errors[0].detail
+                }
+
+                DialogsService.alert(msg);
             });
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
@@ -166,8 +180,20 @@
             });
             ctrl.version.ui.versionCode = lodash.defaultTo(ctrl.version.ui.versionCode, '');
 
-            ctrl.version.ui.invocationURL = lodash.has(ctrl.version, 'status.httpPort') ?
-                'http://' + ConfigService.externalIPAddress + ':' + ctrl.version.status.httpPort : '';
+            ctrl.getExternalIpAddressesCallback()
+                .then(function (address) {
+                    ctrl.version.ui.invocationURL = lodash.has(ctrl.version, 'status.httpPort') ?
+                        'http://' + address.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort : '';
+                })
+                .catch(function (error) {
+                    var msg = 'Oops: Unknown error occurred while retrieving external IP address\'';
+
+                    if (!lodash.isEmpty(error.data.errors)) {
+                        msg = error.data.errors[0].detail;
+                    }
+
+                    DialogsService.alert(msg);
+                });
         }
 
         //
@@ -199,24 +225,36 @@
 
                     ctrl.isSplashShowed.value = true;
 
-                    NuclioEventService.deleteEvent(eventData)
+                    ctrl.deleteFunctionEventCallback({eventData: eventData})
                         .then(function () {
 
                             // update test events list
-                            NuclioEventService.getEvents(ctrl.version)
+                            ctrl.getFunctionEventsCallback({functionData: ctrl.version})
                                 .then(function (response) {
                                     convertTestEventsData(response.data);
 
                                     ctrl.isSplashShowed.value = false;
                                 })
-                                .catch(function () {
-                                    DialogsService.alert('Oops: Unknown error occurred while retrieving events');
+                                .catch(function (error) {
+                                    ctrl.isSplashShowed.value = false;
+                                    var msg = 'Oops: Unknown error occurred while retrieving events';
+
+                                    if (!lodash.isEmpty(error.data.errors)) {
+                                        msg = error.data.errors[0].detail;
+                                    }
+
+                                    DialogsService.alert(msg);
                                 });
                         })
-                        .catch(function () {
-                            DialogsService.alert('Oops: Unknown error occurred while deleting event');
-
+                        .catch(function (error) {
                             ctrl.isSplashShowed.value = false;
+                            var msg = 'Oops: Unknown error occurred while deleting event';
+
+                            if (!lodash.isEmpty(error.data.errors)) {
+                                msg = error.data.errors[0].detail;
+                            }
+
+                            DialogsService.alert(msg);
                         });
                 });
         }
@@ -230,11 +268,13 @@
             ngDialog.open({
                 template: '<ncl-function-event-dialog data-create-event="ngDialogData.createEvent" ' +
                 'data-selected-event="ngDialogData.selectedEvent" data-version="ngDialogData.version" ' +
-                'data-close-dialog="closeThisDialog(result)"></ncl-test-event-dialog>',
+                'data-close-dialog="closeThisDialog(result)"' +
+                'data-create-function-event-callback="ngDialogData.createEventCallback(eventData, isNewEvent)"></ncl-test-event-dialog>',
                 plain: true,
                 scope: $scope,
                 data: {
                     createEvent: createEvent,
+                    createEventCallback: createFunctionEvent,
                     selectedEvent: createEvent ? {} : lodash.get(ctrl.selectedFunctionEvent, 'eventData', {}),
                     version: ctrl.version
                 },
@@ -249,18 +289,25 @@
                         ctrl.isSplashShowed.value = true;
 
                         // update test events list
-                        NuclioEventService.getEvents(ctrl.version)
+                        ctrl.getFunctionEventsCallback({functionData: ctrl.version})
                             .then(function (response) {
                                 convertTestEventsData(response.data);
 
                                 if (!lodash.isNil(data.value.selectedEvent)) {
-                                    setEventAsSelected(data.value.selectedEvent.metadata.name);
+                                    setEventAsSelected(data.value.selectedEvent.spec.displayName);
                                 }
 
                                 ctrl.isSplashShowed.value = false;
                             })
-                            .catch(function () {
-                                DialogsService.alert('Oops: Unknown error occurred while retrieving events');
+                            .catch(function (error) {
+                                ctrl.isSplashShowed.value = false;
+                                var msg = 'Oops: Unknown error occurred while retrieving events';
+
+                                if (!lodash.isEmpty(error.data.errors)) {
+                                    msg = error.data.errors[0].detail;
+                                }
+
+                                DialogsService.alert(msg);
                             });
                     }
                 });
@@ -287,7 +334,7 @@
                     $rootScope.$broadcast('igzWatchWindowResize::resize');
                 });
 
-                NuclioFunctionsDataService.updateFunction(versionCopy, ctrl.project.metadata.name)
+                ctrl.deployVersionCallback({version: versionCopy, projectID: ctrl.project.metadata.name})
                     .then(pullFunctionState)
                     .catch(function (error) {
                         var logs = [{
@@ -345,12 +392,12 @@
             if (!lodash.isNil(ctrl.selectedFunctionEvent)) {
                 ctrl.isTestResultShown = false;
 
-                NuclioEventService.invokeFunction(ctrl.selectedFunctionEvent.eventData)
+
+                ctrl.invokeFunctionCallback({eventData: ctrl.selectedFunctionEvent.eventData})
                     .then(function (response) {
                         return $q.reject(response);
                     })
                     .catch(function (invocationData) {
-
                         if (invocationData.config.headers['Content-Type'] === 'application/json' && lodash.isObject(invocationData.data)) {
                             eventContentType = 'json';
                             invocationData.data = angular.toJson(angular.fromJson(invocationData.data), ' ', 4);
@@ -422,12 +469,19 @@
                     .then(function () {
                         ctrl.isSplashShowed.value = true;
 
-                        NuclioFunctionsDataService.deleteFunction(ctrl.version.metadata)
+                        ctrl.deleteFunctionCallback({functionData: ctrl.version.metadata})
                             .then(function () {
                                 $state.go('app.project.functions');
                             })
-                            .catch(function () {
-                                DialogsService.alert('Oops: Unknown error occurred while deleting function');
+                            .catch(function (error) {
+                                ctrl.isSplashShowed.value = false;
+                                var msg = 'Oops: Unknown error occurred while deleting function';
+
+                                if (!lodash.isEmpty(error.errors)) {
+                                    msg = error.errors[0].detail
+                                }
+
+                                DialogsService.alert(msg);
                             });
                     });
             } else if (item.id === 'exportFunction') {
@@ -470,6 +524,16 @@
         }
 
         /**
+         * Сalls callback which responsible for creare a new function event.
+         * @param eventData
+         * @param isNewEvent
+         * @returns {Promise}
+         */
+        function createFunctionEvent(eventData, isNewEvent) {
+            return ctrl.createFunctionEventCallback({eventData: eventData, isNewEvent: isNewEvent})
+        }
+
+        /**
          * Disable deploy button if forms invalid
          * @param {Object} event
          * @param {Object} args
@@ -500,7 +564,7 @@
             lodash.set(lodash.find(ctrl.navigationTabsConfig, 'status'), 'status', 'building');
 
             interval = $interval(function () {
-                NuclioFunctionsDataService.getFunction(ctrl.version.metadata, ctrl.project.metadata.name)
+                ctrl.getFunctionCallback({metadata: ctrl.version.metadata, projectID: ctrl.project.metadata.name})
                     .then(function (response) {
                         if (response.status.state === 'ready' || response.status.state === 'error') {
                             if (!lodash.isNil(interval)) {
@@ -518,7 +582,19 @@
                                 versionChanged: false
                             };
 
-                            ctrl.version.ui.invocationURL = 'http://' + ConfigService.externalIPAddress + ':' + ctrl.version.status.httpPort;
+                            ctrl.getExternalIpAddressesCallback()
+                                .then(function (address) {
+                                    ctrl.version.ui.invocationURL = 'http://' + address.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort;
+                                })
+                                .catch(function (error) {
+                                    var msg = 'Oops: Unknown error occurred while retrieving external IP address';
+
+                                    if (!lodash.isEmpty(error.errors)) {
+                                        msg = error.errors[0].detail
+                                    }
+
+                                    DialogsService.alert(msg);
+                                });
 
                             ctrl.isFunctionDeployed = true;
                         }
@@ -559,11 +635,11 @@
         }
 
         /**
-         * Sets function event as selected by id
-         * @param id - id of function event to be set as selected
+         * Sets function event as selected by name
+         * @param name - name of function event to be set as selected
          */
-        function setEventAsSelected(id) {
-            ctrl.selectedFunctionEvent = lodash.find(ctrl.functionEvents, ['id', id]);
+        function setEventAsSelected(name) {
+            ctrl.selectedFunctionEvent = lodash.find(ctrl.functionEvents, ['name', name]);
         }
 
         /**

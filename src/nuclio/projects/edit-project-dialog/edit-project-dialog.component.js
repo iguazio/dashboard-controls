@@ -6,14 +6,14 @@
             bindings: {
                 project: '<',
                 confirm: '&',
-                closeDialog: '&'
+                closeDialog: '&',
+                updateProjectCallback: '&'
             },
             templateUrl: 'nuclio/projects/edit-project-dialog/edit-project-dialog.tpl.html',
             controller: IgzEditProjectDialogController
         });
 
-    function IgzEditProjectDialogController($scope, lodash, DialogsService, EventHelperService, FormValidationService,
-                                            NuclioProjectsDataService) {
+    function IgzEditProjectDialogController($scope, lodash, DialogsService, EventHelperService, FormValidationService) {
         var ctrl = this;
 
         ctrl.data = {};
@@ -59,7 +59,7 @@
                     ctrl.isLoadingState = true;
 
                     // use data from dialog to create a new project
-                    NuclioProjectsDataService.updateProject(ctrl.data)
+                    ctrl.updateProjectCallback({project: ctrl.data})
                         .then(function () {
                             ctrl.confirm();
                         })

@@ -4,14 +4,14 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclNewProjectDialog', {
             bindings: {
-                closeDialog: '&'
+                closeDialog: '&',
+                createProjectCallback: '&'
             },
             templateUrl: 'nuclio/projects/new-project-dialog/new-project-dialog.tpl.html',
             controller: IgzNewProjectDialogController
         });
 
-    function IgzNewProjectDialogController($scope, lodash, moment, DialogsService, EventHelperService,
-                                           FormValidationService, NuclioProjectsDataService) {
+    function IgzNewProjectDialogController($scope, lodash, moment, DialogsService, EventHelperService, FormValidationService) {
         var ctrl = this;
 
         ctrl.data = {};
@@ -65,7 +65,7 @@
                     });
 
                     // use data from dialog to create a new project
-                    NuclioProjectsDataService.createProject(ctrl.data)
+                    ctrl.createProjectCallback({project: ctrl.data})
                         .then(function () {
                             ctrl.closeDialog({project: ctrl.data});
                         })
