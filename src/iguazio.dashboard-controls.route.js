@@ -103,32 +103,6 @@
                 data: {
                     pageTitle: 'Functions',
                     mainHeaderTitle: 'Functions'
-                },
-                resolve: {
-                    function: [
-                        'FunctionsService', 'NuclioFunctionsDataService', 'NuclioProjectsDataService', '$state', '$stateParams',
-                        function (FunctionsService, NuclioFunctionsDataService, NuclioProjectsDataService, $state, $stateParams) {
-                            return NuclioProjectsDataService.getProject($stateParams.projectId).then(function (project) {
-                                if ($stateParams.isNewFunction) {
-                                    return angular.copy($stateParams.functionData);
-                                } else {
-                                    var functionMetadata = {
-                                        name: $stateParams.functionId,
-                                        namespace: project.metadata.namespace,
-                                        projectName: project.metadata.name
-                                    };
-
-                                    return NuclioFunctionsDataService.getFunction(functionMetadata)
-                                        .catch(function () {
-                                            $state.go('app.project.functions', {projectId: $stateParams.projectId});
-                                        });
-                                }
-                            })
-                                .catch(function () {
-                                    $state.go('app.projects');
-                                });
-                        }
-                    ]
                 }
             })
             .state('app.project.function.edit', {
@@ -136,7 +110,7 @@
                 url: '',
                 views: {
                     'function': {
-                        template: '<ncl-version data-version="$resolve.function"></ncl-version>'
+                        template: '<ncl-version"></ncl-version>'
                     }
                 },
                 params: {
@@ -151,7 +125,7 @@
                 url: '/code',
                 views: {
                     version: {
-                        template: '<ncl-version-code data-version="$resolve.function"></ncl-version-code>'
+                        template: '<ncl-version-code"></ncl-version-code>'
                     }
                 },
                 params: {
@@ -165,7 +139,7 @@
                 url: '/configuration',
                 views: {
                     version: {
-                        template: '<ncl-version-configuration data-version="$resolve.function"></ncl-version-configuration>'
+                        template: '<ncl-version-configuration"></ncl-version-configuration>'
                     }
                 },
                 params: {
@@ -179,7 +153,7 @@
                 url: '/trigger',
                 views: {
                     version: {
-                        template: '<ncl-version-trigger data-version="$resolve.function"></ncl-version-trigger>'
+                        template: '<ncl-version-trigger"></ncl-version-trigger>'
                     }
                 },
                 params: {
@@ -193,7 +167,7 @@
                 url: '/monitoring',
                 views: {
                     version: {
-                        template: '<ncl-version-monitoring data-version="$resolve.function"></ncl-version-monitoring>'
+                        template: '<ncl-version-monitoring"></ncl-version-monitoring>'
                     }
                 },
                 params: {

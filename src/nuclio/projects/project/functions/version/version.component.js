@@ -7,15 +7,15 @@
             bindings: {
                 project: '<',
                 version: '<',
-                createFunctionEventCallback: '&',
-                getProjectCallback: '&',
-                getFunctionCallback: '&',
-                getFunctionEventsCallback: '&',
-                getExternalIpAddressesCallback: '&',
-                deployVersionCallback: '&',
-                deleteFunctionEventCallback: '&',
-                deleteFunctionCallback: '&',
-                invokeFunctionCallback: '&',
+                createFunctionEvent: '&',
+                getProject: '&',
+                getFunction: '&',
+                getFunctionEvents: '&',
+                getExternalIpAddresses: '&',
+                deployVersion: '&',
+                deleteFunctionEvent: '&',
+                deleteFunction: '&',
+                invokeFunction: '&',
                 onEditCallback: '&?'
             },
             templateUrl: 'nuclio/projects/project/functions/version/version.tpl.html',
@@ -59,14 +59,14 @@
 
         ctrl.$onInit = onInit;
 
-        ctrl.deleteFunctionEvent = deleteFunctionEvent;
+        ctrl.handleDeleteFunctionEvent = handleDeleteFunctionEvent;
         ctrl.openFunctionEventDialog = openFunctionEventDialog;
-        ctrl.deployVersion = deployVersion;
+        ctrl.deployButtonClick = deployButtonClick;
         ctrl.onSelectFunctionEvent = onSelectFunctionEvent;
         ctrl.getDeployStatusState = getDeployStatusState;
         ctrl.checkValidDeployState = checkValidDeployState;
         ctrl.checkEventContentType = checkEventContentType;
-        ctrl.invokeFunction = invokeFunction;
+        ctrl.handleInvokeFunction = handleInvokeFunction;
         ctrl.toggleDeployResult = toggleDeployResult;
         ctrl.toggleTestResult = toggleTestResult;
         ctrl.onRowCollapse = onRowCollapse;
@@ -129,8 +129,8 @@
             ctrl.requiredComponents = {};
 
             $q.all({
-                project: ctrl.getProjectCallback({id: $stateParams.projectId}),
-                events: ctrl.getFunctionEventsCallback({functionData: ctrl.version})
+                project: ctrl.getProject({id: $stateParams.projectId}),
+                events: ctrl.getFunctionEvents({functionData: ctrl.version})
             }).then(function (response) {
 
                 // set projects data
@@ -152,7 +152,7 @@
                 var msg = 'Oops: Unknown error occurred while retrieving project or events';
 
                 if (!lodash.isEmpty(error.errors)) {
-                    msg = error.errors[0].detail
+                    msg = error.errors[0].detail;
                 }
 
                 DialogsService.alert(msg);
@@ -180,7 +180,7 @@
             });
             ctrl.version.ui.versionCode = lodash.defaultTo(ctrl.version.ui.versionCode, '');
 
-            ctrl.getExternalIpAddressesCallback()
+            ctrl.getExternalIpAddresses()
                 .then(function (address) {
                     ctrl.version.ui.invocationURL = lodash.has(ctrl.version, 'status.httpPort') ?
                         'http://' + address.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort : '';
@@ -203,7 +203,7 @@
         /**
          * Deletes selected event
          */
-        function deleteFunctionEvent() {
+        function handleDeleteFunctionEvent() {
             var dialogConfig = {
                 message: {
                     message: 'Delete event “' + ctrl.selectedFunctionEvent.name + '”?',
@@ -225,11 +225,11 @@
 
                     ctrl.isSplashShowed.value = true;
 
-                    ctrl.deleteFunctionEventCallback({eventData: eventData})
+                    ctrl.deleteFunctionEvent({eventData: eventData})
                         .then(function () {
 
                             // update test events list
-                            ctrl.getFunctionEventsCallback({functionData: ctrl.version})
+                            ctrl.getFunctionEvents({functionData: ctrl.version})
                                 .then(function (response) {
                                     convertTestEventsData(response.data);
 
@@ -269,12 +269,13 @@
                 template: '<ncl-function-event-dialog data-create-event="ngDialogData.createEvent" ' +
                 'data-selected-event="ngDialogData.selectedEvent" data-version="ngDialogData.version" ' +
                 'data-close-dialog="closeThisDialog(result)"' +
-                'data-create-function-event-callback="ngDialogData.createEventCallback(eventData, isNewEvent)"></ncl-test-event-dialog>',
+                'data-create-function-event="ngDialogData.createFunctionEvent({eventData: eventData, isNewEvent: isNewEvent})">' +
+                '</ncl-test-event-dialog>',
                 plain: true,
                 scope: $scope,
                 data: {
                     createEvent: createEvent,
-                    createEventCallback: createFunctionEvent,
+                    createFunctionEvent: ctrl.createFunctionEvent,
                     selectedEvent: createEvent ? {} : lodash.get(ctrl.selectedFunctionEvent, 'eventData', {}),
                     version: ctrl.version
                 },
@@ -289,7 +290,7 @@
                         ctrl.isSplashShowed.value = true;
 
                         // update test events list
-                        ctrl.getFunctionEventsCallback({functionData: ctrl.version})
+                        ctrl.getFunctionEvents({functionData: ctrl.version})
                             .then(function (response) {
                                 convertTestEventsData(response.data);
 
@@ -316,7 +317,7 @@
         /**
          * Deploys changed version
          */
-        function deployVersion() {
+        function deployButtonClick() {
             if (!ctrl.isDeployDisabled) {
                 ctrl.isFunctionDeployed = false;
                 $rootScope.$broadcast('deploy-function-version');
@@ -334,7 +335,7 @@
                     $rootScope.$broadcast('igzWatchWindowResize::resize');
                 });
 
-                ctrl.deployVersionCallback({version: versionCopy, projectID: ctrl.project.metadata.name})
+                ctrl.deployVersion({version: versionCopy, projectID: ctrl.project.metadata.name})
                     .then(pullFunctionState)
                     .catch(function (error) {
                         var logs = [{
@@ -354,8 +355,8 @@
          */
         function getDeployStatusState(state) {
             return state === 'ready'    ? 'Successfully deployed' :
-                   state === 'error'    ? 'Failed to deploy'      :
-                                          'Deploying...'          ;
+                state === 'error'    ? 'Failed to deploy'      :
+                    'Deploying...'          ;
         }
 
         /**
@@ -388,12 +389,12 @@
         /**
          * Calls version test
          */
-        function invokeFunction() {
+        function handleInvokeFunction() {
             if (!lodash.isNil(ctrl.selectedFunctionEvent)) {
                 ctrl.isTestResultShown = false;
 
 
-                ctrl.invokeFunctionCallback({eventData: ctrl.selectedFunctionEvent.eventData})
+                ctrl.invokeFunction({eventData: ctrl.selectedFunctionEvent.eventData})
                     .then(function (response) {
                         return $q.reject(response);
                     })
@@ -469,7 +470,7 @@
                     .then(function () {
                         ctrl.isSplashShowed.value = true;
 
-                        ctrl.deleteFunctionCallback({functionData: ctrl.version.metadata})
+                        ctrl.deleteFunction({functionData: ctrl.version.metadata})
                             .then(function () {
                                 $state.go('app.project.functions');
                             })
@@ -478,7 +479,7 @@
                                 var msg = 'Oops: Unknown error occurred while deleting function';
 
                                 if (!lodash.isEmpty(error.errors)) {
-                                    msg = error.errors[0].detail
+                                    msg = error.errors[0].detail;
                                 }
 
                                 DialogsService.alert(msg);
@@ -524,16 +525,6 @@
         }
 
         /**
-         * Сalls callback which responsible for creare a new function event.
-         * @param eventData
-         * @param isNewEvent
-         * @returns {Promise}
-         */
-        function createFunctionEvent(eventData, isNewEvent) {
-            return ctrl.createFunctionEventCallback({eventData: eventData, isNewEvent: isNewEvent})
-        }
-
-        /**
          * Disable deploy button if forms invalid
          * @param {Object} event
          * @param {Object} args
@@ -564,7 +555,7 @@
             lodash.set(lodash.find(ctrl.navigationTabsConfig, 'status'), 'status', 'building');
 
             interval = $interval(function () {
-                ctrl.getFunctionCallback({metadata: ctrl.version.metadata, projectID: ctrl.project.metadata.name})
+                ctrl.getFunction({metadata: ctrl.version.metadata, projectID: ctrl.project.metadata.name})
                     .then(function (response) {
                         if (response.status.state === 'ready' || response.status.state === 'error') {
                             if (!lodash.isNil(interval)) {
@@ -582,7 +573,7 @@
                                 versionChanged: false
                             };
 
-                            ctrl.getExternalIpAddressesCallback()
+                            ctrl.getExternalIpAddresses()
                                 .then(function (address) {
                                     ctrl.version.ui.invocationURL = 'http://' + address.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort;
                                 })
@@ -590,7 +581,7 @@
                                     var msg = 'Oops: Unknown error occurred while retrieving external IP address';
 
                                     if (!lodash.isEmpty(error.errors)) {
-                                        msg = error.errors[0].detail
+                                        msg = error.errors[0].detail;
                                     }
 
                                     DialogsService.alert(msg);
@@ -640,6 +631,7 @@
          */
         function setEventAsSelected(name) {
             ctrl.selectedFunctionEvent = lodash.find(ctrl.functionEvents, ['name', name]);
+            console.log(ctrl.functionEvents, name);
         }
 
         /**
@@ -701,9 +693,9 @@
          */
         function getValidYaml(data) {
             return data.replace(/(\s+\-)\s*\n\s+/g, '$1 ')
-                       .replace(/'(.+)'(:)/g, '\"$1\"$2')
-                       .replace(/(:\s)'(.+)'/g, '$1\"$2\"')
-                       .replace(/'{2}/g, '\'');
+                .replace(/'(.+)'(:)/g, '\"$1\"$2')
+                .replace(/(:\s)'(.+)'/g, '$1\"$2\"')
+                .replace(/'{2}/g, '\'');
         }
 
         /**

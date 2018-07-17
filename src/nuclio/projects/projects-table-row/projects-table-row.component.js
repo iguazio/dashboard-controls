@@ -7,8 +7,8 @@
                 project: '<',
                 projectsList: '<',
                 actionHandlerCallback: '&',
-                deleteProjectCallback: '&',
-                updateProjectCallback: '&'
+                deleteProject: '&',
+                updateProject: '&'
             },
             templateUrl: 'nuclio/projects/projects-table-row/projects-table-row.tpl.html',
             controller: NclProjectsTableRowController
@@ -45,7 +45,7 @@
                 },
                 ui: {
                     checked: false,
-                    delete: deleteProject,
+                    delete: handleDeleteProject,
                     edit: editProject
                 }
             });
@@ -91,8 +91,8 @@
         /**
          * Deletes project from projects list
          */
-        function deleteProject() {
-            ctrl.deleteProjectCallback({project: ctrl.project})
+        function handleDeleteProject() {
+            ctrl.deleteProject({project: ctrl.project})
                 .then(function () {
                     lodash.remove(ctrl.projectsList, ['metadata.name', ctrl.project.metadata.name]);
                 })
@@ -141,11 +141,11 @@
         function editProject() {
             return ngDialog.openConfirm({
                 template: '<ncl-edit-project-dialog data-project="$ctrl.project" data-confirm="confirm()"' +
-                'data-close-dialog="closeThisDialog(newProject)" data-update-project-callback="ngDialogData.updateProject(project)">' +
+                'data-close-dialog="closeThisDialog(newProject)" data-update-project-callback="ngDialogData.updateProject({project: project})">' +
                 '</ncl-edit-project-dialog>',
                 plain: true,
                 data: {
-                    updateProject: updateProject
+                    updateProject: ctrl.updateProject
                 },
                 scope: $scope,
                 className: 'ngdialog-theme-nuclio'
@@ -159,15 +159,6 @@
                         ActionCheckboxAllService.changeCheckedItemsCount(-1);
                     }
                 });
-        }
-
-        /**
-         * Calls callback which responsible to update project
-         * @param {Object} project - project to update
-         * @returns {Promise}
-         */
-        function updateProject(project) {
-            return ctrl.updateProjectCallback({project})
         }
     }
 }());

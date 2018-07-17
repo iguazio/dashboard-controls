@@ -8,7 +8,7 @@
                 project: '<',
                 functionsList: '<',
                 actionHandlerCallback: '&',
-                deleteFunctionCallback: '&',
+                handleDeleteFunction: '&',
                 externalAddress: '<',
                 isSplashShowed: '<'
             },
@@ -16,7 +16,7 @@
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController($state, lodash, NuclioClientService, NuclioFunctionsDataService, NuclioHeaderService, DialogsService, ConfigService) {
+    function NclFunctionCollapsingRowController($state, lodash, NuclioClientService, NuclioHeaderService, DialogsService, ConfigService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -137,7 +137,7 @@
         function deleteFunction() {
             ctrl.isSplashShowed.value = true;
 
-            return ctrl.deleteFunctionCallback({functionData: ctrl.function.metadata})
+            return ctrl.handleDeleteFunction({functionData: ctrl.function.metadata})
                 .then(function () {
                     lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
                 })
@@ -146,7 +146,7 @@
                     var msg = 'Unknown error occurred while deleting the function.';
 
                     if (!lodash.isEmpty(error.errors)) {
-                        msg = error.errors[0].detail
+                        msg = error.errors[0].detail;
                     }
 
                     return DialogsService.alert(msg);

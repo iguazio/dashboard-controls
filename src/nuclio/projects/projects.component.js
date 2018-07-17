@@ -5,10 +5,10 @@
         .component('nclProjects', {
             bindings: {
                 projects: '<',
-                createProjectCallback: '&',
-                deleteProjectCallback: '&',
-                updateProjectCallback: '&',
-                getProjectsCallback: '&'
+                createProject: '&',
+                deleteProject: '&',
+                updateProject: '&',
+                getProjects: '&'
             },
             templateUrl: 'nuclio/projects/projects.tpl.html',
             controller: NclProjectsController
@@ -68,9 +68,6 @@
 
         ctrl.isColumnSorted = CommonTableService.isColumnSorted;
 
-        ctrl.deleteProject = deleteProject;
-        ctrl.updateProjects = updateProjects;
-        ctrl.updateProject = updateProject;
         ctrl.handleAction = handleAction;
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isProjectsListEmpty = isProjectsListEmpty;
@@ -116,32 +113,15 @@
         //
 
         /**
-         * Deletes project
-         * Call callback which responsible for deleting project
-         * @param {Object} project
-         */
-        function deleteProject(project) {
-            return ctrl.deleteProjectCallback({project: project});
-        }
-
-        /**
          * Updates current projects
          */
         function updateProjects() {
             ctrl.isSplashShowed.value = true;
 
-            ctrl.getProjectsCallback()
+            ctrl.getProjects()
                 .finally(function () {
                     ctrl.isSplashShowed.value = false;
                 });
-        }
-
-        /**
-         * Calls callback to update a single project
-         * @param project
-         */
-        function updateProject(project) {
-            ctrl.updateProjectCallback({project: project});
         }
 
         /**
@@ -239,11 +219,11 @@
         function openNewProjectDialog() {
             ngDialog.open({
                 template: '<ncl-new-project-dialog data-close-dialog="closeThisDialog(project)" ' +
-                'data-create-project-callback="ngDialogData.createProject(project)"></ncl-new-project-dialog>',
+                'data-create-project-callback="ngDialogData.createProject({project: project})"></ncl-new-project-dialog>',
                 plain: true,
                 scope: $scope,
                 data: {
-                    createProject: createProject
+                    createProject: ctrl.createProject
                 },
                 className: 'ngdialog-theme-nuclio'
             })
@@ -357,18 +337,6 @@
                     };
                 }
             }
-        }
-
-        //
-        // Private methods
-        //
-
-        /**
-         * Сalls callback which responsible for creare new project.
-         * @param {Object} project
-         */
-        function createProject(project) {
-            return ctrl.createProjectCallback({project: project});
         }
     }
 }());

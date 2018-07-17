@@ -162,7 +162,7 @@
                     var msg = 'Oops: Unknown error occurred while getting function\'s templates';
 
                     if (!lodash.isEmpty(error.errors)) {
-                        msg = error.errors[0].detail
+                        msg = error.errors[0].detail;
                     }
 
                     DialogsService.alert(msg);

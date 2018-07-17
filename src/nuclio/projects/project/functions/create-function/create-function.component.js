@@ -4,8 +4,8 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclCreateFunction', {
             bindings: {
-                getProjectCallback: '&',
-                getTemplatesCallback: '&',
+                getProject: '&',
+                getTemplates: '&',
                 templates: '<'
             },
             templateUrl: 'nuclio/projects/project/functions/create-function/create-function.tpl.html',
@@ -41,7 +41,6 @@
         ctrl.toggleSplashScreen = toggleSplashScreen;
         ctrl.isTypeSelected = isTypeSelected;
         ctrl.selectFunctionType = selectFunctionType;
-        ctrl.getFunctionTemplates = getFunctionTemplates;
 
         //
         // Hook methods
@@ -51,7 +50,7 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.getProjectCallback({id: $stateParams.projectId})
+            ctrl.getProject({id: $stateParams.projectId})
                 .then(function (project) {
                     ctrl.project = project;
 
@@ -68,7 +67,7 @@
                     var msg = 'Oops: Unknown error occurred while retrieving project';
 
                     if (!lodash.isEmpty(error.errors)) {
-                        msg = error.errors[0].detail
+                        msg = error.errors[0].detail;
                     }
 
                     DialogsService.alert(msg);
@@ -112,14 +111,6 @@
             if (!lodash.isEqual(functionType, selectedFunctionType)) {
                 selectedFunctionType = functionType;
             }
-        }
-
-        /**
-         * Gets list of function templates
-         * @returns {Promise}
-         */
-        function getFunctionTemplates() {
-            return ctrl.getTemplatesCallback();
         }
 
         /**

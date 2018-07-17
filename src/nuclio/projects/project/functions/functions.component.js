@@ -4,17 +4,17 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclFunctions', {
             bindings: {
-                getExternalIpAddressesCallback: '&',
-                getProjectCallback: '&',
-                getFunctionsCallback: '&',
-                deleteFunctionCallback: '&'
+                getExternalIpAddresses: '&',
+                getProject: '&',
+                getFunctions: '&',
+                deleteFunction: '&'
             },
             templateUrl: 'nuclio/projects/project/functions/functions.tpl.html',
             controller: FunctionsController
         });
 
     function FunctionsController($filter, $q, $rootScope, $scope, $state, $stateParams, $timeout, lodash, CommonTableService,
-                                 ConfigService, DialogsService, NuclioClientService, NuclioHeaderService, NuclioProjectsDataService, NuclioFunctionsDataService) {
+                                 ConfigService, DialogsService, NuclioHeaderService) {
         var ctrl = this;
         var title = {}; // breadcrumbs config
 
@@ -71,7 +71,6 @@
 
         ctrl.isColumnSorted = CommonTableService.isColumnSorted;
 
-        ctrl.deleteFunction = deleteFunction;
         ctrl.getVersions = getVersions;
         ctrl.handleAction = handleAction;
         ctrl.isDemoMode = ConfigService.isDemoMode;
@@ -96,7 +95,7 @@
             if (angular.isDefined($stateParams.projectId)) {
                 ctrl.isSplashShowed.value = true;
 
-                ctrl.getProjectCallback({id: $stateParams.projectId})
+                ctrl.getProject({id: $stateParams.projectId})
                     .then(function (project) {
                         ctrl.project = project;
 
@@ -112,13 +111,13 @@
                         var msg = 'Oops: Unknown error occurred while retrieving project';
 
                         if (!lodash.isEmpty(error.errors)) {
-                            msg = error.errors[0].detail
+                            msg = error.errors[0].detail;
                         }
 
                         DialogsService.alert(msg);
                     });
 
-                ctrl.getExternalIpAddressesCallback()
+                ctrl.getExternalIpAddresses()
                     .then(function (response) {
                         ctrl.externalIPAddress = response.data.externalIPAddresses.addresses[0];
                     })
@@ -127,7 +126,7 @@
                         var msg = 'Oops: Unknown error occurred while retrieving external IP address';
 
                         if (!lodash.isEmpty(error.errors)) {
-                            msg = error.errors[0].detail
+                            msg = error.errors[0].detail;
                         }
 
                         DialogsService.alert(msg);
@@ -136,7 +135,7 @@
                 ctrl.refreshFunctions();
             }
 
-            ctrl.actions = NuclioFunctionsDataService.initVersionActions();
+            ctrl.actions = initVersionActions();
 
             $scope.$on('$stateChangeStart', stateChangeStart);
             $scope.$on('action-panel_fire-action', onFireAction);
@@ -151,15 +150,6 @@
         //
         // Public methods
         //
-
-        /**
-         * Calls callback which responsible to delete a single function
-         * @param functionData
-         * @returns {*}
-         */
-        function deleteFunction(functionData) {
-            return ctrl.deleteFunctionCallback({functionData: functionData});
-        }
 
         /**
          * Gets list of function versions
@@ -270,7 +260,7 @@
         function refreshFunctions() {
             ctrl.isSplashShowed.value = true;
 
-            ctrl.getFunctionsCallback({id: ctrl.project.metadata.name, namespace: ctrl.project.metadata.namespace})
+            ctrl.getFunctions({id: ctrl.project.metadata.name, namespace: ctrl.project.metadata.namespace})
                 .then(function (result) {
                     ctrl.functions = lodash.toArray(lodash.defaultTo(result.data, result));
 
@@ -298,7 +288,7 @@
                     var msg = 'Oops: Unknown error occurred while retrieving functions';
 
                     if (!lodash.isEmpty(error.errors)) {
-                        msg = error.errors[0].detail
+                        msg = error.errors[0].detail;
                     }
 
                     DialogsService.alert(msg);
@@ -340,6 +330,35 @@
         //
         // Private methods
         //
+
+        /**
+         * Actions for Action panel
+         * @returns {Object[]} - array of actions
+         */
+        function initVersionActions() {
+            var actions = [
+                {
+                    label: 'Edit',
+                    id: 'edit',
+                    icon: 'igz-icon-edit',
+                    active: true
+                },
+                {
+                    label: 'Delete',
+                    id: 'delete',
+                    icon: 'igz-icon-trash',
+                    active: true,
+                    confirm: {
+                        message: 'Are you sure you want to delete selected version?',
+                        yesLabel: 'Yes, Delete',
+                        noLabel: 'Cancel',
+                        type: 'critical_alert'
+                    }
+                }
+            ];
+
+            return actions;
+        }
 
         /**
          * Handler on action-panel broadcast

@@ -7,14 +7,14 @@
                 closeDialog: '&',
                 createEvent: '<',
                 selectedEvent: '<',
-                version: '<'
-
+                version: '<',
+                createFunctionEvent: '&'
             },
             templateUrl: 'nuclio/projects/project/functions/version/function-event-dialog/function-event-dialog.tpl.html',
             controller: NclFunctionEventDialogController
         });
 
-    function NclFunctionEventDialogController($timeout, lodash, EventHelperService, NuclioEventService) {
+    function NclFunctionEventDialogController($timeout, lodash, EventHelperService) {
         var ctrl = this;
 
         ctrl.inputModelOptions = {
@@ -155,15 +155,15 @@
                 ctrl.isLoadingState = true;
 
                 // save created event on beck-end
-                NuclioEventService.deployEvent(ctrl.workingCopy, ctrl.createEvent)
-                    .then(function (response) {
+                ctrl.createFunctionEvent({eventData: ctrl.workingCopy, isNewEvent: ctrl.createEvent})
+                    .then(function () {
                         ctrl.isDeployFailed = false;
 
                         // close dialog with newly created or updated event data, and state of event.
                         ctrl.closeDialog({
                             result: {
                                 isEventDeployed: true, // If isEventDeployed is 'true' that mean - dialog was closed after creating event, not by pressing 'X' button.
-                                selectedEvent: ctrl.createEvent ? response.data : ctrl.selectedEvent
+                                selectedEvent: ctrl.workingCopy
                             }
                         });
                     })
