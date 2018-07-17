@@ -13,7 +13,9 @@
     <ncl-breadcrumbs-dropdown data-state="$ctrl.mainHeaderTitle.state"
                               data-title=""
                               data-project="$ctrl.mainHeaderTitle.project"
-                              data-type="projects">
+                              data-type="projects"
+                              data-get-functions="$ctrl.getFunctions({id: id, namespace: namespace})"
+                              data-get-projects="$ctrl.getProjects()">
     </ncl-breadcrumbs-dropdown>
 </span>
 
@@ -25,7 +27,9 @@
                                   data-state="$ctrl.mainHeaderTitle.state"
                                   data-title=""
                                   data-project="$ctrl.mainHeaderTitle.project"
-                                  data-type="functions">
+                                  data-type="functions"
+                                  data-get-functions="$ctrl.getFunctions({id: id, namespace: namespace})"
+                                  data-get-projects="$ctrl.getProjects()">
         </ncl-breadcrumbs-dropdown>
 </span>
 

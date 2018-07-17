@@ -92,6 +92,8 @@
                                 <ncl-projects-table-row data-igz-resizable-row-cells
                                                         data-project="project"
                                                         data-projects-list="$ctrl.projects"
+                                                        data-delete-project="$ctrl.deleteProject({project: project})"
+                                                        data-update-project="$ctrl.updateProject({project: project})"
                                                         data-action-handler-callback="$ctrl.handleAction(actionType, checkedItems)"></ncl-projects-table-row>
                             </div>
                         </div>

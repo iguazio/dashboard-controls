@@ -3,12 +3,19 @@
 
     angular.module('iguazio.dashboard-controls')
         .component('nclProjects', {
+            bindings: {
+                projects: '<',
+                createProject: '&',
+                deleteProject: '&',
+                updateProject: '&',
+                getProjects: '&'
+            },
             templateUrl: 'nuclio/projects/projects.tpl.html',
             controller: NclProjectsController
         });
 
     function NclProjectsController($filter, $rootScope, $scope, $q, $state, lodash, ngDialog, ActionCheckboxAllService,
-                                   CommonTableService, ConfigService, DialogsService, NuclioProjectsDataService, ValidatingPatternsService) {
+                                   CommonTableService, ConfigService, DialogsService, ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -61,7 +68,6 @@
 
         ctrl.isColumnSorted = CommonTableService.isColumnSorted;
 
-        ctrl.updateProjects = updateProjects;
         ctrl.handleAction = handleAction;
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isProjectsListEmpty = isProjectsListEmpty;
@@ -112,23 +118,9 @@
         function updateProjects() {
             ctrl.isSplashShowed.value = true;
 
-            NuclioProjectsDataService.getProjects()
-                .then(function (response) {
-                    ctrl.projects = lodash.map(response, function (projectFromResponse) {
-                        var foundProject = lodash.find(ctrl.projects, ['metadata.name', projectFromResponse.metadata.name]);
-                        var projectChecked = lodash.get(foundProject, 'ui.checked', false);
-                        lodash.set(projectFromResponse, 'ui.checked', projectChecked);
-                        return projectFromResponse;
-                    });
-
-                    if (lodash.isEmpty(ctrl.projects)) {
-                        $state.go('app.nuclio-welcome');
-                    } else {
-                        ctrl.isSplashShowed.value = false;
-                    }
-                })
-                .catch(function () {
-                    DialogsService.alert('Oops: Unknown error occurred while retrieving projects');
+            ctrl.getProjects()
+                .finally(function () {
+                    ctrl.isSplashShowed.value = false;
                 });
         }
 
@@ -226,9 +218,13 @@
          */
         function openNewProjectDialog() {
             ngDialog.open({
-                template: '<ncl-new-project-dialog data-close-dialog="closeThisDialog(project)"></ncl-new-project-dialog>',
+                template: '<ncl-new-project-dialog data-close-dialog="closeThisDialog(project)" ' +
+                'data-create-project-callback="ngDialogData.createProject({project: project})"></ncl-new-project-dialog>',
                 plain: true,
                 scope: $scope,
+                data: {
+                    createProject: ctrl.createProject
+                },
                 className: 'ngdialog-theme-nuclio'
             })
                 .closePromise

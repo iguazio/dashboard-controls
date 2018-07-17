@@ -7,13 +7,15 @@
                 state: '<',
                 title: '<',
                 project: '<',
-                type: '@'
+                type: '@',
+                getFunctions: '&',
+                getProjects: '&'
             },
             templateUrl: 'nuclio/common/components/breadcrumbs-dropdown/breadcrumbs-dropdown.tpl.html',
             controller: NclBreadcrumbsDropdown
         });
 
-    function NclBreadcrumbsDropdown($document, $element, $rootScope, $scope, $state, $timeout, lodash, DialogsService, NuclioFunctionsDataService, NuclioProjectsDataService) {
+    function NclBreadcrumbsDropdown($document, $element, $rootScope, $scope, $state, $timeout, lodash, DialogsService) {
         var ctrl = this;
 
         ctrl.itemsList = [];
@@ -34,13 +36,13 @@
          */
         function onInit() {
             if (ctrl.type === 'projects') {
-                NuclioProjectsDataService.getProjects()
+                ctrl.getProjects()
                     .then(setNuclioItemsList)
                     .catch(function () {
                         DialogsService.alert('Oops: Unknown error occurred while retrieving projects');
                     });
             } else if (ctrl.type === 'functions') {
-                NuclioFunctionsDataService.getFunctions(ctrl.project.metadata.namespace, ctrl.project.metadata.name)
+                ctrl.getFunctions({id: ctrl.project.metadata.name, namespace: ctrl.project.metadata.namespace})
                     .then(setNuclioItemsList)
                     .catch(function () {
                         DialogsService.alert('Oops: Unknown error occurred while retrieving functions');
@@ -147,9 +149,9 @@
          */
         function setNuclioItemsList(data) {
             if (ctrl.type === 'projects') {
-                setProjectsItemList(data)
+                setProjectsItemList(data);
             } else if (ctrl.type === 'functions') {
-                setFunctionsItemList(data.data)
+                setFunctionsItemList(lodash.defaultTo(data.data, data));
             }
         }
 

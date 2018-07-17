@@ -25,7 +25,7 @@
                 <div class="actions-bar-right">
                     <div class="ncl-grouped-buttons">
                         <button type="button" class="test-version-button"
-                                data-ng-click="$ctrl.invokeFunction()"
+                                data-ng-click="$ctrl.handleInvokeFunction()"
                                 data-ng-disabled="!$ctrl.isFunctionDeployed || !$ctrl.selectedFunctionEvent"
                                 data-ng-class="{'disabled': !$ctrl.isFunctionDeployed || !$ctrl.selectedFunctionEvent}">
                             TEST
@@ -48,7 +48,7 @@
                                     function event</a>
                             </li>
                             <li data-ng-if="$ctrl.selectedFunctionEvent">
-                                <a class="icon-font-layer" href="#" data-ng-click="$ctrl.deleteFunctionEvent()">Delete
+                                <a class="icon-font-layer" href="#" data-ng-click="$ctrl.handleDeleteFunctionEvent()">Delete
                                     function event</a>
                             </li>
                         </ul>
@@ -58,7 +58,7 @@
             <div class="actions-bar-left actions-buttons-block">
                 <button class="ncl-new-entity-button"
                         data-ng-class="{'disabled': $ctrl.checkValidDeployState() || $ctrl.isDeployDisabled}"
-                        data-ng-click="$ctrl.checkValidDeployState() || $ctrl.deployVersion()">
+                        data-ng-click="$ctrl.checkValidDeployState() || $ctrl.deployButtonClick()">
                     Deploy
                 </button>
             </div>

@@ -5,16 +5,17 @@
         .component('nclFunctionFromTemplate', {
             bindings: {
                 project: '<',
-                toggleSplashScreen: '&'
+                toggleSplashScreen: '&',
+                getFunctionTemplates: '&'
             },
             templateUrl: 'nuclio/projects/project/functions/create-function/function-from-template/function-from-template.tpl.html',
             controller: FunctionFromTemplateController
         });
 
-    function FunctionFromTemplateController($state, $timeout, lodash, DialogsService, ValidatingPatternsService,
-                                            NuclioFunctionsDataService) {
+    function FunctionFromTemplateController($state, $timeout, lodash, DialogsService, ValidatingPatternsService) {
         var ctrl = this;
 
+        ctrl.templates = {};
         ctrl.functionName = '';
         ctrl.inputModelOptions = {
             debounce: {
@@ -24,7 +25,6 @@
         ctrl.functionData = {};
         ctrl.isCreateFunctionAllowed = false;
         ctrl.selectedTemplate = '';
-        ctrl.templates = {};
 
         ctrl.$onInit = onInit;
 
@@ -147,10 +147,9 @@
         function initFunctionData() {
 
             // gets all available function templates
-            NuclioFunctionsDataService.getTemplates()
+            ctrl.getFunctionTemplates()
                 .then(function (response) {
-                    convertFunctionTemplates(response.data);
-
+                    ctrl.templates = response;
                     ctrl.selectedTemplate = getSelectedTemplate();
                     var selectedTemplate = ctrl.templates[ctrl.selectedTemplate];
                     ctrl.functionData = angular.copy(selectedTemplate);
@@ -159,24 +158,18 @@
                         name: ctrl.functionName
                     });
                 })
-                .catch(function () {
-                    DialogsService.alert('Oops: Unknown error occurred while getting function\'s templates');
+                .catch(function (error) {
+                    var msg = 'Oops: Unknown error occurred while getting function\'s templates';
+
+                    if (!lodash.isEmpty(error.errors)) {
+                        msg = error.errors[0].detail;
+                    }
+
+                    DialogsService.alert(msg);
                 })
                 .finally(function () {
                     ctrl.toggleSplashScreen({value: false});
                 });
-        }
-
-        /**
-         * Converts function template to be more readable
-         * @param {Object} templates - templates to be convert
-         */
-        function convertFunctionTemplates(templates) {
-            lodash.forOwn(templates, function (value, key) {
-                var title = key.split(':')[0] + ' (' + value.spec.runtime + ')';
-
-                ctrl.templates[title] = value;
-            });
         }
     }
 }());

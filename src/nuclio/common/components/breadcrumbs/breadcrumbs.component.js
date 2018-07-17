@@ -3,6 +3,10 @@
 
     angular.module('iguazio.dashboard-controls')
         .component('nclBreadcrumbs', {
+            bindings: {
+                getProjects: '&',
+                getFunctions: '&'
+            },
             templateUrl: 'nuclio/common/components/breadcrumbs/breadcrumbs.tpl.html',
             controller: NclBreadcrumbsController
         });
