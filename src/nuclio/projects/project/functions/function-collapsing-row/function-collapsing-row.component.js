@@ -16,7 +16,7 @@
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController($state, lodash, NuclioClientService, NuclioHeaderService, DialogsService, ConfigService) {
+    function NclFunctionCollapsingRowController($state, lodash, NuclioHeaderService, DialogsService, ConfigService) {
         var ctrl = this;
 
         ctrl.actions = [];
