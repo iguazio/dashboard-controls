@@ -23,7 +23,7 @@
         });
 
     function NclVersionController($filter, $interval, $scope, $rootScope, $state, $stateParams, $timeout, $q, lodash,
-                                  ngDialog, YAML, ConfigService, DialogsService, NuclioEventService, NuclioHeaderService) {
+                                  ngDialog, YAML, ConfigService, DialogsService, NuclioHeaderService) {
         var ctrl = this;
         var deregisterFunction = null;
         var interval = null;
@@ -631,7 +631,6 @@
          */
         function setEventAsSelected(name) {
             ctrl.selectedFunctionEvent = lodash.find(ctrl.functionEvents, ['name', name]);
-            console.log(ctrl.functionEvents, name);
         }
 
         /**
