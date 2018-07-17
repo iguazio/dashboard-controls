@@ -34,7 +34,8 @@
             'dotnetcore': '.NET Core',
             'java': 'Java',
             'nodejs': 'NodeJS',
-            'shell': 'Shell'
+            'shell': 'Shell',
+            'ruby': 'Ruby'
         };
 
         ctrl.scrollConfig = {
