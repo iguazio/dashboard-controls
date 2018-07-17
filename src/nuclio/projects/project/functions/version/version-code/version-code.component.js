@@ -337,6 +337,14 @@
                     language: 'shellscript',
                     sourceCode: '',
                     visible: true
+                },
+                {
+                    id: 'ruby',
+                    ext: 'rb',
+                    name: 'Ruby',
+                    language: 'ruby',
+                    sourceCode: 'ZGVmIG1haW4oY29udGV4dCwgZXZlbnQpDQplbmQNCg==', // source code in base64
+                    visible: true
                 }
             ];
         }

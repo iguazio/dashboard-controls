@@ -187,6 +187,12 @@
                     name: 'Shell',
                     sourceCode: '',
                     visible: true
+                },
+                {
+                    id: 'ruby',
+                    name: 'Ruby',
+                    sourceCode: 'ZGVmIG1haW4oY29udGV4dCwgZXZlbnQpDQplbmQNCg==', // source code in base64
+                    visible: true
                 }
             ];
         }
