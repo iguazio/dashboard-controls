@@ -11,7 +11,8 @@
             controller: NclVersionConfigurationLabelsController
         });
 
-    function NclVersionConfigurationLabelsController($element, $rootScope, $timeout, lodash, PreventDropdownCutOffService) {
+    function NclVersionConfigurationLabelsController($element, $rootScope, $timeout, lodash,
+                                                     PreventDropdownCutOffService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {

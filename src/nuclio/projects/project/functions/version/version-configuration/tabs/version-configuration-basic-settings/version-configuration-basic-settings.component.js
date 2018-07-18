@@ -11,7 +11,8 @@
             controller: NclVersionConfigurationBasicSettingsController
         });
 
-    function NclVersionConfigurationBasicSettingsController($rootScope, $timeout, lodash, ConfigService, ValidatingPatternsService) {
+    function NclVersionConfigurationBasicSettingsController($rootScope, $timeout, lodash, ConfigService,
+                                                            ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.enableFunction = false;

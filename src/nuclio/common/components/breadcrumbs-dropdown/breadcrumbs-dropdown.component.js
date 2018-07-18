@@ -15,7 +15,7 @@
             controller: NclBreadcrumbsDropdown
         });
 
-    function NclBreadcrumbsDropdown($document, $element, $rootScope, $scope, $state, $timeout, lodash, DialogsService) {
+    function NclBreadcrumbsDropdown($document, $element, $scope, $state, lodash, DialogsService) {
         var ctrl = this;
 
         ctrl.itemsList = [];

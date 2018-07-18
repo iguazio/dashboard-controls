@@ -36,7 +36,10 @@
 
             $scope.$watch('selectedCodeFile.code', function () {
                 if (angular.isFunction(ctrl.onChangeSourceCodeCallback)) {
-                    ctrl.onChangeSourceCodeCallback({sourceCode: $scope.selectedCodeFile.code, language: $scope.selectedCodeFile.language});
+                    ctrl.onChangeSourceCodeCallback({
+                        sourceCode: $scope.selectedCodeFile.code,
+                        language: $scope.selectedCodeFile.language
+                    });
                 }
             });
 

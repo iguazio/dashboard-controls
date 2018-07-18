@@ -11,7 +11,7 @@
             controller: NclBreadcrumbsController
         });
 
-    function NclBreadcrumbsController($timeout, $element, $rootScope, $scope, $state, $stateParams, $window, lodash, NavigationTabsService, DialogsService) {
+    function NclBreadcrumbsController($scope, $state, lodash, NavigationTabsService) {
         var ctrl = this;
 
         ctrl.mainHeaderTitle = {};
