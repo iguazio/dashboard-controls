@@ -11,7 +11,7 @@
             controller: NclVersionConfigurationBuildController
         });
 
-    function NclVersionConfigurationBuildController($stateParams, $scope, $timeout, lodash, ngDialog, Upload, ConfigService) {
+    function NclVersionConfigurationBuildController($scope, lodash, ngDialog, Upload, ConfigService) {
         var ctrl = this;
         var uploadType = '';
 

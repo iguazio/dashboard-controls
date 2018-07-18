@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('NuclioHeaderService', NuclioHeaderService);
 
-    function NuclioHeaderService($timeout, $rootScope, $state, lodash) {
+    function NuclioHeaderService($rootScope, $state, lodash) {
         return {
             updateMainHeader: updateMainHeader
         };

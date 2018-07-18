@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationController
         });
 
-    function NclVersionConfigurationController($stateParams, lodash, ConfigService, VersionHelperService) {
+    function NclVersionConfigurationController(ConfigService, VersionHelperService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {

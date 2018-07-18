@@ -14,8 +14,8 @@
             controller: NclProjectsController
         });
 
-    function NclProjectsController($filter, $rootScope, $scope, $q, $state, lodash, ngDialog, ActionCheckboxAllService,
-                                   CommonTableService, ConfigService, DialogsService, ValidatingPatternsService) {
+    function NclProjectsController($filter, $rootScope, $scope, $q, lodash, ngDialog, ActionCheckboxAllService,
+                                   CommonTableService, ConfigService, ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.actions = [];

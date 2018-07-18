@@ -13,8 +13,8 @@
             controller: FunctionsController
         });
 
-    function FunctionsController($filter, $q, $rootScope, $scope, $state, $stateParams, $timeout, lodash, CommonTableService,
-                                 ConfigService, DialogsService, NuclioHeaderService) {
+    function FunctionsController($filter, $q, $rootScope, $scope, $state, $stateParams, $timeout, lodash,
+                                 CommonTableService, ConfigService, DialogsService, NuclioHeaderService) {
         var ctrl = this;
         var title = {}; // breadcrumbs config
 

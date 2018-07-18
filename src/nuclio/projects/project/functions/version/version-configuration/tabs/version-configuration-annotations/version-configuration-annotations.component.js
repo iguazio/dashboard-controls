@@ -11,7 +11,8 @@
             controller: NclVersionConfigurationAnnotationsController
         });
 
-    function NclVersionConfigurationAnnotationsController($element, $rootScope, $stateParams, $timeout, lodash, PreventDropdownCutOffService) {
+    function NclVersionConfigurationAnnotationsController($element, $rootScope, $timeout, lodash,
+                                                          PreventDropdownCutOffService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {

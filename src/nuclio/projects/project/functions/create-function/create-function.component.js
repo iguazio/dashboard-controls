@@ -12,7 +12,7 @@
             controller: CreateFunctionController
         });
 
-    function CreateFunctionController($element, $state, $stateParams, $timeout, lodash, DialogsService, NuclioHeaderService) {
+    function CreateFunctionController($element, $state, $stateParams, lodash, DialogsService, NuclioHeaderService) {
         var ctrl = this;
         var selectedFunctionType = 'from_scratch';
 

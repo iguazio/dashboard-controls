@@ -10,8 +10,8 @@
             controller: NclVersionCodeController
         });
 
-    function NclVersionCodeController($element, $rootScope, $stateParams, $timeout, lodash, ConfigService, DialogsService,
-                                      PreventDropdownCutOffService, VersionHelperService) {
+    function NclVersionCodeController($element, $rootScope, $timeout, lodash, ConfigService, DialogsService,
+                                      VersionHelperService) {
         var ctrl = this;
 
         var previousEntryType = null;

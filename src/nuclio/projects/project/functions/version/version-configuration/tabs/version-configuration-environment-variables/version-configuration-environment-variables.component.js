@@ -11,7 +11,8 @@
             controller: NclVersionConfigurationEnvironmentVariablesController
         });
 
-    function NclVersionConfigurationEnvironmentVariablesController($element, $rootScope, $stateParams, $timeout, lodash, PreventDropdownCutOffService) {
+    function NclVersionConfigurationEnvironmentVariablesController($element, $rootScope, $timeout, lodash,
+                                                                   PreventDropdownCutOffService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {

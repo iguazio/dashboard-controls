@@ -12,8 +12,8 @@
             controller: NclEditItemController
         });
 
-    function NclEditItemController($document, $element, $rootScope, $scope, $timeout, lodash, ConverterService, FunctionsService, FormValidationService,
-                                   PreventDropdownCutOffService) {
+    function NclEditItemController($document, $element, $rootScope, $scope, $timeout, lodash, ConverterService,
+                                   FunctionsService, FormValidationService, PreventDropdownCutOffService) {
         var ctrl = this;
 
         ctrl.classList = [];

@@ -11,7 +11,7 @@
             controller: NclVersionConfigurationDataBindingsController
         });
 
-    function NclVersionConfigurationDataBindingsController($rootScope, $stateParams, lodash, DialogsService) {
+    function NclVersionConfigurationDataBindingsController($rootScope, lodash, DialogsService) {
         var ctrl = this;
 
         ctrl.isCreateModeActive = false;

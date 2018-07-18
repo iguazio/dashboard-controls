@@ -8,7 +8,7 @@
             controller: NclFunctionController
         });
 
-    function NclFunctionController($state, $timeout, ConfigService, HeaderService) {
+    function NclFunctionController() {
         var ctrl = this;
     }
 }());
