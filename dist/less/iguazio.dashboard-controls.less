@@ -6857,127 +6857,6 @@ ncl-functions {
     }
 }
 
-.function-import-wrapper-content {
-    font-family: @font-family-sans-serif;
-    padding-left: 3%;
-    width: 96%;
-
-    .splash-screen {
-        top: 0;
-    }
-
-    .function-import-file-picker {
-        margin-bottom: 5px;
-
-        .file-picker-wrapper {
-            cursor: pointer;
-            height: 36px;
-            padding: 12px 21px;
-            margin-left: unset;
-
-            .igz-icon-upload {
-                margin-right: 10px;
-            }
-        }
-
-        .function-import-input {
-            opacity: 0;
-            position: absolute;
-            z-index: -1;
-        }
-    }
-
-    .function-import-monaco {
-        .ncl-monaco {
-            height: 370px;
-            width: 100%;
-
-            .monaco-code-editor {
-                height: 100%;
-            }
-        }
-    }
-
-    .bottom-bar {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 20px;
-    }
-}
-
-.function-from-scratch-content {
-    .splash-screen {
-        top: 0;
-    }
-
-    .title-wrapper {
-        margin-left: 50px;
-
-        .title {
-            color: @ncl-dusk-three;
-            font-size: 16px;
-            font-weight: bold;
-        }
-    }
-
-    .function-configuration {
-        margin: 28px 0 0 0;
-
-        .configuration-form {
-            display: flex;
-
-            .function-name-wrapper {
-                width: 50%;
-                padding-right: 24px;
-                padding-left: 80px;
-
-                .function-name {
-                    .input-label {
-                        font-size: 14px;
-                        font-weight: 600;
-                        color: @ncl-dusk-three;
-                    }
-
-                    igz-validating-input-field {
-                        margin-left: 2px;
-                    }
-                }
-            }
-
-            .function-runtime-wrapper {
-                width: 50%;
-                padding-left: 24px;
-                padding-right: 10%;
-
-                .function-runtime {
-                    .input-label {
-                        font-size: 14px;
-                        font-weight: 600;
-                        color: @ncl-dusk-three;
-                    }
-
-                    igz-default-dropdown {
-                        .default-dropdown {
-                            background-color: @ncl-white;
-
-                            .default-dropdown-field {
-                                &:focus {
-                                    background-color: inherit;
-                                }
-                            }
-                        }
-                    }
-
-                    .bottom-bar {
-                        display: flex;
-                        justify-content: flex-end;
-                        margin-top: 48px;
-                    }
-                }
-            }
-        }
-    }
-}
 .function-from-template-content {
     padding: 0 72px 0 63px;
 
@@ -7096,6 +6975,146 @@ ncl-functions {
     }
 }
 
+.function-from-scratch-content {
+    .splash-screen {
+        top: 0;
+    }
+
+    .title-wrapper {
+        margin-left: 50px;
+
+        .title {
+            color: @ncl-dusk-three;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    }
+
+    .function-configuration {
+        margin: 28px 0 0 0;
+
+        .configuration-form {
+            display: flex;
+
+            .function-name-wrapper {
+                width: 50%;
+                padding-right: 24px;
+                padding-left: 80px;
+
+                .function-name {
+                    .input-label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: @ncl-dusk-three;
+                    }
+
+                    igz-validating-input-field {
+                        margin-left: 2px;
+                    }
+                }
+            }
+
+            .function-runtime-wrapper {
+                width: 50%;
+                padding-left: 24px;
+                padding-right: 10%;
+
+                .function-runtime {
+                    .input-label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: @ncl-dusk-three;
+                    }
+
+                    igz-default-dropdown {
+                        .default-dropdown {
+                            background-color: @ncl-white;
+
+                            .default-dropdown-field {
+                                &:focus {
+                                    background-color: inherit;
+                                }
+                            }
+                        }
+                    }
+
+                    .bottom-bar {
+                        display: flex;
+                        justify-content: flex-end;
+                        margin-top: 48px;
+                    }
+                }
+            }
+        }
+    }
+}
+.function-import-wrapper-content {
+    font-family: @font-family-sans-serif;
+    padding-left: 3%;
+    width: 96%;
+
+    .splash-screen {
+        top: 0;
+    }
+
+    .function-import-file-picker {
+        margin-bottom: 5px;
+
+        .file-picker-wrapper {
+            cursor: pointer;
+            height: 36px;
+            padding: 12px 21px;
+            margin-left: unset;
+
+            .igz-icon-upload {
+                margin-right: 10px;
+            }
+        }
+
+        .function-import-input {
+            opacity: 0;
+            position: absolute;
+            z-index: -1;
+        }
+    }
+
+    .function-import-monaco {
+        .ncl-monaco {
+            height: 370px;
+            width: 100%;
+
+            .monaco-code-editor {
+                height: 100%;
+            }
+        }
+    }
+
+    .bottom-bar {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
+}
+
+.ncl-function-version-row {
+    .actions-menu {
+        visibility: hidden;
+    }
+
+    &.common-table-row {
+        height: 49px;
+
+        &:hover {
+            .actions-menu {
+                visibility: visible;
+            }
+
+            .check-row {
+                background-color: @ncl-pale-grey-three;
+            }
+        }
+    }
+}
 .function-event-wrapper {
     width: 600px;
     margin-bottom: -23px;
@@ -7178,84 +7197,6 @@ ncl-functions {
                 }
             }
         }
-    }
-}
-
-.ncl-function-version-row {
-    .actions-menu {
-        visibility: hidden;
-    }
-
-    &.common-table-row {
-        height: 49px;
-
-        &:hover {
-            .actions-menu {
-                visibility: visible;
-            }
-
-            .check-row {
-                background-color: @ncl-pale-grey-three;
-            }
-        }
-    }
-}
-.ncl-version-configuration {
-    > .igz-scrollable-container {
-        padding: 24px 25px 22px 41px;
-    }
-
-    .ncl-version-configuration-wrapper {
-        > .row {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-
-            .configuration-block {
-                padding: 16px 23px 16px;
-                background-color: @ncl-white;
-                border: solid 1px @ncl-pale-grey;
-                flex-grow: 1;
-                flex-basis: 500px;
-                overflow: hidden;
-                margin-right: 16px;
-                margin-bottom: 16px;
-
-                .igz-scrollable-container {
-                    max-height: 500px;
-                }
-
-                .title {
-                    font-size: 16px;
-                    font-weight: bold;
-                    font-style: normal;
-                    font-stretch: normal;
-                    letter-spacing: normal;
-                    text-align: left;
-                    color: @ncl-dusk-three;
-                    margin-bottom: 12px;
-                }
-
-                .row {
-                    .label {
-                        display: block;
-                        font-family: Roboto, sans-serif;
-                        font-size: 14px;
-                        font-weight: 500;
-                        font-style: normal;
-                        font-stretch: normal;
-                        letter-spacing: normal;
-                        text-align: left;
-                        color: @ncl-dusk-three;
-                        padding: 0;
-                    }
-                }
-            }
-        }
-    }
-
-    .invisible-block {
-        visibility: hidden;
     }
 }
 
@@ -7418,6 +7359,65 @@ ncl-functions {
         .code-edit-section {
             height: 900px;
         }
+    }
+}
+
+.ncl-version-configuration {
+    > .igz-scrollable-container {
+        padding: 24px 25px 22px 41px;
+    }
+
+    .ncl-version-configuration-wrapper {
+        > .row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+
+            .configuration-block {
+                padding: 16px 23px 16px;
+                background-color: @ncl-white;
+                border: solid 1px @ncl-pale-grey;
+                flex-grow: 1;
+                flex-basis: 500px;
+                overflow: hidden;
+                margin-right: 16px;
+                margin-bottom: 16px;
+
+                .igz-scrollable-container {
+                    max-height: 500px;
+                }
+
+                .title {
+                    font-size: 16px;
+                    font-weight: bold;
+                    font-style: normal;
+                    font-stretch: normal;
+                    letter-spacing: normal;
+                    text-align: left;
+                    color: @ncl-dusk-three;
+                    margin-bottom: 12px;
+                }
+
+                .row {
+                    .label {
+                        display: block;
+                        font-family: Roboto, sans-serif;
+                        font-size: 14px;
+                        font-weight: 500;
+                        font-style: normal;
+                        font-stretch: normal;
+                        letter-spacing: normal;
+                        text-align: left;
+                        color: @ncl-dusk-three;
+                        padding: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    .invisible-block {
+        visibility: hidden;
     }
 }
 
@@ -7951,6 +7951,30 @@ ncl-functions {
         }
     }
 }
+.ncl-version-configuration-logging {
+    .row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 3px;
+
+        > div {
+            flex: 1;
+
+            &:not(:last-child) {
+                margin-right: 16px;
+            }
+
+            .label {
+                padding: 0;
+                margin-bottom: 5px;
+            }
+
+            &.logger-input {
+                flex-grow: 1.8;
+            }
+        }
+    }
+}
 @desktop-middle: 1550px;
 
 .ncl-version-configuration-resources {
@@ -8058,30 +8082,6 @@ ncl-functions {
             resize: none;
             white-space: pre;
             overflow-x: auto;
-        }
-    }
-}
-.ncl-version-configuration-logging {
-    .row {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 3px;
-
-        > div {
-            flex: 1;
-
-            &:not(:last-child) {
-                margin-right: 16px;
-            }
-
-            .label {
-                padding: 0;
-                margin-bottom: 5px;
-            }
-
-            &.logger-input {
-                flex-grow: 1.8;
-            }
         }
     }
 }

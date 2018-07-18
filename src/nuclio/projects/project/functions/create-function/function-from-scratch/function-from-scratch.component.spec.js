@@ -4,18 +4,16 @@ describe('nclFunctionFromScratch Component:', function () {
     var $q;
     var $timeout;
     var ctrl;
-    var NuclioProjectsDataService;
     var runtimes;
 
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_, _$rootScope_, _$q_, _$timeout_, _NuclioProjectsDataService_) {
+        inject(function (_$componentController_, _$rootScope_, _$q_, _$timeout_) {
             $componentController = _$componentController_;
             $rootScope = _$rootScope_;
             $q = _$q_;
             $timeout = _$timeout_;
-            NuclioProjectsDataService = _NuclioProjectsDataService_;
         });
 
         runtimes = [
@@ -86,14 +84,19 @@ describe('nclFunctionFromScratch Component:', function () {
             }
         ];
 
-        spyOn(NuclioProjectsDataService, 'getProject').and.callFake(function () {
-            return $q.when({metadata: {namespace: 'nuclio'}});
-        });
+        var bindings = {
+            toggleSplashScreen: angular.noop,
+            getProject: function () {
+                return $q.when({
+                    metadata: {
+                        namespace: 'nuclio'
+                    }
+                });
+            }
+        };
 
-        ctrl = $componentController('nclFunctionFromScratch', null, {toggleSplashScreen: angular.noop});
-
+        ctrl = $componentController('nclFunctionFromScratch', null, bindings);
         ctrl.$onInit();
-
         $rootScope.$digest();
     });
 
@@ -103,7 +106,6 @@ describe('nclFunctionFromScratch Component:', function () {
         $q = null;
         $timeout = null;
         ctrl = null;
-        NuclioProjectsDataService = null;
         runtimes = null;
     });
 

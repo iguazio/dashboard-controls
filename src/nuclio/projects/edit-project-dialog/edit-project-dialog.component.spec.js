@@ -2,7 +2,6 @@ describe('nclEditProjectDialog component:', function () {
     var $componentController;
     var $q;
     var $rootScope;
-    var NuclioProjectsDataService;
     var ctrl;
     var scope;
     var project;
@@ -10,11 +9,10 @@ describe('nclEditProjectDialog component:', function () {
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_, _$q_, _$rootScope_, _NuclioProjectsDataService_) {
+        inject(function (_$componentController_, _$q_, _$rootScope_) {
             $componentController = _$componentController_;
             $q = _$q_;
             $rootScope = _$rootScope_;
-            NuclioProjectsDataService = _NuclioProjectsDataService_;
         });
 
         scope = $rootScope.$new();
@@ -34,7 +32,8 @@ describe('nclEditProjectDialog component:', function () {
         var bindings = {
             project: project,
             confirm: angular.noop,
-            closeDialog: angular.noop
+            closeDialog: angular.noop,
+            updateProjectCallback: angular.noop
         };
 
         ctrl = $componentController('nclEditProjectDialog', {$scope: scope}, bindings);
@@ -46,7 +45,6 @@ describe('nclEditProjectDialog component:', function () {
         $q = null;
         $rootScope = null;
         ctrl = null;
-        NuclioProjectsDataService = null;
     });
 
     describe('$onInit(): ', function () {
@@ -56,39 +54,35 @@ describe('nclEditProjectDialog component:', function () {
     });
 
     describe('saveProject(): ', function () {
-        it('should resolve NuclioProjectsDataService.updateProject() method if form is valid', function () {
-            spyOn(NuclioProjectsDataService, 'updateProject').and.callFake(function () {
-                return $q.resolve();
-            });
+        it('should resolve `ctrl.updateProjectCallback()` method if form is valid', function () {
+            spyOn(ctrl, 'updateProjectCallback').and.returnValue($q.when());
             spyOn(ctrl, 'confirm').and.callThrough();
 
             ctrl.saveProject();
             $rootScope.$digest();
 
-            expect(NuclioProjectsDataService.updateProject).toHaveBeenCalledWith(ctrl.data);
+            expect(ctrl.updateProjectCallback).toHaveBeenCalledWith({ project: ctrl.data });
             expect(ctrl.confirm).toHaveBeenCalled();
             expect(ctrl.serverError).toBe('');
         });
 
         // todo error status cases
-        it('should reject NuclioProjectsDataService.updateProject() method if there is error' +
+        it('should reject `ctrl.updateProjectCallback()` method if there is error ' +
             '(missing mandatory fields) is response', function () {
-            spyOn(NuclioProjectsDataService, 'updateProject').and.callFake(function () {
-                return $q.reject({
-                    data: {
-                        errors: [
-                            {
-                                status: 400
-                            }
-                        ]
-                    }
-                });
-            });
+            spyOn(ctrl, 'updateProjectCallback').and.returnValue($q.reject({
+                data: {
+                    errors: [
+                        {
+                            status: 400
+                        }
+                    ]
+                }
+            }));
 
             ctrl.saveProject();
             $rootScope.$digest();
 
-            expect(NuclioProjectsDataService.updateProject).toHaveBeenCalledWith(ctrl.data);
+            expect(ctrl.updateProjectCallback).toHaveBeenCalledWith({ project: ctrl.data });
             expect(ctrl.serverError).toBe('Missing mandatory fields');
         });
     });

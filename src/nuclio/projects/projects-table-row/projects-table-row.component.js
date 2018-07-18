@@ -97,13 +97,9 @@
                     lodash.remove(ctrl.projectsList, ['metadata.name', ctrl.project.metadata.name]);
                 })
                 .catch(function (error) {
-                    var msg = 'Unknown error occurred while deleting the project.';
-
-                    if (!lodash.isEmpty(error.data.errors)) {
-                        msg = error.data.errors[0].detail;
-                    }
-
-                    return DialogsService.alert(msg);
+                    var detail = lodash.get(error, 'data.errors[0].detail');
+                    var errorMessage = lodash.defaultTo(detail, 'Unknown error occurred while deleting the project.');
+                    return DialogsService.alert(errorMessage);
                 });
         }
 
