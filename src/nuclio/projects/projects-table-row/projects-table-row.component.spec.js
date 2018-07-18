@@ -4,7 +4,6 @@ describe('nclProjectsTableRow component:', function () {
     var $rootScope;
     var ActionCheckboxAllService;
     var DialogsService;
-    var NuclioProjectsDataService;
     var ctrl;
     var project;
     var projectsList;
@@ -12,13 +11,12 @@ describe('nclProjectsTableRow component:', function () {
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_, _$q_, _$rootScope_, _ActionCheckboxAllService_, _DialogsService_, _NuclioProjectsDataService_) {
+        inject(function (_$componentController_, _$q_, _$rootScope_, _ActionCheckboxAllService_, _DialogsService_) {
             $rootScope = _$rootScope_;
             $componentController = _$componentController_;
             $q = _$q_;
             ActionCheckboxAllService = _ActionCheckboxAllService_;
             DialogsService = _DialogsService_;
-            NuclioProjectsDataService = _NuclioProjectsDataService_;
         });
 
         project = {
@@ -64,10 +62,12 @@ describe('nclProjectsTableRow component:', function () {
         ];
         var bindings = {
             project: project,
-            projectsList: angular.copy(projectsList)
+            projectsList: angular.copy(projectsList),
+            deleteProject: $q.when.bind($q)
         };
 
         ctrl = $componentController('nclProjectsTableRow', null, bindings);
+        ctrl.$onInit();
     });
 
     afterEach(function () {
@@ -77,13 +77,11 @@ describe('nclProjectsTableRow component:', function () {
         ctrl = null;
         ActionCheckboxAllService = null;
         DialogsService = null;
-        NuclioProjectsDataService = null;
     });
 
     describe('$onInit(): ', function () {
         it('should initialize `deleteProject`, `editProjects` actions and assign them to `ui` property of current project' +
            'should initialize `checked` status to `false`', function () {
-            ctrl.$onInit();
 
             expect(ctrl.project.ui.checked).toBeFalsy();
         });
@@ -95,37 +93,29 @@ describe('nclProjectsTableRow component:', function () {
     });
 
     describe('deleteProject(): ', function () {
-        it('should resolve NuclioProjectsDataService.deleteProject() method if there is error' +
+        it('should resolve `ctrl.deleteProject()` method if there is error ' +
             '(missing mandatory fields) is response', function () {
-            spyOn(NuclioProjectsDataService, 'deleteProject').and.callFake(function () {
-                return $q.resolve();
-            });
+            spyOn(ctrl, 'deleteProject').and.callThrough();
 
-            ctrl.$onInit();
             ctrl.project.ui.delete();
             $rootScope.$digest();
             project.ui = ctrl.project.ui;
 
-            expect(NuclioProjectsDataService.deleteProject).toHaveBeenCalledWith(project);
+            expect(ctrl.deleteProject).toHaveBeenCalledWith({ project: ctrl.project });
         });
 
         // todo error status cases
-        it('should resolve NuclioProjectsDataService.deleteProject() method if there is error' +
+        it('should resolve `ctrl.deleteProject()` method if there is error ' +
             '(missing mandatory fields) is response', function () {
-            spyOn(NuclioProjectsDataService, 'deleteProject').and.callFake(function () {
-                return $q.reject({
-                    status: 403
-                });
-            });
+            spyOn(ctrl, 'deleteProject').and.returnValue($q.reject());
             spyOn(DialogsService, 'alert');
 
-            ctrl.$onInit();
             ctrl.project.ui.delete();
             $rootScope.$digest();
             project.ui = ctrl.project.ui;
 
-            expect(NuclioProjectsDataService.deleteProject).toHaveBeenCalledWith(project);
-            expect(DialogsService.alert).toHaveBeenCalledWith('You do not have permissions to delete this project.');
+            expect(ctrl.deleteProject).toHaveBeenCalledWith({ project: ctrl.project });
+            expect(DialogsService.alert).toHaveBeenCalledWith('Unknown error occurred while deleting the project.');
         });
     });
 

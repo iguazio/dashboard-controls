@@ -2,18 +2,16 @@ describe('nclNewProjectDialog component:', function () {
     var $componentController;
     var $q;
     var $rootScope;
-    var NuclioProjectsDataService;
     var ctrl;
     var scope;
 
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_, _$q_, _$rootScope_, _NuclioProjectsDataService_) {
+        inject(function (_$componentController_, _$q_, _$rootScope_) {
             $componentController = _$componentController_;
             $q = _$q_;
             $rootScope = _$rootScope_;
-            NuclioProjectsDataService = _NuclioProjectsDataService_;
         });
 
         scope = $rootScope.$new();
@@ -21,10 +19,11 @@ describe('nclNewProjectDialog component:', function () {
             $valid: true
         };
         var bindings = {
-            closeDialog: angular.noop
+            closeDialog: angular.noop,
+            createProjectCallback: angular.noop
         };
 
-        ctrl = $componentController('nclNewProjectDialog', {$scope: scope}, bindings);
+        ctrl = $componentController('nclNewProjectDialog', { $scope: scope }, bindings);
 
         ctrl.$onInit();
     });
@@ -34,7 +33,6 @@ describe('nclNewProjectDialog component:', function () {
         $q = null;
         $rootScope = null;
         ctrl = null;
-        NuclioProjectsDataService = null;
     });
 
     describe('$onInit(): ', function () {
@@ -52,21 +50,9 @@ describe('nclNewProjectDialog component:', function () {
     });
 
     describe('createProject(): ', function () {
-        it('should resolve NuclioProjectsDataService.createProject() method if form is valid', function () {
-            spyOn(NuclioProjectsDataService, 'createProject').and.callFake(function () {
-                return $q.resolve();
-            });
+        it('should resolve `ctrl.createProjectCallback()` method if form is valid', function () {
+            spyOn(ctrl, 'createProjectCallback').and.returnValue($q.when());
             spyOn(ctrl, 'closeDialog').and.callThrough();
-
-            var blankData = {
-                metadata: {
-                    namespace: ''
-                },
-                spec: {
-                    displayName: '',
-                    description: ''
-                }
-            };
             var newData = {
                 metadata: {
                     namespace: 'nuclio'
@@ -83,24 +69,22 @@ describe('nclNewProjectDialog component:', function () {
             ctrl.createProject();
             $rootScope.$digest();
 
-            expect(NuclioProjectsDataService.createProject).toHaveBeenCalledWith(newData);
+            expect(ctrl.createProjectCallback).toHaveBeenCalledWith({ project: newData });
             expect(ctrl.closeDialog).toHaveBeenCalled();
         });
 
         // todo error status cases
-        it('should reject NuclioProjectsDataService.createProject() method if there is error' +
+        it('should reject `ctrl.createProjectCallback()` method if there is error ' +
             '(missing mandatory fields) is response', function () {
-            spyOn(NuclioProjectsDataService, 'createProject').and.callFake(function () {
-                return $q.reject({
-                    data: {
-                        errors: [
-                            {
-                                status: 400
-                            }
-                        ]
-                    }
-                });
-            });
+            spyOn(ctrl, 'createProjectCallback').and.returnValue($q.reject({
+                data: {
+                    errors: [
+                        {
+                            status: 400
+                        }
+                    ]
+                }
+            }));
 
             ctrl.data = {
                 metadata: {
@@ -117,7 +101,7 @@ describe('nclNewProjectDialog component:', function () {
             ctrl.createProject();
             $rootScope.$digest();
 
-            expect(NuclioProjectsDataService.createProject).toHaveBeenCalledWith(ctrl.data);
+            expect(ctrl.createProjectCallback).toHaveBeenCalledWith({ project: ctrl.data });
             expect(ctrl.serverError).toBe('Missing mandatory fields');
         });
     });

@@ -3,21 +3,17 @@ describe('nclFunctions component:', function () {
     var $rootScope;
     var $stateParams;
     var $q;
-    var NuclioFunctionsDataService;
-    var NuclioProjectsDataService;
     var ctrl;
     var project;
 
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_, _$rootScope_, _$stateParams_, _$q_, _NuclioFunctionsDataService_, _NuclioProjectsDataService_) {
+        inject(function (_$componentController_, _$rootScope_, _$stateParams_, _$q_) {
             $componentController = _$componentController_;
             $rootScope = _$rootScope_;
             $stateParams = _$stateParams_;
             $q = _$q_;
-            NuclioFunctionsDataService = _NuclioFunctionsDataService_;
-            NuclioProjectsDataService = _NuclioProjectsDataService_;
         });
 
         project = {
@@ -31,41 +27,35 @@ describe('nclFunctions component:', function () {
             }
         };
 
-        ctrl = $componentController('nclFunctions', null);
-
-        spyOn(NuclioFunctionsDataService, 'getFunctions').and.callFake(function () {
-            return {
-                then: function (callback) {
-                    callback({
-                        data: {
-                            myFunction1: {
-                                'metadata': {
-                                    'name': 'functionName1',
-                                    'namespace': 'nuclio'
-                                },
-                                'spec': {
-                                    'description': 'Some description',
-                                    'runtime': 'golang',
-                                    'replicas': 1,
-                                    'build': {},
-                                    'runRegistry': 'localhost:5000'
-                                },
-                                'version': -1
-
-                            }
+        var bindings = {
+            getExternalIpAddresses: $q.when.bind($q),
+            getFunctions: function () {
+                return $q.when({
+                    data: {
+                        myFunction1: {
+                            metadata: {
+                                name: 'functionName1',
+                                namespace: 'nuclio'
+                            },
+                            spec: {
+                                description: 'Some description',
+                                runtime: 'golang',
+                                replicas: 1,
+                                build: {},
+                                runRegistry: 'localhost:5000'
+                            },
+                            version: -1
                         }
-                    });
-                    return {catch: angular.noop};
-                }
-            };
-        });
-        spyOn(NuclioProjectsDataService, 'getProject').and.callFake(function () {
-            return $q.when(project);
-        });
+                    }
+                });
+            },
+            getProject: $q.when.bind($q, project)
+        };
+
+        ctrl = $componentController('nclFunctions', null, bindings);
         $stateParams.projectId = '18663872';
 
         ctrl.$onInit();
-
         $rootScope.$digest();
     });
 
@@ -74,15 +64,12 @@ describe('nclFunctions component:', function () {
         $rootScope = null;
         $stateParams = null;
         $q = null;
-        NuclioFunctionsDataService = null;
-        NuclioProjectsDataService = null;
         ctrl = null;
         project = null;
     });
 
     describe('$onInit(): ', function () {
         it('should set initial values for actions and delete function method', function () {
-            expect(NuclioProjectsDataService.getProject).toHaveBeenCalled();
             expect(ctrl.actions).not.toBe([]);
         });
     });
@@ -90,8 +77,6 @@ describe('nclFunctions component:', function () {
     describe('refreshFunctions(): ', function () {
         it('should update function list', function () {
             ctrl.refreshFunctions();
-
-            expect(NuclioFunctionsDataService.getFunctions).toHaveBeenCalled();
         });
     });
 

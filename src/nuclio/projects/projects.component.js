@@ -32,7 +32,6 @@
             value: true
         };
         ctrl.nameValidationPattern = ValidatingPatternsService.name;
-        ctrl.projects = [];
         ctrl.searchStates = {};
         ctrl.searchKeys = [
             'spec.displayName',

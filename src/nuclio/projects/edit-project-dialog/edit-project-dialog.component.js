@@ -59,7 +59,7 @@
                     ctrl.isLoadingState = true;
 
                     // use data from dialog to create a new project
-                    ctrl.updateProjectCallback({project: ctrl.data})
+                    ctrl.updateProjectCallback({ project: ctrl.data })
                         .then(function () {
                             ctrl.confirm();
                         })
