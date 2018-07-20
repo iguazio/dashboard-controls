@@ -191,7 +191,7 @@
                 {
                     id: 'ruby',
                     name: 'Ruby',
-                    sourceCode: 'ZGVmIG1haW4oY29udGV4dCwgZXZlbnQpDQplbmQNCg==', // source code in base64
+                    sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpDQplbmQ=', // source code in base64
                     visible: true
                 }
             ];
