@@ -137,7 +137,7 @@
                 ctrl.project = response.project;
 
                 // sets function events data
-                convertTestEventsData(response.events.data);
+                convertTestEventsData(response.events);
 
                 // breadcrumbs config
                 var title = {
@@ -183,7 +183,7 @@
             ctrl.getExternalIpAddresses()
                 .then(function (address) {
                     ctrl.version.ui.invocationURL = lodash.has(ctrl.version, 'status.httpPort') ?
-                        'http://' + address.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort : '';
+                        'http://' + address.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort : '';
                 })
                 .catch(function (error) {
                     var msg = 'Oops: Unknown error occurred while retrieving external IP address\'';
@@ -292,7 +292,7 @@
                         // update test events list
                         ctrl.getFunctionEvents({functionData: ctrl.version})
                             .then(function (response) {
-                                convertTestEventsData(response.data);
+                                convertTestEventsData(response);
 
                                 if (!lodash.isNil(data.value.selectedEvent)) {
                                     setEventAsSelected(data.value.selectedEvent.spec.displayName);
@@ -355,8 +355,8 @@
          */
         function getDeployStatusState(state) {
             return state === 'ready'    ? 'Successfully deployed' :
-                state === 'error'    ? 'Failed to deploy'      :
-                    'Deploying...'          ;
+                   state === 'error'    ? 'Failed to deploy'      :
+                             'Deploying...'          ;
         }
 
         /**
@@ -399,24 +399,16 @@
                         return $q.reject(response);
                     })
                     .catch(function (invocationData) {
-                        if (invocationData.config.headers['Content-Type'] === 'application/json' && lodash.isObject(invocationData.data)) {
+                        if (invocationData.headers['Content-Type'] === 'application/json' && lodash.isObject(invocationData.body)) {
                             eventContentType = 'json';
-                            invocationData.data = angular.toJson(angular.fromJson(invocationData.data), ' ', 4);
-                        } else if (lodash.startsWith(invocationData.config.headers['Content-Type'], 'image/')) {
+                            invocationData.body = angular.toJson(angular.fromJson(invocationData.body), ' ', 4);
+                        } else if (lodash.startsWith(invocationData.headers['Content-Type'], 'image/')) {
                             eventContentType = 'image';
                         }
 
-                        ctrl.testResult = {
-                            status: {
-                                state: invocationData.xhrStatus,
-                                statusCode: invocationData.status,
-                                statusText: invocationData.statusText
-                            },
-                            headers: invocationData.config.headers,
-                            body: invocationData.data
-                        };
+                        ctrl.testResult = invocationData;
                         ctrl.isDeployResultShown = false;
-                        ctrl.isInvocationSuccess = lodash.startsWith(invocationData.status, '2');
+                        ctrl.isInvocationSuccess = lodash.startsWith(String(invocationData.status), '2');
                         ctrl.isTestResultShown = true;
                     });
 
@@ -575,7 +567,7 @@
 
                             ctrl.getExternalIpAddresses()
                                 .then(function (address) {
-                                    ctrl.version.ui.invocationURL = 'http://' + address.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort;
+                                    ctrl.version.ui.invocationURL = 'http://' + address.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort;
                                 })
                                 .catch(function (error) {
                                     var msg = 'Oops: Unknown error occurred while retrieving external IP address';
