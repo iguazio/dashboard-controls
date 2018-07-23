@@ -109,12 +109,7 @@
                     .catch(function (error) {
                         ctrl.isSplashShowed.value = false;
                         var msg = 'Oops: Unknown error occurred while retrieving project';
-
-                        if (!lodash.isEmpty(error.errors)) {
-                            msg = error.errors[0].detail;
-                        }
-
-                        DialogsService.alert(msg);
+                        DialogsService.alert(lodash.get(error, 'error', msg));
                     });
 
                 ctrl.getExternalIpAddresses()
@@ -124,12 +119,7 @@
                     .catch(function (error) {
                         ctrl.isSplashShowed.value = false;
                         var msg = 'Oops: Unknown error occurred while retrieving external IP address';
-
-                        if (!lodash.isEmpty(error.errors)) {
-                            msg = error.errors[0].detail;
-                        }
-
-                        DialogsService.alert(msg);
+                        DialogsService.alert(lodash.get(error, 'error', msg));
                     });
             } else {
                 ctrl.refreshFunctions();
@@ -286,12 +276,7 @@
                 .catch(function (error) {
                     ctrl.isSplashShowed.value = false;
                     var msg = 'Oops: Unknown error occurred while retrieving functions';
-
-                    if (!lodash.isEmpty(error.errors)) {
-                        msg = error.errors[0].detail;
-                    }
-
-                    DialogsService.alert(msg);
+                    DialogsService.alert(lodash.get(error, 'error', msg));
                 });
         }
 

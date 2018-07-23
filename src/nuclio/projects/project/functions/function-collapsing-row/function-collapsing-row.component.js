@@ -146,12 +146,7 @@
                 .catch(function (error) {
                     ctrl.isSplashShowed.value = false;
                     var msg = 'Unknown error occurred while deleting the function.';
-
-                    if (!lodash.isEmpty(error.errors)) {
-                        msg = error.errors[0].detail;
-                    }
-
-                    return DialogsService.alert(msg);
+                    return DialogsService.alert(lodash.get(error, 'error', msg));
                 });
         }
 

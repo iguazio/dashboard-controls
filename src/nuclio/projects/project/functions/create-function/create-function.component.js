@@ -65,12 +65,7 @@
                 })
                 .catch(function (error) {
                     var msg = 'Oops: Unknown error occurred while retrieving project';
-
-                    if (!lodash.isEmpty(error.errors)) {
-                        msg = error.errors[0].detail;
-                    }
-
-                    DialogsService.alert(msg);
+                    DialogsService.alert(lodash.get(error, 'error', msg));
 
                     $state.go('app.projects');
                 })
