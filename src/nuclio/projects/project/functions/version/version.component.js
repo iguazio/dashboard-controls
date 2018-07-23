@@ -150,12 +150,7 @@
                 NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
             }).catch(function (error) {
                 var msg = 'Oops: Unknown error occurred while retrieving project or events';
-
-                if (!lodash.isEmpty(error.errors)) {
-                    msg = error.errors[0].detail;
-                }
-
-                DialogsService.alert(msg);
+                DialogsService.alert(lodash.get(error, 'error', msg));
             });
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
@@ -187,12 +182,7 @@
                 })
                 .catch(function (error) {
                     var msg = 'Oops: Unknown error occurred while retrieving external IP address\'';
-
-                    if (!lodash.isEmpty(error.data.errors)) {
-                        msg = error.data.errors[0].detail;
-                    }
-
-                    DialogsService.alert(msg);
+                    DialogsService.alert(lodash.get(error, 'error', msg));
                 });
         }
 
@@ -238,23 +228,13 @@
                                 .catch(function (error) {
                                     ctrl.isSplashShowed.value = false;
                                     var msg = 'Oops: Unknown error occurred while retrieving events';
-
-                                    if (!lodash.isEmpty(error.data.errors)) {
-                                        msg = error.data.errors[0].detail;
-                                    }
-
-                                    DialogsService.alert(msg);
+                                    DialogsService.alert(lodash.get(error, 'error', msg));
                                 });
                         })
                         .catch(function (error) {
                             ctrl.isSplashShowed.value = false;
                             var msg = 'Oops: Unknown error occurred while deleting event';
-
-                            if (!lodash.isEmpty(error.data.errors)) {
-                                msg = error.data.errors[0].detail;
-                            }
-
-                            DialogsService.alert(msg);
+                            DialogsService.alert(lodash.get(error, 'error', msg));
                         });
                 });
         }
@@ -303,12 +283,7 @@
                             .catch(function (error) {
                                 ctrl.isSplashShowed.value = false;
                                 var msg = 'Oops: Unknown error occurred while retrieving events';
-
-                                if (!lodash.isEmpty(error.data.errors)) {
-                                    msg = error.data.errors[0].detail;
-                                }
-
-                                DialogsService.alert(msg);
+                                DialogsService.alert(lodash.get(error, 'error', msg));
                             });
                     }
                 });
@@ -324,7 +299,11 @@
 
                 setDeployResult('building');
 
-                var versionCopy = lodash.omit(ctrl.version, ['status', 'ui']);
+                var pathsToExcludeOnDeploy = ['status', 'ui'];
+                if (!ConfigService.isDemoMode()) {
+                    pathsToExcludeOnDeploy.push('spec.loggerSinks');
+                }
+                var versionCopy = lodash.omit(ctrl.version, pathsToExcludeOnDeploy);
 
                 ctrl.isTestResultShown = false;
                 ctrl.isDeployResultShown = true;
@@ -356,7 +335,7 @@
         function getDeployStatusState(state) {
             return state === 'ready'    ? 'Successfully deployed' :
                    state === 'error'    ? 'Failed to deploy'      :
-                             'Deploying...'          ;
+                                          'Deploying...'          ;
         }
 
         /**
@@ -469,12 +448,7 @@
                             .catch(function (error) {
                                 ctrl.isSplashShowed.value = false;
                                 var msg = 'Oops: Unknown error occurred while deleting function';
-
-                                if (!lodash.isEmpty(error.errors)) {
-                                    msg = error.errors[0].detail;
-                                }
-
-                                DialogsService.alert(msg);
+                                DialogsService.alert(lodash.get(error, 'error', msg));
                             });
                     });
             } else if (item.id === 'exportFunction') {
@@ -571,12 +545,7 @@
                                 })
                                 .catch(function (error) {
                                     var msg = 'Oops: Unknown error occurred while retrieving external IP address';
-
-                                    if (!lodash.isEmpty(error.errors)) {
-                                        msg = error.errors[0].detail;
-                                    }
-
-                                    DialogsService.alert(msg);
+                                    DialogsService.alert(lodash.get(error, 'error', msg));
                                 });
 
                             ctrl.isFunctionDeployed = true;
