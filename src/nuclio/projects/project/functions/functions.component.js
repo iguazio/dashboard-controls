@@ -115,6 +115,8 @@
                         }
 
                         DialogsService.alert(msg);
+
+                        $state.go('app.projects');
                     });
 
                 ctrl.getExternalIpAddresses()
