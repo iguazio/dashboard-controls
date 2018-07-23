@@ -52,6 +52,7 @@ module.exports = {
             'vendor/jquery-ui/ui/mouse.js',
             'vendor/jquery-ui/ui/sortable.js',
             'vendor/moment/moment.js',
+            'vendor/js-base64/base64.js',
             'vendor/ng-file-upload/ng-file-upload.js',
             'vendor/ng-file-upload/FileAPI.js',
             'vendor/bootstrap/js/dropdown.js',

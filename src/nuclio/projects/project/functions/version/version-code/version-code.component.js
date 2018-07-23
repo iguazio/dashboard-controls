@@ -10,7 +10,7 @@
             controller: NclVersionCodeController
         });
 
-    function NclVersionCodeController($element, $rootScope, $timeout, lodash, ConfigService, DialogsService,
+    function NclVersionCodeController($element, $rootScope, $timeout, lodash, Base64, ConfigService, DialogsService,
                                       VersionHelperService) {
         var ctrl = this;
 
@@ -86,7 +86,7 @@
 
                 ctrl.sourceCode = savedSourceCode;
             } else {
-                ctrl.sourceCode = atob(sourceCode);
+                ctrl.sourceCode = Base64.decode(sourceCode);
 
                 lodash.set(ctrl.version, 'ui.versionCode', sourceCode);
             }
@@ -147,7 +147,7 @@
             } else {
                 var savedSourceCode = lodash.get(ctrl.version, 'ui.versionCode', '');
                 lodash.set(ctrl.version, 'spec.build.functionSourceCode', savedSourceCode);
-                ctrl.sourceCode = atob(savedSourceCode);
+                ctrl.sourceCode = Base64.decode(savedSourceCode);
 
                 $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: false});
             }
@@ -183,8 +183,8 @@
          * @param {string} sourceCode
          */
         function onChangeSourceCode(sourceCode) {
-            lodash.set(ctrl.version, 'spec.build.functionSourceCode', btoa(sourceCode));
-            lodash.set(ctrl.version, 'ui.versionCode', btoa(sourceCode));
+            lodash.set(ctrl.version, 'spec.build.functionSourceCode', Base64.encode(sourceCode));
+            lodash.set(ctrl.version, 'ui.versionCode', Base64.encode(sourceCode));
 
             ctrl.sourceCode = sourceCode;
 
