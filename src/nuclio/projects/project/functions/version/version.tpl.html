@@ -105,7 +105,7 @@
             <span class="result-status-icon"
                   data-ng-class="$ctrl.isInvocationSuccess ? 'igz-icon-tick-round' : 'igz-icon-block'">
             </span>
-                <span class="result-state">Response: {{$ctrl.testResult.status.statusText}}</span>
+                <span class="result-state">Response: {{$ctrl.testResult.statusText}}</span>
             </div>
 
             <div class="ncl-execution-result-block">
@@ -120,7 +120,7 @@
                 <div class="collapsed-block-content-wrapper" data-collapse="$ctrl.rowIsCollapsed.statusCode">
                     <div class="value-row"
                          data-ng-class="{'failed' : !$ctrl.isInvocationSuccess}">
-                        {{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}
+                        {{$ctrl.testResult.status}} {{$ctrl.testResult.statusText}}
                     </div>
                 </div>
             </div>

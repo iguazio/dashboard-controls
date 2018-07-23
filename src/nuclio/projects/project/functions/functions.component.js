@@ -119,7 +119,7 @@
 
                 ctrl.getExternalIpAddresses()
                     .then(function (response) {
-                        ctrl.externalIPAddress = response.data.externalIPAddresses.addresses[0];
+                        ctrl.externalIPAddress = response.externalIPAddresses.addresses[0];
                     })
                     .catch(function (error) {
                         ctrl.isSplashShowed.value = false;
