@@ -114,12 +114,11 @@
 
                 ctrl.getExternalIpAddresses()
                     .then(function (response) {
-                        ctrl.externalIPAddress = response.externalIPAddresses.addresses[0];
+                        ctrl.externalIPAddress = lodash.get(response, 'externalIPAddresses.addresses[0]', '');
                     })
-                    .catch(function (error) {
+                    .catch(function () {
                         ctrl.isSplashShowed.value = false;
-                        var msg = 'Oops: Unknown error occurred while retrieving external IP address';
-                        DialogsService.alert(lodash.get(error, 'error', msg));
+                        ctrl.externalIPAddress = '';
                     });
             } else {
                 ctrl.refreshFunctions();

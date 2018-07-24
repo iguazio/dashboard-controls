@@ -47,7 +47,7 @@
                 }
             }
 
-            ctrl.enableFunction = !lodash.get(ctrl.version, 'spec.disable', false);
+            ctrl.enableFunction = !lodash.get(ctrl.version, 'spec.disabled', false);
         }
 
         //
@@ -82,7 +82,7 @@
          * Switches enable/disable function status
          */
         function updateEnableStatus() {
-            lodash.set(ctrl.version, 'spec.disable', !ctrl.enableFunction);
+            lodash.set(ctrl.version, 'spec.disabled', !ctrl.enableFunction);
             ctrl.onChangeCallback();
         }
     }

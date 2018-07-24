@@ -36,19 +36,23 @@
         function onInit() {
 
             // initialize `deleteProject`, `editProjects` actions and assign them to `ui` property of current project
-            // TODO sets default `created_by` and `created_date` if they are not defined
             // initialize `checked` status to `false`
             lodash.defaultsDeep(ctrl.project, {
-                spec: {
-                    created_by: 'admin',
-                    created_date: moment().toISOString()
-                },
                 ui: {
                     checked: false,
                     delete: handleDeleteProject,
                     edit: editProject
                 }
             });
+
+            if (ConfigService.isDemoMode()) {
+                lodash.defaultsDeep(ctrl.project, {
+                    spec: {
+                        created_by: 'admin',
+                        created_date: moment().toISOString()
+                    }
+                });
+            }
 
             ctrl.actions = initActions();
         }

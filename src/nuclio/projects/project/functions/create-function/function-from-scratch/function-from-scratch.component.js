@@ -11,7 +11,8 @@
             controller: FunctionFromScratchController
         });
 
-    function FunctionFromScratchController($state, $timeout, lodash, FunctionsService, ValidatingPatternsService) {
+    function FunctionFromScratchController($state, $timeout, lodash, ConfigService, FunctionsService,
+                                           ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.inputModelOptions = {
@@ -218,8 +219,7 @@
                 },
                 spec: {
                     description: '',
-                    disable: false,
-                    timeoutSeconds: 0,
+                    disabled: false,
                     triggers: {},
                     env: [],
                     loggerSinks: [{
@@ -236,6 +236,10 @@
                     maxReplicas: 1
                 }
             };
+
+            if (ConfigService.isDemoMode()) {
+                ctrl.functionData.spec.timeoutSeconds = 0;
+            }
         }
     }
 }());
