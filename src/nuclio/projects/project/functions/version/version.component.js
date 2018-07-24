@@ -114,7 +114,7 @@
                 },
                 {
                     tabName: 'Triggers',
-                    uiRoute: 'app.project.function.edit.trigger'
+                    uiRoute: 'app.project.function.edit.triggers'
                 },
                 {
                     tabName: 'Status',
