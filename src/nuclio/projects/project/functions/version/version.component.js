@@ -176,13 +176,9 @@
             ctrl.version.ui.versionCode = lodash.defaultTo(ctrl.version.ui.versionCode, '');
 
             ctrl.getExternalIpAddresses()
-                .then(function (address) {
-                    ctrl.version.ui.invocationURL = lodash.has(ctrl.version, 'status.httpPort') ?
-                        'http://' + address.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort : '';
-                })
-                .catch(function (error) {
-                    var msg = 'Oops: Unknown error occurred while retrieving external IP address\'';
-                    DialogsService.alert(lodash.get(error, 'error', msg));
+                .then(setInvocationUrl)
+                .catch(function () {
+                    ctrl.version.ui.invocationURL = '';
                 });
         }
 
@@ -507,6 +503,18 @@
         }
 
         /**
+         * Sets the invocation URL of the function
+         * @param {{externalIPAddresses: {addresses: Array.<string>}}} result - the response body from
+         *     `getExternalIpAddresses`
+         */
+        function setInvocationUrl(result) {
+            var ip = lodash.get(result, 'externalIPAddresses.addresses[0]', '');
+            var port = lodash.get(ctrl.version, 'status.httpPort');
+            ctrl.version.ui.invocationURL =
+                lodash.isEmpty(ip) || !lodash.isNumber(port) ? '' : 'http://' + ip + ':' + port;
+        }
+
+        /**
          * Gets copy of ctrl.version without `ui` property
          */
         function getVersionCopy() {
@@ -540,12 +548,9 @@
                             };
 
                             ctrl.getExternalIpAddresses()
-                                .then(function (address) {
-                                    ctrl.version.ui.invocationURL = 'http://' + address.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort;
-                                })
-                                .catch(function (error) {
-                                    var msg = 'Oops: Unknown error occurred while retrieving external IP address';
-                                    DialogsService.alert(lodash.get(error, 'error', msg));
+                                .then(setInvocationUrl)
+                                .catch(function () {
+                                    ctrl.version.ui.invocationURL = '';
                                 });
 
                             ctrl.isFunctionDeployed = true;

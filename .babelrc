@@ -1,4 +1,5 @@
 {
     "presets": ["env"],
-    "plugins": ["angularjs-annotate"]
+    "plugins": ["angularjs-annotate"],
+    "ignore": ["node_modules/iguazio.dashboard-controls/dist/js/iguazio.dashboard-controls.js"]
 }
