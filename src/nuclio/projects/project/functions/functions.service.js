@@ -169,12 +169,6 @@
                                 allowEmpty: false
                             },
                             {
-                                name: 'numContainerWorkers',
-                                pattern: 'number',
-                                type: 'number-input',
-                                allowEmpty: true
-                            },
-                            {
                                 name: 'seekTo',
                                 values: [
                                     {
