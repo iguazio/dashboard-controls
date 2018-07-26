@@ -1,0 +1,43 @@
+<div class="ncl-test-events-logs">
+    <div class="functional-buttons"
+         data-ng-if="$ctrl.logs.length > 0">
+        <div class="ncl-icon-expand-all"
+             data-ng-click="$ctrl.expandAllRows(true)"></div>
+        <div class="ncl-icon-collapse-all"
+             data-ng-click="$ctrl.expandAllRows(false)"></div>
+    </div>
+    <div data-ng-repeat="log in $ctrl.logs">
+        <div class="collapsed-row text-ellipsis" data-ng-if="log.ui.collapsed">
+            <span class="igz-icon-right"
+                  data-ng-click="$ctrl.collapseRow(log, false)"></span>
+            <div class="level-icon {{$ctrl.getLevelIconClass(log)}}"></div>
+            <span class="date">{{log.time | date: "EEE, MMM d, yyyy, HH:mm:ss'GMT'" : "+0000"}}</span>
+            <div class="message text-ellipsis">{{log.message}}</div>
+            <div class="ncl-icon-parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"></div>
+        </div>
+        <div class="expanded-row" data-ng-if="!log.ui.collapsed">
+            <div class="header">
+                <span class="igz-icon-down"
+                      data-ng-click="$ctrl.collapseRow(log, true)"></span>
+                <div class="level-icon {{$ctrl.getLevelIconClass(log)}}"></div>
+                <span class="date">{{log.time | date: "EEE, MMM d, yyyy, HH:mm:ss'GMT'" : "+0000"}}</span>
+                <div class="ncl-icon-parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"></div>
+            </div>
+            <div class="expanded-body">
+                <div class="message">{{log.message}}</div>
+                <div class="error"
+                     data-ng-if="log.err">{{log.err}}</div>
+                <div class="parameters"
+                     data-ng-if="$ctrl.hasAdditionalParameters(log)">
+                    <span class="parameters-header">Parameters</span>
+                    <div data-ng-repeat="(key, value) in $ctrl.getParameters(log)">
+                        <div class="text-ellipsis labels">{{key}}:</div>
+                        <div class="text-ellipsis values">{{value}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="no-logs"
+         data-ng-if="$ctrl.logs.length === 0">No logs has been found...</div>
+</div>
