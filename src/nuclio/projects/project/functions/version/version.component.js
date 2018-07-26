@@ -114,7 +114,7 @@
                 },
                 {
                     tabName: 'Triggers',
-                    uiRoute: 'app.project.function.edit.trigger'
+                    uiRoute: 'app.project.function.edit.triggers'
                 },
                 {
                     tabName: 'Status',
@@ -137,7 +137,7 @@
                 ctrl.project = response.project;
 
                 // sets function events data
-                convertTestEventsData(response.events.data);
+                convertTestEventsData(response.events);
 
                 // breadcrumbs config
                 var title = {
@@ -150,12 +150,7 @@
                 NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
             }).catch(function (error) {
                 var msg = 'Oops: Unknown error occurred while retrieving project or events';
-
-                if (!lodash.isEmpty(error.errors)) {
-                    msg = error.errors[0].detail;
-                }
-
-                DialogsService.alert(msg);
+                DialogsService.alert(lodash.get(error, 'error', msg));
             });
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
@@ -181,18 +176,9 @@
             ctrl.version.ui.versionCode = lodash.defaultTo(ctrl.version.ui.versionCode, '');
 
             ctrl.getExternalIpAddresses()
-                .then(function (address) {
-                    ctrl.version.ui.invocationURL = lodash.has(ctrl.version, 'status.httpPort') ?
-                        'http://' + address.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort : '';
-                })
-                .catch(function (error) {
-                    var msg = 'Oops: Unknown error occurred while retrieving external IP address\'';
-
-                    if (!lodash.isEmpty(error.data.errors)) {
-                        msg = error.data.errors[0].detail;
-                    }
-
-                    DialogsService.alert(msg);
+                .then(setInvocationUrl)
+                .catch(function () {
+                    ctrl.version.ui.invocationURL = '';
                 });
         }
 
@@ -238,23 +224,13 @@
                                 .catch(function (error) {
                                     ctrl.isSplashShowed.value = false;
                                     var msg = 'Oops: Unknown error occurred while retrieving events';
-
-                                    if (!lodash.isEmpty(error.data.errors)) {
-                                        msg = error.data.errors[0].detail;
-                                    }
-
-                                    DialogsService.alert(msg);
+                                    DialogsService.alert(lodash.get(error, 'error', msg));
                                 });
                         })
                         .catch(function (error) {
                             ctrl.isSplashShowed.value = false;
                             var msg = 'Oops: Unknown error occurred while deleting event';
-
-                            if (!lodash.isEmpty(error.data.errors)) {
-                                msg = error.data.errors[0].detail;
-                            }
-
-                            DialogsService.alert(msg);
+                            DialogsService.alert(lodash.get(error, 'error', msg));
                         });
                 });
         }
@@ -292,7 +268,7 @@
                         // update test events list
                         ctrl.getFunctionEvents({functionData: ctrl.version})
                             .then(function (response) {
-                                convertTestEventsData(response.data);
+                                convertTestEventsData(response);
 
                                 if (!lodash.isNil(data.value.selectedEvent)) {
                                     setEventAsSelected(data.value.selectedEvent.spec.displayName);
@@ -303,12 +279,7 @@
                             .catch(function (error) {
                                 ctrl.isSplashShowed.value = false;
                                 var msg = 'Oops: Unknown error occurred while retrieving events';
-
-                                if (!lodash.isEmpty(error.data.errors)) {
-                                    msg = error.data.errors[0].detail;
-                                }
-
-                                DialogsService.alert(msg);
+                                DialogsService.alert(lodash.get(error, 'error', msg));
                             });
                     }
                 });
@@ -324,7 +295,11 @@
 
                 setDeployResult('building');
 
-                var versionCopy = lodash.omit(ctrl.version, ['status', 'ui']);
+                var pathsToExcludeOnDeploy = ['status', 'ui'];
+                if (!ConfigService.isDemoMode()) {
+                    pathsToExcludeOnDeploy.push('spec.loggerSinks');
+                }
+                var versionCopy = lodash.omit(ctrl.version, pathsToExcludeOnDeploy);
 
                 ctrl.isTestResultShown = false;
                 ctrl.isDeployResultShown = true;
@@ -355,8 +330,8 @@
          */
         function getDeployStatusState(state) {
             return state === 'ready'    ? 'Successfully deployed' :
-                state === 'error'    ? 'Failed to deploy'      :
-                    'Deploying...'          ;
+                   state === 'error'    ? 'Failed to deploy'      :
+                                          'Deploying...'          ;
         }
 
         /**
@@ -399,24 +374,16 @@
                         return $q.reject(response);
                     })
                     .catch(function (invocationData) {
-                        if (invocationData.config.headers['Content-Type'] === 'application/json' && lodash.isObject(invocationData.data)) {
+                        if (invocationData.headers['Content-Type'] === 'application/json' && lodash.isObject(invocationData.body)) {
                             eventContentType = 'json';
-                            invocationData.data = angular.toJson(angular.fromJson(invocationData.data), ' ', 4);
-                        } else if (lodash.startsWith(invocationData.config.headers['Content-Type'], 'image/')) {
+                            invocationData.body = angular.toJson(angular.fromJson(invocationData.body), ' ', 4);
+                        } else if (lodash.startsWith(invocationData.headers['Content-Type'], 'image/')) {
                             eventContentType = 'image';
                         }
 
-                        ctrl.testResult = {
-                            status: {
-                                state: invocationData.xhrStatus,
-                                statusCode: invocationData.status,
-                                statusText: invocationData.statusText
-                            },
-                            headers: invocationData.config.headers,
-                            body: invocationData.data
-                        };
+                        ctrl.testResult = invocationData;
                         ctrl.isDeployResultShown = false;
-                        ctrl.isInvocationSuccess = lodash.startsWith(invocationData.status, '2');
+                        ctrl.isInvocationSuccess = lodash.startsWith(String(invocationData.status), '2');
                         ctrl.isTestResultShown = true;
                     });
 
@@ -477,12 +444,7 @@
                             .catch(function (error) {
                                 ctrl.isSplashShowed.value = false;
                                 var msg = 'Oops: Unknown error occurred while deleting function';
-
-                                if (!lodash.isEmpty(error.errors)) {
-                                    msg = error.errors[0].detail;
-                                }
-
-                                DialogsService.alert(msg);
+                                DialogsService.alert(lodash.get(error, 'error', msg));
                             });
                     });
             } else if (item.id === 'exportFunction') {
@@ -541,6 +503,18 @@
         }
 
         /**
+         * Sets the invocation URL of the function
+         * @param {{externalIPAddresses: {addresses: Array.<string>}}} result - the response body from
+         *     `getExternalIpAddresses`
+         */
+        function setInvocationUrl(result) {
+            var ip = lodash.get(result, 'externalIPAddresses.addresses[0]', '');
+            var port = lodash.get(ctrl.version, 'status.httpPort');
+            ctrl.version.ui.invocationURL =
+                lodash.isEmpty(ip) || !lodash.isNumber(port) ? '' : 'http://' + ip + ':' + port;
+        }
+
+        /**
          * Gets copy of ctrl.version without `ui` property
          */
         function getVersionCopy() {
@@ -574,17 +548,9 @@
                             };
 
                             ctrl.getExternalIpAddresses()
-                                .then(function (address) {
-                                    ctrl.version.ui.invocationURL = 'http://' + address.data.externalIPAddresses.addresses[0] + ':' + ctrl.version.status.httpPort;
-                                })
-                                .catch(function (error) {
-                                    var msg = 'Oops: Unknown error occurred while retrieving external IP address';
-
-                                    if (!lodash.isEmpty(error.errors)) {
-                                        msg = error.errors[0].detail;
-                                    }
-
-                                    DialogsService.alert(msg);
+                                .then(setInvocationUrl)
+                                .catch(function () {
+                                    ctrl.version.ui.invocationURL = '';
                                 });
 
                             ctrl.isFunctionDeployed = true;

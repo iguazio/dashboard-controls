@@ -6,11 +6,13 @@
             <div class="row">
                 <div class="monitoring-block">
                     <span class="monitoring-block-title">Invocation URL:</span>
-                    <a data-ng-if="$ctrl.version.status.state === 'ready'"
+                    <a data-ng-if="$ctrl.version.status.state === 'ready' && $ctrl.version.ui.invocationURL !== ''"
                        class="monitoring-invocation-url"
                        href="{{$ctrl.version.ui.invocationURL}}">
                         {{$ctrl.version.ui.invocationURL}}
                     </a>
+                    <span data-ng-if="$ctrl.version.status.state === 'ready' && $ctrl.version.ui.invocationURL === ''"
+                          class="monitoring-invocation-field-invalid">N/A</span>
                     <span data-ng-if="$ctrl.version.status.state !== 'ready'"
                           class="monitoring-invocation-field-invalid">Not yet deployed</span>
                 </div>

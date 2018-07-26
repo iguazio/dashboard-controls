@@ -70,7 +70,11 @@
 
             ctrl.convertedStatusState = lodash.chain(ctrl.function.status.state).lowerCase().upperFirst().value();
 
-            ctrl.invocationURL = lodash.isNil(ctrl.function.status.httpPort) ? 'Not yet deployed' : 'http://' + ctrl.externalAddress + ':' + ctrl.function.status.httpPort;
+            ctrl.invocationURL =
+                lodash.isNil(ctrl.function.status.httpPort) ? 'Not yet deployed' :
+                lodash.isEmpty(ctrl.externalAddress)        ? 'N/A'              :
+                                                              'http://' + ctrl.externalAddress + ':' +
+                                                              ctrl.function.status.httpPort;
 
             ctrl.actions = initActions();
         }
@@ -145,12 +149,7 @@
                 .catch(function (error) {
                     ctrl.isSplashShowed.value = false;
                     var msg = 'Unknown error occurred while deleting the function.';
-
-                    if (!lodash.isEmpty(error.errors)) {
-                        msg = error.errors[0].detail;
-                    }
-
-                    return DialogsService.alert(msg);
+                    return DialogsService.alert(lodash.get(error, 'error', msg));
                 });
         }
 
