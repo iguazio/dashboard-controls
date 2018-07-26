@@ -602,7 +602,7 @@
                 ctrl.testResult = {};
                 ctrl.responseImage = null;
 
-                ctrl.invokeFunction({eventData: ctrl.selectedEvent}, canceller)
+                ctrl.invokeFunction({eventData: ctrl.selectedEvent, canceller: canceller})
                     .then(function (response) {
                         return $q.reject(response);
                     })
@@ -673,8 +673,9 @@
 
                             ctrl.showResponse = true;
                         } else {
+                            var statusText = invocationData.status + ' ' + invocationData.statusText;
                             ctrl.testing = false;
-                            DialogsService.alert('Oops: Error occurred while invoking. Status: ' + invocationData.xhrStatus);
+                            DialogsService.alert('Oops: Error occurred while invoking. Status: ' + statusText);
                             ctrl.showResponse = false;
                         }
 
