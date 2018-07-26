@@ -109,7 +109,9 @@
                     .catch(function (error) {
                         ctrl.isSplashShowed.value = false;
                         var msg = 'Oops: Unknown error occurred while retrieving project';
-                        DialogsService.alert(lodash.get(error, 'error', msg));
+                        DialogsService.alert(lodash.get(error, 'error', msg)).then(function () {
+                            $state.go('app.projects');
+                        });
                     });
 
                 ctrl.getExternalIpAddresses()
