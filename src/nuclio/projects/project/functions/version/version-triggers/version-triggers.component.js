@@ -2,15 +2,15 @@
     'use strict';
 
     angular.module('iguazio.dashboard-controls')
-        .component('nclVersionTrigger', {
+        .component('nclVersionTriggers', {
             bindings: {
                 version: '<'
             },
-            templateUrl: 'nuclio/projects/project/functions/version/version-trigger/version-trigger.tpl.html',
-            controller: NclVersionTriggerController
+            templateUrl: 'nuclio/projects/project/functions/version/version-triggers/version-triggers.tpl.html',
+            controller: NclVersionTriggersController
         });
 
-    function NclVersionTriggerController($rootScope, lodash, DialogsService, VersionHelperService) {
+    function NclVersionTriggersController($rootScope, lodash, DialogsService, VersionHelperService) {
         var ctrl = this;
 
         ctrl.isCreateModeActive = false;
