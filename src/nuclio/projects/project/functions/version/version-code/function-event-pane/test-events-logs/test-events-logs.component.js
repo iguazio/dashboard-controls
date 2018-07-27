@@ -67,7 +67,8 @@
             return log.level === 'debug' ? 'ncl-icon-debug' :
                    log.level === 'info'  ? 'igz-icon-info-round' :
                    log.level === 'warn'  ? 'igz-icon-warning' :
-                   log.level === 'error' ? 'igz-icon-cancel-path' : '';
+                   log.level === 'error' ? 'igz-icon-cancel-path' :
+                                           '';
         }
 
         /**
@@ -85,7 +86,7 @@
          * @returns {boolean}
          */
         function hasAdditionalParameters(log) {
-            return lodash.chain(log).omit(REQUIRED_PARAMETERS).size().value() > 1;
+            return lodash.size(getParameters(log)) > 1;
         }
     }
 }());

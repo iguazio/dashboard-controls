@@ -9,6 +9,7 @@
                 onChangeSourceCodeCallback: '&',
                 selectedTheme: '<',
                 miniMonaco: '<?',
+                noTopPadding: '<?',
                 showLineNumbers: '<?',
                 readOnly: '<?',
                 wordWrap: '<?',

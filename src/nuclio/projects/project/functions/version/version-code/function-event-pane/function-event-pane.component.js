@@ -197,15 +197,16 @@
                 }
             });
 
-            ctrl.getFunctionEvents({functionData: ctrl.version}).then(function (response) {
-                ctrl.savedEvents = response;
-
-                ctrl.isSplashShowed.value = false;
-            }).catch(function () {
-                DialogsService.alert('Oops: Unknown error occurred while retrieving events');
-
-                ctrl.isSplashShowed.value = false;
-            });
+            ctrl.getFunctionEvents({functionData: ctrl.version})
+                .then(function (response) {
+                    ctrl.savedEvents = response;
+                })
+                .catch(function () {
+                    DialogsService.alert('Oops: Unknown error occurred while retrieving events');
+                })
+                .finally(function () {
+                    ctrl.isSplashShowed.value = false;
+                });
 
             updateRequestHeaders();
         }
@@ -323,20 +324,17 @@
                                     if (event.metadata.name === ctrl.selectedEvent.metadata.name) {
                                         resetData();
                                     }
-
-                                    ctrl.isSplashShowed.value = false;
                                 })
                                 .catch(function (error) {
                                     var msg = 'Oops: Unknown error occurred while retrieving events';
                                     DialogsService.alert(lodash.get(error, 'error', msg));
-
-                                    ctrl.isSplashShowed.value = false;
                                 });
                         })
                         .catch(function (error) {
                             var msg = 'Oops: Unknown error occurred while deleting events';
                             DialogsService.alert(lodash.get(error, 'error', msg));
-
+                        })
+                        .finally(function () {
                             ctrl.isSplashShowed.value = false;
                         });
                 });
@@ -384,7 +382,8 @@
             return method === 'POST'    ? '#fdbc5a' :
                    method === 'GET'     ? '#21d4ac' :
                    method === 'PUT'     ? '#239bca' :
-                   method === 'DELETE'  ? '#e54158' : '#96a8d3';
+                   method === 'DELETE'  ? '#e54158' :
+                                          '#96a8d3';
         }
 
         /**
@@ -494,6 +493,7 @@
          * Resets all changes
          */
         function resetData() {
+            ctrl.testEventsForm.$setPristine();
             ctrl.selectedEvent = {
                 metadata: {
                     namespace: lodash.get(ctrl.version, 'metadata.namespace'),
@@ -518,6 +518,7 @@
             ctrl.testResult = null;
             ctrl.showResponse = false;
             ctrl.requestBodyType = ctrl.requestBodyTypes[0];
+            ctrl.selectedResponseTab = ctrl.responseNavigationTabs[0];
             ctrl.headers = null;
 
             updateRequestHeaders();
@@ -529,10 +530,10 @@
          * @param {Object} event
          */
         function saveEvent(event) {
-            ctrl.headersForm.$submitted = true;
+            ctrl.testEventsForm.$submitted = true;
 
             if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) &&
-                (ctrl.headersForm.$valid)) {
+                (ctrl.testEventsForm.$valid)) {
 
                 var eventToSave = angular.copy(ctrl.selectedEvent);
                 if (ctrl.requestBodyType === 'file') {
@@ -574,6 +575,7 @@
             ctrl.showResponse = false;
             ctrl.testResult = null;
             ctrl.showLeftBar = ctrl.fixedLeftBar;
+            ctrl.selectedResponseTab = ctrl.responseNavigationTabs[0];
 
             var contentType = ctrl.selectedEvent.spec.attributes.headers['Content-Type'];
             ctrl.requestSourceCodeLanguage = contentType === 'application/json' ? 'json' : 'textplain';
@@ -582,7 +584,8 @@
             $rootScope.$broadcast('monaco_on-change-content', {code: ctrl.selectedEvent.spec.body, language: ctrl.requestSourceCodeLanguage, name: 'eventRequestBody'});
 
             var requestType = contentType === 'application/json' ? 'json' :
-                              contentType === 'text/plain'       ? 'text' : 'file';
+                              contentType === 'text/plain'       ? 'text' :
+                                                                   'file';
             ctrl.requestBodyType = lodash.find(ctrl.requestBodyTypes, ['id', requestType]);
         }
 
@@ -592,10 +595,10 @@
          */
         function testEvent(event) {
             var httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
-            ctrl.headersForm.$submitted = true;
+            ctrl.testEventsForm.$submitted = true;
 
             if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) &&
-                ctrl.headersForm.$valid && !lodash.isNull(httpPort) && !ctrl.uploadingData.uploading && !ctrl.testing) {
+                ctrl.testEventsForm.$valid && !lodash.isNull(httpPort) && !ctrl.uploadingData.uploading && !ctrl.testing) {
                 var startTime = moment();
                 canceller = $q.defer();
                 ctrl.testing = true;
@@ -626,17 +629,7 @@
                             var responseHeadersTab = lodash.find(ctrl.responseNavigationTabs, ['id', 'headers']);
                             responseHeadersTab.badge = lodash.size(ctrl.testResult.headers);
 
-                            var updatedHistory = lodash.defaultTo(angular.fromJson(localStorage.getItem('test-events')), []);
-                            if (updatedHistory.length === HISTORY_LIMIT) {
-                                updatedHistory.splice(0, 1);
-                            }
-                            updatedHistory.push({
-                                functionName: ctrl.version.metadata.name,
-                                method: ctrl.selectedEvent.spec.attributes.method,
-                                path: ctrl.selectedEvent.spec.attributes.path
-                            });
-                            localStorage.setItem('test-events', angular.toJson(updatedHistory));
-                            updateHistory();
+                            saveEventToHistory();
 
                             var logs = lodash.get(invocationData.headers, 'x-nuclio-logs', null);
                             var responseLogsTab = lodash.find(ctrl.responseNavigationTabs, ['id', 'logs']);
@@ -650,7 +643,8 @@
                                 ctrl.testResult.headers['content-type'] === 'application/json';
                             var imageFile = lodash.startsWith(ctrl.testResult.headers['content-type'], 'image/');
                             ctrl.responseBodyType = textualFile ? 'code'  :
-                                                    imageFile   ? 'image' : 'N/A';
+                                                    imageFile   ? 'image' :
+                                                                  'N/A';
 
                             if (textualFile) {
                                 $rootScope.$broadcast('monaco_on-change-content', {
@@ -673,7 +667,7 @@
 
                             ctrl.showResponse = true;
                         } else {
-                            var statusText = invocationData.status + ' ' + invocationData.statusText;
+                            var statusText = angular.isDefined(invocationData.error) ? invocationData.error : invocationData.status + ' ' + invocationData.statusText;
                             ctrl.testing = false;
                             DialogsService.alert('Oops: Error occurred while invoking. Status: ' + statusText);
                             ctrl.showResponse = false;
@@ -771,8 +765,7 @@
                 byteArrays.push(byteArray);
             }
 
-            var blob = new Blob(byteArrays, {type: contentType});
-            return blob;
+            return new Blob(byteArrays, {type: contentType});
         }
 
         /**
@@ -785,7 +778,8 @@
             var minutes = (millisec / (1000 * 60)).toFixed(1);
 
             return millisec < 1000  ? millisec + ' ms' :
-                   seconds  < 60    ? seconds  + ' s'  : minutes + ' min';
+                   seconds  < 60    ? seconds  + ' s'  :
+                                      minutes  + ' min';
         }
 
         /**
@@ -828,6 +822,20 @@
                     $element.find('.upload-file-section').css('padding', '8px');
                     $element.find('.drop-section').css('border-color', '#c9c9cd');
                 });
+        }
+
+        /**
+         * Saves tested event to local storage history
+         */
+        function saveEventToHistory() {
+            var updatedHistory = lodash.defaultTo(angular.fromJson(localStorage.getItem('test-events')), []);
+            if (updatedHistory.length === HISTORY_LIMIT) {
+                updatedHistory.splice(0, 1);
+            }
+            updatedHistory.push(ctrl.selectedEvent);
+
+            localStorage.setItem('test-events', angular.toJson(updatedHistory));
+            updateHistory();
         }
 
         /**
@@ -877,8 +885,9 @@
          * Updates invoking history
          */
         function updateHistory() {
+            var nameField = 'metadata.labels[\'nuclio.io/function-name\']';
             ctrl.history = lodash.defaultTo(angular.fromJson(localStorage.getItem('test-events')), []);
-            ctrl.history = lodash.filter(ctrl.history, ['functionName', ctrl.version.metadata.name]);
+            ctrl.history = lodash.filter(ctrl.history, [nameField, ctrl.version.metadata.name]);
         }
     }
 }());
