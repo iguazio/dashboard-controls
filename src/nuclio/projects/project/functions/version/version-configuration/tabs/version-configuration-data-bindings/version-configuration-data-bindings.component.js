@@ -127,44 +127,11 @@
          */
         function handleAction(actionType, selectedItem) {
             if (actionType === 'delete') {
-                lodash.remove(ctrl.bindings, ['id', selectedItem.id]);
-                lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
+                deleteHandler(selectedItem);
             } else if (actionType === 'edit') {
-                var aBinding = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
-                aBinding.ui.editModeActive = true;
+                editHandler(selectedItem);
             } else if (actionType === 'update') {
-                var currentBinding = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
-
-                if (angular.isDefined(currentBinding)) {
-                    if (!lodash.isEmpty(selectedItem.id)) {
-                        lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
-                    }
-
-                    var bindingItem = {
-                        kind: selectedItem.kind,
-                        attributes: selectedItem.attributes
-                    };
-
-                    if (angular.isDefined(selectedItem.url)) {
-                        bindingItem.url = selectedItem.url;
-
-                        if (selectedItem.kind === 'v3io') {
-                            bindingItem.url = bindingItem.url + '/' + selectedItem.attributes.containerID;
-                            bindingItem = lodash.omit(bindingItem, 'attributes');
-                        }
-                    }
-
-                    if (angular.isDefined(selectedItem.secret)) {
-                        bindingItem.secret = selectedItem.secret;
-                    }
-
-                    lodash.set(ctrl.version, 'spec.dataBindings.' + selectedItem.name, bindingItem);
-                    selectedItem.id = selectedItem.name;
-
-                    if (!lodash.isEqual(currentBinding, selectedItem)) {
-                        angular.copy(selectedItem, currentBinding);
-                    }
-                }
+                updateHandler(selectedItem);
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }
@@ -177,6 +144,67 @@
             });
 
             ctrl.onChangeCallback();
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Deletes selected item
+         * @param {Array} selectedItem - an object of selected data-binding
+         */
+        function deleteHandler(selectedItem) {
+            lodash.remove(ctrl.bindings, ['id', selectedItem.id]);
+            lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
+        }
+
+        /**
+         * Toggles item to edit mode
+         * @param {Array} selectedItem - an object of selected data-binding
+         */
+        function editHandler(selectedItem) {
+            var aBinding = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
+            aBinding.ui.editModeActive = true;
+        }
+
+        /**
+         * Updates data in selected item
+         * @param {Array} selectedItem - an object of selected data-binding
+         */
+        function updateHandler(selectedItem) {
+            var currentBinding = lodash.find(ctrl.bindings, ['id', selectedItem.id]);
+
+            if (angular.isDefined(currentBinding)) {
+                if (!lodash.isEmpty(selectedItem.id)) {
+                    lodash.unset(ctrl.version, 'spec.dataBindings.' + selectedItem.id);
+                }
+
+                var bindingItem = {
+                    kind: selectedItem.kind,
+                    attributes: selectedItem.attributes
+                };
+
+                if (angular.isDefined(selectedItem.url)) {
+                    bindingItem.url = selectedItem.url;
+
+                    if (selectedItem.kind === 'v3io') {
+                        bindingItem.url = bindingItem.url + '/' + selectedItem.attributes.containerID;
+                        bindingItem.attributes = lodash.omit(bindingItem.attributes, 'containerID');
+                    }
+                }
+
+                if (angular.isDefined(selectedItem.secret)) {
+                    bindingItem.secret = selectedItem.secret;
+                }
+
+                lodash.set(ctrl.version, 'spec.dataBindings.' + selectedItem.name, bindingItem);
+                selectedItem.id = selectedItem.name;
+
+                if (!lodash.isEqual(currentBinding, selectedItem)) {
+                    angular.copy(selectedItem, currentBinding);
+                }
+            }
         }
 
         /**
