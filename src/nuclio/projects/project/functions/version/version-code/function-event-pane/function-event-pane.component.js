@@ -1,5 +1,5 @@
 /* eslint max-statements: ["error", 100] */
-/* eslint complexity: ["error", 12] */
+/* eslint complexity: ["error", 13] */
 (function () {
     'use strict';
 
@@ -21,6 +21,7 @@
         var ctrl = this;
 
         var canceller = $q.defer();
+        var cancelledInvocation = false;
         var HISTORY_LIMIT = 100;
 
         ctrl.createEvent = true;
@@ -242,6 +243,7 @@
          */
         function cancelInvocation() {
             canceller.resolve();
+            cancelledInvocation = true;
         }
 
         /**
@@ -601,6 +603,7 @@
                 ctrl.testEventsForm.$valid && !lodash.isNull(httpPort) && !ctrl.uploadingData.uploading && !ctrl.testing) {
                 var startTime = moment();
                 canceller = $q.defer();
+                cancelledInvocation = false;
                 ctrl.testing = true;
                 ctrl.testResult = {};
                 ctrl.responseImage = null;
@@ -667,9 +670,12 @@
 
                             ctrl.showResponse = true;
                         } else {
-                            var statusText = angular.isDefined(invocationData.error) ? invocationData.error : invocationData.status + ' ' + invocationData.statusText;
+                            if (!cancelledInvocation) {
+                                var statusText = angular.isDefined(invocationData.error) ? invocationData.error : invocationData.status + ' ' + invocationData.statusText;
+                                DialogsService.alert('Oops: Error occurred while invoking. Status: ' + statusText);
+                            }
+
                             ctrl.testing = false;
-                            DialogsService.alert('Oops: Error occurred while invoking. Status: ' + statusText);
                             ctrl.showResponse = false;
                         }
 
