@@ -97,7 +97,7 @@ describe('igzValidatingInputField component:', function () {
             var spy = spyOn(ctrl, 'itemBlurCallback');
             ctrl.unfocusInput();
             $timeout(function () {
-                expect(spy).toHaveBeenCalledWith({inputValue: ctrl.inputValue});
+                expect(spy).toHaveBeenCalledWith({inputValue: ctrl.inputValue, inputName: ctrl.inputName});
             });
             $timeout.flush();
         });
