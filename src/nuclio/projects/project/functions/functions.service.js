@@ -251,6 +251,14 @@
                                 pattern: 'string',
                                 type: 'input',
                                 allowEmpty: false
+                            },
+                            {
+                                name: 'numWorkers',
+                                pattern: 'number',
+                                type: 'number-input',
+                                allowEmpty: true,
+                                defaultValue: 8,
+                                maxValue: 100
                             }
                         ]
                     },
