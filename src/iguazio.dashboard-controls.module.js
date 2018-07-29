@@ -6,6 +6,7 @@
         'ui.router',
         'ui.bootstrap',
         'ngFileUpload',
-        'ngDialog'
+        'ngDialog',
+        'download'
     ]);
 }());

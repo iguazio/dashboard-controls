@@ -9,9 +9,12 @@
                 itemIndex: '<',
                 rowData: '<',
                 useType: '<',
+                allowSelection: '<?',
+                changeStateBroadcast: '@?',
                 keyOptional: '<?',
                 listClass: '@?',
-                submitOnFly: '<?'
+                submitOnFly: '<?',
+                valueOptional: '<?'
             },
             templateUrl: 'nuclio/common/components/key-value-input/key-value-input.tpl.html',
             controller: NclKeyValueInputController
@@ -52,6 +55,12 @@
 
             $document.on('click', saveChanges);
             $document.on('keypress', saveChanges);
+
+            $scope.$on('action-checkbox_item-checked', function () {
+                if (angular.isFunction(ctrl.changeDataCallback)) {
+                    ctrl.changeDataCallback({newData: ctrl.data, index: ctrl.itemIndex});
+                }
+            });
         }
 
         /**
@@ -61,7 +70,9 @@
             $document.off('click', saveChanges);
             $document.off('keypress', saveChanges);
 
-            $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.data.ui.name, isDisabled: false});
+            if (angular.isDefined(ctrl.changeStateBroadcast)) {
+                $rootScope.$broadcast(ctrl.changeStateBroadcast, {component: ctrl.data.ui.name, isDisabled: false});
+            }
         }
 
         //
@@ -258,9 +269,13 @@
                     ctrl.data.ui = {
                         editModeActive: false,
                         isFormValid: true,
-                        name: ctrl.data.ui.name
+                        name: ctrl.data.ui.name,
+                        checked: ctrl.data.ui.checked
                     };
-                    $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.data.ui.name, isDisabled: false});
+
+                    if (angular.isDefined(ctrl.changeStateBroadcast)) {
+                        $rootScope.$broadcast(ctrl.changeStateBroadcast, {component: ctrl.data.ui.name, isDisabled: false});
+                    }
 
                     $scope.$evalAsync(function () {
                         ctrl.editMode = false;
@@ -274,9 +289,13 @@
                     ctrl.data.ui = {
                         editModeActive: true,
                         isFormValid: false,
-                        name: ctrl.data.ui.name
+                        name: ctrl.data.ui.name,
+                        checked: ctrl.data.ui.checked
                     };
-                    $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.data.ui.name, isDisabled: true});
+
+                    if (angular.isDefined(ctrl.changeStateBroadcast)) {
+                        $rootScope.$broadcast(ctrl.changeStateBroadcast, {component: ctrl.data.ui.name, isDisabled: true});
+                    }
                 }
             }
         }

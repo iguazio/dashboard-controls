@@ -102,8 +102,6 @@
             ctrl.archive = lodash.get(ctrl.version, 'spec.build.path', '');
 
             previousEntryType = ctrl.selectedEntryType;
-
-
         }
 
         /**
@@ -201,7 +199,10 @@
             VersionHelperService.checkVersionChange(ctrl.version);
 
             $timeout(function () {
-                $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: ctrl.versionCodeForm.$invalid});
+                $rootScope.$broadcast('change-state-deploy-button', {
+                    component: 'code',
+                    isDisabled: ctrl.versionCodeForm.$invalid
+                });
             });
         }
 

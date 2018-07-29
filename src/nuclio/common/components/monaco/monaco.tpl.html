@@ -1,10 +1,12 @@
 <div class="ncl-monaco">
     <div class="ncl-monaco-wrapper"
-         data-ng-class="{'ncl-monaco-dark': $ctrl.selectedTheme === 'vs-dark'}">
+         data-ng-class="{'ncl-monaco-dark': $ctrl.selectedTheme === 'vs-dark',
+                         'no-top-padding': $ctrl.noTopPadding}">
         <div igz-monaco-editor
              data-code-file="selectedCodeFile"
              data-editor-theme="$ctrl.selectedTheme"
              data-mini-monaco="$ctrl.miniMonaco"
+             data-show-line-numbers="$ctrl.showLineNumbers"
              data-read-only="$ctrl.readOnly"
              data-word-wrap="$ctrl.wordWrap"></div>
     </div>
