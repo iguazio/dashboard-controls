@@ -1,136 +1,138 @@
 .ncl-edit-version-code {
     height: 100%;
     display: flex;
-    flex-flow: column;
+    justify-content: space-between;
     padding-bottom: 24px !important;
 
     .igz-scrollable-container {
+        flex-grow: 1;
         height: 100%;
+        min-width: 0;
 
         .ncl-monaco {
             height: 100%;
         }
-    }
 
-    .ncl-edit-version-code-wrapper {
-        height: 100%;
-        padding: 24px 41px;
+        .ncl-edit-version-code-wrapper {
+            height: 100%;
+            padding: 24px 41px;
 
-        .ncl-code-entry-url {
-            width: 700px;
-        }
-    }
-
-    .section-wrapper {
-        padding: 18px 39px 0 23px;
-    }
-
-    .code-entry-section {
-        flex: 0 1 auto;
-    }
-
-    .code-edit-section {
-        position: relative;
-        flex: 1 1 auto;
-        display: flex;
-        height: 400px;
-
-        .code-editor-drop-zone {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgb(200, 200, 200);
-            outline: 3px dashed black;
-            outline-offset: -10px;
-            display: none;
-
-            &.dragover {
-                display: block;
-
-                &:before {
-                    content: 'Drop files here';
-                    display: inline-block;
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    font-size: xx-large;
-                }
+            .ncl-code-entry-url {
+                width: 700px;
             }
         }
 
-        .monaco-code-editor {
-            width: 100%;
-
-            .ncl-monaco {
-                height: 100%;
-            }
+        .section-wrapper {
+            padding: 18px 39px 0 23px;
         }
-    }
 
-    .code-entry-section {
-        margin-bottom: 20px;
-        background-color: @ncl-white;
-        border: 1px solid @ncl-pale-grey-two;
+        .code-entry-section {
+            flex: 0 1 auto;
+        }
 
-        .code-entry-row {
+        .code-edit-section {
+            position: relative;
+            flex: 1 1 auto;
             display: flex;
-            margin-bottom: 24px;
+            height: 400px;
 
-            .code-entry-col {
-                margin-right: 16px;
+            .code-editor-drop-zone {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgb(200, 200, 200);
+                outline: 3px dashed black;
+                outline-offset: -10px;
+                display: none;
 
-                .col-label {
-                    margin-bottom: 2px;
-                    font-size: 14px;
-                    color: @ncl-dusk-three;
-                }
-            }
+                &.dragover {
+                    display: block;
 
-            .code-entry-type-col {
-                width: 22%;
-            }
-
-            .code-entry-runtime-col {
-                width: 22%;
-            }
-
-            .code-entry-handler-col {
-                width: 41%;
-            }
-
-            .code-entry-theme-col {
-                width: 15%;
-            }
-
-            .code-entry-button-col {
-                min-width: 128px;
-
-                .upload-button {
-                    height: 36px;
-                    width: 128px;
-                    margin: 21px 0 0 0;
-                    padding: 0;
-
-                    i {
+                    &:before {
+                        content: 'Drop files here';
                         display: inline-block;
-                        font-size: 16px;
-                        margin-left: 20px;
-                        vertical-align: middle;
-                    }
-                    span {
-                        margin-left: 4px;
-                        letter-spacing: 1px;
-                        vertical-align: middle;
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        font-size: xx-large;
                     }
                 }
             }
 
-            .code-entry-url-col {
+            .monaco-code-editor {
                 width: 100%;
-                margin-right: 160px;
+
+                .ncl-monaco {
+                    height: 100%;
+                }
+            }
+        }
+
+        .code-entry-section {
+            margin-bottom: 20px;
+            background-color: @ncl-white;
+            border: 1px solid @ncl-pale-grey-two;
+
+            .code-entry-row {
+                display: flex;
+                margin-bottom: 24px;
+
+                .code-entry-col {
+                    margin-right: 16px;
+
+                    .col-label {
+                        margin-bottom: 2px;
+                        font-size: 14px;
+                        color: @ncl-dusk-three;
+                    }
+                }
+
+                .code-entry-type-col {
+                    width: 22%;
+                }
+
+                .code-entry-runtime-col {
+                    width: 22%;
+                }
+
+                .code-entry-handler-col {
+                    width: 41%;
+                }
+
+                .code-entry-theme-col {
+                    width: 15%;
+                }
+
+                .code-entry-button-col {
+                    min-width: 128px;
+
+                    .upload-button {
+                        height: 36px;
+                        width: 128px;
+                        margin: 21px 0 0 0;
+                        padding: 0;
+
+                        i {
+                            display: inline-block;
+                            font-size: 16px;
+                            margin-left: 20px;
+                            vertical-align: middle;
+                        }
+                        span {
+                            margin-left: 4px;
+                            letter-spacing: 1px;
+                            vertical-align: middle;
+                        }
+                    }
+                }
+
+                .code-entry-url-col {
+                    width: 100%;
+                    margin-right: 160px;
+                }
             }
         }
     }

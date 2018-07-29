@@ -58,7 +58,8 @@ module.exports = {
             'vendor/bootstrap/js/dropdown.js',
             'vendor/ng-dialog/js/ngDialog.js',
             'vendor/lodash/lodash.js',
-            'node_modules/monaco-editor/min/vs/loader.js'
+            'node_modules/monaco-editor/min/vs/loader.js',
+            'node_modules/angular-download/angular-download.js'
         ]
     },
 
