@@ -20,8 +20,8 @@
                                             DialogsService, EventHelperService, VersionHelperService) {
         var ctrl = this;
 
-        var canceller = $q.defer();
-        var cancelledInvocation = false;
+        var canceler = null;
+        var canceledInvocation = false;
         var HISTORY_LIMIT = 100;
 
         ctrl.createEvent = true;
@@ -242,8 +242,11 @@
          * Cancels invoke request
          */
         function cancelInvocation() {
-            canceller.resolve();
-            cancelledInvocation = true;
+            if (canceler !== null) {
+                canceler.resolve();
+                canceler = null;
+            }
+            canceledInvocation = true;
         }
 
         /**
@@ -602,13 +605,13 @@
             if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) &&
                 ctrl.testEventsForm.$valid && !lodash.isNull(httpPort) && !ctrl.uploadingData.uploading && !ctrl.testing) {
                 var startTime = moment();
-                canceller = $q.defer();
-                cancelledInvocation = false;
+                canceler = $q.defer();
+                canceledInvocation = false;
                 ctrl.testing = true;
                 ctrl.testResult = {};
                 ctrl.responseImage = null;
 
-                ctrl.invokeFunction({eventData: ctrl.selectedEvent, canceller: canceller})
+                ctrl.invokeFunction({eventData: ctrl.selectedEvent, canceler: canceler.promise})
                     .then(function (response) {
                         return $q.reject(response);
                     })
@@ -670,7 +673,7 @@
 
                             ctrl.showResponse = true;
                         } else {
-                            if (!cancelledInvocation) {
+                            if (!canceledInvocation) {
                                 var statusText = angular.isDefined(invocationData.error) ? invocationData.error : invocationData.status + ' ' + invocationData.statusText;
                                 DialogsService.alert('Oops: Error occurred while invoking. Status: ' + statusText);
                             }
