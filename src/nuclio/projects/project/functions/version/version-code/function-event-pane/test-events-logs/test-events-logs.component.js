@@ -77,7 +77,7 @@
          * @returns {Object}
          */
         function getParameters(log) {
-            return angular.fromJson(angular.toJson(lodash.omit(log, REQUIRED_PARAMETERS)));
+            return lodash.omit(log, REQUIRED_PARAMETERS);
         }
 
         /**
