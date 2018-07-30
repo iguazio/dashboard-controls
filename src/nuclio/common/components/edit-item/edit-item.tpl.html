@@ -70,26 +70,11 @@
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.secret)">
-                <div class="field-label">Secret</div>
-                <igz-validating-input-field class="nuclio-validating-input"
-                                            data-field-type="input"
-                                            data-input-name="itemSecret"
-                                            data-input-value="$ctrl.item.secret"
-                                            data-is-focused="false"
-                                            data-form-object="$ctrl.editItemForm"
-                                            data-validation-is-required="true"
-                                            data-placeholder-text="Type secret..."
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-update-data-field="secret">
-                </igz-validating-input-field>
-            </div>
-            <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && attribute.type === 'input'"
                  data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
                 <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div>
                 <igz-validating-input-field class="nuclio-validating-input"
-                                            data-field-type="input"
+                                            data-field-type="{{attribute.fieldType}}"
                                             data-input-name="item_{{attribute.name}}"
                                             data-input-value="$ctrl.getAttrValue(attribute.name)"
                                             data-is-focused="false"

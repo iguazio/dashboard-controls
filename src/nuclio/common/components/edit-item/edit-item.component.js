@@ -82,9 +82,7 @@
                 ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
                 ctrl.item.ui.className = ctrl.selectedClass.name;
 
-                $timeout(function () {
-                    validateCronClassValues();
-                })
+                $timeout(validateCronClassValues);
             }
 
             if (isHttpTrigger()) {
