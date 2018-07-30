@@ -112,6 +112,45 @@
                     clear: both;
                 }
 
+                .igz-icon-help-round {
+                    cursor: pointer;
+
+                    &:before {
+                        color: @lightblue;
+                        background-color: @white;
+                        border-radius: 50%;
+                        font-size: 18px;
+                    }
+
+                    &:hover {
+                        + div {
+                            display: block;
+                        }
+                    }
+                }
+
+                .question-mark {
+                    display: none;
+                    margin-left: 21px;
+                    margin-top: 9px;
+                }
+
+                .question-mark-visible {
+                    display: block;
+                }
+
+                .row-description {
+                    position: absolute;
+                    font-family: @font-family-sans-serif;
+                    color: @dark-sky-blue;
+                    font-size: 12px;
+                    padding: 0;
+                    margin-left: 8px;
+                    margin-top: 10px;
+                    width: 300px;
+                    display: none;
+                }
+
                 .field-label {
                     display: flex;
                     color: @dusk-three;

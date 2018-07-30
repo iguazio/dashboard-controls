@@ -202,7 +202,7 @@
         function focusInput() {
             ctrl.inputFocused = true;
             if (angular.isFunction(ctrl.itemFocusCallback)) {
-                ctrl.itemFocusCallback();
+                ctrl.itemFocusCallback({inputName: ctrl.inputName});
             }
         }
 
@@ -263,7 +263,7 @@
                     if (angular.isDefined(ctrl.data) && ctrl.startValue !== Number(ctrl.data)) {
                         ctrl.inputValue = angular.isString(ctrl.data) ? ctrl.data.trim() : ctrl.data;
                         if (angular.isFunction(ctrl.itemBlurCallback)) {
-                            ctrl.itemBlurCallback({inputValue: ctrl.inputValue});
+                            ctrl.itemBlurCallback({inputValue: ctrl.inputValue, inputName: ctrl.inputName});
                         }
                         ctrl.startValue = Number(ctrl.data);
                     } else {
@@ -271,8 +271,12 @@
                         // Revert input value; Outer model value just does not change
                         ctrl.data = ctrl.inputValue;
                         if (angular.isFunction(ctrl.onBlur)) {
-                            ctrl.onBlur();
+                            ctrl.onBlur({inputName: ctrl.inputName});
                         }
+                    }
+                } else {
+                    if (angular.isFunction(ctrl.itemBlurCallback)) {
+                        ctrl.itemBlurCallback({inputValue: ctrl.inputValue, inputName: ctrl.inputName});
                     }
                 }
             });

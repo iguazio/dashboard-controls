@@ -13,6 +13,8 @@
                 inputName: '@?',
                 isDisabled: '<?',
                 isFocused: '@?',
+                itemBlurCallback: '&?',
+                itemFocusCallback: '&?',
                 maxValue: '<?',
                 minValue: '<?',
                 onChange: '<?',
@@ -47,6 +49,8 @@
      * isFocused - checks if true, then input is focused
      * maxValue - maximum legal value
      * minValue - minimum legal value
+     * itemBlurCallback: callback for onBlur event
+     * itemFocusCallback: callback for onFocus event
      * onChange - method on item changed
      * placeholder - placeholder text
      * precision - precision of value, ex. if precision is equal to 2 means that value will be in the form `X.XX`(ex. 2.11)
@@ -186,6 +190,7 @@
          */
         function setFocus() {
             ctrl.inputFocused = true;
+            ctrl.itemFocusCallback({inputName: ctrl.inputName});
         }
 
         /**
@@ -193,6 +198,7 @@
          */
         function onBlurInput() {
             ctrl.inputFocused = false;
+            ctrl.itemBlurCallback({inputName: ctrl.inputName});
             onCurrentValueChange();
         }
 

@@ -8,9 +8,12 @@
                 functionSourceCode: '<',
                 onChangeSourceCodeCallback: '&',
                 selectedTheme: '<',
-                miniMonaco: '<',
-                readOnly: '<',
-                wordWrap: '<'
+                miniMonaco: '<?',
+                noTopPadding: '<?',
+                showLineNumbers: '<?',
+                readOnly: '<?',
+                wordWrap: '<?',
+                name: '@?'
             },
             templateUrl: 'nuclio/common/components/monaco/monaco.tpl.html',
             controller: NclMonacoController
@@ -20,6 +23,7 @@
         var ctrl = this;
 
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
 
         //
         // Hook methods
@@ -46,6 +50,19 @@
             $scope.$on('monaco_on-change-content', setNewSourceCode);
         }
 
+        /**
+         * On changes method
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.language) && !changes.language.isFirstChange()) {
+                $scope.selectedCodeFile = {
+                    language: changes.language.currentValue,
+                    code: $scope.selectedCodeFile.code
+                };
+            }
+        }
+
         //
         // Private method
         //
@@ -56,11 +73,13 @@
          * @param {Object} data
          */
         function setNewSourceCode(event, data) {
-            ctrl.language = data.language;
-            $scope.selectedCodeFile = {
-                language: data.language,
-                code: data.code
-            };
+            if (angular.isUndefined(data.name) || data.name === ctrl.name) {
+                ctrl.language = data.language;
+                $scope.selectedCodeFile = {
+                    language: data.language,
+                    code: data.code
+                };
+            }
         }
     }
 }());

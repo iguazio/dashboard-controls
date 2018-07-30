@@ -44,7 +44,8 @@
         .constant('moment', window.moment)
         .constant('d3', window.d3)
         .constant('Highcharts', window.Highcharts)
-        .constant('lodash', window._);
+        .constant('lodash', window._)
+        .constant('Base64', window.Base64);
 
     function config($compileProvider, $locationProvider, $httpProvider, datepickerConfig, $qProvider) {
         $locationProvider.html5Mode(true);
