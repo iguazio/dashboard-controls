@@ -34,7 +34,7 @@
                 <div class="list-item text-ellipsis"
                      data-ng-if="$ctrl.selectedLeftBarTab.id === 'history'"
                      data-ng-repeat="savedEvent in $ctrl.history | orderBy:'-'"
-                     data-ng-click="$ctrl.selectEvent(savedEvent)">
+                     data-ng-click="$ctrl.selectEvent(savedEvent, 'history')">
                     <span class="method-icon"
                           data-ng-style="{'background-color': $ctrl.getMethodColor(savedEvent.spec.attributes.method)}">
                         {{savedEvent.spec.attributes.method}}
@@ -276,10 +276,18 @@
                         </div>
                         <div class="code-section" data-ng-if="$ctrl.showResponse && !$ctrl.testing">
                             <div class="top-panel">
-                                <div data-ng-click="$ctrl.downloadResponseFile()">
+                                <div data-ng-click="$ctrl.downloadResponseFile()"
+                                     data-tooltip="Download to file"
+                                     data-tooltip-placement="left"
+                                     data-tooltip-popup-delay="300"
+                                     data-tooltip-append-to-body="true">
                                     <div class="igz-icon-download"></div>
                                 </div>
-                                <div data-ng-click="$ctrl.copyToClipboard()">
+                                <div data-ng-click="$ctrl.copyToClipboard()"
+                                     data-tooltip="Copy to clipboard"
+                                     data-tooltip-placement="left"
+                                     data-tooltip-popup-delay="300"
+                                     data-tooltip-append-to-body="true">
                                     <div class="ncl-icon-copy"></div>
                                 </div>
                             </div>

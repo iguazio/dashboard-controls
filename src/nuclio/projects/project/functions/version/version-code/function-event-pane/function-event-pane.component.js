@@ -572,8 +572,13 @@
         /**
          * Selects specific event from list of saved events
          * @param {Object} event
+         * @param {string} [location] - location of event(ex. history)
          */
-        function selectEvent(event) {
+        function selectEvent(event, location) {
+            if (location === 'history') {
+                lodash.set(event, 'spec.displayName', '');
+            }
+
             ctrl.selectedEvent = angular.copy(event);
             ctrl.selectedEvent.spec.body = lodash.defaultTo(ctrl.selectedEvent.spec.body, '');
             ctrl.createEvent = false;
