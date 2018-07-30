@@ -599,11 +599,11 @@
          * @param {Object} event
          */
         function testEvent(event) {
+            ctrl.testEventsForm.$setPristine();
             var httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
-            ctrl.testEventsForm.$submitted = true;
 
             if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) &&
-                ctrl.testEventsForm.$valid && !lodash.isNull(httpPort) && !ctrl.uploadingData.uploading && !ctrl.testing) {
+                !lodash.isNull(httpPort) && !ctrl.uploadingData.uploading && !ctrl.testing) {
                 var startTime = moment();
                 canceler = $q.defer();
                 canceledInvocation = false;
@@ -841,7 +841,9 @@
             if (updatedHistory.length === HISTORY_LIMIT) {
                 updatedHistory.splice(0, 1);
             }
-            updatedHistory.push(ctrl.selectedEvent);
+            var eventToSave = angular.copy(ctrl.selectedEvent);
+            lodash.set(eventToSave, 'spec.displayName', '');
+            updatedHistory.push(eventToSave);
 
             localStorage.setItem('test-events', angular.toJson(updatedHistory));
             updateHistory();

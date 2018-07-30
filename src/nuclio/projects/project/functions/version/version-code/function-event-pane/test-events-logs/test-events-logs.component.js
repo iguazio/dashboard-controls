@@ -32,7 +32,7 @@
         function onInit() {
             lodash.forEach(ctrl.logs, function (log) {
                 lodash.set(log, 'ui.collapsed', true);
-            })
+            });
         }
 
         //
@@ -77,7 +77,7 @@
          * @returns {Object}
          */
         function getParameters(log) {
-            return lodash.omit(log, REQUIRED_PARAMETERS);
+            return angular.fromJson(angular.toJson(lodash.omit(log, REQUIRED_PARAMETERS)));
         }
 
         /**
@@ -86,7 +86,7 @@
          * @returns {boolean}
          */
         function hasAdditionalParameters(log) {
-            return lodash.size(getParameters(log)) > 1;
+            return !lodash.isEmpty(getParameters(log));
         }
     }
 }());
