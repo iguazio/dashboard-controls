@@ -76,12 +76,6 @@
         position: relative;
         line-height: 41px;
 
-        .check-all-rows + .common-table-cells-container {
-            .item-name {
-                border-left: @table-border;
-            }
-        }
-
         .common-table-cell {
             .duskThree(0.66);
             color: @color;
@@ -122,13 +116,8 @@
             }
 
             &.item-name {
-                &.is-details-present {
+                &.details-present {
                     border-right: @table-border;
-                }
-            }
-
-            &.check-row + .common-table-cells-container {
-                .item-name {
                     border-left: @table-border;
                 }
             }
@@ -287,12 +276,6 @@
                 }
             }
 
-            .check-row + .common-table-cells-container {
-                .item-name {
-                    border-left: @table-border;
-                }
-            }
-
             .common-table-cell {
                 border-left-color: transparent;
 
@@ -320,8 +303,9 @@
                 }
 
                 &.item-name {
-                    &.is-details-present {
+                    &.details-present {
                         border-right: @table-border;
+                        border-left: @table-border;
                     }
                 }
 
