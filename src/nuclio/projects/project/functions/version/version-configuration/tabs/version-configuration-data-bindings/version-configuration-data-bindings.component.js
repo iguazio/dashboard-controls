@@ -42,24 +42,23 @@
 
             // get bindings list
             ctrl.bindings = lodash.map(ctrl.version.spec.dataBindings, function (value, key) {
+                if (angular.isDefined(value.secret)) {
+                    var userData = value.secret.split(':');
+                    value.attributes.username = userData[0];
+                    value.attributes.password = angular.isDefined(userData[1]) ? userData[1] : '';
+                    delete value.secret;
+                }
+
                 var bindingsItem = angular.copy(value);
                 bindingsItem.id = key;
                 bindingsItem.name = key;
 
-                if (value.kind === 'v3io') {
-                    if (angular.isDefined(value.url)) {
-                        var splitUrl = value.url.split('/');
+                if (value.kind === 'v3io' && angular.isDefined(value.url)) {
+                    var splitUrl = value.url.split('/');
 
-                        // split on last slash: what comes before it is the URL, what comes after it is container ID
-                        bindingsItem.url = lodash.initial(splitUrl).join('/');
-                        lodash.set(bindingsItem, 'attributes.containerID', splitUrl.length > 1 ? lodash.last(splitUrl) : '');
-                    }
-                    if (angular.isDefined(value.secret)) {
-                        var userData = bindingsItem.secret.split(':');
-                        bindingsItem.attributes.username = userData[0];
-                        bindingsItem.attributes.password = angular.isDefined(userData[1]) ? userData[1] : '';
-                        delete bindingsItem.secret;
-                    }
+                    // split on last slash: what comes before it is the URL, what comes after it is container ID
+                    bindingsItem.url = lodash.initial(splitUrl).join('/');
+                    lodash.set(bindingsItem, 'attributes.containerID', splitUrl.length > 1 ? lodash.last(splitUrl) : '');
                 }
 
                 bindingsItem.ui = {
