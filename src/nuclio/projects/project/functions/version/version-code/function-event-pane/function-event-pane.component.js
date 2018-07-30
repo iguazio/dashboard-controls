@@ -847,7 +847,7 @@
                 updatedHistory.splice(0, 1);
             }
             var eventToSave = angular.copy(ctrl.selectedEvent);
-            lodash.set(eventToSave, 'spec.displayName', '');
+            delete eventToSave.spec.displayName;
             updatedHistory.push(eventToSave);
 
             localStorage.setItem('test-events', angular.toJson(updatedHistory));
