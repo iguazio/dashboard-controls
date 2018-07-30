@@ -6,7 +6,7 @@
         <div class="ncl-icon-collapse-all"
              data-ng-click="$ctrl.expandAllRows(false)"></div>
     </div>
-    <div data-ng-repeat="log in $ctrl.logs">
+    <div data-ng-repeat="log in $ctrl.logs track by $index">
         <div class="collapsed-row text-ellipsis" data-ng-if="log.ui.collapsed">
             <span class="igz-icon-right"
                   data-ng-click="$ctrl.collapseRow(log, false)"></span>
