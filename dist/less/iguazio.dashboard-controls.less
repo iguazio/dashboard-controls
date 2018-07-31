@@ -2403,12 +2403,6 @@ input[disabled] {
         position: relative;
         line-height: 41px;
 
-        .check-all-rows + .common-table-cells-container {
-            .item-name {
-                border-left: @table-border;
-            }
-        }
-
         .common-table-cell {
             .duskThree(0.66);
             color: @color;
@@ -2449,13 +2443,8 @@ input[disabled] {
             }
 
             &.item-name {
-                &.is-details-present {
+                &.details-present {
                     border-right: @table-border;
-                }
-            }
-
-            &.check-row + .common-table-cells-container {
-                .item-name {
                     border-left: @table-border;
                 }
             }
@@ -2614,12 +2603,6 @@ input[disabled] {
                 }
             }
 
-            .check-row + .common-table-cells-container {
-                .item-name {
-                    border-left: @table-border;
-                }
-            }
-
             .common-table-cell {
                 border-left-color: transparent;
 
@@ -2647,8 +2630,9 @@ input[disabled] {
                 }
 
                 &.item-name {
-                    &.is-details-present {
+                    &.details-present {
                         border-right: @table-border;
+                        border-left: @table-border;
                     }
                 }
 
@@ -3368,53 +3352,6 @@ ncl-projects {
     }
 }
 
-.igz-elastic-input-field {
-    .non-editable {
-        padding: 7px 10px 0;
-        letter-spacing: normal;
-    }
-
-    .editable {
-        cursor: text;
-        display: inline-block;
-
-        &.edit-mode {
-            input.elastic-input {
-                border: solid 1px @pale-grey;
-            }
-        }
-
-        input.elastic-input {
-            line-height: 26px;
-            background: none;
-            color: @dusk-three;
-            margin: 0;
-            max-width: 201px;
-            outline: 0;
-            overflow: hidden;
-            padding: 2px 9px 0 9px;
-            text-overflow: ellipsis;
-
-            &:focus {
-                border: solid 1px @dark-sky-blue;
-            }
-
-            &::-ms-clear {
-                display: none;
-            }
-        }
-
-        // Invalid state
-        &.elastic-input-invalid {
-            input.elastic-input {
-                background-color: #fbe5e8;
-                border: solid 1px @darkish-pink;
-                box-shadow: none;
-                outline: none;
-            }
-        }
-    }
-}
 .default-dropdown {
     position: relative;
     height: 36px;
@@ -3806,6 +3743,53 @@ ncl-projects {
 
             &:after {
                 content: ")";
+            }
+        }
+    }
+}
+.igz-elastic-input-field {
+    .non-editable {
+        padding: 7px 10px 0;
+        letter-spacing: normal;
+    }
+
+    .editable {
+        cursor: text;
+        display: inline-block;
+
+        &.edit-mode {
+            input.elastic-input {
+                border: solid 1px @pale-grey;
+            }
+        }
+
+        input.elastic-input {
+            line-height: 26px;
+            background: none;
+            color: @dusk-three;
+            margin: 0;
+            max-width: 201px;
+            outline: 0;
+            overflow: hidden;
+            padding: 2px 9px 0 9px;
+            text-overflow: ellipsis;
+
+            &:focus {
+                border: solid 1px @dark-sky-blue;
+            }
+
+            &::-ms-clear {
+                display: none;
+            }
+        }
+
+        // Invalid state
+        &.elastic-input-invalid {
+            input.elastic-input {
+                background-color: #fbe5e8;
+                border: solid 1px @darkish-pink;
+                box-shadow: none;
+                outline: none;
             }
         }
     }
@@ -7480,6 +7464,62 @@ ncl-functions {
     }
 }
 
+.ncl-version-trigger {
+    padding: 11px 24px;
+
+    .igz-scrollable-container {
+        max-height: 500px;
+    }
+
+    .common-table-header {
+        border: none;
+        padding-left: 24px;
+
+        .common-table-cell {
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: normal;
+            color: @ncl-dusk-three;
+            height: 46px;
+        }
+    }
+
+    .item-row .item-name, .item-row .item-class, .item-row .item-info {
+       padding-left: 0;
+    }
+
+    .title-field-row .name-field, .item-row .item-name, .header-name {
+        margin-right: 16px;
+        width: 15%;
+    }
+
+    .title-field-row .class-field, .item-row .item-class, .header-class {
+        margin-right: 16px;
+        width: 10%;
+    }
+
+    .create-trigger-button.common-table-row {
+        display: flex;
+        align-items: center;
+        padding-left: 16px;
+        font-size: 14px;
+        line-height: 24px;
+        .nclDuskThree(0.64);
+        color: @color;
+        cursor: pointer;
+        border: 1px solid @ncl-pale-grey;
+        box-shadow: none;
+
+        .igz-icon-add-round {
+            font-size: 24px;
+            color: @ncl-orange;
+            height: 46px;
+            padding-right: 13px;
+            display: flex;
+            align-items: center;
+        }
+    }
+}
 .ncl-version-monitoring {
     > .igz-scrollable-container {
         padding: 24px 25px 22px 41px;
@@ -7591,62 +7631,6 @@ ncl-functions {
     }
 }
 
-.ncl-version-trigger {
-    padding: 11px 24px;
-
-    .igz-scrollable-container {
-        max-height: 500px;
-    }
-
-    .common-table-header {
-        border: none;
-        padding-left: 24px;
-
-        .common-table-cell {
-            font-size: 14px;
-            font-weight: bold;
-            letter-spacing: normal;
-            color: @ncl-dusk-three;
-            height: 46px;
-        }
-    }
-
-    .item-row .item-name, .item-row .item-class, .item-row .item-info {
-       padding-left: 0;
-    }
-
-    .title-field-row .name-field, .item-row .item-name, .header-name {
-        margin-right: 16px;
-        width: 15%;
-    }
-
-    .title-field-row .class-field, .item-row .item-class, .header-class {
-        margin-right: 16px;
-        width: 10%;
-    }
-
-    .create-trigger-button.common-table-row {
-        display: flex;
-        align-items: center;
-        padding-left: 16px;
-        font-size: 14px;
-        line-height: 24px;
-        .nclDuskThree(0.64);
-        color: @color;
-        cursor: pointer;
-        border: 1px solid @ncl-pale-grey;
-        box-shadow: none;
-
-        .igz-icon-add-round {
-            font-size: 24px;
-            color: @ncl-orange;
-            height: 46px;
-            padding-right: 13px;
-            display: flex;
-            align-items: center;
-        }
-    }
-}
 .test-events-pane {
     width: 650px;
     height: 100%;
@@ -7819,9 +7803,13 @@ ncl-functions {
             }
         }
 
-        .ncl-test-events-navigation-tabs .test-events-navigation-tab {
-            padding: 10px 22px 0;
+        .ncl-test-events-navigation-tabs {
             background-color: @ncl-white;
+
+            .test-events-navigation-tab {
+                padding: 10px 22px 0;
+                background-color: @ncl-white;
+            }
         }
     }
 

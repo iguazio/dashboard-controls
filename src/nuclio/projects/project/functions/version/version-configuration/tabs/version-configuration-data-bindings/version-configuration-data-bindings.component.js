@@ -42,11 +42,18 @@
 
             // get bindings list
             ctrl.bindings = lodash.map(ctrl.version.spec.dataBindings, function (value, key) {
+                if (angular.isDefined(value.secret)) {
+                    var userData = value.secret.split(':');
+                    value.attributes.username = userData[0];
+                    value.attributes.password = angular.isDefined(userData[1]) ? userData[1] : '';
+                    delete value.secret;
+                }
+
                 var bindingsItem = angular.copy(value);
                 bindingsItem.id = key;
                 bindingsItem.name = key;
 
-                if (angular.isDefined(value.url) && value.kind === 'v3io') {
+                if (value.kind === 'v3io' && angular.isDefined(value.url)) {
                     var splitUrl = value.url.split('/');
 
                     // split on last slash: what comes before it is the URL, what comes after it is container ID
@@ -192,10 +199,6 @@
                         bindingItem.url = bindingItem.url + '/' + selectedItem.attributes.containerID;
                         bindingItem.attributes = lodash.omit(bindingItem.attributes, 'containerID');
                     }
-                }
-
-                if (angular.isDefined(selectedItem.secret)) {
-                    bindingItem.secret = selectedItem.secret;
                 }
 
                 lodash.set(ctrl.version, 'spec.dataBindings.' + selectedItem.name, bindingItem);

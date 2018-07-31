@@ -31,12 +31,14 @@
                                 name: 'topic',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'partitions',
                                 pattern: 'arrayInt',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             }
                         ]
@@ -50,18 +52,21 @@
                                 name: 'exchangeName',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'queueName',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'topics',
                                 pattern: 'arrayStr',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             }
                         ]
@@ -75,6 +80,7 @@
                                 name: 'topic',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             }
                         ]
@@ -87,12 +93,14 @@
                                 name: 'interval',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'schedule',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             }
                         ]
@@ -105,36 +113,42 @@
                                 name: 'sharedAccessKeyName',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'sharedAccessKeyValue',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'namespace',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'eventHubName',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'consumerGroup',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'partitions',
                                 pattern: 'arrayInt',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             }
                         ]
@@ -148,6 +162,7 @@
                                 name: 'port',
                                 pattern: 'number',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: true
                             },
                             {
@@ -166,6 +181,7 @@
                                 name: 'partitions',
                                 pattern: 'arrayInt',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
@@ -210,30 +226,35 @@
                                 name: 'accessKeyID',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'secretAccessKey',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'regionName',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'streamName',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'shards',
                                 pattern: 'arrayStr',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             }
                         ]
@@ -244,12 +265,12 @@
                         id: 'v3io',
                         name: 'v3io',
                         url: 'string',
-                        secret: 'string',
                         attributes: [
                             {
                                 name: 'containerID',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
@@ -259,6 +280,20 @@
                                 allowEmpty: true,
                                 defaultValue: 8,
                                 maxValue: 100
+                            },
+                            {
+                                name: 'username',
+                                pattern: 'string',
+                                type: 'input',
+                                fieldType: 'input',
+                                allowEmpty: false
+                            },
+                            {
+                                name: 'password',
+                                pattern: 'password',
+                                type: 'input',
+                                fieldType: 'password',
+                                allowEmpty: false
                             }
                         ]
                     },
@@ -270,24 +305,28 @@
                                 name: 'sharedAccessKeyName',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'sharedAccessKeyValue',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'namespace',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             },
                             {
                                 name: 'eventHubName',
                                 pattern: 'string',
                                 type: 'input',
+                                fieldType: 'input',
                                 allowEmpty: false
                             }
                         ]

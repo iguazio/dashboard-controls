@@ -126,7 +126,7 @@
                 NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
             }).catch(function (error) {
                 var msg = 'Oops: Unknown error occurred while retrieving project';
-                DialogsService.alert(lodash.get(error, 'error', msg));
+                DialogsService.alert(lodash.get(error, 'data.error', msg));
             });
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
@@ -177,6 +177,9 @@
                     pathsToExcludeOnDeploy.push('spec.loggerSinks');
                 }
                 var versionCopy = lodash.omit(ctrl.version, pathsToExcludeOnDeploy);
+
+                // set `nuclio.io/project-name` label to relate this function to its project
+                lodash.set(versionCopy, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.project.metadata.name);
 
                 ctrl.isTestResultShown = false;
                 ctrl.isDeployResultShown = true;
@@ -261,7 +264,7 @@
                             .catch(function (error) {
                                 ctrl.isSplashShowed.value = false;
                                 var msg = 'Oops: Unknown error occurred while deleting function';
-                                DialogsService.alert(lodash.get(error, 'error', msg));
+                                DialogsService.alert(lodash.get(error, 'data.error', msg));
                             });
                     });
             } else if (item.id === 'exportFunction') {

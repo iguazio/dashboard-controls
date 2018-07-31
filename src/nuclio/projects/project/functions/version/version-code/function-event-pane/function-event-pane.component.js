@@ -332,12 +332,12 @@
                                 })
                                 .catch(function (error) {
                                     var msg = 'Oops: Unknown error occurred while retrieving events';
-                                    DialogsService.alert(lodash.get(error, 'error', msg));
+                                    DialogsService.alert(lodash.get(error, 'data.error', msg));
                                 });
                         })
                         .catch(function (error) {
                             var msg = 'Oops: Unknown error occurred while deleting events';
-                            DialogsService.alert(lodash.get(error, 'error', msg));
+                            DialogsService.alert(lodash.get(error, 'data.error', msg));
                         })
                         .finally(function () {
                             ctrl.isSplashShowed.value = false;
@@ -545,6 +545,9 @@
                     eventToSave.spec.body = '';
                 }
 
+                // set `nuclio.io/function-name` label to relate this function event to its function
+                lodash.set(eventToSave, ['metadata', 'labels', 'nuclio.io/function-name'], ctrl.version.metadata.name);
+
                 ctrl.isSplashShowed.value = true;
 
                 // save created event on beck-end
@@ -572,8 +575,13 @@
         /**
          * Selects specific event from list of saved events
          * @param {Object} event
+         * @param {string} [location] - location of event(ex. history)
          */
-        function selectEvent(event) {
+        function selectEvent(event, location) {
+            if (location === 'history') {
+                lodash.set(event, 'spec.displayName', '');
+            }
+
             ctrl.selectedEvent = angular.copy(event);
             ctrl.selectedEvent.spec.body = lodash.defaultTo(ctrl.selectedEvent.spec.body, '');
             ctrl.createEvent = false;
@@ -599,11 +607,11 @@
          * @param {Object} event
          */
         function testEvent(event) {
+            ctrl.testEventsForm.$setPristine();
             var httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
-            ctrl.testEventsForm.$submitted = true;
 
             if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) &&
-                ctrl.testEventsForm.$valid && !lodash.isNull(httpPort) && !ctrl.uploadingData.uploading && !ctrl.testing) {
+                !lodash.isNull(httpPort) && !ctrl.uploadingData.uploading && !ctrl.testing) {
                 var startTime = moment();
                 canceler = $q.defer();
                 canceledInvocation = false;
@@ -841,7 +849,9 @@
             if (updatedHistory.length === HISTORY_LIMIT) {
                 updatedHistory.splice(0, 1);
             }
-            updatedHistory.push(ctrl.selectedEvent);
+            var eventToSave = angular.copy(ctrl.selectedEvent);
+            delete eventToSave.spec.displayName;
+            updatedHistory.push(eventToSave);
 
             localStorage.setItem('test-events', angular.toJson(updatedHistory));
             updateHistory();

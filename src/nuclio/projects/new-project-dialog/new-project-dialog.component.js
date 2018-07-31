@@ -72,7 +72,7 @@
                             ctrl.closeDialog({project: ctrl.data});
                         })
                         .catch(function (error) {
-                            var status = lodash.get(error, 'data.errors[0].status');
+                            var status = lodash.get(error, 'status');
 
                             ctrl.serverError =
                                 status === 400                   ? 'Missing mandatory fields'                           :

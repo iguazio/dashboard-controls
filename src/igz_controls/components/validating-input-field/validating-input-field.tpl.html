@@ -62,6 +62,7 @@
              class="input-placeholder">{{$ctrl.placeholderText}}
         </div>
         <input class="input-field field" tabindex="0"
+               data-ng-class="{'invalid': $ctrl.isFieldInvalid()}"
                data-igz-validate-password-confirmation="$ctrl.compareInputValue"
                type="password"
                name="{{$ctrl.inputName}}"
