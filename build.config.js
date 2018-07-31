@@ -43,21 +43,20 @@ module.exports = {
      */
     vendor_files: {
         js: [
-            'vendor/jquery/dist/jquery.js',
-            'vendor/angular/angular.js',
-            'vendor/angular-bootstrap/ui-bootstrap-tpls.js',
-            'vendor/angular-ui-router/release/angular-ui-router.js',
-            'vendor/jquery-ui/ui/core.js',
-            'vendor/jquery-ui/ui/widget.js',
-            'vendor/jquery-ui/ui/mouse.js',
-            'vendor/jquery-ui/ui/sortable.js',
-            'vendor/moment/moment.js',
-            'vendor/js-base64/base64.js',
-            'vendor/ng-file-upload/ng-file-upload.js',
-            'vendor/ng-file-upload/FileAPI.js',
-            'vendor/bootstrap/js/dropdown.js',
-            'vendor/ng-dialog/js/ngDialog.js',
-            'vendor/lodash/lodash.js',
+            'node_modules/jquery/dist/jquery.js',
+            'node_modules/angular/angular.js',
+            'node_modules/angular-ui-bootstrap/ui-bootstrap-tpls.js',
+            'node_modules/angular-ui-router/release/angular-ui-router.js',
+            'node_modules/jquery-ui/ui/widget.js',
+            'node_modules/jquery-ui/ui/widgets/mouse.js',
+            'node_modules/jquery-ui/ui/widgets/sortable.js',
+            'node_modules/moment/moment.js',
+            'node_modules/js-base64/base64.js',
+            'node_modules/ng-file-upload/dist/ng-file-upload.js',
+            'node_modules/ng-file-upload/dist/FileAPI.js',
+            'node_modules/bootstrap/js/dropdown.js',
+            'node_modules/ng-dialog/js/ngDialog.js',
+            'node_modules/lodash/lodash.js',
             'node_modules/monaco-editor/min/vs/loader.js',
             'node_modules/angular-download/angular-download.js'
         ]
@@ -78,7 +77,7 @@ module.exports = {
                 '!src/nuclio/**/*.spec.js'
             ],
             modules: [
-                'vendor/angular-mocks/angular-mocks.js'
+                'node_modules/angular-mocks/angular-mocks.js'
             ],
             tests: [
                 'src/**/*.spec.js'
