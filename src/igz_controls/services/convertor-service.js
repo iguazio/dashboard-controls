@@ -17,6 +17,14 @@
          */
         function getConvertedBytes(bytes, unit) {
             if (bytes === 0 || !angular.isNumber(bytes) || !isFinite(bytes)) {
+                if (angular.isDefined(unit)) {
+                    return {
+                        value: 0,
+                        label: lodash.first(unit),
+                        pow: 0
+                    };
+                }
+
                 return {
                     value: 1025,
                     label: angular.isDefined(unit) ? lodash.last(unit) : 'GB/s',
