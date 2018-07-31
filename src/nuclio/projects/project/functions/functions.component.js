@@ -92,7 +92,9 @@
          * Initialization method
          */
         function onInit() {
-            if (angular.isDefined($stateParams.projectId)) {
+            if (lodash.isEmpty($stateParams.projectId)) {
+                $state.go('app.projects');
+            } else {
                 ctrl.isSplashShowed.value = true;
 
                 ctrl.getProject({id: $stateParams.projectId})
@@ -105,25 +107,25 @@
                         ctrl.refreshFunctions();
 
                         NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
+
+                        ctrl.getExternalIpAddresses()
+                            .then(function (response) {
+                                ctrl.externalIPAddress = lodash.get(response, 'externalIPAddresses.addresses[0]', '');
+                            })
+                            .catch(function () {
+                                ctrl.externalIPAddress = '';
+                            })
+                            .finally(function () {
+                                ctrl.isSplashShowed.value = false;
+                            });
                     })
                     .catch(function (error) {
                         ctrl.isSplashShowed.value = false;
                         var msg = 'Oops: Unknown error occurred while retrieving project';
-                        DialogsService.alert(lodash.get(error, 'error', msg)).then(function () {
+                        DialogsService.alert(lodash.get(error, 'data.error', msg)).then(function () {
                             $state.go('app.projects');
                         });
                     });
-
-                ctrl.getExternalIpAddresses()
-                    .then(function (response) {
-                        ctrl.externalIPAddress = lodash.get(response, 'externalIPAddresses.addresses[0]', '');
-                    })
-                    .catch(function () {
-                        ctrl.isSplashShowed.value = false;
-                        ctrl.externalIPAddress = '';
-                    });
-            } else {
-                ctrl.refreshFunctions();
             }
 
             ctrl.actions = initVersionActions();
@@ -183,7 +185,7 @@
             });
 
             return $q.all(promises).then(function () {
-                ctrl.refreshFunctions();
+                ctrl.isSplashShowed.value = false;
             });
         }
 
@@ -277,7 +279,7 @@
                 .catch(function (error) {
                     ctrl.isSplashShowed.value = false;
                     var msg = 'Oops: Unknown error occurred while retrieving functions';
-                    DialogsService.alert(lodash.get(error, 'error', msg));
+                    DialogsService.alert(lodash.get(error, 'data.error', msg));
                 });
         }
 

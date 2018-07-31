@@ -160,7 +160,7 @@
                 })
                 .catch(function (error) {
                     var msg = 'Oops: Unknown error occurred while getting function\'s templates';
-                    DialogsService.alert(lodash.get(error, 'error', msg));
+                    DialogsService.alert(lodash.get(error, 'data.error', msg));
                 })
                 .finally(function () {
                     ctrl.toggleSplashScreen({value: false});
