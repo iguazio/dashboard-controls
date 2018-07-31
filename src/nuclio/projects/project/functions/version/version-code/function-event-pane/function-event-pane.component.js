@@ -332,12 +332,12 @@
                                 })
                                 .catch(function (error) {
                                     var msg = 'Oops: Unknown error occurred while retrieving events';
-                                    DialogsService.alert(lodash.get(error, 'error', msg));
+                                    DialogsService.alert(lodash.get(error, 'data.error', msg));
                                 });
                         })
                         .catch(function (error) {
                             var msg = 'Oops: Unknown error occurred while deleting events';
-                            DialogsService.alert(lodash.get(error, 'error', msg));
+                            DialogsService.alert(lodash.get(error, 'data.error', msg));
                         })
                         .finally(function () {
                             ctrl.isSplashShowed.value = false;
@@ -544,6 +544,9 @@
                 if (ctrl.requestBodyType === 'file') {
                     eventToSave.spec.body = '';
                 }
+
+                // set `nuclio.io/function-name` label to relate this function event to its function
+                lodash.set(eventToSave, ['metadata', 'labels', 'nuclio.io/function-name'], ctrl.version.metadata.name);
 
                 ctrl.isSplashShowed.value = true;
 

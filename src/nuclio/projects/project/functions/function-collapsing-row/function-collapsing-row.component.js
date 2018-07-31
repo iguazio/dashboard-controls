@@ -149,7 +149,7 @@
                 .catch(function (error) {
                     ctrl.isSplashShowed.value = false;
                     var msg = 'Unknown error occurred while deleting the function.';
-                    return DialogsService.alert(lodash.get(error, 'error', msg));
+                    return DialogsService.alert(lodash.get(error, 'data.error', msg));
                 });
         }
 

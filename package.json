@@ -10,7 +10,10 @@
     "bugs": {
         "url": "https://github.com/iguazio/dashboard-controls/issues"
     },
-    "keywords": ["Iguazio", "iguazio"],
+    "keywords": [
+        "Iguazio",
+        "iguazio"
+    ],
     "license": "Apache-2.0",
     "homepage": "https://github.com/iguazio/dashboard-controls",
     "author": {

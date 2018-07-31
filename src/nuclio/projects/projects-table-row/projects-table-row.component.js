@@ -101,8 +101,9 @@
                     lodash.remove(ctrl.projectsList, ['metadata.name', ctrl.project.metadata.name]);
                 })
                 .catch(function (error) {
-                    var detail = lodash.get(error, 'data.errors[0].detail');
-                    var errorMessage = lodash.defaultTo(detail, 'Unknown error occurred while deleting the project.');
+                    var status = lodash.get(error, 'status');
+                    var errorMessage = status === 409 ? 'Cannot delete a non-empty project.' :
+                        'Unknown error occurred while deleting the project.';
                     return DialogsService.alert(errorMessage);
                 });
         }
