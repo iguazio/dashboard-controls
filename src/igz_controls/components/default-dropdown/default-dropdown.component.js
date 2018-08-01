@@ -48,6 +48,7 @@
                 dropdownType: '@?',
                 enableTyping: '<?',
                 formObject: '<?',
+                iconClass: '@?',
                 inputName: '@?',
                 isDisabled: '<?',
                 isCapitalized: '@?',
@@ -112,6 +113,7 @@
          */
         function onInit() {
             ctrl.isCapitalized = lodash.defaultTo(ctrl.isCapitalized, 'false').toLowerCase() === 'true';
+            ctrl.iconClass = lodash.defaultTo(ctrl.iconClass, 'igz-icon-dropdown');
 
             if (!lodash.isNil(ctrl.dropdownType) && ctrl.dropdownType === 'priority') {
                 ctrl.valuesArray = PriorityDropdownService.getPrioritiesArray();
