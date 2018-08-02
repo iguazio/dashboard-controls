@@ -2,9 +2,17 @@
     <div class="functional-buttons"
          data-ng-if="$ctrl.logs.length > 0">
         <div class="ncl-icon-expand-all"
-             data-ng-click="$ctrl.expandAllRows(true)"></div>
+             data-ng-click="$ctrl.expandAllRows(true)"
+             data-tooltip="Expand all"
+             data-tooltip-popup-delay="300"
+             data-tooltip-placement="left"
+             data-tooltip-append-to-body="true"></div>
         <div class="ncl-icon-collapse-all"
-             data-ng-click="$ctrl.expandAllRows(false)"></div>
+             data-ng-click="$ctrl.expandAllRows(false)"
+             data-tooltip="Collapse all"
+             data-tooltip-popup-delay="300"
+             data-tooltip-placement="left"
+             data-tooltip-append-to-body="true"></div>
     </div>
     <div data-ng-repeat="log in $ctrl.logs track by $index">
         <div class="collapsed-row text-ellipsis" data-ng-if="log.ui.collapsed">
