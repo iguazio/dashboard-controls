@@ -4,3 +4,4 @@ vendor
 node_modules
 npm-debug.log
 dist/js/vendor.js
+package-lock.json
