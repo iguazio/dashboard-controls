@@ -190,7 +190,10 @@
          */
         function setFocus() {
             ctrl.inputFocused = true;
-            ctrl.itemFocusCallback({inputName: ctrl.inputName});
+
+            if (angular.isFunction(ctrl.itemFocusCallback)) {
+                ctrl.itemFocusCallback({inputName: ctrl.inputName});
+            }
         }
 
         /**
@@ -198,7 +201,11 @@
          */
         function onBlurInput() {
             ctrl.inputFocused = false;
-            ctrl.itemBlurCallback({inputName: ctrl.inputName});
+
+            if (angular.isFunction(ctrl.itemFocusCallback)) {
+                ctrl.itemBlurCallback({inputName: ctrl.inputName});
+            }
+
             onCurrentValueChange();
         }
 
