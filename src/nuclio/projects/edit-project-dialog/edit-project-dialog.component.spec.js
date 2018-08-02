@@ -70,13 +70,7 @@ describe('nclEditProjectDialog component:', function () {
         it('should reject `ctrl.updateProjectCallback()` method if there is error ' +
             '(missing mandatory fields) is response', function () {
             spyOn(ctrl, 'updateProjectCallback').and.returnValue($q.reject({
-                data: {
-                    errors: [
-                        {
-                            status: 400
-                        }
-                    ]
-                }
+                status: 400
             }));
 
             ctrl.saveProject();

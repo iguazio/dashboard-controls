@@ -77,13 +77,7 @@ describe('nclNewProjectDialog component:', function () {
         it('should reject `ctrl.createProjectCallback()` method if there is error ' +
             '(missing mandatory fields) is response', function () {
             spyOn(ctrl, 'createProjectCallback').and.returnValue($q.reject({
-                data: {
-                    errors: [
-                        {
-                            status: 400
-                        }
-                    ]
-                }
+                status: 400
             }));
 
             ctrl.data = {
