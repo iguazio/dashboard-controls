@@ -184,7 +184,7 @@
             if (ctrl.selectedRuntimeFilter.id !== 'all') {
                 lodash.forIn(templates, function (value, key) {
 
-                    // if template's runtime doesn't match selected runtime, then delete this template from finedTemplates object
+                    // if template's runtime doesn't match selected runtime, then delete this template from templates object
                     if (value.spec.runtime !== ctrl.selectedRuntimeFilter.id) {
                         delete templates[key];
                     }
@@ -193,7 +193,7 @@
         }
 
         /**
-         * Deletes templates which title or description are not matched a search query.
+         * Deletes templates which title and description are not matched a search query.
          * @param {Object} templates - templates to filter.
          */
         function filterByTitleAndDescription(templates) {
@@ -202,7 +202,7 @@
                     var titel = value.metadata.name.split(':')[0];
                     var description = value.spec.description;
 
-                    // if title or description doesn't match search query, then delete this template from finedTemplates object
+                    // if title or description doesn't match search query, then delete this template from templates object
                     if (!lodash.includes(titel, ctrl.searchQuery) && !lodash.includes(description, ctrl.searchQuery)) {
                         delete templates[key];
                     }
@@ -242,7 +242,8 @@
                 })
                 .catch(function (error) {
                     var msg = 'Oops: Unknown error occurred while getting function\'s templates';
-                    DialogsService.alert(lodash.get(error, 'error', msg));
+
+                    DialogsService.alert(lodash.get(error, 'data.error', msg));
                 })
                 .finally(function () {
                     ctrl.toggleSplashScreen({value: false});
