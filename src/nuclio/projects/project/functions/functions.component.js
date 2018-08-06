@@ -253,7 +253,7 @@
         function refreshFunctions() {
             ctrl.isSplashShowed.value = true;
 
-            ctrl.getFunctions({id: ctrl.project.metadata.name, namespace: ctrl.project.metadata.namespace})
+            ctrl.getFunctions({id: ctrl.project.metadata.name})
                 .then(function (result) {
                     ctrl.functions = lodash.toArray(lodash.defaultTo(result.data, result));
 
