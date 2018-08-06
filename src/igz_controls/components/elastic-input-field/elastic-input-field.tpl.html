@@ -1,14 +1,14 @@
 <div class="igz-elastic-input-field">
     <div class="non-editable text-ellipsis"
-         data-ng-if="!$ctrl.readOnly"
+         data-ng-if="$ctrl.readOnly"
          data-tooltip="{{$ctrl.model}}"
          data-tooltip-append-to-body="true"
          data-tooltip-popup-delay="200">{{$ctrl.model}}</div>
     <div class="editable"
          data-ng-class="{
          'elastic-input-invalid': $ctrl.isShowFieldInvalidState($ctrl.formObject, $ctrl.inputName),
-         'edit-mode': $ctrl.readOnly}"
-         data-ng-if="$ctrl.readOnly">
+         'edit-mode': !$ctrl.readOnly}"
+         data-ng-if="!$ctrl.readOnly">
         <input name="{{$ctrl.inputName}}"
                type="text"
                class="elastic-input"
