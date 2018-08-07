@@ -14,7 +14,7 @@
 
     function FunctionFromTemplateController($state, $timeout, lodash, DialogsService, ValidatingPatternsService) {
         var ctrl = this;
-        var templatesOriginalObject = {}; // will always save original amount of templates
+        var templatesOriginalObject = {}; // will always save original templates
 
         ctrl.functionName = '';
         ctrl.templatesWorkingCopy = {};
@@ -175,39 +175,37 @@
         //
 
         /**
-         * Deletes templates which are not matched a runtime filter
-         * @param {Object} templates - templates to filter.
+         * Returns true if template's runtime is matched a selected runtime filter
+         * @param {Object} template - template to filter.
+         * @returns {boolean}
          */
-        function filterByRuntime(templates) {
+        function filterByRuntime(template) {
 
-            // apply runtime filter only when it is selected. In other words - is not equal 'all'
+            // reset pagination to first page if filter was applied
             if (ctrl.selectedRuntimeFilter.id !== 'all') {
-                lodash.forIn(templates, function (value, key) {
-
-                    // if template's runtime doesn't match selected runtime, then delete this template from templates object
-                    if (value.spec.runtime !== ctrl.selectedRuntimeFilter.id) {
-                        delete templates[key];
-                    }
-                });
+                ctrl.page.number = 0;
             }
+
+            return ctrl.selectedRuntimeFilter.id === 'all' ||
+                template.spec.runtime === ctrl.selectedRuntimeFilter.id;
         }
 
         /**
-         * Deletes templates which title and description are not matched a search query.
-         * @param {Object} templates - templates to filter.
+         * Returns true if template's title or description is matched a search query.
+         * @param {Object} template - template to filter.
+         * @returns {boolean}
          */
-        function filterByTitleAndDescription(templates) {
-            if (!lodash.isEmpty(ctrl.searchQuery)) {
-                lodash.forIn(templates, function (value, key) {
-                    var titel = value.metadata.name.split(':')[0];
-                    var description = value.spec.description;
+        function filterByTitleAndDescription(template) {
+            var title = template.metadata.name.split(':')[0];
+            var description = template.spec.description;
 
-                    // if title or description doesn't match search query, then delete this template from templates object
-                    if (!lodash.includes(titel, ctrl.searchQuery) && !lodash.includes(description, ctrl.searchQuery)) {
-                        delete templates[key];
-                    }
-                });
+            // reset pagination to first page if filter was applied
+            if (!lodash.isEmpty(ctrl.searchQuery)) {
+                ctrl.page.number = 0;
             }
+
+            return lodash.isEmpty(ctrl.searchQuery) ||
+                lodash.includes(title, ctrl.searchQuery) || lodash.includes(description, ctrl.searchQuery);
         }
 
         /**
@@ -328,27 +326,20 @@
 
             // amount of visible items on one page
             var PAGE_SIZE = 8;
-            var templatesToPaginate = angular.copy(templatesOriginalObject);
-            var convertedTemplates = {};
 
-            // templatesToPaginate will be modified here
-            filterByTitleAndDescription(templatesToPaginate);
-            filterByRuntime(templatesToPaginate);
+            var filteredTemplates = lodash.chain(templatesOriginalObject)
+                .filter(filterByRuntime)
+                .filter(filterByTitleAndDescription)
+                .value();
 
-            // convert object into array for future slice
-            var tempArrayOfTemplates = lodash.values(angular.copy(templatesToPaginate));
+            ctrl.templatesWorkingCopy = lodash.chain(filteredTemplates)
+                .slice((ctrl.page.number * PAGE_SIZE), (ctrl.page.number * PAGE_SIZE) + PAGE_SIZE)
+                .keyBy(function (template) {
+                    return template.metadata.name.split(':')[0] + ' (' + template.spec.runtime + ')';
+                })
+                .value();
 
-            var paginatedTemplates = lodash.slice(tempArrayOfTemplates, (ctrl.page.number * PAGE_SIZE), (ctrl.page.number * PAGE_SIZE) + PAGE_SIZE);
-
-            // convert array back to the object
-            lodash.forEach(paginatedTemplates, function (template) {
-                var templateTitle = template.metadata.name.split(':')[0] + ' (' + template.spec.runtime + ')';
-
-                convertedTemplates[templateTitle] = template;
-            });
-
-            ctrl.templatesWorkingCopy = convertedTemplates;
-            ctrl.page.total = Math.ceil(lodash.size(tempArrayOfTemplates) / 8);
+            ctrl.page.total = Math.ceil(lodash.size(filteredTemplates) / PAGE_SIZE);
         }
     }
 }());
