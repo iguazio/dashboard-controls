@@ -138,7 +138,6 @@
 
         ctrl.addNewHeader = addNewHeader;
         ctrl.cancelInvocation = cancelInvocation;
-        ctrl.closeLeftBar = closeLeftBar;
         ctrl.copyToClipboard = copyToClipboard;
         ctrl.downloadResponseFile = downloadResponseFile;
         ctrl.deleteEvent = deleteEvent;
@@ -159,6 +158,7 @@
         ctrl.saveEvent = saveEvent;
         ctrl.selectEvent = selectEvent;
         ctrl.testEvent = testEvent;
+        ctrl.toggleLeftBar = toggleLeftBar;
         ctrl.uploadFile = uploadFile;
 
         //
@@ -247,14 +247,6 @@
                 canceler = null;
             }
             canceledInvocation = true;
-        }
-
-        /**
-         * Closes left bar
-         */
-        function closeLeftBar() {
-            ctrl.showLeftBar = false;
-            ctrl.fixedLeftBar = false;
         }
 
         /**
@@ -693,6 +685,15 @@
                         ctrl.isInvocationSuccess = lodash.startsWith(invocationData.status, '2');
                     });
             }
+        }
+
+        /**
+         * Toggles left bar
+         * @param {boolean} [displayLeftBar]
+         */
+        function toggleLeftBar(displayLeftBar) {
+            ctrl.showLeftBar = lodash.defaultTo(displayLeftBar, !ctrl.showLeftBar);
+            ctrl.fixedLeftBar = false;
         }
 
         /**
