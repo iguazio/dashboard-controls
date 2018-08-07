@@ -18,7 +18,7 @@
          * @param {string} columnName
          * @param {string} lastSortedColumnName
          * @param {boolean} isReversed
-         * @return {{sorted: boolean, reversed: boolean}} - an object with css class names suitable for `ng-class`
+         * @returns {{sorted: boolean, reversed: boolean}} - an object with css class names suitable for `ng-class`
          */
         function isColumnSorted(columnName, lastSortedColumnName, isReversed) {
             var classes = {
