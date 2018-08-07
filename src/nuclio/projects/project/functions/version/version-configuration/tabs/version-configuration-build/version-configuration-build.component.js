@@ -80,7 +80,7 @@
 
         /**
          * Returns uploading file config object
-         * @return {Object}
+         * @returns {Object}
          */
         function getFileConfig() {
             return ctrl[uploadType];

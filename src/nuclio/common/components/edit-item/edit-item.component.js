@@ -197,7 +197,7 @@
 
         /**
          * Returns true if scrollbar is necessary
-         * @return {boolean}
+         * @returns {boolean}
          */
         function isScrollNeeded() {
             return ctrl.ingresses.length > 10;

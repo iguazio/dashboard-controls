@@ -108,7 +108,7 @@
 
         /**
          * Checks if source code of function exists into ctrl.sourceCode
-         * @return {boolean}
+         * @returns {boolean}
          */
         function isSourceCodeExists() {
             return !lodash.isNil(ctrl.sourceCode);
@@ -121,7 +121,7 @@
         /**
          * Checks if file imported from file system is YAML extension.
          * Example: 'filename.yml'
-         * @return {boolean}
+         * @returns {boolean}
          */
         function isYamlFile(filename) {
             return lodash.includes(filename, '.yml') || lodash.includes(filename, '.yaml');
