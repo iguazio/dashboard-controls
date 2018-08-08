@@ -51,6 +51,7 @@
             <div class="main-header">
                 <div class="left-side-elements">
                 <span class="igz-icon-hamburger-menu"
+                      data-ng-if="!$ctrl.fixedLeftBar"
                       data-ng-click="$ctrl.toggleLeftBar()"></span>
 
                     <igz-elastic-input-field data-model="$ctrl.selectedEvent.spec.displayName"

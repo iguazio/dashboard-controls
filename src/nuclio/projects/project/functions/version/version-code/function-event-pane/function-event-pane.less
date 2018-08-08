@@ -33,10 +33,6 @@
     &.fixed-left-bar {
         display: flex;
 
-        .main-section-wrapper {
-            margin-left: 187px;
-        }
-
         .left-bar {
             box-shadow: none;
             border: none;
@@ -49,18 +45,37 @@
             }
         }
 
-        .igz-elastic-input-field {
-            input {
-                max-width: 90px !important;
+        .main-section-wrapper {
+            width: 410px;
+            margin-left: 187px;
+
+            .main-header {
+                padding-left: 7px;
+
+                .igz-elastic-input-field {
+                    input {
+                        max-width: 160px !important;
+                    }
+                }
             }
         }
 
-        .main-section-wrapper {
-            width: 410px;
+        .request-section {
+            .request-method {
+                padding-left: 0;
+            }
+
+            .request-body {
+                .body-types {
+                    padding-left: 2px;
+                }
+            }
         }
 
         .response-section {
             .response-header {
+                padding-left: 5px;
+
                 .left-side-elements {
                     margin-left: 12px;
                 }
