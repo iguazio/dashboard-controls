@@ -4,7 +4,7 @@
     <div data-ng-class="{'visible': $ctrl.showLeftBar}"
          class="left-bar">
         <div class="header">
-            <div class="igz-icon-close" data-ng-click="$ctrl.closeLeftBar()"></div>
+            <div class="igz-icon-close" data-ng-click="$ctrl.toggleLeftBar(false)"></div>
             Events
             <div class="ncl-icon-pin"
                  data-ng-if="!$ctrl.fixedLeftBar"
@@ -51,7 +51,8 @@
             <div class="main-header">
                 <div class="left-side-elements">
                 <span class="igz-icon-hamburger-menu"
-                      data-ng-click="$ctrl.showLeftBar = !$ctrl.showLeftBar"></span>
+                      data-ng-if="!$ctrl.fixedLeftBar"
+                      data-ng-click="$ctrl.toggleLeftBar()"></span>
 
                     <igz-elastic-input-field data-model="$ctrl.selectedEvent.spec.displayName"
                                              data-model-options="{allowInvalid:true}"
