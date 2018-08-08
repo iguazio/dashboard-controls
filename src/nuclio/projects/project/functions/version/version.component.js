@@ -18,12 +18,11 @@
             controller: NclVersionController
         });
 
-    function NclVersionController($filter, $interval, $scope, $rootScope, $state, $stateParams, $timeout, $q, lodash,
-                                  ngDialog, YAML, ConfigService, DialogsService, NuclioHeaderService) {
+    function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $timeout, lodash, YAML,
+                                  ConfigService, DialogsService, NuclioHeaderService) {
         var ctrl = this;
         var deregisterFunction = null;
         var interval = null;
-        var eventContentType = '';
 
         ctrl.action = null;
         ctrl.isDemoMode = ConfigService.isDemoMode;
