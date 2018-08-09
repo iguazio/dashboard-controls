@@ -2,8 +2,11 @@
 
 // main
 @dark-sky-blue: #28afe4;
-@lightblue: #4dc4f3;
 @bluish: #239bca;
+@lightblue: #4dc4f3;
+@light-blue: #41baea;
+@light-blue-two: #3fbced;
+@light-blue-three: #f2fafe;
 @dark-blue-grey: #101833;
 @dusk: #3f4b6a;
 @dusk-two: #495a81;
@@ -14,26 +17,38 @@
 @greyish-purple: #898593;
 @cool-grey: #acaab3;
 @silver: #c9c9cd;
+@light-grey: #f7f7fa;
+@light-grey-two: #f1f6fa;
+@light-grey-three: #e0e0e0;
+@light-grayish-blue: #f2f2f5;
 @pale-grey: #e1e0e5;
 @pale-grey-two: #edecef;
 @pale-grey-three: #f3f3f6;
 @pale-white: #f2f2f6;
 @white: #ffffff;
+@solid-grey: #a9a9a9;
+@dark-grey: #0a0a0a;
+@black: #000000;
 
 // alert colours
 @darkish-pink: #e54158;
 @sunflower-yellow: #f7dd00;
 @tealish: #21d4ac;
+@light-green: #f1f9f5;
 @cloudy-blue: #a8c6dc;
 
 // chart colours
 @tiffany-blue: #83dfe9;
 @orangish: #f9794f;
+@dark-orange: #ef7a51;
+@orange: #fa9153;
 @pale-orange: #fdbc5a;
+@dark-greyish-blue: #9997a0;
 @french-blue: #4a69ab;
 @greyish-blue: #a0c3dc;
 
 // NOT in standard palette
+@border-color: #e6ebf1;
 @checkbox-unchecked: #918c9a;
 @slider-bar: #dedce1;
 @vs-dark: #1e1e1e;
@@ -44,10 +59,6 @@
 }
 
 .darkSkyBlue(@alpha) {
-    @color: rgba(40, 175, 228, @alpha);
-}
-
-.lightblue(@alpha) {
     @color: rgba(40, 175, 228, @alpha);
 }
 
@@ -99,10 +110,6 @@
     @color: rgba(201, 201, 205, @alpha);
 }
 
-.paleGrey(@alpha) {
-    @color: rgba(225, 224, 229, @alpha);
-}
-
 .paleGreyTwo(@alpha) {
     @color: rgba(237, 236, 239, @alpha);
 }
@@ -149,4 +156,24 @@
 
 .greyishBlue(@alpha) {
     @color: rgba(168, 198, 220, @alpha);
+}
+
+.orange(@alpha) {
+    @color: rgba(250, 143, 83, @alpha);
+}
+
+.darkOrange(@alpha) {
+    @color: rgba(239, 122, 81, @alpha);
+}
+
+.paleGrey(@alpha) {
+    @color: rgba(225, 224, 229, @alpha);
+}
+
+.black(@alpha) {
+    @color: rgba(0, 0, 0, @alpha);
+}
+
+.lightBlue(@alpha) {
+    @color: rgba(65, 186, 234, @alpha);
 }

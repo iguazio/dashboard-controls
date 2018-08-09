@@ -1,19 +1,19 @@
 .test-events-pane {
     width: 650px;
     height: 100%;
-    border: 1px solid @ncl-pale-grey;
-    border-left: 2px solid @ncl-pale-grey;
+    border: 1px solid @pale-grey;
+    border-left: 2px solid @pale-grey;
     border-top: none;
     position: relative;
-    background-color: @ncl-white;
+    background-color: @white;
 
     .ncl-secondary-button {
-        background-color: @ncl-pale-grey;
-        color: @ncl-dusk-three;
+        background-color: @pale-grey;
+        color: @dusk-three;
 
         &.disabled {
-            .nclDuskThree(0.24);
-            background-color: @ncl-pale-grey-three;
+            .duskThree(0.24);
+            background-color: @pale-grey-three;
             color: @color;
         }
     }
@@ -40,7 +40,7 @@
         .left-bar {
             box-shadow: none;
             border: none;
-            border-right: solid 1px @ncl-pale-grey;
+            border-right: solid 1px @pale-grey;
             display: none;
             transition: none;
 
@@ -90,15 +90,15 @@
     }
 
     .left-bar {
-        .nclBlack(0.1);
+        .black(0.1);
         position: absolute;
         z-index: 5;
         height: 100%;
         width: 187px;
-        background-color: @ncl-white;
-        color: @ncl-dusk-three;
+        background-color: @white;
+        color: @dusk-three;
         box-shadow: 2.5px 1.6px 6px 0 @color;
-        border: solid 1px @ncl-pale-grey;
+        border: solid 1px @pale-grey;
         border-top: none;
         border-bottom: none;
 
@@ -114,7 +114,7 @@
                 padding-right: 27px;
 
                 &:hover {
-                    background-color: @ncl-light-grayish-blue;
+                    background-color: @light-grayish-blue;
 
                     .igz-icon-close {
                         visibility: visible;
@@ -122,7 +122,7 @@
                 }
 
                 .igz-icon-close {
-                    .nclDuskThree(0.64);
+                    .duskThree(0.64);
                     position: absolute;
                     top: 1px;
                     right: 9px;
@@ -139,7 +139,7 @@
             height: 16px;
             line-height: 17px;
             text-align: center;
-            color: @ncl-white;
+            color: @white;
             border-radius: 3px;
             margin: 0 8px 0 10px;
             font-size: 11px;
@@ -151,11 +151,11 @@
             align-items: center;
             font-size: 16px;
             font-weight: bold;
-            color: @ncl-dusk-three;
+            color: @dusk-three;
             height: 39px;
 
             .igz-icon-close {
-                .nclDuskThree(0.64);
+                .duskThree(0.64);
                 color: @color;
                 font-size: 12px;
                 margin: 0 9px 0 12px;
@@ -165,17 +165,17 @@
                 position: absolute;
                 top: 12px;
                 right: 12px;
-                color: @ncl-greyish-purple;
+                color: @greyish-purple;
                 font-size: 16px;
             }
         }
 
         .ncl-test-events-navigation-tabs {
-            background-color: @ncl-white;
+            background-color: @white;
 
             .test-events-navigation-tab {
                 padding: 10px 22px 0;
-                background-color: @ncl-white;
+                background-color: @white;
             }
         }
     }
@@ -191,8 +191,8 @@
         justify-content: space-between;
         align-items: center;
         height: 40px;
-        border-bottom: 1px solid @ncl-pale-grey;
-        background-color: @ncl-white;
+        border-bottom: 1px solid @pale-grey;
+        background-color: @white;
         padding: 0 24px 0 12px;
 
         .left-side-elements {
@@ -200,7 +200,7 @@
             align-items: center;
 
             .igz-icon-hamburger-menu {
-                color: @ncl-dusk-three;
+                color: @dusk-three;
                 margin-right: 4px;
                 font-size: 12px;
             }
@@ -222,7 +222,7 @@
                     }
 
                     &.elastic-input-invalid input {
-                        border: solid 1px @ncl-darkish-pink;
+                        border: solid 1px @darkish-pink;
                     }
                 }
             }
@@ -235,8 +235,8 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background-color: @ncl-pale-grey-two;
-                border: 1px solid @ncl-pale-grey;
+                background-color: @pale-grey-two;
+                border: 1px solid @pale-grey;
                 height: 32px;
                 width: 32px;
                 margin-right: 10px;
@@ -263,14 +263,14 @@
     .request-method {
         display: flex;
         align-items: center;
-        background-color: @ncl-pale-grey-three;
+        background-color: @pale-grey-three;
         height: 38px;
         padding: 0 23px;
 
         .path {
             display: flex;
             align-items: center;
-            color: @ncl-grey;
+            color: @cool-grey;
             font-weight: bold;
             margin-left: 22px;
         }
@@ -290,7 +290,7 @@
             .input-field {
                 padding: 0 1px;
                 border-color: transparent;
-                background-color: @ncl-pale-grey-three;
+                background-color: @pale-grey-three;
             }
         }
     }
@@ -300,8 +300,8 @@
             display: flex;
             align-items: center;
             height: 40px;
-            background-color: @ncl-white;
-            border-bottom: 1px solid @ncl-pale-grey;
+            background-color: @white;
+            border-bottom: 1px solid @pale-grey;
             padding: 0 24px;
 
             .default-dropdown {
@@ -319,7 +319,7 @@
                 padding: 8px;
 
                 &.uploaded {
-                    background-color: @ncl-white;
+                    background-color: @white;
                 }
 
                 .drop-section {
@@ -328,8 +328,8 @@
                     justify-content: center;
                     height: 100%;
                     width: 100%;
-                    border: 2px dashed @ncl-silver;
-                    color: @ncl-silver;
+                    border: 2px dashed @silver;
+                    color: @silver;
                     font-size: 16px;
                     font-weight: bold;
 
@@ -343,7 +343,7 @@
                         text-align: center;
 
                         .ncl-icon-drop-file {
-                            color: @ncl-silver;
+                            color: @silver;
                             font-size: 40px;
                             height: 50px;
                         }
@@ -359,12 +359,12 @@
                                 overflow: hidden;
                                 height: 4px;
                                 width: 205px;
-                                background-color: @ncl-pale-grey;
+                                background-color: @pale-grey;
                                 border-radius: 2px;
                                 margin: 9px auto 14px;
 
                                 .progress-bar {
-                                    background-color: @ncl-dark-sky-blue;
+                                    background-color: @dark-sky-blue;
                                 }
                             }
                         }
@@ -374,7 +374,7 @@
                         }
 
                         .browse {
-                            color: @ncl-dark-sky-blue;
+                            color: @dark-sky-blue;
                             cursor: pointer;
                         }
 
@@ -384,11 +384,11 @@
 
                         .file-name, .file {
                             font-weight: normal;
-                            color: @ncl-dusk-three;
+                            color: @dusk-three;
                             font-size: 14px;
 
                             .size {
-                                color: @ncl-dark-greyish-blue;
+                                color: @dark-greyish-blue;
                             }
                         }
 
@@ -399,13 +399,13 @@
                             margin: 25px 0 0 41px;
                             width: 344px;
                             height: 32px;
-                            background-color: @ncl-light-grayish-blue;
-                            border: solid 1px @ncl-pale-grey;
+                            background-color: @light-grayish-blue;
+                            border: solid 1px @pale-grey;
 
                             .ncl-icon-file {
                                 font-size: 20px;
                                 margin: 0 9px 0 11px;
-                                color: @ncl-greyish-purple;
+                                color: @greyish-purple;
                             }
 
                             .name {
@@ -417,7 +417,7 @@
 
                             .igz-icon-close {
                                 position: absolute;
-                                color: @ncl-dusk-three;
+                                color: @dusk-three;
                                 right: 9px;
                                 top: 9px;
                                 font-size: 10px;
@@ -446,7 +446,7 @@
         }
 
         .headers {
-            background-color: @ncl-white;
+            background-color: @white;
             padding: 22px 17px;
 
             .create-header-button {
@@ -462,7 +462,7 @@
             }
 
             .table-body-wrapper {
-                border-left: 2px solid @ncl-pale-grey;
+                border-left: 2px solid @pale-grey;
 
                 &.scrollable-headers {
                     max-height: 185px;
@@ -473,7 +473,7 @@
                 margin-bottom: 0;
 
                 .ncl-key-value-input {
-                    border: 1px solid @ncl-pale-grey;
+                    border: 1px solid @pale-grey;
                     border-left: none;
                     border-bottom: none;
 
@@ -494,21 +494,21 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: @ncl-pale-grey-three;
-            border-top: 1px solid @ncl-pale-grey;
+            background-color: @pale-grey-three;
+            border-top: 1px solid @pale-grey;
             height: 39px;
 
             .left-side-elements {
                 font-size: 16px;
                 font-weight: bold;
-                color: @ncl-dusk-three;
+                color: @dusk-three;
                 margin-left: 40px;
             }
 
             .right-side-elements {
                 display: flex;
                 font-size: 14px;
-                color: @ncl-dusk-three;
+                color: @dusk-three;
 
                 .status {
                     display: inline-block;
@@ -518,7 +518,7 @@
                     margin-left: 4px;
 
                     &.success {
-                        color: @ncl-green-aquamarine;
+                        color: @tealish;
                     }
 
                     &.fail {
@@ -533,7 +533,7 @@
                         margin-left: 4px;
 
                         &.time, &.size {
-                            color: @ncl-dark-sky-blue;
+                            color: @dark-sky-blue;
                         }
                     }
                 }
@@ -542,7 +542,7 @@
 
         .body {
             display: flex;
-            background-color: @ncl-white;
+            background-color: @white;
             align-items: flex-start;
             justify-content: center;
 
@@ -557,7 +557,7 @@
                     margin-right: 18px;
 
                     > div {
-                        .nclDuskThree(0.64);
+                        .duskThree(0.64);
                         height: 40px;
                         width: 40px;
                         border-radius: 50%;
@@ -575,10 +575,10 @@
                         }
 
                         &:hover {
-                            .nclBlack(0.13);
-                            background-color: @ncl-pale-grey;
+                            .black(0.13);
+                            background-color: @pale-grey;
                             box-shadow: 0.8px 0.5px 3px 0 @color;
-                            color: @ncl-dusk-three;
+                            color: @dusk-three;
                         }
                     }
                 }
@@ -612,7 +612,7 @@
             .no-content-section {
                 margin: 10px auto;
                 font-size: 14px;
-                color: @ncl-pale-grey;
+                color: @pale-grey;
                 text-align: center;
             }
 
@@ -620,7 +620,7 @@
                 margin: 80px 0;
                 text-align: center;
                 font-size: 14px;
-                color: @ncl-greyish-purple;
+                color: @greyish-purple;
 
                 .loader-wrapper {
                     margin: 20px 0;
@@ -633,7 +633,7 @@
 
                 .circle {
                     position: relative;
-                    background-color: @ncl-pale-grey-two;
+                    background-color: @pale-grey-two;
                     height: 130px;
                     width: 130px;
                     border-radius: 50%;
@@ -643,7 +643,7 @@
                         position: absolute;
                         top: 12px;
                         left: 31px;
-                        color: @ncl-dark-sky-blue;
+                        color: @dark-sky-blue;
                         font-size: 43px;
                     }
 
@@ -651,7 +651,7 @@
                         position: absolute;
                         top: 47px;
                         left: 42px;
-                        .nclGreyishPurple(0.64);
+                        .greyishPurple(0.64);
                         color: @color;
                         font-size: 58px;
                     }
@@ -661,7 +661,7 @@
                     margin-top: 14px;
                     width: 245px;
                     font-size: 16px;
-                    color: @ncl-greyish-purple;
+                    color: @greyish-purple;
                     line-height: 1.5;
                 }
             }
@@ -675,13 +675,13 @@
                 line-height: 2;
 
                 .labels {
-                    color: @ncl-greyish-purple;
+                    color: @greyish-purple;
                     font-size: 14px;
                     width: 43%;
                 }
 
                 .values {
-                    color: @ncl-dusk-three;
+                    color: @dusk-three;
                     font-size: 14px;
                     width: 57%;
                 }

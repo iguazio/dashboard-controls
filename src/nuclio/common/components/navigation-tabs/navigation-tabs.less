@@ -2,7 +2,7 @@
     background: @pale-white;
     height: 55px;
     border-top: none;
-    border-bottom: 1px solid @ncl-border-color;
+    border-bottom: 1px solid @border-color;
 
     .navigation-tab {
         position: relative;
@@ -10,7 +10,7 @@
         height: 32px;
         padding: 20px 40px 0;
         font-family: @font-family-sans-serif;
-        color: @ncl-greyish-purple;
+        color: @greyish-purple;
         font-size: 13px;
         text-align: center;
         cursor: pointer;
@@ -19,8 +19,8 @@
 
         &.active, &.active:hover {
             background: none;
-            color: @ncl-orange;
-            border-bottom: 2px solid @ncl-orange;
+            color: @orange;
+            border-bottom: 2px solid @orange;
             font-weight: bold;
         }
 
@@ -41,18 +41,18 @@
             height: 8px;
             border-radius: 50%;
             margin-left: 34px;
-            background-color: @ncl-greyish-purple;
+            background-color: @greyish-purple;
 
             &.ncl-status-ready {
-                background-color: @ncl-green-aquamarine;
+                background-color: @tealish;
             }
 
             &.ncl-status-building {
-                background-color: @ncl-sunflower-yellow;
+                background-color: @sunflower-yellow;
             }
 
             &.ncl-status-error {
-                background-color: @ncl-darkish-pink;
+                background-color: @darkish-pink;
             }
 
             .ncl-status-tooltip {
@@ -64,8 +64,8 @@
                 height: 24px;
                 padding: 4px 12px 22px 10px;
                 border-radius: 2px;
-                background-color: @ncl-greyish-purple;
-                color: @ncl-white;
+                background-color: @greyish-purple;
+                color: @white;
 
                 &:after {
                     content: "";
@@ -76,34 +76,34 @@
                     width: 0;
                     margin-top: -5px;
                     border: 5px solid transparent;
-                    border-right-color: @ncl-greyish-purple;
+                    border-right-color: @greyish-purple;
                     pointer-events: none;
                 }
 
                 &.ncl-status-tooltip-ready {
                     padding-left: 10px;
-                    background-color: @ncl-green-aquamarine;
+                    background-color: @tealish;
 
                     &:after {
-                        border-right-color: @ncl-green-aquamarine;
+                        border-right-color: @tealish;
                     }
                 }
 
                 &.ncl-status-tooltip-building {
                     padding-left: 10px;
-                    background-color: @ncl-sunflower-yellow;
+                    background-color: @sunflower-yellow;
 
                     &:after {
-                        border-right-color: @ncl-sunflower-yellow;
+                        border-right-color: @sunflower-yellow;
                     }
                 }
 
                 &.ncl-status-tooltip-error {
                     padding-left: 10px;
-                    background-color: @ncl-darkish-pink;
+                    background-color: @darkish-pink;
 
                     &:after {
-                        border-right-color: @ncl-darkish-pink;
+                        border-right-color: @darkish-pink;
                     }
                 }
 
