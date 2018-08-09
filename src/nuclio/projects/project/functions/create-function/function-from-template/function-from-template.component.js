@@ -180,12 +180,6 @@
          * @returns {boolean}
          */
         function filterByRuntime(template) {
-
-            // reset pagination to first page if filter was applied
-            if (ctrl.selectedRuntimeFilter.id !== 'all') {
-                ctrl.page.number = 0;
-            }
-
             return ctrl.selectedRuntimeFilter.id === 'all' ||
                 template.spec.runtime === ctrl.selectedRuntimeFilter.id;
         }
@@ -199,8 +193,8 @@
             var title = template.metadata.name.split(':')[0];
             var description = template.spec.description;
 
-            // reset pagination to first page if filter was applied
-            if (!lodash.isEmpty(ctrl.searchQuery)) {
+            // reset pagination to first page if one of the filters was applied
+            if (!lodash.isEmpty(ctrl.searchQuery) || ctrl.selectedRuntimeFilter.id !== 'all') {
                 ctrl.page.number = 0;
             }
 
@@ -327,19 +321,18 @@
             // amount of visible items on one page
             var PAGE_SIZE = 8;
 
-            var filteredTemplates = lodash.chain(templatesOriginalObject)
+            ctrl.templatesWorkingCopy = lodash.chain(templatesOriginalObject)
                 .filter(filterByRuntime)
                 .filter(filterByTitleAndDescription)
-                .value();
+                .thru(function (filteredTemplates) {
+                    ctrl.page.total = Math.ceil(lodash.size(filteredTemplates) / PAGE_SIZE);
 
-            ctrl.templatesWorkingCopy = lodash.chain(filteredTemplates)
-                .slice((ctrl.page.number * PAGE_SIZE), (ctrl.page.number * PAGE_SIZE) + PAGE_SIZE)
+                    return lodash.slice(filteredTemplates, (ctrl.page.number * PAGE_SIZE), (ctrl.page.number * PAGE_SIZE) + PAGE_SIZE);
+                })
                 .keyBy(function (template) {
                     return template.metadata.name.split(':')[0] + ' (' + template.spec.runtime + ')';
                 })
                 .value();
-
-            ctrl.page.total = Math.ceil(lodash.size(filteredTemplates) / PAGE_SIZE);
         }
     }
 }());
