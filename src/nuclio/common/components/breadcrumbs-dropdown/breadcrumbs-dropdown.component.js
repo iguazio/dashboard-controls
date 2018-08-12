@@ -42,7 +42,7 @@
                         DialogsService.alert('Oops: Unknown error occurred while retrieving projects');
                     });
             } else if (ctrl.type === 'functions') {
-                ctrl.getFunctions({id: ctrl.project.metadata.name, namespace: ctrl.project.metadata.namespace})
+                ctrl.getFunctions({id: ctrl.project.metadata.name})
                     .then(setNuclioItemsList)
                     .catch(function () {
                         DialogsService.alert('Oops: Unknown error occurred while retrieving functions');

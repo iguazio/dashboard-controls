@@ -38,7 +38,7 @@
                   class="description">{{$ctrl.getDescription($ctrl.showSelectedItem().description)}}</span>
         </div>
         <div class="dropdown-arrow" data-ng-if="!$ctrl.readOnly">
-            <span class="igz-icon-dropdown" data-ng-class="{'rotate-arrow': $ctrl.isDropUp}"></span>
+            <span class="{{$ctrl.iconClass}}" data-ng-class="{'rotate-arrow': $ctrl.isDropUp}"></span>
         </div>
     </div>
 
@@ -50,7 +50,7 @@
             <li class="list-item" tabindex="0"
                 data-ng-repeat="item in $ctrl.getValuesArray() track by $index"
                 data-ng-click="$ctrl.selectItem(item)" data-ng-keydown="$ctrl.onItemKeydown($event, item)"
-                data-ng-class="{'list-item-description': $ctrl.getDescription(item)}"
+                data-ng-class="{'list-item-description': $ctrl.getDescription(item), 'active': $ctrl.isItemSelected(item)}"
                 data-ng-show="item.visible"
                 data-tooltip="{{$ctrl.getTooltip(item)}}"
                 data-tooltip-placement="left"
