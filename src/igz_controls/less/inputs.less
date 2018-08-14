@@ -6,6 +6,8 @@
 // Checkbox
 //
 input[type=checkbox] {
+    .check-box-color-set();
+
     height: 0;
     opacity: 0;
     position: absolute;
@@ -29,7 +31,7 @@ input[type=checkbox] {
 
         &:before {
             content: "\e92e";
-            color: @mountain-mist;
+            color: @label-before-color;
             font-family: 'iguazio';
             padding: 0;
             height: 16px;
@@ -52,20 +54,20 @@ input[type=checkbox] {
 
         &:before {
             content: "\e92e";
-            color: @mountain-mist;
+            color: @label-before-in-disabled-color;
         }
     }
 
     // Checked - enabled
     &:checked + label:before {
         content: "\e92f";
-        color: @dark-sky-blue;
+        color: @label-before-in-checked-color;
     }
 
     // Checked - disabled
     &:checked:disabled + label:before {
         content: "\e92f";
-        color: @mountain-mist;
+        color: @label-before-in-checked-disabled-color;
     }
 }
 
@@ -73,6 +75,8 @@ input[type=checkbox] {
 // Radio button
 //
 input[type=radio] {
+    .radio-button-color-set();
+
     height: 0;
     opacity: 0;
     position: absolute;
@@ -84,7 +88,7 @@ input[type=radio] {
             &:before {
                 font-family: 'iguazio';
                 content: "\e934";
-                color: @dark-sky-blue;
+                color: @label-before-in-checked-color;
                 font-size: 18px;
             }
         }
@@ -108,7 +112,7 @@ input[type=radio] {
             margin: 0;
             padding: 0;
             position: absolute;
-            color: @greyish-purple;
+            color: @label-before-color;
             font-size: 16px;
         }
 

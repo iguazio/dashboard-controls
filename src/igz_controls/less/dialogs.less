@@ -9,6 +9,8 @@
 }
 
 .ngdialog-theme-iguazio {
+    .ngdialog-color-set();
+
     @animation-duration: 0.2s;
     @animation-function: ease;
     display: flex;
@@ -116,8 +118,8 @@
                     cursor: pointer;
 
                     &:before {
-                        color: @lightblue;
-                        background-color: @white;
+                        color: @icon-help-before-color;
+                        background-color: @icon-help-before-bg-color;
                         border-radius: 50%;
                         font-size: 18px;
                     }
@@ -142,7 +144,7 @@
                 .row-description {
                     position: absolute;
                     font-family: @font-family-sans-serif;
-                    color: @dark-sky-blue;
+                    color: @row-description-color;
                     font-size: 12px;
                     padding: 0;
                     margin-left: 8px;

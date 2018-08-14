@@ -43,7 +43,9 @@
 }
 
 .igz-button-primary {
-    color: @white;
+    .primary-button-color-set();
+
+    color: @primary-btn-color;
     font-size: 12px;
     display: inline-block;
     vertical-align: top;
@@ -55,29 +57,28 @@
     height: 32px;
     line-height: initial;
     border-radius: 2px;
-    background-color: @dark-sky-blue;
-    border: solid 1px @dark-sky-blue;
+    background-color: @primary-btn-bg-color;
+    border: solid 1px @primary-btn-border-color;
 
     &:hover {
         background-color: @bluish;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+        box-shadow: @primary-btn-hover-box-shadow;
         border: none;
         padding: 9px 21px;
     }
 
     &:active {
         background-color: @bluish;
-        box-shadow: inset 0.4px 1.9px 3px 0 rgba(0, 0, 0, 0.2);
+        box-shadow: @primary-btn-active-box-shadow;
         border: none;
         outline: none;
         padding: 9px 21px;
     }
 
     &.disabled {
-        .duskThree(0.24);
-        background-color: @pale-grey-three;
-        border: solid 1px @pale-grey-three;
-        color: @color;
+        background-color: @primary-btn-disabled-bg-color;
+        border: solid 1px @primary-btn-disabled-border-color;
+        color: @primary-btn-disabled-color;
         box-shadow: none;
         cursor: default;
 
@@ -88,7 +89,9 @@
 }
 
 .igz-button-secondary {
-    color: @dusk-three;
+    .secondary-button-color-set();
+
+    color: @secondary-btn-color;
     font-size: 12px;
     display: inline-block;
     vertical-align: top;
@@ -100,12 +103,14 @@
     height: 32px;
     line-height: initial;
     border-radius: 2px;
-    background-color: @pale-grey-two;
-    border: 1px solid @pale-grey;
+    background-color: @secondary-btn-bg-color;
+    border: 1px solid @secondary-btn-border-color;
 }
 
 .igz-button-remove {
-    color: @white;
+    .remove-button-color-set();
+
+    color: @remove-btn-color;
     font-size: 12px;
     display: inline-block;
     vertical-align: top;
@@ -117,19 +122,19 @@
     height: 32px;
     line-height: initial;
     border-radius: 2px;
-    background-color: @darkish-pink;
-    border: solid 1px @darkish-pink;
+    background-color: @remove-btn-bg-color;
+    border: solid 1px @remove-btn-border-color;
 
     &:hover {
-        background-color: #d73d53;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+        background-color: @remove-btn-hover-color;
+        box-shadow: @remove-btn-hover-box-shadow;
         border: none;
         padding: 9px 21px;
     }
 
     &:active {
-        background-color: #d73d53;
-        box-shadow: inset 0.4px 1.9px 3px 0 rgba(0, 0, 0, 0.2);
+        background-color: @remove-btn-active-color;
+        box-shadow: @remove-btn-active-box-shadow;
         border: none;
         outline: none;
         padding: 9px 21px;
