@@ -45,8 +45,9 @@
                 }
 
                 .action-icon {
-                    .duskThree(0.3);
-                    color: @color;
+                    .action-icon-color-set();
+
+                    color: @action-icon-active-color;
                     cursor: default;
                 }
             }
@@ -121,8 +122,9 @@
             }
 
             .action-icon {
-                .duskThree(0.64);
-                color: @color;
+                .action-icon-color-set();
+
+                color: @action-icon-hover-color;
             }
 
             .action-label {
@@ -139,7 +141,9 @@
                 }
 
                 .action-icon {
-                    color: @dusk-three;
+                    .action-icon-color-set();
+
+                    color: @action-icon-color;
                 }
             }
 
@@ -152,7 +156,9 @@
                 }
 
                 .action-icon {
-                    color: @dusk-three;
+                    .action-icon-color-set();
+
+                    color: @action-icon-color;
                 }
             }
         }

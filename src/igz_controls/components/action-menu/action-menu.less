@@ -1,28 +1,30 @@
 .igz-action-menu {
+    .action-menu-color-set();
+
     opacity: 1;
     position: relative;
 
     .menu-button {
-        color: @icon-color-secondary;
+        color: @menu-btn-color;
         cursor: pointer;
         font-size: 18px;
         height: 19px;
         text-align: center;
-        transition: @igz-basic-transition-color;
+        transition: @menu-btn-color-transition;
         width: 30px;
 
         &.active,
         &:hover {
-            color: @dusk-three;
+            color: @menu-btn-active-hover-color;
         }
     }
 
     .menu-dropdown {
         visibility: hidden;
-        background-color: @white;
-        border: 1px solid @primary-border;
+        background-color: @menu-dropdown-bg-color;
+        border: 1px solid @menu-dropdown-border-color;
         border-radius: 2px;
-        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+        box-shadow: @menu-dropdown-box-shadow;
         color: black;
         font-family: @font-family-sans-serif;
         font-size: 13px;
@@ -46,7 +48,7 @@
         }
 
         .igz-action-item {
-            color: @dusk-three;
+            color: @action-item-color;
             cursor: pointer;
             font-size: 13px;
             font-weight: 400;
@@ -57,17 +59,18 @@
 
             &:hover,
             &.subtemplate-show {
-                background-color: @pale-grey-two;
+                background-color: @action-item-hover-bg-color;
             }
 
             &.inactive {
-                color: @bismark;
+                color: @action-item-inactive-color;
                 pointer-events: none;
             }
 
             .action-icon {
-                .duskThree(0.64);
-                color: @color;
+                .action-icon-color-set();
+
+                color: @action-icon-hover-color;
                 display: inline-block;
                 padding-right: 14px;
 
@@ -89,14 +92,14 @@
             padding-bottom: 8px;
 
             &:not(.first-block) {
-                border-top: 1px solid #f5f5f5;
+                border-top: 1px solid @shortcuts-list-not-first-block-border-color;
                 padding-top: 8px;
             }
         }
 
         .shortcuts-header {
             font-family: @font-family-sans-serif;
-            color: #d9d9d9;
+            color: @shortcuts-header-color;
             line-height: 24px;
             font-size: 13px;
             font-weight: 400;
@@ -105,17 +108,17 @@
         }
 
         .shortcuts-item {
-            color: @dusk-three;
+            color: @shortcuts-item-color;
             cursor: pointer;
             font-weight: 400;
             white-space: nowrap;
             line-height: 32px;
             padding: 0 26px 0 32px;
             text-align: left;
-            transition: @igz-basic-transition-color;
+            transition: @shortcuts-item-transition;
 
             &:hover {
-                background-color: @pale-grey-two;
+                background-color: @shortcuts-item-hover-bg-color;
             }
 
         }
@@ -124,8 +127,7 @@
 
     &.small-action-menu {
         .menu-button {
-            .duskThree(0.64);
-            color: @color;
+            color: @small-action-menu-btn-color;
             width: auto;
             font-size: 12px;
             display: inline-block;
