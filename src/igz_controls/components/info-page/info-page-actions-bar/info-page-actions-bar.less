@@ -4,6 +4,8 @@
 }
 
 .igz-info-page-actions-bar {
+    .info-page-actions-bar-color-set();
+
     background-color: @white;
     position: absolute;
     top: 0;
@@ -61,7 +63,7 @@
         margin-top: 1px;
 
         .create-entity-button {
-            color: @white;
+            color: @create-entity-btn-color;
             font-size: 13px;
             font-weight: 500;
             text-transform: uppercase;
@@ -71,15 +73,15 @@
             width: 148px;
             height: 36px;
             border-radius: 2px;
-            background-color: @dark-sky-blue;
+            background-color: @create-entity-btn-bg-color;
 
             &:hover {
-                background-color: @bluish;
+                background-color: @create-entity-btn-hover-bg-color;
                 box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
             }
 
             &:active {
-                background-color: @bluish;
+                background-color: @create-entity-btn-active-bg-color;
                 box-shadow: inset 0.4px 1.9px 3px 0 rgba(0, 0, 0, 0.2);
             }
         }
