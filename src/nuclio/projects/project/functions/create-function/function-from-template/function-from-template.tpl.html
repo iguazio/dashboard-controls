@@ -23,11 +23,38 @@
     </form>
     <div class="templates-wrapper">
         <span class="title">Choose a template</span>
+        <div class="templates-controls">
+            <div class="templates-search-input">
+                <div class="igz-icon-search search-icon"></div>
+                <input class="input-field field" tabindex="0"
+                       data-ng-model="$ctrl.searchQuery"
+                       data-ng-change="$ctrl.onChangeSearchQuery()"
+                       placeholder="Search by text, tags and keywords..."
+                       data-igz-input-blur-on-enter>
+            </div>
+            <div class="templates-runtime-drop-down">
+                <span class="input-label">Runtime</span>
+                <igz-default-dropdown data-values-array="$ctrl.runtimeFilters"
+                                      data-selected-item="$ctrl.selectedRuntimeFilter"
+                                      data-item-select-callback="$ctrl.onRuntimeFilterChange(item, isItemChanged)">
+                </igz-default-dropdown>
+            </div>
+            <div class="templates-pagination">
+                <igz-pagination data-page-data="$ctrl.page"
+                                data-is-per-page-visible="true"
+                                data-pagination-callback="$ctrl.paginationCallback(page, size)">
+                </igz-pagination>
+            </div>
+        </div>
         <div class="function-templates">
-            <div class="function-template-wrapper" data-ng-repeat="(key, value) in $ctrl.templates"
+            <div class="function-template-wrapper" data-ng-repeat="(key, value) in $ctrl.templatesWorkingCopy"
                  data-ng-click="$ctrl.selectTemplate(key)"
                  data-ng-class="{'selected': $ctrl.isTemplateSelected(key)}">
-                <span class="template-check-box igz-icon-radio" data-ng-class="{'selected': $ctrl.isTemplateSelected(key)}"></span>
+                <div class="add-template-icon-wrapper"
+                     data-ng-class="{'selected': $ctrl.isTemplateSelected(key), 'disabled': !$ctrl.isCreateFunctionAllowed}"
+                     data-ng-click="$ctrl.createFunction()">
+                    <div class="igz-icon-add"></div>
+                </div>
 
                 <div class="function-template-content">
                     <div class="template-title">{{key}}</div>
@@ -37,9 +64,6 @@
         </div>
         <div class="bottom-bar">
             <button class="ncl-secondary-button" data-ng-click="$ctrl.cancelCreating($event)">CANCEL</button>
-            <button class="ncl-primary-button" data-ng-click="$ctrl.createFunction()"
-                    data-ng-disabled="!$ctrl.isCreateFunctionAllowed"
-                    data-ng-class="{'disabled': !$ctrl.isCreateFunctionAllowed}">CREATE FUNCTION</button>
         </div>
     </div>
 </div>

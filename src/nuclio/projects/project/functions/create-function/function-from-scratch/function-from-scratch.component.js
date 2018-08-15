@@ -219,7 +219,7 @@
                 },
                 spec: {
                     description: '',
-                    disabled: false,
+                    disable: false,
                     triggers: {},
                     env: [],
                     loggerSinks: [{
