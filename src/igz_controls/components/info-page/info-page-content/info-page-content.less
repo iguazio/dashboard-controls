@@ -1,4 +1,6 @@
 .igz-info-page-content-wrapper {
+    .info-page-content-color-set();
+
     position: absolute;
     top: 56px;
     right: 0;
@@ -6,6 +8,7 @@
     left: 0;
     padding-top: 0;
     transition: @igz-basic-transition;
+    background-color: @page-content-bg-color;
 
     &.upper-pane-opened {
         top: 216px;
@@ -20,12 +23,9 @@
     }
 
     .igz-info-page-content {
-        .info-page-content-color-set();
-
         min-width: 946px;
         max-width: 100%;
         padding: 40px 25px;
-        background-color: @page-content-bg-color;
     }
 }
 
