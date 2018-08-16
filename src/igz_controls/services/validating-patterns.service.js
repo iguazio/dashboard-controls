@@ -85,7 +85,11 @@
                 },
                 user: {
                     firstName: 30,
-                    lastName: 30
+                    lastName: 30,
+                    username: 32
+                },
+                tenant: {
+                    name: 31
                 }
             };
 
