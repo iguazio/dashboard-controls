@@ -10,20 +10,6 @@
 
                 <div class="new-function-types">
                     <div class="type-wrapper">
-                        <div class="type-template"
-                             data-ng-click="$ctrl.selectFunctionType('from_scratch')"
-                             data-ng-class="{'selected': $ctrl.isTypeSelected('from_scratch')}">
-                            <div class="function-type-icon">
-                                <span class="ncl-icon-add icon"></span>
-                            </div>
-                            <div class="function-type-info">
-                                <div class="type-title">Start from scratch</div>
-                                <div class="type-description">Start with a simple "hello" example</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="type-wrapper">
                         <div class="type-template function-from-template"
                              data-ng-click="$ctrl.selectFunctionType('from_template')"
                              data-ng-class="{'selected': $ctrl.isTypeSelected('from_template')}">
@@ -35,6 +21,20 @@
                                 <div class="type-description">Choose a preconfigured template as starting point for your
                                     nuclio function
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="type-wrapper">
+                        <div class="type-template"
+                             data-ng-click="$ctrl.selectFunctionType('from_scratch')"
+                             data-ng-class="{'selected': $ctrl.isTypeSelected('from_scratch')}">
+                            <div class="function-type-icon">
+                                <span class="ncl-icon-add icon"></span>
+                            </div>
+                            <div class="function-type-info">
+                                <div class="type-title">Start from scratch</div>
+                                <div class="type-description">Start with a simple "hello" example</div>
                             </div>
                         </div>
                     </div>

@@ -14,7 +14,7 @@
 
     function CreateFunctionController($element, $state, $stateParams, lodash, DialogsService, NuclioHeaderService) {
         var ctrl = this;
-        var selectedFunctionType = 'from_scratch';
+        var selectedFunctionType = 'from_template';
 
         ctrl.isSplashShowed = {
             value: true
