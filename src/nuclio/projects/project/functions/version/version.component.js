@@ -193,7 +193,7 @@
                     .then(pullFunctionState)
                     .catch(function (error) {
                         var logs = [{
-                            err: error.data.error
+                            err: error.error
                         }];
 
                         lodash.set(ctrl.deployResult, 'status.state', 'error');
@@ -208,9 +208,9 @@
          * @returns {string}
          */
         function getDeployStatusState(state) {
-            return state === 'ready'    ? 'Successfully deployed' :
-                   state === 'error'    ? 'Failed to deploy'      :
-                                          'Deploying...'          ;
+            return state === 'ready' ? 'Successfully deployed' :
+                   state === 'error' ? 'Failed to deploy'      :
+                                       'Deploying...'          ;
         }
 
         /**
