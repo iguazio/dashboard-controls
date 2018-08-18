@@ -89,7 +89,8 @@
                     username: 32
                 },
                 tenant: {
-                    name: 31
+                    name: 31,
+                    securityAdminEmail: 128
                 }
             };
 
