@@ -1,4 +1,6 @@
 .igz-slider-input-block {
+    .igz-slider-input-block-color-set();
+
     position: relative;
 
     .igz-slider-input-title {
@@ -6,7 +8,7 @@
         display: table;
         min-height: 30px;
         line-height: 1;
-        color: @dusk-three;
+        color: @slider-input-title-color;
         font-size: 14px;
         font-weight: 400;
         text-align: left;
@@ -38,11 +40,11 @@
                 padding: 0;
 
                 .rz-bar {
-                    background-color: @slider-bar;
+                    background-color: @rz-bar-bg-color;
                     height: 3px;
 
                     &.rz-selection {
-                        background-color: @dark-sky-blue;
+                        background-color: @rz-selection-bg-color;
                     }
                 }
             }
@@ -55,8 +57,8 @@
                 height: 14px;
                 width: 14px;
                 top: -6px;
-                background-color: @dark-sky-blue;
-                box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.25);
+                background-color: @rz-pointer-bg-color;
+                box-shadow: @rz-pointer-box-shadow;
                 outline: 0;
 
                 &:after {
@@ -89,7 +91,7 @@
             color: #252d36;
             font-size: 13px;
             font-weight: 400;
-            background-color: @white;
+            background-color: @slider-input-current-value-text;
             text-align: right;
         }
     }
@@ -110,7 +112,7 @@
 
             .default-dropdown-field {
                 border: none;
-                background-color: @white;
+                background-color: @default-dropdown-field-color;
 
                 .dropdown-selected-item {
                     padding-left: 0;

@@ -9,6 +9,8 @@
 }
 
 .ngdialog-theme-iguazio {
+    .ngdialog-color-set();
+
     @animation-duration: 0.2s;
     @animation-function: ease;
     display: flex;
@@ -116,13 +118,18 @@
                     cursor: pointer;
 
                     &:before {
-                        color: @lightblue;
-                        background-color: @white;
+                        color: @icon-help-before-color;
+                        background-color: @icon-help-before-bg-color;
                         border-radius: 50%;
                         font-size: 18px;
                     }
 
                     &:hover {
+                        &:before {
+                            color: @icon-help-hover-before-color !important;
+                            background-color: @icon-help-hover-before-bg-color !important;
+                        }
+
                         + div {
                             display: block;
                         }
@@ -142,7 +149,7 @@
                 .row-description {
                     position: absolute;
                     font-family: @font-family-sans-serif;
-                    color: @dark-sky-blue;
+                    color: @row-description-color;
                     font-size: 12px;
                     padding: 0;
                     margin-left: 8px;
@@ -176,7 +183,7 @@
 
                     .href-link {
                         font-family: @font-family-sans-serif;
-                        color: #00c9ff;
+                        color: @bright-turquoise;
                         font-size: 14px;
                         font-weight: 400;
                         line-height: 16px;
@@ -283,7 +290,7 @@
                     text-transform: uppercase;
 
                     &:hover {
-                        background-color: @bluish;
+                        background-color: @oops-dialog-refresh-button-hover-bg-color;
                         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
                     }
 

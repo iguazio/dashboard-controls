@@ -1,5 +1,7 @@
 .validating-input-field {
-    background-color: @white;
+    .validating-input-field-color-set();
+
+    background-color: @validating-input-field-bg-color;
     font-family: @font-family-sans-serif;
     font-size: 13px;
     font-weight: 400;
@@ -12,7 +14,7 @@
         top: 2px;
         left: 8px;
         z-index: 2;
-        color: @greyish-purple;
+        color: @validating-input-icon-color;
     }
 
     //
@@ -20,7 +22,7 @@
     //
 
     .input-counter, .textarea-counter {
-        color: @dusk-three;
+        color: @input-textarea-counter-color;
         font-size: 12px;
         font-weight: 700;
         line-height: 32px;
@@ -30,15 +32,15 @@
         z-index: 3;
 
         &.invalid {
-            color: @darkish-pink;
+            color: @input-textarea-counter-invalid-color;
         }
     }
 
     .input-field, .textarea-field {
         background-color: transparent;
-        border: solid 1px @pale-grey;
+        border: solid 1px @input-textarea-field-border-color;
         border-radius: 2px;
-        color: @dusk-three;
+        color: @input-textarea-field-color;
         display: block;
         position: relative;
         width: 100%;
@@ -46,25 +48,25 @@
 
         &:not([disabled]):not([readonly]) {
             &:focus.ng-invalid:not(.ng-pristine), &.ng-invalid.ng-touched {
-                background-color: #fbe5e8;
-                border: solid 1px @darkish-pink;
+                background-color: @input-textarea-field-not-disabled-focus-invalid-bg-color;
+                border: solid 1px @input-textarea-field-not-disabled-focus-invalid-color;
                 box-shadow: none;
                 outline: none;
             }
 
             &:hover, &:focus {
                 outline: 0;
-                border: solid 1px @dark-sky-blue;
+                border: solid 1px @input-textarea-field-not-disabled-hover-focus-border-color;
             }
 
             &.invalid {
-                background-color: #fbe5e8;
-                border: solid 1px @darkish-pink;
+                background-color: @input-textarea-field-not-disabled-invalid-bg-color;
+                border: solid 1px @input-textarea-field-not-disabled-invalid-border-color;
                 box-shadow: none;
             }
 
             &:focus.ng-valid, &:focus.ng-pristine {
-                border: solid 1px @dark-sky-blue;
+                border: solid 1px @input-textarea-field-not-disabled-valid-border-color;
                 box-shadow: none;
                 outline: none;
             }
@@ -94,7 +96,7 @@
         color: white;
         padding: 4px 5px 3px;
         opacity: 0.64;
-        background-color: @silver;
+        background-color: @validating-input-clear-button-bg-color;
         border-radius: 50%;
         line-height: initial;
         z-index: 3;
@@ -109,8 +111,7 @@
     //
 
     .input-placeholder, .textarea-placeholder {
-        .duskThree(0.44);
-        color: @color;
+        color: @input-textarea-placeholder;
         left: 11px;
         position: absolute;
         line-height: 36px;
