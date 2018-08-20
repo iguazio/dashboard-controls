@@ -19,11 +19,11 @@ describe('nclCreateFunction Component:', function () {
 
     describe('isTypeSelected():', function () {
         it('should return true if "functionType" is equal to "selectedFunctionType"', function () {
-            expect(ctrl.isTypeSelected('from_template')).toBeFalsy();
+            expect(ctrl.isTypeSelected('from_scratch')).toBeFalsy();
         });
 
         it('should return false if "functionType" is not equal to "selectedFunctionType"', function () {
-            expect(ctrl.isTypeSelected('from_scratch')).toBeTruthy();
+            expect(ctrl.isTypeSelected('from_template')).toBeTruthy();
         });
     });
 });
