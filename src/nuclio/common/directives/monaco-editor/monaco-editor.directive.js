@@ -23,9 +23,6 @@
                         onThemeChanged: function onThemeChanged(newValue, oldValue) {
                             window.monaco.editor.setTheme(this.getValueOrDefault(newValue, 'vs-dark'));
                         },
-                        updateScope: function updateScope() {
-                            this.scope.codeFile.code = this.editor.getValue();
-                        },
                         onCodeFileChanged: function onCodeFileChanged(newValue, oldValue) {
 
                             // update the language model (and set `insertSpaces`)
@@ -79,14 +76,12 @@
                         wordWrap: scope.wordWrap ? 'on' : 'off'
                     });
 
-                    // TODO - look up api docs to find a suitable event to handle as the onDidChangeModelContent event only seems to fire for certain changes!
-                    // As a fallback, currently updating scope on a timer...
-                    // editor.onDidChangeModelContent = function(e){
-                    //   console.log('modelContent changed');
-                    //   scope.code = editor.getValue();
-                    //   scope.$apply();
-                    // }
-                    interval = $interval(editorContext.updateScope.bind(editorContext), 1000);
+                    // change content callback
+                    editorContext.editor.onDidChangeModelContent(function () {
+
+                        // call callback from upper scope (monaco component) with new changed code
+                        scope.onCodeChange(editorContext.editor.getValue());
+                    });
 
                     // set up watch for codeFile changes to reflect updates
                     scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
@@ -109,6 +104,7 @@
                     editorTheme: '=editorTheme',
                     miniMonaco: '=miniMonaco',
                     showLineNumbers: '=showLineNumbers',
+                    onCodeChange: '=onCodeChange',
                     readOnly: '=readOnly',
                     wordWrap: '=wordWrap'
                 }
