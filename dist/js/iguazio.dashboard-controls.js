@@ -1570,6 +1570,179 @@
 (function () {
     'use strict';
 
+    IgzActionCheckboxAllController.$inject = ['$scope', '$rootScope'];
+    angular.module('iguazio.dashboard-controls').component('igzActionCheckboxAll', {
+        bindings: {
+            itemsCountOriginal: '<itemsCount',
+            checkedItemsCount: '<?',
+            onCheckChange: '&?'
+        },
+        templateUrl: 'igz_controls/components/action-checkbox-all/action-checkbox-all.tpl.html',
+        controller: IgzActionCheckboxAllController
+    });
+
+    function IgzActionCheckboxAllController($scope, $rootScope) {
+        var ctrl = this;
+
+        ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
+        ctrl.allItemsChecked = false;
+        ctrl.onCheckAll = onCheckAll;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            ctrl.checkedItemsCount = angular.isUndefined(ctrl.checkedItemsCount) ? 0 : ctrl.checkedItemsCount;
+            ctrl.itemsCount = angular.isUndefined(ctrl.itemsCount) ? 0 : ctrl.itemsCount;
+
+            $scope.$on('action-checkbox_item-checked', toggleCheckedItem);
+            $scope.$on('action-checkbox-all_change-checked-items-count', changeItemsCheckedCount);
+            $scope.$on('action-checkbox-all_set-checked-items-count', setCheckedItemsCount);
+        }
+
+        /**
+         * Changes method
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.itemsCountOriginal)) {
+                ctrl.itemsCount = ctrl.itemsCountOriginal;
+                testAllItemsChecked();
+            }
+        }
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Calls when Check all button is clicked.
+         */
+        function onCheckAll() {
+            ctrl.allItemsChecked = !ctrl.allItemsChecked;
+            ctrl.checkedItemsCount = ctrl.allItemsChecked ? ctrl.itemsCount : 0;
+
+            $rootScope.$broadcast('action-checkbox-all_check-all', {
+                checked: ctrl.allItemsChecked,
+                checkedCount: ctrl.checkedItemsCount
+            });
+
+            if (angular.isFunction(ctrl.onCheckChange)) {
+                ctrl.onCheckChange({ checkedCount: ctrl.checkedItemsCount });
+            }
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Calls on checked items count change
+         * @param {Object} event
+         * @param {Object} data
+         */
+        function changeItemsCheckedCount(event, data) {
+            if (data.changedCheckedItemsCount === 0) {
+                ctrl.checkedItemsCount = 0;
+            } else {
+                ctrl.checkedItemsCount += data.changedCheckedItemsCount;
+            }
+
+            $rootScope.$broadcast('action-checkbox-all_checked-items-count-change', {
+                checkedCount: ctrl.checkedItemsCount
+            });
+        }
+
+        /**
+         * Sets checked items count
+         * @param {Object} event
+         * @param {number} newCheckedItemsCount
+         */
+        function setCheckedItemsCount(event, newCheckedItemsCount) {
+            ctrl.checkedItemsCount = newCheckedItemsCount;
+
+            testAllItemsChecked();
+        }
+
+        /**
+         * Calls on checkbox check/uncheck
+         * @param {Object} event
+         * @param {Object} data
+         */
+        function toggleCheckedItem(event, data) {
+            if (data.checked) {
+                ctrl.checkedItemsCount++;
+            } else {
+                ctrl.checkedItemsCount--;
+            }
+
+            $rootScope.$broadcast('action-checkbox-all_checked-items-count-change', {
+                checkedCount: ctrl.checkedItemsCount
+            });
+
+            testAllItemsChecked();
+
+            // callback function is called to inform about checked items count
+            if (angular.isFunction(ctrl.onCheckChange)) {
+                ctrl.onCheckChange({ checkedCount: ctrl.checkedItemsCount });
+            }
+        }
+
+        /**
+         * Updates items count and toggle allItemsChecked flag
+         */
+        function testAllItemsChecked() {
+            ctrl.allItemsChecked = ctrl.itemsCount > 0 && ctrl.checkedItemsCount === ctrl.itemsCount;
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    ActionCheckboxAllService.$inject = ['$rootScope'];
+    angular.module('iguazio.dashboard-controls').factory('ActionCheckboxAllService', ActionCheckboxAllService);
+
+    function ActionCheckboxAllService($rootScope) {
+        return {
+            changeCheckedItemsCount: changeCheckedItemsCount,
+            setCheckedItemsCount: setCheckedItemsCount
+        };
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Sends broadcast with count of changed checked items
+         * @param {number} changedCheckedItemsCount - number of changed checked items
+         */
+        function changeCheckedItemsCount(changedCheckedItemsCount) {
+            $rootScope.$broadcast('action-checkbox-all_change-checked-items-count', {
+                changedCheckedItemsCount: changedCheckedItemsCount
+            });
+        }
+
+        /**
+         * Sends broadcast with count of checked items
+         * @param {number} checkedItemsCount
+         */
+        function setCheckedItemsCount(checkedItemsCount) {
+            $rootScope.$broadcast('action-checkbox-all_set-checked-items-count', checkedItemsCount);
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
     IgzActionCheckbox.$inject = ['$scope', '$rootScope'];
     angular.module('iguazio.dashboard-controls').component('igzActionCheckbox', {
         bindings: {
@@ -1837,283 +2010,6 @@
 (function () {
     'use strict';
 
-    IgzActionCheckboxAllController.$inject = ['$scope', '$rootScope'];
-    angular.module('iguazio.dashboard-controls').component('igzActionCheckboxAll', {
-        bindings: {
-            itemsCountOriginal: '<itemsCount',
-            checkedItemsCount: '<?',
-            onCheckChange: '&?'
-        },
-        templateUrl: 'igz_controls/components/action-checkbox-all/action-checkbox-all.tpl.html',
-        controller: IgzActionCheckboxAllController
-    });
-
-    function IgzActionCheckboxAllController($scope, $rootScope) {
-        var ctrl = this;
-
-        ctrl.$onInit = onInit;
-        ctrl.$onChanges = onChanges;
-        ctrl.allItemsChecked = false;
-        ctrl.onCheckAll = onCheckAll;
-
-        //
-        // Hook methods
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-            ctrl.checkedItemsCount = angular.isUndefined(ctrl.checkedItemsCount) ? 0 : ctrl.checkedItemsCount;
-            ctrl.itemsCount = angular.isUndefined(ctrl.itemsCount) ? 0 : ctrl.itemsCount;
-
-            $scope.$on('action-checkbox_item-checked', toggleCheckedItem);
-            $scope.$on('action-checkbox-all_change-checked-items-count', changeItemsCheckedCount);
-            $scope.$on('action-checkbox-all_set-checked-items-count', setCheckedItemsCount);
-        }
-
-        /**
-         * Changes method
-         * @param {Object} changes
-         */
-        function onChanges(changes) {
-            if (angular.isDefined(changes.itemsCountOriginal)) {
-                ctrl.itemsCount = ctrl.itemsCountOriginal;
-                testAllItemsChecked();
-            }
-        }
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Calls when Check all button is clicked.
-         */
-        function onCheckAll() {
-            ctrl.allItemsChecked = !ctrl.allItemsChecked;
-            ctrl.checkedItemsCount = ctrl.allItemsChecked ? ctrl.itemsCount : 0;
-
-            $rootScope.$broadcast('action-checkbox-all_check-all', {
-                checked: ctrl.allItemsChecked,
-                checkedCount: ctrl.checkedItemsCount
-            });
-
-            if (angular.isFunction(ctrl.onCheckChange)) {
-                ctrl.onCheckChange({ checkedCount: ctrl.checkedItemsCount });
-            }
-        }
-
-        //
-        // Private methods
-        //
-
-        /**
-         * Calls on checked items count change
-         * @param {Object} event
-         * @param {Object} data
-         */
-        function changeItemsCheckedCount(event, data) {
-            if (data.changedCheckedItemsCount === 0) {
-                ctrl.checkedItemsCount = 0;
-            } else {
-                ctrl.checkedItemsCount += data.changedCheckedItemsCount;
-            }
-
-            $rootScope.$broadcast('action-checkbox-all_checked-items-count-change', {
-                checkedCount: ctrl.checkedItemsCount
-            });
-        }
-
-        /**
-         * Sets checked items count
-         * @param {Object} event
-         * @param {number} newCheckedItemsCount
-         */
-        function setCheckedItemsCount(event, newCheckedItemsCount) {
-            ctrl.checkedItemsCount = newCheckedItemsCount;
-
-            testAllItemsChecked();
-        }
-
-        /**
-         * Calls on checkbox check/uncheck
-         * @param {Object} event
-         * @param {Object} data
-         */
-        function toggleCheckedItem(event, data) {
-            if (data.checked) {
-                ctrl.checkedItemsCount++;
-            } else {
-                ctrl.checkedItemsCount--;
-            }
-
-            $rootScope.$broadcast('action-checkbox-all_checked-items-count-change', {
-                checkedCount: ctrl.checkedItemsCount
-            });
-
-            testAllItemsChecked();
-
-            // callback function is called to inform about checked items count
-            if (angular.isFunction(ctrl.onCheckChange)) {
-                ctrl.onCheckChange({ checkedCount: ctrl.checkedItemsCount });
-            }
-        }
-
-        /**
-         * Updates items count and toggle allItemsChecked flag
-         */
-        function testAllItemsChecked() {
-            ctrl.allItemsChecked = ctrl.itemsCount > 0 && ctrl.checkedItemsCount === ctrl.itemsCount;
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
-    ActionCheckboxAllService.$inject = ['$rootScope'];
-    angular.module('iguazio.dashboard-controls').factory('ActionCheckboxAllService', ActionCheckboxAllService);
-
-    function ActionCheckboxAllService($rootScope) {
-        return {
-            changeCheckedItemsCount: changeCheckedItemsCount,
-            setCheckedItemsCount: setCheckedItemsCount
-        };
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Sends broadcast with count of changed checked items
-         * @param {number} changedCheckedItemsCount - number of changed checked items
-         */
-        function changeCheckedItemsCount(changedCheckedItemsCount) {
-            $rootScope.$broadcast('action-checkbox-all_change-checked-items-count', {
-                changedCheckedItemsCount: changedCheckedItemsCount
-            });
-        }
-
-        /**
-         * Sends broadcast with count of checked items
-         * @param {number} checkedItemsCount
-         */
-        function setCheckedItemsCount(checkedItemsCount) {
-            $rootScope.$broadcast('action-checkbox-all_set-checked-items-count', checkedItemsCount);
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
-    IgzActionPanel.$inject = ['$scope', '$rootScope', 'lodash'];
-    angular.module('iguazio.dashboard-controls').component('igzActionPanel', {
-        bindings: {
-            actions: '<',
-            onItemsCheckedCount: '&?'
-        },
-        templateUrl: 'igz_controls/components/action-panel/action-panel.tpl.html',
-        controller: IgzActionPanel,
-        transclude: true
-    });
-
-    function IgzActionPanel($scope, $rootScope, lodash) {
-        var ctrl = this;
-
-        var checkedItemsCount = 0;
-        var mainActionsCount = 5;
-
-        ctrl.mainActions = [];
-        ctrl.remainActions = [];
-
-        ctrl.$onInit = onInit;
-        ctrl.isActionPanelShown = isActionPanelShown;
-
-        //
-        // Hook methods
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-            $scope.$on('action-checkbox-all_checked-items-count-change', onUpdateCheckedItemsCount);
-            $scope.$on('action-checkbox-all_check-all', onUpdateCheckedItemsCount);
-
-            ctrl.actions = lodash.filter(ctrl.actions, function (action) {
-                return !lodash.has(action, 'visible') || action.visible;
-            });
-
-            angular.forEach(ctrl.actions, function (action) {
-                if (!angular.isFunction(action.handler)) {
-                    action.handler = defaultAction;
-
-                    if (action.id === 'delete' && angular.isUndefined(action.confirm)) {
-                        action.confirm = {
-                            message: 'Are you sure you want to delete selected items?',
-                            yesLabel: 'Yes, Delete',
-                            noLabel: 'Cancel',
-                            type: 'critical_alert'
-                        };
-                    }
-                }
-            });
-            ctrl.mainActions = lodash.slice(ctrl.actions, 0, mainActionsCount);
-            ctrl.remainingActions = lodash.slice(ctrl.actions, mainActionsCount, ctrl.actions.length);
-        }
-
-        //
-        // Private methods
-        //
-
-        /**
-         * Default action handler
-         * @param {Object} action
-         * @param {string} action.id - an action ID (e.g. delete, clone etc.)
-         */
-        function defaultAction(action) {
-            $rootScope.$broadcast('action-panel_fire-action', {
-                action: action.id
-            });
-        }
-
-        /**
-         * Checks whether the action panel can be shown
-         * @returns {boolean}
-         */
-        function isActionPanelShown() {
-            return checkedItemsCount > 0;
-        }
-
-        /**
-         * Called when 'Check all' checkbox is clicked or checked some item.
-         * @param {Event} event - $broadcast-ed event
-         * @param {Object} data - $broadcast-ed data
-         * @param {Object} data.checkedCount - count of checked items
-         */
-        function onUpdateCheckedItemsCount(event, data) {
-            checkedItemsCount = data.checkedCount;
-
-            if (angular.isFunction(ctrl.onItemsCheckedCount)) {
-                ctrl.onItemsCheckedCount({ checkedCount: checkedItemsCount });
-            }
-
-            var visibleActions = lodash.filter(ctrl.actions, ['visible', true]);
-
-            ctrl.mainActions = lodash.slice(visibleActions, 0, mainActionsCount);
-            ctrl.remainingActions = lodash.slice(visibleActions, mainActionsCount, visibleActions.length);
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
     IgzActionMenuController.$inject = ['$scope', '$element', '$document', '$rootScope', '$timeout', 'lodash', 'ConfigService', 'PreventDropdownCutOffService'];
     angular.module('iguazio.dashboard-controls').component('igzActionMenu', {
         bindings: {
@@ -2338,6 +2234,110 @@
                     dropdownBottom > parentalBottom ? dropdown.addClass('upward-menu') : dropdown.css({ 'visibility': 'visible' });
                 });
             }
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    IgzActionPanel.$inject = ['$scope', '$rootScope', 'lodash'];
+    angular.module('iguazio.dashboard-controls').component('igzActionPanel', {
+        bindings: {
+            actions: '<',
+            onItemsCheckedCount: '&?'
+        },
+        templateUrl: 'igz_controls/components/action-panel/action-panel.tpl.html',
+        controller: IgzActionPanel,
+        transclude: true
+    });
+
+    function IgzActionPanel($scope, $rootScope, lodash) {
+        var ctrl = this;
+
+        var checkedItemsCount = 0;
+        var mainActionsCount = 5;
+
+        ctrl.mainActions = [];
+        ctrl.remainActions = [];
+
+        ctrl.$onInit = onInit;
+        ctrl.isActionPanelShown = isActionPanelShown;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            $scope.$on('action-checkbox-all_checked-items-count-change', onUpdateCheckedItemsCount);
+            $scope.$on('action-checkbox-all_check-all', onUpdateCheckedItemsCount);
+
+            ctrl.actions = lodash.filter(ctrl.actions, function (action) {
+                return !lodash.has(action, 'visible') || action.visible;
+            });
+
+            angular.forEach(ctrl.actions, function (action) {
+                if (!angular.isFunction(action.handler)) {
+                    action.handler = defaultAction;
+
+                    if (action.id === 'delete' && angular.isUndefined(action.confirm)) {
+                        action.confirm = {
+                            message: 'Are you sure you want to delete selected items?',
+                            yesLabel: 'Yes, Delete',
+                            noLabel: 'Cancel',
+                            type: 'critical_alert'
+                        };
+                    }
+                }
+            });
+            ctrl.mainActions = lodash.slice(ctrl.actions, 0, mainActionsCount);
+            ctrl.remainingActions = lodash.slice(ctrl.actions, mainActionsCount, ctrl.actions.length);
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Default action handler
+         * @param {Object} action
+         * @param {string} action.id - an action ID (e.g. delete, clone etc.)
+         */
+        function defaultAction(action) {
+            $rootScope.$broadcast('action-panel_fire-action', {
+                action: action.id
+            });
+        }
+
+        /**
+         * Checks whether the action panel can be shown
+         * @returns {boolean}
+         */
+        function isActionPanelShown() {
+            return checkedItemsCount > 0;
+        }
+
+        /**
+         * Called when 'Check all' checkbox is clicked or checked some item.
+         * @param {Event} event - $broadcast-ed event
+         * @param {Object} data - $broadcast-ed data
+         * @param {Object} data.checkedCount - count of checked items
+         */
+        function onUpdateCheckedItemsCount(event, data) {
+            checkedItemsCount = data.checkedCount;
+
+            if (angular.isFunction(ctrl.onItemsCheckedCount)) {
+                ctrl.onItemsCheckedCount({ checkedCount: checkedItemsCount });
+            }
+
+            var visibleActions = lodash.filter(ctrl.actions, ['visible', true]);
+
+            ctrl.mainActions = lodash.slice(visibleActions, 0, mainActionsCount);
+            ctrl.remainingActions = lodash.slice(visibleActions, mainActionsCount, visibleActions.length);
         }
     }
 })();
@@ -4836,126 +4836,6 @@
 (function () {
     'use strict';
 
-    IgzInfoPageContentController.$inject = ['$scope', '$timeout', '$window', '$element'];
-    angular.module('iguazio.dashboard-controls').component('igzInfoPageContent', {
-        bindings: {
-            scrolled: '<',
-            watchId: '@?'
-        },
-        templateUrl: 'igz_controls/components/info-page/info-page-content/info-page-content.tpl.html',
-        transclude: true,
-        controller: IgzInfoPageContentController
-    });
-
-    function IgzInfoPageContentController($scope, $timeout, $window, $element) {
-        var ctrl = this;
-
-        ctrl.isFiltersShowed = false;
-        ctrl.isInfoPaneShowed = false;
-
-        // Config for horizontal scrollbar on containers view
-        ctrl.scrollConfigHorizontal = {
-            axis: 'x',
-            scrollInertia: 0
-        };
-
-        ctrl.$onInit = onInit;
-        ctrl.$postLink = postLink;
-
-        //
-        // Hook methods
-        //
-
-        /**
-         * Init method
-         */
-        function onInit() {
-            var watchId = angular.isDefined(ctrl.watchId) ? '-' + ctrl.watchId : '';
-
-            $scope.$on('info-page-upper-pane_toggle-start' + watchId, onUpperPaneToggleStart);
-            $scope.$on('info-page-filters_toggle-start' + watchId, onFiltersPaneToggleStart);
-            $scope.$on('info-page-pane_toggle-start' + watchId, onInfoPaneToggleStart);
-            $scope.$on('info-page-pane_toggled', dispatchResize);
-        }
-
-        /**
-         * Linking method
-         */
-        function postLink() {
-            $timeout(function () {
-                manageHorizontalScroll();
-
-                $scope.$on('info-page-filters_toggled', manageHorizontalScroll);
-
-                $scope.$on('info-page-pane_toggled', manageHorizontalScroll);
-
-                $scope.$on('igzWatchWindowResize::resize', manageHorizontalScroll);
-            });
-        }
-
-        //
-        // Private methods
-        //
-
-        /**
-         * Manages x-scrollbar behavior
-         * Needed to get rid of accidental wrong content width calculations made by 'ng-scrollbars' library
-         * We just control x-scrollbar with lib's native enable/disable methods
-         */
-        function manageHorizontalScroll() {
-            var $scrollXContainer = $element.find('.igz-scrollable-container.horizontal').first();
-            var contentWrapper = $element.find('.igz-info-page-content-wrapper').first();
-
-            if ($scrollXContainer.length && contentWrapper.width() < 946) {
-                $scrollXContainer.mCustomScrollbar('update');
-            } else if ($scrollXContainer.length) {
-                $scrollXContainer.mCustomScrollbar('disable', true);
-                $element.find('.mCSB_container').first().width('100%');
-            }
-        }
-
-        /**
-         * Upper pane toggle start $broadcast listener
-         * @param {Object} e - broadcast event
-         * @param {boolean} isShown - represents upper pane state
-         */
-        function onUpperPaneToggleStart(e, isShown) {
-            ctrl.isUpperPaneShowed = isShown;
-        }
-
-        /**
-         * Filters pane toggle start $broadcast listener
-         * @param {Object} e - broadcast event
-         * @param {boolean} isShown - represents filters pane state
-         */
-        function onFiltersPaneToggleStart(e, isShown) {
-            ctrl.isFiltersShowed = isShown;
-        }
-
-        /**
-         * Info pane toggle start $broadcast listener
-         * @param {Object} e - broadcast event
-         * @param {boolean} isShown - represents info pane state
-         */
-        function onInfoPaneToggleStart(e, isShown) {
-            ctrl.isInfoPaneShowed = isShown;
-        }
-
-        /**
-         * Updates Ui-Layout library's containers size
-         */
-        function dispatchResize() {
-            $timeout(function () {
-                $window.dispatchEvent(new Event('resize'));
-            }, 0);
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
     IgzInfoPageFiltersController.$inject = ['$rootScope', '$scope', '$animate', '$element', 'EventHelperService'];
     angular.module('iguazio.dashboard-controls').component('igzInfoPageFilters', {
         bindings: {
@@ -5136,6 +5016,126 @@
          */
         function changeBadge(delta) {
             $rootScope.$broadcast('info-page-filters_change-badge', delta);
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    IgzInfoPageContentController.$inject = ['$scope', '$timeout', '$window', '$element'];
+    angular.module('iguazio.dashboard-controls').component('igzInfoPageContent', {
+        bindings: {
+            scrolled: '<',
+            watchId: '@?'
+        },
+        templateUrl: 'igz_controls/components/info-page/info-page-content/info-page-content.tpl.html',
+        transclude: true,
+        controller: IgzInfoPageContentController
+    });
+
+    function IgzInfoPageContentController($scope, $timeout, $window, $element) {
+        var ctrl = this;
+
+        ctrl.isFiltersShowed = false;
+        ctrl.isInfoPaneShowed = false;
+
+        // Config for horizontal scrollbar on containers view
+        ctrl.scrollConfigHorizontal = {
+            axis: 'x',
+            scrollInertia: 0
+        };
+
+        ctrl.$onInit = onInit;
+        ctrl.$postLink = postLink;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Init method
+         */
+        function onInit() {
+            var watchId = angular.isDefined(ctrl.watchId) ? '-' + ctrl.watchId : '';
+
+            $scope.$on('info-page-upper-pane_toggle-start' + watchId, onUpperPaneToggleStart);
+            $scope.$on('info-page-filters_toggle-start' + watchId, onFiltersPaneToggleStart);
+            $scope.$on('info-page-pane_toggle-start' + watchId, onInfoPaneToggleStart);
+            $scope.$on('info-page-pane_toggled', dispatchResize);
+        }
+
+        /**
+         * Linking method
+         */
+        function postLink() {
+            $timeout(function () {
+                manageHorizontalScroll();
+
+                $scope.$on('info-page-filters_toggled', manageHorizontalScroll);
+
+                $scope.$on('info-page-pane_toggled', manageHorizontalScroll);
+
+                $scope.$on('igzWatchWindowResize::resize', manageHorizontalScroll);
+            });
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Manages x-scrollbar behavior
+         * Needed to get rid of accidental wrong content width calculations made by 'ng-scrollbars' library
+         * We just control x-scrollbar with lib's native enable/disable methods
+         */
+        function manageHorizontalScroll() {
+            var $scrollXContainer = $element.find('.igz-scrollable-container.horizontal').first();
+            var contentWrapper = $element.find('.igz-info-page-content-wrapper').first();
+
+            if ($scrollXContainer.length && contentWrapper.width() < 946) {
+                $scrollXContainer.mCustomScrollbar('update');
+            } else if ($scrollXContainer.length) {
+                $scrollXContainer.mCustomScrollbar('disable', true);
+                $element.find('.mCSB_container').first().width('100%');
+            }
+        }
+
+        /**
+         * Upper pane toggle start $broadcast listener
+         * @param {Object} e - broadcast event
+         * @param {boolean} isShown - represents upper pane state
+         */
+        function onUpperPaneToggleStart(e, isShown) {
+            ctrl.isUpperPaneShowed = isShown;
+        }
+
+        /**
+         * Filters pane toggle start $broadcast listener
+         * @param {Object} e - broadcast event
+         * @param {boolean} isShown - represents filters pane state
+         */
+        function onFiltersPaneToggleStart(e, isShown) {
+            ctrl.isFiltersShowed = isShown;
+        }
+
+        /**
+         * Info pane toggle start $broadcast listener
+         * @param {Object} e - broadcast event
+         * @param {boolean} isShown - represents info pane state
+         */
+        function onInfoPaneToggleStart(e, isShown) {
+            ctrl.isInfoPaneShowed = isShown;
+        }
+
+        /**
+         * Updates Ui-Layout library's containers size
+         */
+        function dispatchResize() {
+            $timeout(function () {
+                $window.dispatchEvent(new Event('resize'));
+            }, 0);
         }
     }
 })();
@@ -6271,57 +6271,6 @@
 (function () {
     'use strict';
 
-    NclVersionConfigurationController.$inject = ['ConfigService', 'VersionHelperService'];
-    angular.module('iguazio.dashboard-controls').component('nclVersionConfiguration', {
-        bindings: {
-            version: '<'
-        },
-        templateUrl: 'nuclio/projects/project/functions/version/version-configuration/version-configuration.tpl.html',
-        controller: NclVersionConfigurationController
-    });
-
-    function NclVersionConfigurationController(ConfigService, VersionHelperService) {
-        var ctrl = this;
-
-        ctrl.scrollConfig = {
-            axis: 'y',
-            advanced: {
-                autoScrollOnFocus: false,
-                updateOnContentResize: true
-            }
-        };
-
-        ctrl.isDemoMode = ConfigService.isDemoMode;
-
-        ctrl.isInvisibleForCurrentRuntime = isInvisibleForCurrentRuntime;
-        ctrl.onConfigurationChangeCallback = onConfigurationChangeCallback;
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Checks if `Runtime Attributes` block is invisible for current
-         * @param {string} runtime
-         * @returns {boolean}
-         */
-        function isInvisibleForCurrentRuntime(runtime) {
-            return (runtime !== 'shell' || !ctrl.isDemoMode()) && runtime !== 'java';
-        }
-
-        /**
-         * Checks if version's configuration was changed
-         */
-        function onConfigurationChangeCallback() {
-            VersionHelperService.checkVersionChange(ctrl.version);
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
     NclVersionCodeController.$inject = ['$element', '$rootScope', '$timeout', 'lodash', 'Base64', 'ConfigService', 'DialogsService', 'VersionHelperService'];
     angular.module('iguazio.dashboard-controls').component('nclVersionCode', {
         bindings: {
@@ -6717,6 +6666,110 @@
 (function () {
     'use strict';
 
+    NclVersionConfigurationController.$inject = ['ConfigService', 'VersionHelperService'];
+    angular.module('iguazio.dashboard-controls').component('nclVersionConfiguration', {
+        bindings: {
+            version: '<'
+        },
+        templateUrl: 'nuclio/projects/project/functions/version/version-configuration/version-configuration.tpl.html',
+        controller: NclVersionConfigurationController
+    });
+
+    function NclVersionConfigurationController(ConfigService, VersionHelperService) {
+        var ctrl = this;
+
+        ctrl.scrollConfig = {
+            axis: 'y',
+            advanced: {
+                autoScrollOnFocus: false,
+                updateOnContentResize: true
+            }
+        };
+
+        ctrl.isDemoMode = ConfigService.isDemoMode;
+
+        ctrl.isInvisibleForCurrentRuntime = isInvisibleForCurrentRuntime;
+        ctrl.onConfigurationChangeCallback = onConfigurationChangeCallback;
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Checks if `Runtime Attributes` block is invisible for current
+         * @param {string} runtime
+         * @returns {boolean}
+         */
+        function isInvisibleForCurrentRuntime(runtime) {
+            return (runtime !== 'shell' || !ctrl.isDemoMode()) && runtime !== 'java';
+        }
+
+        /**
+         * Checks if version's configuration was changed
+         */
+        function onConfigurationChangeCallback() {
+            VersionHelperService.checkVersionChange(ctrl.version);
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    NclVersionMonitoringController.$inject = ['$rootScope', '$timeout', 'ConfigService'];
+    angular.module('iguazio.dashboard-controls').component('nclVersionMonitoring', {
+        bindings: {
+            version: '<'
+        },
+        templateUrl: 'nuclio/projects/project/functions/version/version-monitoring/version-monitoring.tpl.html',
+        controller: NclVersionMonitoringController
+    });
+
+    function NclVersionMonitoringController($rootScope, $timeout, ConfigService) {
+        var ctrl = this;
+
+        ctrl.scrollConfig = {
+            advanced: {
+                updateOnContentResize: true
+            }
+        };
+        ctrl.loggerScrollConfig = {
+            advanced: {
+                updateOnContentResize: true
+            },
+            theme: 'light-thin'
+        };
+        ctrl.rowIsCollapsed = {
+            buildLog: false,
+            errorLog: false
+        };
+        ctrl.isDemoMode = ConfigService.isDemoMode;
+
+        ctrl.onRowCollapse = onRowCollapse;
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Called when row is collapsed/expanded
+         * @param {string} row - name of expanded/collapsed row
+         */
+        function onRowCollapse(row) {
+            ctrl.rowIsCollapsed[row] = !ctrl.rowIsCollapsed[row];
+
+            $timeout(function () {
+                $rootScope.$broadcast('igzWatchWindowResize::resize');
+            }, 350);
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
     NclVersionTriggersController.$inject = ['$rootScope', 'lodash', 'DialogsService', 'VersionHelperService'];
     angular.module('iguazio.dashboard-controls').component('nclVersionTriggers', {
         bindings: {
@@ -6880,59 +6933,6 @@
                 }
             });
             return triggerInEditMode;
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
-    NclVersionMonitoringController.$inject = ['$rootScope', '$timeout', 'ConfigService'];
-    angular.module('iguazio.dashboard-controls').component('nclVersionMonitoring', {
-        bindings: {
-            version: '<'
-        },
-        templateUrl: 'nuclio/projects/project/functions/version/version-monitoring/version-monitoring.tpl.html',
-        controller: NclVersionMonitoringController
-    });
-
-    function NclVersionMonitoringController($rootScope, $timeout, ConfigService) {
-        var ctrl = this;
-
-        ctrl.scrollConfig = {
-            advanced: {
-                updateOnContentResize: true
-            }
-        };
-        ctrl.loggerScrollConfig = {
-            advanced: {
-                updateOnContentResize: true
-            },
-            theme: 'light-thin'
-        };
-        ctrl.rowIsCollapsed = {
-            buildLog: false,
-            errorLog: false
-        };
-        ctrl.isDemoMode = ConfigService.isDemoMode;
-
-        ctrl.onRowCollapse = onRowCollapse;
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Called when row is collapsed/expanded
-         * @param {string} row - name of expanded/collapsed row
-         */
-        function onRowCollapse(row) {
-            ctrl.rowIsCollapsed[row] = !ctrl.rowIsCollapsed[row];
-
-            $timeout(function () {
-                $rootScope.$broadcast('igzWatchWindowResize::resize');
-            }, 350);
         }
     }
 })();
@@ -7796,6 +7796,141 @@
             var nameField = 'metadata.labels[\'nuclio.io/function-name\']';
             ctrl.history = lodash.defaultTo(angular.fromJson(localStorage.getItem('test-events')), []);
             ctrl.history = lodash.filter(ctrl.history, [nameField, ctrl.version.metadata.name]);
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    NclTestEventsLogsController.$inject = ['lodash'];
+    angular.module('iguazio.dashboard-controls').component('nclTestEventsLogs', {
+        bindings: {
+            logs: '<'
+        },
+        templateUrl: 'nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-logs/test-events-logs.tpl.html',
+        controller: NclTestEventsLogsController
+    });
+
+    function NclTestEventsLogsController(lodash) {
+        var ctrl = this;
+        var REQUIRED_PARAMETERS = ['level', 'name', 'time', 'err', 'message', 'ui'];
+
+        ctrl.$onInit = onInit;
+
+        ctrl.collapseRow = collapseRow;
+        ctrl.expandAllRows = expandAllRows;
+        ctrl.getLevelIconClass = getLevelIconClass;
+        ctrl.getParameters = getParameters;
+        ctrl.hasAdditionalParameters = hasAdditionalParameters;
+
+        //
+        // Hook method
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            lodash.forEach(ctrl.logs, function (log) {
+                lodash.set(log, 'ui.collapsed', true);
+            });
+        }
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Collapse/expand row depending on `collapse` value
+         * @param {Object} log
+         * @param {boolean} collapse
+         */
+        function collapseRow(log, collapse) {
+            lodash.set(log, 'ui.collapsed', collapse);
+        }
+
+        /**
+         * Collapse/expand all rows depending on `expand` value
+         * @param {boolean} expand
+         */
+        function expandAllRows(expand) {
+            lodash.forEach(ctrl.logs, function (log) {
+                lodash.set(log, 'ui.collapsed', !expand);
+            });
+        }
+
+        /**
+         * Gets css class depending on log.level
+         * @param {Object} log
+         * @returns {string}
+         */
+        function getLevelIconClass(log) {
+            return log.level === 'debug' ? 'ncl-icon-debug' : log.level === 'info' ? 'igz-icon-info-round' : log.level === 'warn' ? 'igz-icon-warning' : log.level === 'error' ? 'igz-icon-cancel-path' : '';
+        }
+
+        /**
+         * Gets additional parameters
+         * @param {Object} log
+         * @returns {Object}
+         */
+        function getParameters(log) {
+            return lodash.omit(log, REQUIRED_PARAMETERS);
+        }
+
+        /**
+         * Checks if log has additional parameters
+         * @param {Object} log
+         * @returns {boolean}
+         */
+        function hasAdditionalParameters(log) {
+            return !lodash.isEmpty(getParameters(log));
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    NclTestEventsNavigationTabsController.$inject = ['lodash'];
+    angular.module('iguazio.dashboard-controls').component('nclTestEventsNavigationTabs', {
+        bindings: {
+            activeTab: '<',
+            tabItems: '<',
+            onChangeActiveTab: '&'
+        },
+        templateUrl: 'nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-navigation-tabs/test-events-navigation-tabs.tpl.html',
+        controller: NclTestEventsNavigationTabsController
+    });
+
+    function NclTestEventsNavigationTabsController(lodash) {
+        var ctrl = this;
+
+        ctrl.changeActiveTab = changeActiveTab;
+        ctrl.isActiveTab = isActiveTab;
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Changes active nav tab
+         * @param {Object} item - current status
+         */
+        function changeActiveTab(item) {
+            ctrl.activeTab = item;
+
+            ctrl.onChangeActiveTab({ activeTab: item });
+        }
+
+        /**
+         * Checks if it is an active tab
+         * @param {Object} item - current tab
+         */
+        function isActiveTab(item) {
+            return ctrl.activeTab.id === item.id;
         }
     }
 })();
@@ -9105,141 +9240,6 @@
                 lodash.set(ctrl.version, field, newData);
             }
             ctrl.onChangeCallback();
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
-    NclTestEventsLogsController.$inject = ['lodash'];
-    angular.module('iguazio.dashboard-controls').component('nclTestEventsLogs', {
-        bindings: {
-            logs: '<'
-        },
-        templateUrl: 'nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-logs/test-events-logs.tpl.html',
-        controller: NclTestEventsLogsController
-    });
-
-    function NclTestEventsLogsController(lodash) {
-        var ctrl = this;
-        var REQUIRED_PARAMETERS = ['level', 'name', 'time', 'err', 'message', 'ui'];
-
-        ctrl.$onInit = onInit;
-
-        ctrl.collapseRow = collapseRow;
-        ctrl.expandAllRows = expandAllRows;
-        ctrl.getLevelIconClass = getLevelIconClass;
-        ctrl.getParameters = getParameters;
-        ctrl.hasAdditionalParameters = hasAdditionalParameters;
-
-        //
-        // Hook method
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-            lodash.forEach(ctrl.logs, function (log) {
-                lodash.set(log, 'ui.collapsed', true);
-            });
-        }
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Collapse/expand row depending on `collapse` value
-         * @param {Object} log
-         * @param {boolean} collapse
-         */
-        function collapseRow(log, collapse) {
-            lodash.set(log, 'ui.collapsed', collapse);
-        }
-
-        /**
-         * Collapse/expand all rows depending on `expand` value
-         * @param {boolean} expand
-         */
-        function expandAllRows(expand) {
-            lodash.forEach(ctrl.logs, function (log) {
-                lodash.set(log, 'ui.collapsed', !expand);
-            });
-        }
-
-        /**
-         * Gets css class depending on log.level
-         * @param {Object} log
-         * @returns {string}
-         */
-        function getLevelIconClass(log) {
-            return log.level === 'debug' ? 'ncl-icon-debug' : log.level === 'info' ? 'igz-icon-info-round' : log.level === 'warn' ? 'igz-icon-warning' : log.level === 'error' ? 'igz-icon-cancel-path' : '';
-        }
-
-        /**
-         * Gets additional parameters
-         * @param {Object} log
-         * @returns {Object}
-         */
-        function getParameters(log) {
-            return lodash.omit(log, REQUIRED_PARAMETERS);
-        }
-
-        /**
-         * Checks if log has additional parameters
-         * @param {Object} log
-         * @returns {boolean}
-         */
-        function hasAdditionalParameters(log) {
-            return !lodash.isEmpty(getParameters(log));
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
-    NclTestEventsNavigationTabsController.$inject = ['lodash'];
-    angular.module('iguazio.dashboard-controls').component('nclTestEventsNavigationTabs', {
-        bindings: {
-            activeTab: '<',
-            tabItems: '<',
-            onChangeActiveTab: '&'
-        },
-        templateUrl: 'nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-navigation-tabs/test-events-navigation-tabs.tpl.html',
-        controller: NclTestEventsNavigationTabsController
-    });
-
-    function NclTestEventsNavigationTabsController(lodash) {
-        var ctrl = this;
-
-        ctrl.changeActiveTab = changeActiveTab;
-        ctrl.isActiveTab = isActiveTab;
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Changes active nav tab
-         * @param {Object} item - current status
-         */
-        function changeActiveTab(item) {
-            ctrl.activeTab = item;
-
-            ctrl.onChangeActiveTab({ activeTab: item });
-        }
-
-        /**
-         * Checks if it is an active tab
-         * @param {Object} item - current tab
-         */
-        function isActiveTab(item) {
-            return ctrl.activeTab.id === item.id;
         }
     }
 })();
@@ -11103,6 +11103,82 @@
 (function () {
     'use strict';
 
+    NclMonacoController.$inject = ['$scope'];
+    angular.module('iguazio.dashboard-controls').component('nclMonaco', {
+        bindings: {
+            language: '<',
+            functionSourceCode: '<',
+            onChangeSourceCodeCallback: '&',
+            selectedTheme: '<',
+            miniMonaco: '<?',
+            noTopPadding: '<?',
+            showLineNumbers: '<?',
+            readOnly: '<?',
+            wordWrap: '<?',
+            name: '@?'
+        },
+        templateUrl: 'nuclio/common/components/monaco/monaco.tpl.html',
+        controller: NclMonacoController
+    });
+
+    function NclMonacoController($scope) {
+        var ctrl = this;
+
+        ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
+        ctrl.onCodeChange = onCodeChange;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            $scope.selectedCodeFile = {
+                language: ctrl.language,
+                code: ctrl.functionSourceCode
+            };
+        }
+
+        /**
+         * On changes method
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.language) && !changes.language.isFirstChange()) {
+                $scope.selectedCodeFile = {
+                    language: changes.language.currentValue,
+                    code: $scope.selectedCodeFile.code
+                };
+            }
+        }
+
+        //
+        // Private method
+        //
+
+        /**
+         * On code change callback.
+         * igz-monaco-editor directive calls this callback with new changed content
+         * @param {string} newCode - changed code
+         */
+        function onCodeChange(newCode) {
+            if (angular.isFunction(ctrl.onChangeSourceCodeCallback)) {
+                ctrl.onChangeSourceCodeCallback({
+                    sourceCode: newCode,
+                    language: $scope.selectedCodeFile.language
+                });
+            }
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
     NclKeyValueInputController.$inject = ['$document', '$element', '$rootScope', '$scope', '$timeout', 'lodash', 'EventHelperService'];
     angular.module('iguazio.dashboard-controls').component('nclKeyValueInput', {
         bindings: {
@@ -11389,93 +11465,6 @@
                         $rootScope.$broadcast(ctrl.changeStateBroadcast, { component: ctrl.data.ui.name, isDisabled: true });
                     }
                 }
-            }
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
-    NclMonacoController.$inject = ['$scope'];
-    angular.module('iguazio.dashboard-controls').component('nclMonaco', {
-        bindings: {
-            language: '<',
-            functionSourceCode: '<',
-            onChangeSourceCodeCallback: '&',
-            selectedTheme: '<',
-            miniMonaco: '<?',
-            noTopPadding: '<?',
-            showLineNumbers: '<?',
-            readOnly: '<?',
-            wordWrap: '<?',
-            name: '@?'
-        },
-        templateUrl: 'nuclio/common/components/monaco/monaco.tpl.html',
-        controller: NclMonacoController
-    });
-
-    function NclMonacoController($scope) {
-        var ctrl = this;
-
-        ctrl.$onInit = onInit;
-        ctrl.$onChanges = onChanges;
-
-        //
-        // Hook methods
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-            $scope.selectedCodeFile = {
-                language: ctrl.language,
-                code: ctrl.functionSourceCode
-            };
-
-            $scope.$watch('selectedCodeFile.code', function () {
-                if (angular.isFunction(ctrl.onChangeSourceCodeCallback)) {
-                    ctrl.onChangeSourceCodeCallback({
-                        sourceCode: $scope.selectedCodeFile.code,
-                        language: $scope.selectedCodeFile.language
-                    });
-                }
-            });
-
-            $scope.$on('monaco_on-change-content', setNewSourceCode);
-        }
-
-        /**
-         * On changes method
-         * @param {Object} changes
-         */
-        function onChanges(changes) {
-            if (angular.isDefined(changes.language) && !changes.language.isFirstChange()) {
-                $scope.selectedCodeFile = {
-                    language: changes.language.currentValue,
-                    code: $scope.selectedCodeFile.code
-                };
-            }
-        }
-
-        //
-        // Private method
-        //
-
-        /**
-         * Sets new code data such as source code and language
-         * @param {Event} event
-         * @param {Object} data
-         */
-        function setNewSourceCode(event, data) {
-            if (angular.isUndefined(data.name) || data.name === ctrl.name) {
-                ctrl.language = data.language;
-                $scope.selectedCodeFile = {
-                    language: data.language,
-                    code: data.code
-                };
             }
         }
     }
@@ -11821,9 +11810,6 @@
                     onThemeChanged: function onThemeChanged(newValue, oldValue) {
                         window.monaco.editor.setTheme(this.getValueOrDefault(newValue, 'vs-dark'));
                     },
-                    updateScope: function updateScope() {
-                        this.scope.codeFile.code = this.editor.getValue();
-                    },
                     onCodeFileChanged: function onCodeFileChanged(newValue, oldValue) {
 
                         // update the language model (and set `insertSpaces`)
@@ -11872,14 +11858,12 @@
                     wordWrap: scope.wordWrap ? 'on' : 'off'
                 });
 
-                // TODO - look up api docs to find a suitable event to handle as the onDidChangeModelContent event only seems to fire for certain changes!
-                // As a fallback, currently updating scope on a timer...
-                // editor.onDidChangeModelContent = function(e){
-                //   console.log('modelContent changed');
-                //   scope.code = editor.getValue();
-                //   scope.$apply();
-                // }
-                interval = $interval(editorContext.updateScope.bind(editorContext), 1000);
+                // change content callback
+                editorContext.editor.onDidChangeModelContent(function () {
+
+                    // call callback from upper scope (monaco component) with new changed code
+                    scope.onCodeChange(editorContext.editor.getValue());
+                });
 
                 // set up watch for codeFile changes to reflect updates
                 scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
@@ -11902,6 +11886,7 @@
                 editorTheme: '=editorTheme',
                 miniMonaco: '=miniMonaco',
                 showLineNumbers: '=showLineNumbers',
+                onCodeChange: '=onCodeChange',
                 readOnly: '=readOnly',
                 wordWrap: '=wordWrap'
             }
@@ -13418,6 +13403,20 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('igz_controls/components/action-checkbox-all/action-checkbox-all.tpl.html',
+    '<div class="action-checkbox-all"><div class="check-item" data-ng-class="{\'igz-icon-checkbox-checked\': $ctrl.allItemsChecked,\n' +
+    '                        \'igz-icon-checkbox-checked-few\': $ctrl.checkedItemsCount > 0 && !$ctrl.allItemsChecked,\n' +
+    '                        \'igz-icon-checkbox-unchecked\': $ctrl.checkedItemsCount === 0}" data-ng-click="$ctrl.onCheckAll()"></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('iguazio.dashboard-controls.templates');
+} catch (e) {
+  module = angular.module('iguazio.dashboard-controls.templates', []);
+}
+module.run(['$templateCache', function($templateCache) {
   $templateCache.put('igz_controls/components/action-checkbox/action-checkbox.tpl.html',
     '<div class="action-checkbox"><div class="check-item igz-icon-checkbox-unchecked" data-ng-class="{\'igz-icon-checkbox-checked\': $ctrl.item.ui.checked}" data-ng-click="$ctrl.onCheck($event)" data-ng-dblclick="$event.stopPropagation()"></div></div>');
 }]);
@@ -13445,10 +13444,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/action-checkbox-all/action-checkbox-all.tpl.html',
-    '<div class="action-checkbox-all"><div class="check-item" data-ng-class="{\'igz-icon-checkbox-checked\': $ctrl.allItemsChecked,\n' +
-    '                        \'igz-icon-checkbox-checked-few\': $ctrl.checkedItemsCount > 0 && !$ctrl.allItemsChecked,\n' +
-    '                        \'igz-icon-checkbox-unchecked\': $ctrl.checkedItemsCount === 0}" data-ng-click="$ctrl.onCheckAll()"></div></div>');
+  $templateCache.put('igz_controls/components/action-menu/action-menu.tpl.html',
+    '<div class="igz-action-menu" data-ng-if="$ctrl.isVisible()"><div class="menu-button {{$ctrl.iconClass}}" data-ng-class="{active: $ctrl.isMenuShown}" data-ng-click="$ctrl.toggleMenu($event)"></div><div class="menu-dropdown" data-ng-if="$ctrl.isMenuShown"><div class="actions-list" data-ng-click="$ctrl.toggleMenu($event)"><igz-action-item data-ng-repeat="action in $ctrl.actions track by action.id" data-action="action"></igz-action-item></div><div class="shortcuts-list" data-ng-if="$ctrl.shortcuts && $ctrl.shortcuts.length > 0" data-ng-class="{\'first-block\': $ctrl.actions.length === 0}"><div class="shortcuts-header">Shortcuts</div><div class="shortcuts-item" data-ng-repeat="shortcut in $ctrl.shortcuts" data-ng-click="$ctrl.showDetails($event, shortcut.state)">{{shortcut.label}}</div></div></div></div>');
 }]);
 })();
 
@@ -13461,18 +13458,6 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('igz_controls/components/action-panel/action-panel.tpl.html',
     '<div class="igz-action-panel" data-igz-right-click data-ng-show="$ctrl.isActionPanelShown()"><div class="actions-list clearfix" data-ng-show="$ctrl.mainActions.length > 0 || $ctrl.remainingActions.length > 0"><igz-action-item data-ng-repeat="action in $ctrl.mainActions" data-action="action"></igz-action-item><igz-action-item-more data-ng-if="$ctrl.remainingActions.length !== 0" data-actions="$ctrl.remainingActions"><div class="transclude-container" data-ng-transclude></div></igz-action-item-more></div><div class="actions-list empty" data-ng-show="$ctrl.mainActions.length === 0 && $ctrl.remainingActions.length === 0">(No actions)</div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('iguazio.dashboard-controls.templates');
-} catch (e) {
-  module = angular.module('iguazio.dashboard-controls.templates', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/action-menu/action-menu.tpl.html',
-    '<div class="igz-action-menu" data-ng-if="$ctrl.isVisible()"><div class="menu-button {{$ctrl.iconClass}}" data-ng-class="{active: $ctrl.isMenuShown}" data-ng-click="$ctrl.toggleMenu($event)"></div><div class="menu-dropdown" data-ng-if="$ctrl.isMenuShown"><div class="actions-list" data-ng-click="$ctrl.toggleMenu($event)"><igz-action-item data-ng-repeat="action in $ctrl.actions track by action.id" data-action="action"></igz-action-item></div><div class="shortcuts-list" data-ng-if="$ctrl.shortcuts && $ctrl.shortcuts.length > 0" data-ng-class="{\'first-block\': $ctrl.actions.length === 0}"><div class="shortcuts-header">Shortcuts</div><div class="shortcuts-item" data-ng-repeat="shortcut in $ctrl.shortcuts" data-ng-click="$ctrl.showDetails($event, shortcut.state)">{{shortcut.label}}</div></div></div></div>');
 }]);
 })();
 
@@ -13710,8 +13695,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/info-page/info-page-content/info-page-content.tpl.html',
-    '<div class="igz-info-page-content-wrapper" data-ng-class="{\'info-pane-opened\' : $ctrl.isInfoPaneShowed, \'filters-opened\' : $ctrl.isFiltersShowed, \'upper-pane-opened\' : $ctrl.isUpperPaneShowed}"><div data-ng-if="$ctrl.scrolled !== false" class="igz-scrollable-container horizontal" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfigHorizontal"><div class="igz-info-page-content"><div data-ng-transclude></div></div></div><div data-ng-if="$ctrl.scrolled === false"><div class="igz-info-page-content"><div data-ng-transclude></div></div></div></div>');
+  $templateCache.put('igz_controls/components/info-page/info-page-filters/info-page-filters.tpl.html',
+    '<div class="info-page-filters-wrapper"><div class="info-page-filters" data-ng-show="$ctrl.isFiltersShowed" data-ng-keyup="$ctrl.onApplyFilters($event)"><div class="info-page-filters-title">Filter</div><div class="close-button igz-icon-close" data-ng-click="$ctrl.changeStateCallback({newVal: false})" data-ng-show="$ctrl.changeStateCallback"></div><div class="info-page-filters-body" data-ng-class="{\'buttons-shown\' : $ctrl.isShowFooterButtons()}" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollbarConfig"><div data-ng-transclude></div></div><div class="info-page-filters-footer" data-ng-if="$ctrl.isShowFooterButtons()"><button class="igz-button-just-text" tabindex="0" data-ng-click="$ctrl.onResetFilters()" data-ng-keydown="$ctrl.onResetFilters($event)" data-ng-if="$ctrl.resetFilters">Reset</button><button class="igz-button-primary" tabindex="0" data-ng-click="$ctrl.onApplyFilters()" data-ng-keydown="$ctrl.onApplyFilters($event)" data-ng-if="$ctrl.applyFilters">Apply</button></div></div></div>');
 }]);
 })();
 
@@ -13722,8 +13707,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/info-page/info-page-filters/info-page-filters.tpl.html',
-    '<div class="info-page-filters-wrapper"><div class="info-page-filters" data-ng-show="$ctrl.isFiltersShowed" data-ng-keyup="$ctrl.onApplyFilters($event)"><div class="info-page-filters-title">Filter</div><div class="close-button igz-icon-close" data-ng-click="$ctrl.changeStateCallback({newVal: false})" data-ng-show="$ctrl.changeStateCallback"></div><div class="info-page-filters-body" data-ng-class="{\'buttons-shown\' : $ctrl.isShowFooterButtons()}" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollbarConfig"><div data-ng-transclude></div></div><div class="info-page-filters-footer" data-ng-if="$ctrl.isShowFooterButtons()"><button class="igz-button-just-text" tabindex="0" data-ng-click="$ctrl.onResetFilters()" data-ng-keydown="$ctrl.onResetFilters($event)" data-ng-if="$ctrl.resetFilters">Reset</button><button class="igz-button-primary" tabindex="0" data-ng-click="$ctrl.onApplyFilters()" data-ng-keydown="$ctrl.onApplyFilters($event)" data-ng-if="$ctrl.applyFilters">Apply</button></div></div></div>');
+  $templateCache.put('igz_controls/components/info-page/info-page-content/info-page-content.tpl.html',
+    '<div class="igz-info-page-content-wrapper" data-ng-class="{\'info-pane-opened\' : $ctrl.isInfoPaneShowed, \'filters-opened\' : $ctrl.isFiltersShowed, \'upper-pane-opened\' : $ctrl.isUpperPaneShowed}"><div data-ng-if="$ctrl.scrolled !== false" class="igz-scrollable-container horizontal" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfigHorizontal"><div class="igz-info-page-content"><div data-ng-transclude></div></div></div><div data-ng-if="$ctrl.scrolled === false"><div class="igz-info-page-content"><div data-ng-transclude></div></div></div></div>');
 }]);
 })();
 
@@ -13794,8 +13779,9 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/common/components/key-value-input/key-value-input.tpl.html',
-    '<div class="ncl-key-value-input"><form name="$ctrl.keyValueInputForm" class="input-wrapper" data-ng-mousedown="$ctrl.onEditInput()"><div class="check-row" data-ng-if="$ctrl.allowSelection"><igz-action-checkbox data-item="$ctrl.data"></igz-action-checkbox></div><igz-validating-input-field class="nuclio-validating-input input-key" data-ng-class="{\'use-type\': $ctrl.useType, \'use-checkbox\': $ctrl.allowSelection}" data-field-type="input" data-input-name="key" data-input-value="$ctrl.data.name" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="name" data-form-object="$ctrl.keyValueInputForm" data-validation-is-required="!$ctrl.keyOptional" data-placeholder-text="Type key"></igz-validating-input-field><igz-default-dropdown class="input-type" data-ng-if="$ctrl.useType" data-form-object="$ctrl.keyValueInputForm" data-select-property-only="id" data-prevent-drop-up="true" data-input-name="type" data-values-array="$ctrl.typesList" data-selected-item="$ctrl.getType()" data-placeholder="Select type..." data-item-select-callback="$ctrl.onTypeChanged(item, isItemChanged)" data-on-open-dropdown="$ctrl.openDropdown" data-on-close-dropdown="$ctrl.closeDropdown()"></igz-default-dropdown><igz-validating-input-field class="nuclio-validating-input input-value" data-ng-class="{\'use-type\': $ctrl.useType, \'use-checkbox\': $ctrl.allowSelection}" data-field-type="input" data-input-name="value" data-input-value="$ctrl.getInputValue()" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="value" data-form-object="$ctrl.keyValueInputForm" data-validation-is-required="!$ctrl.valueOptional" data-placeholder-text="Type value..."></igz-validating-input-field><div class="three-dot-menu"><igz-action-menu data-actions="$ctrl.actions" data-on-fire-action="$ctrl.onFireAction" data-list-class="$ctrl.listClass"></igz-action-menu></div></form></div>');
+  $templateCache.put('nuclio/common/components/monaco/monaco.tpl.html',
+    '<div class="ncl-monaco"><div class="ncl-monaco-wrapper" data-ng-class="{\'ncl-monaco-dark\': $ctrl.selectedTheme === \'vs-dark\',\n' +
+    '                         \'no-top-padding\': $ctrl.noTopPadding}"><div igz-monaco-editor data-code-file="selectedCodeFile" data-editor-theme="$ctrl.selectedTheme" data-mini-monaco="$ctrl.miniMonaco" data-show-line-numbers="$ctrl.showLineNumbers" data-read-only="$ctrl.readOnly" data-on-code-change="$ctrl.onCodeChange" data-word-wrap="$ctrl.wordWrap"></div></div></div>');
 }]);
 })();
 
@@ -13806,9 +13792,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/common/components/monaco/monaco.tpl.html',
-    '<div class="ncl-monaco"><div class="ncl-monaco-wrapper" data-ng-class="{\'ncl-monaco-dark\': $ctrl.selectedTheme === \'vs-dark\',\n' +
-    '                         \'no-top-padding\': $ctrl.noTopPadding}"><div igz-monaco-editor data-code-file="selectedCodeFile" data-editor-theme="$ctrl.selectedTheme" data-mini-monaco="$ctrl.miniMonaco" data-show-line-numbers="$ctrl.showLineNumbers" data-read-only="$ctrl.readOnly" data-word-wrap="$ctrl.wordWrap"></div></div></div>');
+  $templateCache.put('nuclio/common/components/key-value-input/key-value-input.tpl.html',
+    '<div class="ncl-key-value-input"><form name="$ctrl.keyValueInputForm" class="input-wrapper" data-ng-mousedown="$ctrl.onEditInput()"><div class="check-row" data-ng-if="$ctrl.allowSelection"><igz-action-checkbox data-item="$ctrl.data"></igz-action-checkbox></div><igz-validating-input-field class="nuclio-validating-input input-key" data-ng-class="{\'use-type\': $ctrl.useType, \'use-checkbox\': $ctrl.allowSelection}" data-field-type="input" data-input-name="key" data-input-value="$ctrl.data.name" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="name" data-form-object="$ctrl.keyValueInputForm" data-validation-is-required="!$ctrl.keyOptional" data-placeholder-text="Type key"></igz-validating-input-field><igz-default-dropdown class="input-type" data-ng-if="$ctrl.useType" data-form-object="$ctrl.keyValueInputForm" data-select-property-only="id" data-prevent-drop-up="true" data-input-name="type" data-values-array="$ctrl.typesList" data-selected-item="$ctrl.getType()" data-placeholder="Select type..." data-item-select-callback="$ctrl.onTypeChanged(item, isItemChanged)" data-on-open-dropdown="$ctrl.openDropdown" data-on-close-dropdown="$ctrl.closeDropdown()"></igz-default-dropdown><igz-validating-input-field class="nuclio-validating-input input-value" data-ng-class="{\'use-type\': $ctrl.useType, \'use-checkbox\': $ctrl.allowSelection}" data-field-type="input" data-input-name="value" data-input-value="$ctrl.getInputValue()" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="value" data-form-object="$ctrl.keyValueInputForm" data-validation-is-required="!$ctrl.valueOptional" data-placeholder-text="Type value..."></igz-validating-input-field><div class="three-dot-menu"><igz-action-menu data-actions="$ctrl.actions" data-on-fire-action="$ctrl.onFireAction" data-list-class="$ctrl.listClass"></igz-action-menu></div></form></div>');
 }]);
 })();
 
@@ -13974,18 +13959,6 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/projects/project/functions/version/version-configuration/version-configuration.tpl.html',
-    '<div class="ncl-version-configuration ncl-version" data-igz-extend-background><div class="igz-scrollable-container" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="ncl-version-configuration-wrapper"><div class="row"><ncl-version-configuration-basic-settings class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-basic-settings><ncl-version-configuration-resources class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-resources></div><div class="row"><ncl-version-configuration-environment-variables class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-environment-variables></div><div class="row"><ncl-version-configuration-labels class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-labels><ncl-version-configuration-annotations class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-annotations></div><div class="row"><ncl-version-configuration-data-bindings class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-data-bindings><ncl-version-configuration-build class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-build></div><div class="row" data-ng-if="$ctrl.isDemoMode() || $ctrl.version.spec.runtime === \'java\'"><ncl-version-configuration-logging data-ng-class="{\'invisible-block\': !$ctrl.isDemoMode()}" class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-logging><ncl-version-configuration-runtime-attributes class="configuration-block runtime-attributes" data-ng-class="{\'invisible-block\': $ctrl.isInvisibleForCurrentRuntime($ctrl.version.spec.runtime)}" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-runtime-attributes></div></div></div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('iguazio.dashboard-controls.templates');
-} catch (e) {
-  module = angular.module('iguazio.dashboard-controls.templates', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('nuclio/projects/project/functions/version/version-code/version-code.tpl.html',
     '<div class="ncl-edit-version-code ncl-version"><div class="igz-scrollable-container"><div class="ncl-edit-version-code-wrapper"><form name="$ctrl.versionCodeForm" class="ncl-edit-version-code-form"><div class="section-wrapper code-entry-section"><div class="code-entry-row"><div class="code-entry-col code-entry-type-col"><div class="col-label code-entry-type">Code entry type</div><igz-default-dropdown data-values-array="$ctrl.codeEntryTypeArray" data-item-select-callback="$ctrl.selectEntryTypeValue(item, isItemChanged, field)" data-selected-item="$ctrl.selectedEntryType"></igz-default-dropdown></div><div class="code-entry-col code-entry-runtime-col"><div class="col-label runtime">Runtime</div><igz-default-dropdown data-values-array="$ctrl.runtimeArray" data-item-select-callback="$ctrl.selectRuntimeValue(item, isItemChanged, field)" data-selected-item="$ctrl.selectedRuntime" data-is-disabled="true"></igz-default-dropdown></div><div class="code-entry-col code-entry-handler-col"><div class="col-label handler">Handler</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="handler" data-input-value="$ctrl.version.spec.handler" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.handler" data-form-object="$ctrl.versionCodeForm" data-placeholder-text="Handler"></igz-validating-input-field></div><div class="code-entry-col code-entry-button-col" data-ng-if="$ctrl.selectedEntryType.name === \'Upload archive\'"><button class="igz-button-primary upload-button"><span>UPLOAD</span><i class="igz-icon-upload"></i></button></div><div class="code-entry-col code-entry-theme-col" data-ng-if="$ctrl.selectedEntryType.name === \'Edit online\' && $ctrl.isDemoMode()"><div class="col-label runtime">Theme</div><igz-default-dropdown data-values-array="$ctrl.themesArray" data-item-select-callback="$ctrl.selectThemeValue(item, isItemChanged, field)" data-selected-item="$ctrl.selectedTheme" data-on-close-dropdown="$ctrl.onCloseDropdown()"></igz-default-dropdown></div></div><div ng-if="$ctrl.selectedEntryType.name === \'S3 URL\'" class="code-entry-row"><div class="code-entry-col code-entry-url-col"><div class="col-label handler">URL</div><igz-validating-input-field data-field-type="input" data-input-name="url" data-input-value="$ctrl.URL" data-update-data-callback="" data-form-object="$ctrl.versionCodeForm" data-placeholder-text="Type path..."></igz-validating-input-field></div></div></div><div data-ng-if="$ctrl.selectedEntryType.name === \'Edit online\'" class="code-edit-section"><div class="code-editor-drop-zone"></div><ncl-monaco class="monaco-code-editor" data-function-source-code="$ctrl.sourceCode" data-mini-monaco="false" data-selected-theme="$ctrl.selectedTheme.id" data-language="$ctrl.selectedRuntime.language" data-on-change-source-code-callback="$ctrl.onChangeSourceCode(sourceCode, language)" data-read-only="false"></ncl-monaco></div><div data-ng-if="$ctrl.selectedEntryType.name === \'Image\'" class="ncl-code-entry-url"><div class="field-label">URL</div><igz-validating-input-field data-field-type="input" data-input-name="image" data-input-value="$ctrl.image" data-is-focused="true" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="true" data-placeholder-text="Type image..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.image" class="nuclio-validating-input"></igz-validating-input-field></div><div data-ng-if="$ctrl.selectedEntryType.name === \'Archive\' || $ctrl.selectedEntryType.name === \'Jar\'" class="ncl-code-entry-url"><div class="field-label">URL</div><igz-validating-input-field data-field-type="input" data-input-name="archive" data-input-value="$ctrl.archive" data-is-focused="true" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="true" data-placeholder-text="Type path..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.path" class="nuclio-validating-input"></igz-validating-input-field></div></form></div></div><function-events-data-wrapper data-version="$ctrl.version"></function-events-data-wrapper></div>');
 }]);
@@ -13998,8 +13971,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/projects/project/functions/version/version-triggers/version-triggers.tpl.html',
-    '<div class="ncl-version-trigger ncl-version"><div class="common-table"><div class="common-table-header header-row"><div class="common-table-cell header-name">Name</div><div class="common-table-cell header-class">Class</div><div class="igz-col-70 common-table-cell">Info</div></div><div class="common-table-body"><div data-igz-extend-background><div class="igz-scrollable-container" data-ng-scrollbars><ncl-collapsing-row data-ng-repeat="trigger in $ctrl.triggers" data-item="trigger" data-type="trigger" data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)"><ncl-edit-item class="common-table-cells-container edit-binding-row" data-item="trigger" data-type="trigger" data-on-submit-callback="$ctrl.editTriggerCallback(item)"></ncl-edit-item></ncl-collapsing-row><div class="common-table-row create-trigger-button" data-ng-click="$ctrl.createTrigger($event)"><span class="igz-icon-add-round"></span>Create a new trigger</div></div></div></div></div></div>');
+  $templateCache.put('nuclio/projects/project/functions/version/version-configuration/version-configuration.tpl.html',
+    '<div class="ncl-version-configuration ncl-version" data-igz-extend-background><div class="igz-scrollable-container" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="ncl-version-configuration-wrapper"><div class="row"><ncl-version-configuration-basic-settings class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-basic-settings><ncl-version-configuration-resources class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-resources></div><div class="row"><ncl-version-configuration-environment-variables class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-environment-variables></div><div class="row"><ncl-version-configuration-labels class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-labels><ncl-version-configuration-annotations class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-annotations></div><div class="row"><ncl-version-configuration-data-bindings class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-data-bindings><ncl-version-configuration-build class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-build></div><div class="row" data-ng-if="$ctrl.isDemoMode() || $ctrl.version.spec.runtime === \'java\'"><ncl-version-configuration-logging data-ng-class="{\'invisible-block\': !$ctrl.isDemoMode()}" class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-logging><ncl-version-configuration-runtime-attributes class="configuration-block runtime-attributes" data-ng-class="{\'invisible-block\': $ctrl.isInvisibleForCurrentRuntime($ctrl.version.spec.runtime)}" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-runtime-attributes></div></div></div></div>');
 }]);
 })();
 
@@ -14022,9 +13995,45 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('nuclio/projects/project/functions/version/version-triggers/version-triggers.tpl.html',
+    '<div class="ncl-version-trigger ncl-version"><div class="common-table"><div class="common-table-header header-row"><div class="common-table-cell header-name">Name</div><div class="common-table-cell header-class">Class</div><div class="igz-col-70 common-table-cell">Info</div></div><div class="common-table-body"><div data-igz-extend-background><div class="igz-scrollable-container" data-ng-scrollbars><ncl-collapsing-row data-ng-repeat="trigger in $ctrl.triggers" data-item="trigger" data-type="trigger" data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)"><ncl-edit-item class="common-table-cells-container edit-binding-row" data-item="trigger" data-type="trigger" data-on-submit-callback="$ctrl.editTriggerCallback(item)"></ncl-edit-item></ncl-collapsing-row><div class="common-table-row create-trigger-button" data-ng-click="$ctrl.createTrigger($event)"><span class="igz-icon-add-round"></span>Create a new trigger</div></div></div></div></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('iguazio.dashboard-controls.templates');
+} catch (e) {
+  module = angular.module('iguazio.dashboard-controls.templates', []);
+}
+module.run(['$templateCache', function($templateCache) {
   $templateCache.put('nuclio/projects/project/functions/version/version-code/function-event-pane/function-event-pane.tpl.html',
     '<div class="test-events-pane" data-ng-class="{\'fixed-left-bar\': $ctrl.fixedLeftBar}"><igz-splash-screen data-is-splash-showed="$ctrl.isSplashShowed"></igz-splash-screen><div data-ng-class="{\'visible\': $ctrl.showLeftBar}" class="left-bar"><div class="header"><div class="igz-icon-close" data-ng-click="$ctrl.toggleLeftBar(false)"></div>Events<div class="ncl-icon-pin" data-ng-if="!$ctrl.fixedLeftBar" data-ng-click="$ctrl.fixLeftBar()"></div></div><ncl-test-events-navigation-tabs data-active-tab="$ctrl.selectedLeftBarTab" data-tab-items="$ctrl.leftBarNavigationTabs" data-on-change-active-tab="$ctrl.onChangeTab(activeTab, \'selectedLeftBarTab\')"></ncl-test-events-navigation-tabs><div class="saved-tabs-list" data-igz-extend-background><div class="igz-scrollable-container" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="list-item" data-ng-if="$ctrl.selectedLeftBarTab.id === \'saved\'" data-ng-repeat="savedEvent in $ctrl.savedEvents"><div class="text-ellipsis" data-ng-click="$ctrl.selectEvent(savedEvent)"><div class="method-icon" data-ng-style="{\'background-color\': $ctrl.getMethodColor(savedEvent.spec.attributes.method)}">{{savedEvent.spec.attributes.method}}</div>{{savedEvent.spec.displayName}}</div><div class="igz-icon-close" data-ng-click="$ctrl.deleteEvent(savedEvent)"></div></div><div class="list-item text-ellipsis" data-ng-if="$ctrl.selectedLeftBarTab.id === \'history\'" data-ng-repeat="savedEvent in $ctrl.history | orderBy:\'-\'" data-ng-click="$ctrl.selectEvent(savedEvent, \'history\')"><span class="method-icon" data-ng-style="{\'background-color\': $ctrl.getMethodColor(savedEvent.spec.attributes.method)}">{{savedEvent.spec.attributes.method}}</span>{{savedEvent.spec.attributes.path === \'\' ? \'/\' : savedEvent.spec.attributes.path}}</div></div></div></div><div class="igz-scrollable-container main-section-wrapper" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><form name="$ctrl.testEventsForm"><div class="main-header"><div class="left-side-elements"><span class="igz-icon-hamburger-menu" data-ng-if="!$ctrl.fixedLeftBar" data-ng-click="$ctrl.toggleLeftBar()"></span><igz-elastic-input-field data-model="$ctrl.selectedEvent.spec.displayName" data-model-options="{allowInvalid:true}" data-on-change="$ctrl.inputValueCallback(item, \'spec.displayName\')" data-input-name="nameInput" data-form-object="$ctrl.testEventsForm" data-required="true" data-placeholder="Event name..." data-max-length="128"></igz-elastic-input-field></div><div class="right-side-elements"><div class="new-test-event" data-ng-click="$ctrl.resetData()" data-tooltip="New test" data-tooltip-popup-delay="300" data-tooltip-placement="left" data-tooltip-append-to-body="true"><span class="ncl-icon-add"></span></div><div class="igz-button-primary" data-ng-class="{\'disabled\': $ctrl.isDisabledTestButton()}" data-ng-click="$ctrl.testEvent()">Test</div><div class="ncl-secondary-button" data-ng-class="{\'disabled\': $ctrl.uploadingData.name !== \'\'}" data-ng-click="$ctrl.uploadingData.name !== \'\' || $ctrl.saveEvent()">Save</div></div></div><div class="request-section"><div class="request-method"><igz-default-dropdown data-values-array="$ctrl.requestMethods" data-select-property-only="name" data-selected-item="$ctrl.selectedEvent.spec.attributes.method" data-item-select-callback="$ctrl.onChangeRequestMethod(item)"></igz-default-dropdown><div class="path">{{$ctrl.getInvocationUrl()}}<igz-validating-input-field data-field-type="input" data-input-value="$ctrl.selectedEvent.spec.attributes.path" data-update-data-field="spec.attributes.path" data-update-data-callback="$ctrl.inputValueCallback(newData, field)"></igz-validating-input-field></div></div><div class="request-body"><ncl-test-events-navigation-tabs data-active-tab="$ctrl.selectedRequestTab" data-tab-items="$ctrl.requestNavigationTabs" data-on-change-active-tab="$ctrl.onChangeTab(activeTab, \'selectedRequestTab\')"></ncl-test-events-navigation-tabs><div class="body" data-ng-if="$ctrl.selectedRequestTab.id === \'body\'"><div class="body-types"><igz-default-dropdown data-values-array="$ctrl.requestBodyTypes" data-selected-item="$ctrl.requestBodyType" data-item-select-callback="$ctrl.onChangeRequestBodyType(item)"></igz-default-dropdown></div><div class="main-block"><div class="upload-file-section" data-ng-class="{\'uploaded\': $ctrl.uploadingData.uploaded}" data-ng-if="$ctrl.requestBodyType.id === \'file\'"><div class="drop-section" data-ng-class="{\'uploaded\': $ctrl.uploadingData.uploaded}"><div class="drop-message" data-ng-class="{\'uploading\': $ctrl.uploadingData.uploading,\n' +
     '                                                         \'uploaded\': $ctrl.uploadingData.uploaded}"><div data-ng-if="!$ctrl.uploadingData.uploaded && !$ctrl.uploadingData.uploading"><div class="ncl-icon-drop-file"></div>Drop a file here or<span class="browse" ngf-select="$ctrl.uploadFile($file)">&nbsp;browse</span></div><div data-ng-if="$ctrl.uploadingData.uploading"><div class="ncl-icon-drop-file"></div><div class="file-name">{{$ctrl.uploadingData.name}}<span class="size">&nbsp;({{$ctrl.uploadingData.size}})</span></div><div class="progress"><div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-ng-style="{\'width\': $ctrl.uploadingData.progress}"></div></div></div><div data-ng-if="$ctrl.uploadingData.uploaded"><div class="file"><span class="ncl-icon-file"></span><div class="name text-ellipsis" data-tooltip="{{$ctrl.uploadingData.name}}" data-tooltip-popup-delay="300" data-tooltip-placement="top">{{$ctrl.uploadingData.name}}</div><span class="size">&nbsp;({{$ctrl.uploadingData.size}})</span><div class="igz-icon-close" data-ng-click="$ctrl.deleteFile()"></div></div></div></div></div></div><div data-ng-if="$ctrl.requestBodyType.id !== \'file\'" class="code-edit-section"><ncl-monaco class="monaco-code-editor" data-function-source-code="$ctrl.selectedEvent.spec.body" data-language="$ctrl.requestSourceCodeLanguage" data-on-change-source-code-callback="$ctrl.onChangeRequestSourceCode(sourceCode)" data-selected-theme="\'vs-light\'" data-show-line-numbers="true" data-mini-monaco="true" data-name="eventRequestBody" data-read-only="false"></ncl-monaco></div></div></div><div class="headers" data-ng-if="$ctrl.selectedRequestTab.id === \'headers\'"><div class="table-headers"><div class="key-header">Key</div><div class="value-header">Value</div></div><div class="table-body-wrapper" data-ng-if="!$ctrl.isScrollNeeded()"><div class="table-body" data-ng-repeat="header in $ctrl.headers"><ncl-key-value-input class="new-header-input" data-list-class="headers" data-row-data="header" data-item-index="$index" data-use-type="false" data-allow-selection="true" data-value-optional="true" data-on-select-item-callback="$ctrl.onSelectHeader" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="igz-scrollable-container scrollable-headers table-body-wrapper" data-ng-if="$ctrl.isScrollNeeded()" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="header in $ctrl.headers"><ncl-key-value-input class="new-header-input" data-list-class="scrollable-headers" data-row-data="header" data-item-index="$index" data-use-type="false" data-allow-selection="true" data-value-optional="true" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-header-button" data-ng-click="$ctrl.addNewHeader($event)"><span class="igz-icon-add-round"></span>Create a new header</div></div></div></div><div class="response-section"><div class="response-header"><div class="left-side-elements">Response</div><div class="right-side-elements" data-ng-if="$ctrl.testResult.status"><div>Status:<div class="text-ellipsis status {{$ctrl.isInvocationSuccess ? \'success\' : \'fail\'}}" data-tooltip="{{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}" data-tooltip-placement="top" data-tooltip-popup-delay="300">{{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}</div></div><div>Time:<span class="time">{{$ctrl.invokeTime}}</span></div><div data-ng-if="$ctrl.responseSize">Size:<span class="size">{{$ctrl.responseSize.value + $ctrl.responseSize.label}}</span></div></div></div><div class="response-body"><ncl-test-events-navigation-tabs data-ng-if="$ctrl.showResponse" data-active-tab="$ctrl.selectedResponseTab" data-tab-items="$ctrl.responseNavigationTabs" data-on-change-active-tab="$ctrl.onChangeTab(activeTab, \'selectedResponseTab\')"></ncl-test-events-navigation-tabs><div class="body" data-ng-if="$ctrl.selectedResponseTab.id === \'body\'"><div class="no-response" data-ng-if="!$ctrl.showResponse && !$ctrl.testing"><div class="circle"><div class="ncl-icon-test"></div><div class="ncl-icon-hand"></div></div><div class="message">Response will be shown here once test button was clicked.</div></div><div class="testing" data-ng-if="$ctrl.testing"><span class="message">Loading...</span><div class="loader-wrapper"><div class="loader-fading-circle"><div class="loader-circle1 loader-circle"></div><div class="loader-circle2 loader-circle"></div><div class="loader-circle3 loader-circle"></div><div class="loader-circle4 loader-circle"></div><div class="loader-circle5 loader-circle"></div><div class="loader-circle6 loader-circle"></div><div class="loader-circle7 loader-circle"></div><div class="loader-circle8 loader-circle"></div><div class="loader-circle9 loader-circle"></div><div class="loader-circle10 loader-circle"></div><div class="loader-circle11 loader-circle"></div><div class="loader-circle12 loader-circle"></div></div></div><div class="ncl-secondary-button" data-ng-click="$ctrl.cancelInvocation()">Cancel</div></div><div class="code-section" data-ng-if="$ctrl.showResponse && !$ctrl.testing"><div class="top-panel"><div data-ng-click="$ctrl.downloadResponseFile()" data-tooltip="Download to file" data-tooltip-placement="left" data-tooltip-popup-delay="300" data-tooltip-append-to-body="true"><div class="igz-icon-download"></div></div><div data-ng-click="$ctrl.copyToClipboard()" data-tooltip="Copy to clipboard" data-tooltip-placement="left" data-tooltip-popup-delay="300" data-tooltip-append-to-body="true"><div class="ncl-icon-copy"></div></div></div><div class="code-edit-section" data-ng-if="$ctrl.responseBodyType === \'code\'"><ncl-monaco class="monaco-code-editor" data-function-source-code="$ctrl.testResult.body" data-language="\'plaintext\'" data-selected-theme="\'vs-light\'" data-show-line-numbers="true" data-mini-monaco="true" data-no-top-padding="true" data-name="eventResponseBody" data-read-only="true"></ncl-monaco></div><div class="image-section" data-ng-if="$ctrl.responseBodyType === \'image\'"><img class="response-body-img" data-ng-src="{{$ctrl.responseImage}}" alt="Response image"></div><div class="no-content-section" data-ng-if="$ctrl.responseBodyType === \'N/A\'">You can download response body</div></div></div><div class="headers" data-ng-if="$ctrl.selectedResponseTab.id === \'headers\'"><div data-ng-repeat="(key, value) in $ctrl.testResult.headers"><div class="text-ellipsis labels" data-tooltip="{{key}}" data-tooltip-placement="left" data-tooltip-popup-delay="300" data-tooltip-append-to-body="true">{{key}}</div><div class="text-ellipsis values" data-tooltip="{{value}}" data-tooltip-placement="left" data-tooltip-popup-delay="300">{{value}}</div></div></div><div class="logs" data-ng-if="$ctrl.selectedResponseTab.id === \'logs\'"><ncl-test-events-logs data-logs="$ctrl.logs"></ncl-test-events-logs></div></div></div></form></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('iguazio.dashboard-controls.templates');
+} catch (e) {
+  module = angular.module('iguazio.dashboard-controls.templates', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-logs/test-events-logs.tpl.html',
+    '<div class="ncl-test-events-logs"><div class="functional-buttons" data-ng-if="$ctrl.logs.length > 0"><div class="ncl-icon-expand-all" data-ng-click="$ctrl.expandAllRows(true)" data-tooltip="Expand all" data-tooltip-popup-delay="300" data-tooltip-placement="left" data-tooltip-append-to-body="true"></div><div class="ncl-icon-collapse-all" data-ng-click="$ctrl.expandAllRows(false)" data-tooltip="Collapse all" data-tooltip-popup-delay="300" data-tooltip-placement="left" data-tooltip-append-to-body="true"></div></div><div data-ng-repeat="log in $ctrl.logs track by $index"><div class="collapsed-row text-ellipsis" data-ng-if="log.ui.collapsed"><span class="igz-icon-right" data-ng-click="$ctrl.collapseRow(log, false)"></span><div class="level-icon {{$ctrl.getLevelIconClass(log)}}"></div><span class="date">{{log.time | date: "EEE, MMM d, yyyy, HH:mm:ss\'GMT\'" : "+0000"}}</span><div class="message text-ellipsis">{{log.message}}</div><div class="ncl-icon-parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"></div></div><div class="expanded-row" data-ng-if="!log.ui.collapsed"><div class="header"><span class="igz-icon-down" data-ng-click="$ctrl.collapseRow(log, true)"></span><div class="level-icon {{$ctrl.getLevelIconClass(log)}}"></div><span class="date">{{log.time | date: "EEE, MMM d, yyyy, HH:mm:ss\'GMT\'" : "+0000"}}</span><div class="ncl-icon-parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"></div></div><div class="expanded-body"><div class="message">{{log.message}}</div><div class="error" data-ng-if="log.err">{{log.err}}</div><div class="parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"><span class="parameters-header">Parameters</span><div data-ng-repeat="(key, value) in $ctrl.getParameters(log)"><div class="text-ellipsis labels">{{key}}:</div><div class="text-ellipsis values">{{value}}</div></div></div></div></div></div><div class="no-logs" data-ng-if="$ctrl.logs.length === 0">No logs have been found...</div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('iguazio.dashboard-controls.templates');
+} catch (e) {
+  module = angular.module('iguazio.dashboard-controls.templates', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-navigation-tabs/test-events-navigation-tabs.tpl.html',
+    '<div class="ncl-test-events-navigation-tabs"><div class="test-events-navigation-tab" data-ng-repeat="item in $ctrl.tabItems" data-ng-click="$ctrl.changeActiveTab(item)" data-ng-class="{\'active\': $ctrl.isActiveTab(item)}">{{item.tabName | uppercase}}<span class="badge" data-ng-if="item.badge">{{item.badge}}</span></div></div>');
 }]);
 })();
 
@@ -14133,30 +14142,6 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-runtime-attributes/version-configuration-runtime-attributes.tpl.html',
     '<div class="ncl-version-configuration-runtime-attributes"><div class="title">Runtime Attributes</div><form name="$ctrl.runtimeAttributesForm" class="runtime-attributes-wrapper"><div class="row" data-ng-class="{\'info-row\': $ctrl.version.spec.runtime !== \'shell\'}" data-ng-if="$ctrl.version.spec.runtime !== \'java\'"><div class="runtime-title"><span class="label">Runtime</span><div class="runtime">{{$ctrl.version.spec.runtime}}</div></div><div class="arguments-input" data-ng-if="$ctrl.version.spec.runtime === \'shell\'"><span class="label">Arguments</span><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="arguments" data-input-value="$ctrl.data.arguments" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="arguments" data-form-object="$ctrl.runtimeAttributesForm" data-placeholder-text="Type..."></igz-validating-input-field></div></div><div class="row igz-col-100 info-row" data-ng-if="$ctrl.version.spec.runtime === \'java\'"><span class="field-label">Repositories</span><igz-validating-input-field data-field-type="textarea" data-input-name="repositories" data-input-value="$ctrl.runtimeAttributes.repositories" data-is-focused="false" data-form-object="$ctrl.runtimeAttributesForm" data-placeholder-text="Type ..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="repositories" class="nuclio-validating-input build-command-field"></igz-validating-input-field></div><div class="row info-row" data-ng-if="$ctrl.version.spec.runtime === \'shell\'"><span class="label">Response headers</span><div class="table-headers"><div class="key-header">Key</div><div class="value-header">Value</div></div><div class="igz-scrollable-container" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="attribute in $ctrl.attributes"><ncl-key-value-input class="new-label-input" data-row-data="attribute" data-change-state-broadcast="change-state-deploy-button" data-use-type="false" data-action-handler-callback="$ctrl.handleAction(actionType, checkedItem)" data-change-data-callback="$ctrl.onChangeData(newData)"></ncl-key-value-input></div></div><div class="create-label-button" data-ng-click="$ctrl.addNewAttribute()"><span class="igz-icon-add-round"></span>Create a new runtime attribute</div></div></form></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('iguazio.dashboard-controls.templates');
-} catch (e) {
-  module = angular.module('iguazio.dashboard-controls.templates', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-logs/test-events-logs.tpl.html',
-    '<div class="ncl-test-events-logs"><div class="functional-buttons" data-ng-if="$ctrl.logs.length > 0"><div class="ncl-icon-expand-all" data-ng-click="$ctrl.expandAllRows(true)" data-tooltip="Expand all" data-tooltip-popup-delay="300" data-tooltip-placement="left" data-tooltip-append-to-body="true"></div><div class="ncl-icon-collapse-all" data-ng-click="$ctrl.expandAllRows(false)" data-tooltip="Collapse all" data-tooltip-popup-delay="300" data-tooltip-placement="left" data-tooltip-append-to-body="true"></div></div><div data-ng-repeat="log in $ctrl.logs track by $index"><div class="collapsed-row text-ellipsis" data-ng-if="log.ui.collapsed"><span class="igz-icon-right" data-ng-click="$ctrl.collapseRow(log, false)"></span><div class="level-icon {{$ctrl.getLevelIconClass(log)}}"></div><span class="date">{{log.time | date: "EEE, MMM d, yyyy, HH:mm:ss\'GMT\'" : "+0000"}}</span><div class="message text-ellipsis">{{log.message}}</div><div class="ncl-icon-parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"></div></div><div class="expanded-row" data-ng-if="!log.ui.collapsed"><div class="header"><span class="igz-icon-down" data-ng-click="$ctrl.collapseRow(log, true)"></span><div class="level-icon {{$ctrl.getLevelIconClass(log)}}"></div><span class="date">{{log.time | date: "EEE, MMM d, yyyy, HH:mm:ss\'GMT\'" : "+0000"}}</span><div class="ncl-icon-parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"></div></div><div class="expanded-body"><div class="message">{{log.message}}</div><div class="error" data-ng-if="log.err">{{log.err}}</div><div class="parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"><span class="parameters-header">Parameters</span><div data-ng-repeat="(key, value) in $ctrl.getParameters(log)"><div class="text-ellipsis labels">{{key}}:</div><div class="text-ellipsis values">{{value}}</div></div></div></div></div></div><div class="no-logs" data-ng-if="$ctrl.logs.length === 0">No logs have been found...</div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('iguazio.dashboard-controls.templates');
-} catch (e) {
-  module = angular.module('iguazio.dashboard-controls.templates', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-navigation-tabs/test-events-navigation-tabs.tpl.html',
-    '<div class="ncl-test-events-navigation-tabs"><div class="test-events-navigation-tab" data-ng-repeat="item in $ctrl.tabItems" data-ng-click="$ctrl.changeActiveTab(item)" data-ng-class="{\'active\': $ctrl.isActiveTab(item)}">{{item.tabName | uppercase}}<span class="badge" data-ng-if="item.badge">{{item.badge}}</span></div></div>');
 }]);
 })();
 
