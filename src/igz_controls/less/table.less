@@ -238,7 +238,14 @@
                     background-color: @pale-grey-two;
                 }
             }
-            &:hover {
+
+            &.read-only {
+                .common-table-cells-container {
+                    cursor: default;
+                }
+            }
+
+            &:not(.read-only):hover {
                 .common-table-cells-container {
                     background-color: @pale-grey-three;
                 }
