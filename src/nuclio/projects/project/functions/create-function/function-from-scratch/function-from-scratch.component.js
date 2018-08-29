@@ -5,6 +5,7 @@
         .component('nclFunctionFromScratch', {
             bindings: {
                 project: '<',
+                projects: '<',
                 toggleSplashScreen: '&'
             },
             templateUrl: 'nuclio/projects/project/functions/create-function/function-from-scratch/function-from-scratch.tpl.html',
@@ -26,13 +27,16 @@
         ctrl.selectedRuntime = null;
 
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
 
         ctrl.validationPatterns = ValidatingPatternsService;
 
         ctrl.cancelCreating = cancelCreating;
         ctrl.createFunction = createFunction;
         ctrl.inputValueCallback = inputValueCallback;
-        ctrl.onDropdownDataChange = onDropdownDataChange;
+        ctrl.isProjectsDropDownVisible = isProjectsDropDownVisible;
+        ctrl.onRuntimeChange = onRuntimeChange;
+        ctrl.onProjectChange = onProjectChange;
 
         /**
          * Initialization method
@@ -42,6 +46,16 @@
             ctrl.selectedRuntime = getDefaultRuntime();
 
             initFunctionData();
+        }
+
+        /**
+         * Bindings changes hook
+         * @param {Object} changes - changed bindings
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.projects)) {
+                prepareProjects();
+            }
         }
 
         //
@@ -80,6 +94,7 @@
                     isNewFunction: true,
                     id: ctrl.project.metadata.name,
                     functionId: ctrl.functionData.metadata.name,
+                    projectId: ctrl.project.metadata.name,
                     projectNamespace: ctrl.project.metadata.namespace,
                     functionData: ctrl.functionData
                 });
@@ -102,11 +117,20 @@
         }
 
         /**
-         * Set data returned by default dropdown component
+         * Hides or shows projects drop-down.
+         * Show drop-down if 'Create Function' screen was reached from 'Projects' screen. Otherwise - hide drop-down
+         * @returns {boolean}
+         */
+        function isProjectsDropDownVisible() {
+            return $state.current.name === 'app.create-function';
+        }
+
+        /**
+         * Set data returned by default drop-down component
          * @param {Object} item - the new data
          * @param {boolean} isItemChanged - was value changed or not
          */
-        function onDropdownDataChange(item, isItemChanged) {
+        function onRuntimeChange(item, isItemChanged) {
             if (!lodash.isNil(item) && isItemChanged) {
                 lodash.assign(ctrl.functionData.spec, {
                     runtime: item.id,
@@ -118,6 +142,16 @@
 
                 ctrl.isCreateFunctionAllowed = true;
             }
+        }
+
+        /**
+         * Projects drop-down callback.
+         * Sets selected project to function.
+         * @param {Object} item - new selected project
+         */
+        function onProjectChange(item) {
+            ctrl.project = lodash.find(ctrl.projects, ['metadata.name', item.id]);
+            ctrl.isCreateFunctionAllowed = lodash.isEmpty(ctrl.functionFromScratchForm.$error);
         }
 
         //
@@ -240,6 +274,18 @@
             if (ConfigService.isDemoMode()) {
                 ctrl.functionData.spec.timeoutSeconds = 0;
             }
+        }
+
+        /**
+         * Converts projects for project drop-down.
+         */
+        function prepareProjects() {
+            ctrl.projectsList = lodash.map(ctrl.projects, function (project) {
+                return {
+                    id: project.metadata.name,
+                    name: project.spec.displayName
+                };
+            });
         }
     }
 }());

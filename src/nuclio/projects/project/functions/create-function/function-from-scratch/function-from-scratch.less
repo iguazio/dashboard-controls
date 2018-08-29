@@ -21,10 +21,35 @@
 
             .function-name-wrapper {
                 width: 50%;
-                padding-right: 24px;
-                padding-left: 80px;
+                display: flex;
+                padding: 0 24px 0 74px;
+
+                .projects-drop-down {
+                    width: 40%;
+                    margin-right: 48px;
+
+                    .input-label {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: @dusk-three;
+                    }
+
+                    igz-default-dropdown {
+                        .default-dropdown {
+                            background-color: @white;
+
+                            .default-dropdown-field {
+                                &:focus {
+                                    background-color: inherit;
+                                }
+                            }
+                        }
+                    }
+                }
 
                 .function-name {
+                    width: 100%;
+
                     .input-label {
                         font-size: 14px;
                         font-weight: 600;

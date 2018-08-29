@@ -5,6 +5,7 @@
         .component('nclFunctionFromTemplate', {
             bindings: {
                 project: '<',
+                projects: '<',
                 toggleSplashScreen: '&',
                 getFunctionTemplates: '&'
             },
@@ -12,7 +13,7 @@
             controller: FunctionFromTemplateController
         });
 
-    function FunctionFromTemplateController($state, $timeout, lodash, DialogsService, ValidatingPatternsService) {
+    function FunctionFromTemplateController($scope, $state, $timeout, lodash, DialogsService, ValidatingPatternsService) {
         var ctrl = this;
         var templatesOriginalObject = {}; // will always save original templates
 
@@ -36,6 +37,7 @@
         ctrl.searchQuery = '';
 
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
 
         ctrl.validationPatterns = ValidatingPatternsService;
 
@@ -43,8 +45,10 @@
         ctrl.createFunction = createFunction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isTemplateSelected = isTemplateSelected;
+        ctrl.isProjectsDropDownVisible = isProjectsDropDownVisible;
         ctrl.onChangeSearchQuery = onChangeSearchQuery;
         ctrl.onRuntimeFilterChange = onRuntimeFilterChange;
+        ctrl.onProjectChange = onProjectChange;
         ctrl.paginationCallback = paginationCallback;
         ctrl.selectTemplate = selectTemplate;
 
@@ -59,6 +63,16 @@
             ctrl.toggleSplashScreen({value: true});
 
             initFunctionData();
+        }
+
+        /**
+         * Bindings changes hook
+         * @param {Object} changes - changed bindings
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.projects)) {
+                prepareProjects();
+            }
         }
 
         //
@@ -95,6 +109,7 @@
                     isNewFunction: true,
                     id: ctrl.project.metadata.name,
                     functionId: ctrl.functionData.metadata.name,
+                    projectId: ctrl.project.metadata.name,
                     projectNamespace: ctrl.project.metadata.namespace,
                     functionData: ctrl.functionData
                 });
@@ -128,6 +143,15 @@
         }
 
         /**
+         * Hides or shows projects drop-down.
+         * Show drop-down if 'Create Function' screen was reached from 'Projects' screen. Otherwise - hide drop-down
+         * @returns {boolean}
+         */
+        function isProjectsDropDownVisible() {
+            return $state.current.name === 'app.create-function';
+        }
+
+        /**
          * Search input callback
          */
         function onChangeSearchQuery() {
@@ -144,6 +168,16 @@
             ctrl.selectedRuntimeFilter = runtime;
 
             paginateTemplates();
+        }
+
+        /**
+         * Projects drop-down callback.
+         * Sets selected project to function.
+         * @param {Object} item - new selected project
+         */
+        function onProjectChange(item) {
+            ctrl.project = lodash.find(ctrl.projects, ['metadata.name', item.id]);
+            ctrl.isCreateFunctionAllowed = lodash.isEmpty(ctrl.functionFromTemplateForm.$error);
         }
 
         /**
@@ -333,6 +367,18 @@
                     return template.metadata.name.split(':')[0] + ' (' + template.spec.runtime + ')';
                 })
                 .value();
+        }
+
+        /**
+         * Converts projects for project drop-down.
+         */
+        function prepareProjects() {
+            ctrl.projectsList = lodash.map(ctrl.projects, function (project) {
+                return {
+                    id: project.metadata.name,
+                    name: project.spec.displayName
+                };
+            });
         }
     }
 }());

@@ -6,6 +6,14 @@
     <div class="function-configuration">
         <form name="$ctrl.functionFromScratchForm" class="configuration-form" novalidate>
             <div class="function-name-wrapper">
+                <div class="projects-drop-down" data-ng-if="$ctrl.isProjectsDropDownVisible()">
+                    <span class="input-label">Projects*</span>
+                    <igz-default-dropdown data-is-required="true"
+                                          data-values-array="$ctrl.projectsList"
+                                          data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)"
+                                          data-form-object="$ctrl.functionFromScratchForm"
+                                          data-input-name="project"></igz-default-dropdown>
+                </div>
                 <div class="function-name">
                     <span class="input-label">Name*</span>
                     <igz-validating-input-field class="nuclio-validating-input"
@@ -31,7 +39,7 @@
                     <igz-default-dropdown data-is-required="true"
                                           data-values-array="$ctrl.runtimes"
                                           data-selected-item="$ctrl.selectedRuntime"
-                                          data-item-select-callback="$ctrl.onDropdownDataChange(item, isItemChanged)"
+                                          data-item-select-callback="$ctrl.onRuntimeChange(item, isItemChanged)"
                                           data-form-object="$ctrl.functionFromScratchForm"
                                           data-input-name="runtime"></igz-default-dropdown>
                     <div class="bottom-bar">

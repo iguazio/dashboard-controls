@@ -5,6 +5,7 @@
         .component('nclCreateFunction', {
             bindings: {
                 getProject: '&',
+                getProjects: '&',
                 getTemplates: '&',
                 templates: '<'
             },
@@ -12,7 +13,7 @@
             controller: CreateFunctionController
         });
 
-    function CreateFunctionController($element, $state, $stateParams, lodash, DialogsService, NuclioHeaderService) {
+    function CreateFunctionController($element, $rootScope, $state, $stateParams, lodash, DialogsService, NuclioHeaderService) {
         var ctrl = this;
         var selectedFunctionType = 'from_template';
 
@@ -20,6 +21,7 @@
             value: true
         };
         ctrl.project = {};
+        ctrl.projects = [];
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -50,28 +52,45 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.getProject({id: $stateParams.projectId})
-                .then(function (project) {
-                    ctrl.project = project;
 
-                    // breadcrumbs config
-                    var title = {
-                        project: project,
-                        projectName: project.spec.displayName,
-                        function: 'Create function'
-                    };
+            // get all projects, only if project wasn't selected before. In other words:
+            // whether New Function screen was opened from Projects or Functions screen.
+            if (lodash.includes(['projects', ''], $stateParams.navigatedFrom)) {
+                ctrl.getProjects()
+                    .then(function (response) {
+                        ctrl.projects = response;
 
-                    NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
-                })
-                .catch(function (error) {
-                    var msg = 'Oops: Unknown error occurred while retrieving project';
-                    DialogsService.alert(lodash.get(error, 'data.error', msg));
+                        // breadcrumbs config
+                        var title = {
+                            function: 'Create function'
+                        };
 
-                    $state.go('app.projects');
-                })
-                .finally(function () {
-                    ctrl.isSplashShowed.value = false;
-                });
+                        $rootScope.$broadcast('update-main-header-title', title);
+                    })
+            } else {
+                ctrl.getProject({id: $stateParams.projectId})
+                    .then(function (project) {
+                        ctrl.project = project;
+
+                        // breadcrumbs config
+                        var title = {
+                            project: project,
+                            projectName: project.spec.displayName,
+                            function: 'Create function'
+                        };
+
+                        NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
+                    })
+                    .catch(function (error) {
+                        var msg = 'Oops: Unknown error occurred while retrieving project';
+                        DialogsService.alert(lodash.get(error, 'data.error', msg));
+
+                        $state.go('app.projects');
+                    })
+                    .finally(function () {
+                        ctrl.isSplashShowed.value = false;
+                    });
+            }
         }
 
         //

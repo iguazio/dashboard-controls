@@ -5,6 +5,7 @@
         .component('nclFunctionImport', {
             bindings: {
                 project: '<',
+                projects: '<',
                 toggleSplashScreen: '&'
             },
             templateUrl: 'nuclio/projects/project/functions/create-function/function-import/function-import.tpl.html',
@@ -25,11 +26,14 @@
         };
 
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
 
         ctrl.cancelCreating = cancelCreating;
         ctrl.createFunction = createFunction;
+        ctrl.onProjectChange = onProjectChange;
         ctrl.importFunction = importFunction;
-        ctrl.isSourceCodeExists = isSourceCodeExists;
+        ctrl.isCreateFunctionAllowed = isCreateFunctionAllowed;
+        ctrl.isProjectsDropDownVisible = isProjectsDropDownVisible;
 
         //
         // Hook methods
@@ -41,6 +45,16 @@
          */
         function onInit() {
             angular.element(document).find('.function-import-input').on('change', importFunction);
+        }
+
+        /**
+         * Bindings changes hook
+         * @param {Object} changes - changed bindings
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.projects)) {
+                prepareProjects();
+            }
         }
 
         //
@@ -84,6 +98,15 @@
         }
 
         /**
+         * Projects drop-down callback.
+         * Sets selected project to function.
+         * @param {Object} item - new selected project
+         */
+        function onProjectChange(item) {
+            ctrl.project = lodash.find(ctrl.projects, ['metadata.name', item.id]);
+        }
+
+        /**
          * Import of selected YAML file from file system and parse it to JS object
          * @param event
          */
@@ -107,11 +130,21 @@
         }
 
         /**
-         * Checks if source code of function exists into ctrl.sourceCode
+         * Checks permissibility creation of new function.
+         * Checks if source code of function exists into ctrl.sourceCode, and if function import form is valid
          * @returns {boolean}
          */
-        function isSourceCodeExists() {
-            return !lodash.isNil(ctrl.sourceCode);
+        function isCreateFunctionAllowed() {
+            return !lodash.isNil(ctrl.sourceCode) && lodash.isEmpty(ctrl.functionImportForm.$error);
+        }
+
+        /**
+         * Hides or shows projects drop-down.
+         * Show drop-down if 'Create Function' screen was reached from 'Projects' screen. Otherwise - hide drop-down
+         * @returns {boolean}
+         */
+        function isProjectsDropDownVisible() {
+            return $state.current.name === 'app.create-function';
         }
 
         //
@@ -125,6 +158,18 @@
          */
         function isYamlFile(filename) {
             return lodash.includes(filename, '.yml') || lodash.includes(filename, '.yaml');
+        }
+
+        /**
+         * Converts projects for project drop-down.
+         */
+        function prepareProjects() {
+            ctrl.projectsList = lodash.map(ctrl.projects, function (project) {
+                return {
+                    id: project.metadata.name,
+                    name: project.spec.displayName
+                };
+            });
         }
     }
 }());
