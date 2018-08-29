@@ -67,6 +67,16 @@
 
                         $rootScope.$broadcast('update-main-header-title', title);
                     })
+                    .catch(function (error) {
+                        var msg = 'Oops: Unknown error occurred while retrieving projects';
+
+                        DialogsService.alert(lodash.get(error, 'data.error', msg));
+
+                        $state.go('app.projects');
+                    })
+                    .finally(function () {
+                        ctrl.isSplashShowed.value = false;
+                    });
             } else {
                 ctrl.getProject({id: $stateParams.projectId})
                     .then(function (project) {
@@ -83,6 +93,7 @@
                     })
                     .catch(function (error) {
                         var msg = 'Oops: Unknown error occurred while retrieving project';
+
                         DialogsService.alert(lodash.get(error, 'data.error', msg));
 
                         $state.go('app.projects');
