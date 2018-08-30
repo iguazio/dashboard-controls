@@ -84,6 +84,15 @@
                 background-color: @create-entity-btn-active-bg-color;
                 box-shadow: inset 0.4px 1.9px 3px 0 rgba(0, 0, 0, 0.2);
             }
+
+            &.disabled {
+                background-color: @create-entity-btn-disabled-bg-color;
+                border: @create-entity-btn-disabled-border;
+                color: @create-entity-btn-disabled-color;
+                box-shadow: none;
+                cursor: default;
+                outline: none;
+            }
         }
     }
 }
