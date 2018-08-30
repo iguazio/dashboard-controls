@@ -519,7 +519,6 @@
             ctrl.headers = null;
 
             updateRequestHeaders();
-            $rootScope.$broadcast('monaco_on-change-content', {code: ctrl.selectedEvent.spec.body, language: ctrl.requestSourceCodeLanguage, name: 'eventRequestBody'});
         }
 
         /**
@@ -586,8 +585,6 @@
             ctrl.requestSourceCodeLanguage = contentType === 'application/json' ? 'json' : 'textplain';
             updateRequestHeaders();
 
-            $rootScope.$broadcast('monaco_on-change-content', {code: ctrl.selectedEvent.spec.body, language: ctrl.requestSourceCodeLanguage, name: 'eventRequestBody'});
-
             var requestType = contentType === 'application/json' ? 'json' :
                               contentType === 'text/plain'       ? 'text' :
                                                                    'file';
@@ -652,15 +649,7 @@
                                                     imageFile   ? 'image' :
                                                                   'N/A';
 
-                            if (textualFile) {
-                                $rootScope.$broadcast('monaco_on-change-content', {
-                                    code: ctrl.testResult.body,
-                                    language: 'plaintext',
-                                    name: 'eventResponseBody'
-                                });
-
-                                ctrl.testing = false;
-                            } else if (imageFile) {
+                            if (imageFile) {
                                 var reader = new FileReader();
                                 reader.readAsDataURL(ctrl.testResult.body);
                                 reader.onload = function () {

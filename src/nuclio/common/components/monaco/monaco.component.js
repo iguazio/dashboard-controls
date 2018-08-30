@@ -51,6 +51,13 @@
                     code: $scope.selectedCodeFile.code
                 };
             }
+
+            if (angular.isDefined(changes.functionSourceCode) && !changes.functionSourceCode.isFirstChange()) {
+                $scope.selectedCodeFile = {
+                    language: ctrl.language,
+                    code: changes.functionSourceCode.currentValue
+                };
+            }
         }
 
         //
