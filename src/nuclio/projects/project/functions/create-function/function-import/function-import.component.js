@@ -6,7 +6,9 @@
             bindings: {
                 project: '<',
                 projects: '<',
-                toggleSplashScreen: '&'
+                toggleSplashScreen: '&',
+                createNewProject: '<',
+                selectedProject: '<'
             },
             templateUrl: 'nuclio/projects/project/functions/create-function/function-import/function-import.tpl.html',
             controller: FunctionImportController
@@ -164,12 +166,23 @@
          * Converts projects for project drop-down.
          */
         function prepareProjects() {
-            ctrl.projectsList = lodash.map(ctrl.projects, function (project) {
-                return {
-                    id: project.metadata.name,
-                    name: project.spec.displayName
-                };
-            });
+            var newProject = {
+                id: 'new_project',
+                name: 'New project'
+            };
+
+            ctrl.projectsList = lodash.chain(ctrl.projects)
+                .map(function (project) {
+                    return {
+                        id: project.metadata.name,
+                        name: project.spec.displayName
+                    };
+                })
+                .sortBy(['name'])
+                .value();
+
+            ctrl.selectedProject = lodash.isEmpty(ctrl.projectsList)         ? newProject           :
+                                   ctrl.selectedProject.id !== 'new_project' ? ctrl.selectedProject : lodash.first(ctrl.projectsList);
         }
     }
 }());

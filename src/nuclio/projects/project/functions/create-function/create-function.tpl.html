@@ -62,6 +62,8 @@
             <ncl-function-from-scratch data-ng-if="$ctrl.isTypeSelected('from_scratch')"
                                        data-toggle-splash-screen="$ctrl.toggleSplashScreen(value)"
                                        data-project="$ctrl.project"
+                                       data-create-new-project="$ctrl.createNewProject"
+                                       data-selected-project="$ctrl.selectedProject"
                                        data-projects="$ctrl.projects">
             </ncl-function-from-scratch>
 
@@ -70,11 +72,15 @@
                                         data-templates="$ctrl.templates"
                                         data-toggle-splash-screen="$ctrl.toggleSplashScreen(value)"
                                         data-project="$ctrl.project"
+                                        data-create-new-project="$ctrl.createNewProject"
+                                        data-selected-project="$ctrl.selectedProject"
                                         data-projects="$ctrl.projects">
             </ncl-function-from-template>
             <ncl-function-import data-ng-if="$ctrl.isTypeSelected('import')"
                                  data-toggle-splash-screen="$ctrl.toggleSplashScreen(value)"
                                  data-project="$ctrl.project"
+                                 data-selected-project="$ctrl.selectedProject"
+                                 data-create-new-project="$ctrl.createNewProject"
                                  data-projects="$ctrl.projects">
             </ncl-function-import>
         </div>

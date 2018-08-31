@@ -10,9 +10,13 @@
                     <span class="input-label">Projects*</span>
                     <igz-default-dropdown data-is-required="true"
                                           data-values-array="$ctrl.projectsList"
+                                          data-selected-item="$ctrl.selectedProject"
                                           data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)"
                                           data-form-object="$ctrl.functionFromScratchForm"
-                                          data-input-name="project"></igz-default-dropdown>
+                                          data-input-name="project">
+                        <div class="transcluded-item"
+                             data-ng-click="$ctrl.createNewProject()">New project</div>
+                    </igz-default-dropdown>
                 </div>
                 <div class="function-name">
                     <span class="input-label">Name*</span>

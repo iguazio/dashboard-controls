@@ -4,6 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclCreateFunction', {
             bindings: {
+                createProject: '&',
                 getProject: '&',
                 getProjects: '&',
                 getTemplates: '&',
@@ -13,7 +14,7 @@
             controller: CreateFunctionController
         });
 
-    function CreateFunctionController($element, $rootScope, $state, $stateParams, lodash, DialogsService, NuclioHeaderService) {
+    function CreateFunctionController($element, $rootScope, $scope, $state, $stateParams, ngDialog, lodash, DialogsService, NuclioHeaderService) {
         var ctrl = this;
         var selectedFunctionType = 'from_template';
 
@@ -31,6 +32,7 @@
                 onUpdate: onContainerResize
             }
         };
+        ctrl.selectedProject = null;
         ctrl.horizontalScrollConfig = {
             axis: 'x',
             advanced: {
@@ -40,6 +42,7 @@
 
         ctrl.$onInit = onInit;
 
+        ctrl.createNewProject = createNewProject;
         ctrl.toggleSplashScreen = toggleSplashScreen;
         ctrl.isTypeSelected = isTypeSelected;
         ctrl.selectFunctionType = selectFunctionType;
@@ -107,6 +110,46 @@
         //
         // Public methods
         //
+
+        /**
+         * New project dialog
+         */
+        function createNewProject() {
+            ngDialog.open({
+                template: '<ncl-new-project-dialog data-close-dialog="closeThisDialog(project)" ' +
+                          'data-create-project-callback="ngDialogData.createProject({project: project})"></ncl-new-project-dialog>',
+                plain: true,
+                scope: $scope,
+                data: {
+                    createProject: ctrl.createProject
+                },
+                className: 'ngdialog-theme-nuclio'
+            })
+                .closePromise
+                .then(function (data) {
+                    if (!lodash.isNil(data.value)) {
+                        ctrl.isSplashShowed.value = true;
+
+                        ctrl.selectedProject = {
+                            id: data.value.metadata.name,
+                            name: data.value.spec.displayName
+                        };
+
+                        ctrl.getProjects()
+                            .then(function (response) {
+                                ctrl.projects = response;
+                            })
+                            .catch(function (error) {
+                                var msg = 'Oops: Unknown error occurred while retrieving projects';
+
+                                DialogsService.alert(lodash.get(error, 'data.error', msg));
+                            })
+                            .finally(function () {
+                                ctrl.isSplashShowed.value = false;
+                            });
+                    }
+                });
+        }
 
         /**
          * Toggles splash screen.
