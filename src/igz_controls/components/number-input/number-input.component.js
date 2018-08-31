@@ -123,7 +123,7 @@
          * @returns {boolean}
          */
         function checkInvalidation() {
-            if (angular.isDefined(ctrl.formObject)) {
+            if (angular.isDefined(ctrl.formObject) && angular.isDefined(ctrl.formObject[ctrl.inputName])) {
                 if ((lodash.isNil(ctrl.currentValue) || ctrl.currentValue === '') && ctrl.validationIsRequired) {
                     ctrl.formObject[ctrl.inputName].$setValidity('text', false);
                 } else {
