@@ -140,7 +140,7 @@
         margin-top: 2px;
 
         .list {
-            padding: 7px 0 8px 0;
+            padding: 0;
             margin: 0;
 
             .list-item {
@@ -156,6 +156,14 @@
                 min-height: 32px;
                 align-items: center;
                 justify-content: space-between;
+
+                &:first-child {
+                    margin-top: 7px;
+                }
+
+                &:last-child {
+                    margin-bottom: 8px;
+                }
 
                 .list-item-block {
                     display: flex;

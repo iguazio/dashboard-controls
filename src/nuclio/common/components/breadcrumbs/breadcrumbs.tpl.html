@@ -1,14 +1,14 @@
 <span class="main-header-title">
     <span class="main-header-title-text"
           data-ng-click="$ctrl.goToProjectsList()"
-          data-ng-class="{'disable-behavior': !$ctrl.mainHeaderTitle.project}">{{$ctrl.mainHeaderTitle.title}}
+          data-ng-class="{'disable-behavior': !$ctrl.mainHeaderTitle.project && $ctrl.mainHeaderTitle.function !== 'Create function'}">
+        {{$ctrl.mainHeaderTitle.title}}
     </span>
     <span class="igz-icon-right ncl-header-subtitle"></span>
 </span>
 
 <span class="main-header-title" data-ng-if="$ctrl.mainHeaderTitle.project">
-    <span class="main-header-title-text"
-          data-ng-click="$ctrl.goToFunctionsList()">{{$ctrl.mainHeaderTitle.projectName}}</span>
+    <span class="main-header-title-text" data-ng-click="$ctrl.goToFunctionsList()">{{$ctrl.mainHeaderTitle.projectName}}</span>
 
     <ncl-breadcrumbs-dropdown data-state="$ctrl.mainHeaderTitle.state"
                               data-title=""
