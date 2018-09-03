@@ -147,6 +147,8 @@
                             .finally(function () {
                                 ctrl.isSplashShowed.value = false;
                             });
+
+                        $rootScope.$broadcast('close-drop-down');
                     }
                 });
         }
