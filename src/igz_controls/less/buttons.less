@@ -3,6 +3,8 @@
 //
 
 [class^="igz-button"], [class*="igz-button"] {
+    .general-button-color-set();
+
     display: inline-block;
     text-align: center;
     vertical-align: middle;
@@ -31,13 +33,13 @@
     }
 
     &.inverted {
-        background-color: transparent;
-        border: 1px solid #B9BEC4;
-        color: #B9BEC4;
+        background-color: @btn-inverted-bg-color;
+        border: @btn-inverted-border;
+        color: @btn-inverted-color;
 
         &:hover {
-            border-color: #fff;
-            color: #fff;
+            border-color: @btn-inverted-border-color;
+            color: @btn-inverted-color;
         }
     }
 }
@@ -58,7 +60,7 @@
     line-height: initial;
     border-radius: 2px;
     background-color: @primary-btn-bg-color;
-    border: solid 1px @primary-btn-border-color;
+    border: @primary-btn-border;
 
     &:hover {
         background-color: @primary-btn-hover-bg-color;
@@ -77,7 +79,7 @@
 
     &.disabled {
         background-color: @primary-btn-disabled-bg-color;
-        border: solid 1px @primary-btn-disabled-border-color;
+        border: @primary-btn-disabled-border;
         color: @primary-btn-disabled-color;
         box-shadow: none;
         cursor: default;
@@ -104,7 +106,7 @@
     line-height: initial;
     border-radius: 2px;
     background-color: @secondary-btn-bg-color;
-    border: 1px solid @secondary-btn-border-color;
+    border: @secondary-btn-border;
 }
 
 .igz-button-remove {
@@ -123,17 +125,17 @@
     line-height: initial;
     border-radius: 2px;
     background-color: @remove-btn-bg-color;
-    border: solid 1px @remove-btn-border-color;
+    border: @remove-btn-border;
 
     &:hover {
-        background-color: @remove-btn-hover-color;
+        background-color: @remove-btn-hover-bg-color;
         box-shadow: @remove-btn-hover-box-shadow;
         border: none;
         padding: 9px 21px;
     }
 
     &:active {
-        background-color: @remove-btn-active-color;
+        background-color: @remove-btn-active-bg-color;
         box-shadow: @remove-btn-active-box-shadow;
         border: none;
         outline: none;
@@ -146,99 +148,105 @@
 }
 
 .igz-button-basic {
-    background-color: @pale-grey-two;
-    border: solid 1px @pale-grey;
-    color: @dusk-three;
+    .basic-button-color-set();
+
+    background-color: @btn-basic-bg-color;
+    border: @btn-basic-border;
+    color: @btn-basic-color;
     font-size: 12px;
 
     &:hover, &:focus {
-        background-color: @pale-grey-three;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.13);
-        border: solid 1px @pale-grey;
+        background-color: @btn-basic-hover-focus-bg-color;
+        box-shadow: @btn-basic-hover-focus-box-shadow;
+        border: @btn-basic-hover-focus-border;
     }
 
     &:active {
-        background-color: @pale-grey;
-        box-shadow: inset 0 2px 3px 0 rgba(0, 0, 0, 0.1);
-        border: solid 1px @silver;
+        background-color: @btn-basic-active-bg-color;
+        box-shadow: @btn-basic-active-box-shadow;
+        border: @btn-basic-active-border;
     }
 
     &.disabled {
-        .paleGreyTwo(0.6);
-        color: @color;
-        border: @pale-grey;
+        color: @btn-basic-disabled-color;
+        border-color: @btn-basic-disabled-border-color;
     }
 }
 
 .igz-button-outline {
-    background-color: #ffffff;
-    border: 1px solid #3d5b77;
-    color: #3d5b77;
+    .outline-button-color-set();
+
+    background-color: @btn-outline-bg-color;
+    border: @btn-outline-border;
+    color: @btn-outline-color;
     font-weight: 400;
     padding: 0 35px;
 
     &:hover {
-        color: #252d36;
-        border-color: #3d5b77;
+        color: @btn-outline-hover-color;
+        border-color: @btn-outline-hover-border-color;
     }
 }
 
 .igz-button-square-icon {
+    .square-button-icon-color-set();
+
     font-family: 'iguazio';
     padding: 0;
     width: 38px;
-    background-color: #ffffff;
-    color: @bismark;
-    border: 1px solid #d7d7d7;
+    background-color: @btn-square-icon-bg-color;
+    color: @btn-square-icon-color;
+    border: @btn-square-icon-border;
 
     &:active {
-        color: #3bd6ff;
+        color: @btn-square-icon-active-color;
     }
 
     &:hover {
-        color: #2d3640;
+        color: @btn-square-icon-hover-color;
     }
 }
 
 .igz-button-just-text {
+    .just-text-button-color-set();
+
     font-size: 12px;
     font-weight: 500;
     display: inline-block;
     vertical-align: top;
     position: relative;
-    color: @greyish-purple;
+    color: @btn-just-text-color;
     text-transform: uppercase;
     line-height: initial;
     height: 32px;
-    background-color: transparent;
+    background-color: @btn-just-text-bg-color;
     border: none;
     padding: 9px 20px;
 
     &:hover {
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.13);
-        border: solid 1px @pale-grey;
+        box-shadow: @btn-just-text-hover-box-shadow;
+        border: @btn-just-text-hover-border;
         border-radius: 2px;
-        background-color: @white;
+        background-color: @btn-just-text-hover-bg-color;
         padding: 8px 19px;
     }
 
     &:active {
-        box-shadow: inset 0 2px 3px 0 rgba(0, 0, 0, 0.1);
-        border: solid 1px @silver;
+        box-shadow: @btn-just-text-active-box-shadow;
+        border: @btn-just-text-active-border;
         outline: none;
         border-radius: 2px;
-        background-color: @white;
+        background-color: @btn-just-text-active-bg-color;
         padding: 8px 19px;
     }
 
     &.disabled {
-        .paleGreyTwo(0.6);
         border-radius: 2px;
-        background-color: @color;
-        border: solid 1px @pale-grey;
+        background-color: @btn-just-text-disabled-bg-color;
+        border: @btn-just-text-disabled-border;
         font-size: 12px;
         font-weight: 500;
-        color: rgba(71, 64, 86, 0.3);
+        color: @btn-just-text-disabled-color;
     }
 
     &.small {

@@ -38,7 +38,7 @@
 
     .input-field, .textarea-field {
         background-color: transparent;
-        border: solid 1px @input-textarea-field-border-color;
+        border: @input-textarea-field-border;
         border-radius: 2px;
         color: @input-textarea-field-color;
         display: block;
@@ -49,24 +49,24 @@
         &:not([disabled]):not([readonly]) {
             &:focus.ng-invalid:not(.ng-pristine), &.ng-invalid.ng-touched {
                 background-color: @input-textarea-field-not-disabled-focus-invalid-bg-color;
-                border: solid 1px @input-textarea-field-not-disabled-focus-invalid-color;
+                border: @input-textarea-field-not-disabled-focus-invalid-border;
                 box-shadow: none;
                 outline: none;
             }
 
             &:hover, &:focus {
                 outline: 0;
-                border: solid 1px @input-textarea-field-not-disabled-hover-focus-border-color;
+                border: @input-textarea-field-not-disabled-hover-focus-border;
             }
 
             &.invalid {
                 background-color: @input-textarea-field-not-disabled-invalid-bg-color;
-                border: solid 1px @input-textarea-field-not-disabled-invalid-border-color;
+                border: @input-textarea-field-not-disabled-invalid-border;
                 box-shadow: none;
             }
 
             &:focus.ng-valid, &:focus.ng-pristine {
-                border: solid 1px @input-textarea-field-not-disabled-valid-border-color;
+                border: @input-textarea-field-not-disabled-valid-border;
                 box-shadow: none;
                 outline: none;
             }
@@ -124,23 +124,23 @@
     }
 
     ::-webkit-input-placeholder {
-        color: transparent;
+        color: @validating-input-field-placeholder;
         font-size: 0;
     }
     :-moz-placeholder {
         /* Firefox 18- */
-        color: transparent;
+        color: @validating-input-field-placeholder;
         font-size: 0;
     }
 
     ::-moz-placeholder {
         /* Firefox 19+ */
-        color: transparent;
+        color: @validating-input-field-placeholder;
         font-size: 0;
     }
 
     :-ms-input-placeholder {
-        color: transparent;
+        color: @validating-input-field-placeholder;
         font-size: 0;
     }
 

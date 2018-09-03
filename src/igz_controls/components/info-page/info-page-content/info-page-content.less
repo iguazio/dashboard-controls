@@ -36,7 +36,7 @@ igz-info-page-actions-bar {
 }
 
 igz-info-page-content {
-    @data-access-policy-borders: @primary-border;
+    .info-page-content-color-set();
 
     .container-data-access-policy-table, .data-lifecycle-table {
         &.common-table {
@@ -50,8 +50,8 @@ igz-info-page-content {
                     height: 49px;
 
                     &.selected {
-                        background-color: @pale-grey;
-                        border: 1px solid @pale-grey;
+                        background-color: @common-table-cell-selected-bg-color;
+                        border: @common-table-cell-selected-border;
                     }
 
                     &:last-child {
@@ -77,7 +77,7 @@ igz-info-page-content {
                     .common-table-cell {
                         height: 49px;
                         padding: 0 15px;
-                        border-right: solid 1px @pale-grey;
+                        border-right: @common-table-cell-border-right;
 
                         &:first-child {
                             padding-left: 7px;
@@ -104,14 +104,14 @@ igz-info-page-content {
         }
 
         .sortable-empty {
-            background-color: #fdfdfd;
-            color: #252d36;
+            background-color: @sortable-empty-bg-color;
+            color: @sortable-empty-color;
             font-size: 14px;
             font-weight: 400;
             font-family: 'Open Sans', sans-serif;
-            border-bottom: @data-access-policy-borders;
-            border-left: @data-access-policy-borders;
-            border-right: @data-access-policy-borders;
+            border-bottom: @sortable-empty-border;
+            border-left: @sortable-empty-border;
+            border-right: @sortable-empty-border;
             padding-left: 70px;
             height: 40px;
             line-height: 38px;
