@@ -92,6 +92,10 @@
                     }
                 });
 
+                if (lodash.isEmpty(ctrl.project) && ctrl.selectedProject.id !== 'new_project') {
+                    ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
+                }
+
                 $state.go('app.project.function.edit.code', {
                     isNewFunction: true,
                     id: ctrl.project.metadata.name,

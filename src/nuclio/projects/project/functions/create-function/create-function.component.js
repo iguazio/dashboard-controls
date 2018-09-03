@@ -130,14 +130,15 @@
                     if (!lodash.isNil(data.value)) {
                         ctrl.isSplashShowed.value = true;
 
-                        ctrl.selectedProject = {
-                            id: data.value.metadata.name,
-                            name: data.value.spec.displayName
-                        };
-
                         ctrl.getProjects()
                             .then(function (response) {
                                 ctrl.projects = response;
+                                var createdProject = lodash.find(ctrl.projects, ['spec.displayName', data.value.spec.displayName]);
+
+                                ctrl.selectedProject = {
+                                    id: createdProject.metadata.name,
+                                    name: createdProject.spec.displayName
+                                };
                             })
                             .catch(function (error) {
                                 var msg = 'Oops: Unknown error occurred while retrieving projects';
