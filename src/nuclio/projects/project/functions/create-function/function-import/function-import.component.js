@@ -11,7 +11,7 @@
             controller: FunctionImportController
         });
 
-    function FunctionImportController($rootScope, $state, lodash, YAML) {
+    function FunctionImportController($scope, $state, lodash, YAML) {
         var ctrl = this;
 
         var importedFunction = null;
@@ -93,12 +93,8 @@
             var reader = new FileReader();
 
             reader.onload = function () {
-                ctrl.sourceCode = {
-                    language: 'yaml',
-                    code: reader.result
-                };
-
-                $rootScope.$broadcast('monaco_on-change-content', ctrl.sourceCode);
+                ctrl.sourceCode = reader.result;
+                $scope.$apply();
 
                 importedFunction = YAML.parse(reader.result);
             };

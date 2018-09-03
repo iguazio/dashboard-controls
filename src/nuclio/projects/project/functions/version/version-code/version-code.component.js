@@ -10,7 +10,7 @@
             controller: NclVersionCodeController
         });
 
-    function NclVersionCodeController($element, $rootScope, $timeout, lodash, Base64, ConfigService, DialogsService,
+    function NclVersionCodeController($element, $rootScope, $scope, $timeout, lodash, Base64, ConfigService, DialogsService,
                                       VersionHelperService) {
         var ctrl = this;
 
@@ -79,6 +79,7 @@
 
             ctrl.runtimeArray = getRuntimes();
             ctrl.selectedRuntime = lodash.find(ctrl.runtimeArray, ['id', ctrl.version.spec.runtime]);
+            ctrl.editorLanguage = ctrl.selectedRuntime.language;
 
             var sourceCode = lodash.get(ctrl.version, 'spec.build.functionSourceCode', '');
             if (lodash.isEmpty(sourceCode)) {
@@ -168,6 +169,7 @@
          */
         function selectRuntimeValue(item) {
             ctrl.selectedRuntime = item;
+            ctrl.editorLanguage = ctrl.selectedRuntime.language;
 
             lodash.set(ctrl.version, 'spec.runtime', item.id);
             lodash.set(ctrl.version, 'spec.build.functionSourceCode', item.sourceCode);
@@ -411,7 +413,9 @@
                                     .language,
                                 code: onloadEvent.target.result
                             };
-                            $rootScope.$broadcast('monaco_on-change-content', functionSource);
+                            ctrl.sourceCode = functionSource.code;
+                            ctrl.editorLanguage = functionSource.language;
+                            $scope.$apply();
 
                             codeEditorDropZone.removeClass('dragover');
                             codeEditor.css('opacity', '');

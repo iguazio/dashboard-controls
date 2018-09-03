@@ -1544,6 +1544,10 @@ h1, h2, h3, h4, h5, h6, .title, .btn {
     .generateIconClass(983);
 }
 
+.igz-icon-services {
+    .generateIconClass(984);
+}
+
 .igz-icon-priority-realtime, .igz-icon-priority-high, .igz-icon-priority-standard, .igz-icon-priority-low {
     display: inline-block;
     font-size: 17px;
@@ -2437,7 +2441,14 @@ input[disabled] {
                     background-color: @pale-grey-two;
                 }
             }
-            &:hover {
+
+            &.read-only {
+                .common-table-cells-container {
+                    cursor: default;
+                }
+            }
+
+            &:not(.read-only):hover {
                 .common-table-cells-container {
                     background-color: @pale-grey-three;
                 }
@@ -2901,6 +2912,156 @@ ncl-projects {
         }
     }
 }
+.igz-action-menu {
+    .action-menu-color-set();
+
+    opacity: 1;
+    position: relative;
+
+    .menu-button {
+        color: @menu-btn-color;
+        cursor: pointer;
+        font-size: 18px;
+        height: 19px;
+        text-align: center;
+        transition: @menu-btn-color-transition;
+        width: 30px;
+
+        &.active,
+        &:hover {
+            color: @menu-btn-active-hover-color;
+        }
+    }
+
+    .menu-dropdown {
+        visibility: hidden;
+        background-color: @menu-dropdown-bg-color;
+        border: 1px solid @menu-dropdown-border-color;
+        border-radius: 2px;
+        box-shadow: @menu-dropdown-box-shadow;
+        color: black;
+        font-family: @font-family-sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: normal;
+        margin-top: 9px;
+        min-width: 129px;
+        padding: 8px 0 0;
+        position: absolute;
+        right: 10px;
+        z-index: 10;
+
+        .actions-list {
+            cursor: default;
+            padding-bottom: 8px;
+
+            .tooltip {
+                // !important used to overwrite third-party's inline style
+                display: none !important;
+            }
+        }
+
+        .igz-action-item {
+            color: @action-item-color;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 32px;
+            padding: 0 18px;
+            text-align: left;
+            white-space: nowrap;
+
+            &:hover,
+            &.subtemplate-show {
+                background-color: @action-item-hover-bg-color;
+            }
+
+            &.inactive {
+                color: @action-item-inactive-color;
+                pointer-events: none;
+            }
+
+            .action-icon {
+                .action-icon-color-set();
+
+                color: @action-icon-hover-color;
+                display: inline-block;
+                padding-right: 14px;
+
+                &:before {
+                    font-size: 16px;
+                    position: relative;
+                    text-align: center;
+                    width: 20px;
+                    top: 2px;
+                }
+            }
+
+            .action-label {
+                display: inline-block;
+            }
+        }
+
+        .shortcuts-list {
+            padding-bottom: 8px;
+
+            &:not(.first-block) {
+                border-top: 1px solid @shortcuts-list-not-first-block-border-color;
+                padding-top: 8px;
+            }
+        }
+
+        .shortcuts-header {
+            font-family: @font-family-sans-serif;
+            color: @shortcuts-header-color;
+            line-height: 24px;
+            font-size: 13px;
+            font-weight: 400;
+            padding: 0 15px 4px 22px;
+            text-align: left;
+        }
+
+        .shortcuts-item {
+            color: @shortcuts-item-color;
+            cursor: pointer;
+            font-weight: 400;
+            white-space: nowrap;
+            line-height: 32px;
+            padding: 0 26px 0 32px;
+            text-align: left;
+            transition: @shortcuts-item-transition;
+
+            &:hover {
+                background-color: @shortcuts-item-hover-bg-color;
+            }
+
+        }
+
+    }
+
+    &.small-action-menu {
+        .menu-button {
+            color: @small-action-menu-btn-color;
+            width: auto;
+            font-size: 12px;
+            display: inline-block;
+            height: auto;
+            margin: 0;
+            vertical-align: sub;
+        }
+
+        .menu-dropdown {
+            margin: 0;
+        }
+    }
+
+    .upward-menu {
+        visibility: visible;
+        top: -55px;
+        right: 15px;
+    }
+}
+
 .igz-action-panel {
     left: 0;
     line-height: 1;
@@ -3076,156 +3237,6 @@ ncl-projects {
         position: fixed;
         margin: -2px 0 0 -1px;
         z-index: 10;
-    }
-}
-
-.igz-action-menu {
-    .action-menu-color-set();
-
-    opacity: 1;
-    position: relative;
-
-    .menu-button {
-        color: @menu-btn-color;
-        cursor: pointer;
-        font-size: 18px;
-        height: 19px;
-        text-align: center;
-        transition: @menu-btn-color-transition;
-        width: 30px;
-
-        &.active,
-        &:hover {
-            color: @menu-btn-active-hover-color;
-        }
-    }
-
-    .menu-dropdown {
-        visibility: hidden;
-        background-color: @menu-dropdown-bg-color;
-        border: 1px solid @menu-dropdown-border-color;
-        border-radius: 2px;
-        box-shadow: @menu-dropdown-box-shadow;
-        color: black;
-        font-family: @font-family-sans-serif;
-        font-size: 13px;
-        font-weight: 500;
-        line-height: normal;
-        margin-top: 9px;
-        min-width: 129px;
-        padding: 8px 0 0;
-        position: absolute;
-        right: 10px;
-        z-index: 10;
-
-        .actions-list {
-            cursor: default;
-            padding-bottom: 8px;
-
-            .tooltip {
-                // !important used to overwrite third-party's inline style
-                display: none !important;
-            }
-        }
-
-        .igz-action-item {
-            color: @action-item-color;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 400;
-            line-height: 32px;
-            padding: 0 18px;
-            text-align: left;
-            white-space: nowrap;
-
-            &:hover,
-            &.subtemplate-show {
-                background-color: @action-item-hover-bg-color;
-            }
-
-            &.inactive {
-                color: @action-item-inactive-color;
-                pointer-events: none;
-            }
-
-            .action-icon {
-                .action-icon-color-set();
-
-                color: @action-icon-hover-color;
-                display: inline-block;
-                padding-right: 14px;
-
-                &:before {
-                    font-size: 16px;
-                    position: relative;
-                    text-align: center;
-                    width: 20px;
-                    top: 2px;
-                }
-            }
-
-            .action-label {
-                display: inline-block;
-            }
-        }
-
-        .shortcuts-list {
-            padding-bottom: 8px;
-
-            &:not(.first-block) {
-                border-top: 1px solid @shortcuts-list-not-first-block-border-color;
-                padding-top: 8px;
-            }
-        }
-
-        .shortcuts-header {
-            font-family: @font-family-sans-serif;
-            color: @shortcuts-header-color;
-            line-height: 24px;
-            font-size: 13px;
-            font-weight: 400;
-            padding: 0 15px 4px 22px;
-            text-align: left;
-        }
-
-        .shortcuts-item {
-            color: @shortcuts-item-color;
-            cursor: pointer;
-            font-weight: 400;
-            white-space: nowrap;
-            line-height: 32px;
-            padding: 0 26px 0 32px;
-            text-align: left;
-            transition: @shortcuts-item-transition;
-
-            &:hover {
-                background-color: @shortcuts-item-hover-bg-color;
-            }
-
-        }
-
-    }
-
-    &.small-action-menu {
-        .menu-button {
-            color: @small-action-menu-btn-color;
-            width: auto;
-            font-size: 12px;
-            display: inline-block;
-            height: auto;
-            margin: 0;
-            vertical-align: sub;
-        }
-
-        .menu-dropdown {
-            margin: 0;
-        }
-    }
-
-    .upward-menu {
-        visibility: visible;
-        top: -55px;
-        right: 15px;
     }
 }
 
@@ -4304,111 +4315,6 @@ ncl-projects {
     }
 }
 
-.splash-screen {
-    position: absolute;
-    z-index: 996;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(37, 45, 54, 0.9);
-    transform-style: preserve-3d;
-
-    // ngAnimate appearance for show/hide
-    transition: opacity linear .25s 0s;
-
-    &.ng-hide-remove {
-        opacity: 0;
-    }
-
-    .loading-splash-screen {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: @white;
-        font-size: 20px;
-        text-align: center;
-        font-weight: 500;
-        width: 217px;
-        border-radius: 6px;
-        background-image: linear-gradient(144deg, @dark-sky-blue, @lightblue), linear-gradient(@dark-sky-blue, @dark-sky-blue);
-        padding: 49px 0;
-
-        .splash-logo-wrapper {
-            position: relative;
-            text-align: center;
-
-            .loader-fading-circle {
-                width: 60px;
-                height: 60px;
-            }
-        }
-
-        .loading-text {
-            padding: 31px 0 0 12px;
-            font-family: @font-family-sans-serif;
-            font-size: 20px;
-            color: @white;
-        }
-    }
-
-    .alert-splash-screen {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: @white;
-        font-size: 20px;
-        font-weight: 500;
-        width: 504px;
-        border-radius: 6px;
-        background-image: linear-gradient(144deg, @dark-sky-blue, @lightblue), linear-gradient(@dark-sky-blue, @dark-sky-blue);
-        box-shadow: none;
-        padding: 0 0 49px;
-
-        .header {
-            background: url('/assets/images/oops.png') no-repeat center;
-            margin: 47px 0 24px;
-            height: 59px;
-            background-size: contain;
-        }
-
-        .notification-text {
-            color: @white;
-            padding: 0 60px;
-            text-align: center;
-            margin: 0 0 36px;
-            line-height: 1.5;
-        }
-
-        .buttons {
-            text-align: center;
-            height: 36px;
-
-            .refresh-button {
-                margin: 0 auto;
-                padding-top: 8px;
-                height: 36px;
-                width: 124px;
-                font-size: 12px;
-                border-radius: 2px;
-                background-color: @dark-sky-blue;
-                border: solid 1px @white;
-                text-transform: uppercase;
-
-                &:hover {
-                    background-color: @bluish;
-                    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
-                }
-
-                .igz-icon-refresh {
-                    font-size: 16px;
-                    margin-right: 8px;
-                    vertical-align: middle;
-                }
-            }
-        }
-    }
-}
 .validating-input-field {
     .validating-input-field-color-set();
 
@@ -4580,6 +4486,111 @@ ncl-projects {
     }
 }
 
+.splash-screen {
+    position: absolute;
+    z-index: 996;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(37, 45, 54, 0.9);
+    transform-style: preserve-3d;
+
+    // ngAnimate appearance for show/hide
+    transition: opacity linear .25s 0s;
+
+    &.ng-hide-remove {
+        opacity: 0;
+    }
+
+    .loading-splash-screen {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: @white;
+        font-size: 20px;
+        text-align: center;
+        font-weight: 500;
+        width: 217px;
+        border-radius: 6px;
+        background-image: linear-gradient(144deg, @dark-sky-blue, @lightblue), linear-gradient(@dark-sky-blue, @dark-sky-blue);
+        padding: 49px 0;
+
+        .splash-logo-wrapper {
+            position: relative;
+            text-align: center;
+
+            .loader-fading-circle {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        .loading-text {
+            padding: 31px 0 0 12px;
+            font-family: @font-family-sans-serif;
+            font-size: 20px;
+            color: @white;
+        }
+    }
+
+    .alert-splash-screen {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: @white;
+        font-size: 20px;
+        font-weight: 500;
+        width: 504px;
+        border-radius: 6px;
+        background-image: linear-gradient(144deg, @dark-sky-blue, @lightblue), linear-gradient(@dark-sky-blue, @dark-sky-blue);
+        box-shadow: none;
+        padding: 0 0 49px;
+
+        .header {
+            background: url('/assets/images/oops.png') no-repeat center;
+            margin: 47px 0 24px;
+            height: 59px;
+            background-size: contain;
+        }
+
+        .notification-text {
+            color: @white;
+            padding: 0 60px;
+            text-align: center;
+            margin: 0 0 36px;
+            line-height: 1.5;
+        }
+
+        .buttons {
+            text-align: center;
+            height: 36px;
+
+            .refresh-button {
+                margin: 0 auto;
+                padding-top: 8px;
+                height: 36px;
+                width: 124px;
+                font-size: 12px;
+                border-radius: 2px;
+                background-color: @dark-sky-blue;
+                border: solid 1px @white;
+                text-transform: uppercase;
+
+                &:hover {
+                    background-color: @bluish;
+                    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+                }
+
+                .igz-icon-refresh {
+                    font-size: 16px;
+                    margin-right: 8px;
+                    vertical-align: middle;
+                }
+            }
+        }
+    }
+}
 .igz-info-page-actions-bar {
     .actions-buttons-block {
         margin-top: 3px;
@@ -5115,6 +5126,15 @@ body {
                 background-color: @create-entity-btn-active-bg-color;
                 box-shadow: inset 0.4px 1.9px 3px 0 rgba(0, 0, 0, 0.2);
             }
+
+            &.disabled {
+                background-color: @create-entity-btn-disabled-bg-color;
+                border: @create-entity-btn-disabled-border;
+                color: @create-entity-btn-disabled-color;
+                box-shadow: none;
+                cursor: default;
+                outline: none;
+            }
         }
     }
 }
@@ -5600,6 +5620,100 @@ ncl-breadcrumbs {
     }
 }
 
+.ncl-collapsing-row {
+    margin-bottom: 9px;
+
+    .title-block.common-table-row {
+        border: 1px solid @pale-grey;
+        box-shadow: none;
+        min-height: 49px;
+
+        &.collapsed {
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+
+            &:hover {
+                box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+            }
+        }
+
+        &:hover {
+            .common-table-cells-container {
+                background-color: @white;
+            }
+
+            .actions-menu {
+                visibility: visible;
+                background-color: @white;
+            }
+        }
+    }
+
+    .row-collapse {
+        width: 40px;
+        justify-content: center;
+        align-items: flex-start;
+        line-height: 51px;
+
+        .collapse-icon {
+            background-color: transparent;
+            position: absolute;
+
+            &.igz-icon-right, &.igz-icon-down {
+                font-size: 12px;
+                .duskThree(0.64);
+                color: @color;
+
+                &:hover {
+                    color: @dusk-three;
+                }
+            }
+        }
+    }
+
+    .item-row {
+        line-height: 48px;
+        display: flex;
+
+        .item-name {
+            font-weight: bold;
+            width: 192px;
+        }
+
+        .item-class {
+            width: 168px;
+            padding-left: 16px;
+        }
+
+        .field-label {
+            text-transform: capitalize;
+        }
+    }
+
+    .item-info-row {
+        line-height: 30px;
+    }
+
+    .expanded-item-info-block {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        padding: 10px 0;
+    }
+
+    .collapsed-item-info-block {
+        padding-left: 16px;
+        white-space: nowrap;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .actions-menu {
+        visibility: hidden;
+        align-items: flex-start;
+        line-height: 51px;
+    }
+}
 .ncl-breadcrumbs-dropdown {
     display: inline-grid;
 
@@ -5740,100 +5854,6 @@ ncl-breadcrumbs {
     }
 }
 
-.ncl-collapsing-row {
-    margin-bottom: 9px;
-
-    .title-block.common-table-row {
-        border: 1px solid @pale-grey;
-        box-shadow: none;
-        min-height: 49px;
-
-        &.collapsed {
-            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-
-            &:hover {
-                box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
-            }
-        }
-
-        &:hover {
-            .common-table-cells-container {
-                background-color: @white;
-            }
-
-            .actions-menu {
-                visibility: visible;
-                background-color: @white;
-            }
-        }
-    }
-
-    .row-collapse {
-        width: 40px;
-        justify-content: center;
-        align-items: flex-start;
-        line-height: 51px;
-
-        .collapse-icon {
-            background-color: transparent;
-            position: absolute;
-
-            &.igz-icon-right, &.igz-icon-down {
-                font-size: 12px;
-                .duskThree(0.64);
-                color: @color;
-
-                &:hover {
-                    color: @dusk-three;
-                }
-            }
-        }
-    }
-
-    .item-row {
-        line-height: 48px;
-        display: flex;
-
-        .item-name {
-            font-weight: bold;
-            width: 192px;
-        }
-
-        .item-class {
-            width: 168px;
-            padding-left: 16px;
-        }
-
-        .field-label {
-            text-transform: capitalize;
-        }
-    }
-
-    .item-info-row {
-        line-height: 30px;
-    }
-
-    .expanded-item-info-block {
-        width: 100%;
-        height: 100%;
-        top: 0;
-        padding: 10px 0;
-    }
-
-    .collapsed-item-info-block {
-        padding-left: 16px;
-        white-space: nowrap;
-        width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .actions-menu {
-        visibility: hidden;
-        align-items: flex-start;
-        line-height: 51px;
-    }
-}
 .ncl-deploy-log-wrapper {
     .log-panel {
         .logs-common();
@@ -7281,65 +7301,6 @@ ncl-functions {
     }
 }
 
-.ncl-version-configuration {
-    > .igz-scrollable-container {
-        padding: 24px 25px 22px 41px;
-    }
-
-    .ncl-version-configuration-wrapper {
-        > .row {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-
-            .configuration-block {
-                padding: 16px 23px 16px;
-                background-color: @white;
-                border: solid 1px @pale-grey;
-                flex-grow: 1;
-                flex-basis: 500px;
-                overflow: hidden;
-                margin-right: 16px;
-                margin-bottom: 16px;
-
-                .igz-scrollable-container {
-                    max-height: 500px;
-                }
-
-                .title {
-                    font-size: 16px;
-                    font-weight: bold;
-                    font-style: normal;
-                    font-stretch: normal;
-                    letter-spacing: normal;
-                    text-align: left;
-                    color: @dusk-three;
-                    margin-bottom: 12px;
-                }
-
-                .row {
-                    .label {
-                        display: block;
-                        font-family: Roboto, sans-serif;
-                        font-size: 14px;
-                        font-weight: 500;
-                        font-style: normal;
-                        font-stretch: normal;
-                        letter-spacing: normal;
-                        text-align: left;
-                        color: @dusk-three;
-                        padding: 0;
-                    }
-                }
-            }
-        }
-    }
-
-    .invisible-block {
-        visibility: hidden;
-    }
-}
-
 .ncl-edit-version-code {
     height: 100%;
     display: flex;
@@ -7513,62 +7474,65 @@ ncl-functions {
     }
 }
 
-.ncl-version-trigger {
-    padding: 11px 24px;
-
-    .igz-scrollable-container {
-        max-height: 500px;
+.ncl-version-configuration {
+    > .igz-scrollable-container {
+        padding: 24px 25px 22px 41px;
     }
 
-    .common-table-header {
-        border: none;
-        padding-left: 24px;
-
-        .common-table-cell {
-            font-size: 14px;
-            font-weight: bold;
-            letter-spacing: normal;
-            color: @dusk-three;
-            height: 46px;
-        }
-    }
-
-    .item-row .item-name, .item-row .item-class, .item-row .item-info {
-       padding-left: 0;
-    }
-
-    .title-field-row .name-field, .item-row .item-name, .header-name {
-        margin-right: 16px;
-        width: 15%;
-    }
-
-    .title-field-row .class-field, .item-row .item-class, .header-class {
-        margin-right: 16px;
-        width: 10%;
-    }
-
-    .create-trigger-button.common-table-row {
-        display: flex;
-        align-items: center;
-        padding-left: 16px;
-        font-size: 14px;
-        line-height: 24px;
-        .duskThree(0.64);
-        color: @color;
-        cursor: pointer;
-        border: 1px solid @pale-grey;
-        box-shadow: none;
-
-        .igz-icon-add-round {
-            font-size: 24px;
-            color: @orange;
-            height: 46px;
-            padding-right: 13px;
+    .ncl-version-configuration-wrapper {
+        > .row {
             display: flex;
-            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+
+            .configuration-block {
+                padding: 16px 23px 16px;
+                background-color: @white;
+                border: solid 1px @pale-grey;
+                flex-grow: 1;
+                flex-basis: 500px;
+                overflow: hidden;
+                margin-right: 16px;
+                margin-bottom: 16px;
+
+                .igz-scrollable-container {
+                    max-height: 500px;
+                }
+
+                .title {
+                    font-size: 16px;
+                    font-weight: bold;
+                    font-style: normal;
+                    font-stretch: normal;
+                    letter-spacing: normal;
+                    text-align: left;
+                    color: @dusk-three;
+                    margin-bottom: 12px;
+                }
+
+                .row {
+                    .label {
+                        display: block;
+                        font-family: Roboto, sans-serif;
+                        font-size: 14px;
+                        font-weight: 500;
+                        font-style: normal;
+                        font-stretch: normal;
+                        letter-spacing: normal;
+                        text-align: left;
+                        color: @dusk-three;
+                        padding: 0;
+                    }
+                }
+            }
         }
+    }
+
+    .invisible-block {
+        visibility: hidden;
     }
 }
+
 .ncl-version-monitoring {
     > .igz-scrollable-container {
         padding: 24px 25px 22px 41px;
@@ -7680,6 +7644,62 @@ ncl-functions {
     }
 }
 
+.ncl-version-trigger {
+    padding: 11px 24px;
+
+    .igz-scrollable-container {
+        max-height: 500px;
+    }
+
+    .common-table-header {
+        border: none;
+        padding-left: 24px;
+
+        .common-table-cell {
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: normal;
+            color: @dusk-three;
+            height: 46px;
+        }
+    }
+
+    .item-row .item-name, .item-row .item-class, .item-row .item-info {
+       padding-left: 0;
+    }
+
+    .title-field-row .name-field, .item-row .item-name, .header-name {
+        margin-right: 16px;
+        width: 15%;
+    }
+
+    .title-field-row .class-field, .item-row .item-class, .header-class {
+        margin-right: 16px;
+        width: 10%;
+    }
+
+    .create-trigger-button.common-table-row {
+        display: flex;
+        align-items: center;
+        padding-left: 16px;
+        font-size: 14px;
+        line-height: 24px;
+        .duskThree(0.64);
+        color: @color;
+        cursor: pointer;
+        border: 1px solid @pale-grey;
+        box-shadow: none;
+
+        .igz-icon-add-round {
+            font-size: 24px;
+            color: @orange;
+            height: 46px;
+            padding-right: 13px;
+            display: flex;
+            align-items: center;
+        }
+    }
+}
 .test-events-pane {
     width: 650px;
     height: 100%;
@@ -8387,6 +8407,275 @@ ncl-functions {
     }
 }
 
+.ncl-test-events-logs {
+    padding: 6px 17px 25px;
+    background-color: @white;
+
+    .functional-buttons {
+        .duskThree(0.64);
+        display: flex;
+        justify-content: flex-end;
+        color: @color;
+        font-size: 16px;
+
+        > div {
+            margin-right: 24px;
+
+            &:hover {
+                color: @dusk-three;
+            }
+        }
+    }
+
+    .collapsed-row {
+        .black(0.2);
+        display: flex;
+        align-items: center;
+        position: relative;
+        height: 36px;
+        background-color: @white;
+        color: @dusk-three;
+        box-shadow: 1.7px 1.1px 4px 0 @color;
+        border: solid 1px @pale-grey;
+        margin-bottom: 10px;
+
+        .igz-icon-right {
+            .duskThree(0.64);
+            font-size: 12px;
+            color: @color;
+            margin: 0 8px 0 12px;
+        }
+
+        .level-icon {
+            display: inline-block;
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
+
+            &:before {
+                font-size: 16px;
+            }
+
+            &.ncl-icon-debug {
+                color: @orangish;
+
+                &:before {
+                    font-size: 18px;
+                }
+            }
+
+            &.igz-icon-info-round {
+                color: @orangish;
+            }
+
+            &.igz-icon-warning {
+                color: @orangish;
+            }
+
+            &.igz-icon-cancel-path {
+                color: @orangish;
+            }
+        }
+
+        .date {
+            display: inline-block;
+            width: 230px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .message {
+            display: inline-block;
+            width: 200px;
+            margin-right: 30px;
+        }
+
+        .ncl-icon-parameters {
+            .duskThree(0.64);
+            color: @color;
+            font-size: 14px;
+            position: absolute;
+            top: 9px;
+            right: 9px;
+        }
+    }
+
+    .expanded-row {
+        background-color: @white;
+        color: @dusk-three;
+        border: solid 1px @pale-grey;
+        margin-bottom: 10px;
+
+        .header {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 36px;
+
+            .igz-icon-down {
+                .duskThree(0.64);
+                font-size: 12px;
+                color: @color;
+                margin: 0 8px 0 12px;
+            }
+
+            .level-icon {
+                display: inline-block;
+                margin-right: 8px;
+                width: 20px;
+                text-align: center;
+
+                &:before {
+                    font-size: 16px;
+                }
+
+                &.ncl-icon-debug {
+                    color: @orangish;
+
+                    &:before {
+                        font-size: 18px;
+                    }
+                }
+
+                &.igz-icon-info-round {
+                    color: @orangish;
+                }
+
+                &.igz-icon-warning {
+                    color: @orangish;
+                }
+
+                &.igz-icon-cancel-path {
+                    color: @orangish;
+                }
+            }
+
+            .date {
+                display: inline-block;
+                width: 230px;
+                font-size: 14px;
+                font-weight: bold;
+                margin-right: 15px;
+            }
+
+            .ncl-icon-parameters {
+                .duskThree(0.64);
+                position: absolute;
+                top: 9px;
+                right: 9px;
+                color: @color;
+                font-size: 14px;
+            }
+        }
+
+        .expanded-body {
+            font-size: 14px;
+            color: @dusk-three;
+
+            .error {
+                width: 71%;
+                border-radius: 3px;
+                background-color: #fbe5e8;
+                border: solid 1px @darkish-pink;
+                color: @darkish-pink;
+                word-wrap: break-word;
+                margin-left: 62px;
+                padding: 12px;
+                margin-bottom: 16px;
+            }
+
+            .message {
+                display: inline-block;
+                width: 70%;
+                word-wrap: break-word;
+                margin: 0 0 16px 62px;
+            }
+
+            .parameters {
+                padding: 0 62px 16px;
+
+                .parameters-header {
+                    font-weight: bold;
+                }
+
+                > div {
+                    display: flex;
+                    line-height: 2;
+
+                    .labels {
+                        color: @greyish-purple;
+                        font-size: 14px;
+                        width: 30%;
+                    }
+
+                    .values {
+                        color: @dusk-three;
+                        font-size: 14px;
+                        width: 70%;
+                    }
+                }
+            }
+        }
+    }
+
+    .no-logs {
+        margin: 10px auto 0;
+        font-size: 14px;
+        color: @pale-grey;
+        text-align: center;
+    }
+}
+.ncl-test-events-navigation-tabs {
+    background: #f8f8fb;
+    height: 40px;
+    border-top: 1px solid @pale-grey;
+    border-bottom: 1px solid @pale-grey;
+
+    .test-events-navigation-tab {
+        .duskThree(0.64);
+        position: relative;
+        float: left;
+        height: 27px;
+        padding: 10px 40px 0;
+        font-family: @font-family-sans-serif;
+        color: @color;
+        font-size: 13px;
+        text-align: center;
+        cursor: pointer;
+        border-bottom: none;
+        box-sizing: content-box;
+
+        &.active, &.active:hover {
+            background: none;
+            color: @dusk-three;
+            border-bottom: 2px solid @dusk-three;
+            font-weight: bold;
+
+            .badge {
+                color: @white;
+                background-color: @light-grey-blue;
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            min-width: 22px;
+            padding: 3px 7px;
+            font-size: 12px;
+            font-weight: 500;
+            color: @greyish-purple;
+            line-height: 1;
+            vertical-align: middle;
+            white-space: nowrap;
+            text-align: center;
+            background-color: @pale-grey;
+            border-radius: 7.5px;
+            margin-left: 7px;
+            margin-top: -4px;
+        }
+    }
+}
 @desktop: 1350px;
 @desktop-low: 1202px;
 @desktop-middle: 1550px;
@@ -8861,275 +9150,6 @@ ncl-functions {
             resize: none;
             white-space: pre;
             overflow-x: auto;
-        }
-    }
-}
-.ncl-test-events-logs {
-    padding: 6px 17px 25px;
-    background-color: @white;
-
-    .functional-buttons {
-        .duskThree(0.64);
-        display: flex;
-        justify-content: flex-end;
-        color: @color;
-        font-size: 16px;
-
-        > div {
-            margin-right: 24px;
-
-            &:hover {
-                color: @dusk-three;
-            }
-        }
-    }
-
-    .collapsed-row {
-        .black(0.2);
-        display: flex;
-        align-items: center;
-        position: relative;
-        height: 36px;
-        background-color: @white;
-        color: @dusk-three;
-        box-shadow: 1.7px 1.1px 4px 0 @color;
-        border: solid 1px @pale-grey;
-        margin-bottom: 10px;
-
-        .igz-icon-right {
-            .duskThree(0.64);
-            font-size: 12px;
-            color: @color;
-            margin: 0 8px 0 12px;
-        }
-
-        .level-icon {
-            display: inline-block;
-            margin-right: 8px;
-            width: 20px;
-            text-align: center;
-
-            &:before {
-                font-size: 16px;
-            }
-
-            &.ncl-icon-debug {
-                color: @orangish;
-
-                &:before {
-                    font-size: 18px;
-                }
-            }
-
-            &.igz-icon-info-round {
-                color: @orangish;
-            }
-
-            &.igz-icon-warning {
-                color: @orangish;
-            }
-
-            &.igz-icon-cancel-path {
-                color: @orangish;
-            }
-        }
-
-        .date {
-            display: inline-block;
-            width: 230px;
-            font-size: 14px;
-            font-weight: bold;
-            margin-right: 15px;
-        }
-
-        .message {
-            display: inline-block;
-            width: 200px;
-            margin-right: 30px;
-        }
-
-        .ncl-icon-parameters {
-            .duskThree(0.64);
-            color: @color;
-            font-size: 14px;
-            position: absolute;
-            top: 9px;
-            right: 9px;
-        }
-    }
-
-    .expanded-row {
-        background-color: @white;
-        color: @dusk-three;
-        border: solid 1px @pale-grey;
-        margin-bottom: 10px;
-
-        .header {
-            position: relative;
-            display: flex;
-            align-items: center;
-            height: 36px;
-
-            .igz-icon-down {
-                .duskThree(0.64);
-                font-size: 12px;
-                color: @color;
-                margin: 0 8px 0 12px;
-            }
-
-            .level-icon {
-                display: inline-block;
-                margin-right: 8px;
-                width: 20px;
-                text-align: center;
-
-                &:before {
-                    font-size: 16px;
-                }
-
-                &.ncl-icon-debug {
-                    color: @orangish;
-
-                    &:before {
-                        font-size: 18px;
-                    }
-                }
-
-                &.igz-icon-info-round {
-                    color: @orangish;
-                }
-
-                &.igz-icon-warning {
-                    color: @orangish;
-                }
-
-                &.igz-icon-cancel-path {
-                    color: @orangish;
-                }
-            }
-
-            .date {
-                display: inline-block;
-                width: 230px;
-                font-size: 14px;
-                font-weight: bold;
-                margin-right: 15px;
-            }
-
-            .ncl-icon-parameters {
-                .duskThree(0.64);
-                position: absolute;
-                top: 9px;
-                right: 9px;
-                color: @color;
-                font-size: 14px;
-            }
-        }
-
-        .expanded-body {
-            font-size: 14px;
-            color: @dusk-three;
-
-            .error {
-                width: 71%;
-                border-radius: 3px;
-                background-color: #fbe5e8;
-                border: solid 1px @darkish-pink;
-                color: @darkish-pink;
-                word-wrap: break-word;
-                margin-left: 62px;
-                padding: 12px;
-                margin-bottom: 16px;
-            }
-
-            .message {
-                display: inline-block;
-                width: 70%;
-                word-wrap: break-word;
-                margin: 0 0 16px 62px;
-            }
-
-            .parameters {
-                padding: 0 62px 16px;
-
-                .parameters-header {
-                    font-weight: bold;
-                }
-
-                > div {
-                    display: flex;
-                    line-height: 2;
-
-                    .labels {
-                        color: @greyish-purple;
-                        font-size: 14px;
-                        width: 30%;
-                    }
-
-                    .values {
-                        color: @dusk-three;
-                        font-size: 14px;
-                        width: 70%;
-                    }
-                }
-            }
-        }
-    }
-
-    .no-logs {
-        margin: 10px auto 0;
-        font-size: 14px;
-        color: @pale-grey;
-        text-align: center;
-    }
-}
-.ncl-test-events-navigation-tabs {
-    background: #f8f8fb;
-    height: 40px;
-    border-top: 1px solid @pale-grey;
-    border-bottom: 1px solid @pale-grey;
-
-    .test-events-navigation-tab {
-        .duskThree(0.64);
-        position: relative;
-        float: left;
-        height: 27px;
-        padding: 10px 40px 0;
-        font-family: @font-family-sans-serif;
-        color: @color;
-        font-size: 13px;
-        text-align: center;
-        cursor: pointer;
-        border-bottom: none;
-        box-sizing: content-box;
-
-        &.active, &.active:hover {
-            background: none;
-            color: @dusk-three;
-            border-bottom: 2px solid @dusk-three;
-            font-weight: bold;
-
-            .badge {
-                color: @white;
-                background-color: @light-grey-blue;
-            }
-        }
-
-        .badge {
-            display: inline-block;
-            min-width: 22px;
-            padding: 3px 7px;
-            font-size: 12px;
-            font-weight: 500;
-            color: @greyish-purple;
-            line-height: 1;
-            vertical-align: middle;
-            white-space: nowrap;
-            text-align: center;
-            background-color: @pale-grey;
-            border-radius: 7.5px;
-            margin-left: 7px;
-            margin-top: -4px;
         }
     }
 }

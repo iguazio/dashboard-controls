@@ -238,7 +238,13 @@
                 }
             }
 
-            &:hover {
+            &.read-only {
+                .common-table-cells-container {
+                    cursor: default;
+                }
+            }
+
+            &:not(.read-only):hover {
                 .common-table-cells-container {
                     background-color: @row-cells-in-hover-bg-color;
                 }
