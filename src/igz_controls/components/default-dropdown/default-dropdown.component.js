@@ -135,6 +135,8 @@
             $transclude(function (transclude) {
                 ctrl.isTranscludePassed = transclude.length > 0;
             });
+
+            $scope.$on('close-drop-down', unselectDropdown);
         }
 
         /**
