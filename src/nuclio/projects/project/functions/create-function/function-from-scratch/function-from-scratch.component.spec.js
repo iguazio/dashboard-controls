@@ -140,7 +140,7 @@ describe('nclFunctionFromScratch Component:', function () {
                 visible: true
             };
 
-            ctrl.onDropdownDataChange(runtime, true);
+            ctrl.onRuntimeChange(runtime, true);
 
             expect(ctrl.functionData.spec.runtime).toEqual(runtime.id);
             expect(ctrl.functionData.spec.build.functionSourceCode).toEqual(runtime.sourceCode);

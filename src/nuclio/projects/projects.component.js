@@ -14,7 +14,7 @@
             controller: NclProjectsController
         });
 
-    function NclProjectsController($filter, $rootScope, $scope, $q, lodash, ngDialog, ActionCheckboxAllService,
+    function NclProjectsController($filter, $rootScope, $scope, $state, $q, lodash, ngDialog, ActionCheckboxAllService,
                                    CommonTableService, ConfigService, ValidatingPatternsService) {
         var ctrl = this;
 
@@ -67,6 +67,7 @@
 
         ctrl.isColumnSorted = CommonTableService.isColumnSorted;
 
+        ctrl.createFunction = createFunction;
         ctrl.handleAction = handleAction;
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isProjectsListEmpty = isProjectsListEmpty;
@@ -121,6 +122,15 @@
                 .finally(function () {
                     ctrl.isSplashShowed.value = false;
                 });
+        }
+
+        /**
+         * Navigates to New Function screen
+         */
+        function createFunction() {
+            $state.go('app.create-function', {
+                navigatedFrom: 'projects'
+            });
         }
 
         /**
