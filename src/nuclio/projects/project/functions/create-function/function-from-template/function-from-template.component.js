@@ -383,6 +383,9 @@
                 id: 'new_project',
                 name: 'New project'
             };
+
+            ctrl.selectedProject = lodash.isNil(ctrl.selectedProject) ? newProject : ctrl.selectedProject;
+
             ctrl.projectsList = lodash.chain(ctrl.projects)
                 .map(function (project) {
                     return {

@@ -68,6 +68,15 @@
                             function: 'Create function'
                         };
 
+                        if (!lodash.isEmpty(ctrl.projects)) {
+                            var project = lodash.first(ctrl.projects);
+
+                            ctrl.selectedProject = {
+                                id: project.metadata.name,
+                                name: project.spec.displayName
+                            };
+                        }
+
                         $rootScope.$broadcast('update-main-header-title', title);
                     })
                     .catch(function (error) {
