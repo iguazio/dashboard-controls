@@ -3,29 +3,59 @@
     padding-left: 3%;
     width: 96%;
 
-    .splash-screen {
-        top: 0;
-    }
+    .function-import-form {
+        display: flex;
+        align-items: flex-end;
+        margin-bottom: 10px;
 
-    .function-import-file-picker {
-        margin-bottom: 5px;
+        .projects-drop-down {
+            margin-right: 48px;
 
-        .file-picker-wrapper {
-            cursor: pointer;
-            height: 36px;
-            padding: 12px 21px;
-            margin-left: unset;
+            .input-label {
+                font-size: 14px;
+                font-weight: 600;
+                color: @dusk-three;
+            }
 
-            .igz-icon-upload {
-                margin-right: 10px;
+            igz-default-dropdown {
+                .default-dropdown {
+                    background-color: @white;
+
+                    .default-dropdown-field {
+                        &:focus {
+                            background-color: inherit;
+                        }
+                    }
+                }
             }
         }
 
-        .function-import-input {
-            opacity: 0;
-            position: absolute;
-            z-index: -1;
+        .function-import-file-picker {
+            label {
+                margin: 0;
+            }
+
+            .file-picker-wrapper {
+                cursor: pointer;
+                height: 36px;
+                padding: 12px 21px;
+                margin-left: unset;
+
+                .igz-icon-upload {
+                    margin-right: 10px;
+                }
+            }
+
+            .function-import-input {
+                opacity: 0;
+                position: absolute;
+                z-index: -1;
+            }
         }
+    }
+
+    .splash-screen {
+        top: 0;
     }
 
     .function-import-monaco {

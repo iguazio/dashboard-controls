@@ -1,6 +1,18 @@
 <div class="function-from-template-content">
     <form name="$ctrl.functionFromTemplateForm" class="configuration-form" novalidate>
         <div class="function-name-wrapper">
+            <div class="projects-drop-down" data-ng-if="$ctrl.isProjectsDropDownVisible()">
+                <span class="input-label">Project*</span>
+                <igz-default-dropdown data-is-required="true"
+                                      data-values-array="$ctrl.projectsList"
+                                      data-selected-item="$ctrl.selectedProject"
+                                      data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)"
+                                      data-form-object="$ctrl.functionFromTemplateForm"
+                                      data-input-name="project">
+                    <div class="transcluded-item"
+                         data-ng-click="$ctrl.createNewProject()">New project</div>
+                </igz-default-dropdown>
+            </div>
             <div class="function-name">
                 <span class="input-label">Name*</span>
                 <igz-validating-input-field class="nuclio-validating-input"
