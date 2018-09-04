@@ -58,7 +58,7 @@
 
             // get all projects, only if project wasn't selected before. In other words:
             // whether New Function screen was opened from Projects or Functions screen.
-            if (lodash.includes(['projects', ''], $stateParams.navigatedFrom)) {
+            if (lodash.includes(['projects', 'home-page', ''], $stateParams.navigatedFrom)) {
                 ctrl.getProjects()
                     .then(function (response) {
                         ctrl.projects = response;
@@ -75,7 +75,7 @@
 
                         DialogsService.alert(lodash.get(error, 'data.error', msg));
 
-                        $state.go('app.projects');
+                        $state.go($stateParams.navigatedFrom === 'home-page' ? 'app.home' : 'app.projects');
                     })
                     .finally(function () {
                         ctrl.isSplashShowed.value = false;
