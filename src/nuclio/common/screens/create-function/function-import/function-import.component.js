@@ -10,7 +10,7 @@
                 createNewProject: '<',
                 selectedProject: '<'
             },
-            templateUrl: 'nuclio/projects/project/functions/create-function/function-import/function-import.tpl.html',
+            templateUrl: 'nuclio/common/screens/create-function/function-import/function-import.tpl.html',
             controller: FunctionImportController
         });
 

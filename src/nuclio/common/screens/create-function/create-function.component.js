@@ -10,7 +10,7 @@
                 getTemplates: '&',
                 templates: '<'
             },
-            templateUrl: 'nuclio/projects/project/functions/create-function/create-function.tpl.html',
+            templateUrl: 'nuclio/common/screens/create-function/create-function.tpl.html',
             controller: CreateFunctionController
         });
 

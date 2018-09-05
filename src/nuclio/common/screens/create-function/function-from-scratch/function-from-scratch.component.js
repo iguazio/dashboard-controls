@@ -10,7 +10,7 @@
                 createNewProject: '<',
                 selectedProject: '<'
             },
-            templateUrl: 'nuclio/projects/project/functions/create-function/function-from-scratch/function-from-scratch.tpl.html',
+            templateUrl: 'nuclio/common/screens/create-function/function-from-scratch/function-from-scratch.tpl.html',
             controller: FunctionFromScratchController
         });
 
