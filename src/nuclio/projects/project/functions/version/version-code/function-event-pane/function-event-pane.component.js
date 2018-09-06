@@ -642,7 +642,7 @@
                             var size = lodash.get(ctrl.testResult.headers, 'content-length', null);
                             ctrl.responseSize = lodash.isNull(size) ? size : ConvertorService.getConvertedBytes(Number(size), ['B', 'KB', 'MB', 'GB']);
 
-                            var textualFile = lodash.startsWith(ctrl.testResult.headers['content-type'], 'text/') ||
+                            var textualFile = lodash.includes(ctrl.testResult.headers['content-type'], 'text') ||
                                 ctrl.testResult.headers['content-type'] === 'application/json';
                             var imageFile = lodash.startsWith(ctrl.testResult.headers['content-type'], 'image/');
                             ctrl.responseBodyType = textualFile ? 'code'  :
