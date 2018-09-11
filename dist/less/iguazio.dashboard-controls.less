@@ -5054,6 +5054,105 @@ body {
         }
     }
 }
+// Style rules for actions bar
+.border-top > .igz-info-page-actions-bar {
+    border-top: 1px solid @pale-grey-two;
+}
+
+.igz-info-page-actions-bar {
+    .info-page-actions-bar-color-set();
+
+    background-color: @white;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 56px;
+    padding: 8px 20px 8px 16px;
+    border-bottom: 1px solid @pale-grey-two;
+    transition: @igz-basic-transition;
+
+    &.upper-pane-opened {
+        top: 150px;
+    }
+
+    &.filters-opened {
+        right: 376px;
+        padding-right: 8px;
+    }
+
+    &.info-pane-opened {
+        right: 379px;
+        padding-right: 8px;
+    }
+
+    .actions-bar-left {
+        float: left;
+        height: 100%;
+    }
+
+    .actions-bar-right {
+        float: right;
+        height: 100%;
+        text-align: right;
+    }
+
+    &:before, &:after {
+        content: " ";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
+
+    .actions-panes-block {
+        padding-left: 16px;
+        border-left: 1px solid @pale-grey-two;
+    }
+
+    .actions-content-block {
+        margin: 0 8px 0 32px;
+    }
+
+    .actions-buttons-block {
+        margin-left: 16px;
+        margin-top: 1px;
+
+        .create-entity-button {
+            color: @create-entity-btn-color;
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            border: none;
+            padding: 0;
+            line-height: inherit;
+            width: 148px;
+            height: 36px;
+            border-radius: 2px;
+            background-color: @create-entity-btn-bg-color;
+
+            &:hover {
+                background-color: @create-entity-btn-hover-bg-color;
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+            }
+
+            &:active {
+                background-color: @create-entity-btn-active-bg-color;
+                box-shadow: inset 0.4px 1.9px 3px 0 rgba(0, 0, 0, 0.2);
+            }
+
+            &.disabled {
+                background-color: @create-entity-btn-disabled-bg-color;
+                border: @create-entity-btn-disabled-border;
+                color: @create-entity-btn-disabled-color;
+                box-shadow: none;
+                cursor: default;
+                outline: none;
+            }
+        }
+    }
+}
+
 .igz-info-page-content-wrapper {
     .info-page-content-color-set();
 
@@ -5175,105 +5274,6 @@ igz-info-page-content {
     }
 }
 
-
-// Style rules for actions bar
-.border-top > .igz-info-page-actions-bar {
-    border-top: 1px solid @pale-grey-two;
-}
-
-.igz-info-page-actions-bar {
-    .info-page-actions-bar-color-set();
-
-    background-color: @white;
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    height: 56px;
-    padding: 8px 20px 8px 16px;
-    border-bottom: 1px solid @pale-grey-two;
-    transition: @igz-basic-transition;
-
-    &.upper-pane-opened {
-        top: 150px;
-    }
-
-    &.filters-opened {
-        right: 376px;
-        padding-right: 8px;
-    }
-
-    &.info-pane-opened {
-        right: 379px;
-        padding-right: 8px;
-    }
-
-    .actions-bar-left {
-        float: left;
-        height: 100%;
-    }
-
-    .actions-bar-right {
-        float: right;
-        height: 100%;
-        text-align: right;
-    }
-
-    &:before, &:after {
-        content: " ";
-        display: table;
-    }
-    &:after {
-        clear: both;
-    }
-
-    .actions-panes-block {
-        padding-left: 16px;
-        border-left: 1px solid @pale-grey-two;
-    }
-
-    .actions-content-block {
-        margin: 0 8px 0 32px;
-    }
-
-    .actions-buttons-block {
-        margin-left: 16px;
-        margin-top: 1px;
-
-        .create-entity-button {
-            color: @create-entity-btn-color;
-            font-size: 13px;
-            font-weight: 500;
-            text-transform: uppercase;
-            border: none;
-            padding: 0;
-            line-height: inherit;
-            width: 148px;
-            height: 36px;
-            border-radius: 2px;
-            background-color: @create-entity-btn-bg-color;
-
-            &:hover {
-                background-color: @create-entity-btn-hover-bg-color;
-                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
-            }
-
-            &:active {
-                background-color: @create-entity-btn-active-bg-color;
-                box-shadow: inset 0.4px 1.9px 3px 0 rgba(0, 0, 0, 0.2);
-            }
-
-            &.disabled {
-                background-color: @create-entity-btn-disabled-bg-color;
-                border: @create-entity-btn-disabled-border;
-                color: @create-entity-btn-disabled-color;
-                box-shadow: none;
-                cursor: default;
-                outline: none;
-            }
-        }
-    }
-}
 
 .info-page-filters-bookmark {
     background-color: #ffffff;
@@ -5616,24 +5616,6 @@ igz-info-page-content {
         }
     }
 }
-ncl-breadcrumbs {
-
-    .igz-icon-right {
-        font-size: 11px;
-        font-weight: 100;
-        margin: 0 14px;
-    }
-
-    .ncl-header-subtitle {
-        color: #898593;
-    }
-
-    .ncl-bold-subtitle {
-        color: #474056;
-        font-weight: bold;
-    }
-}
-
 .ncl-breadcrumbs-dropdown {
     display: inline-grid;
 
@@ -5868,56 +5850,6 @@ ncl-breadcrumbs {
         line-height: 51px;
     }
 }
-.ncl-edit-item {
-    width: 100%;
-    padding: 6px 0;
-
-    .title-field-row {
-        display: flex;
-
-        .name-field {
-            margin-right: 14px;
-            width: 178px;
-
-            .error {
-                color: @darkish-pink;
-                font-size: 12px;
-                white-space: nowrap;
-            }
-        }
-
-        .class-field {
-            margin-right: 14px;
-            width: 154px;
-
-            .error {
-                color: @darkish-pink;
-                font-size: 12px;
-                white-space: nowrap;
-            }
-        }
-
-        &:last-child {
-            padding-bottom: 0;
-        }
-    }
-
-    .attribute-field {
-        margin-right: 1%;
-        padding: 8px 0 6px;
-
-        .field-label {
-            text-transform: capitalize;
-        }
-    }
-
-    .no-class-selected {
-        line-height: 48px;
-        .duskThree(0.64);
-        color: @color;
-    }
-}
-
 .ncl-deploy-log-wrapper {
     .log-panel {
         .logs-common();
@@ -6077,6 +6009,56 @@ ncl-breadcrumbs {
         }
     }
 }
+.ncl-edit-item {
+    width: 100%;
+    padding: 6px 0;
+
+    .title-field-row {
+        display: flex;
+
+        .name-field {
+            margin-right: 14px;
+            width: 178px;
+
+            .error {
+                color: @darkish-pink;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+        }
+
+        .class-field {
+            margin-right: 14px;
+            width: 154px;
+
+            .error {
+                color: @darkish-pink;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+        }
+
+        &:last-child {
+            padding-bottom: 0;
+        }
+    }
+
+    .attribute-field {
+        margin-right: 1%;
+        padding: 8px 0 6px;
+
+        .field-label {
+            text-transform: capitalize;
+        }
+    }
+
+    .no-class-selected {
+        line-height: 48px;
+        .duskThree(0.64);
+        color: @color;
+    }
+}
+
 .ncl-monaco {
     .ncl-monaco-wrapper {
         padding-top: 20px;
@@ -6311,6 +6293,24 @@ ncl-breadcrumbs {
         display: none;
     }
 }
+ncl-breadcrumbs {
+
+    .igz-icon-right {
+        font-size: 11px;
+        font-weight: 100;
+        margin: 0 14px;
+    }
+
+    .ncl-header-subtitle {
+        color: #898593;
+    }
+
+    .ncl-bold-subtitle {
+        color: #474056;
+        font-weight: bold;
+    }
+}
+
 ncl-functions {
     .search-input-not-found {
         height: 48px;
@@ -7309,6 +7309,91 @@ ncl-functions {
         }
     }
 }
+.function-event-wrapper {
+    width: 600px;
+    margin-bottom: -23px;
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid @pale-grey;
+
+        .title {
+            font-size: 18px;
+        }
+    }
+
+    .content {
+        border-bottom: 1px solid @pale-grey;
+        padding: 16px 0 16px 16px;
+
+        .event-form {
+            width: 88%;
+
+            .field-wrapper {
+                display: flex;
+                align-items: center;
+                margin: 15px 0 0 0;
+
+                .field-label {
+                    font-size: 16px;
+                    margin-right: 10px;
+                    width: 195px;
+                }
+
+                .field-content {
+                    width: 100%;
+
+                    .ncl-monaco {
+                        height: 200px;
+                    }
+
+                    .event-body {
+                        font-size: 13px;
+                        outline: none;
+                        border: 1px solid @pale-grey;
+                        resize: none;
+                        width: 100%;
+                        height: 100px;
+                        padding: 5px 5px 5px 16px;
+                    }
+                }
+            }
+        }
+
+        .event-error {
+            display: flex;
+            font-size: 13px;
+            align-items: center;
+            justify-content: center;
+            color: @darkish-pink;
+        }
+    }
+
+    .bottom-bar {
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        .igz-button-primary {
+            &.disabled {
+                color: rgba(71, 64, 86, 0.24);
+                border-radius: 2px;
+                border: solid 1px #f3f3f6;
+                background-color: #f3f3f6;
+                cursor: default;
+                display: inline-block;
+
+                &:hover {
+                    box-shadow: none;
+                    border: none;
+                }
+            }
+        }
+    }
+}
+
 .ncl-edit-version-code {
     height: 100%;
     display: flex;
@@ -7479,91 +7564,6 @@ ncl-functions {
     .ncl-edit-version-code {
         .code-edit-section {
             height: 900px;
-        }
-    }
-}
-
-.function-event-wrapper {
-    width: 600px;
-    margin-bottom: -23px;
-
-    .header {
-        display: flex;
-        justify-content: space-between;
-        border-bottom: 1px solid @pale-grey;
-
-        .title {
-            font-size: 18px;
-        }
-    }
-
-    .content {
-        border-bottom: 1px solid @pale-grey;
-        padding: 16px 0 16px 16px;
-
-        .event-form {
-            width: 88%;
-
-            .field-wrapper {
-                display: flex;
-                align-items: center;
-                margin: 15px 0 0 0;
-
-                .field-label {
-                    font-size: 16px;
-                    margin-right: 10px;
-                    width: 195px;
-                }
-
-                .field-content {
-                    width: 100%;
-
-                    .ncl-monaco {
-                        height: 200px;
-                    }
-
-                    .event-body {
-                        font-size: 13px;
-                        outline: none;
-                        border: 1px solid @pale-grey;
-                        resize: none;
-                        width: 100%;
-                        height: 100px;
-                        padding: 5px 5px 5px 16px;
-                    }
-                }
-            }
-        }
-
-        .event-error {
-            display: flex;
-            font-size: 13px;
-            align-items: center;
-            justify-content: center;
-            color: @darkish-pink;
-        }
-    }
-
-    .bottom-bar {
-        height: 64px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-
-        .igz-button-primary {
-            &.disabled {
-                color: rgba(71, 64, 86, 0.24);
-                border-radius: 2px;
-                border: solid 1px #f3f3f6;
-                background-color: #f3f3f6;
-                cursor: default;
-                display: inline-block;
-
-                &:hover {
-                    box-shadow: none;
-                    border: none;
-                }
-            }
         }
     }
 }
