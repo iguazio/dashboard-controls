@@ -23,12 +23,16 @@
                         onThemeChanged: function onThemeChanged(newValue, oldValue) {
                             window.monaco.editor.setTheme(this.getValueOrDefault(newValue, 'vs-dark'));
                         },
-                        onCodeFileChanged: function onCodeFileChanged(newValue, oldValue) {
+                        onFileLanguageChanged: function (newValue) {
 
                             // update the language model (and set `insertSpaces`)
                             var newModel = window.monaco.editor.createModel('', newValue.language);
                             newModel.updateOptions({ insertSpaces: this.getValueOrDefault(newValue.useSpaces, true) });
                             this.editor.setModel(newModel);
+
+                            this.onCodeFileChanged(scope.codeFile);
+                        },
+                        onCodeFileChanged: function onCodeFileChanged(newValue, oldValue) {
 
                             // update the code
                             this.editor.setValue(newValue.code);
@@ -63,7 +67,7 @@
 
                     editorContext.editor = window.monaco.editor.create(editorElement, {
                         value: scope.codeFile.code,
-                        language: scope.codeFile.language,
+                        language: scope.fileLanguage.language,
                         theme: 'vs',
                         automaticLayout: true,
                         dragAndDrop: true,
@@ -85,6 +89,7 @@
 
                     // set up watch for codeFile changes to reflect updates
                     scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
+                    scope.$watch('fileLanguage', editorContext.onFileLanguageChanged.bind(editorContext));
                     scope.$watch('editorTheme', editorContext.onThemeChanged.bind(editorContext));
                     scope.$watch('wordWrap', editorContext.onWrapStateChanged.bind(editorContext));
 
@@ -102,6 +107,7 @@
                 scope: {
                     codeFile: '=codeFile',
                     editorTheme: '=editorTheme',
+                    fileLanguage: '=fileLanguage',
                     miniMonaco: '=miniMonaco',
                     showLineNumbers: '=showLineNumbers',
                     onCodeChange: '=onCodeChange',

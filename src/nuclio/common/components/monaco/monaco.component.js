@@ -35,8 +35,11 @@
          */
         function onInit() {
             $scope.selectedCodeFile = {
+                code: ctrl.functionSourceCode,
+            };
+
+            $scope.selectedFileLanguage = {
                 language: ctrl.language,
-                code: ctrl.functionSourceCode
             };
         }
 
@@ -47,22 +50,20 @@
         function onChanges(changes) {
             if (angular.isDefined(changes.language) && !changes.language.isFirstChange()) {
                 $scope.selectedCodeFile = {
-                    language: changes.language.currentValue,
                     code: $scope.selectedCodeFile.code
+                };
+
+                $scope.selectedFileLanguage = {
+                    language: changes.language.currentValue,
                 };
             }
 
             if (angular.isDefined(changes.functionSourceCode) && !changes.functionSourceCode.isFirstChange()) {
                 $scope.selectedCodeFile = {
-                    language: ctrl.language,
                     code: changes.functionSourceCode.currentValue
                 };
             }
         }
-
-        //
-        // Private method
-        //
 
         /**
          * On code change callback.
