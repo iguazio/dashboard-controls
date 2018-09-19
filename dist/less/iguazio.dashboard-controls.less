@@ -5616,6 +5616,24 @@ igz-info-page-content {
         }
     }
 }
+ncl-breadcrumbs {
+
+    .igz-icon-right {
+        font-size: 11px;
+        font-weight: 100;
+        margin: 0 14px;
+    }
+
+    .ncl-header-subtitle {
+        color: #898593;
+    }
+
+    .ncl-bold-subtitle {
+        color: #474056;
+        font-weight: bold;
+    }
+}
+
 .ncl-breadcrumbs-dropdown {
     display: inline-grid;
 
@@ -5888,6 +5906,56 @@ igz-info-page-content {
         }
     }
 }
+.ncl-edit-item {
+    width: 100%;
+    padding: 6px 0;
+
+    .title-field-row {
+        display: flex;
+
+        .name-field {
+            margin-right: 14px;
+            width: 178px;
+
+            .error {
+                color: @darkish-pink;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+        }
+
+        .class-field {
+            margin-right: 14px;
+            width: 154px;
+
+            .error {
+                color: @darkish-pink;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+        }
+
+        &:last-child {
+            padding-bottom: 0;
+        }
+    }
+
+    .attribute-field {
+        margin-right: 1%;
+        padding: 8px 0 6px;
+
+        .field-label {
+            text-transform: capitalize;
+        }
+    }
+
+    .no-class-selected {
+        line-height: 48px;
+        .duskThree(0.64);
+        color: @color;
+    }
+}
+
 .ncl-key-value-input {
     .input-wrapper {
         width: 100%;
@@ -6009,56 +6077,6 @@ igz-info-page-content {
         }
     }
 }
-.ncl-edit-item {
-    width: 100%;
-    padding: 6px 0;
-
-    .title-field-row {
-        display: flex;
-
-        .name-field {
-            margin-right: 14px;
-            width: 178px;
-
-            .error {
-                color: @darkish-pink;
-                font-size: 12px;
-                white-space: nowrap;
-            }
-        }
-
-        .class-field {
-            margin-right: 14px;
-            width: 154px;
-
-            .error {
-                color: @darkish-pink;
-                font-size: 12px;
-                white-space: nowrap;
-            }
-        }
-
-        &:last-child {
-            padding-bottom: 0;
-        }
-    }
-
-    .attribute-field {
-        margin-right: 1%;
-        padding: 8px 0 6px;
-
-        .field-label {
-            text-transform: capitalize;
-        }
-    }
-
-    .no-class-selected {
-        line-height: 48px;
-        .duskThree(0.64);
-        color: @color;
-    }
-}
-
 .ncl-monaco {
     .ncl-monaco-wrapper {
         padding-top: 20px;
@@ -6293,24 +6311,6 @@ igz-info-page-content {
         display: none;
     }
 }
-ncl-breadcrumbs {
-
-    .igz-icon-right {
-        font-size: 11px;
-        font-weight: 100;
-        margin: 0 14px;
-    }
-
-    .ncl-header-subtitle {
-        color: #898593;
-    }
-
-    .ncl-bold-subtitle {
-        color: #474056;
-        font-weight: bold;
-    }
-}
-
 ncl-functions {
     .search-input-not-found {
         height: 48px;
@@ -6970,6 +6970,84 @@ ncl-functions {
     }
 }
 
+.function-import-wrapper-content {
+    font-family: @font-family-sans-serif;
+    padding-left: 3%;
+    width: 96%;
+
+    .function-import-form {
+        display: flex;
+        align-items: flex-end;
+        margin-bottom: 10px;
+
+        .projects-drop-down {
+            margin-right: 48px;
+
+            .input-label {
+                font-size: 14px;
+                font-weight: 600;
+                color: @dusk-three;
+            }
+
+            igz-default-dropdown {
+                .default-dropdown {
+                    background-color: @white;
+
+                    .default-dropdown-field {
+                        &:focus {
+                            background-color: inherit;
+                        }
+                    }
+                }
+            }
+        }
+
+        .function-import-file-picker {
+            label {
+                margin: 0;
+            }
+
+            .file-picker-wrapper {
+                cursor: pointer;
+                height: 36px;
+                padding: 12px 21px;
+                margin-left: unset;
+
+                .igz-icon-upload {
+                    margin-right: 10px;
+                }
+            }
+
+            .function-import-input {
+                opacity: 0;
+                position: absolute;
+                z-index: -1;
+            }
+        }
+    }
+
+    .splash-screen {
+        top: 0;
+    }
+
+    .function-import-monaco {
+        .ncl-monaco {
+            height: 370px;
+            width: 100%;
+
+            .monaco-code-editor {
+                height: 100%;
+            }
+        }
+    }
+
+    .bottom-bar {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
+}
+
 .function-from-template-content {
     padding: 0 72px 0 63px;
 
@@ -7209,84 +7287,6 @@ ncl-functions {
             margin-top: 2px;
             padding-right: 16px;
         }
-    }
-}
-
-.function-import-wrapper-content {
-    font-family: @font-family-sans-serif;
-    padding-left: 3%;
-    width: 96%;
-
-    .function-import-form {
-        display: flex;
-        align-items: flex-end;
-        margin-bottom: 10px;
-
-        .projects-drop-down {
-            margin-right: 48px;
-
-            .input-label {
-                font-size: 14px;
-                font-weight: 600;
-                color: @dusk-three;
-            }
-
-            igz-default-dropdown {
-                .default-dropdown {
-                    background-color: @white;
-
-                    .default-dropdown-field {
-                        &:focus {
-                            background-color: inherit;
-                        }
-                    }
-                }
-            }
-        }
-
-        .function-import-file-picker {
-            label {
-                margin: 0;
-            }
-
-            .file-picker-wrapper {
-                cursor: pointer;
-                height: 36px;
-                padding: 12px 21px;
-                margin-left: unset;
-
-                .igz-icon-upload {
-                    margin-right: 10px;
-                }
-            }
-
-            .function-import-input {
-                opacity: 0;
-                position: absolute;
-                z-index: -1;
-            }
-        }
-    }
-
-    .splash-screen {
-        top: 0;
-    }
-
-    .function-import-monaco {
-        .ncl-monaco {
-            height: 370px;
-            width: 100%;
-
-            .monaco-code-editor {
-                height: 100%;
-            }
-        }
-    }
-
-    .bottom-bar {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 20px;
     }
 }
 
