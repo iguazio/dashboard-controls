@@ -35,11 +35,11 @@
          */
         function onInit() {
             $scope.selectedCodeFile = {
-                code: ctrl.functionSourceCode,
+                code: ctrl.functionSourceCode
             };
 
             $scope.selectedFileLanguage = {
-                language: ctrl.language,
+                language: ctrl.language
             };
         }
 
@@ -54,7 +54,7 @@
                 };
 
                 $scope.selectedFileLanguage = {
-                    language: changes.language.currentValue,
+                    language: changes.language.currentValue
                 };
             }
 
