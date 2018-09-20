@@ -38,7 +38,7 @@
          * Destructor method
          */
         function onDestroy() {
-            if (angular.isDefined(ctrl.action.template)) {
+            if (angular.isDefined(ctrl.action) && angular.isDefined(ctrl.action.template)) {
                 detachDocumentEvent();
             }
         }
