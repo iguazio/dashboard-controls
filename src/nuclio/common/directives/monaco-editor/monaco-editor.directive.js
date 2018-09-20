@@ -30,12 +30,8 @@
                             newModel.updateOptions({ insertSpaces: this.getValueOrDefault(newValue.useSpaces, true) });
                             this.editor.setModel(newModel);
 
-                            this.onCodeFileChanged(scope.codeFile);
-                        },
-                        onCodeFileChanged: function onCodeFileChanged(newValue, oldValue) {
-
                             // update the code
-                            this.editor.setValue(newValue.code);
+                            this.editor.setValue(scope.codeFile.code);
                         },
                         onWrapStateChanged: function onWrapStateChanged(newState) {
                             this.editor.updateOptions({ wordWrap: newState ? 'on' : 'off' });
@@ -88,7 +84,6 @@
                     });
 
                     // set up watch for codeFile changes to reflect updates
-                    scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
                     scope.$watch('fileLanguage', editorContext.onFileLanguageChanged.bind(editorContext));
                     scope.$watch('editorTheme', editorContext.onThemeChanged.bind(editorContext));
                     scope.$watch('wordWrap', editorContext.onWrapStateChanged.bind(editorContext));
