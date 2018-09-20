@@ -14,7 +14,7 @@
             controller: FunctionImportController
         });
 
-    function FunctionImportController($scope, $state, lodash, YAML) {
+    function FunctionImportController($rootScope, $scope, $state, lodash, YAML) {
         var ctrl = this;
 
         var importedFunction = null;
@@ -124,6 +124,7 @@
             reader.onload = function () {
                 ctrl.sourceCode = reader.result;
                 $scope.$apply();
+                $rootScope.$broadcast('function-import-source-code', ctrl.sourceCode);
 
                 importedFunction = YAML.parse(reader.result);
             };
