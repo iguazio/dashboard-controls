@@ -33,6 +33,9 @@
                             // update the code
                             this.editor.setValue(scope.codeFile.code);
                         },
+                        onCodeFileChanged: function () {
+                            this.editor.setValue(scope.codeFile.code);
+                        },
                         onWrapStateChanged: function onWrapStateChanged(newState) {
                             this.editor.updateOptions({ wordWrap: newState ? 'on' : 'off' });
                         }
@@ -87,6 +90,8 @@
                     scope.$watch('fileLanguage', editorContext.onFileLanguageChanged.bind(editorContext));
                     scope.$watch('editorTheme', editorContext.onThemeChanged.bind(editorContext));
                     scope.$watch('wordWrap', editorContext.onWrapStateChanged.bind(editorContext));
+
+                    scope.$on('function-import-source-code', editorContext.onCodeFileChanged.bind(editorContext));
 
                     scope.$on('$destroy', function () {
                         if (interval !== null) {
