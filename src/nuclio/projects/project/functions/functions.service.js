@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('FunctionsService', FunctionsService);
 
-    function FunctionsService() {
+    function FunctionsService(lodash) {
         return {
             getClassesList: getClassesList,
             getHandler: getHandler,
@@ -343,7 +343,13 @@
          * @returns {string} handler
          */
         function getHandler(runtime) {
-            return runtime === 'golang' ? 'main:Handler' : runtime === 'java' ? 'Handler' : 'main:handler';
+            var handlers = {
+                'golang': 'main:Handler',
+                'java': 'Handler',
+                'shell': 'main.sh'
+            };
+
+            return lodash.get(handlers, runtime, 'main:handler');
         }
 
         /**

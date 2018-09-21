@@ -69,7 +69,9 @@
                         };
 
                         if (!lodash.isEmpty(ctrl.projects)) {
-                            var project = lodash.first(ctrl.projects);
+
+                            // get first project
+                            var project = lodash.find(ctrl.projects);
 
                             ctrl.selectedProject = {
                                 id: project.metadata.name,
