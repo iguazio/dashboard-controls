@@ -1,5 +1,6 @@
 describe('nclBreadcrumbsDropdown component:', function () {
     var $componentController;
+    var $httpBackend;
     var $rootScope;
     var $state;
     var ctrl;
@@ -7,19 +8,25 @@ describe('nclBreadcrumbsDropdown component:', function () {
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_, _$rootScope_, _$state_) {
+        inject(function (_$componentController_, _$httpBackend_, _$rootScope_, _$state_) {
             $componentController = _$componentController_;
+            $httpBackend = _$httpBackend_;
             $rootScope = _$rootScope_;
             $state = _$state_;
         });
 
         var element = angular.element('<igz-breadcrumbs-dropdown></igz-breadcrumbs-dropdown>');
 
+        $httpBackend
+            .whenGET('views/app/main.tpl.html')
+            .respond(200, {});
+
         ctrl = $componentController('nclBreadcrumbsDropdown', {$element: element});
     });
 
     afterEach(function () {
         $componentController = null;
+        $httpBackend = null;
         $rootScope = null;
         $state = null;
         ctrl = null;
