@@ -6,7 +6,7 @@
     <div class="default-dropdown-field" tabindex="0"
          data-ng-click="$ctrl.readOnly || $ctrl.toggleDropdown($event)"
          data-ng-keydown="$ctrl.onDropDownKeydown($event)"
-         data-tooltip="{{$ctrl.isDropdownContainerShown ? '' : $ctrl.typedValue}}"
+         data-uib-tooltip="{{$ctrl.isDropdownContainerShown ? '' : $ctrl.typedValue}}"
          data-tooltip-append-to-body="true"
          data-tooltip-placement="top"
          data-tooltip-popup-delay="300"
@@ -52,7 +52,7 @@
                 data-ng-click="$ctrl.selectItem(item)" data-ng-keydown="$ctrl.onItemKeydown($event, item)"
                 data-ng-class="{'list-item-description': $ctrl.getDescription(item), 'active': $ctrl.isItemSelected(item)}"
                 data-ng-show="item.visible"
-                data-tooltip="{{$ctrl.getTooltip(item)}}"
+                data-uib-tooltip="{{$ctrl.getTooltip(item)}}"
                 data-tooltip-placement="left"
                 data-tooltip-append-to-body="true">
                 <div class="list-item-block">

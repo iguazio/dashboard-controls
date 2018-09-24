@@ -14,7 +14,7 @@
                 {{$ctrl.function.metadata.name}}
             </div>
             <div class="igz-col-20 common-table-cell"
-                 data-tooltip="{{$ctrl.function.spec.description}}"
+                 data-uib-tooltip="{{$ctrl.function.spec.description}}"
                  data-tooltip-append-to-body="true"
                  data-tooltip-placement="top">
                 <span class="description-content common-table-cell-content">{{$ctrl.function.spec.description}}</span>
@@ -33,7 +33,7 @@
                 {{$ctrl.runtimes[$ctrl.function.spec.runtime]}}
             </div>
             <div class="igz-col-15 common-table-cell"
-                 data-tooltip="{{$ctrl.invocationURL}}"
+                 data-uib-tooltip="{{$ctrl.invocationURL}}"
                  data-tooltip-append-to-body="true"
                  data-tooltip-placement="top">
                 <span class="common-table-cell-content">{{$ctrl.invocationURL}}</span>
@@ -51,7 +51,7 @@
         </div>
     </div>
     <div class="items-wrapper" data-ui-sortable="$ctrl.sortableConfig" data-ng-model="$ctrl.layer.ui.children"
-         data-collapse="$ctrl.isCollapsed">
+         data-uib-collapse="$ctrl.isCollapsed">
         <div data-ng-repeat="version in $ctrl.function.versions">
             <ncl-function-version-row class="function-version-wrapper"
                                       data-version="version"

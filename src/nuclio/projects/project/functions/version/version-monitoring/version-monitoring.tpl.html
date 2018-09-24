@@ -39,7 +39,7 @@
                          data-ng-click="$ctrl.onRowCollapse('buildLog')"></span>
                     <span class="monitoring-block-title">Build log</span>
                     <div class="ncl-monitoring-build-logs collapsed-block-content-wrapper"
-                         data-collapse="$ctrl.rowIsCollapsed.buildLog">
+                         data-uib-collapse="$ctrl.rowIsCollapsed.buildLog">
                         <ncl-deploy-log data-log-entires="$ctrl.version.status.logs"></ncl-deploy-log>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                           data-ng-click="$ctrl.onRowCollapse('errorLog')"></span>
                     <span class="monitoring-block-title">Error</span>
                     <div class="ncl-monitoring-error-logs collapsed-block-content-wrapper"
-                         data-collapse="$ctrl.rowIsCollapsed.errorLog">
+                         data-uib-collapse="$ctrl.rowIsCollapsed.errorLog">
                         <div class="error-panel igz-scrollable-container"
                              data-ng-scrollbars
                              data-ng-scrollbars-config="$ctrl.scrollConfig">

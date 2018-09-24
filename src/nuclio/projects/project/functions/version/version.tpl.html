@@ -43,7 +43,7 @@
                                   'igz-icon-block'      : $ctrl.deployResult.status.state === 'error'}"></span>
             <span class="result-state">{{$ctrl.getDeployStatusState($ctrl.deployResult.status.state)}}</span>
         </div>
-        <div class="ncl-execution-result-block collapsed-block-content-wrapper" data-collapse="$ctrl.rowIsCollapsed.deployBlock">
+        <div class="ncl-execution-result-block collapsed-block-content-wrapper" data-uib-collapse="$ctrl.rowIsCollapsed.deployBlock">
             <div class="collapsed-block-title without-collapse">Logs</div>
 
             <ncl-deploy-log data-log-entires="$ctrl.deployResult.status.logs"></ncl-deploy-log>
