@@ -47,7 +47,7 @@ describe('nclBreadcrumbsDropdown component:', function () {
 
     describe('ctrl.showDetails(): ', function () {
         it('should show details of clicked item', function () {
-            spyOn($state, 'go').and.callThrough();
+            spyOn($state, 'go');
 
             ctrl.showDropdownList = true;
             ctrl.searchText = 'some text';
