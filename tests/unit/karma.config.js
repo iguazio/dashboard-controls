@@ -10,6 +10,14 @@ module.exports = function (config) {
             'jasmine'
         ],
 
+        client: {
+            jasmine: {
+
+                // tells jasmine to run tests in random order, true is default
+                random: true
+            }
+        },
+
         // web server port
         port: 8080,
 
