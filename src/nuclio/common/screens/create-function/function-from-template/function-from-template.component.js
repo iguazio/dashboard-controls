@@ -11,7 +11,7 @@
                 createNewProject: '<',
                 selectedProject: '<'
             },
-            templateUrl: 'nuclio/projects/project/functions/create-function/function-from-template/function-from-template.tpl.html',
+            templateUrl: 'nuclio/common/screens/create-function/function-from-template/function-from-template.tpl.html',
             controller: FunctionFromTemplateController
         });
 
