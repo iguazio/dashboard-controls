@@ -14,7 +14,7 @@ module.exports = function (config) {
             jasmine: {
 
                 // tells jasmine to run tests in random order, true is default
-                random: false
+                random: true
             }
         },
 
