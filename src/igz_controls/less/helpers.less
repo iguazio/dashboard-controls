@@ -61,7 +61,9 @@
 }
 
 .inactive {
-    color: @bismark;
+    .helpers-color-set();
+
+    color: @inactive-color;
     cursor: pointer;
     opacity: .5;
 }
@@ -105,7 +107,9 @@
 }
 
 .asterisk:after {
-    color: @brand-danger;
+    .helpers-color-set();
+
+    color: @asterisk-after-color;
     content: " *";
 }
 

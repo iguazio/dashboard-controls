@@ -275,11 +275,11 @@
          */
         function downloadResponseFile() {
             var fileName = ctrl.selectedEvent.spec.displayName + '_' + moment.utc().format('YYYY-MM-DDThh-mm-ss');
-            var textualFile = lodash.startsWith(ctrl.testResult.headers['content-type'], 'text/') ||
-                              ctrl.testResult.headers['content-type'] === 'application/json';
+            var contentType = lodash.get(ctrl.testResult.headers, 'content-type', lodash.get(ctrl.testResult.headers, 'Content-Type', null));
+            var textualFile = lodash.includes(contentType, 'text') || contentType === 'application/json';
 
             if (textualFile) {
-                download.fromData(ctrl.testResult.body, ctrl.testResult.headers['content-type'], fileName);
+                download.fromData(ctrl.testResult.body, contentType, fileName);
             } else {
                 download.fromBlob(ctrl.testResult.body, fileName);
             }
@@ -621,11 +621,13 @@
                                     statusCode: invocationData.status,
                                     statusText: invocationData.statusText
                                 },
-                                headers: lodash.omit(invocationData.headers, 'x-nuclio-logs'),
+                                headers: lodash.omit(invocationData.headers, ['x-nuclio-logs', 'X-Nuclio-Logs']),
                                 body: invocationData.body
                             };
 
-                            if (ctrl.testResult.headers['content-type'] === 'application/json' || lodash.isObject(invocationData.body)) {
+                            var contentType = lodash.get(ctrl.testResult.headers, 'content-type', lodash.get(ctrl.testResult.headers, 'Content-Type', null));
+
+                            if (contentType === 'application/json' || lodash.isObject(invocationData.body)) {
                                 ctrl.testResult.body = angular.toJson(angular.fromJson(ctrl.testResult.body), ' ', 4);
                             }
 
@@ -634,17 +636,16 @@
 
                             saveEventToHistory();
 
-                            var logs = lodash.get(invocationData.headers, 'x-nuclio-logs', null);
+                            var logs = lodash.get(invocationData.headers, 'x-nuclio-logs', lodash.get(invocationData.headers, 'X-Nuclio-Logs', null));
                             var responseLogsTab = lodash.find(ctrl.responseNavigationTabs, ['id', 'logs']);
                             ctrl.logs = lodash.isNull(logs) ? [] : angular.fromJson(logs);
                             responseLogsTab.badge = ctrl.logs.length;
 
-                            var size = lodash.get(ctrl.testResult.headers, 'content-length', null);
+                            var size = lodash.get(ctrl.testResult.headers, 'content-length', lodash.get(ctrl.testResult.headers, 'Content-Length', null));
                             ctrl.responseSize = lodash.isNull(size) ? size : ConvertorService.getConvertedBytes(Number(size), ['B', 'KB', 'MB', 'GB']);
 
-                            var textualFile = lodash.startsWith(ctrl.testResult.headers['content-type'], 'text/') ||
-                                ctrl.testResult.headers['content-type'] === 'application/json';
-                            var imageFile = lodash.startsWith(ctrl.testResult.headers['content-type'], 'image/');
+                            var textualFile = lodash.includes(contentType, 'text') || contentType === 'application/json';
+                            var imageFile = lodash.startsWith(contentType, 'image/');
                             ctrl.responseBodyType = textualFile ? 'code'  :
                                                     imageFile   ? 'image' :
                                                                   'N/A';

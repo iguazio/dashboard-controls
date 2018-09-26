@@ -23,7 +23,7 @@
                         onThemeChanged: function onThemeChanged(newValue, oldValue) {
                             window.monaco.editor.setTheme(this.getValueOrDefault(newValue, 'vs-dark'));
                         },
-                        onCodeFileChanged: function onCodeFileChanged(newValue, oldValue) {
+                        onFileLanguageChanged: function (newValue) {
 
                             // update the language model (and set `insertSpaces`)
                             var newModel = window.monaco.editor.createModel('', newValue.language);
@@ -31,7 +31,10 @@
                             this.editor.setModel(newModel);
 
                             // update the code
-                            this.editor.setValue(newValue.code);
+                            this.editor.setValue(scope.codeFile.code);
+                        },
+                        onCodeFileChanged: function () {
+                            this.editor.setValue(scope.codeFile.code);
                         },
                         onWrapStateChanged: function onWrapStateChanged(newState) {
                             this.editor.updateOptions({ wordWrap: newState ? 'on' : 'off' });
@@ -63,7 +66,7 @@
 
                     editorContext.editor = window.monaco.editor.create(editorElement, {
                         value: scope.codeFile.code,
-                        language: scope.codeFile.language,
+                        language: scope.fileLanguage.language,
                         theme: 'vs',
                         automaticLayout: true,
                         dragAndDrop: true,
@@ -84,9 +87,11 @@
                     });
 
                     // set up watch for codeFile changes to reflect updates
-                    scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
+                    scope.$watch('fileLanguage', editorContext.onFileLanguageChanged.bind(editorContext));
                     scope.$watch('editorTheme', editorContext.onThemeChanged.bind(editorContext));
                     scope.$watch('wordWrap', editorContext.onWrapStateChanged.bind(editorContext));
+
+                    scope.$on('function-import-source-code', editorContext.onCodeFileChanged.bind(editorContext));
 
                     scope.$on('$destroy', function () {
                         if (interval !== null) {
@@ -102,6 +107,7 @@
                 scope: {
                     codeFile: '=codeFile',
                     editorTheme: '=editorTheme',
+                    fileLanguage: '=fileLanguage',
                     miniMonaco: '=miniMonaco',
                     showLineNumbers: '=showLineNumbers',
                     onCodeChange: '=onCodeChange',

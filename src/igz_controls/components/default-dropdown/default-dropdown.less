@@ -1,11 +1,12 @@
 .default-dropdown {
     .default-dropdown-color-set();
+    .severity-icons-color-set();
 
     position: relative;
     height: 36px;
 
     .default-dropdown-field {
-        border: 1px solid @default-dropdown-field-border-color;
+        border: @default-dropdown-field-border;
         border-radius: 2px;
         height: 100%;
         color: @default-dropdown-field-color;
@@ -75,7 +76,7 @@
         &:active {
             background-color: @default-dropdown-field-active-bg-color;
             box-shadow: @default-dropdown-field-active-box-shadow;
-            border: solid 1px @default-dropdown-field-active-border-color;
+            border: @default-dropdown-field-active-border;
         }
 
         &.placeholder {
@@ -117,14 +118,14 @@
     }
 
     &.upward .default-dropdown-container {
-        border-top: 1px solid @default-dropdown-container-upward-border-top-color;
+        border-top: @default-dropdown-container-upward-border-top;
         bottom: 30px;
         box-shadow: @default-dropdown-container-upward-box-shadow;
     }
 
     &:not(.upward) .default-dropdown-container {
-        border-bottom: @default-dropdown-container-upward-border-top-color;
-        box-shadow: @default-dropdown-container-upward-box-shadow;
+        border-bottom: @default-dropdown-container-not-upward-border-bottom;
+        box-shadow: @default-dropdown-container-not-upward-box-shadow;
     }
 
     .default-dropdown-container {
@@ -241,7 +242,7 @@
         }
 
         .transclude-container {
-            border-top: 1px solid @transclude-container-border-top-color;
+            border-top: @transclude-container-border-top;
             height: 48px;
             padding: 8px 0;
 
@@ -257,7 +258,7 @@
                 color: @transclude-container-item-color;
 
                 &:hover, &:focus {
-                    background-color: @transclude-container-item-hover-focus-color;
+                    background-color: @transclude-container-item-hover-focus-bg-color;
                 }
             }
         }
@@ -271,12 +272,10 @@
         text-align: center;
 
         &:not(.custom-color) {
-            color: @dropdown-icon-not-custom-color
+            color: @dropdown-icon-not-custom-color;
         }
 
         &.severity-icon {
-            .severity-icons-color-set();
-
             font-size: 19px;
 
             &.critical {
@@ -315,7 +314,7 @@
 
     .default-dropdown-field {
         background-color: @default-dropdown-invalid-bg-color;
-        border: solid 1px @default-dropdown-invalid-border-color;
+        border: @default-dropdown-invalid-border;
         box-shadow: none;
     }
 }
@@ -369,7 +368,7 @@
                 }
 
                 &:hover, &:focus {
-                    background-color: @default-dropdown-day-of-month-list-item-hover-focus-color;
+                    background-color: @default-dropdown-day-of-month-list-item-hover-focus-bg-color;
                 }
             }
         }

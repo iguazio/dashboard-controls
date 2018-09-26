@@ -139,13 +139,17 @@
 }
 
 .loader-wrapper {
+    .loader-spinner-color-set();
+
     .loader-fading-circle .loader-circle:before {
-        background-color: @dark-sky-blue;
+        background-color: @loader-wrapper-circle-before-bg-color;
     }
 }
 
 .splash-logo-wrapper {
+    .loader-spinner-color-set();
+
     .loader-fading-circle .loader-circle:before {
-        background-color: @white;
+        background-color: @splash-logo-wrapper-circle-before-bg-color;
     }
 }

@@ -69,12 +69,13 @@ describe('igzSliderInputBlock component', function () {
         $rootScope = null;
         mockedConvertorService = null;
         ctrl = null;
-        units = null;
     });
 
-    it('should set default units` values', function () {
-        expect(ctrl.measureUnits[0].pow).toEqual(units[0].pow);
-        expect(ctrl.measureUnits[0].name).toEqual(units[0].name);
+    describe('onInit(): ', function () {
+        it('should set default units` values', function () {
+            expect(ctrl.measureUnits[0].pow).toEqual(units[0].pow);
+            expect(ctrl.measureUnits[0].name).toEqual(units[0].name);
+        });
     });
 
     describe('changeTrafficUnit(): ', function () {

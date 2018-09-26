@@ -1,4 +1,6 @@
 .igz-pagination {
+    .pagination-color-set();
+
     float: right;
     padding: 24px 36px 5px 30px;
 
@@ -13,7 +15,7 @@
 
     .rows-title {
         font-size: 13px;
-        color: @dusk-three;
+        color: @rows-title-color;
         font-family: @font-family-sans-serif;
     }
 
@@ -85,19 +87,17 @@
             vertical-align: top;
             position: relative;
             text-align: center;
-            .duskThree(0.64);
-            color: @color;
+            color: @page-prev-next-color;
             font-size: 12px;
 
             &.disabled, &.disabled:hover {
-                background-color: @pale-grey-two;
-                border: solid 1px @pale-grey;
+                background-color: @page-prev-next-disabled-hover-bg-color;
+                border: @page-prev-next-disabled-hover-border;
                 box-shadow: none;
                 cursor: default;
 
                 &:before {
-                    .checkboxUnchecked(0.34);
-                    color: @color;
+                    color: @page-prev-next-disabled-hover-before-color;
                 }
             }
 
@@ -124,17 +124,17 @@
             width: 43px;
             height: 36px;
             border-radius: 0;
-            background-color: @pale-grey-two;
-            box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.1);
-            border: solid 1px @pale-grey;
+            background-color: @input-field-bg-color;
+            box-shadow: @input-field-box-shadow;
+            border: @input-field-border;
             font-family: @font-family-sans-serif;
             font-size: 14px;
             font-weight: 500;
-            color: @dusk-three;
+            color: @input-field-color;
             text-align: center;
 
             &:hover {
-                border: solid 1px @silver;
+                border: @input-field-hover-border;
             }
         }
     }

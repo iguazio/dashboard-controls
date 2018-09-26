@@ -1,9 +1,11 @@
 .info-page-filters-bookmark {
-    background-color: #ffffff;
+    .info-page-filters-color-set();
+
+    background-color: @filters-bookmark-bg-color;
     border-bottom-right-radius: 4px;
     border-top-right-radius: 4px;
-    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.2);
-    color: @bismark;
+    box-shadow: @filters-bookmark-box-shadow;
+    color: @filters-bookmark-color;
     cursor: pointer;
     font-size: 10px;
     height: 22px;
@@ -23,7 +25,7 @@
     }
 
     &:after {
-        background-color: #efefef;
+        background-color: @filters-bookmark-after-bg-color;
         content: "";
         height: 100%;
         right: -6px;
@@ -44,15 +46,17 @@
         position: absolute;
         top: -10px;
         right: -12px;
-        box-shadow: 0 0 3px #e4365f;
+        box-shadow: @filters-bookmark-badge-box-shadow;
     }
 }
 
 .info-page-filters {
-    background: @white;
-    border: 1px solid @pale-grey-two;
+    .info-page-filters-color-set();
+
+    background: @filters-bg;
+    border: @filters-border;
     border-top: none;
-    box-shadow: 0 8px 10px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: @filters-box-shadow;
     position: absolute;
     bottom: 0;
     right: 0;
@@ -60,7 +64,6 @@
     top: 0;
     transition: @igz-basic-transition;
     width: 376px;
-
     z-index: 996;
 
     &.ng-hide {
@@ -81,11 +84,11 @@
         font-family: @font-family-sans-serif;
         font-size: 20px;
         letter-spacing: 0.2px;
-        color: @dusk-three;
+        color: @filters-title-color;
     }
 
     .info-page-filters-label {
-        color: @label-color;
+        color: @filters-label-color;
         font-size: 15px;
         font-weight: 400;
         margin-bottom: 5px;
@@ -93,7 +96,6 @@
 
     // Close button
     .close-button {
-        .duskThree(0.64);
         width: 14px;
         height: 14px;
         display: block;
@@ -102,7 +104,7 @@
         top: 18px;
         cursor: pointer;
         font-size: 14px;
-        color: @color;
+        color: @close-btn-color;
     }
 
     // Collapsed block
@@ -112,7 +114,7 @@
         vertical-align: top;
         font-family: @font-family-sans-serif;
         text-transform: capitalize;
-        color: @dusk-three;
+        color: @collapsed-block-title-color;
         font-size: 16px;
         font-weight: bold;
         cursor: pointer;
@@ -120,8 +122,7 @@
         line-height: 16px;
 
         .icon-collapsed {
-            .duskThree(0.64);
-            color: @color;
+            color: @collapsed-block-title-icon;
             font-size: 12px;
             margin: 0 11px 0 9px;
         }
@@ -132,11 +133,11 @@
             font-size: 12px;
             font-weight: 500;
             text-align: center;
-            color: @pale-grey-three;
+            color: @collapsed-block-title-filter-counter-color;
             width: 22px;
             height: 15px;
             border-radius: 7.5px;
-            background-color: @dark-sky-blue;
+            background-color: @collapsed-block-title-filter-counter-bg-color;
         }
 
         &.without-collapse {
@@ -161,7 +162,7 @@
             margin: 3px 0 10px;
 
             input[type=checkbox] + label {
-                color: @dusk-three;
+                color: @row-input-label-color;
                 display: flex;
                 align-items: center;
 
@@ -174,9 +175,8 @@
 
     // Separator line
     .separator {
-        .duskThree(0.1);
         margin-bottom: 22px;
-        border-bottom: 1px solid @color;
+        border-bottom: @separator-border-bottom;
     }
 
     .info-page-filters-body {
@@ -192,8 +192,7 @@
 
         .info-page-filters-item {
             padding: 0 15px;
-            .duskThree(0.1);
-            border-bottom: 1px solid @color;
+            border-bottom: @filters-item-border-bottom;
             position: relative;
 
             &.all-padded {
@@ -205,8 +204,7 @@
             }
 
             .igz-icon-search {
-                .greyishPurple(0.34);
-                color: @color;
+                color: @filters-item-icon-search-color;
                 font-size: 18px;
                 top: 15px;
                 left: 23px;
@@ -225,10 +223,10 @@
                 right: 6px;
                 top: 18px;
                 cursor: pointer;
-                color: white;
+                color: @filters-item-clear-btn-color;
                 padding: 4px 5px 2px;
                 opacity: 0.64;
-                background-color: @silver;
+                background-color: @filters-item-clear-btn-bg-color;
                 border-radius: 50%;
                 line-height: initial;
 
@@ -238,7 +236,7 @@
             }
 
             .info-page-filters-text-input, .container-search-input {
-                background-color: transparent;
+                background-color: @text-search-input-bg-color;
                 border: 0;
                 font-weight: 400;
                 height: 52px;
@@ -248,47 +246,47 @@
                 padding: 0 60px 0 20px;
                 margin-left: 20px;
                 width: 100%;
-                color: @dusk-three;
+                color: @text-search-input-color;
 
                 &::-webkit-input-placeholder {
-                    color: @silver;
+                    color: @text-search-input-placeholder-color;
                 }
 
                 &:-moz-placeholder { /* Firefox 18- */
-                    color: @silver;
+                    color: @text-search-input-placeholder-color;
                 }
 
                 &::-moz-placeholder {  /* Firefox 19+ */
-                    color: @silver;
+                    color: @text-search-input-placeholder-color;
                 }
 
                 &:-ms-input-placeholder {
-                    color: @silver;
+                    color: @text-search-input-placeholder-color;
                 }
 
                 &:focus {
                     & + .igz-icon-search:before {
-                        color: #252d36;
+                        color: @text-search-input-focus-icon-search-before-color;
                     }
 
                     & ~ .igz-icon-search {
-                        color: @greyish-purple;
+                        color: @text-search-input-focus-icon-search-color;
                     }
 
                     &::-webkit-input-placeholder {
-                        color: transparent;
+                        color: @text-search-input-focus-placeholder-color;
                     }
 
                     &:-moz-placeholder { /* Firefox 18- */
-                        color: transparent;
+                        color: @text-search-input-focus-placeholder-color;
                     }
 
                     &::-moz-placeholder {  /* Firefox 19+ */
-                        color: transparent;
+                        color: @text-search-input-focus-placeholder-color;
                     }
 
                     &:-ms-input-placeholder {
-                        color: transparent;
+                        color: @text-search-input-focus-placeholder-color;
                     }
                 }
             }
@@ -311,7 +309,7 @@
                         box-shadow: none;
 
                         &.panel-default {
-                            border-color: #ddd;
+                            border-color: @accordion-panel-default-border-color;
 
                             & > .panel-heading {
                                 background-color: inherit;

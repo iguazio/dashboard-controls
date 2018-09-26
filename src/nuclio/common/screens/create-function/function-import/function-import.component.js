@@ -14,7 +14,7 @@
             controller: FunctionImportController
         });
 
-    function FunctionImportController($scope, $state, lodash, YAML) {
+    function FunctionImportController($rootScope, $scope, $state, lodash, YAML) {
         var ctrl = this;
 
         var importedFunction = null;
@@ -69,10 +69,14 @@
         function cancelCreating(event) {
             event.preventDefault();
 
-            $state.go('app.project.functions', {
-                projectId: ctrl.project.metadata.name,
-                createCancelled: true
-            });
+            if (!lodash.isEmpty(ctrl.project)) {
+                $state.go('app.project.functions', {
+                    projectId: ctrl.project.metadata.name,
+                    createCancelled: true
+                });
+            } else {
+                $state.go('app.projects');
+            }
         }
 
         /**
@@ -124,6 +128,7 @@
             reader.onload = function () {
                 ctrl.sourceCode = reader.result;
                 $scope.$apply();
+                $rootScope.$broadcast('function-import-source-code', ctrl.sourceCode);
 
                 importedFunction = YAML.parse(reader.result);
             };

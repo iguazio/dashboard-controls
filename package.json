@@ -1,6 +1,6 @@
 {
     "name": "iguazio.dashboard-controls",
-    "version": "0.2.4",
+    "version": "0.2.10",
     "main": "dist/js/iguazio.dashboard-controls.js",
     "description": "Collection of resources (such as CSS styles, fonts and images) and AngularJs 1.x components and services to share among different Iguazio repos.",
     "repository": {
@@ -69,13 +69,12 @@
         "yargs": "3.10.0"
     },
     "devDependencies": {
-        "gulp-karma": "~0.0.4",
-        "jasmine-core": "~2.1.3",
-        "jasmine-reporters": "^2.2.0",
+        "jasmine-core": "~3.2.1",
+        "jasmine-reporters": "^2.3.2",
         "jstoxml": "~0.2.3",
-        "karma": "~0.13",
-        "karma-chrome-launcher": "~0.1.7",
-        "karma-jasmine": "~0.3.4"
+        "karma": "~3.0.0",
+        "karma-chrome-launcher": "~2.2.0",
+        "karma-jasmine": "~1.1.2"
     },
     "autoupdate": {
         "source": "git",
