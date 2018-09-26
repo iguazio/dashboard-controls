@@ -132,10 +132,12 @@ input[type="checkbox"][disabled] {
 
 // Regular text-input
 input.igz-text-input {
-    background-color: transparent;
-    border: solid 1px @pale-grey;
+    .inputs-general-color-set();
+
+    background-color: @text-input-bg-color;
+    border: @text-input-border;
     border-radius: 2px;
-    color: @dusk-three;
+    color: @text-input-color;
     display: block;
     position: relative;
     width: 100%;
@@ -148,37 +150,41 @@ input.igz-text-input {
     }
 
     &:focus.ng-invalid:not(.ng-pristine), &.ng-invalid.ng-touched {
-        background-color: #fbe5e8;
-        border: solid 1px @darkish-pink;
+        background-color: @text-input-focus-invalid-bg-color;
+        border: @text-input-focus-invalid-border;
         box-shadow: none;
         outline: none;
     }
 
     &:hover:not(:disabled), &:focus {
         outline: 0;
-        border: solid 1px @dark-sky-blue;
+        border: @text-input-hover-focus-border;
     }
 
     &.invalid {
-        background-color: #fbe5e8;
-        border: solid 1px @darkish-pink;
+        background-color: @text-input-invalid-bg-color;
+        border: @text-input-invalid-border;
         box-shadow: none;
     }
 
     &:focus.ng-valid, &:focus.ng-pristine {
-        border: solid 1px @dark-sky-blue;
+        border: @text-input-focus-valid-border;
         box-shadow: none;
         outline: none;
     }
 }
 
 input[disabled] {
-    background-color: white;
+    .inputs-general-color-set();
+
+    background-color: @input-disabled-bg-color;
     opacity: 0.5;
 }
 
 // Number + Measurement select combo input
 .igz-combo-input-dropdown {
+    .combo-input-dropdown-color-set();
+
     position: relative;
     height: 36px;
     display: flex;
@@ -217,10 +223,10 @@ input[disabled] {
         bottom: 0;
         height: 2px;
         width: 100%;
-        background-color: transparent;
+        background-color: @combo-status-line-bg-color;
 
         &.invalid {
-            background-color: #e3375f;
+            background-color: @combo-status-line-invalid-bg-color;
         }
     }
 }
@@ -230,11 +236,15 @@ input[disabled] {
 //
 
 .input-invalid {
-    border-color: #ea674d;
+    .inputs-general-color-set();
+
+    border-color: @input-invalid-border-color;
 }
 
 .error-text {
-    color: @darkish-pink;
+    .inputs-general-color-set();
+
+    color: @error-text-color;
     font-size: 12px;
     line-height: 1;
     margin-top: 2px;
@@ -250,7 +260,9 @@ input[disabled] {
 }
 
 .asterisks {
-    color: #e4365f;
+    .inputs-general-color-set();
+
+    color: @asterisks-color;
     font-size: 16px;
     font-weight: 400;
     padding-left: 2px;

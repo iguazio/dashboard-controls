@@ -1,4 +1,6 @@
 .common-table {
+    .common-table-color-set();
+    .descriptive-icons-color-set();
 
     @table-border: 1px solid @pale-grey;
 
@@ -14,7 +16,7 @@
         width: 100%;
         cursor: pointer;
 
-        color: @dusk-three;
+        color: @cells-container-color;
         font-size: 14px;
         font-family: @font-family-sans-serif;
         font-weight: 400;
@@ -70,15 +72,14 @@
     // Table header
     //
     .common-table-header {
-        border: @table-border;
+        border: @header-border;
         display: -ms-flexbox;
         display: flex;
         position: relative;
         line-height: 41px;
 
         .common-table-cell {
-            .duskThree(0.66);
-            color: @color;
+            color: @header-cell-color;
             font-family: @font-family-sans-serif;
             font-size: 14px;
             font-weight: 500;
@@ -109,7 +110,7 @@
                 }
 
                 &.sorted {
-                    color: @dusk-three;
+                    color: @header-cell-sorted-color;
                     font-size: 14px;
                     font-weight: bold;
                 }
@@ -117,8 +118,8 @@
 
             &.item-name {
                 &.details-present {
-                    border-right: @table-border;
-                    border-left: @table-border;
+                    border-right: @header-cell-details-present-border-right;
+                    border-left: @header-cell-details-present-border-left;
                 }
             }
         }
@@ -129,33 +130,32 @@
     //
     .common-table-body {
         .common-table-row {
-            border: @table-border;
+            border: @row-border;
             border-top: none;
-            background-color: @white;
+            background-color: @row-bg-color;
             display: -ms-flexbox;
             display: flex;
             position: relative;
             min-height: 56px;
 
             &.inactive-row .inactive-state {
-                .duskThree(0.2);
-                color: @color;
+                color: @row-inactive-color;
 
                 .common-table-cell .column-block .common-table-icon:before {
-                    color: @color;
+                    color: @row-inactive-color;
                 }
             }
 
             &.deleting-row {
                 &:hover .common-table-cells-container {
-                    background-color: @pale-grey-three;
+                    background-color: @deleting-row-cells-in-hover-bg-color;
 
                     .common-table-cell.item-name-wrapper .item-name {
-                        background-color: @pale-grey-three;
+                        background-color: @deleting-row-item-name-in-hover-bg-color;
                     }
 
                     .common-table-cell.item-name-wrapper ~ .common-table-cell {
-                        background-color: @pale-grey-three;
+                        background-color: @deleting-row-cell-in-hover-bg-color;
                     }
                 }
 
@@ -164,39 +164,38 @@
                         .common-table-cells-container.deleted-state {
                             .item-name-wrapper {
                                 .item-name {
-                                    background-color: @pale-grey-three;
+                                    background-color: @selected-item-name-in-hover-bg-color;
                                 }
                             }
                         }
                     }
 
                     .common-table-cells-container.deleted-state {
-                        background-color: @pale-grey-two;
+                        background-color: @selected-deleted-state-bg-color;
 
                         .item-name-wrapper {
                             .item-name {
-                                background-color: @pale-grey-two;
+                                background-color: @selected-deleted-state-item-name-bg-color;
                             }
                         }
 
                         &:hover {
                             .common-table-cell.item-name-wrapper .item-name {
-                                background-color: @pale-grey-three;
+                                background-color: @selected-deleted-state-item-name-in-hover-bg-color;
                             }
 
                             .common-table-cell.item-name-wrapper ~ .common-table-cell {
-                                background-color: @pale-grey-three;
+                                background-color: @selected-deleted-state-cell-in-hover-bg-color;
                             }
                         }
                     }
                 }
 
                 .deleted-state {
-                    .duskThree(0.2);
-                    color: @color;
+                    color: @deleted-state-color;
 
                     .common-table-cell.item-name-wrapper .item-name {
-                        border-right: transparent;
+                        border-right-color: @deleted-state-item-name-border-right-color;
                         transition: none;
 
                         &:after {
@@ -217,25 +216,25 @@
             &.checked,
             &.selected {
                 .common-table-cells-container {
-                    background-color: @pale-grey-two;
+                    background-color: @row-selected-cells-bg-color;
 
                     .item-name-wrapper {
                         .item-name {
-                            background-color: @white;
+                            background-color: @row-selected-cells-item-name-bg-color;
                         }
                     }
 
                     .common-table-cell {
                         &.item-name-wrapper:hover {
                             & ~ .common-table-cell {
-                                background-color: @pale-grey-two;
+                                background-color: @row-selected-cells-item-name-cell-in-hover-bg-color;
                             }
                         }
                     }
                 }
 
                 .actions-menu {
-                    background-color: @pale-grey-two;
+                    background-color: @row-selected-action-menu-bg-color;
                 }
             }
 
@@ -247,11 +246,11 @@
 
             &:not(.read-only):hover {
                 .common-table-cells-container {
-                    background-color: @pale-grey-three;
+                    background-color: @row-cells-in-hover-bg-color;
                 }
 
                 .actions-menu {
-                    background-color: @pale-grey-three;
+                    background-color: @row-actions-menu-in-hover-bg-color;
                 }
 
                 .zone-drag {
@@ -269,8 +268,7 @@
                     top: 50%;
                     margin-top: -50%;
                     font-size: 16px;
-                    .duskThree(0.44);
-                    color: @color;
+                    color: @zone-drag-icon-color;
                 }
 
                 .igz-icon-drag-arrow-up {
@@ -284,11 +282,9 @@
             }
 
             .common-table-cell {
-                border-left-color: transparent;
+                border-left-color: @cell-border-left-color;
 
                 .column-block .common-table-icon:before {
-                    .descriptive-icons-color-set();
-
                     color: @icon-default-color;
                 }
 
@@ -313,8 +309,8 @@
 
                 &.item-name {
                     &.details-present {
-                        border-right: @table-border;
-                        border-left: @table-border;
+                        border-right: @cell-item-name-details-present-border-right;
+                        border-left: @cell-item-name-details-present-border-left;
                     }
                 }
 
@@ -324,10 +320,10 @@
                     overflow: visible;
 
                     .item-name {
-                        background-color: @white;
+                        background-color: @item-name-bg-color;
                         border-width: 1px;
                         border-style: solid;
-                        border-color: transparent @pale-grey;
+                        border-color: @item-name-border-color;
                         font-weight: bold;
                         width: 100%;
                         height: 100%;
@@ -340,8 +336,7 @@
                         }
 
                         &:after {
-                            .duskThree(0.64);
-                            color: @color;
+                            color: @item-name-after-color;
                             content: '\e914';
                             font-family: 'iguazio';
                             font-size: 11px;
@@ -349,20 +344,20 @@
                         }
 
                         .item-description {
-                            color: #b2b2b2;
+                            color: @item-name-description-color;
                             display: block;
                             font-size: 12px;
                             text-align: left;
 
                             .item-description-accent {
-                                color: #3d5b77;
+                                color: @item-name-description-accent-color;
                                 font-weight: 700;
                             }
                         }
 
                         &:hover {
                             box-sizing: content-box;
-                            box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.15);
+                            box-shadow: @item-name-hover-box-shadow;
                             margin: 0 0 0 -1px;
                             padding: 1px 0 1px;
                             z-index: 99;
@@ -372,21 +367,20 @@
 
                     &:hover {
                         & ~ .common-table-cell {
-                            background-color: @white;
+                            background-color: @item-name-wrapper-cell-in-hover-bg-color;
                         }
 
                         .actions-menu {
-                            background-color: @white;
+                            background-color: @item-name-wrapper-action-menu-in-hover-bg-color;
                         }
                     }
                 }
 
                 &.selected {
-                    background-color: @pale-grey-two;
+                    background-color: @cell-selected-bg-color;
                 }
                 &.modified {
-                    .darkSkyBlue(0.3);
-                    border-bottom: 4px @color solid;
+                    border-bottom: @cell-modified-border-bottom;
                 }
 
                 .centered {
@@ -422,8 +416,7 @@
             .igz-icon-drag {
                 top: 1px;
                 font-size: 12px;
-                .duskThree(0.44);
-                color: @color;
+                color: @title-block-icon-drag-color;
             }
 
             .igz-icon-drag-arrow-up {
@@ -446,7 +439,7 @@
             width: 16px;
             left: 0;
             position: absolute;
-            color: @dusk-three;
+            color: @zone-drag-color;
             cursor: move;
 
             .igz-icon-drag {
@@ -470,20 +463,19 @@
             }
 
             &:hover {
-                background-color: @pale-grey-two;
+                background-color: @zone-drag-hover-bg-color;
 
                 .igz-icon-drag-arrow-up, .igz-icon-drag-arrow-down {
-                    .duskThree(0.64);
                     visibility: visible;
-                    color: @color;
+                    color: @zone-drag-icon-arrow-in-hover-color;
 
                     &:hover {
-                        color: @dusk-three;
+                        color: @zone-drag-icon-arrow-hover-color;
                     }
                 }
 
                 .igz-icon-drag {
-                    color: @dusk-three;
+                    color: @zone-drag-icon-drag-in-hover-color;
                 }
             }
         }

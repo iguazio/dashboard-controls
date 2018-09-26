@@ -1,6 +1,8 @@
 .igz-highcharts-wrapper, .igz-tooltip {
+    .tooltips-color-set();
+
     .igz-tooltip-wrapper {
-        background-color: @dusk-three;
+        background-color: @tooltip-wrapper-bg-color;
         font-size: 12px;
         font-family: @font-family-sans-serif;
         padding: 12px 8px;
@@ -23,7 +25,7 @@
             }
 
             .series-label {
-                color: @silver;
+                color: @series-label-color;
                 min-width: 56px;
                 margin-right: 16px;
             }
@@ -38,15 +40,15 @@
         }
 
         .tooltip-label {
-            color: @pale-grey-three;
+            color: @tooltip-label-color;
             font-weight: 400;
         }
 
         .tooltip-value {
-            color: @tooltip-value-primary-color;
+            color: @tooltip-value-color;
 
             .tooltip-value-highlighted {
-                color: @perano;
+                color: @tooltip-value-hightlighted-color;
             }
         }
 
@@ -59,7 +61,7 @@
     }
 
     .igz-tooltip-arrow-down {
-        .triangle-arrow(down, @dusk-three, 7px, 7px);
+        .triangle-arrow(down, @tooltip-arrow-down-color, 7px, 7px);
         position: absolute;
         margin-left: -7px;
         left: 50%;
@@ -91,6 +93,8 @@
 // Custom Bootstrap tooltip styles
 
 .tooltip {
+    .tooltips-color-set();
+
     transition-duration: 0s;
     z-index: 10001;
 
@@ -107,9 +111,8 @@
     }
 
     .tooltip-inner {
-        .duskThree(0.8);
-        background-color: @color;
-        color: @white;
+        background-color: @tooltip-inner-bg-color;
+        color: @tooltip-inner-color;
         border-radius: 2px;
         word-wrap: break-word;
         max-width: 280px;

@@ -1,12 +1,14 @@
 .igz-browser-sort-dropdown {
+    .sort-dropdown-color-set();
+
     .dropdown-menu {
         left: auto;
         margin: 0;
         padding: 10px 0;
-        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+        box-shadow: @dropdown-menu-box-shadow;
         top: 39px;
         right: -1px;
-        color: @dusk-three;
+        color: @dropdown-menu-color;
         width: 139px;
         min-width: 139px;
 
@@ -17,7 +19,7 @@
             list-style: none;
             max-height: 192px;
             border: none;
-            box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+            box-shadow: @dropdown-menu-list-box-shadow;
 
             .dropdown-menu-item {
                 font-family: @font-family-sans-serif;
@@ -34,7 +36,7 @@
                     white-space: nowrap;
                     text-overflow: ellipsis;
                     margin-left: 15px;
-                    color: @dusk-three;
+                    color: @dropdown-menu-item-name-color;
                     vertical-align:top;
                     text-decoration: none;
                     height: 32px;
@@ -50,7 +52,7 @@
 
                 &:hover {
                     height: 32px;
-                    background-color: @pale-grey-two;
+                    background-color: @dropdown-menu-item-hover-bg-color;
                 }
             }
         }
