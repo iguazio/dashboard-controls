@@ -47,15 +47,12 @@
         .constant('lodash', window._)
         .constant('Base64', window.Base64);
 
-    function config($compileProvider, $locationProvider, $httpProvider, uibDatepickerConfig, $qProvider) {
+    function config($locationProvider, $httpProvider, uibDatepickerConfig, $qProvider) {
         $locationProvider.html5Mode(true);
 
         $httpProvider.defaults.withCredentials = true;
 
         uibDatepickerConfig.showWeeks = false;
-
-        // allows to get values from bindings outside of onInit function (since angular 1.6)
-        $compileProvider.preAssignBindingsEnabled(true);
 
         // prevents 'Possibly unhandled rejection' error
         $qProvider.errorOnUnhandledRejections(false);

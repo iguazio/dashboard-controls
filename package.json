@@ -21,12 +21,12 @@
         "email": "erann@iguazio.com"
     },
     "dependencies": {
+        "@uirouter/angularjs": "^1.0.20",
         "jquery": "*",
-        "angular": "~1.6.5",
+        "angular": "~1.7.4",
         "angular-download": "0.0.5",
-        "angular-mocks": "~1.5.8",
+        "angular-mocks": "~1.7.4",
         "angular-ui-bootstrap": "~2.5.6",
-        "angular-ui-router": "~0.3.2",
         "babel-core": "^6.26.0",
         "babel-plugin-angularjs-annotate": "^0.8.2",
         "babel-polyfill": "^6.26.0",

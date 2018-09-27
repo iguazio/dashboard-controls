@@ -13,7 +13,7 @@
             controller: FunctionsController
         });
 
-    function FunctionsController($filter, $q, $rootScope, $scope, $state, $stateParams, $timeout, lodash,
+    function FunctionsController($filter, $q, $rootScope, $scope, $state, $stateParams, $transitions, $timeout, lodash,
                                  CommonTableService, ConfigService, DialogsService, NuclioHeaderService) {
         var ctrl = this;
         var title = {}; // breadcrumbs config
@@ -130,12 +130,13 @@
 
             ctrl.actions = initVersionActions();
 
-            $scope.$on('$stateChangeStart', stateChangeStart);
             $scope.$on('action-panel_fire-action', onFireAction);
             $scope.$on('action-checkbox_item-checked', updatePanelActions);
             $scope.$on('action-checkbox-all_check-all', function () {
                 $timeout(updatePanelActions);
             });
+
+            $transitions.onStart({}, stateChangeStart);
 
             updatePanelActions();
         }

@@ -29,7 +29,7 @@
         function alert(alertText, buttonText) {
             buttonText = lodash.defaultTo(buttonText, 'OK');
 
-            if (angular.isArray(alertText)) {
+            if (lodash.isArray(alertText)) {
                 alertText = alertText.length === 1 ? lodash.first(alertText) :
                     '<ul class="error-list"><li class="error-list-item">' +
                         alertText.join('</li><li class="error-list-item">') + '</li></ul>';
