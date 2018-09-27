@@ -21,11 +21,7 @@
 
         ctrl.actions = [];
         ctrl.isCollapsed = true;
-        ctrl.title = {
-            project: ctrl.project,
-            projectName: ctrl.project.spec.displayName,
-            function: ctrl.function.metadata.name
-        };
+        ctrl.title = null;
         ctrl.invocationURL = '';
         ctrl.runtimes = {
             'golang': 'Go',
@@ -62,6 +58,12 @@
          * Initialization method
          */
         function onInit() {
+            ctrl.title = {
+                project: ctrl.project,
+                projectName: ctrl.project.spec.displayName,
+                function: ctrl.function.metadata.name
+            };
+
             lodash.defaultsDeep(ctrl.function, {
                 ui: {
                     delete: deleteFunction

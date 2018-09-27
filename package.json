@@ -22,9 +22,9 @@
     },
     "dependencies": {
         "jquery": "*",
-        "angular": "~1.6.5",
+        "angular": "~1.7.4",
         "angular-download": "0.0.5",
-        "angular-mocks": "~1.5.8",
+        "angular-mocks": "~1.7.4",
         "angular-ui-bootstrap": "~0.13.0",
         "angular-ui-router": "~0.3.2",
         "babel-core": "^6.26.0",

@@ -19,11 +19,7 @@
         var ctrl = this;
 
         ctrl.actions = [];
-        ctrl.title = {
-            project: ctrl.project.spec.displayName,
-            function: ctrl.function.metadata.name,
-            version: ctrl.version.name
-        };
+        ctrl.title = null;
 
         ctrl.$onInit = onInit;
 
@@ -40,6 +36,12 @@
          * Initialization method
          */
         function onInit() {
+            ctrl.title = {
+                project: ctrl.project.spec.displayName,
+                function: ctrl.function.metadata.name,
+                version: ctrl.version.name
+            };
+
             lodash.defaultsDeep(ctrl.version, {
                 ui: {
                     checked: false,
