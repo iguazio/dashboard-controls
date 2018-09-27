@@ -10,7 +10,7 @@
                 createNewProject: '<',
                 selectedProject: '<'
             },
-            templateUrl: 'nuclio/projects/project/functions/create-function/function-import/function-import.tpl.html',
+            templateUrl: 'nuclio/common/screens/create-function/function-import/function-import.tpl.html',
             controller: FunctionImportController
         });
 
@@ -69,10 +69,14 @@
         function cancelCreating(event) {
             event.preventDefault();
 
-            $state.go('app.project.functions', {
-                projectId: ctrl.project.metadata.name,
-                createCancelled: true
-            });
+            if (!lodash.isEmpty(ctrl.project)) {
+                $state.go('app.project.functions', {
+                    projectId: ctrl.project.metadata.name,
+                    createCancelled: true
+                });
+            } else {
+                $state.go('app.projects');
+            }
         }
 
         /**

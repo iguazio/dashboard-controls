@@ -10,7 +10,7 @@
                 getTemplates: '&',
                 templates: '<'
             },
-            templateUrl: 'nuclio/projects/project/functions/create-function/create-function.tpl.html',
+            templateUrl: 'nuclio/common/screens/create-function/create-function.tpl.html',
             controller: CreateFunctionController
         });
 
@@ -69,7 +69,9 @@
                         };
 
                         if (!lodash.isEmpty(ctrl.projects)) {
-                            var project = lodash.first(ctrl.projects);
+
+                            // get first project
+                            var project = lodash.find(ctrl.projects);
 
                             ctrl.selectedProject = {
                                 id: project.metadata.name,

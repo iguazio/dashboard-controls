@@ -11,7 +11,7 @@
                 createNewProject: '<',
                 selectedProject: '<'
             },
-            templateUrl: 'nuclio/projects/project/functions/create-function/function-from-template/function-from-template.tpl.html',
+            templateUrl: 'nuclio/common/screens/create-function/function-from-template/function-from-template.tpl.html',
             controller: FunctionFromTemplateController
         });
 
@@ -87,10 +87,14 @@
         function cancelCreating(event) {
             event.preventDefault();
 
-            $state.go('app.project.functions', {
-                projectId: ctrl.project.metadata.name,
-                createCancelled: true
-            });
+            if (!lodash.isEmpty(ctrl.project)) {
+                $state.go('app.project.functions', {
+                    projectId: ctrl.project.metadata.name,
+                    createCancelled: true
+                });
+            } else {
+                $state.go('app.projects');
+            }
         }
 
         /**

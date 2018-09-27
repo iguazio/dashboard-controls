@@ -1,4 +1,7 @@
 .igz-action-panel {
+    .action-panel-color-set();
+    .action-icon-color-set();
+
     left: 0;
     line-height: 1;
     position: relative;
@@ -20,13 +23,13 @@
             padding: 1px 19px;
             font-size: 17px;
             letter-spacing: 0.2px;
-            color: @pale-grey-two;
+            color: @action-list-empty-color;
         }
 
         .igz-action-item {
-            background-color: transparent;
+            background-color: @action-item-bg-color;
             border-radius: 50%;
-            color: @dusk-three;
+            color: @action-item-color;
             cursor: pointer;
             float: left;
             font-size: 18px;
@@ -41,12 +44,10 @@
 
             &.inactive {
                 &:hover {
-                    color: transparent;
+                    color: @action-item-inactive-hover-color;
                 }
 
                 .action-icon {
-                    .action-icon-color-set();
-
                     color: @action-icon-active-color;
                     cursor: default;
                 }
@@ -65,12 +66,12 @@
                 font-weight: 500;
                 text-align: center;
                 line-height: 16px;
-                color: @pale-grey-three;
+                color: @action-item-filter-counter-color;
                 min-width: 16px;
                 height: 15px;
                 padding: 0 4px;
                 border-radius: 7.5px;
-                background-color: @dark-sky-blue;
+                background-color: @action-item-filter-counter-bg-color;
             }
 
             .item-dropdown-menu {
@@ -81,10 +82,10 @@
                 list-style: none;
                 font-size: 13px;
                 font-weight: 500;
-                color: @dusk-three;
+                color: @dropdown-menu-color;
                 border-radius: 2px;
-                background-color: @white;
-                box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+                background-color: @dropdown-menu-bg-color;
+                box-shadow: @dropdown-menu-box-shadow;
                 margin-top: 1px;
                 z-index: 10;
 
@@ -101,7 +102,7 @@
                         display: flex;
 
                         &:hover {
-                            background-color: @pale-grey-two;
+                            background-color: @dropdown-menu-li-hover-bg-color;
                         }
 
                         .action-label {
@@ -122,8 +123,6 @@
             }
 
             .action-icon {
-                .action-icon-color-set();
-
                 color: @action-icon-hover-color;
             }
 
@@ -133,31 +132,27 @@
 
             &:not(.inactive):hover {
                 overflow: visible;
-                background-color: @pale-grey;
-                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.13);
+                background-color: @dropdown-menu-hover-bg-color;
+                box-shadow: @dropdown-menu-hover-box-shadow;
 
                 &:active {
-                    box-shadow: inset 0 2px 3px 0 rgba(0, 0, 0, 0.1);
+                    box-shadow: @dropdown-menu-hover-active-box-shadow;
                 }
 
                 .action-icon {
-                    .action-icon-color-set();
-
                     color: @action-icon-color;
                 }
             }
 
             &.subtemplate-show {
                 transition: none;
-                background-color: @silver;
+                background-color: @dropdown-menu-subtemplate-show-bg-color;
 
                 &:hover {
-                    background-color: @pale-grey;
+                    background-color: @dropdown-menu-subtemplate-show-hover-bg-color;
                 }
 
                 .action-icon {
-                    .action-icon-color-set();
-
                     color: @action-icon-color;
                 }
             }
@@ -167,9 +162,9 @@
     .action-subtemplate {
         border-bottom-left-radius: 4px;
         border-bottom-right-radius: 4px;
-        border: @primary-border;
-        background-color: @white;
-        box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
+        border: @action-subtemplate-border;
+        background-color: @action-subtemplate-bg-color;
+        box-shadow: @action-subtemplate-box-shadow;
         position: fixed;
         margin: -2px 0 0 -1px;
         z-index: 10;

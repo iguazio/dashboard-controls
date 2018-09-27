@@ -1,4 +1,6 @@
 .igz-elastic-input-field {
+    .elastic-input-field-color-set();
+
     .non-editable {
         padding: 7px 10px 0;
         letter-spacing: normal;
@@ -10,14 +12,14 @@
 
         &.edit-mode {
             input.elastic-input {
-                border: solid 1px @pale-grey;
+                border: @edit-mode-elastic-input-border;
             }
         }
 
         input.elastic-input {
             line-height: 26px;
             background: none;
-            color: @dusk-three;
+            color: @elastic-input-color;
             margin: 0;
             max-width: 201px;
             outline: 0;
@@ -26,7 +28,7 @@
             text-overflow: ellipsis;
 
             &:focus {
-                border: solid 1px @dark-sky-blue;
+                border: @elastic-input-focus-border;
             }
 
             &::-ms-clear {
@@ -37,8 +39,8 @@
         // Invalid state
         &.elastic-input-invalid {
             input.elastic-input {
-                background-color: #fbe5e8;
-                border: solid 1px @darkish-pink;
+                background-color: @elastic-input-invalid-bg-color;
+                border: @elastic-input-invalid-border;
                 box-shadow: none;
                 outline: none;
             }
