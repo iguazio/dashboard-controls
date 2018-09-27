@@ -18,7 +18,7 @@
             controller: NclVersionController
         });
 
-    function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $timeout, lodash, YAML,
+    function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $transitions, $timeout, lodash, YAML,
                                   ConfigService, DialogsService, NuclioHeaderService) {
         var ctrl = this;
         var deregisterFunction = null;
@@ -130,7 +130,8 @@
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
             $scope.$on('change-version-deployed-state', setVersionDeployed);
-            deregisterFunction = $scope.$on('$stateChangeStart', stateChangeStart);
+
+            deregisterFunction = $transitions.onStart({}, stateChangeStart);
 
             if (ctrl.checkValidDeployState()) {
                 ctrl.isFunctionDeployed = false;
@@ -404,19 +405,18 @@
 
         /**
          * Prevents change state if there are unsaved data
-         * @param {Event} event
-         * @param {Object} toState
-         * @param {Object} params
+         * @param {Event} transition
          */
-        function stateChangeStart(event, toState, params) {
-            if (lodash.get($state, 'params.functionId') !== params.functionId && !ctrl.versionDeployed) {
-                event.preventDefault();
+        function stateChangeStart(transition) {
+            var toState = transition.$to();
+            if (lodash.get($state, 'params.functionId') !== toState.params.functionId && !ctrl.versionDeployed) {
+                transition.abort();
                 DialogsService.confirm('Leaving this page will discard your changes.', 'Leave', 'Don\'t leave')
                     .then(function () {
 
                         // unsubscribe from broadcast event
                         deregisterFunction();
-                        $state.go(toState.name, params);
+                        $state.go(toState.name, toState.params);
                     });
             }
         }

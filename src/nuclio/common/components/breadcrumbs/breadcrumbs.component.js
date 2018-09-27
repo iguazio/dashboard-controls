@@ -11,7 +11,7 @@
             controller: NclBreadcrumbsController
         });
 
-    function NclBreadcrumbsController($scope, $state, lodash, NavigationTabsService) {
+    function NclBreadcrumbsController($scope, $state, $transitions, lodash, NavigationTabsService) {
         var ctrl = this;
 
         ctrl.mainHeaderTitle = {};
@@ -34,7 +34,8 @@
             setMainHeaderTitle();
 
             $scope.$on('update-main-header-title', setMainHeaderTitle);
-            $scope.$on('$stateChangeSuccess', onStateChangeSuccess);
+
+            $transitions.onSuccess({}, onStateChangeSuccess);
         }
 
         /**
@@ -90,10 +91,10 @@
          * tabs config
          * Needed for better UX - header title changes correctly even before controller data resolved and broadcast
          * have been sent
-         * @param {Object} event
-         * @param {Object} toState
+         * @param {Object} transition
          */
-        function onStateChangeSuccess(event, toState) {
+        function onStateChangeSuccess(transition) {
+            var toState = transition.$to();
             ctrl.navigationTabsConfig = NavigationTabsService.getNavigationTabsConfig(toState.name);
 
             // Check to exclude prototypical inheritance of the `mainHeaderTitle` property from parent router state
