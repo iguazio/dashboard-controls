@@ -47,12 +47,12 @@
         .constant('lodash', window._)
         .constant('Base64', window.Base64);
 
-    function config($locationProvider, $httpProvider, datepickerConfig, $qProvider) {
+    function config($locationProvider, $httpProvider, uibDatepickerConfig, $qProvider) {
         $locationProvider.html5Mode(true);
 
         $httpProvider.defaults.withCredentials = true;
 
-        datepickerConfig.showWeeks = false;
+        uibDatepickerConfig.showWeeks = false;
 
         // prevents 'Possibly unhandled rejection' error
         $qProvider.errorOnUnhandledRejections(false);

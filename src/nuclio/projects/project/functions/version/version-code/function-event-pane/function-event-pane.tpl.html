@@ -68,7 +68,7 @@
                 <div class="right-side-elements">
                     <div class="new-test-event"
                          data-ng-click="$ctrl.resetData()"
-                         data-tooltip="New test"
+                         data-uib-tooltip="New test"
                          data-tooltip-popup-delay="300"
                          data-tooltip-placement="left"
                          data-tooltip-append-to-body="true">
@@ -135,7 +135,7 @@
                                             </div>
                                             <div class="progress">
                                                 <div class="progress-bar"
-                                                     role="progressbar"
+                                                     role="uib-progressbar"
                                                      aria-valuemin="0"
                                                      aria-valuemax="100"
                                                      data-ng-style="{'width': $ctrl.uploadingData.progress}">
@@ -146,7 +146,7 @@
                                             <div class="file">
                                                 <span class="ncl-icon-file"></span>
                                                 <div class="name text-ellipsis"
-                                                     data-tooltip="{{$ctrl.uploadingData.name}}"
+                                                     data-uib-tooltip="{{$ctrl.uploadingData.name}}"
                                                      data-tooltip-popup-delay="300"
                                                      data-tooltip-placement="top">
                                                     {{$ctrl.uploadingData.name}}
@@ -225,7 +225,7 @@
                          data-ng-if="$ctrl.testResult.status">
                         <div>Status:
                             <div class="text-ellipsis status {{$ctrl.isInvocationSuccess ? 'success' : 'fail'}}"
-                                 data-tooltip="{{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}"
+                                 data-uib-tooltip="{{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}"
                                  data-tooltip-placement="top"
                                  data-tooltip-popup-delay="300">
                                 {{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}
@@ -277,14 +277,14 @@
                         <div class="code-section" data-ng-if="$ctrl.showResponse && !$ctrl.testing">
                             <div class="top-panel">
                                 <div data-ng-click="$ctrl.downloadResponseFile()"
-                                     data-tooltip="Download to file"
+                                     data-uib-tooltip="Download to file"
                                      data-tooltip-placement="left"
                                      data-tooltip-popup-delay="300"
                                      data-tooltip-append-to-body="true">
                                     <div class="igz-icon-download"></div>
                                 </div>
                                 <div data-ng-click="$ctrl.copyToClipboard()"
-                                     data-tooltip="Copy to clipboard"
+                                     data-uib-tooltip="Copy to clipboard"
                                      data-tooltip-placement="left"
                                      data-tooltip-popup-delay="300"
                                      data-tooltip-append-to-body="true">
@@ -315,12 +315,12 @@
                     <div class="headers" data-ng-if="$ctrl.selectedResponseTab.id === 'headers'">
                         <div data-ng-repeat="(key, value) in $ctrl.testResult.headers">
                             <div class="text-ellipsis labels"
-                                 data-tooltip="{{key}}"
+                                 data-uib-tooltip="{{key}}"
                                  data-tooltip-placement="left"
                                  data-tooltip-popup-delay="300"
                                  data-tooltip-append-to-body="true">{{key}}</div>
                             <div class="text-ellipsis values"
-                                 data-tooltip="{{value}}"
+                                 data-uib-tooltip="{{value}}"
                                  data-tooltip-placement="left"
                                  data-tooltip-popup-delay="300">{{value}}</div>
                         </div>

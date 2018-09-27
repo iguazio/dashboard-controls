@@ -12,7 +12,7 @@
     <div class="jump-to-page" data-ng-form="jumpToPageForm" data-ng-if="$ctrl.pageData.total > 1">
 
         <div class="to-page-prev igz-button-basic igz-icon-left" tabindex="0"
-             data-tooltip="{{$ctrl.page <= 0 ? '' : 'Previous page'}}"
+             data-uib-tooltip="{{$ctrl.page <= 0 ? '' : 'Previous page'}}"
              data-tooltip-placement="top"
              data-ng-class="{'disabled' : $ctrl.page <= 0}"
              data-ng-click="$ctrl.page <= 0 || $ctrl.goToPrevPage()" data-ng-keydown="$ctrl.goToPrevPage($event)"></div>
@@ -30,7 +30,7 @@
         </igz-validating-input-field>
 
         <div class="to-page-next igz-button-basic igz-icon-right" tabindex="0"
-             data-tooltip="{{$ctrl.pageData.total <= $ctrl.page + 1 ? '' : 'Next page'}}"
+             data-uib-tooltip="{{$ctrl.pageData.total <= $ctrl.page + 1 ? '' : 'Next page'}}"
              data-tooltip-placement="top"
              data-ng-class="{'disabled' : $ctrl.pageData.total <= $ctrl.page + 1}"
              data-ng-click="($ctrl.pageData.total <= $ctrl.page + 1) || $ctrl.goToNextPage()" data-ng-keydown="$ctrl.goToNextPage($event)">

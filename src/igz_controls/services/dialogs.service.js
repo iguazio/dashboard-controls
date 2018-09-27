@@ -116,7 +116,7 @@
 
             return ngDialog.open({
                 template: '<div class="title text-ellipsis"' +
-                'data-tooltip="' + label + '"' +
+                'data-uib-tooltip="' + label + '"' +
                 'data-tooltip-popup-delay="400"' +
                 'data-tooltip-append-to-body="true"' +
                 'data-tooltip-placement="bottom-left">' + label + '</div>' +
