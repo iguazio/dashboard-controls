@@ -10,10 +10,12 @@
             controller: NclNavigationTabsController
         });
 
-    function NclNavigationTabsController(lodash) {
+    function NclNavigationTabsController($rootScope, lodash) {
         var ctrl = this;
 
+        ctrl.isTestPaneClosed = false;
         ctrl.isFunctionBuilding = isFunctionBuilding;
+        ctrl.toggleTestPane = toggleTestPane;
 
         //
         // Public methods
@@ -25,6 +27,15 @@
          */
         function isFunctionBuilding(status) {
             return !lodash.includes(['ready', 'error', 'not yet deployed'], status);
+        }
+
+        /**
+         * Sends broadcast to toggle test pane.
+         */
+        function toggleTestPane() {
+            ctrl.isTestPaneClosed = !ctrl.isTestPaneClosed;
+
+            $rootScope.$broadcast('navigation-tabs_toggle-test-pane', {closeTestPane: ctrl.isTestPaneClosed});
         }
     }
 }());

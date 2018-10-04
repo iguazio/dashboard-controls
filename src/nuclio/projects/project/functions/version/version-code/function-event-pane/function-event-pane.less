@@ -6,6 +6,12 @@
     border-top: none;
     position: relative;
     background-color: @white;
+    transition: @igz-basic-transition;
+
+    &.test-pane-closed {
+        width: 0;
+        transition: @igz-basic-transition;
+    }
 
     .ncl-secondary-button {
         background-color: @pale-grey;

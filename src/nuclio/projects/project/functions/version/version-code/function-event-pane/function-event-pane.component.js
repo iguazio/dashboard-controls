@@ -16,8 +16,8 @@
             controller: NclFunctionEventPaneController
         });
 
-    function NclFunctionEventPaneController($element, $rootScope, $timeout, $q, lodash, moment, download, ConvertorService,
-                                            DialogsService, EventHelperService, VersionHelperService) {
+    function NclFunctionEventPaneController($element, $rootScope, $scope, $timeout, $q, lodash, moment, download,
+                                            ConvertorService, DialogsService, EventHelperService, VersionHelperService) {
         var ctrl = this;
 
         var canceler = null;
@@ -29,6 +29,7 @@
         ctrl.isSplashShowed = {
             value: false
         };
+        ctrl.isTestPaneClosed = false;
         ctrl.leftBarNavigationTabs = [
             {
                 id: 'saved',
@@ -208,6 +209,8 @@
                 .finally(function () {
                     ctrl.isSplashShowed.value = false;
                 });
+
+            $scope.$on('navigation-tabs_toggle-test-pane', toggleTestPane);
 
             updateRequestHeaders();
         }
@@ -846,6 +849,15 @@
 
             localStorage.setItem('test-events', angular.toJson(updatedHistory));
             updateHistory();
+        }
+
+        /**
+         * Broadcast callback to toggle test pane
+         * @param {Event} event - native broadcast event object
+         * @param {Object} data - contains data of test pane state (closed/opened)
+         */
+        function toggleTestPane(event, data) {
+            ctrl.isTestPaneClosed = data.closeTestPane;
         }
 
         /**
