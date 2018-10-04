@@ -409,14 +409,14 @@
          */
         function stateChangeStart(transition) {
             var toState = transition.$to();
-            if (lodash.get($state, 'params.functionId') !== toState.params.functionId && !ctrl.versionDeployed) {
+            if (lodash.get($state, 'params.functionId') !== transition.params('to').functionId && !ctrl.versionDeployed) {
                 transition.abort();
                 DialogsService.confirm('Leaving this page will discard your changes.', 'Leave', 'Don\'t leave')
                     .then(function () {
 
                         // unsubscribe from broadcast event
                         deregisterFunction();
-                        $state.go(toState.name, toState.params);
+                        $state.go(toState.name, transition.params('to'));
                     });
             }
         }
