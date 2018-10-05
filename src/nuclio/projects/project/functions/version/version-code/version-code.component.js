@@ -23,6 +23,19 @@
                 updateOnContentResize: true
             }
         };
+        ctrl.scrollConfigHorizontal = {
+            axis: 'x',
+            advanced: {
+                autoScrollOnFocus: false,
+                updateOnContentResize: true
+            },
+            callbacks: {
+                onCreate: function () {
+                    ctrl.scrollContainer = this.querySelector('.mCSB_container');
+                    ctrl.scrollContainer.style.height = '100%';
+                }
+            }
+        };
         ctrl.codeEntryTypeArray = [
             {
                 id: 'sourceCode',
@@ -149,6 +162,12 @@
                 ctrl.sourceCode = Base64.decode(savedSourceCode);
 
                 $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: false});
+            }
+
+            if (ctrl.scrollContainer) {
+                $timeout(function () {
+                    ctrl.scrollContainer.style.height = '100%';
+                })
             }
 
             previousEntryType = ctrl.selectedEntryType;
