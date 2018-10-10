@@ -369,7 +369,16 @@
          * @returns {string}
          */
         function getInvocationUrl() {
-            var httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
+            var httpPort = lodash.get(ctrl.version, 'ui.deployResult.status.httpPort', null);
+
+            if (lodash.isNil(httpPort)) {
+                httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
+            }
+
+            if (httpPort && lodash.includes(['building', 'error'], lodash.get(ctrl.version, 'ui.deployResult.status.state'))) {
+                httpPort = null;
+            }
+
             return lodash.isNull(httpPort) ? 'Not yet deployed' : ctrl.version.ui.invocationURL + '/';
         }
 
@@ -423,7 +432,16 @@
          * @returns {boolean}
          */
         function isDisabledTestButton() {
-            var httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
+            var httpPort = lodash.get(ctrl.version, 'ui.deployResult.status.httpPort', null);
+
+            if (lodash.isNil(httpPort)) {
+                httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
+            }
+
+            if (httpPort && lodash.includes(['building', 'error'], lodash.get(ctrl.version, 'ui.deployResult.status.state'))) {
+                httpPort = null;
+            }
+
             return lodash.isNull(httpPort) || ctrl.uploadingData.uploading || ctrl.testing;
         }
 
