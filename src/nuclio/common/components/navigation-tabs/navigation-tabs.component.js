@@ -10,11 +10,12 @@
             controller: NclNavigationTabsController
         });
 
-    function NclNavigationTabsController($rootScope, lodash) {
+    function NclNavigationTabsController($rootScope, $state, lodash) {
         var ctrl = this;
 
         ctrl.isTestPaneClosed = false;
         ctrl.isFunctionBuilding = isFunctionBuilding;
+        ctrl.isToggleButtonVisible = isToggleButtonVisible;
         ctrl.toggleTestPane = toggleTestPane;
 
         //
@@ -24,9 +25,27 @@
         /**
          * Checks if it's 'building' state.
          * @param {string} status - current status
+         * @returns {boolean}
          */
         function isFunctionBuilding(status) {
             return !lodash.includes(['ready', 'error', 'not yet deployed'], status);
+        }
+
+        /**
+         * Checks if 'toggle test pane' button should be visible.
+         * It should, only when 'code' tab is reached.
+         * @returns {boolean}
+         */
+        function isToggleButtonVisible() {
+            var isButtonVisible = lodash.get($state.$current, 'self.url', null) === '/code';
+
+            if (!isButtonVisible) {
+                ctrl.isTestPaneClosed = false;
+
+                $rootScope.$broadcast('navigation-tabs_toggle-test-pane', {closeTestPane: ctrl.isTestPaneClosed});
+            }
+
+            return isButtonVisible;
         }
 
         /**
