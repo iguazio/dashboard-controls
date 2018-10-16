@@ -156,6 +156,17 @@
                 .catch(function () {
                     ctrl.version.ui.invocationURL = '';
                 });
+
+            lodash.set(ctrl.version, 'spec.build', lodash.merge({
+                image: '',
+                readinessTimeout: 60,
+                noCache: false,
+                offline: false,
+                runtimeAttributes: {
+                    repositories: [],
+                    dependencies: []
+                }
+            }, ctrl.version.spec.build));
         }
 
         //
