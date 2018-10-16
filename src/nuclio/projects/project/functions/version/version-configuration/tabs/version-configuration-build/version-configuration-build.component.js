@@ -16,7 +16,9 @@
         var uploadType = '';
 
         ctrl.actions = initActions();
-        ctrl.build = {};
+        ctrl.build = {
+            runtimeAttributes: {}
+        };
         ctrl.script = {
             uploading: false,
             uploaded: false,
@@ -52,9 +54,14 @@
             ctrl.build.commands = lodash.get(ctrl.version, 'spec.build.commands', []);
             ctrl.build.commands = ctrl.build.commands.join('\n');
 
-            if (!lodash.isNil(lodash.get(ctrl.version, 'spec.build.dependencies'))) {
-                ctrl.build.dependencies = lodash.get(ctrl.version, 'spec.build.dependencies', []);
-                ctrl.build.dependencies = ctrl.build.dependencies.join('\n');
+            if (!lodash.isEmpty(lodash.get(ctrl.version, 'spec.build.runtimeAttributes.dependencies'))) {
+                ctrl.build.runtimeAttributes.dependencies = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.dependencies', []);
+                ctrl.build.runtimeAttributes.dependencies = ctrl.build.runtimeAttributes.dependencies.join('\n');
+            }
+
+            if (!lodash.isEmpty(lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories'))) {
+                ctrl.build.runtimeAttributes.repositories = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories', []);
+                ctrl.build.runtimeAttributes.repositories = ctrl.build.runtimeAttributes.repositories.join('\n');
             }
         }
 
@@ -68,7 +75,7 @@
          * @param {string} field
          */
         function inputValueCallback(newData, field) {
-            if (lodash.includes(['commands', 'dependencies'], field)) {
+            if (lodash.includes(['commands', 'runtimeAttributes.dependencies', 'runtimeAttributes.repositories'], field)) {
                 lodash.set(ctrl.build, field, newData);
                 lodash.set(ctrl.version, 'spec.build.' + field, newData.replace(/\r/g, '\n').split(/\n+/));
             } else {
