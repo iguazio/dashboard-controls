@@ -157,14 +157,16 @@
                     ctrl.version.ui.invocationURL = '';
                 });
 
-            if (!lodash.has(ctrl.version, 'status')) {
-                lodash.assign(ctrl.version.spec.build, {
-                    image: '',
-                    readinessTimeout: 60,
-                    noCache: false,
-                    offline: false
-                });
-            }
+            lodash.set(ctrl.version, 'spec.build', lodash.merge({
+                image: '',
+                readinessTimeout: 60,
+                noCache: false,
+                offline: false,
+                runtimeAttributes: {
+                    repositories: [],
+                    dependencies: []
+                }
+            }, ctrl.version.spec.build));
         }
 
         //
