@@ -23,7 +23,7 @@
             var classesList = {
                 trigger: [
                     {
-                        id: 'kafka',
+                        id: 'kafka-cluster',
                         name: 'Kafka',
                         url: 'string',
                         attributes: [
@@ -40,6 +40,51 @@
                                 type: 'input',
                                 fieldType: 'input',
                                 allowEmpty: false
+                            },
+                            {
+                                name: 'consumerGroup',
+                                pattern: 'string',
+                                type: 'input',
+                                fieldType: 'input',
+                                allowEmpty: true
+                            },
+                            {
+                                name: 'initialOffset',
+                                values: [
+                                    {
+                                        id: 'earliest',
+                                        name: 'Earliest',
+                                        visible: true
+                                    },
+                                    {
+                                        id: 'latest',
+                                        name: 'Latest',
+                                        visible: true
+                                    }
+                                ],
+                                defaultValue: 'latest',
+                                pattern: 'string',
+                                type: 'dropdown'
+                            },
+                            {
+                                name: 'sasl',
+                                values: {
+                                    enable: {
+                                        name: 'saslEnabled',
+                                        type: 'checkbox',
+                                        defaultValue: false
+                                    },
+                                    user: {
+                                        name: 'saslUsername',
+                                        type: 'input',
+                                        defaultValue: ''
+                                    },
+                                    password: {
+                                        name: 'saslPassword',
+                                        type: 'input',
+                                        defaultValue: ''
+                                    },
+                                }
                             }
                         ]
                     },
@@ -82,6 +127,13 @@
                                 type: 'input',
                                 fieldType: 'input',
                                 allowEmpty: false
+                            },
+                            {
+                                name: 'queueName',
+                                pattern: 'string',
+                                type: 'input',
+                                fieldType: 'input',
+                                allowEmpty: true
                             }
                         ]
                     },
@@ -157,6 +209,13 @@
                         id: 'http',
                         name: 'HTTP',
                         maxWorkers: 'number',
+                        workerAvailabilityTimeoutMilliseconds: {
+                            name: 'workerAvailabilityTimeoutMilliseconds',
+                            pattern: 'number',
+                            type: 'number-input',
+                            allowEmpty: false,
+                            defaultValue: 0
+                        },
                         attributes: [
                             {
                                 name: 'port',
@@ -170,12 +229,19 @@
                                 pattern: 'object',
                                 type: 'key-value'
                             }
-                        ]
+                        ],
+                        annotations: {
+                            name: 'annotations',
+                            pattern: 'object',
+                            type: 'key-value'
+                        }
                     },
                     {
                         id: 'v3ioStream',
                         name: 'v3io stream',
                         url: 'string',
+                        username: 'string',
+                        password: 'string',
                         attributes: [
                             {
                                 name: 'partitions',
