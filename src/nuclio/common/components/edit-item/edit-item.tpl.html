@@ -120,6 +120,23 @@
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.workerAvailabilityTimeoutMilliseconds)">
+                <div class="field-label">Worker availability timeout (seconds)</div>
+                <igz-number-input data-form-object="$ctrl.editItemForm"
+                                  data-input-name="{{$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.name}}"
+                                  data-current-value="$ctrl.item.workerAvailabilityTimeoutMilliseconds"
+                                  data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
+                                  data-update-number-input-field="workerAvailabilityTimeoutMilliseconds"
+                                  data-placeholder=""
+                                  data-decimal-number="0"
+                                  data-value-step="1"
+                                  data-validation-is-required="!$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.allowEmpty"
+                                  data-allow-empty-field="$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.allowEmpty"
+                                  data-min-value="0">
+                </igz-number-input>
+
+            </div>
+            <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && attribute.type === 'input'"
                  data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
                 <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div>
@@ -131,7 +148,7 @@
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-pattern="$ctrl.getValidationPattern(attribute.pattern)"
                                             data-validation-is-required="!attribute.allowEmpty"
-                                            data-placeholder-text="Type {{attribute.name}}..."
+                                            data-placeholder-text="Type {{$ctrl.convertFromCamelCase(attribute.name) | lowercase}}..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="attributes.{{attribute.name}}">
                 </igz-validating-input-field>
@@ -141,7 +158,7 @@
                  data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
                 <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div>
                 <igz-default-dropdown data-select-property-only="id"
-                                      data-placeholder="Seek to..."
+                                      data-placeholder="{{$ctrl.convertFromCamelCase(attribute.name) | lowercase}}..."
                                       data-values-array="attribute.values"
                                       data-form-object="$ctrl.editItemForm"
                                       data-is-required="true"
@@ -150,7 +167,6 @@
                                       data-selected-item="$ctrl.getAttrValue(attribute.name)"
                                       data-item-select-callback="$ctrl.onSelectDropdownValue(item, field)"
                                       data-item-select-field="attributes.{{attribute.name}}">
-
                 </igz-default-dropdown>
             </div>
             <div class="igz-col-45 attribute-field"
@@ -169,16 +185,95 @@
                                   data-validation-is-required="!attribute.allowEmpty"
                                   data-allow-empty-field="attribute.allowEmpty"
                                   data-min-value="0"
-                                  data-max-value="attribute.maxValue"></igz-number-input>
+                                  data-max-value="attribute.maxValue">
+                </igz-number-input>
+            </div>
+            <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.username)">
+                <div class="field-label">Username</div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-input-name="username"
+                                            data-input-value="$ctrl.item.username"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-pattern="$ctrl.stringValidationPattern"
+                                            data-validation-is-required="false"
+                                            data-placeholder-text="Type username..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="username">
+                </igz-validating-input-field>
+            </div>
+            <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.password)">
+                <div class="field-label">Password</div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-input-name="password"
+                                            data-input-value="$ctrl.item.password"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-pattern="$ctrl.stringValidationPattern"
+                                            data-validation-is-required="false"
+                                            data-placeholder-text="Type password..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="password">
+                </igz-validating-input-field>
+            </div>
+            <div class="igz-col-45 attribute-field attribute-field-checkbox"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.sasl.enable)">
+                <div class="checkbox-block">
+                    <input type="checkbox"
+                           class="small"
+                           id="saslEnable"
+                           data-ng-model="$ctrl.item.attributes.sasl.enable">
+                    <label for="saslEnable" class="checkbox-inline field-label">
+                        SASL Enable
+                    </label>
+                </div>
+            </div>
+            <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.sasl.user)">
+                <div class="field-label">SASL Username</div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-input-name="itemSASLUsername"
+                                            data-input-value="$ctrl.item.attributes.sasl.user"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-pattern="$ctrl.stringValidationPattern"
+                                            data-validation-is-required="false"
+                                            data-placeholder-text="Type SASL username..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="attributes.sasl.user">
+                </igz-validating-input-field>
+            </div>
+            <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.sasl.password)">
+                <div class="field-label">SASL Password</div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-input-name="itemSASLPassword"
+                                            data-input-value="$ctrl.item.attributes.sasl.password"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-pattern="$ctrl.stringValidationPattern"
+                                            data-validation-is-required="false"
+                                            data-placeholder-text="Type SASL password..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="attributes.sasl.password">
+                </igz-validating-input-field>
             </div>
             <div class="igz-col-91 attribute-field ingresses-wrapper"
                  data-ng-if="$ctrl.isClassSelected() && $ctrl.isHttpTrigger()">
+
+                <div class="field-label">Ingresses</div>
 
                 <div class="table-headers">
                     <div class="key-header">Host</div>
                     <div class="value-header">Paths</div>
                 </div>
-                <div data-ng-if="!$ctrl.isScrollNeeded()">
+                <div data-ng-if="!$ctrl.isScrollNeeded('ingresses')">
                     <div class="table-body" data-ng-repeat="ingress in $ctrl.ingresses">
                         <ncl-key-value-input class="new-label-input"
                                              data-list-class="ingresses-wrapper"
@@ -188,11 +283,12 @@
                                              data-use-type="false"
                                              data-submit-on-fly="true"
                                              data-item-index="$index"
-                                             data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                             data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                             data-action-handler-callback="$ctrl.handleIngressAction(actionType, index)"
+                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                        </ncl-key-value-input>
                     </div>
                 </div>
-                <div data-ng-if="$ctrl.isScrollNeeded()"
+                <div data-ng-if="$ctrl.isScrollNeeded('ingresses')"
                      class="igz-scrollable-container scrollable-ingresses"
                      data-ng-scrollbars
                      data-ng-scrollbars-config="$ctrl.scrollConfig">
@@ -204,8 +300,9 @@
                                              data-use-type="false"
                                              data-submit-on-fly="true"
                                              data-item-index="$index"
-                                             data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                             data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                             data-action-handler-callback="$ctrl.handleIngressAction(actionType, index)"
+                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                        </ncl-key-value-input>
                     </div>
                 </div>
                 <div class="create-ingress-button"
@@ -214,6 +311,59 @@
                     Create a new ingress
                 </div>
             </div>
+
+
+            <div class="igz-col-91 attribute-field annotations-wrapper"
+                 data-ng-if="$ctrl.isClassSelected() && $ctrl.isHttpTrigger()">
+
+                <div class="field-label">Annotations</div>
+
+                <div class="table-headers">
+                    <div class="key-header">Key</div>
+                    <div class="value-header">Value</div>
+                </div>
+                <div data-ng-if="!$ctrl.isScrollNeeded('annotations')">
+                    <div class="table-body" data-ng-repeat="annotation in $ctrl.annotations">
+                        <ncl-key-value-input class="new-label-input"
+                                             data-list-class="annotations-wrapper"
+                                             data-change-state-broadcast="change-state-deploy-button"
+                                             data-key-optional="true"
+                                             data-row-data="annotation"
+                                             data-use-type="false"
+                                             data-submit-on-fly="true"
+                                             data-item-index="$index"
+                                             data-action-handler-callback="$ctrl.handleAnnotationAction(actionType, index)"
+                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                        </ncl-key-value-input>
+                    </div>
+                </div>
+
+                <div data-ng-if="$ctrl.isScrollNeeded('annotations')"
+                     class="igz-scrollable-container scrollable-annotations"
+                     data-ng-scrollbars
+                     data-ng-scrollbars-config="$ctrl.scrollConfig">
+                    <div class="table-body" data-ng-repeat="annotation in $ctrl.annotations">
+                        <ncl-key-value-input class="new-label-input"
+                                             data-list-class="annotations-wrapper"
+                                             data-change-state-broadcast="change-state-deploy-button"
+                                             data-key-optional="true"
+                                             data-row-data="annotation"
+                                             data-use-type="false"
+                                             data-submit-on-fly="true"
+                                             data-item-index="$index"
+                                             data-action-handler-callback="$ctrl.handleAnnotationAction(actionType, index)"
+                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                        </ncl-key-value-input>
+                    </div>
+                </div>
+
+                <div class="create-annotation-button"
+                     data-ng-click="$ctrl.addNewAnnotation($event)">
+                    <span class="igz-icon-add-round"></span>
+                    Create a new annotation
+                </div>
+            </div>
+
         </div>
     </form>
 </div>

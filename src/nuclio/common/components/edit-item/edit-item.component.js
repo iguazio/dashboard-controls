@@ -42,11 +42,13 @@
         ctrl.isNil = lodash.isNil;
 
         ctrl.addNewIngress = addNewIngress;
+        ctrl.addNewAnnotation = addNewAnnotation;
         ctrl.convertFromCamelCase = convertFromCamelCase;
         ctrl.getAttrValue = getAttrValue;
         ctrl.getValidationPattern = getValidationPattern;
         ctrl.getInputValue = getInputValue;
-        ctrl.handleAction = handleAction;
+        ctrl.handleIngressAction = handleIngressAction;
+        ctrl.handleAnnotationAction = handleAnnotationAction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isClassSelected = isClassSelected;
         ctrl.isScrollNeeded = isScrollNeeded;
@@ -103,6 +105,10 @@
             }
 
             if (!ctrl.isVolumeType() && ctrl.isHttpTrigger()) {
+                if (lodash.isNil(ctrl.item.workerAvailabilityTimeoutMilliseconds)) {
+                    ctrl.item.workerAvailabilityTimeoutMilliseconds = 0;
+                }
+
                 ctrl.ingresses = lodash.chain(ctrl.item.attributes.ingresses)
                     .defaultTo([])
                     .map(function (ingress) {
@@ -117,6 +123,39 @@
                         };
                     })
                     .value();
+
+                ctrl.annotations = lodash.chain(ctrl.item.annotations)
+                    .defaultTo([])
+                    .map(function (value, key) {
+                        return {
+                            name: key,
+                            value: value,
+                            ui: {
+                                editModeActive: false,
+                                isFormValid: true,
+                                name: 'trigger.annotation'
+                            }
+                        };
+                    })
+                    .value();
+            }
+
+            if (!ctrl.isVolumeType() && isKafkaTrigger()) {
+                lodash.defaultsDeep(ctrl.item.attributes, {
+                    initialOffset: 'latest',
+                    sasl: {
+                        enabled: false,
+                        user: '',
+                        password: ''
+                    }
+                });
+            }
+
+            if (!ctrl.isVolumeType() && isv3ioTrigger()) {
+                lodash.defaults(ctrl.item, {
+                    username: '',
+                    password: ''
+                });
             }
 
             $scope.$on('deploy-function-version', ctrl.onSubmitForm);
@@ -143,7 +182,7 @@
         //
 
         /**
-         * Adds new variable
+         * Adds new ingress
          */
         function addNewIngress(event) {
             $timeout(function () {
@@ -163,12 +202,32 @@
         }
 
         /**
-         * Updates function`s variables
+         * Adds new annotation
          */
-        function updateIngresses() {
-            lodash.forEach(ctrl.ingresses, function (ingress) {
-                if (!ingress.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: ingress.ui.name, isDisabled: true});
+        function addNewAnnotation(event) {
+            $timeout(function () {
+                if (ctrl.annotations.length < 1 || lodash.last(ctrl.annotations).ui.isFormValid) {
+                    ctrl.annotations.push({
+                        name: '',
+                        value: '',
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'trigger.annotation'
+                        }
+                    });
+                    event.stopPropagation();
+                }
+            }, 50);
+        }
+
+        /**
+         * Checks validation of function`s variables
+         */
+        function checkValidation(variableName) {
+            lodash.forEach(ctrl[variableName], function (variable) {
+                if (!variable.ui.isFormValid) {
+                    $rootScope.$broadcast('change-state-deploy-button', {component: variable.ui.name, isDisabled: true});
                 }
             });
         }
@@ -203,15 +262,30 @@
         }
 
         /**
-         * Handler on specific action type
+         * Handler on specific action type of trigger's ingress
          * @param {string} actionType
          * @param {number} index - index of variable in array
          */
-        function handleAction(actionType, index) {
+        function handleIngressAction(actionType, index) {
             if (actionType === 'delete') {
                 ctrl.ingresses.splice(index, 1);
+                lodash.unset(ctrl.item, 'attributes.ingresses.' + index);
 
-                updateIngresses();
+                checkValidation('ingresses');
+            }
+        }
+
+        /**
+         * Handler on specific action type of trigger's annotation
+         * @param {string} actionType
+         * @param {number} index - index of variable in array
+         */
+        function handleAnnotationAction(actionType, index) {
+            if (actionType === 'delete') {
+                var deletedItems = ctrl.annotations.splice(index, 1);
+                lodash.unset(ctrl.item, 'annotations.' + lodash.head(deletedItems).name);
+
+                checkValidation('annotations');
             }
         }
 
@@ -225,10 +299,11 @@
 
         /**
          * Returns true if scrollbar is necessary
+         * @param {string} itemsType - items where scroll is needed (e.g. 'ingresses', 'annotations')
          * @returns {boolean}
          */
-        function isScrollNeeded() {
-            return ctrl.ingresses.length > 10;
+        function isScrollNeeded(itemsType) {
+            return ctrl[itemsType].length > 10;
         }
 
         /**
@@ -274,15 +349,22 @@
          * @param {number} index
          */
         function onChangeData(variable, index) {
-            ctrl.ingresses[index] = variable;
+            if (variable.ui.name === 'trigger.annotation') {
+                ctrl.annotations[index] = variable;
 
-            updateIngresses();
+                checkValidation('annotations');
+            } else if (variable.ui.name === 'ingress') {
+                ctrl.ingresses[index] = variable;
+
+                checkValidation('ingresses');
+            }
         }
 
         /**
          * Update item class callback
          * @param {Object} item - item class\kind
          */
+        // eslint-disable-next-line
         function onSelectClass(item) {
             ctrl.selectedClass = item;
 
@@ -315,7 +397,7 @@
                 return;
             }
 
-            ctrl.item = lodash.omit(ctrl.item, ['maxWorkers', 'url', 'secret']);
+            ctrl.item = lodash.omit(ctrl.item, ['maxWorkers', 'url', 'secret', 'annotations', 'workerAvailabilityTimeoutMilliseconds', 'username', 'password']);
 
             var nameDirty = ctrl.editItemForm.itemName.$dirty;
             var nameInvalid = ctrl.editItemForm.itemName.$invalid;
@@ -336,9 +418,35 @@
                 ctrl.item.secret = '';
             }
 
+            if (!lodash.isNil(item.annotations)) {
+                ctrl.annotations = [];
+            }
+
+            if (!lodash.isNil(item.workerAvailabilityTimeoutMilliseconds)) {
+                ctrl.item.workerAvailabilityTimeoutMilliseconds = item.workerAvailabilityTimeoutMilliseconds.defaultValue;
+            }
+
+            if (!lodash.isNil(item.username)) {
+                ctrl.item.username = '';
+            }
+
+            if (!lodash.isNil(item.password)) {
+                ctrl.item.password = '';
+            }
+
+            if (!lodash.isNil(item.workerAvailabilityTimeoutMilliseconds)) {
+                ctrl.item.workerAvailabilityTimeoutMilliseconds = item.workerAvailabilityTimeoutMilliseconds.defaultValue;
+            }
+
             lodash.each(item.attributes, function (attribute) {
                 if (attribute.name === 'ingresses') {
                     ctrl.ingresses = [];
+                } else if (attribute.name === 'sasl') {
+                    ctrl.item.attributes.sasl = {};
+
+                    lodash.forEach(attribute.values, function (value, key) {
+                        lodash.set(ctrl.item.attributes, ['sasl', key], value.defaultValue);
+                    });
                 } else {
                     lodash.set(ctrl.item.attributes, attribute.name, lodash.get(attribute, 'defaultValue', ''));
                 }
@@ -420,21 +528,25 @@
                                 }
 
                                 if (attribute.name === 'ingresses') {
-                                    var ingresses = lodash.defaultTo(ctrl.item.attributes[attribute.name], {});
+                                    var newIngresses = {};
 
                                     lodash.forEach(ctrl.ingresses, function (ingress, key) {
-                                        ingresses[key.toString()] = {
+                                        newIngresses[key.toString()] = {
                                             paths: ingress.value.split(',')
                                         };
 
                                         if (!lodash.isEmpty(ingress.name)) {
-                                            ingresses[key.toString()].host = ingress.name;
+                                            newIngresses[key.toString()].host = ingress.name;
                                         }
                                     });
 
-                                    ctrl.item.attributes[attribute.name] = ingresses;
+                                    ctrl.item.attributes[attribute.name] = newIngresses;
                                 }
                             });
+
+                            if (ctrl.item.kind === 'http') {
+                                updateAnnotaions();
+                            }
 
                             $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.item.ui.name, isDisabled: false});
 
@@ -443,6 +555,19 @@
                     }
                 }
             }
+        }
+
+        /**
+         * Updates annotations fields
+         */
+        function updateAnnotaions() {
+            var newAnnotations = {};
+
+            lodash.forEach(ctrl.annotations, function (label) {
+                newAnnotations[label.name] = label.value;
+            });
+
+            lodash.set(ctrl.item, 'annotations', newAnnotations);
         }
 
         /**
@@ -482,6 +607,22 @@
             };
 
             return lodash.get(placeholders, ctrl.type, placeholders.default);
+        }
+
+        /**
+         * Checks for `kafka` triggers
+         * @returns {boolean}
+         */
+        function isKafkaTrigger() {
+            return ctrl.selectedClass.id === 'kafka-cluster';
+        }
+
+        /**
+         * Checks for `kafka` triggers
+         * @returns {boolean}
+         */
+        function isv3ioTrigger() {
+            return ctrl.selectedClass.id === 'v3ioStream';
         }
     }
 }());
