@@ -54,15 +54,8 @@
             ctrl.build.commands = lodash.get(ctrl.version, 'spec.build.commands', []);
             ctrl.build.commands = ctrl.build.commands.join('\n');
 
-            if (!lodash.isEmpty(lodash.get(ctrl.version, 'spec.build.runtimeAttributes.dependencies'))) {
-                ctrl.build.runtimeAttributes.dependencies = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.dependencies', []);
-                ctrl.build.runtimeAttributes.dependencies = ctrl.build.runtimeAttributes.dependencies.join('\n');
-            }
-
-            if (!lodash.isEmpty(lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories'))) {
-                ctrl.build.runtimeAttributes.repositories = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories', []);
-                ctrl.build.runtimeAttributes.repositories = ctrl.build.runtimeAttributes.repositories.join('\n');
-            }
+            ctrl.build.runtimeAttributes.dependencies = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.dependencies', []).join('\n');
+            ctrl.build.runtimeAttributes.repositories = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories', []).join('\n');
         }
 
         //
