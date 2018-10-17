@@ -125,29 +125,21 @@
             }
 
             if (isKafkaTrigger()) {
-                if (lodash.isNil(ctrl.item.attributes.initialOffset)) {
-                    ctrl.item.attributes.initialOffset = 'latest';
-                }
-
-                if (lodash.isNil(ctrl.item.attributes.sasl)) {
-                    ctrl.item.attributes.sasl = {};
-                }
-
-                ctrl.item.attributes.sasl = lodash.merge({
-                    enable: false,
-                    user: '',
-                    password: ''
-                }, ctrl.item.attributes.sasl);
+                lodash.defaultsDeep(ctrl.item.attributes, {
+                    initialOffset: 'latest',
+                    sasl: {
+                        enabled: false,
+                        user: '',
+                        password: ''
+                    }
+                });
             }
 
             if (isv3ioTrigger()) {
-                if (lodash.isNil(ctrl.item.username)) {
-                    ctrl.item.username = '';
-                }
-
-                if (lodash.isNil(ctrl.item.password)) {
-                    ctrl.item.password = '';
-                }
+                lodash.defaults(ctrl.item, {
+                    username: '',
+                    password: ''
+                });
             }
         }
 

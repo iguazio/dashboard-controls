@@ -83,7 +83,7 @@
                                         name: 'saslPassword',
                                         type: 'input',
                                         defaultValue: ''
-                                    },
+                                    }
                                 }
                             }
                         ]
