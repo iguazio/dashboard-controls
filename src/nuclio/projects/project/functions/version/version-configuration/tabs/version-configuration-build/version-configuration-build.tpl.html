@@ -8,6 +8,19 @@
     <form name="$ctrl.buildForm" class="build-wrapper">
         <div class="igz-row">
             <div class="igz-col-100 build-field">
+                <div class="field-label">Image name</div>
+                <igz-validating-input-field data-field-type="input"
+                                            data-input-name="imageName"
+                                            data-input-value="$ctrl.version.spec.build.image"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.buildForm"
+                                            data-placeholder-text="Type an image name..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="spec.build.image"
+                                            class="nuclio-validating-input">
+                </igz-validating-input-field>
+            </div>
+            <div class="igz-col-100 build-field">
                 <div class="field-label">Base image</div>
                 <igz-validating-input-field data-field-type="input"
                                             data-input-name="baseImage"
@@ -46,6 +59,19 @@
                                             class="nuclio-validating-input build-command-field">
                 </igz-validating-input-field>
             </div>
+            <div class="igz-col-100 build-field">
+                <div class="field-label">Readiness timeout (seconds)</div>
+                <igz-number-input data-form-object="$ctrl.buildForm"
+                                  data-input-name="readinessTimeout"
+                                  data-current-value="$ctrl.version.spec.build.readinessTimeout"
+                                  data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)"
+                                  data-update-number-input-field="spec.build.readinessTimeout"
+                                  data-allow-empty-field="false"
+                                  data-value-step="1"
+                                  data-validation-is-required="true"
+                                  data-min-value="0"
+                                  data-default-value="60"></igz-number-input>
+            </div>
             <div class="igz-col-100 build-field"
                  data-ng-if="$ctrl.version.spec.runtime === 'java'">
                 <div class="field-label">Repositories</div>
@@ -73,6 +99,16 @@
                                             data-update-data-field="runtimeAttributes.dependencies"
                                             class="nuclio-validating-input build-dependencies-field">
                 </igz-validating-input-field>
+            </div>
+            <div class="igz-col-100 build-field build-checkboxes">
+                <div class="checkbox-block">
+                    <input type="checkbox" class="small" id="noCache" data-ng-model="$ctrl.version.spec.build.noCache">
+                    <label for="noCache" class="checkbox-inline">Disable cache</label>
+                </div>
+                <div class="checkbox-block">
+                    <input type="checkbox" class="small" id="offline" data-ng-model="$ctrl.version.spec.build.offline">
+                    <label for="offline" class="checkbox-inline">No internet access</label>
+                </div>
             </div>
             <div class="igz-col-100 build-field files-field">
                 <div class="uploading-files">
