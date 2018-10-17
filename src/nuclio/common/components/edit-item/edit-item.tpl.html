@@ -7,7 +7,7 @@
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-input-name="itemName"
-                                            data-input-value="$ctrl.item.name"
+                                            data-input-value="$ctrl.getInputValue()"
                                             data-is-focused="true"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
@@ -19,11 +19,12 @@
                     The inputs you provided are invalid or incorrect
                 </div>
             </div>
+
             <div class="igz-col-12-5 class-field">
                 <igz-default-dropdown data-select-property-only="id"
                                       data-input-name="itemClass"
                                       data-is-required="true"
-                                      data-placeholder="Select class..."
+                                      data-placeholder="{{ $ctrl.placeholder }}"
                                       data-prevent-drop-up="true"
                                       data-values-array="$ctrl.classList"
                                       data-selected-item="$ctrl.item.kind"
@@ -36,7 +37,7 @@
 
         <div class="igz-row">
             <div class="igz-col-100 no-class-selected"
-                 data-ng-if="!$ctrl.isClassSelected()">Please select a class
+                 data-ng-if="!$ctrl.isClassSelected()">{{ $ctrl.placeholder }}
             </div>
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.url)">
@@ -53,6 +54,55 @@
                                             data-update-data-field="url">
                 </igz-validating-input-field>
             </div>
+
+            <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volumeMount.mountPath)">
+                <div class="field-label">Path</div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-input-name="itemPath"
+                                            data-input-value="$ctrl.item.volumeMount.mountPath"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-is-required="true"
+                                            data-placeholder-text="Type Path..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="volumeMount.mountPath">
+                </igz-validating-input-field>
+            </div>
+
+            <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.hostPath.path)">
+                <div class="field-label">Host path</div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-input-name="hostPath"
+                                            data-input-value="$ctrl.item.volume.hostPath.path"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-is-required="true"
+                                            data-placeholder-text="Type host path..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="volume.hostPath.path">
+                </igz-validating-input-field>
+            </div>
+
+            <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.flexVolume.secretRef.name)">
+                <div class="field-label">Secret name</div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-input-name="secretRef"
+                                            data-input-value="$ctrl.item.volume.flexVolume.secretRef.name"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-is-required="true"
+                                            data-placeholder-text="Type secret name..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="volume.flexVolume.secretRef.name">
+                </igz-validating-input-field>
+            </div>
+
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.maxWorkers)">
                 <div class="field-label">Max workers</div>

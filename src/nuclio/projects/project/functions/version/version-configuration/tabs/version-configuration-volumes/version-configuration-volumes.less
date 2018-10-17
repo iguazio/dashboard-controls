@@ -1,5 +1,5 @@
-.ncl-version-configuration-data-bindings {
-    .ncl-version-binding {
+.ncl-version-configuration-volumes {
+    .ncl-version-volume {
         .common-table-header {
             border: none;
             padding-left: 24px;
@@ -30,6 +30,20 @@
         }
 
         .common-table-body {
+            .ncl-collapsing-row .item-row {
+                .item-name {
+                    width: 22%;
+                }
+
+                .item-class {
+                    width: 18.5%;
+                }
+
+                .item-info {
+                    width: 58%;
+                }
+            }
+
             .common-table-row {
                 &:not(.read-only):hover {
                     .common-table-cells-container {
@@ -41,24 +55,10 @@
                     }
                 }
             }
-
-            .ncl-collapsing-row .item-row {
-                .item-name {
-                    width: 22%;
-                }
-
-                .item-class {
-                    width: 20%;
-                }
-
-                .item-info {
-                    width: 58%;
-                }
-            }
         }
     }
 
-    .create-binding-button {
+    .create-volume-button {
         display: flex;
         align-items: center;
         padding-left: 16px;

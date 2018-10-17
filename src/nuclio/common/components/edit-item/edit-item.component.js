@@ -1,3 +1,4 @@
+/* eslint max-statements: ["error", 100] */
 (function () {
     'use strict';
 
@@ -34,6 +35,7 @@
         ctrl.arrayIntValidationPattern = /^(\d+[-,]?)*\d$/;
         ctrl.arrayStrValidationPattern = /^.{1,128}$/;
         ctrl.stringValidationPattern = /^.{1,128}$/;
+        ctrl.placeholder = '';
 
         ctrl.isShowFieldError = FormValidationService.isShowFieldError;
         ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
@@ -43,11 +45,13 @@
         ctrl.convertFromCamelCase = convertFromCamelCase;
         ctrl.getAttrValue = getAttrValue;
         ctrl.getValidationPattern = getValidationPattern;
+        ctrl.getInputValue = getInputValue;
         ctrl.handleAction = handleAction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isClassSelected = isClassSelected;
         ctrl.isScrollNeeded = isScrollNeeded;
         ctrl.isHttpTrigger = isHttpTrigger;
+        ctrl.isVolumeType = isVolumeType;
         ctrl.onChangeData = onChangeData;
         ctrl.onSubmitForm = onSubmitForm;
         ctrl.onSelectClass = onSelectClass;
@@ -70,7 +74,8 @@
          * Initialization method
          */
         function onInit() {
-            $scope.$on('deploy-function-version', ctrl.onSubmitForm);
+            ctrl.placeholder = getPlaceholder();
+
             $document.on('click', function (event) {
                 if (!lodash.isNil(ctrl.editItemForm)) {
                     onSubmitForm(event);
@@ -85,7 +90,19 @@
                 $timeout(validateCronClassValues);
             }
 
-            if (isHttpTrigger()) {
+            if (ctrl.isVolumeType()) {
+                var selectedTypeName = !lodash.isNil(ctrl.item.volume.hostPath) ? 'hostPath' : !ctrl.isNil(ctrl.item.volume.flexVolume) ? 'v3io' : null;
+
+                if (!lodash.isNil(selectedTypeName)) {
+                    ctrl.selectedClass = lodash.find(ctrl.classList, ['id', selectedTypeName]);
+
+                    if (!lodash.isNil(ctrl.selectedClass)) {
+                        ctrl.item.kind = ctrl.selectedClass.id;
+                    }
+                }
+            }
+
+            if (!ctrl.isVolumeType() && ctrl.isHttpTrigger()) {
                 ctrl.ingresses = lodash.chain(ctrl.item.attributes.ingresses)
                     .defaultTo([])
                     .map(function (ingress) {
@@ -101,6 +118,8 @@
                     })
                     .value();
             }
+
+            $scope.$on('deploy-function-version', ctrl.onSubmitForm);
         }
 
         /**
@@ -175,6 +194,15 @@
         }
 
         /**
+         * Returns value for Name input.
+         * Value could has different path depends on item type.
+         * @returns {string}
+         */
+        function getInputValue() {
+            return ctrl.type === 'volume' ? ctrl.item.volume.name : ctrl.item.name;
+        }
+
+        /**
          * Handler on specific action type
          * @param {string} actionType
          * @param {number} index - index of variable in array
@@ -209,7 +237,16 @@
          * @param {string} field
          */
         function inputValueCallback(newData, field) {
-            lodash.set(ctrl.item, field, newData);
+            if (ctrl.isVolumeType()) {
+                if (field === 'name') {
+                    lodash.set(ctrl.item, 'volumeMount.name', newData);
+                    lodash.set(ctrl.item, 'volume.name', newData);
+                } else {
+                    lodash.set(ctrl.item, field, newData);
+                }
+            } else {
+                lodash.set(ctrl.item, field, newData);
+            }
 
             validateCronClassValues();
         }
@@ -220,6 +257,15 @@
          */
         function isHttpTrigger() {
             return ctrl.selectedClass.id === 'http';
+        }
+
+        /**
+         * Checks is input have to be visible for sperific item type
+         * @param {string} name - input name
+         * @returns {boolean}
+         */
+        function isVolumeType(name) {
+            return ctrl.type === 'volume';
         }
 
         /**
@@ -238,13 +284,43 @@
          * @param {Object} item - item class\kind
          */
         function onSelectClass(item) {
+            ctrl.selectedClass = item;
+
+            if (ctrl.isVolumeType()) {
+                if (lodash.isNil(ctrl.item.volumeMount.mountPath)) {
+                    ctrl.item.volumeMount.mountPath = '';
+                }
+
+                if (item.id === 'hostPath' && lodash.isNil(ctrl.item.volume.hostPath)) {
+
+                    // delete values from type 'v3io'
+                    delete ctrl.item.volume.flexVolume;
+
+                    lodash.set(ctrl.item, 'volume.hostPath.path', '');
+                }
+
+                if (item.id === 'v3io' && lodash.isNil(ctrl.item.volume.flexVolume)) {
+
+                    // delete values from type 'hostPath'
+                    delete ctrl.item.volume.hostPath;
+
+                    ctrl.item.volume.flexVolume = {
+                        driver: 'v3io/fuse',
+                        secretRef: {
+                            name: ''
+                        }
+                    };
+                }
+
+                return;
+            }
+
             ctrl.item = lodash.omit(ctrl.item, ['maxWorkers', 'url', 'secret']);
 
             var nameDirty = ctrl.editItemForm.itemName.$dirty;
             var nameInvalid = ctrl.editItemForm.itemName.$invalid;
 
             ctrl.item.kind = item.id;
-            ctrl.selectedClass = item;
             ctrl.item.attributes = {};
             ctrl.item.ui.className = ctrl.selectedClass.name;
 
@@ -393,6 +469,19 @@
                     intervalAttribute.allowEmpty = scheduleInputIsFilled;
                 }
             }
+        }
+
+        /**
+         * Returns placeholder value depends on incoming component type
+         * @returns {string}
+         */
+        function getPlaceholder() {
+            var placeholders = {
+                volume: 'Please select a volume',
+                default: 'Please select a class'
+            };
+
+            return lodash.get(placeholders, ctrl.type, placeholders.default);
         }
     }
 }());
