@@ -97,47 +97,12 @@
          * @returns {Promise}
          */
         function handleAction(actionType, selectedItem) {
-            var item = lodash.find(ctrl.triggers, ['id', selectedItem.id]);
             if (actionType === 'delete') {
-                lodash.remove(ctrl.triggers, ['id', selectedItem.id]);
-                lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
+                deleteHandler(selectedItem);
             } else if (actionType === 'edit') {
-                item.ui.editModeActive = true;
+                editHandler(selectedItem);
             } else if (actionType === 'update') {
-                if (!lodash.isEmpty(selectedItem.id)) {
-                    lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
-                }
-
-                var triggerItem = {
-                    kind: selectedItem.kind,
-                    attributes: selectedItem.attributes
-                };
-
-                if (angular.isDefined(selectedItem.url)) {
-                    triggerItem.url = selectedItem.url;
-                }
-
-                if (angular.isDefined(selectedItem.maxWorkers)) {
-                    triggerItem.maxWorkers = Number(selectedItem.maxWorkers);
-                }
-
-                if (angular.isDefined(triggerItem.attributes)) {
-                    triggerItem.attributes = lodash.omitBy(triggerItem.attributes, function (attribute) {
-                        return !lodash.isNumber(attribute) && lodash.isEmpty(attribute);
-                    });
-
-                    if (lodash.isEmpty(triggerItem.attributes)) {
-                        triggerItem = lodash.omit(triggerItem, 'attributes');
-                    }
-                }
-
-                lodash.set(ctrl.version, 'spec.triggers.' + selectedItem.name, triggerItem);
-
-                selectedItem.id = selectedItem.name;
-
-                if (!lodash.isEqual(item, selectedItem)) {
-                    angular.copy(selectedItem, item);
-                }
+                updateHandler(selectedItem);
             } else {
                 DialogsService.alert('This functionality is not implemented yet.');
             }
@@ -150,6 +115,88 @@
             });
 
             VersionHelperService.checkVersionChange(ctrl.version);
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Deletes selected item
+         * @param {Array} selectedItem - an object of selected trigger
+         */
+        function deleteHandler(selectedItem) {
+            lodash.remove(ctrl.triggers, ['id', selectedItem.id]);
+            lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
+        }
+
+        /**
+         * Toggles item to edit mode
+         * @param {Array} selectedItem - an object of selected trigger
+         */
+        function editHandler(selectedItem) {
+            var aTrigger = lodash.find(ctrl.triggers, ['id', selectedItem.id]);
+            aTrigger.ui.editModeActive = true;
+        }
+
+        /**
+         * Updates data in selected item
+         * @param {Array} selectedItem - an object of selected trigger
+         */
+        // eslint-disable-next-line
+        function updateHandler(selectedItem) {
+            var currentTrigger = lodash.find(ctrl.triggers, ['id', selectedItem.id]);
+
+            if (!lodash.isEmpty(selectedItem.id)) {
+                lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
+            }
+
+            var triggerItem = {
+                kind: selectedItem.kind,
+                attributes: selectedItem.attributes
+            };
+
+            if (angular.isDefined(selectedItem.url)) {
+                triggerItem.url = selectedItem.url;
+            }
+
+            if (angular.isDefined(selectedItem.maxWorkers)) {
+                triggerItem.maxWorkers = Number(selectedItem.maxWorkers);
+            }
+
+            if (angular.isDefined(selectedItem.workerAvailabilityTimeoutMilliseconds)) {
+                triggerItem.workerAvailabilityTimeoutMilliseconds = Number(selectedItem.workerAvailabilityTimeoutMilliseconds);
+            }
+
+            if (angular.isDefined(selectedItem.username)) {
+                triggerItem.username = selectedItem.username;
+            }
+
+            if (angular.isDefined(selectedItem.password)) {
+                triggerItem.password = selectedItem.password;
+            }
+
+            if (angular.isDefined(triggerItem.attributes)) {
+                triggerItem.attributes = lodash.omitBy(triggerItem.attributes, function (attribute) {
+                    return !lodash.isNumber(attribute) && lodash.isEmpty(attribute);
+                });
+
+                if (lodash.isEmpty(triggerItem.attributes)) {
+                    triggerItem = lodash.omit(triggerItem, 'attributes');
+                }
+            }
+
+            if (angular.isDefined(selectedItem.annotations)) {
+                triggerItem.annotations = selectedItem.annotations;
+            }
+
+            lodash.set(ctrl.version, 'spec.triggers.' + selectedItem.name, triggerItem);
+
+            selectedItem.id = selectedItem.name;
+
+            if (!lodash.isEqual(currentTrigger, selectedItem)) {
+                angular.copy(selectedItem, currentTrigger);
+            }
         }
 
         /**

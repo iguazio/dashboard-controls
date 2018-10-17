@@ -21,11 +21,23 @@
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.maxWorkers)">
                         <span class="field-label">Max Workers</span>:&nbsp;{{ $ctrl.item.maxWorkers }};&nbsp;
                     </span>
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.workerAvailabilityTimeoutMilliseconds)">
+                        <span class="field-label">Worker availability timeout</span>:&nbsp;{{ $ctrl.item.workerAvailabilityTimeoutMilliseconds }};&nbsp;
+                    </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.secret)">
                         <span class="field-label">Secret</span>:&nbsp;{{ $ctrl.item.secret }};&nbsp;
                     </span>
                     <span data-ng-repeat="(key, value) in $ctrl.item.attributes">
                         <span class="field-label">{{ key }}</span>:&nbsp;{{ value }};&nbsp;
+                    </span>
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.annotations)">
+                        <span class="field-label">Annotations</span>: {{ $ctrl.item.annotations }};
+                    </span>
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.username)">
+                        <span class="field-label">Username</span>: {{ $ctrl.item.username }};
+                    </span>
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.password)">
+                        <span class="field-label">Password</span>: {{ $ctrl.item.password }};
                     </span>
                 </div>
                 <div data-ng-hide="!$ctrl.item.ui.expanded" class="expanded-item-info-block">
