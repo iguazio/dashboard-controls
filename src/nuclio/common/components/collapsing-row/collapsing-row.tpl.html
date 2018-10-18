@@ -10,15 +10,12 @@
             <div class="text-ellipsis item-name" data-ng-if="!$ctrl.isNil($ctrl.item.name)">
                 {{$ctrl.item.name}}
             </div>
-
             <div class="text-ellipsis item-name" data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.name)">
                 {{ $ctrl.item.volumeMount.name }}
             </div>
-
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.ui.className)">
                 {{$ctrl.item.ui.className}}
             </div>
-
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)">
                 Host path
             </div>
@@ -54,7 +51,6 @@
                     </span>
 
                     <!-- type Volume block -->
-
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.mountPath)">
                         <span class="field-label">Path</span>:&nbsp;{{ $ctrl.item.volumeMount.mountPath }};&nbsp;
                     </span>
@@ -64,8 +60,8 @@
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.secretRef.name)">
                         <span class="field-label">Secret name</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.secretRef.name }};&nbsp;
                     </span>
-
                 </div>
+
                 <div data-ng-hide="!$ctrl.item.ui.expanded" class="expanded-item-info-block">
                     <div class="igz-row common-table-cells-container item-info-row"
                          data-ng-if="!$ctrl.isNil($ctrl.item.url)">

@@ -111,14 +111,7 @@
         /**
          * According to given action name calls proper action handler
          * @param {string} actionType - e.g. `'delete'`, `'edit'`, `'update'`
-         * @param {Array} selectedItem - an object of selected data-binding
-         * @param {string} selectedItem.id - the identifier of the data-binding
-         * @param {string} selectedItem.name - the name of the data-binding
-         * @param {string} selectedItem.kind - the kind of data-binding (e.g. 'v3io', 'eventhub')
-         * @param {string} [selectedItem.secret] - the secret of data-binding (for v3io kind)
-         * @param {string} [selectedItem.url] - the URL of the data-binding (for v3io kind)
-         * @param {Object} [selectedItem.attributes] - more custom attributes of the data-binding
-         * @param {string} [selectedItem.attributes.containerID] - the container ID (for v3io kind)
+         * @param {Object} selectedItem - an object of selected volume
          */
         function handleAction(actionType, selectedItem) {
             if (actionType === 'delete') {
