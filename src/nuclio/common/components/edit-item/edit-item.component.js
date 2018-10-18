@@ -88,6 +88,8 @@
                 $timeout(validateCronClassValues);
             }
 
+            ctrl.item.workerAllocatorName = lodash.defaultTo(ctrl.item.workerAllocatorName, '');
+
             if (isHttpTrigger()) {
                 if (lodash.isNil(ctrl.item.workerAvailabilityTimeoutMilliseconds)) {
                     ctrl.item.workerAvailabilityTimeoutMilliseconds = 0;
@@ -336,7 +338,7 @@
          * @param {Object} item - item class\kind
          */
         function onSelectClass(item) {
-            ctrl.item = lodash.omit(ctrl.item, ['maxWorkers', 'url', 'secret', 'annotations', 'workerAvailabilityTimeoutMilliseconds', 'username', 'password']);
+            ctrl.item = lodash.omit(ctrl.item, ['maxWorkers', 'url', 'secret', 'annotations', 'workerAvailabilityTimeoutMilliseconds', 'username', 'password', 'workerAllocatorName']);
 
             var nameDirty = ctrl.editItemForm.itemName.$dirty;
             var nameInvalid = ctrl.editItemForm.itemName.$invalid;

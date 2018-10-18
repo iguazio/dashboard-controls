@@ -15,6 +15,9 @@
             </div>
             <div class="igz-col-70 item-info">
                 <div data-ng-hide="$ctrl.item.ui.editModeActive" class="collapsed-item-info-block">
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.workerAllocatorName)">
+                        <span class="field-label">Worker allocator name</span>:&nbsp;{{ $ctrl.item.workerAllocatorName }};&nbsp;
+                    </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.url)">
                         <span class="field-label">URL</span>:&nbsp;{{ $ctrl.item.url }};&nbsp;
                     </span>
