@@ -25,6 +25,7 @@
         ctrl.isNil = lodash.isNil;
 
         ctrl.onFireAction = onFireAction;
+        ctrl.isVolumeType = isVolumeType;
         ctrl.toggleItem = toggleItem;
         ctrl.onCollapse = onCollapse;
 
@@ -43,7 +44,8 @@
                 }
             });
 
-            ctrl.classList  = FunctionsService.getClassesList(ctrl.type);
+            ctrl.classList = FunctionsService.getClassesList(ctrl.type);
+
             if (!lodash.isEmpty(ctrl.item.kind)) {
                 ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
                 ctrl.item.ui.className = ctrl.selectedClass.name;
@@ -62,6 +64,15 @@
          */
         function onFireAction(actionType) {
             ctrl.actionHandlerCallback({actionType: actionType, selectedItem: ctrl.item});
+        }
+
+        /**
+         * Checks if input have to be visible for specific item type
+         * @param {string} name - input name
+         * @returns {boolean}
+         */
+        function isVolumeType(name) {
+            return ctrl.type === 'volume';
         }
 
         /**

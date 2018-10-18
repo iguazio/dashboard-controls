@@ -397,6 +397,16 @@
                             }
                         ]
                     }
+                ],
+                volume: [
+                    {
+                        id: 'v3io',
+                        name: 'v3io'
+                    },
+                    {
+                        id: 'hostPath',
+                        name: 'Host path'
+                    },
                 ]
             };
 
