@@ -1,0 +1,57 @@
+<div class="ncl-version-configuration-volumes">
+    <div class="title">Volumes</div>
+    <form name="$ctrl.volumesForm" class="volumes-wrapper">
+
+        <div class="ncl-version-volume">
+            <div class="common-table">
+                <div class="common-table-header item-header">
+                    <div class="common-table-cell item-name">
+                        Name
+                    </div>
+                    <div class="common-table-cell item-class">
+                        Type
+                    </div>
+                    <div class="igz-col-70 common-table-cell">
+                        Path
+                    </div>
+                </div>
+
+                <div class="common-table-body">
+                    <div data-ng-if="!$ctrl.isScrollNeeded()"
+                         class="igz-scrollable-container">
+                        <ncl-collapsing-row data-ng-repeat="volume in $ctrl.volumes track by $index"
+                                            data-item="volume"
+                                            data-type="volume"
+                                            data-list-class="ncl-version-configuration-volumes"
+                                            data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)">
+                            <ncl-edit-item class="common-table-cells-container edit-volume-row"
+                                           data-item="volume"
+                                           data-type="volume"
+                                           data-on-submit-callback="$ctrl.editVolumeCallback(item)"></ncl-edit-item>
+                        </ncl-collapsing-row>
+                    </div>
+                    <div data-ng-if="$ctrl.isScrollNeeded()"
+                         class="igz-scrollable-container scrollable-volumes"
+                         data-ng-scrollbars
+                         data-ng-scrollbars-config="$ctrl.scrollConfig">
+                        <ncl-collapsing-row data-ng-repeat="volume in $ctrl.volumes track by $index"
+                                            data-item="volume"
+                                            data-type="volume"
+                                            data-list-class="scrollable-volumes"
+                                            data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)">
+                            <ncl-edit-item class="common-table-cells-container edit-binding-row"
+                                           data-item="volume"
+                                           data-type="volume"
+                                           data-on-submit-callback="$ctrl.editVolumeCallback(item)"></ncl-edit-item>
+                        </ncl-collapsing-row>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="create-volume-button"
+             data-ng-click="$ctrl.createVolume($event)">
+            <span class="igz-icon-add-round"></span>
+            Create a new volume
+        </div>
+    </form>
+</div>

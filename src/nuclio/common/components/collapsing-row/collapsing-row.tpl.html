@@ -7,12 +7,22 @@
         </div>
 
         <div data-ng-show="!$ctrl.item.ui.editModeActive" class="igz-row common-table-cells-container item-row">
-            <div class="text-ellipsis item-name">
+            <div class="text-ellipsis item-name" data-ng-if="!$ctrl.isNil($ctrl.item.name)">
                 {{$ctrl.item.name}}
             </div>
-            <div class="item-class">
+            <div class="text-ellipsis item-name" data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.name)">
+                {{ $ctrl.item.volumeMount.name }}
+            </div>
+            <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.ui.className)">
                 {{$ctrl.item.ui.className}}
             </div>
+            <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)">
+                Host path
+            </div>
+            <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.secretRef.name)">
+                v3io
+            </div>
+
             <div class="igz-col-70 item-info">
                 <div data-ng-hide="$ctrl.item.ui.editModeActive" class="collapsed-item-info-block">
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.workerAllocatorName)">
@@ -42,7 +52,19 @@
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.password)">
                         <span class="field-label">Password</span>: {{ $ctrl.item.password }};
                     </span>
+
+                    <!-- type Volume block -->
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.mountPath)">
+                        <span class="field-label">Path</span>:&nbsp;{{ $ctrl.item.volumeMount.mountPath }};&nbsp;
+                    </span>
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)">
+                        <span class="field-label">Host path</span>:&nbsp;{{ $ctrl.item.volume.hostPath }};&nbsp;
+                    </span>
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.secretRef.name)">
+                        <span class="field-label">Secret name</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.secretRef.name }};&nbsp;
+                    </span>
                 </div>
+
                 <div data-ng-hide="!$ctrl.item.ui.expanded" class="expanded-item-info-block">
                     <div class="igz-row common-table-cells-container item-info-row"
                          data-ng-if="!$ctrl.isNil($ctrl.item.url)">
