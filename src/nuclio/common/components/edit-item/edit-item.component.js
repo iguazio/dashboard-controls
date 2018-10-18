@@ -98,10 +98,6 @@
 
                 if (!lodash.isNil(selectedTypeName)) {
                     ctrl.selectedClass = lodash.find(ctrl.classList, ['id', selectedTypeName]);
-
-                    if (!lodash.isNil(ctrl.selectedClass)) {
-                        ctrl.item.kind = ctrl.selectedClass.id;
-                    }
                 }
             }
 
