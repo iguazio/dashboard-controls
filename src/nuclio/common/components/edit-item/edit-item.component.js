@@ -75,6 +75,7 @@
         /**
          * Initialization method
          */
+        // eslint-disable-next-line
         function onInit() {
             ctrl.placeholder = getPlaceholder();
 
