@@ -93,7 +93,9 @@
                 $timeout(validateCronClassValues);
             }
 
-            ctrl.item.workerAllocatorName = lodash.defaultTo(ctrl.item.workerAllocatorName, '');
+            lodash.defaults(ctrl.item, {
+                workerAllocatorName: ''
+            });
 
             if (ctrl.isVolumeType()) {
                 var selectedTypeName = !lodash.isNil(ctrl.item.volume.hostPath) ? 'hostPath' : !ctrl.isNil(ctrl.item.volume.flexVolume) ? 'v3io' : null;
