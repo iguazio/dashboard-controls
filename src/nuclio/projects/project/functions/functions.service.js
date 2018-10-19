@@ -154,6 +154,19 @@
                                 type: 'input',
                                 fieldType: 'input',
                                 allowEmpty: false
+                            },
+                            {
+                                name: 'event',
+                                values: {
+                                    body: {
+                                        name: 'body',
+                                        defaultValue: ''
+                                    },
+                                    headers: {
+                                        name: 'headers',
+                                        defaultValue: {}
+                                    }
+                                }
                             }
                         ]
                     },

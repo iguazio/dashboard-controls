@@ -43,16 +43,19 @@
 
         ctrl.addNewIngress = addNewIngress;
         ctrl.addNewAnnotation = addNewAnnotation;
+        ctrl.addNewEventHeader = addNewEventHeader;
         ctrl.convertFromCamelCase = convertFromCamelCase;
         ctrl.getAttrValue = getAttrValue;
         ctrl.getValidationPattern = getValidationPattern;
         ctrl.getInputValue = getInputValue;
         ctrl.handleIngressAction = handleIngressAction;
         ctrl.handleAnnotationAction = handleAnnotationAction;
+        ctrl.handleEventHeaderAction = handleEventHeaderAction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isClassSelected = isClassSelected;
         ctrl.isScrollNeeded = isScrollNeeded;
         ctrl.isHttpTrigger = isHttpTrigger;
+        ctrl.isCronTrigger = isCronTrigger;
         ctrl.isVolumeType = isVolumeType;
         ctrl.onChangeData = onChangeData;
         ctrl.onSubmitForm = onSubmitForm;
@@ -155,6 +158,23 @@
                 });
             }
 
+            if (!ctrl.isVolumeType() && isCronTrigger()) {
+                ctrl.eventHeaders = lodash.chain(ctrl.item.event.headers)
+                    .defaultTo([])
+                    .map(function (value, key) {
+                        return {
+                            name: key,
+                            value: value,
+                            ui: {
+                                editModeActive: false,
+                                isFormValid: true,
+                                name: 'event.headers'
+                            }
+                        };
+                    })
+                    .value();
+            }
+
             $scope.$on('deploy-function-version', ctrl.onSubmitForm);
         }
 
@@ -219,6 +239,27 @@
         }
 
         /**
+         * Adds new event header
+         * @param {Object} event - native event object
+         */
+        function addNewEventHeader(event) {
+            $timeout(function () {
+                if (ctrl.eventHeaders.length < 1 || lodash.last(ctrl.eventHeaders).ui.isFormValid) {
+                    ctrl.eventHeaders.push({
+                        name: '',
+                        value: '',
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'event.headers'
+                        }
+                    });
+                    event.stopPropagation();
+                }
+            }, 50);
+        }
+
+        /**
          * Checks validation of function`s variables
          */
         function checkValidation(variableName) {
@@ -269,6 +310,20 @@
                 lodash.unset(ctrl.item, 'attributes.ingresses.' + index);
 
                 checkValidation('ingresses');
+            }
+        }
+
+        /**
+         * Handler on specific action type of trigger's event header
+         * @param {string} actionType
+         * @param {number} index - index of variable in array
+         */
+        function handleEventHeaderAction(actionType, index) {
+            if (actionType === 'delete') {
+                ctrl.eventHeaders.splice(index, 1);
+                lodash.unset(ctrl.item, 'attributes.event.headers.' + index);
+
+                checkValidation('eventHeaders');
             }
         }
 
@@ -444,6 +499,13 @@
                     lodash.forEach(attribute.values, function (value, key) {
                         lodash.set(ctrl.item.attributes, ['sasl', key], value.defaultValue);
                     });
+                } else if (attribute.name === 'event') {
+                    ctrl.eventHeaders = [];
+                    ctrl.item.attributes.event = {};
+
+                    lodash.forEach(attribute.values, function (value, key) {
+                        lodash.set(ctrl.item.attributes, ['event', key], value.defaultValue);
+                    });
                 } else {
                     lodash.set(ctrl.item.attributes, attribute.name, lodash.get(attribute, 'defaultValue', ''));
                 }
@@ -612,6 +674,14 @@
          */
         function isKafkaTrigger() {
             return ctrl.selectedClass.id === 'kafka-cluster';
+        }
+
+        /**
+         * Checks for `cron` triggers
+         * @returns {boolean}
+         */
+        function isCronTrigger() {
+            return ctrl.selectedClass.id === 'cron';
         }
 
         /**
