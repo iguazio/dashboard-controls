@@ -156,6 +156,10 @@
                 attributes: selectedItem.attributes
             };
 
+            if (angular.isDefined(selectedItem.workerAllocatorName)) {
+                triggerItem.workerAllocatorName = selectedItem.workerAllocatorName;
+            }
+
             if (angular.isDefined(selectedItem.url)) {
                 triggerItem.url = selectedItem.url;
             }

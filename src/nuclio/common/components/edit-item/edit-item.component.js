@@ -93,6 +93,10 @@
                 $timeout(validateCronClassValues);
             }
 
+            lodash.defaults(ctrl.item, {
+                workerAllocatorName: ''
+            });
+
             if (ctrl.isVolumeType()) {
                 var selectedTypeName = !lodash.isNil(ctrl.item.volume.hostPath) ? 'hostPath' : !ctrl.isNil(ctrl.item.volume.flexVolume) ? 'v3io' : null;
 
@@ -394,7 +398,7 @@
                 return;
             }
 
-            ctrl.item = lodash.omit(ctrl.item, ['maxWorkers', 'url', 'secret', 'annotations', 'workerAvailabilityTimeoutMilliseconds', 'username', 'password']);
+            ctrl.item = lodash.omit(ctrl.item, ['maxWorkers', 'url', 'secret', 'annotations', 'workerAvailabilityTimeoutMilliseconds', 'username', 'password', 'workerAllocatorName']);
 
             var nameDirty = ctrl.editItemForm.itemName.$dirty;
             var nameInvalid = ctrl.editItemForm.itemName.$invalid;

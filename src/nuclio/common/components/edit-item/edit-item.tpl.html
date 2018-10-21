@@ -40,6 +40,21 @@
                  data-ng-if="!$ctrl.isClassSelected()">{{ $ctrl.placeholder }}
             </div>
             <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected()">
+                <div class="field-label">Worker allocator name</div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-input-name="itemWorkerAllocatorName"
+                                            data-input-value="$ctrl.item.workerAllocatorName"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-is-required="false"
+                                            data-placeholder-text="Type worker allocator name..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="workerAllocatorName">
+                </igz-validating-input-field>
+            </div>
+            <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.url)">
                 <div class="field-label">URL</div>
                 <igz-validating-input-field class="nuclio-validating-input"
