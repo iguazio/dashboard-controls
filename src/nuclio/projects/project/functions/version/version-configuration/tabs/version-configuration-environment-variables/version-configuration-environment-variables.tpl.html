@@ -1,11 +1,6 @@
 <div class="ncl-version-configuration-environment-variables">
     <div class="title">Environment Variables</div>
     <form name="$ctrl.environmentVariablesForm" class="resources-wrapper">
-        <div class="table-headers">
-            <div class="key-header use-type">Key</div>
-            <div class="type-header">Type</div>
-            <div class="value-header use-type">Info</div>
-        </div>
         <div data-ng-if="!$ctrl.isScrollNeeded()"
              class="igz-scrollable-container">
             <div class="table-body" data-ng-repeat="variable in $ctrl.variables track by $index">
@@ -15,6 +10,8 @@
                                      data-row-data="variable"
                                      data-item-index="$index"
                                      data-use-type="true"
+                                     data-use-labels="true"
+                                     data-all-value-types="$ctrl.isOnlyValueTypeInputs"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
                                      data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
             </div>
@@ -30,6 +27,8 @@
                                      data-row-data="variable"
                                      data-item-index="$index"
                                      data-use-type="true"
+                                     data-use-labels="true"
+                                     data-all-value-types="$ctrl.isOnlyValueTypeInputs"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
                                      data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
             </div>

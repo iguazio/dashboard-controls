@@ -9,6 +9,8 @@
                 itemIndex: '<',
                 rowData: '<',
                 useType: '<',
+                useLabels: '<',
+                allValueTypes: '<',
                 allowSelection: '<?',
                 changeStateBroadcast: '@?',
                 keyOptional: '<?',
@@ -32,8 +34,11 @@
         ctrl.closeDropdown = closeDropdown;
         ctrl.onEditInput = onEditInput;
         ctrl.getInputValue = getInputValue;
+        ctrl.getInputKey = getInputKey;
         ctrl.getType = getType;
+        ctrl.isVisibleByType = isVisibleByType;
         ctrl.inputValueCallback = inputValueCallback;
+        ctrl.inputKeyCallback = inputKeyCallback;
         ctrl.onFireAction = onFireAction;
         ctrl.openDropdown = openDropdown;
         ctrl.onTypeChanged = onTypeChanged;
@@ -89,10 +94,24 @@
                                    ctrl.getType() === 'configmap' ? 'valueFrom.configMapKeyRef' : 'valueFrom.secretKeyRef';
                 var value = lodash.get(ctrl.data, specificType);
 
-                return specificType === 'value' ? value :
-                    value.name + (!lodash.isNil(value.key) ? ':' + value.key : '');
+                return specificType === 'value' ? value : value.name;
             } else {
                 return ctrl.data.value;
+            }
+        }
+
+        /**
+         * Gets model for value-key input
+         * @returns {string}
+         */
+        function getInputKey() {
+            if (ctrl.useType && ctrl.getType() !== 'value') {
+                var specificType = ctrl.getType() === 'configmap' ? 'valueFrom.configMapKeyRef' : 'valueFrom.secretKeyRef';
+                var value = lodash.get(ctrl.data, specificType);
+
+                return value.key;
+            } else {
+                return null;
             }
         }
 
@@ -106,26 +125,43 @@
         }
 
         /**
+         * Check whether the block visibility match the given type
+         * @param {string} type
+         * @returns {boolean}
+         */
+        function isVisibleByType(type) {
+            return type === ctrl.getType();
+        }
+
+        /**
          * Update data callback
          * @param {string} newData
          * @param {string} field
          */
         function inputValueCallback(newData, field) {
             if (lodash.includes(field, 'value') && ctrl.getType() !== 'value') {
-                var keyValueData = newData.split(':');
 
-                lodash.set(ctrl.data, getValueField(), {
-                    name: keyValueData[0]
+                lodash.assign(lodash.get(ctrl.data, getValueField()), {
+                    name: newData
                 });
 
-                if (keyValueData.length > 1) {
-                    var data = lodash.get(ctrl.data, getValueField());
-
-                    data.key = keyValueData[1];
-                }
             } else {
                 ctrl.data[field] = newData;
             }
+
+            if (ctrl.submitOnFly) {
+                saveChanges();
+            }
+        }
+
+        /**
+         * Update data callback
+         * @param {string} newData
+         */
+        function inputKeyCallback(newData) {
+            lodash.assign(lodash.get(ctrl.data, getValueField()), {
+                key: newData
+            });
 
             if (ctrl.submitOnFly) {
                 saveChanges();
@@ -156,6 +192,8 @@
 
                     ctrl.data = lodash.omit(ctrl.data, ['value', 'valueFrom']);
                     lodash.set(ctrl.data, 'valueFrom.' + specificType, value);
+
+                    $rootScope.$broadcast('key-value-type-changed', false);
                 } else {
                     ctrl.data = lodash.omit(ctrl.data, 'valueFrom');
                     lodash.set(ctrl.data, 'value', '');
