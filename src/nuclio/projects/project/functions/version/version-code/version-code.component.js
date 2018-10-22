@@ -13,6 +13,7 @@
     function NclVersionCodeController($element, $rootScope, $scope, $timeout, lodash, Base64, ConfigService, DialogsService,
                                       VersionHelperService) {
         var ctrl = this;
+        var scrollContainer = null;
 
         var previousEntryType = null;
 
@@ -31,8 +32,12 @@
             },
             callbacks: {
                 onCreate: function () {
-                    ctrl.scrollContainer = this.querySelector('.mCSB_container');
-                    ctrl.scrollContainer.style.height = '100%';
+                    scrollContainer = this.querySelector('.mCSB_container');
+
+                    this.querySelector('.mCSB_container').style.height = '100%';
+                },
+                onUpdate: function () {
+                    scrollContainer.style.width = '100%';
                 }
             }
         };
@@ -164,9 +169,9 @@
                 $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: false});
             }
 
-            if (ctrl.scrollContainer) {
+            if (!lodash.isNil(scrollContainer)) {
                 $timeout(function () {
-                    ctrl.scrollContainer.style.height = '100%';
+                    scrollContainer.style.height = '100%';
                 })
             }
 
