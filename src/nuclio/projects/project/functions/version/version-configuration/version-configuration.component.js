@@ -36,7 +36,7 @@
          * @returns {boolean}
          */
         function isInvisibleForCurrentRuntime(runtime) {
-            return (runtime !== 'shell' || !ctrl.isDemoMode()) && runtime !== 'java';
+            return runtime !== 'shell' && runtime !== 'java';
         }
 
         /**
