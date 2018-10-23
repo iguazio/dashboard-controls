@@ -14,6 +14,8 @@
                 allowSelection: '<?',
                 changeStateBroadcast: '@?',
                 keyOptional: '<?',
+                valueValidationPattern: '<?',
+                keyValidationPattern: '<?',
                 listClass: '@?',
                 submitOnFly: '<?',
                 valueOptional: '<?'
