@@ -338,8 +338,8 @@
          */
         function handleSubscriptionAction(actionType, index) {
             if (actionType === 'delete') {
-                ctrl.subscriptions.splice(index, 1);
-                lodash.unset(ctrl.item, 'attributes.subscriptions.' + index);
+                lodash.pullAt(ctrl.subscriptions, index);
+                lodash.pullAt(ctrl.item.attributes.subscriptions, index);
 
                 checkValidation('subscriptions');
             }
@@ -648,13 +648,11 @@
          * Updates subscriptions fields
          */
         function updateSubscriptions() {
-            var newSubscriptions = [];
-
-            lodash.forEach(ctrl.subscriptions, function (subscription) {
-                newSubscriptions.push({
-                    'topic': subscription.name,
-                    'qos': subscription.value
-                })
+            var newSubscriptions = lodash.map(ctrl.subscriptions, function (subscription) {
+                return {
+                    topic: subscription.name,
+                    qos: Number(subscription.value)
+                };
             });
 
             lodash.set(ctrl.item, 'attributes.subscriptions', newSubscriptions);
