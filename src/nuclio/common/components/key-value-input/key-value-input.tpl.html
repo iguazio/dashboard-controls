@@ -6,41 +6,83 @@
              data-ng-if="$ctrl.allowSelection">
             <igz-action-checkbox data-item="$ctrl.data"></igz-action-checkbox>
         </div>
-        <igz-validating-input-field class="nuclio-validating-input input-key"
-                                    data-ng-class="{'use-type': $ctrl.useType, 'use-checkbox': $ctrl.allowSelection}"
-                                    data-field-type="input"
-                                    data-input-name="key"
-                                    data-input-value="$ctrl.data.name"
-                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                    data-update-data-field="name"
-                                    data-form-object="$ctrl.keyValueInputForm"
-                                    data-validation-is-required="!$ctrl.keyOptional"
-                                    data-placeholder-text="Type key"></igz-validating-input-field>
+        <div class="inputs-container"
+             data-ng-class="{'use-type': $ctrl.useType, 'use-checkbox': $ctrl.allowSelection}">
 
-        <igz-default-dropdown class="input-type"
-                              data-ng-if="$ctrl.useType"
-                              data-form-object="$ctrl.keyValueInputForm"
-                              data-select-property-only="id"
-                              data-prevent-drop-up="true"
-                              data-input-name="type"
-                              data-values-array="$ctrl.typesList"
-                              data-selected-item="$ctrl.getType()"
-                              data-placeholder="Select type..."
-                              data-item-select-callback="$ctrl.onTypeChanged(item, isItemChanged)"
-                              data-on-open-dropdown="$ctrl.openDropdown"
-                              data-on-close-dropdown="$ctrl.closeDropdown()"></igz-default-dropdown>
+            <div class="input-container input-key-wrapper"
+                 data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
+                <label for="key" data-ng-if="$ctrl.useLabels" class="key-label">Key:</label>
+                <igz-validating-input-field class="nuclio-validating-input input-key"
+                                            data-field-type="input"
+                                            data-input-name="key"
+                                            data-input-value="$ctrl.data.name"
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="name"
+                                            data-form-object="$ctrl.keyValueInputForm"
+                                            data-validation-is-required="!$ctrl.keyOptional"
+                                            data-validation-pattern="$ctrl.keyValidationPattern"
+                                            data-placeholder-text="Type key">
+                </igz-validating-input-field>
+            </div>
 
-        <igz-validating-input-field class="nuclio-validating-input input-value"
-                                    data-ng-class="{'use-type': $ctrl.useType, 'use-checkbox': $ctrl.allowSelection}"
-                                    data-field-type="input"
-                                    data-input-name="value"
-                                    data-input-value="$ctrl.getInputValue()"
-                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                    data-update-data-field="value"
-                                    data-form-object="$ctrl.keyValueInputForm"
-                                    data-validation-is-required="!$ctrl.valueOptional"
-                                    data-placeholder-text="Type value..."></igz-validating-input-field>
+            <div class="input-container input-type-wrapper"
+                 data-ng-if="$ctrl.useType"
+                 data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
+                <label for="type" data-ng-if="$ctrl.useLabels" class="type-label">Type:</label>
+                <igz-default-dropdown class="input-type"
+                                      data-form-object="$ctrl.keyValueInputForm"
+                                      data-select-property-only="id"
+                                      data-prevent-drop-up="true"
+                                      data-input-name="type"
+                                      data-values-array="$ctrl.typesList"
+                                      data-selected-item="$ctrl.getType()"
+                                      data-placeholder="Select type..."
+                                      data-item-select-callback="$ctrl.onTypeChanged(item, isItemChanged)"
+                                      data-on-open-dropdown="$ctrl.openDropdown"
+                                      data-on-close-dropdown="$ctrl.closeDropdown()">
+                </igz-default-dropdown>
 
+            </div>
+
+            <div class="input-container input-value-key-wrapper"
+                 data-ng-if="!$ctrl.isVisibleByType('value')"
+                 data-ng-class="{'use-type': $ctrl.useType}">
+                <label for="value-key" data-ng-if="$ctrl.useLabels">
+                    <span data-ng-if="$ctrl.isVisibleByType('secret')">Secret key:</span>
+                    <span data-ng-if="$ctrl.isVisibleByType('configmap')">ConfigMap key:</span>
+                </label>
+                <igz-validating-input-field class="nuclio-validating-input input-value-key"
+                                            data-field-type="input"
+                                            data-input-name="value-key"
+                                            data-input-value="$ctrl.getInputKey()"
+                                            data-update-data-callback="$ctrl.inputKeyCallback(newData)"
+                                            data-update-data-field="value-key"
+                                            data-form-object="$ctrl.keyValueInputForm"
+                                            data-validation-is-required="!$ctrl.valueOptional"
+                                            data-placeholder-text="Type key...">
+                </igz-validating-input-field>
+            </div>
+
+            <div class="input-container input-value-wrapper"
+                 data-ng-class="{'use-type': $ctrl.useType, 'only-value-input': $ctrl.isVisibleByType('value'), 'all-value-types': $ctrl.allValueTypes}">
+                <label for="value" data-ng-if="$ctrl.useLabels">
+                    <span data-ng-if="$ctrl.isVisibleByType('value')">Value:</span>
+                    <span data-ng-if="$ctrl.isVisibleByType('secret')">Secret name:</span>
+                    <span data-ng-if="$ctrl.isVisibleByType('configmap')">ConfigMap name:</span>
+                </label>
+                <igz-validating-input-field class="nuclio-validating-input input-value"
+                                            data-field-type="input"
+                                            data-input-name="value"
+                                            data-input-value="$ctrl.getInputValue()"
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="value"
+                                            data-form-object="$ctrl.keyValueInputForm"
+                                            data-validation-is-required="!$ctrl.valueOptional"
+                                            data-validation-pattern="$ctrl.valueValidationPattern"
+                                            data-placeholder-text="{{$ctrl.valuePlaceholder}}">
+                </igz-validating-input-field>
+            </div>
+        </div>
         <div class="three-dot-menu">
             <igz-action-menu data-actions="$ctrl.actions"
                              data-on-fire-action="$ctrl.onFireAction"

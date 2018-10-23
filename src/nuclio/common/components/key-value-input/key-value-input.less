@@ -4,14 +4,12 @@
         display: flex;
         background-color: @white;
         position: relative;
-        border: 1px solid @pale-grey;
 
         .check-row {
             width: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-right: 1px solid @pale-grey;
         }
 
         .three-dot-menu {
@@ -28,92 +26,132 @@
             }
         }
 
-        .validating-input-field {
-            .input-field {
-                padding: 0 10px 0 17px;
-                border-radius: 0;
-                border: none;
+        .inputs-container {
+            width: calc(100% - 30px);
+            display: flex;
 
-                &:hover {
-                    border: none;
-                }
-
-                &:not([readonly]):focus {
-                    outline: 0;
-                    border: solid 1px @dark-sky-blue;
-                }
+            &.use-checkbox {
+                width: calc(100% - 58px);
             }
-
-            .input-placeholder {
-                left: 18px;
-                font-style: italic;
-            }
-        }
-
-        .input-key {
-            width: 34%;
 
             .validating-input-field {
                 .input-field {
-                    &[readonly]:focus, &:not(:focus) {
-                        border-right: 1px solid @pale-grey;
-                    }
+                    padding: 0 10px 0 17px;
+                    border-radius: 0;
+                }
 
-                    &.invalid:not(:focus) {
-                        border-right: 1px solid @darkish-pink;
-                    }
+                .input-placeholder {
+                    left: 18px;
+                    font-style: italic;
                 }
             }
 
-            &:not(.use-type) {
-                width: 36%;
+            .input-container {
+                width: 29%;
+                display: flex;
+                align-items: center;
 
-                .validating-input-field {
-                    .input-field {
-                        &[readonly]:focus, &:not(:focus) {
-                            border-right: none;
+                label {
+                    width: 130px;
+                    padding-right: 7px;
+                    text-align: right;
+                    margin-bottom: 0;
+                }
+            }
+
+            .input-key-wrapper {
+                width: 29%;
+
+                .key-label {
+                    width: 40px;
+                }
+
+                .input-key {
+                    flex-grow: 1;
+                }
+
+                &.all-value-types {
+                    width: 40%;
+                }
+
+                &:not(.use-type) {
+                    width: 38%;
+
+                    .validating-input-field {
+                        .input-field {
+                            &[readonly]:focus, &:not(:focus) {
+                                border-right: none;
+                            }
+
+                            &.invalid {
+                                border: 1px solid @darkish-pink;
+                            }
+
+                            &.invalid:hover {
+                                border: 1px solid @pale-grey;
+                            }
                         }
                     }
                 }
             }
 
-            &.use-checkbox {
-                width: 44%;
-            }
-        }
+            .input-value-wrapper {
+                width: 29%;
 
-        .input-value {
-            width: 51%;
+                .input-value {
+                    flex-grow: 1;
+                }
 
-            &:not(.use-type) {
-                width: 61%;
-            }
+                &.only-value-input {
+                    width: 58%;
+                }
 
-            .validating-input-field {
-                .input-field {
-                    &[readonly]:focus, &:not(:focus) {
-                        border-left: 1px solid @pale-grey;
-                    }
+                &:not(.use-type) {
+                    width: 62%;
+                }
 
-                    &.invalid:not(:focus) {
-                        border-left: 1px solid @darkish-pink;
+                &.all-value-types {
+                    width: 40%;
+
+                    label {
+                        width: 65px;
                     }
                 }
             }
 
-            &.use-checkbox {
-                width: 45%;
+            .input-value-key-wrapper {
+                width: 29%;
+
+                .input-value-key {
+                    flex-grow: 1;
+                }
+
+                &:not(.use-type) {
+                    width: 61%;
+                }
             }
-        }
 
-        .input-type {
-            width: 12%;
+            .input-type-wrapper {
+                width: 13%;
 
-            .default-dropdown {
-                .default-dropdown-field {
-                    background-color: @white;
-                    border: none;
-                    border-radius: 0;
+                .type-label {
+                    width: 60px;
+                    padding-left: 7px;
+                }
+
+                &.all-value-types {
+                    width: 20%;
+                }
+
+                .input-type {
+                    flex-grow: 1;
+
+                    .default-dropdown {
+                        .default-dropdown-field {
+                            background-color: @white;
+                            border-radius: 0;
+                        }
+                    }
                 }
             }
         }
