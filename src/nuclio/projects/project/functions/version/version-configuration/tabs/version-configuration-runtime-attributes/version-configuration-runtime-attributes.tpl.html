@@ -16,7 +16,7 @@
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-input-name="arguments"
-                                            data-input-value="$ctrl.data.arguments"
+                                            data-input-value="$ctrl.runtimeAttributes.arguments"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="arguments"
                                             data-form-object="$ctrl.runtimeAttributesForm"
@@ -25,17 +25,19 @@
         </div>
         <div class="row igz-col-100 info-row"
              data-ng-if="$ctrl.version.spec.runtime === 'java'">
-            <span class="field-label">Repositories</span>
-            <igz-validating-input-field data-field-type="textarea"
-                                        data-input-name="repositories"
-                                        data-input-value="$ctrl.runtimeAttributes.repositories"
-                                        data-is-focused="false"
-                                        data-form-object="$ctrl.runtimeAttributesForm"
-                                        data-placeholder-text="Type ..."
-                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                        data-update-data-field="repositories"
-                                        class="nuclio-validating-input build-command-field">
-            </igz-validating-input-field>
+            <div class="row igz-col-100 info-row">
+                <span class="field-label">JVM options</span>
+                <igz-validating-input-field data-field-type="textarea"
+                                            data-input-name="jvmOptions"
+                                            data-input-value="$ctrl.runtimeAttributes.jvmOptions"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.runtimeAttributesForm"
+                                            data-placeholder-text="Type options"
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="jvmOptions"
+                                            class="nuclio-validating-input build-command-field java-attribute">
+                </igz-validating-input-field>
+            </div>
         </div>
         <div class="row info-row"
              data-ng-if="$ctrl.version.spec.runtime === 'shell'">
@@ -52,12 +54,13 @@
                                          data-row-data="attribute"
                                          data-change-state-broadcast="change-state-deploy-button"
                                          data-use-type="false"
-                                         data-action-handler-callback="$ctrl.handleAction(actionType, checkedItem)"
-                                         data-change-data-callback="$ctrl.onChangeData(newData)"></ncl-key-value-input>
+                                         data-item-index="$index"
+                                         data-action-handler-callback="$ctrl.handleAction(actionType, index)"
+                                         data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
                 </div>
             </div>
             <div class="create-label-button"
-                 data-ng-click="$ctrl.addNewAttribute()">
+                 data-ng-click="$ctrl.addNewAttribute($event)">
                 <span class="igz-icon-add-round"></span>
                 Create a new runtime attribute
             </div>
