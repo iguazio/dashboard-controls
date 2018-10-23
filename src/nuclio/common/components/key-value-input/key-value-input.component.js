@@ -14,6 +14,9 @@
                 allowSelection: '<?',
                 changeStateBroadcast: '@?',
                 keyOptional: '<?',
+                valueValidationPattern: '<?',
+                valuePlaceholder: '@?',
+                keyValidationPattern: '<?',
                 listClass: '@?',
                 submitOnFly: '<?',
                 valueOptional: '<?'
@@ -51,6 +54,7 @@
          * Initialization method
          */
         function onInit() {
+            ctrl.valuePlaceholder = lodash.defaultTo(ctrl.valuePlaceholder, 'Type value...');
             ctrl.data = lodash.cloneDeep(ctrl.rowData);
             ctrl.editMode = lodash.get(ctrl.data, 'ui.editModeActive', false);
 

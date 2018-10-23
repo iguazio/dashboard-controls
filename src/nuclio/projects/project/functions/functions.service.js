@@ -324,6 +324,30 @@
                                 allowEmpty: false
                             }
                         ]
+                    },
+                    {
+                        id: 'mqtt',
+                        name: 'MQTT',
+                        url: 'string',
+                        username: 'string',
+                        password: 'string',
+                        attributes: [
+                            {
+                                name: 'subscriptions',
+                                values: {
+                                    topic: {
+                                        name: 'topic',
+                                        type: 'input',
+                                        pattern: 'string'
+                                    },
+                                    qos: {
+                                        name: 'QoS',
+                                        type: 'input',
+                                        pattern: 'number'
+                                    }
+                                }
+                            }
+                        ]
                     }
                 ],
                 binding: [

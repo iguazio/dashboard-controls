@@ -35,6 +35,7 @@
         ctrl.arrayIntValidationPattern = /^(\d+[-,]?)*\d$/;
         ctrl.arrayStrValidationPattern = /^.{1,128}$/;
         ctrl.stringValidationPattern = /^.{1,128}$/;
+        ctrl.subscriptionQoSValidationPattern = /^[0-2]$/;
         ctrl.placeholder = '';
 
         ctrl.isShowFieldError = FormValidationService.isShowFieldError;
@@ -43,16 +44,19 @@
 
         ctrl.addNewIngress = addNewIngress;
         ctrl.addNewAnnotation = addNewAnnotation;
+        ctrl.addNewSubscription = addNewSubscription;
         ctrl.convertFromCamelCase = convertFromCamelCase;
         ctrl.getAttrValue = getAttrValue;
         ctrl.getValidationPattern = getValidationPattern;
         ctrl.getInputValue = getInputValue;
         ctrl.handleIngressAction = handleIngressAction;
         ctrl.handleAnnotationAction = handleAnnotationAction;
+        ctrl.handleSubscriptionAction = handleSubscriptionAction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isClassSelected = isClassSelected;
         ctrl.isScrollNeeded = isScrollNeeded;
         ctrl.isHttpTrigger = isHttpTrigger;
+        ctrl.isMQTTTrigger = isMQTTTrigger;
         ctrl.isVolumeType = isVolumeType;
         ctrl.onChangeData = onChangeData;
         ctrl.onSubmitForm = onSubmitForm;
@@ -66,7 +70,7 @@
 
         /**
          * Converts attribute names in class list from camel case
-         * @param {String} string whitch must be converted
+         * @param {String} str - string which must be converted
          */
         function convertFromCamelCase(str) {
             return str.replace(/([a-z])([A-Z])/g, '$1 $2');
@@ -159,6 +163,23 @@
                 });
             }
 
+            if (!ctrl.isVolumeType() && isMQTTTrigger()) {
+                ctrl.subscriptions = lodash.chain(ctrl.item.attributes.subscriptions)
+                    .defaultTo([])
+                    .map(function (value, key) {
+                        return {
+                            name: value.topic,
+                            value: value.qos,
+                            ui: {
+                                editModeActive: false,
+                                isFormValid: true,
+                                name: 'subscription'
+                            }
+                        };
+                    })
+                    .value();
+            }
+
             $scope.$on('deploy-function-version', ctrl.onSubmitForm);
         }
 
@@ -215,6 +236,26 @@
                             editModeActive: true,
                             isFormValid: false,
                             name: 'trigger.annotation'
+                        }
+                    });
+                    event.stopPropagation();
+                }
+            }, 50);
+        }
+
+        /**
+         * Adds new subscription
+         */
+        function addNewSubscription(event) {
+            $timeout(function () {
+                if (ctrl.subscriptions.length < 1 || lodash.last(ctrl.subscriptions).ui.isFormValid) {
+                    ctrl.subscriptions.push({
+                        name: '',
+                        value: '',
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'subscription'
                         }
                     });
                     event.stopPropagation();
@@ -291,6 +332,20 @@
         }
 
         /**
+         * Handler on specific action type of trigger's subscription
+         * @param {string} actionType
+         * @param {number} index - index of variable in array
+         */
+        function handleSubscriptionAction(actionType, index) {
+            if (actionType === 'delete') {
+                lodash.pullAt(ctrl.subscriptions, index);
+                lodash.pullAt(ctrl.item.attributes.subscriptions, index);
+
+                checkValidation('subscriptions');
+            }
+        }
+
+        /**
          * Determine whether the item class was selected
          * @returns {boolean}
          */
@@ -345,6 +400,14 @@
         }
 
         /**
+         * Checks for `mqtt` triggers
+         * @returns {boolean}
+         */
+        function isMQTTTrigger() {
+            return ctrl.selectedClass.id === 'mqtt';
+        }
+
+        /**
          * Changes data of specific variable
          * @param {Object} variable
          * @param {number} index
@@ -358,6 +421,10 @@
                 ctrl.ingresses[index] = variable;
 
                 checkValidation('ingresses');
+            } else if (variable.ui.name === 'subscription') {
+                ctrl.subscriptions[index] = variable;
+
+                checkValidation('subscriptions');
             }
         }
 
@@ -448,6 +515,8 @@
                     lodash.forEach(attribute.values, function (value, key) {
                         lodash.set(ctrl.item.attributes, ['sasl', key], value.defaultValue);
                     });
+                } else if (attribute.name === 'subscriptions') {
+                    ctrl.subscriptions = [];
                 } else {
                     lodash.set(ctrl.item.attributes, attribute.name, lodash.get(attribute, 'defaultValue', ''));
                 }
@@ -545,8 +614,12 @@
                                 }
                             });
 
-                            if (ctrl.item.kind === 'http') {
+                            if (isHttpTrigger()) {
                                 updateAnnotaions();
+                            }
+
+                            if (isMQTTTrigger()) {
+                                updateSubscriptions();
                             }
 
                             $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.item.ui.name, isDisabled: false});
@@ -569,6 +642,20 @@
             });
 
             lodash.set(ctrl.item, 'annotations', newAnnotations);
+        }
+
+        /**
+         * Updates subscriptions fields
+         */
+        function updateSubscriptions() {
+            var newSubscriptions = lodash.map(ctrl.subscriptions, function (subscription) {
+                return {
+                    topic: subscription.name,
+                    qos: Number(subscription.value)
+                };
+            });
+
+            lodash.set(ctrl.item, 'attributes.subscriptions', newSubscriptions);
         }
 
         /**
