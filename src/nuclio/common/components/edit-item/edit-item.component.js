@@ -45,6 +45,7 @@
         ctrl.addNewIngress = addNewIngress;
         ctrl.addNewAnnotation = addNewAnnotation;
         ctrl.addNewSubscription = addNewSubscription;
+        ctrl.addNewEventHeader = addNewEventHeader;
         ctrl.convertFromCamelCase = convertFromCamelCase;
         ctrl.getAttrValue = getAttrValue;
         ctrl.getValidationPattern = getValidationPattern;
@@ -52,11 +53,13 @@
         ctrl.handleIngressAction = handleIngressAction;
         ctrl.handleAnnotationAction = handleAnnotationAction;
         ctrl.handleSubscriptionAction = handleSubscriptionAction;
+        ctrl.handleEventHeaderAction = handleEventHeaderAction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isClassSelected = isClassSelected;
         ctrl.isScrollNeeded = isScrollNeeded;
         ctrl.isHttpTrigger = isHttpTrigger;
         ctrl.isMQTTTrigger = isMQTTTrigger;
+        ctrl.isCronTrigger = isCronTrigger;
         ctrl.isVolumeType = isVolumeType;
         ctrl.onChangeData = onChangeData;
         ctrl.onSubmitForm = onSubmitForm;
@@ -180,6 +183,30 @@
                     .value();
             }
 
+            if (!ctrl.isVolumeType() && isCronTrigger()) {
+                lodash.defaultsDeep(ctrl.item.attributes, {
+                    event: {
+                        body: '',
+                        headers: {}
+                    }
+                });
+
+                ctrl.eventHeaders = lodash.chain(lodash.get(ctrl.item, 'attributes.event.headers'))
+                    .defaultTo([])
+                    .map(function (value, key) {
+                        return {
+                            name: key,
+                            value: value,
+                            ui: {
+                                editModeActive: false,
+                                isFormValid: true,
+                                name: 'event.headers'
+                            }
+                        };
+                    })
+                    .value();
+            }
+
             $scope.$on('deploy-function-version', ctrl.onSubmitForm);
         }
 
@@ -264,6 +291,27 @@
         }
 
         /**
+         * Adds new event header
+         * @param {Object} event - native event object
+         */
+        function addNewEventHeader(event) {
+            $timeout(function () {
+                if (ctrl.eventHeaders.length < 1 || lodash.last(ctrl.eventHeaders).ui.isFormValid) {
+                    ctrl.eventHeaders.push({
+                        name: '',
+                        value: '',
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'event.headers'
+                        }
+                    });
+                    event.stopPropagation();
+                }
+            }, 50);
+        }
+
+        /**
          * Checks validation of function`s variables
          */
         function checkValidation(variableName) {
@@ -314,6 +362,20 @@
                 lodash.unset(ctrl.item, 'attributes.ingresses.' + index);
 
                 checkValidation('ingresses');
+            }
+        }
+
+        /**
+         * Handler on specific action type of trigger's event header
+         * @param {string} actionType
+         * @param {number} index - index of variable in array
+         */
+        function handleEventHeaderAction(actionType, index) {
+            if (actionType === 'delete') {
+                ctrl.eventHeaders.splice(index, 1);
+                lodash.unset(ctrl.item, 'attributes.event.headers.' + index);
+
+                checkValidation('eventHeaders');
             }
         }
 
@@ -421,6 +483,10 @@
                 ctrl.ingresses[index] = variable;
 
                 checkValidation('ingresses');
+            } else if (variable.ui.name === 'event.headers') {
+                ctrl.eventHeaders[index] = variable;
+
+                checkValidation('eventHeaders');
             } else if (variable.ui.name === 'subscription') {
                 ctrl.subscriptions[index] = variable;
 
@@ -514,6 +580,13 @@
 
                     lodash.forEach(attribute.values, function (value, key) {
                         lodash.set(ctrl.item.attributes, ['sasl', key], value.defaultValue);
+                    });
+                } else if (attribute.name === 'event') {
+                    ctrl.eventHeaders = [];
+                    ctrl.item.attributes.event = {};
+
+                    lodash.forEach(attribute.values, function (value, key) {
+                        lodash.set(ctrl.item.attributes, ['event', key], value.defaultValue);
                     });
                 } else if (attribute.name === 'subscriptions') {
                     ctrl.subscriptions = [];
@@ -612,6 +685,16 @@
 
                                     ctrl.item.attributes[attribute.name] = newIngresses;
                                 }
+
+                                if (attribute.name === 'event') {
+                                    var newEventHeader = {};
+
+                                    lodash.forEach(ctrl.eventHeaders, function (headers, key) {
+                                        newEventHeader[headers.name] = headers.value;
+                                    });
+
+                                    lodash.set(ctrl.item, 'attributes.event.headers', newEventHeader);
+                                }
                             });
 
                             if (isHttpTrigger()) {
@@ -703,6 +786,14 @@
          */
         function isKafkaTrigger() {
             return ctrl.selectedClass.id === 'kafka-cluster';
+        }
+
+        /**
+         * Checks for `cron` triggers
+         * @returns {boolean}
+         */
+        function isCronTrigger() {
+            return ctrl.selectedClass.id === 'cron';
         }
 
         /**

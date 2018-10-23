@@ -180,6 +180,24 @@
                 triggerItem.password = selectedItem.password;
             }
 
+            if (angular.isDefined(selectedItem.attributes.event)) {
+                if (lodash.isEmpty(triggerItem.attributes.event.body)) {
+                    delete triggerItem.attributes.event.body;
+                }
+
+                if (!lodash.isEmpty(selectedItem.attributes.event.body)) {
+                    triggerItem.attributes.event.body = selectedItem.attributes.event.body;
+                }
+
+                if (lodash.isEmpty(triggerItem.attributes.event.headers)) {
+                    delete triggerItem.attributes.event.headers;
+                }
+
+                if (!lodash.isEmpty(selectedItem.attributes.event.headers)) {
+                    triggerItem.attributes.event.headers = angular.copy(selectedItem.attributes.event.headers);
+                }
+            }
+
             if (angular.isDefined(triggerItem.attributes)) {
                 triggerItem.attributes = lodash.omitBy(triggerItem.attributes, function (attribute) {
                     return !lodash.isNumber(attribute) && lodash.isEmpty(attribute);

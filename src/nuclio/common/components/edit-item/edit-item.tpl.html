@@ -279,6 +279,22 @@
                                             data-update-data-field="attributes.sasl.password">
                 </igz-validating-input-field>
             </div>
+            <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.event.body)">
+                <div class="field-label">Event Body</div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-input-name="eventBody"
+                                            data-input-value="$ctrl.item.attributes.event.body"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-pattern="$ctrl.stringValidationPattern"
+                                            data-validation-is-required="false"
+                                            data-placeholder-text="Type event body..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="attributes.event.body">
+                </igz-validating-input-field>
+            </div>
             <div class="igz-col-91 attribute-field ingresses-wrapper"
                  data-ng-if="$ctrl.isClassSelected() && $ctrl.isHttpTrigger()">
 
@@ -379,6 +395,57 @@
                 </div>
             </div>
 
+            <div class="igz-col-91 attribute-field event-headers-wrapper"
+                 data-ng-if="$ctrl.isClassSelected() && $ctrl.isCronTrigger()">
+
+                <div class="field-label">Event headers</div>
+
+                <div class="table-headers">
+                    <div class="key-header">Key</div>
+                    <div class="value-header">Value</div>
+                </div>
+                <div data-ng-if="!$ctrl.isScrollNeeded('eventHeaders')">
+                    <div class="table-body" data-ng-repeat="header in $ctrl.eventHeaders">
+                        <ncl-key-value-input class="new-label-input"
+                                             data-list-class="event-headers-wrapper"
+                                             data-change-state-broadcast="change-state-deploy-button"
+                                             data-key-optional="true"
+                                             data-row-data="header"
+                                             data-use-type="false"
+                                             data-submit-on-fly="true"
+                                             data-item-index="$index"
+                                             data-action-handler-callback="$ctrl.handleEventHeaderAction(actionType, index)"
+                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                        </ncl-key-value-input>
+                    </div>
+                </div>
+
+                <div data-ng-if="$ctrl.isScrollNeeded('eventHeaders')"
+                     class="igz-scrollable-container scrollable-annotations"
+                     data-ng-scrollbars
+                     data-ng-scrollbars-config="$ctrl.scrollConfig">
+                    <div class="table-body" data-ng-repeat="header in $ctrl.eventHeaders">
+                        <ncl-key-value-input class="new-label-input"
+                                             data-list-class="event-headers-wrapper"
+                                             data-change-state-broadcast="change-state-deploy-button"
+                                             data-key-optional="true"
+                                             data-row-data="header"
+                                             data-use-type="false"
+                                             data-submit-on-fly="true"
+                                             data-item-index="$index"
+                                             data-action-handler-callback="$ctrl.handleEventHeaderAction(actionType, index)"
+                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                        </ncl-key-value-input>
+                    </div>
+                </div>
+
+                <div class="create-event-header"
+                     data-ng-click="$ctrl.addNewEventHeader($event)">
+                    <span class="igz-icon-add-round"></span>
+                    Create a new event header
+                </div>
+            </div>
+
             <div class="igz-col-91 attribute-field subscriptions-wrapper"
                  data-ng-if="$ctrl.isClassSelected() && $ctrl.isMQTTTrigger()">
 
@@ -412,7 +479,6 @@
                     Create a new subscription
                 </div>
             </div>
-
         </div>
     </form>
 </div>
