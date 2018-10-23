@@ -163,7 +163,14 @@
             }
 
             if (!ctrl.isVolumeType() && isCronTrigger()) {
-                ctrl.eventHeaders = lodash.chain(ctrl.item.event.headers)
+                lodash.defaultsDeep(ctrl.item.attributes, {
+                    event: {
+                        body: '',
+                        headers: {}
+                    }
+                });
+
+                ctrl.eventHeaders = lodash.chain(lodash.get(ctrl.item, 'attributes.event.headers'))
                     .defaultTo([])
                     .map(function (value, key) {
                         return {
@@ -413,6 +420,10 @@
                 ctrl.ingresses[index] = variable;
 
                 checkValidation('ingresses');
+            } else if (variable.ui.name === 'event.headers') {
+                ctrl.eventHeaders[index] = variable;
+
+                checkValidation('eventHeaders');
             }
         }
 
@@ -604,6 +615,16 @@
                                     });
 
                                     ctrl.item.attributes[attribute.name] = newIngresses;
+                                }
+
+                                if (attribute.name === 'event') {
+                                    var newEventHeader = {};
+
+                                    lodash.forEach(ctrl.eventHeaders, function (headers, key) {
+                                        newEventHeader[headers.name] = headers.value;
+                                    });
+
+                                    lodash.set(ctrl.item, 'attributes.event.headers', newEventHeader);
                                 }
                             });
 
