@@ -58,6 +58,11 @@
                 name: 'Archive'
             },
             {
+                id: 'github',
+                visible: true,
+                name: 'GitHub'
+            },
+            {
                 id: 'jar',
                 visible: lodash.get(ctrl.version, 'spec.runtime') === 'java',
                 name: 'Jar'

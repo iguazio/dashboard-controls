@@ -103,6 +103,54 @@
                                                 class="nuclio-validating-input">
                     </igz-validating-input-field>
                 </div>
+
+                <div data-ng-if="$ctrl.selectedEntryType.name === 'GitHub'"
+                     class="ncl-code-entry-url">
+                    <div class="field-label">URL</div>
+                    <igz-validating-input-field data-field-type="input"
+                                                data-input-name="githubUrl"
+                                                data-input-value="$ctrl.version.spec.build.path"
+                                                data-is-focused="true"
+                                                data-form-object="$ctrl.versionCodeForm"
+                                                data-validation-is-required="true"
+                                                data-placeholder-text="For example: https://github.com/nuclio/nuclio"
+                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                data-update-data-field="spec.build.path"
+                                                class="nuclio-validating-input">
+                    </igz-validating-input-field>
+                </div>
+
+                <div data-ng-if="$ctrl.selectedEntryType.name === 'GitHub'"
+                     class="ncl-code-entry-url">
+                    <div class="field-label">Branch</div>
+                    <igz-validating-input-field data-field-type="input"
+                                                data-input-name="githubBranch"
+                                                data-input-value="$ctrl.version.spec.build.codeEntryAttributes.branch"
+                                                data-is-focused="false"
+                                                data-form-object="$ctrl.versionCodeForm"
+                                                data-validation-is-required="true"
+                                                data-placeholder-text="For example: master"
+                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                data-update-data-field="spec.build.codeEntryAttributes.branch"
+                                                class="nuclio-validating-input">
+                    </igz-validating-input-field>
+                </div>
+
+                <div data-ng-if="$ctrl.selectedEntryType.name === 'GitHub'"
+                     class="ncl-code-entry-url">
+                    <div class="field-label">Work Dir</div>
+                    <igz-validating-input-field data-field-type="input"
+                                                data-input-name="githubWorkDir"
+                                                data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir"
+                                                data-is-focused="false"
+                                                data-form-object="$ctrl.versionCodeForm"
+                                                data-validation-is-required="false"
+                                                data-placeholder-text="For example: /path/to/functions"
+                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                data-update-data-field="spec.build.codeEntryAttributes.workDir"
+                                                class="nuclio-validating-input">
+                    </igz-validating-input-field>
+                </div>
             </form>
         </div>
     </div>
