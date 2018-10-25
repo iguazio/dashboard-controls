@@ -122,9 +122,6 @@
                 lodash.set(ctrl.version, 'spec.build.codeEntryType', ctrl.selectedEntryType.id);
             }
 
-            ctrl.image = lodash.get(ctrl.version, 'spec.image', '');
-            ctrl.archive = lodash.get(ctrl.version, 'spec.build.path', '');
-
             previousEntryType = ctrl.selectedEntryType;
         }
 
@@ -148,7 +145,7 @@
 
             lodash.set(ctrl.version, 'spec.build.codeEntryType', ctrl.selectedEntryType.id);
 
-            if (lodash.includes(['image', 'archive', 'jar'], item.id)) {
+            if (lodash.includes(['image', 'archive', 'github', 'jar'], item.id)) {
                 var functionSourceCode = lodash.get(ctrl.version, 'spec.build.functionSourceCode', '');
                 lodash.merge(ctrl.version, {
                     spec: {
@@ -157,6 +154,9 @@
                         }
                     }
                 });
+
+                lodash.set(ctrl.version, 'spec.build.path', '');
+                lodash.set(ctrl.version, 'spec.build.codeEntryAttributes', {branch: '', workDir: ''});
 
                 if (previousEntryType.id === 'sourceCode') {
                     lodash.set(ctrl.version, 'ui.versionCode', functionSourceCode);
