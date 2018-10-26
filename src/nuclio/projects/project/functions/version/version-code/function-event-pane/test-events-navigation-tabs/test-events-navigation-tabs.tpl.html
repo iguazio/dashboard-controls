@@ -7,4 +7,11 @@
 
         <span class="badge" data-ng-if="item.badge">{{item.badge}}</span>
     </div>
+
+    <igz-default-dropdown data-ng-if="$ctrl.selectedLogLevel"
+                          data-values-array="$ctrl.logLevelValues"
+                          data-select-property-only="id"
+                          data-selected-item="$ctrl.selectedLogLevel"
+                          data-item-select-callback="$ctrl.onChangeLogLevel({selectedLogLevel: item})">
+    </igz-default-dropdown>
 </div>

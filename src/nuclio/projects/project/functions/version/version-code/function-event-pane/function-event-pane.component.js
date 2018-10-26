@@ -151,6 +151,7 @@
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isDisabledTestButton = isDisabledTestButton;
         ctrl.onChangeData = onChangeData;
+        ctrl.onChangeLogLevel = onChangeLogLevel;
         ctrl.onChangeRequestMethod = onChangeRequestMethod;
         ctrl.onChangeTab = onChangeTab;
         ctrl.onChangeRequestBodyType = onChangeRequestBodyType;
@@ -171,6 +172,7 @@
          */
         function onInit() {
             ctrl.isSplashShowed.value = true;
+            ctrl.eventLogLevel = 'debug';
 
             if (lodash.isNil(ctrl.version.ui.deployedVersion)) {
                 VersionHelperService.checkVersionChange(ctrl.version);
@@ -457,6 +459,14 @@
         }
 
         /**
+         * Changes log level data
+         * @param {Object} selectedLogLevel - selected log level
+         */
+        function onChangeLogLevel(selectedLogLevel) {
+            ctrl.eventLogLevel = selectedLogLevel.id;
+        }
+
+        /**
          * Changes request's source code
          * @param {string} sourceCode
          */
@@ -538,6 +548,7 @@
             ctrl.requestBodyType = ctrl.requestBodyTypes[0];
             ctrl.selectedResponseTab = ctrl.responseNavigationTabs[0];
             ctrl.headers = null;
+            ctrl.eventLogLevel = 'debug';
 
             updateRequestHeaders();
         }
@@ -629,7 +640,10 @@
                 ctrl.testResult = {};
                 ctrl.responseImage = null;
 
-                ctrl.invokeFunction({eventData: ctrl.selectedEvent, canceler: canceler.promise})
+                var eventData = angular.copy(ctrl.selectedEvent);
+                lodash.set(eventData, 'spec.attributes.logLevel', ctrl.eventLogLevel);
+
+                ctrl.invokeFunction({eventData: eventData, canceler: canceler.promise})
                     .then(function (response) {
                         return $q.reject(response);
                     })

@@ -102,7 +102,10 @@
                 <div class="request-body">
                     <ncl-test-events-navigation-tabs data-active-tab="$ctrl.selectedRequestTab"
                                                      data-tab-items="$ctrl.requestNavigationTabs"
-                                                     data-on-change-active-tab="$ctrl.onChangeTab(activeTab, 'selectedRequestTab')"></ncl-test-events-navigation-tabs>
+                                                     data-on-change-active-tab="$ctrl.onChangeTab(activeTab, 'selectedRequestTab')"
+                                                     data-selected-log-level="$ctrl.eventLogLevel"
+                                                     data-on-change-log-level="$ctrl.onChangeLogLevel(selectedLogLevel)">
+                    </ncl-test-events-navigation-tabs>
 
                     <div class="body" data-ng-if="$ctrl.selectedRequestTab.id === 'body'">
                         <div class="body-types">
