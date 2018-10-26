@@ -19,7 +19,8 @@
                 keyValidationPattern: '<?',
                 listClass: '@?',
                 submitOnFly: '<?',
-                valueOptional: '<?'
+                valueOptional: '<?',
+                onlyValueInput: '<?'
             },
             templateUrl: 'nuclio/common/components/key-value-input/key-value-input.tpl.html',
             controller: NclKeyValueInputController

@@ -45,6 +45,7 @@
         ctrl.addNewIngress = addNewIngress;
         ctrl.addNewAnnotation = addNewAnnotation;
         ctrl.addNewSubscription = addNewSubscription;
+        ctrl.addNewTopic = addNewTopic;
         ctrl.addNewEventHeader = addNewEventHeader;
         ctrl.convertFromCamelCase = convertFromCamelCase;
         ctrl.getAttrValue = getAttrValue;
@@ -53,11 +54,13 @@
         ctrl.handleIngressAction = handleIngressAction;
         ctrl.handleAnnotationAction = handleAnnotationAction;
         ctrl.handleSubscriptionAction = handleSubscriptionAction;
+        ctrl.handleTopicAction = handleTopicAction;
         ctrl.handleEventHeaderAction = handleEventHeaderAction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isClassSelected = isClassSelected;
         ctrl.isScrollNeeded = isScrollNeeded;
         ctrl.isHttpTrigger = isHttpTrigger;
+        ctrl.isKafkaTrigger = isKafkaTrigger;
         ctrl.isMQTTTrigger = isMQTTTrigger;
         ctrl.isCronTrigger = isCronTrigger;
         ctrl.isVolumeType = isVolumeType;
@@ -150,7 +153,7 @@
                     .value();
             }
 
-            if (!ctrl.isVolumeType() && isKafkaTrigger()) {
+            if (!ctrl.isVolumeType() && ctrl.isKafkaTrigger()) {
                 lodash.defaultsDeep(ctrl.item.attributes, {
                     initialOffset: 'latest',
                     sasl: {
@@ -159,6 +162,21 @@
                         password: ''
                     }
                 });
+
+                ctrl.topics = lodash.chain(ctrl.item.attributes.topics)
+                    .defaultTo([])
+                    .map(function (value, key) {
+                        return {
+                            name: key,
+                            value: value,
+                            ui: {
+                                editModeActive: false,
+                                isFormValid: true,
+                                name: 'topic'
+                            }
+                        };
+                    })
+                    .value();
             }
 
             if (!ctrl.isVolumeType() && isv3ioTrigger()) {
@@ -168,7 +186,7 @@
                 });
             }
 
-            if (!ctrl.isVolumeType() && isMQTTTrigger()) {
+            if (!ctrl.isVolumeType() && ctrl.isMQTTTrigger()) {
                 ctrl.subscriptions = lodash.chain(ctrl.item.attributes.subscriptions)
                     .defaultTo([])
                     .map(function (value, key) {
@@ -185,7 +203,7 @@
                     .value();
             }
 
-            if (!ctrl.isVolumeType() && isCronTrigger()) {
+            if (!ctrl.isVolumeType() && ctrl.isCronTrigger()) {
                 lodash.defaultsDeep(ctrl.item.attributes, {
                     event: {
                         body: '',
@@ -285,6 +303,26 @@
                             editModeActive: true,
                             isFormValid: false,
                             name: 'subscription'
+                        }
+                    });
+                    event.stopPropagation();
+                }
+            }, 50);
+        }
+
+        /**
+         * Adds new topic
+         */
+        function addNewTopic(event) {
+            $timeout(function () {
+                if (ctrl.topics.length < 1 || lodash.last(ctrl.topics).ui.isFormValid) {
+                    ctrl.topics.push({
+                        name: '',
+                        value: '',
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'topic'
                         }
                     });
                     event.stopPropagation();
@@ -410,6 +448,20 @@
         }
 
         /**
+         * Handler on specific action type of trigger's topic
+         * @param {string} actionType
+         * @param {number} index - index of variable in array
+         */
+        function handleTopicAction(actionType, index) {
+            if (actionType === 'delete') {
+                lodash.pullAt(ctrl.topics, index);
+                lodash.pullAt(ctrl.item.attributes.topics, index);
+
+                checkValidation('topics');
+            }
+        }
+
+        /**
          * Determine whether the item class was selected
          * @returns {boolean}
          */
@@ -455,6 +507,22 @@
         }
 
         /**
+         * Checks for `kafka` triggers
+         * @returns {boolean}
+         */
+        function isKafkaTrigger() {
+            return ctrl.selectedClass.id === 'kafka-cluster';
+        }
+
+        /**
+         * Checks for `cron` triggers
+         * @returns {boolean}
+         */
+        function isCronTrigger() {
+            return ctrl.selectedClass.id === 'cron';
+        }
+
+        /**
          * Checks is input have to be visible for sperific item type
          * @param {string} name - input name
          * @returns {boolean}
@@ -493,6 +561,10 @@
                 ctrl.subscriptions[index] = variable;
 
                 checkValidation('subscriptions');
+            } else if (variable.ui.name === 'topic') {
+                ctrl.topics[index] = variable;
+
+                checkValidation('topics');
             }
         }
 
@@ -592,6 +664,8 @@
                     });
                 } else if (attribute.name === 'subscriptions') {
                     ctrl.subscriptions = [];
+                } else if (attribute.name === 'kafka-topics') {
+                    ctrl.topics = [];
                 } else {
                     lodash.set(ctrl.item.attributes, attribute.name, lodash.get(attribute, 'defaultValue', ''));
                 }
@@ -699,12 +773,16 @@
                                 }
                             });
 
-                            if (isHttpTrigger()) {
+                            if (ctrl.isHttpTrigger()) {
                                 updateAnnotaions();
                             }
 
-                            if (isMQTTTrigger()) {
+                            if (ctrl.isMQTTTrigger()) {
                                 updateSubscriptions();
+                            }
+
+                            if (ctrl.isKafkaTrigger()) {
+                                updateTopics();
                             }
 
                             $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.item.ui.name, isDisabled: false});
@@ -744,6 +822,17 @@
         }
 
         /**
+         * Updates topics fields
+         */
+        function updateTopics() {
+            var newTopics = lodash.map(ctrl.topics, function (topic) {
+                return topic.value;
+            });
+
+            lodash.set(ctrl.item, 'attributes.topics', newTopics);
+        }
+
+        /**
          * Validate interval and schedule fields
          */
         function validateCronClassValues() {
@@ -780,22 +869,6 @@
             };
 
             return lodash.get(placeholders, ctrl.type, placeholders.default);
-        }
-
-        /**
-         * Checks for `kafka` triggers
-         * @returns {boolean}
-         */
-        function isKafkaTrigger() {
-            return ctrl.selectedClass.id === 'kafka-cluster';
-        }
-
-        /**
-         * Checks for `cron` triggers
-         * @returns {boolean}
-         */
-        function isCronTrigger() {
-            return ctrl.selectedClass.id === 'cron';
         }
 
         /**

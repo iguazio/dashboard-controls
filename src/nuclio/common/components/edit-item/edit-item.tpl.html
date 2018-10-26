@@ -479,6 +479,35 @@
                     Create a new subscription
                 </div>
             </div>
+
+            <div class="igz-col-45 attribute-field topics-wrapper"
+                 data-ng-if="$ctrl.isClassSelected() && $ctrl.isKafkaTrigger()">
+
+                <div class="field-label">Topics</div>
+
+                <div>
+                    <div class="table-body" data-ng-repeat="topic in $ctrl.topics">
+                        <ncl-key-value-input class="new-label-input"
+                                             data-list-class="topics-wrapper"
+                                             data-change-state-broadcast="change-state-deploy-button"
+                                             data-row-data="topic"
+                                             data-use-type="false"
+                                             data-submit-on-fly="true"
+                                             data-item-index="$index"
+                                             data-only-value-input="true"
+                                             data-value-validation-pattern="$ctrl.stringValidationPattern"
+                                             data-action-handler-callback="$ctrl.handleTopicAction(actionType, index)"
+                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                        </ncl-key-value-input>
+                    </div>
+                </div>
+
+                <div class="create-topic-button"
+                     data-ng-click="$ctrl.addNewTopic($event)">
+                    <span class="igz-icon-add-round"></span>
+                    Create a new topic
+                </div>
+            </div>
         </div>
     </form>
 </div>

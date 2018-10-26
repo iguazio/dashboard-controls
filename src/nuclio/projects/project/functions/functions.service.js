@@ -28,11 +28,14 @@
                         url: 'string',
                         attributes: [
                             {
-                                name: 'topic',
-                                pattern: 'string',
-                                type: 'input',
-                                fieldType: 'input',
-                                allowEmpty: false
+                                name: 'kafka-topics',
+                                values: {
+                                    topic: {
+                                        name: 'topic',
+                                        type: 'input',
+                                        pattern: 'string'
+                                    }
+                                }
                             },
                             {
                                 name: 'partitions',
