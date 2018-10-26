@@ -44,9 +44,7 @@
             </div>
         </div>
     </div>
-    <div class="igz-scrollable-container main-section-wrapper"
-         data-ng-scrollbars
-         data-ng-scrollbars-config="$ctrl.scrollConfig">
+    <div class="main-section-wrapper">
         <form name="$ctrl.testEventsForm">
             <div class="main-header">
                 <div class="left-side-elements">
@@ -84,249 +82,259 @@
                     </div>
                 </div>
             </div>
-            <div class="request-section">
-                <div class="request-method">
-                    <igz-default-dropdown data-values-array="$ctrl.requestMethods"
-                                          data-select-property-only="name"
-                                          data-selected-item="$ctrl.selectedEvent.spec.attributes.method"
-                                          data-item-select-callback="$ctrl.onChangeRequestMethod(item)"></igz-default-dropdown>
-                    <div class="path">
-                        {{$ctrl.getInvocationUrl()}}
-                        <igz-validating-input-field data-field-type="input"
-                                                    data-input-value="$ctrl.selectedEvent.spec.attributes.path"
-                                                    data-update-data-field="spec.attributes.path"
-                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)">
-                        </igz-validating-input-field>
-                    </div>
-                </div>
-                <div class="request-body">
-                    <ncl-test-events-navigation-tabs data-active-tab="$ctrl.selectedRequestTab"
-                                                     data-tab-items="$ctrl.requestNavigationTabs"
-                                                     data-on-change-active-tab="$ctrl.onChangeTab(activeTab, 'selectedRequestTab')"></ncl-test-events-navigation-tabs>
-
-                    <div class="body" data-ng-if="$ctrl.selectedRequestTab.id === 'body'">
-                        <div class="body-types">
-                            <igz-default-dropdown data-values-array="$ctrl.requestBodyTypes"
-                                                  data-selected-item="$ctrl.requestBodyType"
-                                                  data-item-select-callback="$ctrl.onChangeRequestBodyType(item)"></igz-default-dropdown>
+            <div data-ui-layout="{ flow : 'row', dividerSize: 2 }">
+                <div ui-layout-container size="45%" min-size="100px" class="request-section">
+                    <div class="igz-scrollable-container scrollable-request-section"
+                         data-ng-scrollbars
+                         data-ng-scrollbars-config="$ctrl.scrollConfig">
+                        <div class="request-method">
+                            <igz-default-dropdown data-values-array="$ctrl.requestMethods"
+                                                  data-select-property-only="name"
+                                                  data-selected-item="$ctrl.selectedEvent.spec.attributes.method"
+                                                  data-item-select-callback="$ctrl.onChangeRequestMethod(item)"></igz-default-dropdown>
+                            <div class="path">
+                                {{$ctrl.getInvocationUrl()}}
+                                <igz-validating-input-field data-field-type="input"
+                                                            data-input-value="$ctrl.selectedEvent.spec.attributes.path"
+                                                            data-update-data-field="spec.attributes.path"
+                                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)">
+                                </igz-validating-input-field>
+                            </div>
                         </div>
-                        <div class="main-block">
-                            <div class="upload-file-section"
-                                 data-ng-class="{'uploaded': $ctrl.uploadingData.uploaded}"
-                                 data-ng-if="$ctrl.requestBodyType.id === 'file'">
-                                <div class="drop-section"
-                                     data-ng-class="{'uploaded': $ctrl.uploadingData.uploaded}">
-                                    <div class="drop-message"
-                                         data-ng-class="{'uploading': $ctrl.uploadingData.uploading,
+                        <div class="request-body">
+                            <ncl-test-events-navigation-tabs data-active-tab="$ctrl.selectedRequestTab"
+                                                             data-tab-items="$ctrl.requestNavigationTabs"
+                                                             data-on-change-active-tab="$ctrl.onChangeTab(activeTab, 'selectedRequestTab')"></ncl-test-events-navigation-tabs>
+
+                            <div class="body" data-ng-if="$ctrl.selectedRequestTab.id === 'body'">
+                                <div class="body-types">
+                                    <igz-default-dropdown data-values-array="$ctrl.requestBodyTypes"
+                                                          data-selected-item="$ctrl.requestBodyType"
+                                                          data-item-select-callback="$ctrl.onChangeRequestBodyType(item)"></igz-default-dropdown>
+                                </div>
+                                <div class="main-block">
+                                    <div class="upload-file-section"
+                                         data-ng-class="{'uploaded': $ctrl.uploadingData.uploaded}"
+                                         data-ng-if="$ctrl.requestBodyType.id === 'file'">
+                                        <div class="drop-section"
+                                             data-ng-class="{'uploaded': $ctrl.uploadingData.uploaded}">
+                                            <div class="drop-message"
+                                                 data-ng-class="{'uploading': $ctrl.uploadingData.uploading,
                                                          'uploaded': $ctrl.uploadingData.uploaded}">
-                                        <div data-ng-if="!$ctrl.uploadingData.uploaded && !$ctrl.uploadingData.uploading">
-                                            <div class="ncl-icon-drop-file"></div>
+                                                <div data-ng-if="!$ctrl.uploadingData.uploaded && !$ctrl.uploadingData.uploading">
+                                                    <div class="ncl-icon-drop-file"></div>
 
-                                            Drop a file here or
-                                            <span class="browse"
-                                                  ngf-select="$ctrl.uploadFile($file)">&nbsp;browse</span>
-                                        </div>
-                                        <div data-ng-if="$ctrl.uploadingData.uploading">
-                                            <div class="ncl-icon-drop-file"></div>
+                                                    Drop a file here or
+                                                    <span class="browse"
+                                                          ngf-select="$ctrl.uploadFile($file)">&nbsp;browse</span>
+                                                </div>
+                                                <div data-ng-if="$ctrl.uploadingData.uploading">
+                                                    <div class="ncl-icon-drop-file"></div>
 
-                                            <div class="file-name">
-                                                {{$ctrl.uploadingData.name}}
-                                                <span class="size">&nbsp;({{$ctrl.uploadingData.size}})</span>
-                                            </div>
-                                            <div class="progress">
-                                                <div class="progress-bar"
-                                                     role="uib-progressbar"
-                                                     aria-valuemin="0"
-                                                     aria-valuemax="100"
-                                                     data-ng-style="{'width': $ctrl.uploadingData.progress}">
+                                                    <div class="file-name">
+                                                        {{$ctrl.uploadingData.name}}
+                                                        <span class="size">&nbsp;({{$ctrl.uploadingData.size}})</span>
+                                                    </div>
+                                                    <div class="progress">
+                                                        <div class="progress-bar"
+                                                             role="uib-progressbar"
+                                                             aria-valuemin="0"
+                                                             aria-valuemax="100"
+                                                             data-ng-style="{'width': $ctrl.uploadingData.progress}">
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div data-ng-if="$ctrl.uploadingData.uploaded">
-                                            <div class="file">
-                                                <span class="ncl-icon-file"></span>
-                                                <div class="name text-ellipsis"
-                                                     data-uib-tooltip="{{$ctrl.uploadingData.name}}"
-                                                     data-tooltip-popup-delay="300"
-                                                     data-tooltip-placement="top">
-                                                    {{$ctrl.uploadingData.name}}
+                                                <div data-ng-if="$ctrl.uploadingData.uploaded">
+                                                    <div class="file">
+                                                        <span class="ncl-icon-file"></span>
+                                                        <div class="name text-ellipsis"
+                                                             data-uib-tooltip="{{$ctrl.uploadingData.name}}"
+                                                             data-tooltip-popup-delay="300"
+                                                             data-tooltip-placement="top">
+                                                            {{$ctrl.uploadingData.name}}
+                                                        </div>
+                                                        <span class="size">&nbsp;({{$ctrl.uploadingData.size}})</span>
+                                                        <div class="igz-icon-close" data-ng-click="$ctrl.deleteFile()"></div>
+                                                    </div>
                                                 </div>
-                                                <span class="size">&nbsp;({{$ctrl.uploadingData.size}})</span>
-                                                <div class="igz-icon-close" data-ng-click="$ctrl.deleteFile()"></div>
                                             </div>
                                         </div>
                                     </div>
+                                    <div data-ng-if="$ctrl.requestBodyType.id !== 'file'"
+                                         class="code-edit-section">
+                                        <ncl-monaco class="monaco-code-editor"
+                                                    data-function-source-code="$ctrl.selectedEvent.spec.body"
+                                                    data-language="$ctrl.requestSourceCodeLanguage"
+                                                    data-on-change-source-code-callback="$ctrl.onChangeRequestSourceCode(sourceCode)"
+                                                    data-selected-theme="'vs-light'"
+                                                    data-show-line-numbers="true"
+                                                    data-mini-monaco="true"
+                                                    data-name="eventRequestBody"
+                                                    data-read-only="false"></ncl-monaco>
+                                    </div>
                                 </div>
                             </div>
-                            <div data-ng-if="$ctrl.requestBodyType.id !== 'file'"
-                                 class="code-edit-section">
-                                <ncl-monaco class="monaco-code-editor"
-                                            data-function-source-code="$ctrl.selectedEvent.spec.body"
-                                            data-language="$ctrl.requestSourceCodeLanguage"
-                                            data-on-change-source-code-callback="$ctrl.onChangeRequestSourceCode(sourceCode)"
-                                            data-selected-theme="'vs-light'"
-                                            data-show-line-numbers="true"
-                                            data-mini-monaco="true"
-                                            data-name="eventRequestBody"
-                                            data-read-only="false"></ncl-monaco>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="headers" data-ng-if="$ctrl.selectedRequestTab.id === 'headers'">
-                        <div class="table-headers">
-                            <div class="key-header">Key</div>
-                            <div class="value-header">Value</div>
-                        </div>
-                        <div class="table-body-wrapper" data-ng-if="!$ctrl.isScrollNeeded()">
-                            <div class="table-body" data-ng-repeat="header in $ctrl.headers">
-                                <ncl-key-value-input class="new-header-input"
-                                                     data-list-class="headers"
-                                                     data-row-data="header"
-                                                     data-item-index="$index"
-                                                     data-use-type="false"
-                                                     data-allow-selection="true"
-                                                     data-value-optional="true"
-                                                     data-on-select-item-callback="$ctrl.onSelectHeader"
-                                                     data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
-                            </div>
-                        </div>
+                            <div class="headers" data-ng-if="$ctrl.selectedRequestTab.id === 'headers'">
+                                <div class="table-headers">
+                                    <div class="key-header">Key</div>
+                                    <div class="value-header">Value</div>
+                                </div>
+                                <div class="table-body-wrapper" data-ng-if="!$ctrl.isScrollNeeded()">
+                                    <div class="table-body" data-ng-repeat="header in $ctrl.headers">
+                                        <ncl-key-value-input class="new-header-input"
+                                                             data-list-class="headers"
+                                                             data-row-data="header"
+                                                             data-item-index="$index"
+                                                             data-use-type="false"
+                                                             data-allow-selection="true"
+                                                             data-value-optional="true"
+                                                             data-on-select-item-callback="$ctrl.onSelectHeader"
+                                                             data-action-handler-callback="$ctrl.handleAction(actionType, index)"
+                                                             data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                    </div>
+                                </div>
 
-                        <div class="igz-scrollable-container scrollable-headers table-body-wrapper"
-                             data-ng-if="$ctrl.isScrollNeeded()"
-                             data-ng-scrollbars
-                             data-ng-scrollbars-config="$ctrl.scrollConfig">
-                            <div class="table-body" data-ng-repeat="header in $ctrl.headers">
-                                <ncl-key-value-input class="new-header-input"
-                                                     data-list-class="scrollable-headers"
-                                                     data-row-data="header"
-                                                     data-item-index="$index"
-                                                     data-use-type="false"
-                                                     data-allow-selection="true"
-                                                     data-value-optional="true"
-                                                     data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                <div class="igz-scrollable-container scrollable-headers table-body-wrapper"
+                                     data-ng-if="$ctrl.isScrollNeeded()"
+                                     data-ng-scrollbars
+                                     data-ng-scrollbars-config="$ctrl.scrollConfig">
+                                    <div class="table-body" data-ng-repeat="header in $ctrl.headers">
+                                        <ncl-key-value-input class="new-header-input"
+                                                             data-list-class="scrollable-headers"
+                                                             data-row-data="header"
+                                                             data-item-index="$index"
+                                                             data-use-type="false"
+                                                             data-allow-selection="true"
+                                                             data-value-optional="true"
+                                                             data-action-handler-callback="$ctrl.handleAction(actionType, index)"
+                                                             data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                    </div>
+                                </div>
+                                <div class="create-header-button"
+                                     data-ng-click="$ctrl.addNewHeader($event)">
+                                    <span class="igz-icon-add-round"></span>
+                                    Create a new header
+                                </div>
                             </div>
-                        </div>
-                        <div class="create-header-button"
-                             data-ng-click="$ctrl.addNewHeader($event)">
-                            <span class="igz-icon-add-round"></span>
-                            Create a new header
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="response-section">
-                <div class="response-header">
-                    <div class="left-side-elements">
-                        Response
-                    </div>
-                    <div class="right-side-elements"
-                         data-ng-if="$ctrl.testResult.status">
-                        <div>Status:
-                            <div class="text-ellipsis status {{$ctrl.isInvocationSuccess ? 'success' : 'fail'}}"
-                                 data-uib-tooltip="{{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}"
-                                 data-tooltip-placement="top"
-                                 data-tooltip-popup-delay="300">
-                                {{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}
+                <div ui-layout-container size="55%" min-size="100px" class="response-section">
+                    <div class="igz-scrollable-container scrollable-response-section"
+                         data-ng-scrollbars
+                         data-ng-scrollbars-config="$ctrl.scrollConfig">
+                        <div class="response-header">
+                            <div class="left-side-elements">
+                                Response
                             </div>
-                        </div>
-                        <div>Time: <span class="time">{{$ctrl.invokeTime}}</span></div>
-                        <div data-ng-if="$ctrl.responseSize">
-                            Size: <span class="size">{{$ctrl.responseSize.value + $ctrl.responseSize.label}}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="response-body">
-                    <ncl-test-events-navigation-tabs data-ng-if="$ctrl.showResponse"
-                                                     data-active-tab="$ctrl.selectedResponseTab"
-                                                     data-tab-items="$ctrl.responseNavigationTabs"
-                                                     data-on-change-active-tab="$ctrl.onChangeTab(activeTab, 'selectedResponseTab')"></ncl-test-events-navigation-tabs>
-                    <div class="body" data-ng-if="$ctrl.selectedResponseTab.id === 'body'">
-                        <div class="no-response"
-                             data-ng-if="!$ctrl.showResponse && !$ctrl.testing">
-                            <div class="circle">
-                                <div class="ncl-icon-test"></div>
-                                <div class="ncl-icon-hand"></div>
-                            </div>
-                            <div class="message">
-                                Response will be shown here once test button was clicked.
-                            </div>
-                        </div>
-                        <div class="testing" data-ng-if="$ctrl.testing">
-                            <span class="message">Loading...</span>
-                            <div class="loader-wrapper">
-                                <div class="loader-fading-circle">
-                                    <div class="loader-circle1 loader-circle"></div>
-                                    <div class="loader-circle2 loader-circle"></div>
-                                    <div class="loader-circle3 loader-circle"></div>
-                                    <div class="loader-circle4 loader-circle"></div>
-                                    <div class="loader-circle5 loader-circle"></div>
-                                    <div class="loader-circle6 loader-circle"></div>
-                                    <div class="loader-circle7 loader-circle"></div>
-                                    <div class="loader-circle8 loader-circle"></div>
-                                    <div class="loader-circle9 loader-circle"></div>
-                                    <div class="loader-circle10 loader-circle"></div>
-                                    <div class="loader-circle11 loader-circle"></div>
-                                    <div class="loader-circle12 loader-circle"></div>
+                            <div class="right-side-elements"
+                                 data-ng-if="$ctrl.testResult.status">
+                                <div>Status:
+                                    <div class="text-ellipsis status {{$ctrl.isInvocationSuccess ? 'success' : 'fail'}}"
+                                         data-uib-tooltip="{{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}"
+                                         data-tooltip-placement="top"
+                                         data-tooltip-popup-delay="300">
+                                        {{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}
+                                    </div>
+                                </div>
+                                <div>Time: <span class="time">{{$ctrl.invokeTime}}</span></div>
+                                <div data-ng-if="$ctrl.responseSize">
+                                    Size: <span class="size">{{$ctrl.responseSize.value + $ctrl.responseSize.label}}</span>
                                 </div>
                             </div>
-                            <div class="ncl-secondary-button"
-                                 data-ng-click="$ctrl.cancelInvocation()">Cancel</div>
                         </div>
-                        <div class="code-section" data-ng-if="$ctrl.showResponse && !$ctrl.testing">
-                            <div class="top-panel">
-                                <div data-ng-click="$ctrl.downloadResponseFile()"
-                                     data-uib-tooltip="Download to file"
-                                     data-tooltip-placement="left"
-                                     data-tooltip-popup-delay="300"
-                                     data-tooltip-append-to-body="true">
-                                    <div class="igz-icon-download"></div>
+                        <div class="response-body">
+                            <ncl-test-events-navigation-tabs data-ng-if="$ctrl.showResponse"
+                                                             data-active-tab="$ctrl.selectedResponseTab"
+                                                             data-tab-items="$ctrl.responseNavigationTabs"
+                                                             data-on-change-active-tab="$ctrl.onChangeTab(activeTab, 'selectedResponseTab')"></ncl-test-events-navigation-tabs>
+                            <div class="body" data-ng-if="$ctrl.selectedResponseTab.id === 'body'">
+                                <div class="no-response"
+                                     data-ng-if="!$ctrl.showResponse && !$ctrl.testing">
+                                    <div class="circle">
+                                        <div class="ncl-icon-test"></div>
+                                        <div class="ncl-icon-hand"></div>
+                                    </div>
+                                    <div class="message">
+                                        Response will be shown here once test button was clicked.
+                                    </div>
                                 </div>
-                                <div data-ng-click="$ctrl.copyToClipboard()"
-                                     data-uib-tooltip="Copy to clipboard"
-                                     data-tooltip-placement="left"
-                                     data-tooltip-popup-delay="300"
-                                     data-tooltip-append-to-body="true">
-                                    <div class="ncl-icon-copy"></div>
+                                <div class="testing" data-ng-if="$ctrl.testing">
+                                    <span class="message">Loading...</span>
+                                    <div class="loader-wrapper">
+                                        <div class="loader-fading-circle">
+                                            <div class="loader-circle1 loader-circle"></div>
+                                            <div class="loader-circle2 loader-circle"></div>
+                                            <div class="loader-circle3 loader-circle"></div>
+                                            <div class="loader-circle4 loader-circle"></div>
+                                            <div class="loader-circle5 loader-circle"></div>
+                                            <div class="loader-circle6 loader-circle"></div>
+                                            <div class="loader-circle7 loader-circle"></div>
+                                            <div class="loader-circle8 loader-circle"></div>
+                                            <div class="loader-circle9 loader-circle"></div>
+                                            <div class="loader-circle10 loader-circle"></div>
+                                            <div class="loader-circle11 loader-circle"></div>
+                                            <div class="loader-circle12 loader-circle"></div>
+                                        </div>
+                                    </div>
+                                    <div class="ncl-secondary-button"
+                                         data-ng-click="$ctrl.cancelInvocation()">Cancel</div>
+                                </div>
+                                <div class="code-section" data-ng-if="$ctrl.showResponse && !$ctrl.testing">
+                                    <div class="top-panel">
+                                        <div data-ng-click="$ctrl.downloadResponseFile()"
+                                             data-uib-tooltip="Download to file"
+                                             data-tooltip-placement="left"
+                                             data-tooltip-popup-delay="300"
+                                             data-tooltip-append-to-body="true">
+                                            <div class="igz-icon-download"></div>
+                                        </div>
+                                        <div data-ng-click="$ctrl.copyToClipboard()"
+                                             data-uib-tooltip="Copy to clipboard"
+                                             data-tooltip-placement="left"
+                                             data-tooltip-popup-delay="300"
+                                             data-tooltip-append-to-body="true">
+                                            <div class="ncl-icon-copy"></div>
+                                        </div>
+                                    </div>
+                                    <div class="code-edit-section" data-ng-if="$ctrl.responseBodyType === 'code'">
+                                        <ncl-monaco class="monaco-code-editor"
+                                                    data-function-source-code="$ctrl.testResult.body"
+                                                    data-language="'plaintext'"
+                                                    data-selected-theme="'vs-light'"
+                                                    data-show-line-numbers="true"
+                                                    data-mini-monaco="true"
+                                                    data-no-top-padding="true"
+                                                    data-name="eventResponseBody"
+                                                    data-read-only="true"></ncl-monaco>
+                                    </div>
+                                    <div class="image-section" data-ng-if="$ctrl.responseBodyType === 'image'">
+                                        <img class="response-body-img"
+                                             data-ng-src="{{$ctrl.responseImage}}"
+                                             alt="Response image"/>
+                                    </div>
+                                    <div class="no-content-section" data-ng-if="$ctrl.responseBodyType === 'N/A'">
+                                        You can download response body
+                                    </div>
                                 </div>
                             </div>
-                            <div class="code-edit-section" data-ng-if="$ctrl.responseBodyType === 'code'">
-                                <ncl-monaco class="monaco-code-editor"
-                                            data-function-source-code="$ctrl.testResult.body"
-                                            data-language="'plaintext'"
-                                            data-selected-theme="'vs-light'"
-                                            data-show-line-numbers="true"
-                                            data-mini-monaco="true"
-                                            data-no-top-padding="true"
-                                            data-name="eventResponseBody"
-                                            data-read-only="true"></ncl-monaco>
+                            <div class="headers" data-ng-if="$ctrl.selectedResponseTab.id === 'headers'">
+                                <div data-ng-repeat="(key, value) in $ctrl.testResult.headers">
+                                    <div class="text-ellipsis labels"
+                                         data-uib-tooltip="{{key}}"
+                                         data-tooltip-placement="left"
+                                         data-tooltip-popup-delay="300"
+                                         data-tooltip-append-to-body="true">{{key}}</div>
+                                    <div class="text-ellipsis values"
+                                         data-uib-tooltip="{{value}}"
+                                         data-tooltip-placement="left"
+                                         data-tooltip-popup-delay="300">{{value}}</div>
+                                </div>
                             </div>
-                            <div class="image-section" data-ng-if="$ctrl.responseBodyType === 'image'">
-                                <img class="response-body-img"
-                                     data-ng-src="{{$ctrl.responseImage}}"
-                                     alt="Response image"/>
-                            </div>
-                            <div class="no-content-section" data-ng-if="$ctrl.responseBodyType === 'N/A'">
-                                You can download response body
+                            <div class="logs" data-ng-if="$ctrl.selectedResponseTab.id === 'logs'">
+                                <ncl-test-events-logs data-logs="$ctrl.logs"></ncl-test-events-logs>
                             </div>
                         </div>
-                    </div>
-                    <div class="headers" data-ng-if="$ctrl.selectedResponseTab.id === 'headers'">
-                        <div data-ng-repeat="(key, value) in $ctrl.testResult.headers">
-                            <div class="text-ellipsis labels"
-                                 data-uib-tooltip="{{key}}"
-                                 data-tooltip-placement="left"
-                                 data-tooltip-popup-delay="300"
-                                 data-tooltip-append-to-body="true">{{key}}</div>
-                            <div class="text-ellipsis values"
-                                 data-uib-tooltip="{{value}}"
-                                 data-tooltip-placement="left"
-                                 data-tooltip-popup-delay="300">{{value}}</div>
-                        </div>
-                    </div>
-                    <div class="logs" data-ng-if="$ctrl.selectedResponseTab.id === 'logs'">
-                        <ncl-test-events-logs data-logs="$ctrl.logs"></ncl-test-events-logs>
                     </div>
                 </div>
             </div>
