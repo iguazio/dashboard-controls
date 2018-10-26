@@ -65,7 +65,7 @@
          * Destructor method
          */
         function onDestroy() {
-           terminateInterval();
+            terminateInterval();
         }
 
         /**
@@ -212,7 +212,7 @@
                     .then(pullFunctionState)
                     .catch(function (error) {
                         var logs = [{
-                            err: error.error
+                            err: error.data.error
                         }];
 
                         lodash.set(ctrl.deployResult, 'status.state', 'error');
@@ -386,7 +386,6 @@
                     })
                     .catch(function (error) {
                         if (error.status !== 404) {
-
                             ctrl.isSplashShowed.value = false;
                         }
                     });

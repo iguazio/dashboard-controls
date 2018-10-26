@@ -255,8 +255,8 @@
             ctrl.isSplashShowed.value = true;
 
             ctrl.getFunctions({id: ctrl.project.metadata.name})
-                .then(function (result) {
-                    ctrl.functions = lodash.toArray(lodash.defaultTo(result.data, result));
+                .then(function (functions) {
+                    ctrl.functions = lodash.toArray(functions);
 
                     if (lodash.isEmpty(ctrl.functions) && !$stateParams.createCancelled) {
                         ctrl.isSplashShowed.value = false;

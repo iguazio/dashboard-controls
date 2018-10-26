@@ -575,13 +575,13 @@
 
                 // save created event on beck-end
                 ctrl.createFunctionEvent({eventData: eventToSave, isNewEvent: ctrl.createEvent})
-                    .then(function (res) {
+                    .then(function (newEvent) {
                         ctrl.getFunctionEvents({functionData: ctrl.version}).then(function (response) {
                             ctrl.savedEvents = response;
                         });
 
-                        if (ctrl.createEvent && angular.isDefined(res)) {
-                            ctrl.selectedEvent = res.data;
+                        if (ctrl.createEvent && angular.isDefined(newEvent)) {
+                            ctrl.selectedEvent = newEvent;
                             ctrl.selectedEvent.spec.body = lodash.defaultTo(ctrl.selectedEvent.spec.body, '');
                         }
 
