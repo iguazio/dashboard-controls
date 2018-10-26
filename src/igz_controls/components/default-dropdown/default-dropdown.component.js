@@ -20,6 +20,7 @@
      * @param {Object} formObject - form object.
      * @param {string} inputName - name of the input.
      * @param {boolean} isDisabled - set to `true` to make this instance of the component read-only.
+     * @param {boolean} isFocused - should input be focused when screen is displayed
      * @param {boolean} isCapitalized - set to `true` to make capitalized all text from listing and selected value.
      * @param {boolean} isPagination - set to `true` to remove check mark from selected list`s item.
      *     Note: only for pagination dropdown.
@@ -51,6 +52,7 @@
                 iconClass: '@?',
                 inputName: '@?',
                 isDisabled: '<?',
+                isFocused: '<?',
                 isCapitalized: '@?',
                 isPagination: '<?',
                 isRequired: '<?',
@@ -134,6 +136,13 @@
             // checks if transclude template was passed
             $transclude(function (transclude) {
                 ctrl.isTranscludePassed = transclude.length > 0;
+            });
+
+            // set focus (for using keyboard) if ctrl.isFocused is true
+            $timeout(function () {
+                if (ctrl.isFocused) {
+                    $element.find('.default-dropdown-field').first().focus();
+                }
             });
 
             $scope.$on('close-drop-down', unselectDropdown);
