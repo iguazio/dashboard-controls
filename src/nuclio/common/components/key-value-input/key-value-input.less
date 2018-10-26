@@ -102,12 +102,16 @@
                     flex-grow: 1;
                 }
 
-                &.only-value-input {
+                &:not(.use-type, .only-value-input) {
+                    width: 62%;
+                }
+
+                &.only-key-value-input {
                     width: 58%;
                 }
 
-                &:not(.use-type) {
-                    width: 62%;
+                &.only-value-input {
+                    width: 100%;
                 }
 
                 &.all-value-types {

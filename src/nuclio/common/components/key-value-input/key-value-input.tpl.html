@@ -10,6 +10,7 @@
              data-ng-class="{'use-type': $ctrl.useType, 'use-checkbox': $ctrl.allowSelection}">
 
             <div class="input-container input-key-wrapper"
+                 data-ng-if="!$ctrl.onlyValueInput"
                  data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
                 <label for="key" data-ng-if="$ctrl.useLabels" class="key-label">Key:</label>
                 <igz-validating-input-field class="nuclio-validating-input input-key"
@@ -64,7 +65,10 @@
             </div>
 
             <div class="input-container input-value-wrapper"
-                 data-ng-class="{'use-type': $ctrl.useType, 'only-value-input': $ctrl.isVisibleByType('value'), 'all-value-types': $ctrl.allValueTypes}">
+                 data-ng-class="{'use-type': $ctrl.useType,
+                                 'only-value-input': $ctrl.onlyValueInput,
+                                 'only-key-value-input': $ctrl.isVisibleByType('value'),
+                                 'all-value-types': $ctrl.allValueTypes}">
                 <label for="value" data-ng-if="$ctrl.useLabels">
                     <span data-ng-if="$ctrl.isVisibleByType('value')">Value:</span>
                     <span data-ng-if="$ctrl.isVisibleByType('secret')">Secret name:</span>
