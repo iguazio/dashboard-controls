@@ -154,7 +154,7 @@
                 lodash.defaultsDeep(ctrl.item.attributes, {
                     initialOffset: 'latest',
                     sasl: {
-                        enabled: false,
+                        enable: false,
                         user: '',
                         password: ''
                     }
