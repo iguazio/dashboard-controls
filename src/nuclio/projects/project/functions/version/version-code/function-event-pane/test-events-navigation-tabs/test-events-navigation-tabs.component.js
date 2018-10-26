@@ -6,7 +6,9 @@
             bindings: {
                 activeTab: '<',
                 tabItems: '<',
-                onChangeActiveTab: '&'
+                selectedLogLevel: '<?',
+                onChangeActiveTab: '&',
+                onChangeLogLevel: '&?'
             },
             templateUrl: 'nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-navigation-tabs/test-events-navigation-tabs.tpl.html',
             controller: NclTestEventsNavigationTabsController
@@ -14,6 +16,29 @@
 
     function NclTestEventsNavigationTabsController(lodash) {
         var ctrl = this;
+
+        ctrl.logLevelValues = [
+            {
+                id: 'error',
+                name: 'Error',
+                visible: true
+            },
+            {
+                id: 'warn',
+                name: 'Warning',
+                visible: true
+            },
+            {
+                id: 'info',
+                name: 'Info',
+                visible: true
+            },
+            {
+                id: 'debug',
+                name: 'Debug',
+                visible: true
+            }
+        ];
 
         ctrl.changeActiveTab = changeActiveTab;
         ctrl.isActiveTab = isActiveTab;

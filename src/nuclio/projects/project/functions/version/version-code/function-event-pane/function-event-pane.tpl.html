@@ -91,7 +91,8 @@
                             <igz-default-dropdown data-values-array="$ctrl.requestMethods"
                                                   data-select-property-only="name"
                                                   data-selected-item="$ctrl.selectedEvent.spec.attributes.method"
-                                                  data-item-select-callback="$ctrl.onChangeRequestMethod(item)"></igz-default-dropdown>
+                                                  data-item-select-callback="$ctrl.onChangeRequestMethod(item)">
+                            </igz-default-dropdown>
                             <div class="path">
                                 {{$ctrl.getInvocationUrl()}}
                                 <igz-validating-input-field data-field-type="input"
@@ -104,13 +105,17 @@
                         <div class="request-body">
                             <ncl-test-events-navigation-tabs data-active-tab="$ctrl.selectedRequestTab"
                                                              data-tab-items="$ctrl.requestNavigationTabs"
-                                                             data-on-change-active-tab="$ctrl.onChangeTab(activeTab, 'selectedRequestTab')"></ncl-test-events-navigation-tabs>
+                                                             data-on-change-active-tab="$ctrl.onChangeTab(activeTab, 'selectedRequestTab')"
+                                                             data-selected-log-level="$ctrl.eventLogLevel"
+                                                             data-on-change-log-level="$ctrl.onChangeLogLevel(selectedLogLevel)">
+                            </ncl-test-events-navigation-tabs>
 
                             <div class="body" data-ng-if="$ctrl.selectedRequestTab.id === 'body'">
                                 <div class="body-types">
                                     <igz-default-dropdown data-values-array="$ctrl.requestBodyTypes"
                                                           data-selected-item="$ctrl.requestBodyType"
-                                                          data-item-select-callback="$ctrl.onChangeRequestBodyType(item)"></igz-default-dropdown>
+                                                          data-item-select-callback="$ctrl.onChangeRequestBodyType(item)">
+                                    </igz-default-dropdown>
                                 </div>
                                 <div class="main-block">
                                     <div class="upload-file-section"
@@ -170,7 +175,8 @@
                                                     data-show-line-numbers="true"
                                                     data-mini-monaco="true"
                                                     data-name="eventRequestBody"
-                                                    data-read-only="false"></ncl-monaco>
+                                                    data-read-only="false">
+                                        </ncl-monaco>
                                     </div>
                                 </div>
                             </div>
@@ -190,7 +196,8 @@
                                                              data-value-optional="true"
                                                              data-on-select-item-callback="$ctrl.onSelectHeader"
                                                              data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                                             data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                                        </ncl-key-value-input>
                                     </div>
                                 </div>
 
@@ -207,7 +214,8 @@
                                                              data-allow-selection="true"
                                                              data-value-optional="true"
                                                              data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                                             data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                                        </ncl-key-value-input>
                                     </div>
                                 </div>
                                 <div class="create-header-button"
@@ -247,7 +255,8 @@
                             <ncl-test-events-navigation-tabs data-ng-if="$ctrl.showResponse"
                                                              data-active-tab="$ctrl.selectedResponseTab"
                                                              data-tab-items="$ctrl.responseNavigationTabs"
-                                                             data-on-change-active-tab="$ctrl.onChangeTab(activeTab, 'selectedResponseTab')"></ncl-test-events-navigation-tabs>
+                                                             data-on-change-active-tab="$ctrl.onChangeTab(activeTab, 'selectedResponseTab')">
+                            </ncl-test-events-navigation-tabs>
                             <div class="body" data-ng-if="$ctrl.selectedResponseTab.id === 'body'">
                                 <div class="no-response"
                                      data-ng-if="!$ctrl.showResponse && !$ctrl.testing">
@@ -306,7 +315,8 @@
                                                     data-mini-monaco="true"
                                                     data-no-top-padding="true"
                                                     data-name="eventResponseBody"
-                                                    data-read-only="true"></ncl-monaco>
+                                                    data-read-only="true">
+                                        </ncl-monaco>
                                     </div>
                                     <div class="image-section" data-ng-if="$ctrl.responseBodyType === 'image'">
                                         <img class="response-body-img"
