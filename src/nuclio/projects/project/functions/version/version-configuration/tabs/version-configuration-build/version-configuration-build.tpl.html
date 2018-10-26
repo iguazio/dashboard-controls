@@ -62,10 +62,10 @@
             <div class="igz-col-100 build-field">
                 <div class="field-label">Readiness timeout (seconds)</div>
                 <igz-number-input data-form-object="$ctrl.buildForm"
-                                  data-input-name="readinessTimeout"
-                                  data-current-value="$ctrl.version.spec.readinessTimeout"
+                                  data-input-name="readinessTimeoutSeconds"
+                                  data-current-value="$ctrl.version.spec.readinessTimeoutSeconds"
                                   data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)"
-                                  data-update-number-input-field="spec.readinessTimeout"
+                                  data-update-number-input-field="spec.readinessTimeoutSeconds"
                                   data-allow-empty-field="false"
                                   data-value-step="1"
                                   data-validation-is-required="true"

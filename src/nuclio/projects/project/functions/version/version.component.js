@@ -159,7 +159,7 @@
 
             lodash.set(ctrl.version, 'spec.build', lodash.merge({
                 image: '',
-                readinessTimeout: 60,
+                readinessTimeoutSeconds: 60,
                 noCache: false,
                 offline: false,
                 dependencies: [],
