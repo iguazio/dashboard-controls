@@ -205,6 +205,23 @@
         height: 100%;
         margin-left: 0;
         transition: margin-left 0.3s ease-in-out;
+
+        .ui-layout-row {
+            overflow: hidden;
+
+            .ui-layout-container {
+                overflow: hidden;
+            }
+
+            .ui-splitbar {
+                .duskThree(0.2);
+                background: @color;
+
+                a {
+                    display: none;
+                }
+            }
+        }
     }
 
     .main-header {
