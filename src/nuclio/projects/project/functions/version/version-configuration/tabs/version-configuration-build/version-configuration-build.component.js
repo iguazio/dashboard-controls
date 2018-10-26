@@ -69,8 +69,13 @@
          */
         function inputValueCallback(newData, field) {
             if (lodash.includes(['commands', 'dependencies', 'runtimeAttributes.repositories'], field)) {
-                lodash.set(ctrl.build, field, newData);
-                lodash.set(ctrl.version, 'spec.build.' + field, newData.replace(/\r/g, '\n').split(/\n+/));
+                if (lodash.isEmpty(newData)) {
+                    lodash.unset(ctrl.build, field);
+                    lodash.unset(ctrl.version, 'spec.build.' + field);
+                } else {
+                    lodash.set(ctrl.build, field, newData);
+                    lodash.set(ctrl.version, 'spec.build.' + field, newData.replace(/\r/g, '\n').split(/\n+/));
+                }
             } else {
                 lodash.set(ctrl.version, field, newData);
             }
