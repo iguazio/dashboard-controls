@@ -54,7 +54,7 @@
             ctrl.build.commands = lodash.get(ctrl.version, 'spec.build.commands', []);
             ctrl.build.commands = ctrl.build.commands.join('\n');
 
-            ctrl.build.runtimeAttributes.dependencies = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.dependencies', []).join('\n');
+            ctrl.build.dependencies = lodash.get(ctrl.version, 'spec.build.dependencies', []).join('\n');
             ctrl.build.runtimeAttributes.repositories = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories', []).join('\n');
         }
 
@@ -68,7 +68,7 @@
          * @param {string} field
          */
         function inputValueCallback(newData, field) {
-            if (lodash.includes(['commands', 'runtimeAttributes.dependencies', 'runtimeAttributes.repositories'], field)) {
+            if (lodash.includes(['commands', 'dependencies', 'runtimeAttributes.repositories'], field)) {
                 if (lodash.isEmpty(newData)) {
                     lodash.unset(ctrl.build, field);
                     lodash.unset(ctrl.version, 'spec.build.' + field);
