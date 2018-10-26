@@ -8,6 +8,7 @@
             bindings: {
                 version: '<',
                 createFunctionEvent: '&',
+                getExternalIpAddresses: '&',
                 getFunctionEvents: '&',
                 deleteFunctionEvent: '&',
                 invokeFunction: '&'
@@ -25,6 +26,7 @@
         var HISTORY_LIMIT = 100;
 
         ctrl.createEvent = true;
+        ctrl.externalIPAddress = '';
         ctrl.headers = [];
         ctrl.isSplashShowed = {
             value: false
@@ -210,6 +212,14 @@
                     ctrl.isSplashShowed.value = false;
                 });
 
+            ctrl.getExternalIpAddresses()
+                .then(function (result) {
+                    ctrl.externalIPAddress = lodash.get(result, 'externalIPAddresses.addresses[0]', '');
+                })
+                .catch(function () {
+                    ctrl.version.ui.invocationURL = '';
+                });
+
             $scope.$on('navigation-tabs_toggle-test-pane', toggleTestPane);
 
             updateRequestHeaders();
@@ -378,6 +388,8 @@
             if (httpPort && lodash.includes(['building', 'error'], lodash.get(ctrl.version, 'ui.deployResult.status.state'))) {
                 httpPort = null;
             }
+
+            setInvocationUrl(ctrl.externalIPAddress, httpPort);
 
             return lodash.isNull(httpPort) ? 'Not yet deployed' : ctrl.version.ui.invocationURL + '/';
         }
@@ -867,6 +879,16 @@
 
             localStorage.setItem('test-events', angular.toJson(updatedHistory));
             updateHistory();
+        }
+
+        /**
+         * Sets the invocation URL of the function
+         * @param {string} ip - external IP address
+         * @param {number} port - HTTP port
+         */
+        function setInvocationUrl(ip, port) {
+            ctrl.version.ui.invocationURL =
+                lodash.isEmpty(ip) || !lodash.isNumber(port) ? '' : 'http://' + ip + ':' + port;
         }
 
         /**
