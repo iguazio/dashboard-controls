@@ -162,9 +162,9 @@
                 readinessTimeout: 60,
                 noCache: false,
                 offline: false,
+                dependencies: [],
                 runtimeAttributes: {
-                    repositories: [],
-                    dependencies: []
+                    repositories: []
                 }
             }, ctrl.version.spec.build));
         }

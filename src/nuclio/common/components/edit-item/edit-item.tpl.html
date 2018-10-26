@@ -40,7 +40,7 @@
                  data-ng-if="!$ctrl.isClassSelected()">{{ $ctrl.placeholder }}
             </div>
             <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected()">
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isVolumeType()">
                 <div class="field-label">Worker allocator name</div>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
