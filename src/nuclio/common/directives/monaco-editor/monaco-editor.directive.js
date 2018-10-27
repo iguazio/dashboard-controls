@@ -90,6 +90,7 @@
                     scope.$watch('fileLanguage', editorContext.onFileLanguageChanged.bind(editorContext));
                     scope.$watch('editorTheme', editorContext.onThemeChanged.bind(editorContext));
                     scope.$watch('wordWrap', editorContext.onWrapStateChanged.bind(editorContext));
+                    scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
 
                     scope.$on('function-import-source-code', editorContext.onCodeFileChanged.bind(editorContext));
 
