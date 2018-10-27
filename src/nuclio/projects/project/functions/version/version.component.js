@@ -47,6 +47,7 @@
         ctrl.isLayoutCollapsed = true;
         ctrl.versionDeployed = true;
 
+        ctrl.$onDestroy = onDestroy;
         ctrl.$onInit = onInit;
 
         ctrl.deployButtonClick = deployButtonClick;
@@ -59,6 +60,13 @@
         //
         // Hook method
         //
+
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+           terminateInterval();
+        }
 
         /**
          * Initialization method
@@ -345,10 +353,7 @@
                 ctrl.getFunction({metadata: ctrl.version.metadata, projectID: ctrl.project.metadata.name})
                     .then(function (response) {
                         if (response.status.state === 'ready' || response.status.state === 'error') {
-                            if (!lodash.isNil(interval)) {
-                                $interval.cancel(interval);
-                                interval = null;
-                            }
+                            terminateInterval();
 
                             ctrl.versionDeployed = true;
 
@@ -381,10 +386,6 @@
                     })
                     .catch(function (error) {
                         if (error.status !== 404) {
-                            if (!lodash.isNil(interval)) {
-                                $interval.cancel(interval);
-                                interval = null;
-                            }
 
                             ctrl.isSplashShowed.value = false;
                         }
@@ -428,6 +429,16 @@
                         deregisterFunction();
                         $state.go(toState.name, transition.params('to'));
                     });
+            }
+        }
+
+        /**
+         * Terminates the interval of function state polling.
+         */
+        function terminateInterval() {
+            if (!lodash.isNil(interval)) {
+                $interval.cancel(interval);
+                interval = null;
             }
         }
 
