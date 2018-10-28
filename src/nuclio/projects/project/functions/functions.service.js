@@ -446,7 +446,7 @@
                     {
                         id: 'hostPath',
                         name: 'Host path'
-                    },
+                    }
                 ]
             };
 
@@ -473,7 +473,7 @@
          * @returns {Object[]} - array of actions
          */
         function initVersionActions() {
-            var actions = [
+            return [
                 {
                     label: 'Edit',
                     id: 'edit',
@@ -493,8 +493,6 @@
                     }
                 }
             ];
-
-            return actions;
         }
     }
 }());
