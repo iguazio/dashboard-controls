@@ -63,6 +63,7 @@
         ctrl.isKafkaTrigger = isKafkaTrigger;
         ctrl.isMQTTTrigger = isMQTTTrigger;
         ctrl.isCronTrigger = isCronTrigger;
+        ctrl.isTriggerType = isTriggerType;
         ctrl.isVolumeType = isVolumeType;
         ctrl.onChangeData = onChangeData;
         ctrl.onSubmitForm = onSubmitForm;
@@ -103,7 +104,7 @@
                 $timeout(validateCronClassValues);
             }
 
-            if (!ctrl.isVolumeType()) {
+            if (ctrl.isTriggerType()) {
                 lodash.defaults(ctrl.item, {
                     workerAllocatorName: ''
                 });
@@ -117,7 +118,7 @@
                 }
             }
 
-            if (!ctrl.isVolumeType() && ctrl.isHttpTrigger()) {
+            if (ctrl.isTriggerType() && ctrl.isHttpTrigger()) {
                 if (lodash.isNil(ctrl.item.workerAvailabilityTimeoutMilliseconds)) {
                     ctrl.item.workerAvailabilityTimeoutMilliseconds = 0;
                 }
@@ -153,7 +154,7 @@
                     .value();
             }
 
-            if (!ctrl.isVolumeType() && ctrl.isKafkaTrigger()) {
+            if (ctrl.isTriggerType() && ctrl.isKafkaTrigger()) {
                 lodash.defaultsDeep(ctrl.item.attributes, {
                     initialOffset: 'latest',
                     sasl: {
@@ -179,14 +180,14 @@
                     .value();
             }
 
-            if (!ctrl.isVolumeType() && isv3ioTrigger()) {
+            if (ctrl.isTriggerType() && isv3ioTrigger()) {
                 lodash.defaults(ctrl.item, {
                     username: '',
                     password: ''
                 });
             }
 
-            if (!ctrl.isVolumeType() && ctrl.isMQTTTrigger()) {
+            if (ctrl.isTriggerType() && ctrl.isMQTTTrigger()) {
                 ctrl.subscriptions = lodash.chain(ctrl.item.attributes.subscriptions)
                     .defaultTo([])
                     .map(function (value, key) {
@@ -203,7 +204,7 @@
                     .value();
             }
 
-            if (!ctrl.isVolumeType() && ctrl.isCronTrigger()) {
+            if (ctrl.isTriggerType() && ctrl.isCronTrigger()) {
                 lodash.defaultsDeep(ctrl.item.attributes, {
                     event: {
                         body: '',
@@ -523,11 +524,18 @@
         }
 
         /**
-         * Checks is input have to be visible for sperific item type
-         * @param {string} name - input name
+         * Returns `true` if item is a trigger.
+         * @returns {boolean} `true` if item is a trigger, or `false` otherwise.
+         */
+        function isTriggerType() {
+            return ctrl.type === 'trigger';
+        }
+
+        /**
+         * Checks is input have to be visible for specific item type
          * @returns {boolean}
          */
-        function isVolumeType(name) {
+        function isVolumeType() {
             return ctrl.type === 'volume';
         }
 

@@ -50,22 +50,55 @@
             {
                 id: 'image',
                 visible: true,
-                name: 'Image'
+                name: 'Image',
+                defaultValues: {
+                    spec: {
+                        image: ''
+                    }
+                }
             },
             {
                 id: 'archive',
                 visible: true,
-                name: 'Archive'
+                name: 'Archive',
+                defaultValues: {
+                    spec: {
+                        build: {
+                            path: '',
+                            codeEntryAttributes: {
+                                workDir: ''
+                            }
+                        }
+                    }
+                }
             },
             {
                 id: 'github',
                 visible: true,
-                name: 'GitHub'
+                name: 'GitHub',
+                defaultValues: {
+                    spec: {
+                        build: {
+                            path: '',
+                            codeEntryAttributes: {
+                                branch: '',
+                                workDir: ''
+                            }
+                        }
+                    }
+                }
             },
             {
                 id: 'jar',
                 visible: lodash.get(ctrl.version, 'spec.runtime') === 'java',
-                name: 'Jar'
+                name: 'Jar',
+                defaultValues: {
+                    spec: {
+                        build: {
+                            path: ''
+                        }
+                    }
+                }
             }
         ];
         ctrl.themesArray = [
@@ -106,9 +139,7 @@
 
             var sourceCode = lodash.get(ctrl.version, 'spec.build.functionSourceCode', '');
             if (lodash.isEmpty(sourceCode)) {
-                var savedSourceCode = lodash.get(ctrl.version, 'ui.versionCode', sourceCode);
-
-                ctrl.sourceCode = savedSourceCode;
+                ctrl.sourceCode = lodash.get(ctrl.version, 'ui.versionCode', sourceCode);
             } else {
                 ctrl.sourceCode = Base64.decode(sourceCode);
 
@@ -137,41 +168,46 @@
         //
 
         /**
-         * Sets new value to entity type
-         * @param {Object} item
+         * Sets new value to entity type and prepares the relevant fields for this type.
+         * @param {Object} item - the selected option of "Code Entry Type" drop-down field.
          */
         function selectEntryTypeValue(item) {
             ctrl.selectedEntryType = item;
 
             lodash.set(ctrl.version, 'spec.build.codeEntryType', ctrl.selectedEntryType.id);
+            var functionSourceCode = lodash.get(ctrl.version, 'spec.build.functionSourceCode', '');
 
-            if (lodash.includes(['image', 'archive', 'github', 'jar'], item.id)) {
-                var functionSourceCode = lodash.get(ctrl.version, 'spec.build.functionSourceCode', '');
-                lodash.merge(ctrl.version, {
-                    spec: {
-                        build: {
-                            functionSourceCode: ''
-                        }
-                    }
-                });
+            // delete the following paths ...
+            lodash.forEach([
+                'spec.image',
+                'spec.build.codeEntryAttributes',
+                'spec.build.path',
+                'spec.build.functionSourceCode'
+            ], lodash.unset.bind(lodash, ctrl.version));
 
-                lodash.set(ctrl.version, 'spec.build.path', '');
-                lodash.set(ctrl.version, 'spec.build.codeEntryAttributes', {branch: '', workDir: ''});
+            // ... then fill only the relevant ones with default value according to the selected option
+            lodash.merge(ctrl.version, item.defaultValues);
 
-                if (previousEntryType.id === 'sourceCode') {
-                    lodash.set(ctrl.version, 'ui.versionCode', functionSourceCode);
-                }
+            if (item.id === 'sourceCode') {
 
-                if ((item.id === 'image' && lodash.isEmpty(ctrl.version.spec.image)) ||
-                    (item.id !== 'image' && lodash.isEmpty(ctrl.version.spec.build.path))) {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: true});
-                }
-            } else {
+                // restore source code that was preserved in memory - if such exists
                 var savedSourceCode = lodash.get(ctrl.version, 'ui.versionCode', '');
                 lodash.set(ctrl.version, 'spec.build.functionSourceCode', savedSourceCode);
                 ctrl.sourceCode = Base64.decode(savedSourceCode);
 
                 $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: false});
+            } else {
+
+                // preserve source code (for later using it if the user selects "Edit Online" option)
+                if (previousEntryType.id === 'sourceCode') {
+                    lodash.set(ctrl.version, 'ui.versionCode', functionSourceCode);
+                }
+
+                // disable "Deploy" button if required fields of the selected option are empty
+                if ((item.id === 'image' && lodash.isEmpty(ctrl.version.spec.image)) ||
+                    (item.id !== 'image' && lodash.isEmpty(ctrl.version.spec.build.path))) {
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: true});
+                }
             }
 
             if (!lodash.isNil(scrollContainer)) {
