@@ -46,6 +46,7 @@
         ctrl.addNewAnnotation = addNewAnnotation;
         ctrl.addNewSubscription = addNewSubscription;
         ctrl.addNewTopic = addNewTopic;
+        ctrl.addNewBroker = addNewBroker;
         ctrl.addNewEventHeader = addNewEventHeader;
         ctrl.convertFromCamelCase = convertFromCamelCase;
         ctrl.getAttrValue = getAttrValue;
@@ -55,6 +56,7 @@
         ctrl.handleAnnotationAction = handleAnnotationAction;
         ctrl.handleSubscriptionAction = handleSubscriptionAction;
         ctrl.handleTopicAction = handleTopicAction;
+        ctrl.handleBrokerAction = handleBrokerAction;
         ctrl.handleEventHeaderAction = handleEventHeaderAction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isClassSelected = isClassSelected;
@@ -174,6 +176,21 @@
                                 editModeActive: false,
                                 isFormValid: true,
                                 name: 'topic'
+                            }
+                        };
+                    })
+                    .value();
+
+                ctrl.brokers = lodash.chain(ctrl.item.attributes.brokers)
+                    .defaultTo([])
+                    .map(function (value, key) {
+                        return {
+                            name: key,
+                            value: value,
+                            ui: {
+                                editModeActive: false,
+                                isFormValid: true,
+                                name: 'broker'
                             }
                         };
                     })
@@ -332,6 +349,26 @@
         }
 
         /**
+         * Adds new broker
+         */
+        function addNewBroker(event) {
+            $timeout(function () {
+                if (ctrl.brokers.length < 1 || lodash.last(ctrl.brokers).ui.isFormValid) {
+                    ctrl.brokers.push({
+                        name: '',
+                        value: '',
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'broker'
+                        }
+                    });
+                    event.stopPropagation();
+                }
+            }, 50);
+        }
+
+        /**
          * Adds new event header
          * @param {Object} event - native event object
          */
@@ -463,6 +500,20 @@
         }
 
         /**
+         * Handler on specific action type of trigger's broker
+         * @param {string} actionType
+         * @param {number} index - index of variable in array
+         */
+        function handleBrokerAction(actionType, index) {
+            if (actionType === 'delete') {
+                lodash.pullAt(ctrl.brokers, index);
+                lodash.pullAt(ctrl.item.attributes.brokers, index);
+
+                checkValidation('brokers');
+            }
+        }
+
+        /**
          * Determine whether the item class was selected
          * @returns {boolean}
          */
@@ -573,6 +624,10 @@
                 ctrl.topics[index] = variable;
 
                 checkValidation('topics');
+            } else if (variable.ui.name === 'broker') {
+                ctrl.brokers[index] = variable;
+
+                checkValidation('brokers');
             }
         }
 
@@ -674,6 +729,8 @@
                     ctrl.subscriptions = [];
                 } else if (attribute.name === 'kafka-topics') {
                     ctrl.topics = [];
+                } else if (attribute.name === 'kafka-brokers') {
+                    ctrl.brokers = [];
                 } else {
                     lodash.set(ctrl.item.attributes, attribute.name, lodash.get(attribute, 'defaultValue', ''));
                 }
@@ -791,6 +848,7 @@
 
                             if (ctrl.isKafkaTrigger()) {
                                 updateTopics();
+                                updateBrokers();
                             }
 
                             $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.item.ui.name, isDisabled: false});
@@ -838,6 +896,17 @@
             });
 
             lodash.set(ctrl.item, 'attributes.topics', newTopics);
+        }
+
+        /**
+         * Updates Brokers fields
+         */
+        function updateBrokers() {
+            var newBrokers = lodash.map(ctrl.brokers, function (broker) {
+                return broker.value;
+            });
+
+            lodash.set(ctrl.item, 'attributes.brokers', newBrokers);
         }
 
         /**
