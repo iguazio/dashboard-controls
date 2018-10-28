@@ -25,7 +25,6 @@
                     {
                         id: 'kafka-cluster',
                         name: 'Kafka',
-                        url: 'string',
                         attributes: [
                             {
                                 name: 'kafka-topics',
@@ -38,11 +37,14 @@
                                 }
                             },
                             {
-                                name: 'partitions',
-                                pattern: 'arrayInt',
-                                type: 'input',
-                                fieldType: 'input',
-                                allowEmpty: false
+                                name: 'kafka-brokers',
+                                values: {
+                                    topic: {
+                                        name: 'brokers',
+                                        type: 'input',
+                                        pattern: 'string'
+                                    }
+                                }
                             },
                             {
                                 name: 'consumerGroup',
