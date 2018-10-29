@@ -323,7 +323,8 @@
          */
         function setInvocationUrl(result) {
             var ip = lodash.get(result, 'externalIPAddresses.addresses[0]', '');
-            var port = lodash.get(ctrl.version, 'status.httpPort');
+            var port = lodash.get(ctrl.version, 'ui.deployResult.status.httpPort');
+
             ctrl.version.ui.invocationURL =
                 lodash.isEmpty(ip) || !lodash.isNumber(port) ? '' : 'http://' + ip + ':' + port;
         }
