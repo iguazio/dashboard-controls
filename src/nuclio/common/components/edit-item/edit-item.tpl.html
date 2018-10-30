@@ -152,7 +152,7 @@
 
             </div>
             <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && attribute.type === 'input'"
+                 data-ng-if="$ctrl.isClassSelected() && attribute.type === 'input' && attribute.name !== 'schedule'"
                  data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
                 <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div>
                 <igz-validating-input-field class="nuclio-validating-input"
@@ -393,6 +393,20 @@
                     <span class="igz-icon-add-round"></span>
                     Create a new annotation
                 </div>
+            </div>
+
+            <div class="igz-col-91 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && $ctrl.isCronTrigger()">
+                    <div class="field-label">Schedule</div>
+                    <igz-validating-input-field data-field-type="schedule"
+                                                data-input-name="item_schedule"
+                                                data-input-value="$ctrl.item.attributes.schedule"
+                                                data-is-focused="false"
+                                                data-form-object="$ctrl.editItemForm"
+                                                data-validation-is-required="true"
+                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                data-update-data-field="attributes.schedule">
+                    </igz-validating-input-field>
             </div>
 
             <div class="igz-col-91 attribute-field event-headers-wrapper"

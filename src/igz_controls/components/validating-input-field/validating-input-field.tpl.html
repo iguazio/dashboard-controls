@@ -76,4 +76,11 @@
                data-ng-change="$ctrl.updateInputValue()"
                data-igz-input-blur-on-enter>
     </div>
+
+    <div data-ng-if="$ctrl.fieldType === 'schedule'">
+        <cron-selection data-ng-class="{'invalid': $ctrl.isFieldValid()}"
+                        data-ng-model="$ctrl.data"
+                        data-ng-change="$ctrl.updateInputValue()"
+                        name="{{$ctrl.inputName}}"></cron-selection>
+    </div>
 </div>
