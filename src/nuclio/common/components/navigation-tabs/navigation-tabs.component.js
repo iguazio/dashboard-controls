@@ -10,8 +10,9 @@
             controller: NclNavigationTabsController
         });
 
-    function NclNavigationTabsController($rootScope, $state, lodash) {
+    function NclNavigationTabsController($rootScope, $state, $timeout, lodash) {
         var ctrl = this;
+        var isTestPaneToggled = true;
 
         ctrl.isTestPaneClosed = false;
         ctrl.isFunctionBuilding = isFunctionBuilding;
@@ -52,9 +53,17 @@
          * Sends broadcast to toggle test pane.
          */
         function toggleTestPane() {
-            ctrl.isTestPaneClosed = !ctrl.isTestPaneClosed;
+            if (isTestPaneToggled) {
+                ctrl.isTestPaneClosed = !ctrl.isTestPaneClosed;
+                isTestPaneToggled = false;
 
-            $rootScope.$broadcast('navigation-tabs_toggle-test-pane', {closeTestPane: ctrl.isTestPaneClosed});
+                $rootScope.$broadcast('navigation-tabs_toggle-test-pane', {closeTestPane: ctrl.isTestPaneClosed});
+
+                // wait until toggling animation will be completed
+                $timeout(function () {
+                    isTestPaneToggled = true;
+                }, 600)
+            }
         }
     }
 }());

@@ -1,17 +1,10 @@
 .test-events-pane {
-    width: 650px;
     height: 100%;
     border: 1px solid @pale-grey;
-    border-left: 2px solid @pale-grey;
     border-top: none;
     position: relative;
     background-color: @white;
     transition: @igz-basic-transition;
-
-    &.test-pane-closed {
-        width: 0;
-        transition: @igz-basic-transition;
-    }
 
     .ncl-secondary-button {
         background-color: @pale-grey;
@@ -215,8 +208,7 @@
             }
 
             .ui-splitbar {
-                .duskThree(0.2);
-                background: @color;
+                background: @pale-grey;
 
                 a {
                     display: none;
@@ -534,7 +526,6 @@
             align-items: center;
             justify-content: space-between;
             background-color: @pale-grey-three;
-            border-top: 1px solid @pale-grey;
             height: 39px;
 
             .left-side-elements {

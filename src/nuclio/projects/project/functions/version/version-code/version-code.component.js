@@ -14,8 +14,9 @@
                                       VersionHelperService) {
         var ctrl = this;
         var scrollContainer = null;
-
         var previousEntryType = null;
+        var testPaneWidth = 650;
+        var isAnimationCompleted = true;
 
         ctrl.scrollConfig = {
             axis: 'y',
@@ -154,6 +155,9 @@
             }
 
             previousEntryType = ctrl.selectedEntryType;
+
+            $scope.$on('ui.layout.resize', onLayoutResize);
+            $scope.$on('navigation-tabs_toggle-test-pane', toggleTestPane);
         }
 
         /**
@@ -497,6 +501,105 @@
                     }
                     event.preventDefault();
                 });
+        }
+
+        /**
+         * Broadcast callback from angular-ui-layout.
+         * Sets new width of test pane.
+         * @param event
+         * @param beforeContainerResize
+         * @param afterContainerResize
+         */
+        function onLayoutResize(event, beforeContainerResize, afterContainerResize) {
+            testPaneWidth = afterContainerResize.size;
+        }
+
+        /**
+         * Broadcast callback to toggle test pane
+         * @param {Event} event - native broadcast event object
+         * @param {Object} data - contains data of test pane state (closed/opened)
+         */
+        function toggleTestPane(event, data) {
+            if (isAnimationCompleted) {
+                if (data.closeTestPane) {
+                    closeTestPane();
+                } else {
+                    openTestPane();
+                }
+            }
+
+            /**
+             * Closes Test pane
+             */
+            function closeTestPane() {
+                isAnimationCompleted = false;
+                var testPaneLeftPosition = parseInt(angular.element('.event-pane-section').css('left'));
+                var codeSectionWidth = parseInt(angular.element('.code-section').css('width'));
+
+                // move Test pane to left
+                angular.element('.event-pane-section').animate({
+                    'left': testPaneLeftPosition + testPaneWidth
+                }, {
+                    complete: onCloseCompleteAnimation
+                });
+
+                // resize code section to full width
+                angular.element('.code-section').animate({
+                    'width': (codeSectionWidth + testPaneWidth) + 'px'
+                }, 500);
+
+                // hide splitter
+                angular.element(angular.element('.ui-splitbar')[0]).css('display', 'none');
+
+
+                /**
+                 * jQuery complete animation callback.
+                 * Hide Test pane when animation is completed
+                 */
+                function onCloseCompleteAnimation() {
+
+                    // hide Test pane
+                    angular.element('.event-pane-section').css('display', 'none');
+
+                    isAnimationCompleted = true;
+                }
+            }
+
+            /**
+             * Opens Test pane
+             */
+            function openTestPane() {
+                isAnimationCompleted = false;
+                var codeSectionWidth = parseInt(angular.element('.code-section').css('width'));
+
+                // show Test pane
+                angular.element('.event-pane-section').css('display', 'block');
+
+                var testPaneLeftPosition = parseInt(angular.element('.event-pane-section').css('left'));
+
+                // resize code section
+                angular.element('.code-section').animate({
+                    'width': (codeSectionWidth - testPaneWidth) + 'px'
+                });
+
+                // move Test pane to be visible on the screen
+                angular.element('.event-pane-section').animate({
+                    'left': testPaneLeftPosition - testPaneWidth
+                }, {
+                    complete: onOpenCompleteAnimation
+                });
+
+
+                /**
+                 * jQuery complete animation callback.
+                 * Shows splitter, when animation is completed
+                 */
+                function onOpenCompleteAnimation() {
+                    angular.element(angular.element('.ui-splitbar')[0]).css('display', 'block');
+
+                    isAnimationCompleted = true;
+                }
+            }
         }
     }
 }());

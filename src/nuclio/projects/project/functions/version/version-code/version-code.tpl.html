@@ -1,175 +1,180 @@
-<div class="ncl-edit-version-code ncl-version">
-    <div class="igz-scrollable-container"
-         data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfigHorizontal">
-        <div class="ncl-edit-version-code-wrapper">
-            <form name="$ctrl.versionCodeForm" class="ncl-edit-version-code-form">
-                <div class="section-wrapper code-entry-section">
-                    <div class="code-entry-row">
-                        <div class="code-entry-col code-entry-type-col">
-                            <div class="col-label code-entry-type">Code entry type</div>
-                            <igz-default-dropdown data-values-array="$ctrl.codeEntryTypeArray"
-                                                  data-item-select-callback="$ctrl.selectEntryTypeValue(item, isItemChanged, field)"
-                                                  data-selected-item="$ctrl.selectedEntryType"></igz-default-dropdown>
+<div data-ui-layout="{ flow : 'column', dividerSize: 3 }" class="ncl-edit-version-code ncl-version">
+    <div ui-layout-container min-size="200px" class="code-section">
+        <div class="igz-scrollable-container"
+             data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfigHorizontal">
+            <div class="ncl-edit-version-code-wrapper">
+                <form name="$ctrl.versionCodeForm" class="ncl-edit-version-code-form">
+                    <div class="section-wrapper code-entry-section">
+                        <div class="code-entry-row">
+                            <div class="code-entry-col code-entry-type-col">
+                                <div class="col-label code-entry-type">Code entry type</div>
+                                <igz-default-dropdown data-values-array="$ctrl.codeEntryTypeArray"
+                                                      data-item-select-callback="$ctrl.selectEntryTypeValue(item, isItemChanged, field)"
+                                                      data-selected-item="$ctrl.selectedEntryType"></igz-default-dropdown>
+                            </div>
+                            <div class="code-entry-col code-entry-runtime-col">
+                                <div class="col-label runtime">Runtime</div>
+                                <igz-default-dropdown data-values-array="$ctrl.runtimeArray"
+                                                      data-item-select-callback="$ctrl.selectRuntimeValue(item, isItemChanged, field)"
+                                                      data-selected-item="$ctrl.selectedRuntime"
+                                                      data-is-disabled="true"></igz-default-dropdown>
+                            </div>
+                            <div class="code-entry-col code-entry-handler-col">
+                                <div class="col-label handler">Handler</div>
+                                <igz-validating-input-field class="nuclio-validating-input"
+                                                            data-field-type="input"
+                                                            data-input-name="handler"
+                                                            data-input-value="$ctrl.version.spec.handler"
+                                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                            data-update-data-field="spec.handler"
+                                                            data-form-object="$ctrl.versionCodeForm"
+                                                            data-placeholder-text="Handler">
+                                </igz-validating-input-field>
+                            </div>
+                            <div class="code-entry-col code-entry-button-col"
+                                 data-ng-if="$ctrl.selectedEntryType.name === 'Upload archive'">
+                                <button class="igz-button-primary upload-button">
+                                    <span>UPLOAD</span>
+                                    <i class="igz-icon-upload"></i>
+                                </button>
+                            </div>
+                            <div class="code-entry-col code-entry-theme-col"
+                                 data-ng-if="$ctrl.selectedEntryType.name === 'Edit online' && $ctrl.isDemoMode()">
+                                <div class="col-label runtime">Theme</div>
+                                <igz-default-dropdown data-values-array="$ctrl.themesArray"
+                                                      data-item-select-callback="$ctrl.selectThemeValue(item, isItemChanged, field)"
+                                                      data-selected-item="$ctrl.selectedTheme"
+                                                      data-on-close-dropdown="$ctrl.onCloseDropdown()"></igz-default-dropdown>
+                            </div>
                         </div>
-                        <div class="code-entry-col code-entry-runtime-col">
-                            <div class="col-label runtime">Runtime</div>
-                            <igz-default-dropdown data-values-array="$ctrl.runtimeArray"
-                                                  data-item-select-callback="$ctrl.selectRuntimeValue(item, isItemChanged, field)"
-                                                  data-selected-item="$ctrl.selectedRuntime"
-                                                  data-is-disabled="true"></igz-default-dropdown>
-                        </div>
-                        <div class="code-entry-col code-entry-handler-col">
-                            <div class="col-label handler">Handler</div>
-                            <igz-validating-input-field class="nuclio-validating-input"
-                                                        data-field-type="input"
-                                                        data-input-name="handler"
-                                                        data-input-value="$ctrl.version.spec.handler"
-                                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                        data-update-data-field="spec.handler"
-                                                        data-form-object="$ctrl.versionCodeForm"
-                                                        data-placeholder-text="Handler">
-                            </igz-validating-input-field>
-                        </div>
-                        <div class="code-entry-col code-entry-button-col"
-                             data-ng-if="$ctrl.selectedEntryType.name === 'Upload archive'">
-                            <button class="igz-button-primary upload-button">
-                                <span>UPLOAD</span>
-                                <i class="igz-icon-upload"></i>
-                            </button>
-                        </div>
-                        <div class="code-entry-col code-entry-theme-col"
-                             data-ng-if="$ctrl.selectedEntryType.name === 'Edit online' && $ctrl.isDemoMode()">
-                            <div class="col-label runtime">Theme</div>
-                            <igz-default-dropdown data-values-array="$ctrl.themesArray"
-                                                  data-item-select-callback="$ctrl.selectThemeValue(item, isItemChanged, field)"
-                                                  data-selected-item="$ctrl.selectedTheme"
-                                                  data-on-close-dropdown="$ctrl.onCloseDropdown()"></igz-default-dropdown>
+                        <div ng-if="$ctrl.selectedEntryType.name === 'S3 URL'" class="code-entry-row">
+                            <div class="code-entry-col code-entry-url-col">
+                                <div class="col-label handler">URL</div>
+                                <igz-validating-input-field data-field-type="input"
+                                                            data-input-name="url"
+                                                            data-input-value="$ctrl.URL"
+                                                            data-update-data-callback=""
+                                                            data-form-object="$ctrl.versionCodeForm"
+                                                            data-placeholder-text="Type path...">
+                                </igz-validating-input-field>
+                            </div>
                         </div>
                     </div>
-                    <div ng-if="$ctrl.selectedEntryType.name === 'S3 URL'" class="code-entry-row">
-                        <div class="code-entry-col code-entry-url-col">
-                            <div class="col-label handler">URL</div>
-                            <igz-validating-input-field data-field-type="input"
-                                                        data-input-name="url"
-                                                        data-input-value="$ctrl.URL"
-                                                        data-update-data-callback=""
-                                                        data-form-object="$ctrl.versionCodeForm"
-                                                        data-placeholder-text="Type path...">
-                            </igz-validating-input-field>
-                        </div>
+
+                    <div data-ng-if="$ctrl.selectedEntryType.name === 'Edit online'"
+                         class="code-edit-section">
+                        <div class="code-editor-drop-zone"></div>
+                        <ncl-monaco class="monaco-code-editor"
+                                    data-function-source-code="$ctrl.sourceCode"
+                                    data-mini-monaco="false"
+                                    data-selected-theme="$ctrl.selectedTheme.id"
+                                    data-language="$ctrl.editorLanguage"
+                                    data-on-change-source-code-callback="$ctrl.onChangeSourceCode(sourceCode, language)"
+                                    data-read-only="false"></ncl-monaco>
                     </div>
-                </div>
 
-                <div data-ng-if="$ctrl.selectedEntryType.name === 'Edit online'"
-                     class="code-edit-section">
-                    <div class="code-editor-drop-zone"></div>
-                    <ncl-monaco class="monaco-code-editor"
-                                data-function-source-code="$ctrl.sourceCode"
-                                data-mini-monaco="false"
-                                data-selected-theme="$ctrl.selectedTheme.id"
-                                data-language="$ctrl.editorLanguage"
-                                data-on-change-source-code-callback="$ctrl.onChangeSourceCode(sourceCode, language)"
-                                data-read-only="false"></ncl-monaco>
-                </div>
+                    <div data-ng-if="$ctrl.selectedEntryType.name === 'Image'"
+                         class="ncl-code-entry-url">
+                        <div class="field-label">URL</div>
+                        <igz-validating-input-field data-field-type="input"
+                                                    data-input-name="image"
+                                                    data-input-value="$ctrl.version.spec.image"
+                                                    data-is-focused="true"
+                                                    data-form-object="$ctrl.versionCodeForm"
+                                                    data-validation-is-required="true"
+                                                    data-placeholder-text="Type image..."
+                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                    data-update-data-field="spec.image"
+                                                    class="nuclio-validating-input">
+                        </igz-validating-input-field>
+                    </div>
 
-                <div data-ng-if="$ctrl.selectedEntryType.name === 'Image'"
-                     class="ncl-code-entry-url">
-                    <div class="field-label">URL</div>
-                    <igz-validating-input-field data-field-type="input"
-                                                data-input-name="image"
-                                                data-input-value="$ctrl.version.spec.image"
-                                                data-is-focused="true"
-                                                data-form-object="$ctrl.versionCodeForm"
-                                                data-validation-is-required="true"
-                                                data-placeholder-text="Type image..."
-                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                data-update-data-field="spec.image"
-                                                class="nuclio-validating-input">
-                    </igz-validating-input-field>
-                </div>
+                    <div data-ng-if="$ctrl.selectedEntryType.name === 'Archive' || $ctrl.selectedEntryType.name === 'Jar'"
+                         class="ncl-code-entry-url">
+                        <div class="field-label">URL</div>
+                        <igz-validating-input-field data-field-type="input"
+                                                    data-input-name="archive"
+                                                    data-input-value="$ctrl.version.spec.build.path"
+                                                    data-is-focused="true"
+                                                    data-form-object="$ctrl.versionCodeForm"
+                                                    data-validation-is-required="true"
+                                                    data-placeholder-text="Type path..."
+                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                    data-update-data-field="spec.build.path"
+                                                    class="nuclio-validating-input">
+                        </igz-validating-input-field>
+                    </div>
 
-                <div data-ng-if="$ctrl.selectedEntryType.name === 'Archive' || $ctrl.selectedEntryType.name === 'Jar'"
-                     class="ncl-code-entry-url">
-                    <div class="field-label">URL</div>
-                    <igz-validating-input-field data-field-type="input"
-                                                data-input-name="archive"
-                                                data-input-value="$ctrl.version.spec.build.path"
-                                                data-is-focused="true"
-                                                data-form-object="$ctrl.versionCodeForm"
-                                                data-validation-is-required="true"
-                                                data-placeholder-text="Type path..."
-                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                data-update-data-field="spec.build.path"
-                                                class="nuclio-validating-input">
-                    </igz-validating-input-field>
-                </div>
+                    <div data-ng-if="$ctrl.selectedEntryType.name === 'Archive'"
+                         class="ncl-code-entry-url">
+                        <div class="field-label">Work Dir</div>
+                        <igz-validating-input-field data-field-type="input"
+                                                    data-input-name="archiveWorkDir"
+                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir"
+                                                    data-is-focused="false"
+                                                    data-form-object="$ctrl.versionCodeForm"
+                                                    data-validation-is-required="false"
+                                                    data-placeholder-text="For example: /path/to/functions"
+                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                    data-update-data-field="spec.build.codeEntryAttributes.workDir"
+                                                    class="nuclio-validating-input">
+                        </igz-validating-input-field>
+                    </div>
 
-                <div data-ng-if="$ctrl.selectedEntryType.name === 'Archive'"
-                     class="ncl-code-entry-url">
-                    <div class="field-label">Work Dir</div>
-                    <igz-validating-input-field data-field-type="input"
-                                                data-input-name="archiveWorkDir"
-                                                data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir"
-                                                data-is-focused="false"
-                                                data-form-object="$ctrl.versionCodeForm"
-                                                data-validation-is-required="false"
-                                                data-placeholder-text="For example: /path/to/functions"
-                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                data-update-data-field="spec.build.codeEntryAttributes.workDir"
-                                                class="nuclio-validating-input">
-                    </igz-validating-input-field>
-                </div>
+                    <div data-ng-if="$ctrl.selectedEntryType.name === 'GitHub'"
+                         class="ncl-code-entry-url">
+                        <div class="field-label">URL</div>
+                        <igz-validating-input-field data-field-type="input"
+                                                    data-input-name="githubUrl"
+                                                    data-input-value="$ctrl.version.spec.build.path"
+                                                    data-is-focused="true"
+                                                    data-form-object="$ctrl.versionCodeForm"
+                                                    data-validation-is-required="true"
+                                                    data-placeholder-text="For example: https://github.com/nuclio/nuclio"
+                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                    data-update-data-field="spec.build.path"
+                                                    class="nuclio-validating-input">
+                        </igz-validating-input-field>
+                    </div>
 
-                <div data-ng-if="$ctrl.selectedEntryType.name === 'GitHub'"
-                     class="ncl-code-entry-url">
-                    <div class="field-label">URL</div>
-                    <igz-validating-input-field data-field-type="input"
-                                                data-input-name="githubUrl"
-                                                data-input-value="$ctrl.version.spec.build.path"
-                                                data-is-focused="true"
-                                                data-form-object="$ctrl.versionCodeForm"
-                                                data-validation-is-required="true"
-                                                data-placeholder-text="For example: https://github.com/nuclio/nuclio"
-                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                data-update-data-field="spec.build.path"
-                                                class="nuclio-validating-input">
-                    </igz-validating-input-field>
-                </div>
+                    <div data-ng-if="$ctrl.selectedEntryType.name === 'GitHub'"
+                         class="ncl-code-entry-url">
+                        <div class="field-label">Branch</div>
+                        <igz-validating-input-field data-field-type="input"
+                                                    data-input-name="githubBranch"
+                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.branch"
+                                                    data-is-focused="false"
+                                                    data-form-object="$ctrl.versionCodeForm"
+                                                    data-validation-is-required="true"
+                                                    data-placeholder-text="For example: master"
+                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                    data-update-data-field="spec.build.codeEntryAttributes.branch"
+                                                    class="nuclio-validating-input">
+                        </igz-validating-input-field>
+                    </div>
 
-                <div data-ng-if="$ctrl.selectedEntryType.name === 'GitHub'"
-                     class="ncl-code-entry-url">
-                    <div class="field-label">Branch</div>
-                    <igz-validating-input-field data-field-type="input"
-                                                data-input-name="githubBranch"
-                                                data-input-value="$ctrl.version.spec.build.codeEntryAttributes.branch"
-                                                data-is-focused="false"
-                                                data-form-object="$ctrl.versionCodeForm"
-                                                data-validation-is-required="true"
-                                                data-placeholder-text="For example: master"
-                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                data-update-data-field="spec.build.codeEntryAttributes.branch"
-                                                class="nuclio-validating-input">
-                    </igz-validating-input-field>
-                </div>
-
-                <div data-ng-if="$ctrl.selectedEntryType.name === 'GitHub'"
-                     class="ncl-code-entry-url">
-                    <div class="field-label">Work Dir</div>
-                    <igz-validating-input-field data-field-type="input"
-                                                data-input-name="githubWorkDir"
-                                                data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir"
-                                                data-is-focused="false"
-                                                data-form-object="$ctrl.versionCodeForm"
-                                                data-validation-is-required="false"
-                                                data-placeholder-text="For example: /path/to/functions"
-                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                data-update-data-field="spec.build.codeEntryAttributes.workDir"
-                                                class="nuclio-validating-input">
-                    </igz-validating-input-field>
-                </div>
-            </form>
+                    <div data-ng-if="$ctrl.selectedEntryType.name === 'GitHub'"
+                         class="ncl-code-entry-url">
+                        <div class="field-label">Work Dir</div>
+                        <igz-validating-input-field data-field-type="input"
+                                                    data-input-name="githubWorkDir"
+                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir"
+                                                    data-is-focused="false"
+                                                    data-form-object="$ctrl.versionCodeForm"
+                                                    data-validation-is-required="false"
+                                                    data-placeholder-text="For example: /path/to/functions"
+                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                    data-update-data-field="spec.build.codeEntryAttributes.workDir"
+                                                    class="nuclio-validating-input">
+                        </igz-validating-input-field>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
-    <function-events-data-wrapper data-version="$ctrl.version"></function-events-data-wrapper>
+    <div ui-layout-container size="650px" min-size="200px" class="event-pane-section">
+        <function-events-data-wrapper  data-version="$ctrl.version"></function-events-data-wrapper>
+    </div>
 </div>
+
