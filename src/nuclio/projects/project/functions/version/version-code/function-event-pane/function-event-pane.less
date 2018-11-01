@@ -1,17 +1,12 @@
 .test-events-pane {
-    width: 650px;
     height: 100%;
     border: 1px solid @pale-grey;
-    border-left: 2px solid @pale-grey;
+    .duskThree(0.64);
+    border-left: 1px solid @color;
     border-top: none;
     position: relative;
     background-color: @white;
     transition: @igz-basic-transition;
-
-    &.test-pane-closed {
-        width: 0;
-        transition: @igz-basic-transition;
-    }
 
     .ncl-secondary-button {
         background-color: @pale-grey;
@@ -215,9 +210,6 @@
             }
 
             .ui-splitbar {
-                .duskThree(0.2);
-                background: @color;
-
                 a {
                     display: none;
                 }
@@ -534,7 +526,8 @@
             align-items: center;
             justify-content: space-between;
             background-color: @pale-grey-three;
-            border-top: 1px solid @pale-grey;
+            .duskThree(0.64);
+            border-top: 1px solid @color;
             height: 39px;
 
             .left-side-elements {
