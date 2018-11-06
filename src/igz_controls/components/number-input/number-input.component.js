@@ -98,8 +98,8 @@
 
             resizeInput();
 
-            if (!ctrl.allowEmptyField && !lodash.isNil(ctrl.currentValue)) {
-                ctrl.currentValue = lodash.defaultTo(ctrl.currentValue, lodash.max([ctrl.minValue, 0]));
+            if (lodash.isNil(ctrl.currentValue) && !lodash.isNil(ctrl.defaultValue)) {
+                ctrl.currentValue = ctrl.defaultValue;
             }
         }
 
@@ -138,7 +138,7 @@
          * Method subtracts value from current value in input or sets current value to 0 it is below 0
          */
         function decreaseValue() {
-            if (!lodash.isNull(ctrl.currentValue)) {
+            if (!lodash.isNil(ctrl.currentValue)) {
                 ctrl.currentValue = Math.max(Number(ctrl.currentValue) - Number(ctrl.valueStep), 0).toFixed(ctrl.precision);
 
                 if (angular.isDefined(ctrl.formObject) && ctrl.currentValue !== 0) {
@@ -152,7 +152,7 @@
          * Method adds value to current value in input
          */
         function increaseValue() {
-            if (lodash.isNull(ctrl.currentValue) || ctrl.currentValue === '') {
+            if (lodash.isNil(ctrl.currentValue) || ctrl.currentValue === '') {
                 ctrl.currentValue = 0;
             } else {
                 ctrl.currentValue = (Number(ctrl.currentValue) + Number(ctrl.valueStep)).toFixed(ctrl.precision);
