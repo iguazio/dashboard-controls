@@ -116,7 +116,9 @@
                 className: 'ngdialog-theme-nuclio version-configuration-build-dialog-wrapper'
             }).closePromise
                 .then(function (data) {
-                    ctrl.uploadFile(data.value);
+                    if (!lodash.isNil(data.value)) {
+                        ctrl.uploadFile(data.value);
+                    }
                 });
         }
 
