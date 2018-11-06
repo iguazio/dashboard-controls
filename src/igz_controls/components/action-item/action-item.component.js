@@ -13,7 +13,7 @@
             controller: IgzActionItem
         });
 
-    function IgzActionItem($rootScope, $scope, $element, $document, lodash, DialogsService) {
+    function IgzActionItem($document, $element, $rootScope, $scope , $timeout, lodash, DialogsService) {
         var ctrl = this;
 
         ctrl.$onInit = onInit();
@@ -29,8 +29,10 @@
          * Initialization method
          */
         function onInit() {
-            lodash.defaults(ctrl.action, {
-                visible: true
+            $timeout(function () {
+                lodash.defaults(ctrl.action, {
+                    visible: true
+                });
             });
         }
 
