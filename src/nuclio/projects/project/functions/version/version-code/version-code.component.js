@@ -36,9 +36,6 @@
                     scrollContainer = this.querySelector('.mCSB_container');
 
                     this.querySelector('.mCSB_container').style.height = '100%';
-                },
-                onUpdate: function () {
-                    scrollContainer.style.width = '100%';
                 }
             }
         };
