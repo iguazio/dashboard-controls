@@ -22,6 +22,8 @@
         ctrl.remainActions = [];
 
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
+
         ctrl.isActionPanelShown = isActionPanelShown;
 
         //
@@ -35,26 +37,14 @@
             $scope.$on('action-checkbox-all_checked-items-count-change', onUpdateCheckedItemsCount);
             $scope.$on('action-checkbox-all_check-all', onUpdateCheckedItemsCount);
 
-            ctrl.actions = lodash.filter(ctrl.actions, function (action) {
-                return !lodash.has(action, 'visible') || action.visible;
-            });
+            refreshActions();
+        }
 
-            angular.forEach(ctrl.actions, function (action) {
-                if (!angular.isFunction(action.handler)) {
-                    action.handler = defaultAction;
-
-                    if (action.id === 'delete' && angular.isUndefined(action.confirm)) {
-                        action.confirm = {
-                            message: 'Are you sure you want to delete selected items?',
-                            yesLabel: 'Yes, Delete',
-                            noLabel: 'Cancel',
-                            type: 'critical_alert'
-                        };
-                    }
-                }
-            });
-            ctrl.mainActions = lodash.slice(ctrl.actions, 0, mainActionsCount);
-            ctrl.remainingActions = lodash.slice(ctrl.actions, mainActionsCount, ctrl.actions.length);
+        /**
+         * On changes hook method
+         */
+        function onChanges() {
+            refreshActions();
         }
 
         //
@@ -97,6 +87,32 @@
 
             ctrl.mainActions = lodash.slice(visibleActions, 0, mainActionsCount);
             ctrl.remainingActions = lodash.slice(visibleActions, mainActionsCount, visibleActions.length);
+        }
+
+        /**
+         * Refreshes actions list
+         */
+        function refreshActions() {
+            ctrl.actions = lodash.filter(ctrl.actions, function (action) {
+                return !lodash.has(action, 'visible') || action.visible;
+            });
+
+            angular.forEach(ctrl.actions, function (action) {
+                if (!angular.isFunction(action.handler)) {
+                    action.handler = defaultAction;
+
+                    if (action.id === 'delete' && angular.isUndefined(action.confirm)) {
+                        action.confirm = {
+                            message: 'Are you sure you want to delete selected items?',
+                            yesLabel: 'Yes, Delete',
+                            noLabel: 'Cancel',
+                            type: 'critical_alert'
+                        };
+                    }
+                }
+            });
+            ctrl.mainActions = lodash.slice(ctrl.actions, 0, mainActionsCount);
+            ctrl.remainingActions = lodash.slice(ctrl.actions, mainActionsCount, ctrl.actions.length);
         }
     }
 }());
