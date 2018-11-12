@@ -52,20 +52,20 @@
 </div>
 
 <div class="buttons">
-    <div class="ncl-secondary-button"
+    <button class="ncl-secondary-button"
          tabindex="0"
          data-ng-click="$ctrl.onClose()"
          data-ng-keydown="$ctrl.onClose($event)">
         Cancel
-    </div>
-    <div class="ncl-primary-button"
+    </button>
+    <button class="ncl-primary-button"
          tabindex="0"
          data-ng-click="$ctrl.saveProject()"
          data-ng-keydown="$ctrl.saveProject($event)"
          data-ng-hide="$ctrl.isLoadingState">
         Apply
-    </div>
-    <div class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">Loading...</div>
+    </button>
+    <button class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">Loading...</button>
 </div>
 
 <div class="error-text text-centered error-relative"
