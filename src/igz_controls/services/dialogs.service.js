@@ -38,7 +38,7 @@
             return ngDialog.open({
                 template: '<div class="notification-text title igz-scrollable-container" data-ng-scrollbars>' + alertText + '</div>' +
                 '<div class="buttons">' +
-                '<div class="igz-button-primary" data-ng-click="closeThisDialog() || $event.stopPropagation()">' + buttonText + '</div>' +
+                '<button class="igz-button-primary" data-ng-click="closeThisDialog() || $event.stopPropagation()">' + buttonText + '</button>' +
                 '</div>',
                 plain: true
             })
@@ -67,10 +67,10 @@
                 (!lodash.isNil(type) && type === 'nuclio_alert' && !lodash.isNil(confirmText.description) ?
                 '<div class="notification-text description">' + confirmText.description + '</div>' : '') +
                 '<div class="buttons">' +
-                '<div class="igz-button-just-text" tabindex="0" data-ng-click="closeThisDialog(0)" data-ng-keydown="$event.keyCode === 13 && closeThisDialog(0)">' + cancelButton + '</div>' +
-                '<div class="' +
+                '<button class="igz-button-just-text" tabindex="0" data-ng-click="closeThisDialog(0)" data-ng-keydown="$event.keyCode === 13 && closeThisDialog(0)">' + cancelButton + '</button>' +
+                '<button class="' +
                 (!lodash.isNil(type) && (type === 'critical_alert' || type === 'nuclio_alert') ? 'igz-button-remove' : 'igz-button-primary') +
-                '" tabindex="0" data-ng-click="confirm(1)" data-ng-keydown="$event.keyCode === 13 && confirm(1)">' + confirmButton + '</div>' +
+                '" tabindex="0" data-ng-click="confirm(1)" data-ng-keydown="$event.keyCode === 13 && confirm(1)">' + confirmButton + '</button>' +
                 '</div>';
 
             return ngDialog.openConfirm({
@@ -90,10 +90,10 @@
         function customConfirm(confirmText, cancelButton, actionButtons) {
             var template = '<div class="notification-text title">' + confirmText + '</div>' +
                 '<div class="buttons">' +
-                '<div class="igz-button-just-text" tabindex="0" data-ng-click="closeThisDialog(-1)" data-ng-keydown="$event.keyCode === 13 && closeThisDialog(-1)">' + cancelButton + '</div>';
+                '<button class="igz-button-just-text" tabindex="0" data-ng-click="closeThisDialog(-1)" data-ng-keydown="$event.keyCode === 13 && closeThisDialog(-1)">' + cancelButton + '</button>';
             lodash.each(actionButtons, function (button, index) {
-                template += '<div class="igz-button-primary" tabindex="0" data-ng-click="confirm(' +
-                    index + ')" data-ng-keydown="$event.keyCode === 13 && confirm(' + index + ')">' + button + '</div>';
+                template += '<button class="igz-button-primary" tabindex="0" data-ng-click="confirm(' +
+                    index + ')" data-ng-keydown="$event.keyCode === 13 && confirm(' + index + ')">' + button + '</button>';
             });
             template += '</div>';
 
@@ -139,7 +139,7 @@
             return ngDialog.open({
                 template: '<div class="header"></div><div class="notification-text">' + alertText + '</div>' +
                 '<div class="buttons">' +
-                '<div class="refresh-button" data-ng-click="closeThisDialog()"><span class="igz-icon-refresh"></span>' + buttonText + '</div>' +
+                '<button class="refresh-button" data-ng-click="closeThisDialog()"><span class="igz-icon-refresh"></span>' + buttonText + '</button>' +
                 '</div>',
                 plain: true,
                 className: 'ngdialog-theme-iguazio oops-dialog'
@@ -212,8 +212,8 @@
                     '</div>' +
                 '</div>' +
                 '<div class="buttons">' +
-                    '<div class="igz-button-just-text" data-ng-click="closeThisDialog()">' + cancelButton + '</div>' +
-                    '<div class="igz-button-primary" data-ng-click="ngDialogData.checkInput() && closeThisDialog(ngDialogData.value)">' + confirmButton + '</div>' +
+                    '<button class="igz-button-just-text" data-ng-click="closeThisDialog()">' + cancelButton + '</button>' +
+                    '<button class="igz-button-primary" data-ng-click="ngDialogData.checkInput() && closeThisDialog(ngDialogData.value)">' + confirmButton + '</button>' +
                 '</div>',
                 plain: true,
                 data: data

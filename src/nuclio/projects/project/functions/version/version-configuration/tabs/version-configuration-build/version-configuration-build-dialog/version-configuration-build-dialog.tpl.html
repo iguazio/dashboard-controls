@@ -14,21 +14,22 @@
             </div>
             <igz-validating-input-field class="nuclio-validating-input"
                                         data-field-type="input"
+                                        data-is-focused="true"
                                         data-placeholder-text="Type path..."></igz-validating-input-field>
         </div>
     </form>
 </div>
 
 <div class="buttons">
-    <div class="ncl-secondary-button"
+    <button class="ncl-secondary-button"
          tabindex="0"
          data-ng-click="$ctrl.onClose()"
          data-ng-keydown="$ctrl.onClose($event)">
         Cancel
-    </div>
-    <div class="ncl-primary-button"
+    </button>
+    <button class="ncl-primary-button"
          tabindex="0"
          ngf-select="$ctrl.uploadFile($file)">
         Browse
-    </div>
+    </button>
 </div>
