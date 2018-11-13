@@ -16,7 +16,7 @@
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController($state, lodash, NuclioHeaderService, DialogsService, ConfigService) {
+    function NclFunctionCollapsingRowController($state, lodash, ConfigService, DialogsService, FunctionsService, NuclioHeaderService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -108,7 +108,11 @@
          * @param {string} actionType - a type of action
          */
         function onFireAction(actionType) {
-            ctrl.actionHandlerCallback({actionType: actionType, checkedItems: [ctrl.function]});
+            if (actionType === 'export') {
+                FunctionsService.exportFunction(ctrl.function);
+            } else {
+                ctrl.actionHandlerCallback({actionType: actionType, checkedItems: [ctrl.function]});
+            }
         }
 
         //
@@ -133,6 +137,12 @@
                         noLabel: 'Cancel',
                         type: 'nuclio_alert'
                     }
+                },
+                {
+                    label: 'Export',
+                    id: 'export',
+                    icon: 'igz-icon-export-yml',
+                    active: true
                 }
             ];
         }
