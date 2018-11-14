@@ -18,8 +18,8 @@
             controller: NclVersionController
         });
 
-    function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $transitions, $timeout, lodash, YAML,
-                                  ConfigService, DialogsService, NuclioHeaderService) {
+    function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $transitions, $timeout, lodash,
+                                  ConfigService, DialogsService, FunctionsService, NuclioHeaderService) {
         var ctrl = this;
         var deregisterFunction = null;
         var interval = null;
@@ -286,20 +286,7 @@
                             });
                     });
             } else if (item.id === 'exportFunction') {
-                var versionYaml = {
-                    metadata: lodash.omit(ctrl.version.metadata, 'namespace'),
-                    spec: lodash.omit(ctrl.version.spec, ['build.noBaseImagesPull', 'loggerSinks'])
-                };
-
-                var parsedVersion = YAML.stringify(versionYaml, Infinity, 2);
-
-                parsedVersion = getValidYaml(parsedVersion);
-
-                var blob = new Blob([parsedVersion], {
-                    type: 'application/json'
-                });
-
-                downloadExportedFunction(blob);
+                FunctionsService.exportFunction(ctrl.version);
             }
         }
 
@@ -443,62 +430,6 @@
                 $interval.cancel(interval);
                 interval = null;
             }
-        }
-
-        /**
-         * Returns valid YAML-string.
-         * First RegExp deletes all excess lines in YAML string created by issue in yaml.js package.
-         * It is necessary to generate valid YAML.
-         * Example:
-         * -
-         *   name: name
-         *   value: value
-         * -
-         *   name: name
-         *   value: value
-         * Will transform in:
-         * - name: name
-         *   value: value
-         * - name: name
-         *   value: value
-         * Second and Third RegExp replaces all single quotes on double quotes.
-         * Example:
-         * 'key': 'value' -> "key": "value"
-         * Fourth RegExp replaces all pairs of single quotes on one single quote.
-         * It needs because property name or property value is a sting which contains single quote
-         * will parsed by yaml.js package in sting with pair of single quotes.
-         * Example:
-         * "ke'y": "val'ue"
-         * After will parse will be -> "ke''y": "val''ue"
-         * This RegExp will transform it to normal view -> "ke'y": "val'ue"
-         * @param {string} data - incoming YAML-string
-         * @returns {string}
-         */
-        function getValidYaml(data) {
-            return data.replace(/(\s+\-)\s*\n\s+/g, '$1 ')
-                       .replace(/'(.+)'(:)/g, '\"$1\"$2')
-                       .replace(/(:\s)'(.+)'/g, '$1\"$2\"')
-                       .replace(/'{2}/g, '\'');
-        }
-
-        /**
-         * Creates artificial link and starts downloading of exported function.
-         * Downloaded .yaml file will be saved in user's default folder for downloads.
-         * @param {string} data - exported function config parsed to YAML
-         */
-        function downloadExportedFunction(data) {
-            var url = URL.createObjectURL(data);
-            var link = document.createElement('a');
-
-            link.href = url;
-            link.download = ctrl.version.metadata.name + '.yaml';
-            document.body.appendChild(link);
-            link.click();
-
-            $timeout(function () {
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
-            });
         }
     }
 }());

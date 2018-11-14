@@ -7,6 +7,7 @@
         'ui.bootstrap',
         'ngFileUpload',
         'ngDialog',
-        'download'
+        'download',
+        'angular-yamljs'
     ]);
 }());
