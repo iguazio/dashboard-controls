@@ -2,7 +2,13 @@
     <div class="ncl-monaco-wrapper"
          data-ng-class="{'ncl-monaco-dark': $ctrl.selectedTheme === 'vs-dark',
                          'no-top-padding': $ctrl.noTopPadding}">
-        <div igz-monaco-editor
+        <div data-ng-if="$ctrl.showTextSizeDropdown" class="ncl-monaco-top-row">
+            <ncl-text-size-dropdown data-update-data-callback="$ctrl.onTextSizeChange(newTextSize)">
+            </ncl-text-size-dropdown>
+        </div>
+        <div class="ncl-monaco-editor"
+             igz-monaco-editor
+             data-font-size="$ctrl.selectedTextSize"
              data-code-file="selectedCodeFile"
              data-editor-theme="$ctrl.selectedTheme"
              data-file-language="selectedFileLanguage"
