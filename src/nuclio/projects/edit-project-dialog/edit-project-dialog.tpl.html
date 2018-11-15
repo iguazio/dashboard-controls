@@ -53,16 +53,18 @@
 
 <div class="buttons">
     <button class="ncl-secondary-button"
-         tabindex="0"
-         data-ng-click="$ctrl.onClose()"
-         data-ng-keydown="$ctrl.onClose($event)">
+            data-test-id="projects.edit-project_cancel.button"
+            tabindex="0"
+            data-ng-click="$ctrl.onClose()"
+            data-ng-keydown="$ctrl.onClose($event)">
         Cancel
     </button>
     <button class="ncl-primary-button"
-         tabindex="0"
-         data-ng-click="$ctrl.saveProject()"
-         data-ng-keydown="$ctrl.saveProject($event)"
-         data-ng-hide="$ctrl.isLoadingState">
+            data-test-id="projects.edit-project_apply.button"
+            tabindex="0"
+            data-ng-click="$ctrl.saveProject()"
+            data-ng-keydown="$ctrl.saveProject($event)"
+            data-ng-hide="$ctrl.isLoadingState">
         Apply
     </button>
     <button class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">Loading...</button>
