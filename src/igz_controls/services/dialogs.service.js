@@ -36,10 +36,12 @@
             }
 
             return ngDialog.open({
-                template: '<div class="notification-text title igz-scrollable-container" data-ng-scrollbars>' + alertText + '</div>' +
+                template: '<div class="notification-text title igz-scrollable-container" data-ng-scrollbars>' +
+                alertText + '</div>' +
                 '<div class="buttons">' +
-                '<button class="igz-button-primary" data-ng-click="closeThisDialog() || $event.stopPropagation()">' + buttonText + '</button>' +
-                '</div>',
+                '<button class="igz-button-primary" data-ng-click="closeThisDialog() || $event.stopPropagation()" ' +
+                'data-test-id="general.alert_ok.button">' +
+                buttonText + '</button></div>',
                 plain: true
             })
                 .closePromise;
@@ -49,34 +51,41 @@
          * Show confirmation dialog
          *
          * @param {string|Object} confirmText that will be shown in pop-up
+         * @param {string} [confirmText.message] the text of the dialog body
+         * @param {string} [confirmText.description] additional info
          * @param {string} confirmButton Text displayed on Confirm button
          * @param {string} [cancelButton=Cancel] Text displayed on Cancel button
          * @param {string} type - type of popup dialog
          * @returns {Object}
          */
         function confirm(confirmText, confirmButton, cancelButton, type) {
-            var confirmMessage = !lodash.isNil(type) && type === 'nuclio_alert' && lodash.isPlainObject(confirmText) ?
+            var confirmMessage = type === 'nuclio_alert' && lodash.isPlainObject(confirmText) ?
                 confirmText.message : confirmText;
 
-            if (!cancelButton) {
-                cancelButton = 'Cancel';
-            }
+            var confirmButtonClass = lodash.includes(['critical_alert', 'nuclio_alert'], type) ?
+                'igz-button-remove' : 'igz-button-primary';
+
+            var cancelButtonCaption = lodash.defaultTo(cancelButton, 'Cancel');
+            var noDescription = type !== 'nuclio_alert' || lodash.isEmpty(confirmText.description);
 
             var template = '<div class="close-button igz-icon-close" data-ng-click="closeThisDialog()"></div>' +
-                '<div class="nuclio-alert-icon"></div><div class="notification-text title">' + confirmMessage + '</div>' +
-                (!lodash.isNil(type) && type === 'nuclio_alert' && !lodash.isNil(confirmText.description) ?
-                '<div class="notification-text description">' + confirmText.description + '</div>' : '') +
+                '<div class="nuclio-alert-icon"></div><div class="notification-text title">' + confirmMessage +
+                '</div>' + (noDescription ? '' : '<div class="notification-text description">' +
+                confirmText.description + '</div>') +
                 '<div class="buttons">' +
-                '<button class="igz-button-just-text" tabindex="0" data-ng-click="closeThisDialog(0)" data-ng-keydown="$event.keyCode === 13 && closeThisDialog(0)">' + cancelButton + '</button>' +
-                '<button class="' +
-                (!lodash.isNil(type) && (type === 'critical_alert' || type === 'nuclio_alert') ? 'igz-button-remove' : 'igz-button-primary') +
-                '" tabindex="0" data-ng-click="confirm(1)" data-ng-keydown="$event.keyCode === 13 && confirm(1)">' + confirmButton + '</button>' +
+                '<button class="igz-button-just-text" tabindex="0" data-ng-click="closeThisDialog(0)" ' +
+                'data-test-id="general.confirm_cancel.button" ' +
+                'data-ng-keydown="$event.keyCode === 13 && closeThisDialog(0)">' + cancelButtonCaption + '</button>' +
+                '<button class="' + confirmButtonClass + '" tabindex="0" data-ng-click="confirm(1)" ' +
+                'data-test-id="general.confirm_confirm.button" data-ng-keydown="$event.keyCode === 13 && confirm(1)">' +
+                confirmButton + '</button>' +
                 '</div>';
 
             return ngDialog.openConfirm({
                 template: template,
                 plain: true,
-                className: !lodash.isNil(type) && type === 'nuclio_alert' ? 'ngdialog-theme-nuclio delete-entity-dialog-wrapper' : 'ngdialog-theme-iguazio'
+                className: type === 'nuclio_alert' ?
+                    'ngdialog-theme-nuclio delete-entity-dialog-wrapper' : 'ngdialog-theme-iguazio'
             });
         }
 
@@ -90,10 +99,13 @@
         function customConfirm(confirmText, cancelButton, actionButtons) {
             var template = '<div class="notification-text title">' + confirmText + '</div>' +
                 '<div class="buttons">' +
-                '<button class="igz-button-just-text" tabindex="0" data-ng-click="closeThisDialog(-1)" data-ng-keydown="$event.keyCode === 13 && closeThisDialog(-1)">' + cancelButton + '</button>';
+                '<button class="igz-button-just-text" tabindex="0" data-ng-click="closeThisDialog(-1)" ' +
+                'data-test-id="general.confirm_cancel.button" ' +
+                'data-ng-keydown="$event.keyCode === 13 && closeThisDialog(-1)">' + cancelButton + '</button>';
             lodash.each(actionButtons, function (button, index) {
                 template += '<button class="igz-button-primary" tabindex="0" data-ng-click="confirm(' +
-                    index + ')" data-ng-keydown="$event.keyCode === 13 && confirm(' + index + ')">' + button + '</button>';
+                    index + ')" data-test-id="general.confirm_confirm_' + index + '.button" ' +
+                    'data-ng-keydown="$event.keyCode === 13 && confirm(' + index + ')">' + button + '</button>';
             });
             template += '</div>';
 
@@ -139,7 +151,9 @@
             return ngDialog.open({
                 template: '<div class="header"></div><div class="notification-text">' + alertText + '</div>' +
                 '<div class="buttons">' +
-                '<button class="refresh-button" data-ng-click="closeThisDialog()"><span class="igz-icon-refresh"></span>' + buttonText + '</button>' +
+                '<button class="refresh-button" data-ng-click="closeThisDialog()" ' +
+                'data-test-id="general.oops_refresh.button" ' +
+                '<span class="igz-icon-refresh"></span>' + buttonText + '</button>' +
                 '</div>',
                 plain: true,
                 className: 'ngdialog-theme-iguazio oops-dialog'
@@ -151,21 +165,19 @@
          * Show confirmation dialog with input field
          *
          * @param {string} promptText that will be shown in pop-up
-         * @param {string} confirmButton Text displayed on Confirm button
+         * @param {string} [okButton='OK'] Text displayed on Confirm button
          * @param {string} [cancelButton='Cancel'] Text displayed on Cancel button
          * @param {string} [defaultValue=''] Value that should be shown in text input after prompt is opened
          * @param {string} [placeholder=''] Text input placeholder
          * @param {Object} [validation] Validation pattern
-         * @param {boolean} required Should input be required or not
+         * @param {boolean} [required=false] Should input be required or not
          * @returns {Object}
          */
-        function prompt(promptText, confirmButton, cancelButton, defaultValue, placeholder, validation, required) {
-            cancelButton = cancelButton || 'Cancel';
-            placeholder = placeholder || '';
-            defaultValue = defaultValue || '';
-
+        function prompt(promptText, okButton, cancelButton, defaultValue, placeholder, validation, required) {
+            var okButtonCaption = lodash.defaultTo(okButton, 'OK');
+            var cancelButtonCaption = lodash.defaultTo(cancelButton, 'Cancel');
             var data = {
-                value: defaultValue,
+                value: lodash.defaultTo(defaultValue, ''),
                 igzDialogPromptForm: {},
                 checkInput: function () {
                     if (angular.isDefined(validation) || required) {
@@ -193,17 +205,17 @@
                     '<div class="main-content">' +
                         '<div class="field-group">' +
                             '<div class="field-input">' +
-                                '<igz-validating-input-field data-field-type="input" ' +
-                                                            'data-input-name="promptName" ' +
-                                                            'data-input-value="ngDialogData.value" ' +
-                                                            'data-form-object="ngDialogData.igzDialogPromptForm" ' +
-                                                            'data-is-focused="true" ' +
-                                                            (angular.isDefined(validation) ? 'data-validation-pattern="ngDialogData.validation" ' : '') +
-                                                            (placeholder !== '' ? 'data-placeholder-text="' + placeholder + '" ' : '') +
-                                                            (required ? 'data-validation-is-required="true" ' : '') +
-                                                            'data-update-data-callback="ngDialogData.inputValueCallback(newData)"' +
-                                                            '>' +
-                                '</igz-validating-input-field>' +
+                                '<igz-validating-input-field ' +
+                                    'data-field-type="input" ' +
+                                    'data-input-name="promptName" ' +
+                                    'data-input-value="ngDialogData.value" ' +
+                                    'data-form-object="ngDialogData.igzDialogPromptForm" ' +
+                                    'data-is-focused="true" ' +
+                                    (angular.isUndefined(validation) ? '' : 'data-validation-pattern="ngDialogData.validation" ') +
+                                    (lodash.isEmpty(placeholder) ? '' : 'data-placeholder-text="' + placeholder + '" ') +
+                                    (lodash.defaultTo(required, false) ? 'data-validation-is-required="true" ' : '') +
+                                    'data-update-data-callback="ngDialogData.inputValueCallback(newData)"' +
+                                '></igz-validating-input-field>' +
                                 (angular.isDefined(validation) ? '<div class="error-text" data-ng-show="ngDialogData.isShowFieldInvalidState(ngDialogData.igzDialogPromptForm, ngDialogData.inputName)">' +
                                 'The input is Invalid, please try again.' +
                                 '</div>' : '') +
@@ -212,8 +224,11 @@
                     '</div>' +
                 '</div>' +
                 '<div class="buttons">' +
-                    '<button class="igz-button-just-text" data-ng-click="closeThisDialog()">' + cancelButton + '</button>' +
-                    '<button class="igz-button-primary" data-ng-click="ngDialogData.checkInput() && closeThisDialog(ngDialogData.value)">' + confirmButton + '</button>' +
+                    '<button class="igz-button-just-text" data-ng-click="closeThisDialog()" ' +
+                    'data-test-id="general.prompt_cancel.button">' + cancelButtonCaption + '</button>' +
+                '<button class="igz-button-primary" ' +
+                    'data-ng-click="ngDialogData.checkInput() && closeThisDialog(ngDialogData.value)" ' +
+                    'data-test-id="general.prompt_ok.button">' + okButtonCaption + '</button>' +
                 '</div>',
                 plain: true,
                 data: data
@@ -230,6 +245,7 @@
          * @param {string} content that will be shown in pop-up
          * @param {Object} [node] actual node to be shown
          * @param {function} submitData function for submitting data
+         * @param {string} language the language to use in text editor
          * @returns {Promise}
          */
         function text(content, node, submitData, language) {
