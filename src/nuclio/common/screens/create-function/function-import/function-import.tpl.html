@@ -12,14 +12,20 @@
                      data-ng-click="$ctrl.createNewProject()">New project</div>
             </igz-default-dropdown>
         </div>
-        <div class="function-import-file-picker">
-            <label class="file-picker-wrapper ncl-primary-button" for="function-import">
-                <span class="igz-icon-upload"></span>Import
-            </label>
-            <input class="function-import-input"
-                   type="file"
-                   id="function-import"
-                   accept=".yml, .yaml">
+        <div class="function-import-actions-bar">
+            <div class="function-import-file-picker">
+                <label class="file-picker-wrapper ncl-primary-button" for="function-import">
+                    <span class="igz-icon-upload"></span>Import
+                </label>
+                <input class="function-import-input"
+                       type="file"
+                       id="function-import"
+                       accept=".yml, .yaml">
+            </div>
+            <button class="ncl-primary-button" data-ng-click="$ctrl.createFunction()"
+                    data-ng-disabled="!$ctrl.isCreateFunctionAllowed()"
+                    data-ng-class="{'disabled': !$ctrl.isCreateFunctionAllowed()}">CREATE FUNCTION
+            </button>
         </div>
     </form>
 
@@ -34,9 +40,5 @@
 
     <div class="bottom-bar">
         <button class="ncl-secondary-button" data-ng-click="$ctrl.cancelCreating($event)">CANCEL</button>
-        <button class="ncl-primary-button" data-ng-click="$ctrl.createFunction()"
-                data-ng-disabled="!$ctrl.isCreateFunctionAllowed()"
-                data-ng-class="{'disabled': !$ctrl.isCreateFunctionAllowed()}">CREATE FUNCTION
-        </button>
     </div>
 </div>

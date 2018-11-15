@@ -30,26 +30,34 @@
             }
         }
 
-        .function-import-file-picker {
-            label {
-                margin: 0;
-            }
+        .function-import-actions-bar {
+            display: flex;
 
-            .file-picker-wrapper {
-                cursor: pointer;
-                height: 36px;
-                padding: 12px 21px;
-                margin-left: unset;
+            .function-import-file-picker {
+                label {
+                    margin: 0;
+                }
 
-                .igz-icon-upload {
-                    margin-right: 10px;
+                .file-picker-wrapper {
+                    cursor: pointer;
+                    height: 36px;
+                    padding: 12px 21px;
+                    margin-left: unset;
+
+                    .igz-icon-upload {
+                        margin-right: 10px;
+                    }
+                }
+
+                .function-import-input {
+                    opacity: 0;
+                    position: absolute;
+                    z-index: -1;
                 }
             }
 
-            .function-import-input {
-                opacity: 0;
-                position: absolute;
-                z-index: -1;
+            .ncl-primary-button {
+                height: 36px;
             }
         }
     }
