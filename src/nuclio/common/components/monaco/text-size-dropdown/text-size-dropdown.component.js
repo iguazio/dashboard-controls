@@ -17,22 +17,22 @@
             {
                 label: 'Small',
                 id: 'small',
-                value: '10px'
+                value: '8px'
             },
             {
                 label: 'Normal',
                 id: 'normal',
-                value: '14px'
+                value: '12px'
             },
             {
                 label: 'Large',
                 id: 'large',
-                value: '18px'
+                value: '16px'
             },
             {
                 label: 'Huge',
                 id: 'huge',
-                value: '22px'
+                value: '20px'
             },
         ];
 
