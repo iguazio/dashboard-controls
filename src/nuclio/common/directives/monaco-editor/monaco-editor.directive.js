@@ -38,6 +38,9 @@
                         },
                         onWrapStateChanged: function onWrapStateChanged(newState) {
                             this.editor.updateOptions({ wordWrap: newState ? 'on' : 'off' });
+                        },
+                        onFontSizeChanged: function (newFontSize) {
+                            this.editor.updateOptions({ fontSize: newFontSize });
                         }
                     };
 
@@ -91,6 +94,7 @@
                     scope.$watch('editorTheme', editorContext.onThemeChanged.bind(editorContext));
                     scope.$watch('wordWrap', editorContext.onWrapStateChanged.bind(editorContext));
                     scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
+                    scope.$watch('fontSize', editorContext.onFontSizeChanged.bind(editorContext));
 
                     scope.$on('function-import-source-code', editorContext.onCodeFileChanged.bind(editorContext));
 
@@ -108,6 +112,7 @@
                 scope: {
                     codeFile: '=codeFile',
                     editorTheme: '=editorTheme',
+                    fontSize: '=fontSize',
                     fileLanguage: '=fileLanguage',
                     miniMonaco: '=miniMonaco',
                     showLineNumbers: '=showLineNumbers',

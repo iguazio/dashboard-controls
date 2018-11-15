@@ -11,6 +11,7 @@
                 miniMonaco: '<?',
                 noTopPadding: '<?',
                 showLineNumbers: '<?',
+                showTextSizeDropdown: '<?',
                 readOnly: '<?',
                 wordWrap: '<?',
                 name: '@?'
@@ -19,12 +20,14 @@
             controller: NclMonacoController
         });
 
-    function NclMonacoController($scope) {
+    function NclMonacoController($scope, lodash) {
         var ctrl = this;
 
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
+
         ctrl.onCodeChange = onCodeChange;
+        ctrl.onTextSizeChange = onTextSizeChange;
 
         //
         // Hook methods
@@ -34,6 +37,8 @@
          * Initialization method
          */
         function onInit() {
+            ctrl.noTopPadding = lodash.defaultTo(ctrl.noTopPadding, ctrl.showTextSizeDropdown);
+
             $scope.selectedCodeFile = {
                 code: ctrl.functionSourceCode
             };
@@ -76,6 +81,16 @@
                     sourceCode: newCode,
                     language: $scope.selectedCodeFile.language
                 });
+            }
+        }
+
+        /**
+         * On text size dropdown change
+         * @param {string} newTextSize
+         */
+        function onTextSizeChange(newTextSize) {
+            if (!lodash.isNil(newTextSize)) {
+                ctrl.selectedTextSize = newTextSize;
             }
         }
     }

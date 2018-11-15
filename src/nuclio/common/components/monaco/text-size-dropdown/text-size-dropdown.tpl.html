@@ -1,0 +1,23 @@
+<div class="ncl-text-size-dropdown dropdown" data-uib-dropdown
+     data-is-open="$ctrl.isOpen">
+    <div class="text-size-action-item"
+         data-uib-dropdown-toggle
+         data-uib-tooltip="Change text size"
+         data-tooltip-append-to-body="true"
+         data-tooltip-placement="bottom"
+         data-tooltip-popup-delay="1000">
+        <span class="action-icon igz-icon-format-size"></span>
+        <span class="action-icon igz-icon-decrease"></span>
+    </div>
+    <ul class="dropdown-menu dropdown-list"
+        data-ng-if="$ctrl.isOpen">
+        <li class="dropdown-menu-item"
+            data-ng-repeat="textSize in $ctrl.textSizes"
+            data-ng-click="$ctrl.changeTextSize(textSize.value)">
+            <span class="item-name"
+                  data-ng-class="{'active-item': $ctrl.selectedTextSize === textSize.value}">
+                {{textSize.label}}
+            </span>
+        </li>
+    </ul>
+</div>
