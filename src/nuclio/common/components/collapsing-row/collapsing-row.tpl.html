@@ -22,6 +22,12 @@
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.secretRef.name)">
                 v3io
             </div>
+            <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.secret.secretName)">
+                Secret
+            </div>
+            <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.configMap.name)">
+                Config map
+            </div>
 
             <div class="igz-col-70 item-info">
                 <div data-ng-hide="$ctrl.item.ui.editModeActive" class="collapsed-item-info-block">
@@ -62,6 +68,12 @@
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.secretRef.name)">
                         <span class="field-label">Secret name</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.secretRef.name }};&nbsp;
+                    </span>
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.secret.secretName)">
+                        <span class="field-label">Secret name</span>:&nbsp;{{ $ctrl.item.volume.secret.secretName }};&nbsp;
+                    </span>
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.configMap.name)">
+                        <span class="field-label">Config map name</span>:&nbsp;{{ $ctrl.item.volume.configMap.name }};&nbsp;
                     </span>
                 </div>
 

@@ -466,6 +466,14 @@
                     {
                         id: 'hostPath',
                         name: 'Host path'
+                    },
+                    {
+                        id: 'secret',
+                        name: 'Secret'
+                    },
+                    {
+                        id: 'configMap',
+                        name: 'ConfigMap'
                     }
                 ]
             };
