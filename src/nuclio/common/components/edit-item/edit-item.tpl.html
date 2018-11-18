@@ -119,6 +119,38 @@
             </div>
 
             <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.secret.secretName)">
+                <div class="field-label">Secret name</div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-input-name="secretName"
+                                            data-input-value="$ctrl.item.volume.secret.secretName"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-is-required="true"
+                                            data-placeholder-text="Type secret name..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="volume.secret.secretName">
+                </igz-validating-input-field>
+            </div>
+
+            <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.configMap.name)">
+                <div class="field-label">Config map name</div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-input-name="configMap"
+                                            data-input-value="$ctrl.item.volume.configMap.name"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-is-required="true"
+                                            data-placeholder-text="Type config map name..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="volume.configMap.name">
+                </igz-validating-input-field>
+            </div>
+
+            <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.maxWorkers)">
                 <div class="field-label">Max workers</div>
                 <igz-validating-input-field class="nuclio-validating-input"

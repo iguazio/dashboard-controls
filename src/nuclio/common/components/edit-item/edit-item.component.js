@@ -19,6 +19,7 @@
 
         ctrl.classList = [];
         ctrl.selectedClass = {};
+        ctrl.editItemForm = {};
 
         ctrl.scrollConfig = {
             axis: 'y',
@@ -78,14 +79,6 @@
         //
 
         /**
-         * Converts attribute names in class list from camel case
-         * @param {String} str - string which must be converted
-         */
-        function convertFromCamelCase(str) {
-            return str.replace(/([a-z])([A-Z])/g, '$1 $2');
-        }
-
-        /**
          * Initialization method
          */
         // eslint-disable-next-line
@@ -113,7 +106,11 @@
             }
 
             if (ctrl.isVolumeType()) {
-                var selectedTypeName = !lodash.isNil(ctrl.item.volume.hostPath) ? 'hostPath' : !ctrl.isNil(ctrl.item.volume.flexVolume) ? 'v3io' : null;
+                var selectedTypeName = !lodash.isNil(ctrl.item.volume.hostPath)   ? 'hostPath'  :
+                                       !lodash.isNil(ctrl.item.volume.flexVolume) ? 'v3io'      :
+                                       !lodash.isNil(ctrl.item.volume.secret)     ? 'secret'    :
+                                       !lodash.isNil(ctrl.item.volume.configMap)  ? 'configMap' :
+                                                                                    null;
 
                 if (!lodash.isNil(selectedTypeName)) {
                     ctrl.selectedClass = lodash.find(ctrl.classList, ['id', selectedTypeName]);
@@ -207,7 +204,7 @@
             if (ctrl.isTriggerType() && ctrl.isMQTTTrigger()) {
                 ctrl.subscriptions = lodash.chain(ctrl.item.attributes.subscriptions)
                     .defaultTo([])
-                    .map(function (value, key) {
+                    .map(function (value) {
                         return {
                             name: value.topic,
                             value: value.qos,
@@ -267,6 +264,14 @@
         //
         // Public methods
         //
+
+        /**
+         * Converts attribute names in class list from camel case
+         * @param {string} str - string which must be converted
+         */
+        function convertFromCamelCase(str) {
+            return str.replace(/([a-z])([A-Z])/g, '$1 $2');
+        }
 
         /**
          * Adds new ingress
@@ -395,7 +400,7 @@
         function checkValidation(variableName) {
             lodash.forEach(ctrl[variableName], function (variable) {
                 if (!variable.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: variable.ui.name, isDisabled: true});
+                    $rootScope.$broadcast('change-state-deploy-button', { component: variable.ui.name, isDisabled: true });
                 }
             });
         }
@@ -633,36 +638,70 @@
 
         /**
          * Update item class callback
-         * @param {Object} item - item class\kind
+         * @param {Object} item - item class/kind
          */
         // eslint-disable-next-line
         function onSelectClass(item) {
             ctrl.selectedClass = item;
 
             if (ctrl.isVolumeType()) {
-                if (lodash.isNil(ctrl.item.volumeMount.mountPath)) {
-                    ctrl.item.volumeMount.mountPath = '';
-                }
+                lodash.defaultsDeep(ctrl.item, {
+                    volume: {
+                        name: ''
+                    },
+                    volumeMount: {
+                        name: '',
+                        mountPath: ''
+                    }
+                });
 
-                if (item.id === 'hostPath' && lodash.isNil(ctrl.item.volume.hostPath)) {
+                if (item.id === 'hostPath') {
+                    lodash.defaultsDeep(ctrl.item.volume, {
+                        hostPath: {
+                            path: ''
+                        }
+                    });
 
-                    // delete values from type 'v3io'
+                    // delete properties of other classes
                     delete ctrl.item.volume.flexVolume;
+                    delete ctrl.item.volume.secret;
+                    delete ctrl.item.volume.configMap;
+                } else if (item.id === 'v3io') {
+                    lodash.defaultsDeep(ctrl.item.volume, {
+                        flexVolume: {
+                            driver: 'v3io/fuse',
+                            secretRef: {
+                                name: ''
+                            }
+                        }
+                    });
 
-                    lodash.set(ctrl.item, 'volume.hostPath.path', '');
-                }
-
-                if (item.id === 'v3io' && lodash.isNil(ctrl.item.volume.flexVolume)) {
-
-                    // delete values from type 'hostPath'
+                    // delete properties of other classes
                     delete ctrl.item.volume.hostPath;
+                    delete ctrl.item.volume.secret;
+                    delete ctrl.item.volume.configMap;
+                } else if (item.id === 'secret') {
+                    lodash.defaultsDeep(ctrl.item.volume, {
+                        secret: {
+                            secretName: ''
+                        }
+                    });
 
-                    ctrl.item.volume.flexVolume = {
-                        driver: 'v3io/fuse',
-                        secretRef: {
+                    // delete properties of other classes
+                    delete ctrl.item.volume.hostPath;
+                    delete ctrl.item.volume.flexVolume;
+                    delete ctrl.item.volume.configMap;
+                } else if (item.id === 'configMap') {
+                    lodash.defaultsDeep(ctrl.item.volume, {
+                        configMap: {
                             name: ''
                         }
-                    };
+                    });
+
+                    // delete properties of other classes
+                    delete ctrl.item.volume.hostPath;
+                    delete ctrl.item.volume.flexVolume;
+                    delete ctrl.item.volume.secret;
                 }
 
                 return;
@@ -763,10 +802,6 @@
             lodash.set(ctrl.item, field, item);
         }
 
-        //
-        // Private methods
-        //
-
         /**
          * On submit form handler
          * Hides the item create/edit mode
@@ -775,12 +810,12 @@
         function onSubmitForm(event) {
             ctrl.item.ui.expandable = !ctrl.editItemForm.$invalid;
 
-            if (angular.isUndefined(event.keyCode) || event.keyCode === '13') {
+            if (angular.isUndefined(event.keyCode) || event.keyCode === 13) {
                 if (event.target !== $element[0] && $element.find(event.target).length === 0 && !event.target.closest('ncl-edit-item')) {
                     if (ctrl.editItemForm.$invalid) {
                         ctrl.item.ui.isFormValid = false;
 
-                        $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.item.ui.name, isDisabled: true});
+                        $rootScope.$broadcast('change-state-deploy-button', { component: ctrl.item.ui.name, isDisabled: true });
 
                         ctrl.editItemForm.itemName.$setDirty();
 
@@ -797,8 +832,8 @@
                             lodash.forEach(ctrl.selectedClass.attributes, function (attribute) {
                                 if (attribute.pattern === 'number') {
                                     var emptyValue = lodash.isNil(ctrl.item.attributes[attribute.name]) || ctrl.item.attributes[attribute.name] === '';
-                                    var numberAttribute = attribute.allowEmpty && emptyValue ?
-                                        '' : Number(ctrl.item.attributes[attribute.name]);
+                                    var numberAttribute = attribute.allowEmpty && emptyValue ? '' :
+                                        Number(ctrl.item.attributes[attribute.name]);
 
                                     lodash.set(ctrl.item, 'attributes[' + attribute.name + ']', numberAttribute);
                                 }
@@ -830,7 +865,7 @@
                                 if (attribute.name === 'event') {
                                     var newEventHeader = {};
 
-                                    lodash.forEach(ctrl.eventHeaders, function (headers, key) {
+                                    lodash.forEach(ctrl.eventHeaders, function (headers) {
                                         newEventHeader[headers.name] = headers.value;
                                     });
 
@@ -851,9 +886,9 @@
                                 updateBrokers();
                             }
 
-                            $rootScope.$broadcast('change-state-deploy-button', {component: ctrl.item.ui.name, isDisabled: false});
+                            $rootScope.$broadcast('change-state-deploy-button', { component: ctrl.item.ui.name, isDisabled: false });
 
-                            ctrl.onSubmitCallback({item: ctrl.item});
+                            ctrl.onSubmitCallback({ item: ctrl.item });
                         });
                     }
                 }
@@ -909,19 +944,23 @@
             lodash.set(ctrl.item, 'attributes.brokers', newBrokers);
         }
 
+        //
+        // Private methods
+        //
+
         /**
          * Validate interval and schedule fields
          */
         function validateCronClassValues() {
             if (ctrl.item.kind === 'cron') {
-                var scheduleAttribute = lodash.find(ctrl.selectedClass.attributes, {'name': 'schedule'});
-                var intervalAttribute = lodash.find(ctrl.selectedClass.attributes, {'name': 'interval'});
+                var scheduleAttribute = lodash.find(ctrl.selectedClass.attributes, { name: 'schedule' });
+                var intervalAttribute = lodash.find(ctrl.selectedClass.attributes, { name: 'interval' });
                 var intervalInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_interval.$viewValue);
                 var scheduleInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_schedule.$viewValue);
 
                 if (intervalInputIsFilled === scheduleInputIsFilled) {
 
-                    // if interval and schedule fileds are filled or they are empty - makes these fields invalid
+                    // if interval and schedule fields are filled or they are empty - makes these fields invalid
                     ctrl.editItemForm.item_interval.$setValidity('text', false);
                     ctrl.editItemForm.item_schedule.$setValidity('text', false);
                 } else {

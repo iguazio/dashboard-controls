@@ -5,7 +5,7 @@
         .component('nclVersionConfigurationVolumes', {
             bindings: {
                 version: '<',
-                onChangeCallback: '<'
+                onChangeCallback: '&'
             },
             templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-volumes/version-configuration-volumes.tpl.html',
             controller: NclVersionConfigurationVolumesController
@@ -41,7 +41,7 @@
         function onInit() {
 
             // get volumes list
-            ctrl.volumes = lodash.map(lodash.get(ctrl.version, 'spec.volumes', []), function (value, key) {
+            ctrl.volumes = lodash.map(lodash.get(ctrl.version, 'spec.volumes', []), function (value) {
                 var volumeItem = angular.copy(value);
 
                 volumeItem.ui = {
@@ -58,7 +58,7 @@
          * Destructor method
          */
         function onDestroy() {
-            $rootScope.$broadcast('change-state-deploy-button', {component: 'volume', isDisabled: false});
+            $rootScope.$broadcast('change-state-deploy-button', { component: 'volume', isDisabled: false });
         }
 
         //
@@ -74,10 +74,10 @@
                 ctrl.volumes.push(
                     {
                         volumeMount: {
-                            name: '',
+                            name: ''
                         },
                         volume: {
-                            name: '',
+                            name: ''
                         },
                         ui: {
                             editModeActive: true,
@@ -88,7 +88,7 @@
                 );
 
                 event.stopPropagation();
-                $rootScope.$broadcast('change-state-deploy-button', {component: 'volume', isDisabled: true});
+                $rootScope.$broadcast('change-state-deploy-button', { component: 'volume', isDisabled: true });
             }
         }
 
@@ -124,10 +124,10 @@
                 DialogsService.alert('This functionality is not implemented yet.');
             }
 
-            $rootScope.$broadcast('change-state-deploy-button', {component: 'volume', isDisabled: false});
+            $rootScope.$broadcast('change-state-deploy-button', { component: 'volume', isDisabled: false });
             lodash.forEach(ctrl.volumes, function (volume) {
                 if (!volume.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: volume.ui.name, isDisabled: true});
+                    $rootScope.$broadcast('change-state-deploy-button', { component: volume.ui.name, isDisabled: true });
                 }
             });
 
@@ -140,15 +140,13 @@
 
         /**
          * Deletes selected item
-         * @param {Array} selectedItem - an object of selected data-binding
+         * @param {Object} selectedItem - an object of selected data-binding
          */
         function deleteHandler(selectedItem) {
             lodash.remove(ctrl.volumes, ['volume.name', selectedItem.volume.name]);
 
-            var workingCopy = angular.copy(ctrl.volumes);
-
-            lodash.forEach(workingCopy, function (volume) {
-                delete volume.ui;
+            var workingCopy = lodash.map(ctrl.volumes, function (volume) {
+                return lodash.omit(volume, 'ui');
             });
 
             lodash.set(ctrl.version, 'spec.volumes', workingCopy);
@@ -156,7 +154,7 @@
 
         /**
          * Toggles item to edit mode
-         * @param {Array} selectedItem - an object of selected data-binding
+         * @param {Object} selectedItem - an object of selected data-binding
          */
         function editHandler(selectedItem) {
             var volume = lodash.find(ctrl.volumes, ['volume.name', selectedItem.volume.name]);
@@ -165,7 +163,7 @@
 
         /**
          * Updates data in selected item
-         * @param {Array} selectedItem - an object of selected data-binding
+         * @param {Object} selectedItem - an object of selected data-binding
          */
         function updateHandler(selectedItem) {
             var workingCopy = angular.copy(ctrl.volumes);
@@ -173,12 +171,10 @@
             var indexOfEditableElement = lodash.findIndex(ctrl.volumes, ['volume.name', selectedItem.volume.name]);
 
             if (angular.isDefined(currentVolume)) {
-                var editedVolume = {
+                workingCopy[indexOfEditableElement] = {
                     volumeMount: selectedItem.volumeMount,
                     volume: selectedItem.volume
                 };
-
-                workingCopy[indexOfEditableElement] = editedVolume;
 
                 lodash.forEach(workingCopy, function (volume) {
                     delete volume.ui;
