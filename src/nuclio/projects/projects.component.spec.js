@@ -3,17 +3,19 @@ describe('nclProjects component: ', function () {
     var $rootScope;
     var $q;
     var ngDialog;
+    var ExportService;
     var ctrl;
     var projects;
 
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$rootScope_, _$componentController_, _$q_, _ngDialog_) {
+        inject(function (_$rootScope_, _$componentController_, _$q_, _ngDialog_, _ExportService_) {
             $rootScope = _$rootScope_;
             $componentController = _$componentController_;
             $q = _$q_;
             ngDialog = _ngDialog_;
+            ExportService = _ExportService_;
 
             projects = [
                 {
@@ -47,7 +49,8 @@ describe('nclProjects component: ', function () {
             ];
             var bindings = {
                 projects: projects,
-                getProjects: $q.when.bind($q)
+                getProjects: $q.when.bind($q),
+                getFunctions: $q.when.bind($q)
             };
 
             ctrl = $componentController('nclProjects', null, bindings);
@@ -182,6 +185,31 @@ describe('nclProjects component: ', function () {
             ctrl.toggleFilters();
 
             expect(ctrl.isFiltersShowed.value).toBeFalsy();
+        });
+    });
+
+    describe('onSelectDropdownAction(): ', function () {
+        it('should call `onSelectDropdown` function', function () {
+            spyOn(ctrl, 'onSelectDropdownAction');
+
+            ctrl.onSelectDropdownAction({id: 'exportProjects'});
+
+            expect(ctrl.onSelectDropdownAction).toHaveBeenCalled();
+        });
+
+        it('should call `exportProject` handler', function () {
+            spyOn(ExportService, 'exportProjects');
+
+            ctrl.onSelectDropdownAction({id: 'exportProjects'});
+
+            expect(ExportService.exportProjects).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.objectContaining({
+                metadata: jasmine.objectContaining({
+                    name: jasmine.any(String)
+                }),
+                spec: jasmine.objectContaining({
+                    displayName: jasmine.any(String)
+                })
+            })]), jasmine.any(Function));
         });
     });
 });

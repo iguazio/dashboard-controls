@@ -4,9 +4,8 @@
     angular.module('iguazio.dashboard-controls')
         .factory('FunctionsService', FunctionsService);
 
-    function FunctionsService($timeout, lodash, YAML) {
+    function FunctionsService($timeout, lodash) {
         return {
-            exportFunction: exportFunction,
             getClassesList: getClassesList,
             getHandler: getHandler,
             initVersionActions: initVersionActions
@@ -15,23 +14,6 @@
         //
         // Public methods
         //
-
-        function exportFunction(version) {
-            var versionYaml = {
-                metadata: lodash.omit(version.metadata, 'namespace'),
-                spec: lodash.omit(version.spec, ['build.noBaseImagesPull', 'loggerSinks'])
-            };
-
-            var parsedVersion = YAML.stringify(versionYaml, Infinity, 2);
-
-            parsedVersion = getValidYaml(parsedVersion);
-
-            var blob = new Blob([parsedVersion], {
-                type: 'application/json'
-            });
-
-            downloadExportedFunction(blob, version);
-        }
 
         /**
          * Returns classes list by type
@@ -513,66 +495,6 @@
                     }
                 }
             ];
-        }
-
-        //
-        // Private methods
-        //
-
-        /**
-         * Creates artificial link and starts downloading of exported function.
-         * Downloaded .yaml file will be saved in user's default folder for downloads.
-         * @param {string} data - exported function config parsed to YAML
-         */
-        function downloadExportedFunction(data, version) {
-            var url = URL.createObjectURL(data);
-            var link = document.createElement('a');
-
-            link.href = url;
-            link.download = version.metadata.name + '.yaml';
-            document.body.appendChild(link);
-
-            $timeout(function () {
-                link.click();
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
-            });
-        }
-
-        /**
-         * Returns valid YAML string.
-         * First RegExp deletes all excess lines in YAML string created by issue in yaml.js package.
-         * It is necessary to generate valid YAML.
-         * Example:
-         * -
-         *   name: name
-         *   value: value
-         * -
-         *   name: name
-         *   value: value
-         * Will transform in:
-         * - name: name
-         *   value: value
-         * - name: name
-         *   value: value
-         * Second and Third RegExp replaces all single quotes on double quotes.
-         * Example:
-         * 'key': 'value' -> "key": "value"
-         * Fourth RegExp replaces all pairs of single quotes on one single quote.
-         * It needs because property name or property value is a sting which contains single quote
-         * will parsed by yaml.js package in string with pair of single quotes.
-         * Example:
-         * "ke'y": "val'ue"
-         * After will parse will be -> "ke''y": "val''ue"
-         * This RegExp will transform it to normal view -> "ke'y": "val'ue"
-         * @param {string} data - incoming YAML-string
-         * @returns {string}
-         */
-        function getValidYaml(data) {
-            return data.replace(/(\s+\-)\s*\n\s+/g, '$1 ')
-                .replace(/'(.+)'(:)/g, '\"$1\"$2')
-                .replace(/(:\s)'(.+)'/g, '$1\"$2\"')
-                .replace(/'{2}/g, '\'');
         }
     }
 }());

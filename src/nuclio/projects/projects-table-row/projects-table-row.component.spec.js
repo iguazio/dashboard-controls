@@ -63,7 +63,8 @@ describe('nclProjectsTableRow component:', function () {
         var bindings = {
             project: project,
             projectsList: angular.copy(projectsList),
-            deleteProject: $q.when.bind($q)
+            deleteProject: $q.when.bind($q),
+            actionHandlerCallback: angular.noop
         };
 
         ctrl = $componentController('nclProjectsTableRow', null, bindings);
@@ -121,5 +122,17 @@ describe('nclProjectsTableRow component:', function () {
 
     describe('editProject(): ', function () {
         // todo
+    });
+
+    describe('onFireAction(): ', function () {
+        it('should call actionHandlerCallback() method', function () {
+            spyOn(ctrl, 'actionHandlerCallback');
+
+            ctrl.onFireAction('delete');
+            ctrl.onFireAction('edit');
+            ctrl.onFireAction('export');
+
+            expect(ctrl.actionHandlerCallback).toHaveBeenCalledTimes(3);
+        });
     });
 });

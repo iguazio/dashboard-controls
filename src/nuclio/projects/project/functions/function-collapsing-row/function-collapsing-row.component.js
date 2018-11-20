@@ -16,7 +16,7 @@
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController($state, lodash, ConfigService, DialogsService, FunctionsService, NuclioHeaderService) {
+    function NclFunctionCollapsingRowController($state, lodash, ConfigService, DialogsService, ExportService, NuclioHeaderService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -66,7 +66,8 @@
 
             lodash.defaultsDeep(ctrl.function, {
                 ui: {
-                    delete: deleteFunction
+                    delete: deleteFunction,
+                    export: exportFunction
                 }
             });
 
@@ -108,11 +109,7 @@
          * @param {string} actionType - a type of action
          */
         function onFireAction(actionType) {
-            if (actionType === 'export') {
-                FunctionsService.exportFunction(ctrl.function);
-            } else {
-                ctrl.actionHandlerCallback({actionType: actionType, checkedItems: [ctrl.function]});
-            }
+            ctrl.actionHandlerCallback({actionType: actionType, checkedItems: [ctrl.function]});
         }
 
         //
@@ -163,6 +160,13 @@
                     var msg = 'Unknown error occurred while deleting the function.';
                     return DialogsService.alert(lodash.get(error, 'data.error', msg));
                 });
+        }
+
+        /**
+         * Exports the function
+         */
+        function exportFunction() {
+            ExportService.exportFunction(ctrl.function);
         }
 
         /**

@@ -8,14 +8,15 @@
                 projectsList: '<',
                 actionHandlerCallback: '&',
                 deleteProject: '&',
-                updateProject: '&'
+                updateProject: '&',
+                getFunctions: '&'
             },
             templateUrl: 'nuclio/projects/projects-table-row/projects-table-row.tpl.html',
             controller: NclProjectsTableRowController
         });
 
     function NclProjectsTableRowController($scope, $state, lodash, moment, ngDialog, ActionCheckboxAllService,
-                                           ConfigService, DialogsService) {
+                                           ConfigService, DialogsService, ExportService) {
         var ctrl = this;
 
         ctrl.actions = {};
@@ -35,13 +36,14 @@
          */
         function onInit() {
 
-            // initialize `deleteProject`, `editProjects` actions and assign them to `ui` property of current project
+            // initialize `deleteProject`, `editProject`, `exportProject` actions and assign them to `ui` property of current project
             // initialize `checked` status to `false`
             lodash.defaultsDeep(ctrl.project, {
                 ui: {
                     checked: false,
                     delete: handleDeleteProject,
-                    edit: editProject
+                    edit: editProject,
+                    export: exportProject
                 }
             });
 
@@ -132,6 +134,12 @@
                     id: 'edit',
                     icon: 'igz-icon-properties',
                     active: true
+                },
+                {
+                    label: 'Export',
+                    id: 'export',
+                    icon: 'igz-icon-export-yml',
+                    active: true
                 }
             ];
         }
@@ -160,6 +168,13 @@
                         ActionCheckboxAllService.changeCheckedItemsCount(-1);
                     }
                 });
+        }
+
+        /**
+         * Exports the project
+         */
+        function exportProject() {
+            ExportService.exportProject(ctrl.project, ctrl.getFunctions);
         }
     }
 }());

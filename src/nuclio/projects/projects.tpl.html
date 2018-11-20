@@ -10,6 +10,12 @@
         </div>
         <div class="actions-bar-right">
             <div class="actions-bar-left actions-buttons-block">
+                <igz-default-dropdown data-select-property-only="id"
+                                      data-placeholder="ACTIONS"
+                                      data-values-array="$ctrl.dropdownActions"
+                                      data-item-select-callback="$ctrl.onSelectDropdownAction(item)"
+                                      data-skip-selection="true">
+                </igz-default-dropdown>
                 <button class="ncl-new-entity-button"
                         data-ng-click="$ctrl.openNewProjectDialog()">
                     Create project
@@ -98,7 +104,9 @@
                                                         data-projects-list="$ctrl.projects"
                                                         data-delete-project="$ctrl.deleteProject({project: project})"
                                                         data-update-project="$ctrl.updateProject({project: project})"
-                                                        data-action-handler-callback="$ctrl.handleAction(actionType, checkedItems)"></ncl-projects-table-row>
+                                                        data-action-handler-callback="$ctrl.handleAction(actionType, checkedItems)"
+                                                        data-get-functions="$ctrl.getFunctions({id: id})">
+                                </ncl-projects-table-row>
                             </div>
                         </div>
 
