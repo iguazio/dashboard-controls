@@ -98,7 +98,7 @@
             $q.all(promises)
                 .then(function (projectsToExport) {
                     var blob = prepareBlobObject({
-                        projects: projectsToExport
+                        projects: lodash.compact(projectsToExport)
                     });
 
                     downloadExportedFunction(blob, 'projects');
