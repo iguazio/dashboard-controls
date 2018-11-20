@@ -19,7 +19,7 @@
         });
 
     function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $transitions, $timeout, lodash,
-                                  ConfigService, DialogsService, FunctionsService, NuclioHeaderService) {
+                                  ConfigService, DialogsService, ExportService, NuclioHeaderService) {
         var ctrl = this;
         var deregisterFunction = null;
         var interval = null;
@@ -286,7 +286,7 @@
                             });
                     });
             } else if (item.id === 'exportFunction') {
-                FunctionsService.exportFunction(ctrl.version);
+                ExportService.exportFunction(ctrl.version);
             }
         }
 

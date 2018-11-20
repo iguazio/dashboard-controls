@@ -79,8 +79,9 @@ describe('nclFunctionCollapsingRow component:', function () {
             spyOn(ctrl, 'actionHandlerCallback');
 
             ctrl.handleAction('delete', []);
+            ctrl.handleAction('export', []);
 
-            expect(ctrl.actionHandlerCallback).toHaveBeenCalled();
+            expect(ctrl.actionHandlerCallback).toHaveBeenCalledTimes(2);
         });
     });
 });

@@ -8,17 +8,24 @@
                 createProject: '&',
                 deleteProject: '&',
                 updateProject: '&',
-                getProjects: '&'
+                getProjects: '&',
+                getFunctions: '&'
             },
             templateUrl: 'nuclio/projects/projects.tpl.html',
             controller: NclProjectsController
         });
 
     function NclProjectsController($filter, $rootScope, $scope, $state, $q, lodash, ngDialog, ActionCheckboxAllService,
-                                   CommonTableService, ConfigService, ValidatingPatternsService) {
+                                   CommonTableService, ConfigService, DialogsService, ExportService, ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.actions = [];
+        ctrl.dropdownActions = [
+            {
+                id: 'exportProjects',
+                name: 'Export all projects'
+            }
+        ];
         ctrl.checkedItemsCount = 0;
         ctrl.filtersCounter = 0;
         ctrl.isFiltersShowed = {
@@ -73,6 +80,7 @@
         ctrl.isProjectsListEmpty = isProjectsListEmpty;
         ctrl.onApplyFilters = onApplyFilters;
         ctrl.onSortOptionsChange = onSortOptionsChange;
+        ctrl.onSelectDropdownAction = onSelectDropdownAction;
         ctrl.onResetFilters = onResetFilters;
         ctrl.onUpdateFiltersCounter = onUpdateFiltersCounter;
         ctrl.openNewProjectDialog = openNewProjectDialog;
@@ -203,6 +211,16 @@
             ctrl.sortedColumnName = newElement.value;
 
             ctrl.sortTableByColumn(ctrl.sortedColumnName);
+        }
+
+        /**
+         * Called when dropdown action is selected
+         * @param {Object} item - selected action
+         */
+        function onSelectDropdownAction(item) {
+            if (item.id === 'exportProjects') {
+                ExportService.exportProjects(ctrl.projects, ctrl.getFunctions);
+            }
         }
 
         /**
