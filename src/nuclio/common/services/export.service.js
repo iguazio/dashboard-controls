@@ -73,13 +73,8 @@
          * @param {Function} getFunctions
          */
         function exportProjects(projects, getFunctions) {
-            var projectsToExport = {
-                projects: []
-            };
-            var promises = [];
-
-            lodash.forEach(projects, function (project) {
-                var promise = getFunctions({id: project.metadata.name})
+            var promises = lodash.map(projects, function (project) {
+                return getFunctions({id: project.metadata.name})
                     .then(function (functions) {
                         var functionsList = lodash.map(functions, function (functionItem) {
                             return lodash.chain(functionItem)
@@ -88,7 +83,7 @@
                                 .value();
                         });
 
-                        var projectToExport = {
+                        return {
                             metadata: {
                                 name: project.spec.displayName
                             },
@@ -96,16 +91,15 @@
                                 functions: functionsList
                             }
                         };
-
-                        projectsToExport.projects.push(projectToExport);
-                    });
-
-                promises.push(promise);
+                    })
+                    .catch(angular.noop);
             });
 
             $q.all(promises)
-                .then(function () {
-                    var blob = prepareBlobObject(projectsToExport);
+                .then(function (projectsToExport) {
+                    var blob = prepareBlobObject({
+                        projects: projectsToExport
+                    });
 
                     downloadExportedFunction(blob, 'projects');
                 })
