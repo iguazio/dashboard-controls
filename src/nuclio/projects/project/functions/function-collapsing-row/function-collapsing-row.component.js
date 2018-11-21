@@ -16,7 +16,7 @@
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController($state, lodash, ConfigService, DialogsService, ExportService, NuclioHeaderService) {
+    function NclFunctionCollapsingRowController($state, lodash, ngDialog, ConfigService, DialogsService, ExportService, NuclioHeaderService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -40,6 +40,12 @@
             advanced: {
                 updateOnContentResize: true
             }
+        };
+
+        ctrl.editorTheme = {
+            id: 'vs',
+            name: 'Light',
+            visible: true
         };
 
         ctrl.$onInit = onInit;
@@ -67,7 +73,8 @@
             lodash.defaultsDeep(ctrl.function, {
                 ui: {
                     delete: deleteFunction,
-                    export: exportFunction
+                    export: exportFunction,
+                    viewConfig: viewConfig
                 }
             });
 
@@ -140,6 +147,11 @@
                     id: 'export',
                     icon: 'igz-icon-export-yml',
                     active: true
+                },
+                {
+                    label: 'View YAML',
+                    id: 'viewConfig',
+                    active: true
                 }
             ];
         }
@@ -189,6 +201,70 @@
             });
 
             NuclioHeaderService.updateMainHeader('Projects', ctrl.title, $state.current.name);
+        }
+
+        /**
+         * Show dialog with YAML function config
+         */
+        function viewConfig() {
+            var sourceCode = ExportService.getFunctionConfig(ctrl.function);
+            var label = 'Config ' + ctrl.title.function;
+
+            ngDialog.open({
+                template:
+                    '<div class="view-yaml-dialog-container">' +
+                        '<div class="view-yaml-dialog-header">' +
+                            '<div class="title">' + label + '</div>' +
+                            '<div class="copy-to-clipboard" ' +
+                                'data-ng-click="ngDialogData.copyToClipboard(ngDialogData.sourceCode)" data-uib-tooltip="Copy to clipboard" ' +
+                                'data-tooltip-placement="left" data-tooltip-popup-delay="300" data-tooltip-append-to-body="true">' +
+                                '<div class="ncl-icon-copy"></div>' +
+                            '</div>' +
+                            '<div class="close-button igz-icon-close" data-ng-click="closeThisDialog(0)"></div>' +
+                        '</div>' +
+                        '<div class="main-content">' +
+                            '<ncl-monaco class="monaco-code-editor" ' +
+                                'data-function-source-code="ngDialogData.sourceCode" ' +
+                                'data-mini-monaco="false" ' +
+                                'data-selected-theme="ngDialogData.editorTheme" ' +
+                                'data-language="yaml" ' +
+                                'data-read-only="true">' +
+                            '</ncl-monaco>' +
+                        '</div>' +
+                        '<div class="buttons">' +
+                            '<button class="igz-button-primary" tabindex="0" data-ng-click="closeThisDialog(0)">Close</button>' +
+                        '</div>' +
+                    '</div>',
+                plain: true,
+                data: {
+                    sourceCode: sourceCode,
+                    copyToClipboard: copyToClipboard,
+                    editorTheme: ctrl.editorTheme
+                },
+                className: 'ngdialog-theme-iguazio view-yaml-dialog-wrapper'
+            });
+        }
+
+        /**
+         * Copies a string to the clipboard. Must be called from within an event handler such as click
+         * @param {string} data
+         */
+        function copyToClipboard(data) {
+            if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
+                var textarea = document.createElement('textarea');
+                textarea.textContent = data;
+                textarea.style.position = 'fixed';
+                document.body.appendChild(textarea);
+                textarea.select();
+
+                try {
+                    return document.execCommand('copy'); // Security exception may be thrown by some browsers.
+                } catch (ex) {
+                    DialogsService.alert('Copy to clipboard failed.', ex);
+                } finally {
+                    document.body.removeChild(textarea);
+                }
+            }
         }
     }
 }());
