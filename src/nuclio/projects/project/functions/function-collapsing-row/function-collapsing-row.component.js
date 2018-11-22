@@ -42,12 +42,6 @@
             }
         };
 
-        ctrl.editorTheme = {
-            id: 'vs',
-            name: 'Light',
-            visible: true
-        };
-
         ctrl.$onInit = onInit;
 
         ctrl.isFunctionShowed = isFunctionShowed;
@@ -207,64 +201,15 @@
          * Show dialog with YAML function config
          */
         function viewConfig() {
-            var sourceCode = ExportService.getFunctionConfig(ctrl.function);
-            var label = 'Config ' + ctrl.title.function;
-
             ngDialog.open({
-                template:
-                    '<div class="view-yaml-dialog-container">' +
-                        '<div class="view-yaml-dialog-header">' +
-                            '<div class="title">' + label + '</div>' +
-                            '<div class="copy-to-clipboard" ' +
-                                'data-ng-click="ngDialogData.copyToClipboard(ngDialogData.sourceCode)" data-uib-tooltip="Copy to clipboard" ' +
-                                'data-tooltip-placement="left" data-tooltip-popup-delay="300" data-tooltip-append-to-body="true">' +
-                                '<div class="ncl-icon-copy"></div>' +
-                            '</div>' +
-                            '<div class="close-button igz-icon-close" data-ng-click="closeThisDialog(0)"></div>' +
-                        '</div>' +
-                        '<div class="main-content">' +
-                            '<ncl-monaco class="monaco-code-editor" ' +
-                                'data-function-source-code="ngDialogData.sourceCode" ' +
-                                'data-mini-monaco="false" ' +
-                                'data-selected-theme="ngDialogData.editorTheme" ' +
-                                'data-language="yaml" ' +
-                                'data-read-only="true">' +
-                            '</ncl-monaco>' +
-                        '</div>' +
-                        '<div class="buttons">' +
-                            '<button class="igz-button-primary" tabindex="0" data-ng-click="closeThisDialog(0)">Close</button>' +
-                        '</div>' +
-                    '</div>',
+                template: '<ncl-function-config-dialog data-close-dialog="closeThisDialog()" ' +
+                    'data-function="ngDialogData.function"></ncl-function-config-dialog>',
                 plain: true,
                 data: {
-                    sourceCode: sourceCode,
-                    copyToClipboard: copyToClipboard,
-                    editorTheme: ctrl.editorTheme
+                    function: ctrl.function,
                 },
                 className: 'ngdialog-theme-iguazio view-yaml-dialog-wrapper'
             });
-        }
-
-        /**
-         * Copies a string to the clipboard. Must be called from within an event handler such as click
-         * @param {string} data
-         */
-        function copyToClipboard(data) {
-            if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
-                var textarea = document.createElement('textarea');
-                textarea.textContent = data;
-                textarea.style.position = 'fixed';
-                document.body.appendChild(textarea);
-                textarea.select();
-
-                try {
-                    return document.execCommand('copy'); // Security exception may be thrown by some browsers.
-                } catch (ex) {
-                    DialogsService.alert('Copy to clipboard failed.', ex);
-                } finally {
-                    document.body.removeChild(textarea);
-                }
-            }
         }
     }
 }());
