@@ -73,6 +73,7 @@
         ctrl.onSelectClass = onSelectClass;
         ctrl.onSelectDropdownValue = onSelectDropdownValue;
         ctrl.numberInputCallback = numberInputCallback;
+        ctrl.getPlaceholderText = getPlaceholderText;
 
         //
         // Hook methods
@@ -942,6 +943,18 @@
             });
 
             lodash.set(ctrl.item, 'attributes.brokers', newBrokers);
+        }
+
+        /**
+         * Return placeholder text for input
+         * @param {string} attributeName
+         */
+        function getPlaceholderText(attributeName) {
+            if (attributeName === 'interval') {
+                return 'E.g. 1h, 30m, 10s, 250ms'
+            }
+
+            return 'Type ' + ctrl.convertFromCamelCase(attributeName).toLowerCase() + '...';
         }
 
         //
