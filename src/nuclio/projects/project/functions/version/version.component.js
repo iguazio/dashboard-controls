@@ -19,7 +19,7 @@
         });
 
     function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $transitions, $timeout, lodash,
-                                  ConfigService, DialogsService, ExportService, NuclioHeaderService) {
+                                  ngDialog, ConfigService, DialogsService, ExportService, NuclioHeaderService) {
         var ctrl = this;
         var deregisterFunction = null;
         var interval = null;
@@ -92,6 +92,10 @@
                         noLabel: 'Cancel',
                         type: 'nuclio_alert'
                     }
+                },
+                {
+                    id: 'viewConfig',
+                    name: 'View YAML'
                 }
             ];
 
@@ -287,6 +291,16 @@
                     });
             } else if (item.id === 'exportFunction') {
                 ExportService.exportFunction(ctrl.version);
+            } else if (item.id === 'viewConfig') {
+                ngDialog.open({
+                    template: '<ncl-function-config-dialog data-close-dialog="closeThisDialog()" ' +
+                        'data-function="ngDialogData.function"></ncl-function-config-dialog>',
+                    plain: true,
+                    data: {
+                        function: ctrl.version,
+                    },
+                    className: 'ngdialog-theme-iguazio view-yaml-dialog-wrapper'
+                });
             }
         }
 
