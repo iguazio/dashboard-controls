@@ -16,7 +16,7 @@
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController($state, lodash, ConfigService, DialogsService, ExportService, NuclioHeaderService) {
+    function NclFunctionCollapsingRowController($state, lodash, ngDialog, ConfigService, DialogsService, ExportService, NuclioHeaderService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -67,7 +67,8 @@
             lodash.defaultsDeep(ctrl.function, {
                 ui: {
                     delete: deleteFunction,
-                    export: exportFunction
+                    export: exportFunction,
+                    viewConfig: viewConfig
                 }
             });
 
@@ -140,6 +141,11 @@
                     id: 'export',
                     icon: 'igz-icon-export-yml',
                     active: true
+                },
+                {
+                    label: 'View YAML',
+                    id: 'viewConfig',
+                    active: true
                 }
             ];
         }
@@ -189,6 +195,21 @@
             });
 
             NuclioHeaderService.updateMainHeader('Projects', ctrl.title, $state.current.name);
+        }
+
+        /**
+         * Show dialog with YAML function config
+         */
+        function viewConfig() {
+            ngDialog.open({
+                template: '<ncl-function-config-dialog data-close-dialog="closeThisDialog()" ' +
+                    'data-function="ngDialogData.function"></ncl-function-config-dialog>',
+                plain: true,
+                data: {
+                    function: ctrl.function,
+                },
+                className: 'ngdialog-theme-iguazio view-yaml-dialog-wrapper'
+            });
         }
     }
 }());

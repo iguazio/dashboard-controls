@@ -7,6 +7,7 @@
     function ExportService($q, $timeout, DialogsService, lodash, YAML) {
         return {
             exportFunction: exportFunction,
+            getFunctionConfig: getFunctionConfig,
             exportProject: exportProject,
             exportProjects: exportProjects
         };
@@ -20,14 +21,21 @@
          * @param {Object} version
          */
         function exportFunction(version) {
-            var functionToExport = {
-                metadata: lodash.omit(version.metadata, 'namespace'),
-                spec: lodash.omit(version.spec, ['build.noBaseImagesPull', 'loggerSinks'])
-            };
-
+            var functionToExport = prepareFunctionData(version);
             var blob = prepareBlobObject(functionToExport);
 
             downloadExportedFunction(blob, version.metadata.name);
+        }
+
+        /**
+         * Returns function config
+         * @param {Object} version
+         * @returns {string} YAML object
+         */
+        function getFunctionConfig(version) {
+            var functionConfig = prepareFunctionData(version);
+
+            return prepareYamlObject(functionConfig);
         }
 
         /**
@@ -171,14 +179,34 @@
         }
 
         /**
+         * Prepare function data
+         * @param {Object} version
+         * @returns {Object} data for export
+         */
+        function prepareFunctionData(version) {
+            return {
+                metadata: lodash.omit(version.metadata, 'namespace'),
+                spec: lodash.omit(version.spec, ['build.noBaseImagesPull', 'loggerSinks'])
+            };
+        }
+
+        /**
+         * Prepare YAML object
+         * @param {Object} objectToParse
+         * @returns {string} YAML object
+         */
+        function prepareYamlObject(objectToParse) {
+            var parsedObject = YAML.stringify(objectToParse, Infinity, 2);
+
+            return getValidYaml(parsedObject);
+        }
+        /**
          * Prepare blob object for downloading
          * @param {Object} objectToParse
          * @returns {Blob} Blob object
          */
         function prepareBlobObject(objectToParse) {
-            var parsedObject = YAML.stringify(objectToParse, Infinity, 2);
-
-            parsedObject = getValidYaml(parsedObject);
+            var parsedObject = prepareYamlObject(objectToParse);
 
             return new Blob([parsedObject], {
                 type: 'application/json'
