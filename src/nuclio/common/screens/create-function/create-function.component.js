@@ -8,6 +8,7 @@
                 getProject: '&',
                 getProjects: '&',
                 getTemplates: '&',
+                renderTemplate: '&',
                 templates: '<'
             },
             templateUrl: 'nuclio/common/screens/create-function/create-function.tpl.html',
