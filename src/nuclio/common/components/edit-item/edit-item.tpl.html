@@ -195,7 +195,7 @@
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-pattern="$ctrl.getValidationPattern(attribute.pattern)"
                                             data-validation-is-required="!attribute.allowEmpty"
-                                            data-placeholder-text="Type {{$ctrl.convertFromCamelCase(attribute.name) | lowercase}}..."
+                                            data-placeholder-text="{{$ctrl.getPlaceholderText(attribute.name)}}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="attributes.{{attribute.name}}">
                 </igz-validating-input-field>
