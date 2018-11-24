@@ -4304,91 +4304,6 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 (function () {
     'use strict';
 
-    IgzSplashScreenController.$inject = ['$scope', '$state'];
-    angular.module('iguazio.dashboard-controls').component('igzSplashScreen', {
-        bindings: {
-            isSplashShowed: '<'
-        },
-        templateUrl: 'igz_controls/components/splash-screen/splash-screen.tpl.html',
-        controller: IgzSplashScreenController
-    });
-
-    function IgzSplashScreenController($scope, $state) {
-        var ctrl = this;
-
-        // public properties
-        ctrl.isLoading = true;
-        ctrl.isAlertShowing = false;
-        ctrl.textToDisplay = 'Loading…';
-
-        ctrl.$onInit = onInit;
-
-        // public methods
-        ctrl.refreshPage = refreshPage;
-
-        //
-        // Hook methods
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-            $scope.$on('splash-screen_show-error', showError);
-            $scope.$on('browse-action_change-loading-text', changeLoadingText);
-        }
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Sends broadcast to refresh browse page
-         */
-        function refreshPage() {
-            ctrl.isLoading = true;
-            ctrl.isAlertShowing = false;
-
-            $state.reload();
-        }
-
-        //
-        // Private methods
-        //
-
-        /**
-         * Changes displayed text on loading spinner
-         * @param {Object} event - broadcast event
-         * @param {Object} data - broadcast data with text to be displayed
-         */
-        function changeLoadingText(event, data) {
-            ctrl.textToDisplay = data.textToDisplay;
-        }
-
-        /**
-         * Shows error text
-         * @param {Object} event - native broadcast event
-         * @param {string} data - broadcast data
-         */
-        function showError(event, data) {
-            if (angular.isDefined(data.textToDisplay)) {
-                ctrl.textToDisplay = data.textToDisplay;
-            }
-
-            if (angular.isDefined(data.alertText)) {
-                ctrl.alertText = data.alertText;
-            }
-
-            ctrl.isLoading = false;
-            ctrl.isAlertShowing = true;
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
     angular.module('iguazio.dashboard-controls').component('igzSortDropdown', {
         bindings: {
             sortOptions: '<',
@@ -4714,6 +4629,91 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
                     }
                 }
             });
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    IgzSplashScreenController.$inject = ['$scope', '$state'];
+    angular.module('iguazio.dashboard-controls').component('igzSplashScreen', {
+        bindings: {
+            isSplashShowed: '<'
+        },
+        templateUrl: 'igz_controls/components/splash-screen/splash-screen.tpl.html',
+        controller: IgzSplashScreenController
+    });
+
+    function IgzSplashScreenController($scope, $state) {
+        var ctrl = this;
+
+        // public properties
+        ctrl.isLoading = true;
+        ctrl.isAlertShowing = false;
+        ctrl.textToDisplay = 'Loading…';
+
+        ctrl.$onInit = onInit;
+
+        // public methods
+        ctrl.refreshPage = refreshPage;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            $scope.$on('splash-screen_show-error', showError);
+            $scope.$on('browse-action_change-loading-text', changeLoadingText);
+        }
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Sends broadcast to refresh browse page
+         */
+        function refreshPage() {
+            ctrl.isLoading = true;
+            ctrl.isAlertShowing = false;
+
+            $state.reload();
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Changes displayed text on loading spinner
+         * @param {Object} event - broadcast event
+         * @param {Object} data - broadcast data with text to be displayed
+         */
+        function changeLoadingText(event, data) {
+            ctrl.textToDisplay = data.textToDisplay;
+        }
+
+        /**
+         * Shows error text
+         * @param {Object} event - native broadcast event
+         * @param {string} data - broadcast data
+         */
+        function showError(event, data) {
+            if (angular.isDefined(data.textToDisplay)) {
+                ctrl.textToDisplay = data.textToDisplay;
+            }
+
+            if (angular.isDefined(data.alertText)) {
+                ctrl.alertText = data.alertText;
+            }
+
+            ctrl.isLoading = false;
+            ctrl.isAlertShowing = true;
         }
     }
 })();
@@ -5944,57 +5944,6 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 (function () {
     'use strict';
 
-    NclVersionConfigurationController.$inject = ['ConfigService', 'VersionHelperService'];
-    angular.module('iguazio.dashboard-controls').component('nclVersionConfiguration', {
-        bindings: {
-            version: '<'
-        },
-        templateUrl: 'nuclio/projects/project/functions/version/version-configuration/version-configuration.tpl.html',
-        controller: NclVersionConfigurationController
-    });
-
-    function NclVersionConfigurationController(ConfigService, VersionHelperService) {
-        var ctrl = this;
-
-        ctrl.scrollConfig = {
-            axis: 'y',
-            advanced: {
-                autoScrollOnFocus: false,
-                updateOnContentResize: true
-            }
-        };
-
-        ctrl.isDemoMode = ConfigService.isDemoMode;
-
-        ctrl.isInvisibleForCurrentRuntime = isInvisibleForCurrentRuntime;
-        ctrl.onConfigurationChangeCallback = onConfigurationChangeCallback;
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Checks if `Runtime Attributes` block is invisible for current
-         * @param {string} runtime
-         * @returns {boolean}
-         */
-        function isInvisibleForCurrentRuntime(runtime) {
-            return runtime !== 'shell' && runtime !== 'java';
-        }
-
-        /**
-         * Checks if version's configuration was changed
-         */
-        function onConfigurationChangeCallback() {
-            VersionHelperService.checkVersionChange(ctrl.version);
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
     NclFunctionEventDialogController.$inject = ['$timeout', 'lodash', 'EventHelperService'];
     angular.module('iguazio.dashboard-controls').component('nclFunctionEventDialog', {
         bindings: {
@@ -6236,6 +6185,57 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
             $timeout(function () {
                 ctrl.isFormChanged = !lodash.isEqual(ctrl.workingCopy, ctrl.selectedEvent) && lodash.isEmpty(ctrl.functionEventForm.$error);
             });
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    NclVersionConfigurationController.$inject = ['ConfigService', 'VersionHelperService'];
+    angular.module('iguazio.dashboard-controls').component('nclVersionConfiguration', {
+        bindings: {
+            version: '<'
+        },
+        templateUrl: 'nuclio/projects/project/functions/version/version-configuration/version-configuration.tpl.html',
+        controller: NclVersionConfigurationController
+    });
+
+    function NclVersionConfigurationController(ConfigService, VersionHelperService) {
+        var ctrl = this;
+
+        ctrl.scrollConfig = {
+            axis: 'y',
+            advanced: {
+                autoScrollOnFocus: false,
+                updateOnContentResize: true
+            }
+        };
+
+        ctrl.isDemoMode = ConfigService.isDemoMode;
+
+        ctrl.isInvisibleForCurrentRuntime = isInvisibleForCurrentRuntime;
+        ctrl.onConfigurationChangeCallback = onConfigurationChangeCallback;
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Checks if `Runtime Attributes` block is invisible for current
+         * @param {string} runtime
+         * @returns {boolean}
+         */
+        function isInvisibleForCurrentRuntime(runtime) {
+            return runtime !== 'shell' && runtime !== 'java';
+        }
+
+        /**
+         * Checks if version's configuration was changed
+         */
+        function onConfigurationChangeCallback() {
+            VersionHelperService.checkVersionChange(ctrl.version);
         }
     }
 })();
@@ -7443,71 +7443,6 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 (function () {
     'use strict';
 
-    NclTestEventsNavigationTabsController.$inject = ['lodash'];
-    angular.module('iguazio.dashboard-controls').component('nclTestEventsNavigationTabs', {
-        bindings: {
-            activeTab: '<',
-            tabItems: '<',
-            selectedLogLevel: '<?',
-            onChangeActiveTab: '&',
-            onChangeLogLevel: '&?'
-        },
-        templateUrl: 'nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-navigation-tabs/test-events-navigation-tabs.tpl.html',
-        controller: NclTestEventsNavigationTabsController
-    });
-
-    function NclTestEventsNavigationTabsController(lodash) {
-        var ctrl = this;
-
-        ctrl.logLevelValues = [{
-            id: 'error',
-            name: 'Error',
-            visible: true
-        }, {
-            id: 'warn',
-            name: 'Warning',
-            visible: true
-        }, {
-            id: 'info',
-            name: 'Info',
-            visible: true
-        }, {
-            id: 'debug',
-            name: 'Debug',
-            visible: true
-        }];
-
-        ctrl.changeActiveTab = changeActiveTab;
-        ctrl.isActiveTab = isActiveTab;
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Changes active nav tab
-         * @param {Object} item - current status
-         */
-        function changeActiveTab(item) {
-            ctrl.activeTab = item;
-
-            ctrl.onChangeActiveTab({ activeTab: item });
-        }
-
-        /**
-         * Checks if it is an active tab
-         * @param {Object} item - current tab
-         */
-        function isActiveTab(item) {
-            return ctrl.activeTab.id === item.id;
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
     NclTestEventsLogsController.$inject = ['lodash'];
     angular.module('iguazio.dashboard-controls').component('nclTestEventsLogs', {
         bindings: {
@@ -7590,6 +7525,71 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
          */
         function hasAdditionalParameters(log) {
             return !lodash.isEmpty(getParameters(log));
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    NclTestEventsNavigationTabsController.$inject = ['lodash'];
+    angular.module('iguazio.dashboard-controls').component('nclTestEventsNavigationTabs', {
+        bindings: {
+            activeTab: '<',
+            tabItems: '<',
+            selectedLogLevel: '<?',
+            onChangeActiveTab: '&',
+            onChangeLogLevel: '&?'
+        },
+        templateUrl: 'nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-navigation-tabs/test-events-navigation-tabs.tpl.html',
+        controller: NclTestEventsNavigationTabsController
+    });
+
+    function NclTestEventsNavigationTabsController(lodash) {
+        var ctrl = this;
+
+        ctrl.logLevelValues = [{
+            id: 'error',
+            name: 'Error',
+            visible: true
+        }, {
+            id: 'warn',
+            name: 'Warning',
+            visible: true
+        }, {
+            id: 'info',
+            name: 'Info',
+            visible: true
+        }, {
+            id: 'debug',
+            name: 'Debug',
+            visible: true
+        }];
+
+        ctrl.changeActiveTab = changeActiveTab;
+        ctrl.isActiveTab = isActiveTab;
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Changes active nav tab
+         * @param {Object} item - current status
+         */
+        function changeActiveTab(item) {
+            ctrl.activeTab = item;
+
+            ctrl.onChangeActiveTab({ activeTab: item });
+        }
+
+        /**
+         * Checks if it is an active tab
+         * @param {Object} item - current tab
+         */
+        function isActiveTab(item) {
+            return ctrl.activeTab.id === item.id;
         }
     }
 })();
@@ -8031,149 +8031,6 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 (function () {
     'use strict';
 
-    NclVersionConfigurationEnvironmentVariablesController.$inject = ['$element', '$rootScope', '$scope', '$timeout', 'lodash', 'PreventDropdownCutOffService'];
-    angular.module('iguazio.dashboard-controls').component('nclVersionConfigurationEnvironmentVariables', {
-        bindings: {
-            version: '<',
-            onChangeCallback: '<'
-        },
-        templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-environment-variables/version-configuration-environment-variables.tpl.html',
-        controller: NclVersionConfigurationEnvironmentVariablesController
-    });
-
-    function NclVersionConfigurationEnvironmentVariablesController($element, $rootScope, $scope, $timeout, lodash, PreventDropdownCutOffService) {
-        var ctrl = this;
-
-        ctrl.scrollConfig = {
-            axis: 'y',
-            advanced: {
-                updateOnContentResize: true
-            }
-        };
-
-        ctrl.$onInit = onInit;
-        ctrl.$postLink = postLink;
-
-        ctrl.addNewVariable = addNewVariable;
-        ctrl.handleAction = handleAction;
-        ctrl.isScrollNeeded = isScrollNeeded;
-        ctrl.onChangeData = onChangeData;
-
-        //
-        // Hook methods
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-            ctrl.variables = lodash.chain(ctrl.version).get('spec.env', []).map(function (variable) {
-                variable.ui = {
-                    editModeActive: false,
-                    isFormValid: true,
-                    name: 'variable'
-                };
-
-                return variable;
-            }).value();
-
-            ctrl.isOnlyValueTypeInputs = !lodash.some(ctrl.variables, 'valueFrom');
-
-            $scope.$on('key-value-type-changed', function (event, isValueType) {
-                if (!isValueType) {
-                    ctrl.isOnlyValueTypeInputs = false;
-                }
-            });
-        }
-
-        /**
-         * Post linking method
-         */
-        function postLink() {
-
-            // Bind DOM-related preventDropdownCutOff method to component's controller
-            PreventDropdownCutOffService.preventDropdownCutOff($element, '.three-dot-menu');
-        }
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Adds new variable
-         */
-        function addNewVariable(event) {
-            $timeout(function () {
-                if (ctrl.variables.length < 1 || lodash.chain(ctrl.variables).last().get('ui.isFormValid', true).value()) {
-                    ctrl.variables.push({
-                        name: '',
-                        value: '',
-                        ui: {
-                            editModeActive: true,
-                            isFormValid: false,
-                            name: 'variable'
-                        }
-                    });
-
-                    $rootScope.$broadcast('change-state-deploy-button', { component: 'variable', isDisabled: true });
-                    event.stopPropagation();
-                }
-            }, 50);
-        }
-
-        /**
-         * Handler on specific action type
-         * @param {string} actionType
-         * @param {number} index - index of variable in array
-         */
-        function handleAction(actionType, index) {
-            if (actionType === 'delete') {
-                ctrl.variables.splice(index, 1);
-
-                updateVariables();
-            }
-        }
-
-        /**
-         * Changes data of specific variable
-         * @param {Object} variable
-         * @param {number} index
-         */
-        function onChangeData(variable, index) {
-            ctrl.variables[index] = variable;
-
-            updateVariables();
-        }
-
-        /**
-         * Returns true if scrollbar is necessary
-         * @returns {boolean}
-         */
-        function isScrollNeeded() {
-            return ctrl.variables.length > 10;
-        }
-
-        /**
-         * Updates function`s variables
-         */
-        function updateVariables() {
-            var variables = lodash.map(ctrl.variables, function (variable) {
-                if (!variable.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', { component: variable.ui.name, isDisabled: true });
-                }
-                return lodash.omit(variable, 'ui');
-            });
-
-            lodash.set(ctrl.version, 'spec.env', variables);
-            ctrl.onChangeCallback();
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
     NclVersionConfigurationDataBindingsController.$inject = ['$rootScope', 'lodash', 'DialogsService'];
     angular.module('iguazio.dashboard-controls').component('nclVersionConfigurationDataBindings', {
         bindings: {
@@ -8403,6 +8260,149 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 (function () {
     'use strict';
 
+    NclVersionConfigurationEnvironmentVariablesController.$inject = ['$element', '$rootScope', '$scope', '$timeout', 'lodash', 'PreventDropdownCutOffService'];
+    angular.module('iguazio.dashboard-controls').component('nclVersionConfigurationEnvironmentVariables', {
+        bindings: {
+            version: '<',
+            onChangeCallback: '<'
+        },
+        templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-environment-variables/version-configuration-environment-variables.tpl.html',
+        controller: NclVersionConfigurationEnvironmentVariablesController
+    });
+
+    function NclVersionConfigurationEnvironmentVariablesController($element, $rootScope, $scope, $timeout, lodash, PreventDropdownCutOffService) {
+        var ctrl = this;
+
+        ctrl.scrollConfig = {
+            axis: 'y',
+            advanced: {
+                updateOnContentResize: true
+            }
+        };
+
+        ctrl.$onInit = onInit;
+        ctrl.$postLink = postLink;
+
+        ctrl.addNewVariable = addNewVariable;
+        ctrl.handleAction = handleAction;
+        ctrl.isScrollNeeded = isScrollNeeded;
+        ctrl.onChangeData = onChangeData;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            ctrl.variables = lodash.chain(ctrl.version).get('spec.env', []).map(function (variable) {
+                variable.ui = {
+                    editModeActive: false,
+                    isFormValid: true,
+                    name: 'variable'
+                };
+
+                return variable;
+            }).value();
+
+            ctrl.isOnlyValueTypeInputs = !lodash.some(ctrl.variables, 'valueFrom');
+
+            $scope.$on('key-value-type-changed', function (event, isValueType) {
+                if (!isValueType) {
+                    ctrl.isOnlyValueTypeInputs = false;
+                }
+            });
+        }
+
+        /**
+         * Post linking method
+         */
+        function postLink() {
+
+            // Bind DOM-related preventDropdownCutOff method to component's controller
+            PreventDropdownCutOffService.preventDropdownCutOff($element, '.three-dot-menu');
+        }
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Adds new variable
+         */
+        function addNewVariable(event) {
+            $timeout(function () {
+                if (ctrl.variables.length < 1 || lodash.chain(ctrl.variables).last().get('ui.isFormValid', true).value()) {
+                    ctrl.variables.push({
+                        name: '',
+                        value: '',
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'variable'
+                        }
+                    });
+
+                    $rootScope.$broadcast('change-state-deploy-button', { component: 'variable', isDisabled: true });
+                    event.stopPropagation();
+                }
+            }, 50);
+        }
+
+        /**
+         * Handler on specific action type
+         * @param {string} actionType
+         * @param {number} index - index of variable in array
+         */
+        function handleAction(actionType, index) {
+            if (actionType === 'delete') {
+                ctrl.variables.splice(index, 1);
+
+                updateVariables();
+            }
+        }
+
+        /**
+         * Changes data of specific variable
+         * @param {Object} variable
+         * @param {number} index
+         */
+        function onChangeData(variable, index) {
+            ctrl.variables[index] = variable;
+
+            updateVariables();
+        }
+
+        /**
+         * Returns true if scrollbar is necessary
+         * @returns {boolean}
+         */
+        function isScrollNeeded() {
+            return ctrl.variables.length > 10;
+        }
+
+        /**
+         * Updates function`s variables
+         */
+        function updateVariables() {
+            var variables = lodash.map(ctrl.variables, function (variable) {
+                if (!variable.ui.isFormValid) {
+                    $rootScope.$broadcast('change-state-deploy-button', { component: variable.ui.name, isDisabled: true });
+                }
+                return lodash.omit(variable, 'ui');
+            });
+
+            lodash.set(ctrl.version, 'spec.env', variables);
+            ctrl.onChangeCallback();
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
     NclVersionConfigurationLabelsController.$inject = ['$element', '$rootScope', '$timeout', 'lodash', 'PreventDropdownCutOffService'];
     angular.module('iguazio.dashboard-controls').component('nclVersionConfigurationLabels', {
         bindings: {
@@ -8593,6 +8593,180 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
          */
         function setPriority(item) {
             lodash.set(ctrl.version, 'spec.loggerSinks[0].level', item.type);
+            ctrl.onChangeCallback();
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    NclVersionConfigurationRuntimeAttributesController.$inject = ['$element', '$rootScope', '$timeout', 'lodash', 'PreventDropdownCutOffService'];
+    angular.module('iguazio.dashboard-controls').component('nclVersionConfigurationRuntimeAttributes', {
+        bindings: {
+            version: '<',
+            onChangeCallback: '<'
+        },
+        templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-runtime-attributes/version-configuration-runtime-attributes.tpl.html',
+        controller: NclVersionConfigurationRuntimeAttributesController
+    });
+
+    function NclVersionConfigurationRuntimeAttributesController($element, $rootScope, $timeout, lodash, PreventDropdownCutOffService) {
+        var ctrl = this;
+
+        ctrl.scrollConfig = {
+            axis: 'y',
+            advanced: {
+                updateOnContentResize: true
+            }
+        };
+
+        ctrl.$onInit = onInit;
+        ctrl.$postLink = postLink;
+
+        ctrl.inputValueCallback = inputValueCallback;
+        ctrl.addNewAttribute = addNewAttribute;
+        ctrl.handleAction = handleAction;
+        ctrl.isScrollNeeded = isScrollNeeded;
+        ctrl.onChangeData = onChangeData;
+
+        ctrl.runtimeAttributes = {};
+
+        //
+        // Hook method
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+
+            // Set attributes from ctrl.version to local ctrl.runtimeAttributes.
+            // The attributes stored in arrays are converted to a string by using `join('\n')` method
+            lodash.assign(ctrl.runtimeAttributes, {
+                jvmOptions: lodash.get(ctrl.version, 'spec.runtimeAttributes.jvmOptions', []).join('\n'),
+                arguments: lodash.get(ctrl.version, 'spec.runtimeAttributes.arguments', '')
+            });
+
+            // Set attributes stored in key-value inputs
+            var attributes = lodash.get(ctrl.version, 'spec.runtimeAttributes.responseHeaders', []);
+            ctrl.attributes = lodash.chain(attributes).map(function (value, key) {
+                return {
+                    name: key,
+                    value: value,
+                    ui: {
+                        editModeActive: false,
+                        isFormValid: true,
+                        name: 'attribute'
+                    }
+                };
+            }).value();
+            ctrl.attributes = lodash.compact(ctrl.attributes);
+        }
+
+        /**
+         * Post linking method
+         */
+        function postLink() {
+
+            // Bind DOM-related preventDropdownCutOff method to component's controller
+            PreventDropdownCutOffService.preventDropdownCutOff($element, '.three-dot-menu');
+        }
+
+        //
+        // Public method
+        //
+
+        /**
+         * Update spec.runtimeAttributes value
+         * @param {string} newData
+         * @param {string} field
+         */
+        function inputValueCallback(newData, field) {
+            if (field === 'jvmOptions') {
+                ctrl.runtimeAttributes.jvmOptions = newData;
+                lodash.set(ctrl.version, 'spec.runtimeAttributes.jvmOptions', newData.replace(/\r/g, '\n').split(/\n+/));
+            } else {
+                lodash.set(ctrl.version, 'spec.runtimeAttributes.' + field, newData);
+            }
+
+            ctrl.onChangeCallback();
+        }
+
+        /**
+         * Adds new Attribute
+         */
+        function addNewAttribute(event) {
+            $timeout(function () {
+                if (ctrl.attributes.length < 1 || lodash.last(ctrl.attributes).ui.isFormValid) {
+                    ctrl.attributes.push({
+                        name: '',
+                        value: '',
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'attribute'
+                        }
+                    });
+
+                    $rootScope.$broadcast('change-state-deploy-button', { component: 'attribute', isDisabled: true });
+                    event.stopPropagation();
+                }
+            }, 50);
+        }
+
+        /**
+         * Handler on specific action type
+         * @param {string} actionType
+         * @param {number} index - index of label in array
+         */
+        function handleAction(actionType, index) {
+            if (actionType === 'delete') {
+                ctrl.attributes.splice(index, 1);
+
+                updateAttributes();
+            }
+        }
+
+        /**
+         * Changes labels data
+         * @param {Object} attribute
+         * @param {number} index
+         */
+        function onChangeData(attribute, index) {
+            ctrl.attributes[index] = attribute;
+
+            updateAttributes();
+        }
+
+        /**
+         * Returns true if scrollbar is necessary
+         * @returns {boolean}
+         */
+        function isScrollNeeded() {
+            return ctrl.attributes.length > 10;
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Updates function`s labels
+         */
+        function updateAttributes() {
+            var newAttributes = {};
+
+            lodash.forEach(ctrl.attributes, function (attribute) {
+                if (!attribute.ui.isFormValid) {
+                    $rootScope.$broadcast('change-state-deploy-button', { component: attribute.ui.name, isDisabled: true });
+                }
+                newAttributes[attribute.name] = attribute.value;
+            });
+
+            lodash.set(ctrl.version, 'spec.runtimeAttributes.responseHeaders', newAttributes);
+
             ctrl.onChangeCallback();
         }
     }
@@ -8862,180 +9036,6 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
                 stepsArray.push(value <= limits.thirdLimit.limit ? value : value / 1024);
             }
             return stepsArray;
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
-    NclVersionConfigurationRuntimeAttributesController.$inject = ['$element', '$rootScope', '$timeout', 'lodash', 'PreventDropdownCutOffService'];
-    angular.module('iguazio.dashboard-controls').component('nclVersionConfigurationRuntimeAttributes', {
-        bindings: {
-            version: '<',
-            onChangeCallback: '<'
-        },
-        templateUrl: 'nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-runtime-attributes/version-configuration-runtime-attributes.tpl.html',
-        controller: NclVersionConfigurationRuntimeAttributesController
-    });
-
-    function NclVersionConfigurationRuntimeAttributesController($element, $rootScope, $timeout, lodash, PreventDropdownCutOffService) {
-        var ctrl = this;
-
-        ctrl.scrollConfig = {
-            axis: 'y',
-            advanced: {
-                updateOnContentResize: true
-            }
-        };
-
-        ctrl.$onInit = onInit;
-        ctrl.$postLink = postLink;
-
-        ctrl.inputValueCallback = inputValueCallback;
-        ctrl.addNewAttribute = addNewAttribute;
-        ctrl.handleAction = handleAction;
-        ctrl.isScrollNeeded = isScrollNeeded;
-        ctrl.onChangeData = onChangeData;
-
-        ctrl.runtimeAttributes = {};
-
-        //
-        // Hook method
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-
-            // Set attributes from ctrl.version to local ctrl.runtimeAttributes.
-            // The attributes stored in arrays are converted to a string by using `join('\n')` method
-            lodash.assign(ctrl.runtimeAttributes, {
-                jvmOptions: lodash.get(ctrl.version, 'spec.runtimeAttributes.jvmOptions', []).join('\n'),
-                arguments: lodash.get(ctrl.version, 'spec.runtimeAttributes.arguments', '')
-            });
-
-            // Set attributes stored in key-value inputs
-            var attributes = lodash.get(ctrl.version, 'spec.runtimeAttributes.responseHeaders', []);
-            ctrl.attributes = lodash.chain(attributes).map(function (value, key) {
-                return {
-                    name: key,
-                    value: value,
-                    ui: {
-                        editModeActive: false,
-                        isFormValid: true,
-                        name: 'attribute'
-                    }
-                };
-            }).value();
-            ctrl.attributes = lodash.compact(ctrl.attributes);
-        }
-
-        /**
-         * Post linking method
-         */
-        function postLink() {
-
-            // Bind DOM-related preventDropdownCutOff method to component's controller
-            PreventDropdownCutOffService.preventDropdownCutOff($element, '.three-dot-menu');
-        }
-
-        //
-        // Public method
-        //
-
-        /**
-         * Update spec.runtimeAttributes value
-         * @param {string} newData
-         * @param {string} field
-         */
-        function inputValueCallback(newData, field) {
-            if (field === 'jvmOptions') {
-                ctrl.runtimeAttributes.jvmOptions = newData;
-                lodash.set(ctrl.version, 'spec.runtimeAttributes.jvmOptions', newData.replace(/\r/g, '\n').split(/\n+/));
-            } else {
-                lodash.set(ctrl.version, 'spec.runtimeAttributes.' + field, newData);
-            }
-
-            ctrl.onChangeCallback();
-        }
-
-        /**
-         * Adds new Attribute
-         */
-        function addNewAttribute(event) {
-            $timeout(function () {
-                if (ctrl.attributes.length < 1 || lodash.last(ctrl.attributes).ui.isFormValid) {
-                    ctrl.attributes.push({
-                        name: '',
-                        value: '',
-                        ui: {
-                            editModeActive: true,
-                            isFormValid: false,
-                            name: 'attribute'
-                        }
-                    });
-
-                    $rootScope.$broadcast('change-state-deploy-button', { component: 'attribute', isDisabled: true });
-                    event.stopPropagation();
-                }
-            }, 50);
-        }
-
-        /**
-         * Handler on specific action type
-         * @param {string} actionType
-         * @param {number} index - index of label in array
-         */
-        function handleAction(actionType, index) {
-            if (actionType === 'delete') {
-                ctrl.attributes.splice(index, 1);
-
-                updateAttributes();
-            }
-        }
-
-        /**
-         * Changes labels data
-         * @param {Object} attribute
-         * @param {number} index
-         */
-        function onChangeData(attribute, index) {
-            ctrl.attributes[index] = attribute;
-
-            updateAttributes();
-        }
-
-        /**
-         * Returns true if scrollbar is necessary
-         * @returns {boolean}
-         */
-        function isScrollNeeded() {
-            return ctrl.attributes.length > 10;
-        }
-
-        //
-        // Private methods
-        //
-
-        /**
-         * Updates function`s labels
-         */
-        function updateAttributes() {
-            var newAttributes = {};
-
-            lodash.forEach(ctrl.attributes, function (attribute) {
-                if (!attribute.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', { component: attribute.ui.name, isDisabled: true });
-                }
-                newAttributes[attribute.name] = attribute.value;
-            });
-
-            lodash.set(ctrl.version, 'spec.runtimeAttributes.responseHeaders', newAttributes);
-
-            ctrl.onChangeCallback();
         }
     }
 })();
@@ -9705,6 +9705,7 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
     function ExportService($q, $timeout, DialogsService, lodash, YAML) {
         return {
             exportFunction: exportFunction,
+            getFunctionConfig: getFunctionConfig,
             exportProject: exportProject,
             exportProjects: exportProjects
         };
@@ -9718,14 +9719,21 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
          * @param {Object} version
          */
         function exportFunction(version) {
-            var functionToExport = {
-                metadata: lodash.omit(version.metadata, 'namespace'),
-                spec: lodash.omit(version.spec, ['build.noBaseImagesPull', 'loggerSinks'])
-            };
-
+            var functionToExport = prepareFunctionData(version);
             var blob = prepareBlobObject(functionToExport);
 
             downloadExportedFunction(blob, version.metadata.name);
+        }
+
+        /**
+         * Returns function config
+         * @param {Object} version
+         * @returns {string} YAML object
+         */
+        function getFunctionConfig(version) {
+            var functionConfig = prepareFunctionData(version);
+
+            return prepareYamlObject(functionConfig);
         }
 
         /**
@@ -9853,14 +9861,34 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
         }
 
         /**
+         * Prepare function data
+         * @param {Object} version
+         * @returns {Object} data for export
+         */
+        function prepareFunctionData(version) {
+            return {
+                metadata: lodash.omit(version.metadata, 'namespace'),
+                spec: lodash.omit(version.spec, ['build.noBaseImagesPull', 'loggerSinks'])
+            };
+        }
+
+        /**
+         * Prepare YAML object
+         * @param {Object} objectToParse
+         * @returns {string} YAML object
+         */
+        function prepareYamlObject(objectToParse) {
+            var parsedObject = YAML.stringify(objectToParse, Infinity, 2);
+
+            return getValidYaml(parsedObject);
+        }
+        /**
          * Prepare blob object for downloading
          * @param {Object} objectToParse
          * @returns {Blob} Blob object
          */
         function prepareBlobObject(objectToParse) {
-            var parsedObject = YAML.stringify(objectToParse, Infinity, 2);
-
-            parsedObject = getValidYaml(parsedObject);
+            var parsedObject = prepareYamlObject(objectToParse);
 
             return new Blob([parsedObject], {
                 type: 'application/json'
@@ -9992,112 +10020,6 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 (function () {
     'use strict';
 
-    IgzEditProjectDialogController.$inject = ['$scope', 'lodash', 'DialogsService', 'EventHelperService', 'FormValidationService'];
-    angular.module('iguazio.dashboard-controls').component('nclEditProjectDialog', {
-        bindings: {
-            project: '<',
-            confirm: '&',
-            closeDialog: '&',
-            updateProjectCallback: '&'
-        },
-        templateUrl: 'nuclio/projects/edit-project-dialog/edit-project-dialog.tpl.html',
-        controller: IgzEditProjectDialogController
-    });
-
-    function IgzEditProjectDialogController($scope, lodash, DialogsService, EventHelperService, FormValidationService) {
-        var ctrl = this;
-
-        ctrl.data = {};
-        ctrl.isLoadingState = false;
-        ctrl.nameTakenError = false;
-        ctrl.serverError = '';
-        ctrl.nameValidationPattern = /^.{1,128}$/;
-
-        ctrl.$onInit = onInit;
-
-        ctrl.isShowFieldError = FormValidationService.isShowFieldError;
-        ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
-
-        ctrl.inputValueCallback = inputValueCallback;
-        ctrl.isServerError = isServerError;
-        ctrl.onClose = onClose;
-        ctrl.saveProject = saveProject;
-
-        //
-        // Hook method
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-            ctrl.data = lodash.cloneDeep(ctrl.project);
-        }
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Handle click on `Apply changes` button or press `Enter`
-         * @param {Event} [event]
-         */
-        function saveProject(event) {
-            if (angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) {
-                $scope.editProjectForm.$submitted = true;
-
-                if ($scope.editProjectForm.$valid) {
-                    ctrl.isLoadingState = true;
-
-                    // use data from dialog to create a new project
-                    ctrl.updateProjectCallback({ project: lodash.omit(ctrl.data, 'ui') }).then(function () {
-                        ctrl.confirm();
-                    }).catch(function (error) {
-                        var status = lodash.get(error, 'status');
-
-                        ctrl.serverError = status === 400 ? 'Missing mandatory fields' : status === 403 ? 'You do not have permissions to update project' : status === 405 ? 'Failed to create a project' : lodash.inRange(status, 500, 599) ? 'Server error' : 'Unknown error occurred. Retry later';
-
-                        DialogsService.alert(ctrl.serverError);
-                    }).finally(function () {
-                        ctrl.isLoadingState = false;
-                    });
-                }
-            }
-        }
-
-        /**
-         * Sets new data from input field for corresponding field of current project
-         * @param {string} newData - new string value which should be set
-         * @param {string} field - field name, ex. `name`, `description`
-         */
-        function inputValueCallback(newData, field) {
-            lodash.set(ctrl.data, field, newData);
-        }
-
-        /**
-         * Checks if server error is present or not
-         * @returns {boolean}
-         */
-        function isServerError() {
-            return ctrl.serverError !== '';
-        }
-
-        /**
-         * Closes dialog
-         * @param {Event} [event]
-         */
-        function onClose(event) {
-            if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) && !ctrl.isLoadingState) {
-                ctrl.closeDialog();
-            }
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
     IgzNewProjectDialogController.$inject = ['$scope', 'lodash', 'moment', 'ConfigService', 'DialogsService', 'EventHelperService', 'FormValidationService'];
     angular.module('iguazio.dashboard-controls').component('nclNewProjectDialog', {
         bindings: {
@@ -10221,6 +10143,112 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
                     description: ''
                 }
             };
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    IgzEditProjectDialogController.$inject = ['$scope', 'lodash', 'DialogsService', 'EventHelperService', 'FormValidationService'];
+    angular.module('iguazio.dashboard-controls').component('nclEditProjectDialog', {
+        bindings: {
+            project: '<',
+            confirm: '&',
+            closeDialog: '&',
+            updateProjectCallback: '&'
+        },
+        templateUrl: 'nuclio/projects/edit-project-dialog/edit-project-dialog.tpl.html',
+        controller: IgzEditProjectDialogController
+    });
+
+    function IgzEditProjectDialogController($scope, lodash, DialogsService, EventHelperService, FormValidationService) {
+        var ctrl = this;
+
+        ctrl.data = {};
+        ctrl.isLoadingState = false;
+        ctrl.nameTakenError = false;
+        ctrl.serverError = '';
+        ctrl.nameValidationPattern = /^.{1,128}$/;
+
+        ctrl.$onInit = onInit;
+
+        ctrl.isShowFieldError = FormValidationService.isShowFieldError;
+        ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
+
+        ctrl.inputValueCallback = inputValueCallback;
+        ctrl.isServerError = isServerError;
+        ctrl.onClose = onClose;
+        ctrl.saveProject = saveProject;
+
+        //
+        // Hook method
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            ctrl.data = lodash.cloneDeep(ctrl.project);
+        }
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Handle click on `Apply changes` button or press `Enter`
+         * @param {Event} [event]
+         */
+        function saveProject(event) {
+            if (angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) {
+                $scope.editProjectForm.$submitted = true;
+
+                if ($scope.editProjectForm.$valid) {
+                    ctrl.isLoadingState = true;
+
+                    // use data from dialog to create a new project
+                    ctrl.updateProjectCallback({ project: lodash.omit(ctrl.data, 'ui') }).then(function () {
+                        ctrl.confirm();
+                    }).catch(function (error) {
+                        var status = lodash.get(error, 'status');
+
+                        ctrl.serverError = status === 400 ? 'Missing mandatory fields' : status === 403 ? 'You do not have permissions to update project' : status === 405 ? 'Failed to create a project' : lodash.inRange(status, 500, 599) ? 'Server error' : 'Unknown error occurred. Retry later';
+
+                        DialogsService.alert(ctrl.serverError);
+                    }).finally(function () {
+                        ctrl.isLoadingState = false;
+                    });
+                }
+            }
+        }
+
+        /**
+         * Sets new data from input field for corresponding field of current project
+         * @param {string} newData - new string value which should be set
+         * @param {string} field - field name, ex. `name`, `description`
+         */
+        function inputValueCallback(newData, field) {
+            lodash.set(ctrl.data, field, newData);
+        }
+
+        /**
+         * Checks if server error is present or not
+         * @returns {boolean}
+         */
+        function isServerError() {
+            return ctrl.serverError !== '';
+        }
+
+        /**
+         * Closes dialog
+         * @param {Event} [event]
+         */
+        function onClose(event) {
+            if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) && !ctrl.isLoadingState) {
+                ctrl.closeDialog();
+            }
         }
     }
 })();
@@ -10464,6 +10492,141 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
             });
         }
     }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    require.config({ paths: { 'vs': '/assets/monaco-editor/min/vs' } });
+
+    angular.module('iguazio.dashboard-controls').directive('igzMonacoEditor', ['$interval', function ($interval) {
+        function link(scope, element, attrs) {
+            var editorElement = element[0];
+            var interval = null;
+            require(['vs/editor/editor.main'], function () {
+                var editorContext = {
+                    scope: scope,
+                    element: element,
+                    attrs: attrs,
+                    getValueOrDefault: function getValueOrDefault(value, defaultValue) {
+                        if (angular.isUndefined(value) || value === null) {
+                            return defaultValue;
+                        } else {
+                            return value;
+                        }
+                    },
+                    onThemeChanged: function onThemeChanged(newValue, oldValue) {
+                        window.monaco.editor.setTheme(this.getValueOrDefault(newValue, 'vs-dark'));
+                    },
+                    onFileLanguageChanged: function onFileLanguageChanged(newValue) {
+
+                        // update the language model (and set `insertSpaces`)
+                        var newModel = window.monaco.editor.createModel('', newValue.language);
+                        newModel.updateOptions({ insertSpaces: this.getValueOrDefault(newValue.useSpaces, true) });
+                        this.editor.setModel(newModel);
+
+                        // update the code
+                        this.editor.setValue(scope.codeFile.code);
+                    },
+                    onCodeFileChanged: function onCodeFileChanged() {
+                        this.editor.setValue(scope.codeFile.code);
+                    },
+                    onWrapStateChanged: function onWrapStateChanged(newState) {
+                        this.editor.updateOptions({ wordWrap: newState ? 'on' : 'off' });
+                    },
+                    onFontSizeChanged: function onFontSizeChanged(newFontSize) {
+                        this.editor.updateOptions({ fontSize: newFontSize });
+                    }
+                };
+
+                editorContext.editor = window.monaco.editor.defineTheme('custom-vs', {
+                    base: 'vs',
+                    inherit: true,
+                    rules: [{ token: '', foreground: '474056', background: 'ffffff' }, { token: 'number', foreground: '474056' }, { token: 'delimiter', foreground: '474056' }, { token: 'string', foreground: '21d4ac' }],
+                    colors: {
+                        'editor.foreground': '#474056',
+                        'editor.background': '#ffffff',
+                        'editorLineNumber.foreground': '#474056',
+                        'editorGutter.background': '#e1e0e5',
+                        'textBlockQuote.border': '#ffffff',
+                        'editorCursor.foreground': '#8B0000',
+                        'editor.lineHighlightBackground': '#e1e0e5',
+                        'editorMarkerNavigation.background': '#000000',
+                        'editor.selectionBackground': '#239bca',
+                        'editorIndentGuide.background': '#e1e0e5'
+                    }
+                });
+
+                editorContext.editor = window.monaco.editor.create(editorElement, {
+                    value: scope.codeFile.code,
+                    language: scope.fileLanguage.language,
+                    theme: 'vs',
+                    automaticLayout: true,
+                    dragAndDrop: true,
+                    lineNumbersMinChars: scope.miniMonaco ? 2 : 5,
+                    lineNumbers: scope.miniMonaco && !scope.showLineNumbers ? 'off' : 'on', // hide line number if it's a mini-monaco
+                    minimap: {
+                        enabled: !scope.miniMonaco // hide mini-map if it's a mini-monaco
+                    },
+                    readOnly: scope.readOnly,
+                    wordWrap: scope.wordWrap ? 'on' : 'off'
+                });
+
+                // change content callback
+                editorContext.editor.onDidChangeModelContent(function () {
+
+                    // call callback from upper scope (monaco component) with new changed code
+                    scope.onCodeChange(editorContext.editor.getValue());
+                });
+
+                // set up watch for codeFile changes to reflect updates
+                scope.$watch('fileLanguage', editorContext.onFileLanguageChanged.bind(editorContext));
+                scope.$watch('editorTheme', editorContext.onThemeChanged.bind(editorContext));
+                scope.$watch('wordWrap', editorContext.onWrapStateChanged.bind(editorContext));
+                scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
+                scope.$watch('fontSize', editorContext.onFontSizeChanged.bind(editorContext));
+
+                scope.$on('function-import-source-code', editorContext.onCodeFileChanged.bind(editorContext));
+
+                scope.$on('$destroy', function () {
+                    if (interval !== null) {
+                        $interval.cancel(interval);
+                        interval = null;
+                    }
+                });
+            });
+        }
+
+        return {
+            link: link,
+            scope: {
+                codeFile: '=codeFile',
+                editorTheme: '=editorTheme',
+                fontSize: '=fontSize',
+                fileLanguage: '=fileLanguage',
+                miniMonaco: '=miniMonaco',
+                showLineNumbers: '=showLineNumbers',
+                onCodeChange: '=onCodeChange',
+                readOnly: '=readOnly',
+                wordWrap: '=wordWrap'
+            }
+        };
+    }]);
+
+    require(['vs/editor/editor.main'], function () {
+        window.monaco.languages.registerCompletionItemProvider('python', {
+            provideCompletionItems: function provideCompletionItems() {
+                return [{
+                    label: 'def',
+                    kind: window.monaco.languages.CompletionItemKind.Keyword,
+                    insertText: {
+                        value: 'def ${1:name}():\r\t$0'
+                    }
+                }];
+            }
+        });
+    });
 })();
 'use strict';
 
@@ -11006,6 +11169,7 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
         ctrl.onSelectClass = onSelectClass;
         ctrl.onSelectDropdownValue = onSelectDropdownValue;
         ctrl.numberInputCallback = numberInputCallback;
+        ctrl.getPlaceholderText = getPlaceholderText;
 
         //
         // Hook methods
@@ -11852,6 +12016,18 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
             lodash.set(ctrl.item, 'attributes.brokers', newBrokers);
         }
 
+        /**
+         * Return placeholder text for input
+         * @param {string} attributeName
+         */
+        function getPlaceholderText(attributeName) {
+            if (attributeName === 'interval') {
+                return 'E.g. 1h, 30m, 10s, 250ms';
+            }
+
+            return 'Type ' + ctrl.convertFromCamelCase(attributeName).toLowerCase() + '...';
+        }
+
         //
         // Private methods
         //
@@ -11901,6 +12077,71 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
          */
         function isv3ioTrigger() {
             return ctrl.selectedClass.id === 'v3ioStream';
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    NclFunctionConfigDialogController.$inject = ['DialogsService', 'ExportService'];
+    angular.module('iguazio.dashboard-controls').component('nclFunctionConfigDialog', {
+        bindings: {
+            closeDialog: '&',
+            function: '<'
+        },
+        templateUrl: 'nuclio/common/components/function-config-dialog/function-config-dialog.tpl.html',
+        controller: NclFunctionConfigDialogController
+    });
+
+    function NclFunctionConfigDialogController(DialogsService, ExportService) {
+        var ctrl = this;
+
+        ctrl.editorTheme = {
+            id: 'vs',
+            name: 'Light',
+            visible: true
+        };
+
+        ctrl.$onInit = onInit;
+        ctrl.copyToClipboard = copyToClipboard;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            ctrl.title = ctrl.function.metadata.name + ' - configuration';
+            ctrl.sourceCode = ExportService.getFunctionConfig(ctrl.function);
+        }
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Copies a string to the clipboard. Must be called from within an event handler such as click
+         */
+        function copyToClipboard() {
+            if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
+                var textarea = document.createElement('textarea');
+                textarea.textContent = ctrl.sourceCode;
+                textarea.style.position = 'fixed';
+                document.body.appendChild(textarea);
+                textarea.select();
+
+                try {
+                    return document.execCommand('copy'); // Security exception may be thrown by some browsers.
+                } catch (ex) {
+                    DialogsService.alert('Copy to clipboard failed.', ex);
+                } finally {
+                    document.body.removeChild(textarea);
+                }
+            }
         }
     }
 })();
@@ -12247,6 +12488,105 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 (function () {
     'use strict';
 
+    NclMonacoController.$inject = ['$scope', 'lodash'];
+    angular.module('iguazio.dashboard-controls').component('nclMonaco', {
+        bindings: {
+            language: '<',
+            functionSourceCode: '<',
+            onChangeSourceCodeCallback: '&',
+            selectedTheme: '<',
+            miniMonaco: '<?',
+            noTopPadding: '<?',
+            showLineNumbers: '<?',
+            showTextSizeDropdown: '<?',
+            readOnly: '<?',
+            wordWrap: '<?',
+            name: '@?'
+        },
+        templateUrl: 'nuclio/common/components/monaco/monaco.tpl.html',
+        controller: NclMonacoController
+    });
+
+    function NclMonacoController($scope, lodash) {
+        var ctrl = this;
+
+        ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
+
+        ctrl.onCodeChange = onCodeChange;
+        ctrl.onTextSizeChange = onTextSizeChange;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            ctrl.noTopPadding = lodash.defaultTo(ctrl.noTopPadding, ctrl.showTextSizeDropdown);
+
+            $scope.selectedCodeFile = {
+                code: ctrl.functionSourceCode
+            };
+
+            $scope.selectedFileLanguage = {
+                language: ctrl.language
+            };
+        }
+
+        /**
+         * On changes method
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.language) && !changes.language.isFirstChange()) {
+                $scope.selectedCodeFile = {
+                    code: $scope.selectedCodeFile.code
+                };
+
+                $scope.selectedFileLanguage = {
+                    language: changes.language.currentValue
+                };
+            }
+
+            if (angular.isDefined(changes.functionSourceCode) && !changes.functionSourceCode.isFirstChange()) {
+                $scope.selectedCodeFile = {
+                    code: changes.functionSourceCode.currentValue
+                };
+            }
+        }
+
+        /**
+         * On code change callback.
+         * igz-monaco-editor directive calls this callback with new changed content
+         * @param {string} newCode - changed code
+         */
+        function onCodeChange(newCode) {
+            if (angular.isFunction(ctrl.onChangeSourceCodeCallback)) {
+                ctrl.onChangeSourceCodeCallback({
+                    sourceCode: newCode,
+                    language: $scope.selectedCodeFile.language
+                });
+            }
+        }
+
+        /**
+         * On text size dropdown change
+         * @param {string} newTextSize
+         */
+        function onTextSizeChange(newTextSize) {
+            if (!lodash.isNil(newTextSize)) {
+                ctrl.selectedTextSize = newTextSize;
+            }
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
     NclNavigationTabsController.$inject = ['$rootScope', '$state', '$timeout', 'lodash'];
     angular.module('iguazio.dashboard-controls').component('nclNavigationTabs', {
         bindings: {
@@ -12502,105 +12842,6 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 (function () {
     'use strict';
 
-    NclMonacoController.$inject = ['$scope', 'lodash'];
-    angular.module('iguazio.dashboard-controls').component('nclMonaco', {
-        bindings: {
-            language: '<',
-            functionSourceCode: '<',
-            onChangeSourceCodeCallback: '&',
-            selectedTheme: '<',
-            miniMonaco: '<?',
-            noTopPadding: '<?',
-            showLineNumbers: '<?',
-            showTextSizeDropdown: '<?',
-            readOnly: '<?',
-            wordWrap: '<?',
-            name: '@?'
-        },
-        templateUrl: 'nuclio/common/components/monaco/monaco.tpl.html',
-        controller: NclMonacoController
-    });
-
-    function NclMonacoController($scope, lodash) {
-        var ctrl = this;
-
-        ctrl.$onInit = onInit;
-        ctrl.$onChanges = onChanges;
-
-        ctrl.onCodeChange = onCodeChange;
-        ctrl.onTextSizeChange = onTextSizeChange;
-
-        //
-        // Hook methods
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-            ctrl.noTopPadding = lodash.defaultTo(ctrl.noTopPadding, ctrl.showTextSizeDropdown);
-
-            $scope.selectedCodeFile = {
-                code: ctrl.functionSourceCode
-            };
-
-            $scope.selectedFileLanguage = {
-                language: ctrl.language
-            };
-        }
-
-        /**
-         * On changes method
-         * @param {Object} changes
-         */
-        function onChanges(changes) {
-            if (angular.isDefined(changes.language) && !changes.language.isFirstChange()) {
-                $scope.selectedCodeFile = {
-                    code: $scope.selectedCodeFile.code
-                };
-
-                $scope.selectedFileLanguage = {
-                    language: changes.language.currentValue
-                };
-            }
-
-            if (angular.isDefined(changes.functionSourceCode) && !changes.functionSourceCode.isFirstChange()) {
-                $scope.selectedCodeFile = {
-                    code: changes.functionSourceCode.currentValue
-                };
-            }
-        }
-
-        /**
-         * On code change callback.
-         * igz-monaco-editor directive calls this callback with new changed content
-         * @param {string} newCode - changed code
-         */
-        function onCodeChange(newCode) {
-            if (angular.isFunction(ctrl.onChangeSourceCodeCallback)) {
-                ctrl.onChangeSourceCodeCallback({
-                    sourceCode: newCode,
-                    language: $scope.selectedCodeFile.language
-                });
-            }
-        }
-
-        /**
-         * On text size dropdown change
-         * @param {string} newTextSize
-         */
-        function onTextSizeChange(newTextSize) {
-            if (!lodash.isNil(newTextSize)) {
-                ctrl.selectedTextSize = newTextSize;
-            }
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
     SearchInputController.$inject = ['$scope', '$timeout'];
     angular.module('iguazio.dashboard-controls').component('nclSearchInput', {
         bindings: {
@@ -12694,141 +12935,6 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
             $timeout(makeSearch);
         }
     }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
-    require.config({ paths: { 'vs': '/assets/monaco-editor/min/vs' } });
-
-    angular.module('iguazio.dashboard-controls').directive('igzMonacoEditor', ['$interval', function ($interval) {
-        function link(scope, element, attrs) {
-            var editorElement = element[0];
-            var interval = null;
-            require(['vs/editor/editor.main'], function () {
-                var editorContext = {
-                    scope: scope,
-                    element: element,
-                    attrs: attrs,
-                    getValueOrDefault: function getValueOrDefault(value, defaultValue) {
-                        if (angular.isUndefined(value) || value === null) {
-                            return defaultValue;
-                        } else {
-                            return value;
-                        }
-                    },
-                    onThemeChanged: function onThemeChanged(newValue, oldValue) {
-                        window.monaco.editor.setTheme(this.getValueOrDefault(newValue, 'vs-dark'));
-                    },
-                    onFileLanguageChanged: function onFileLanguageChanged(newValue) {
-
-                        // update the language model (and set `insertSpaces`)
-                        var newModel = window.monaco.editor.createModel('', newValue.language);
-                        newModel.updateOptions({ insertSpaces: this.getValueOrDefault(newValue.useSpaces, true) });
-                        this.editor.setModel(newModel);
-
-                        // update the code
-                        this.editor.setValue(scope.codeFile.code);
-                    },
-                    onCodeFileChanged: function onCodeFileChanged() {
-                        this.editor.setValue(scope.codeFile.code);
-                    },
-                    onWrapStateChanged: function onWrapStateChanged(newState) {
-                        this.editor.updateOptions({ wordWrap: newState ? 'on' : 'off' });
-                    },
-                    onFontSizeChanged: function onFontSizeChanged(newFontSize) {
-                        this.editor.updateOptions({ fontSize: newFontSize });
-                    }
-                };
-
-                editorContext.editor = window.monaco.editor.defineTheme('custom-vs', {
-                    base: 'vs',
-                    inherit: true,
-                    rules: [{ token: '', foreground: '474056', background: 'ffffff' }, { token: 'number', foreground: '474056' }, { token: 'delimiter', foreground: '474056' }, { token: 'string', foreground: '21d4ac' }],
-                    colors: {
-                        'editor.foreground': '#474056',
-                        'editor.background': '#ffffff',
-                        'editorLineNumber.foreground': '#474056',
-                        'editorGutter.background': '#e1e0e5',
-                        'textBlockQuote.border': '#ffffff',
-                        'editorCursor.foreground': '#8B0000',
-                        'editor.lineHighlightBackground': '#e1e0e5',
-                        'editorMarkerNavigation.background': '#000000',
-                        'editor.selectionBackground': '#239bca',
-                        'editorIndentGuide.background': '#e1e0e5'
-                    }
-                });
-
-                editorContext.editor = window.monaco.editor.create(editorElement, {
-                    value: scope.codeFile.code,
-                    language: scope.fileLanguage.language,
-                    theme: 'vs',
-                    automaticLayout: true,
-                    dragAndDrop: true,
-                    lineNumbersMinChars: scope.miniMonaco ? 2 : 5,
-                    lineNumbers: scope.miniMonaco && !scope.showLineNumbers ? 'off' : 'on', // hide line number if it's a mini-monaco
-                    minimap: {
-                        enabled: !scope.miniMonaco // hide mini-map if it's a mini-monaco
-                    },
-                    readOnly: scope.readOnly,
-                    wordWrap: scope.wordWrap ? 'on' : 'off'
-                });
-
-                // change content callback
-                editorContext.editor.onDidChangeModelContent(function () {
-
-                    // call callback from upper scope (monaco component) with new changed code
-                    scope.onCodeChange(editorContext.editor.getValue());
-                });
-
-                // set up watch for codeFile changes to reflect updates
-                scope.$watch('fileLanguage', editorContext.onFileLanguageChanged.bind(editorContext));
-                scope.$watch('editorTheme', editorContext.onThemeChanged.bind(editorContext));
-                scope.$watch('wordWrap', editorContext.onWrapStateChanged.bind(editorContext));
-                scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
-                scope.$watch('fontSize', editorContext.onFontSizeChanged.bind(editorContext));
-
-                scope.$on('function-import-source-code', editorContext.onCodeFileChanged.bind(editorContext));
-
-                scope.$on('$destroy', function () {
-                    if (interval !== null) {
-                        $interval.cancel(interval);
-                        interval = null;
-                    }
-                });
-            });
-        }
-
-        return {
-            link: link,
-            scope: {
-                codeFile: '=codeFile',
-                editorTheme: '=editorTheme',
-                fontSize: '=fontSize',
-                fileLanguage: '=fileLanguage',
-                miniMonaco: '=miniMonaco',
-                showLineNumbers: '=showLineNumbers',
-                onCodeChange: '=onCodeChange',
-                readOnly: '=readOnly',
-                wordWrap: '=wordWrap'
-            }
-        };
-    }]);
-
-    require(['vs/editor/editor.main'], function () {
-        window.monaco.languages.registerCompletionItemProvider('python', {
-            provideCompletionItems: function provideCompletionItems() {
-                return [{
-                    label: 'def',
-                    kind: window.monaco.languages.CompletionItemKind.Keyword,
-                    insertText: {
-                        value: 'def ${1:name}():\r\t$0'
-                    }
-                }];
-            }
-        });
-    });
 })();
 'use strict';
 
@@ -14225,199 +14331,6 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 (function () {
     'use strict';
 
-    FunctionImportController.$inject = ['$rootScope', '$scope', '$state', 'lodash', 'YAML'];
-    angular.module('iguazio.dashboard-controls').component('nclFunctionImport', {
-        bindings: {
-            project: '<',
-            projects: '<',
-            toggleSplashScreen: '&',
-            createNewProject: '<',
-            selectedProject: '<'
-        },
-        templateUrl: 'nuclio/common/screens/create-function/function-import/function-import.tpl.html',
-        controller: FunctionImportController
-    });
-
-    function FunctionImportController($rootScope, $scope, $state, lodash, YAML) {
-        var ctrl = this;
-
-        var importedFunction = null;
-        var file = null;
-
-        ctrl.sourceCode = null;
-        ctrl.editorTheme = {
-            id: 'vs',
-            name: 'Light',
-            visible: true
-        };
-
-        ctrl.$onInit = onInit;
-        ctrl.$onChanges = onChanges;
-
-        ctrl.cancelCreating = cancelCreating;
-        ctrl.createFunction = createFunction;
-        ctrl.onProjectChange = onProjectChange;
-        ctrl.importFunction = importFunction;
-        ctrl.isCreateFunctionAllowed = isCreateFunctionAllowed;
-        ctrl.isProjectsDropDownVisible = isProjectsDropDownVisible;
-
-        //
-        // Hook methods
-        //
-
-        /**
-         * Initialization function
-         * Adds event listener on file input and when some file is loaded call importFunction()
-         */
-        function onInit() {
-            angular.element(document).find('.function-import-input').on('change', importFunction);
-        }
-
-        /**
-         * Bindings changes hook
-         * @param {Object} changes - changed bindings
-         */
-        function onChanges(changes) {
-            if (angular.isDefined(changes.projects)) {
-                prepareProjects();
-            }
-        }
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Cancels creating a function
-         */
-        function cancelCreating(event) {
-            event.preventDefault();
-
-            if (!lodash.isEmpty(ctrl.project)) {
-                $state.go('app.project.functions', {
-                    projectId: ctrl.project.metadata.name,
-                    createCancelled: true
-                });
-            } else {
-                $state.go('app.projects');
-            }
-        }
-
-        /**
-         * Callback handler for 'create function' button
-         * Creates function with imported data.
-         */
-        function createFunction() {
-
-            // create function only when imported file is .yml
-            if (isYamlFile(file.name)) {
-                ctrl.toggleSplashScreen({ value: true });
-
-                lodash.defaults(importedFunction, {
-                    metadata: {}
-                });
-
-                if (lodash.isEmpty(ctrl.project) && ctrl.selectedProject.id !== 'new_project') {
-                    ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
-                }
-
-                $state.go('app.project.function.edit.code', {
-                    isNewFunction: true,
-                    id: ctrl.project.metadata.name,
-                    functionId: importedFunction.metadata.name,
-                    projectNamespace: ctrl.project.metadata.namespace,
-                    functionData: importedFunction
-                });
-            }
-        }
-
-        /**
-         * Projects drop-down callback.
-         * Sets selected project to function.
-         * @param {Object} item - new selected project
-         */
-        function onProjectChange(item) {
-            ctrl.project = lodash.find(ctrl.projects, ['metadata.name', item.id]);
-        }
-
-        /**
-         * Import of selected YAML file from file system and parse it to JS object
-         * @param event
-         */
-        function importFunction(event) {
-            file = event.target.files[0];
-
-            var reader = new FileReader();
-
-            reader.onload = function () {
-                ctrl.sourceCode = reader.result;
-                $scope.$apply();
-                $rootScope.$broadcast('function-import-source-code', ctrl.sourceCode);
-
-                importedFunction = YAML.parse(reader.result);
-            };
-
-            reader.readAsText(file);
-        }
-
-        /**
-         * Checks permissibility creation of new function.
-         * Checks if source code of function exists into ctrl.sourceCode, and if function import form is valid
-         * @returns {boolean}
-         */
-        function isCreateFunctionAllowed() {
-            return !lodash.isNil(ctrl.sourceCode) && lodash.isEmpty(ctrl.functionImportForm.$error);
-        }
-
-        /**
-         * Hides or shows projects drop-down.
-         * Show drop-down if 'Create Function' screen was reached from 'Projects' screen. Otherwise - hide drop-down
-         * @returns {boolean}
-         */
-        function isProjectsDropDownVisible() {
-            return $state.current.name === 'app.create-function';
-        }
-
-        //
-        // Private methods
-        //
-
-        /**
-         * Checks if file imported from file system is YAML extension.
-         * Example: 'filename.yml'
-         * @returns {boolean}
-         */
-        function isYamlFile(filename) {
-            return lodash.includes(filename, '.yml') || lodash.includes(filename, '.yaml');
-        }
-
-        /**
-         * Converts projects for project drop-down.
-         */
-        function prepareProjects() {
-            var newProject = {
-                id: 'new_project',
-                name: 'New project'
-            };
-
-            ctrl.selectedProject = lodash.isNil(ctrl.selectedProject) ? newProject : ctrl.selectedProject;
-
-            ctrl.projectsList = lodash.chain(ctrl.projects).map(function (project) {
-                return {
-                    id: project.metadata.name,
-                    name: project.spec.displayName
-                };
-            }).sortBy(['name']).value();
-
-            ctrl.selectedProject = lodash.isEmpty(ctrl.projectsList) ? newProject : ctrl.selectedProject.id !== 'new_project' ? ctrl.selectedProject : lodash.first(ctrl.projectsList);
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
     FunctionFromTemplateController.$inject = ['$scope', '$state', '$timeout', 'lodash', 'DialogsService', 'ValidatingPatternsService'];
     angular.module('iguazio.dashboard-controls').component('nclFunctionFromTemplate', {
         bindings: {
@@ -14802,7 +14715,200 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 (function () {
     'use strict';
 
-    NclFunctionCollapsingRowController.$inject = ['$state', 'lodash', 'ConfigService', 'DialogsService', 'ExportService', 'NuclioHeaderService'];
+    FunctionImportController.$inject = ['$rootScope', '$scope', '$state', 'lodash', 'YAML'];
+    angular.module('iguazio.dashboard-controls').component('nclFunctionImport', {
+        bindings: {
+            project: '<',
+            projects: '<',
+            toggleSplashScreen: '&',
+            createNewProject: '<',
+            selectedProject: '<'
+        },
+        templateUrl: 'nuclio/common/screens/create-function/function-import/function-import.tpl.html',
+        controller: FunctionImportController
+    });
+
+    function FunctionImportController($rootScope, $scope, $state, lodash, YAML) {
+        var ctrl = this;
+
+        var importedFunction = null;
+        var file = null;
+
+        ctrl.sourceCode = null;
+        ctrl.editorTheme = {
+            id: 'vs',
+            name: 'Light',
+            visible: true
+        };
+
+        ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
+
+        ctrl.cancelCreating = cancelCreating;
+        ctrl.createFunction = createFunction;
+        ctrl.onProjectChange = onProjectChange;
+        ctrl.importFunction = importFunction;
+        ctrl.isCreateFunctionAllowed = isCreateFunctionAllowed;
+        ctrl.isProjectsDropDownVisible = isProjectsDropDownVisible;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Initialization function
+         * Adds event listener on file input and when some file is loaded call importFunction()
+         */
+        function onInit() {
+            angular.element(document).find('.function-import-input').on('change', importFunction);
+        }
+
+        /**
+         * Bindings changes hook
+         * @param {Object} changes - changed bindings
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.projects)) {
+                prepareProjects();
+            }
+        }
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Cancels creating a function
+         */
+        function cancelCreating(event) {
+            event.preventDefault();
+
+            if (!lodash.isEmpty(ctrl.project)) {
+                $state.go('app.project.functions', {
+                    projectId: ctrl.project.metadata.name,
+                    createCancelled: true
+                });
+            } else {
+                $state.go('app.projects');
+            }
+        }
+
+        /**
+         * Callback handler for 'create function' button
+         * Creates function with imported data.
+         */
+        function createFunction() {
+
+            // create function only when imported file is .yml
+            if (isYamlFile(file.name)) {
+                ctrl.toggleSplashScreen({ value: true });
+
+                lodash.defaults(importedFunction, {
+                    metadata: {}
+                });
+
+                if (lodash.isEmpty(ctrl.project) && ctrl.selectedProject.id !== 'new_project') {
+                    ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
+                }
+
+                $state.go('app.project.function.edit.code', {
+                    isNewFunction: true,
+                    id: ctrl.project.metadata.name,
+                    functionId: importedFunction.metadata.name,
+                    projectNamespace: ctrl.project.metadata.namespace,
+                    functionData: importedFunction
+                });
+            }
+        }
+
+        /**
+         * Projects drop-down callback.
+         * Sets selected project to function.
+         * @param {Object} item - new selected project
+         */
+        function onProjectChange(item) {
+            ctrl.project = lodash.find(ctrl.projects, ['metadata.name', item.id]);
+        }
+
+        /**
+         * Import of selected YAML file from file system and parse it to JS object
+         * @param event
+         */
+        function importFunction(event) {
+            file = event.target.files[0];
+
+            var reader = new FileReader();
+
+            reader.onload = function () {
+                ctrl.sourceCode = reader.result;
+                $scope.$apply();
+                $rootScope.$broadcast('function-import-source-code', ctrl.sourceCode);
+
+                importedFunction = YAML.parse(reader.result);
+            };
+
+            reader.readAsText(file);
+        }
+
+        /**
+         * Checks permissibility creation of new function.
+         * Checks if source code of function exists into ctrl.sourceCode, and if function import form is valid
+         * @returns {boolean}
+         */
+        function isCreateFunctionAllowed() {
+            return !lodash.isNil(ctrl.sourceCode) && lodash.isEmpty(ctrl.functionImportForm.$error);
+        }
+
+        /**
+         * Hides or shows projects drop-down.
+         * Show drop-down if 'Create Function' screen was reached from 'Projects' screen. Otherwise - hide drop-down
+         * @returns {boolean}
+         */
+        function isProjectsDropDownVisible() {
+            return $state.current.name === 'app.create-function';
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Checks if file imported from file system is YAML extension.
+         * Example: 'filename.yml'
+         * @returns {boolean}
+         */
+        function isYamlFile(filename) {
+            return lodash.includes(filename, '.yml') || lodash.includes(filename, '.yaml');
+        }
+
+        /**
+         * Converts projects for project drop-down.
+         */
+        function prepareProjects() {
+            var newProject = {
+                id: 'new_project',
+                name: 'New project'
+            };
+
+            ctrl.selectedProject = lodash.isNil(ctrl.selectedProject) ? newProject : ctrl.selectedProject;
+
+            ctrl.projectsList = lodash.chain(ctrl.projects).map(function (project) {
+                return {
+                    id: project.metadata.name,
+                    name: project.spec.displayName
+                };
+            }).sortBy(['name']).value();
+
+            ctrl.selectedProject = lodash.isEmpty(ctrl.projectsList) ? newProject : ctrl.selectedProject.id !== 'new_project' ? ctrl.selectedProject : lodash.first(ctrl.projectsList);
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    NclFunctionCollapsingRowController.$inject = ['$state', 'lodash', 'ngDialog', 'ConfigService', 'DialogsService', 'ExportService', 'NuclioHeaderService'];
     angular.module('iguazio.dashboard-controls').component('nclFunctionCollapsingRow', {
         bindings: {
             function: '<',
@@ -14817,7 +14923,7 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
         controller: NclFunctionCollapsingRowController
     });
 
-    function NclFunctionCollapsingRowController($state, lodash, ConfigService, DialogsService, ExportService, NuclioHeaderService) {
+    function NclFunctionCollapsingRowController($state, lodash, ngDialog, ConfigService, DialogsService, ExportService, NuclioHeaderService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -14868,7 +14974,8 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
             lodash.defaultsDeep(ctrl.function, {
                 ui: {
                     delete: deleteFunction,
-                    export: exportFunction
+                    export: exportFunction,
+                    viewConfig: viewConfig
                 }
             });
 
@@ -14935,6 +15042,10 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
                 id: 'export',
                 icon: 'igz-icon-export-yml',
                 active: true
+            }, {
+                label: 'View YAML',
+                id: 'viewConfig',
+                active: true
             }];
         }
 
@@ -14982,6 +15093,20 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 
             NuclioHeaderService.updateMainHeader('Projects', ctrl.title, $state.current.name);
         }
+
+        /**
+         * Show dialog with YAML function config
+         */
+        function viewConfig() {
+            ngDialog.open({
+                template: '<ncl-function-config-dialog data-close-dialog="closeThisDialog()" ' + 'data-function="ngDialogData.function"></ncl-function-config-dialog>',
+                plain: true,
+                data: {
+                    function: ctrl.function
+                },
+                className: 'ngdialog-theme-iguazio view-yaml-dialog-wrapper'
+            });
+        }
     }
 })();
 'use strict';
@@ -15005,7 +15130,7 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 (function () {
     'use strict';
 
-    NclVersionController.$inject = ['$interval', '$scope', '$rootScope', '$state', '$stateParams', '$transitions', '$timeout', 'lodash', 'ConfigService', 'DialogsService', 'ExportService', 'NuclioHeaderService'];
+    NclVersionController.$inject = ['$interval', '$scope', '$rootScope', '$state', '$stateParams', '$transitions', '$timeout', 'lodash', 'ngDialog', 'ConfigService', 'DialogsService', 'ExportService', 'NuclioHeaderService'];
     angular.module('iguazio.dashboard-controls').component('nclVersion', {
         bindings: {
             project: '<',
@@ -15021,7 +15146,7 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
         controller: NclVersionController
     });
 
-    function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $transitions, $timeout, lodash, ConfigService, DialogsService, ExportService, NuclioHeaderService) {
+    function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $transitions, $timeout, lodash, ngDialog, ConfigService, DialogsService, ExportService, NuclioHeaderService) {
         var ctrl = this;
         var deregisterFunction = null;
         var interval = null;
@@ -15092,6 +15217,9 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
                     noLabel: 'Cancel',
                     type: 'nuclio_alert'
                 }
+            }, {
+                id: 'viewConfig',
+                name: 'View YAML'
             }];
 
             ctrl.navigationTabsConfig = [{
@@ -15272,6 +15400,15 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
                 });
             } else if (item.id === 'exportFunction') {
                 ExportService.exportFunction(ctrl.version);
+            } else if (item.id === 'viewConfig') {
+                ngDialog.open({
+                    template: '<ncl-function-config-dialog data-close-dialog="closeThisDialog()" ' + 'data-function="ngDialogData.function"></ncl-function-config-dialog>',
+                    plain: true,
+                    data: {
+                        function: ctrl.version
+                    },
+                    className: 'ngdialog-theme-iguazio view-yaml-dialog-wrapper'
+                });
             }
         }
 
@@ -15587,18 +15724,6 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/splash-screen/splash-screen.tpl.html',
-    '<div class="splash-screen" data-ng-hide="!$ctrl.isSplashShowed.value"><div class="loading-splash-screen" data-ng-if="$ctrl.isLoading"><div class="splash-logo-wrapper"><div class="loader-fading-circle"><div class="loader-circle1 loader-circle"></div><div class="loader-circle2 loader-circle"></div><div class="loader-circle3 loader-circle"></div><div class="loader-circle4 loader-circle"></div><div class="loader-circle5 loader-circle"></div><div class="loader-circle6 loader-circle"></div><div class="loader-circle7 loader-circle"></div><div class="loader-circle8 loader-circle"></div><div class="loader-circle9 loader-circle"></div><div class="loader-circle10 loader-circle"></div><div class="loader-circle11 loader-circle"></div><div class="loader-circle12 loader-circle"></div></div></div><div class="loading-text">{{$ctrl.textToDisplay}}</div></div><div class="alert-splash-screen" data-ng-if="$ctrl.isAlertShowing"><div class="header"></div><div class="notification-text">{{$ctrl.alertText}}</div><div class="buttons"><div class="refresh-button" data-ng-click="$ctrl.refreshPage()"><span class="igz-icon-refresh"></span>Refresh</div></div></div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('iguazio.dashboard-controls.templates');
-} catch (e) {
-  module = angular.module('iguazio.dashboard-controls.templates', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('igz_controls/components/sort-dropdown/sort-dropdown.tpl.html',
     '<div class="igz-browser-sort-dropdown dropdown" data-uib-dropdown data-is-open="$ctrl.isOpen"><div class="igz-action-item" data-uib-dropdown-toggle><span class="action-icon igz-icon-sort"></span></div><ul class="dropdown-menu dropdown-list" data-ng-if="$ctrl.isOpen"><li class="dropdown-menu-item" data-ng-repeat="option in $ctrl.sortOptions" data-ng-click="$ctrl.toggleSortingOrder(option)"><span class="item-name" data-ng-class="$ctrl.getItemClass(option.active)">{{option.label}}</span><span class="igz-icon-sort-{{$ctrl.reverseSorting ? \'down\' : \'up\'}}" data-ng-show="option.active"></span></li></ul></div>');
 }]);
@@ -15624,8 +15749,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/projects/edit-project-dialog/edit-project-dialog.tpl.html',
-    '<div class="close-button igz-icon-close" data-ng-click="$ctrl.onClose()"></div><div class="title"><span>Edit Project</span></div><div class="main-content"><form name="editProjectForm" novalidate data-ng-keydown="$ctrl.saveProject($event)"><div class="field-group"><div class="field-label">Project Name</div><div class="field-input"><div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(editProjectForm, \'spec.displayName\')">The inputs you provided are invalid or incorrect</div><div class="error" data-ng-show="$ctrl.nameTakenError">Name already exists</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="spec.displayName" data-input-value="$ctrl.data.spec.displayName" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-is-focused="true" data-validation-is-required="true" data-validation-pattern="$ctrl.nameValidationPattern" data-form-object="editProjectForm" data-placeholder-text="Project name..."></igz-validating-input-field></div></div><div class="field-group"><div class="field-label">Description</div><div class="field-input"><div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(editProjectForm, \'description\')">The inputs you provided are invalid or incorrect</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="spec.description" data-input-value="$ctrl.data.spec.description" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-form-object="editProjectForm" data-placeholder-text="Description..."></igz-validating-input-field></div></div></form></div><div class="buttons"><button class="ncl-secondary-button" data-test-id="projects.edit-project_cancel.button" tabindex="0" data-ng-click="$ctrl.onClose()" data-ng-keydown="$ctrl.onClose($event)">Cancel</button><button class="ncl-primary-button" data-test-id="projects.edit-project_apply.button" tabindex="0" data-ng-click="$ctrl.saveProject()" data-ng-keydown="$ctrl.saveProject($event)" data-ng-hide="$ctrl.isLoadingState">Apply</button><button class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">Loading...</button></div><div class="error-text text-centered error-relative" data-ng-show="$ctrl.isServerError()">Error: {{$ctrl.serverError}}</div>');
+  $templateCache.put('igz_controls/components/splash-screen/splash-screen.tpl.html',
+    '<div class="splash-screen" data-ng-hide="!$ctrl.isSplashShowed.value"><div class="loading-splash-screen" data-ng-if="$ctrl.isLoading"><div class="splash-logo-wrapper"><div class="loader-fading-circle"><div class="loader-circle1 loader-circle"></div><div class="loader-circle2 loader-circle"></div><div class="loader-circle3 loader-circle"></div><div class="loader-circle4 loader-circle"></div><div class="loader-circle5 loader-circle"></div><div class="loader-circle6 loader-circle"></div><div class="loader-circle7 loader-circle"></div><div class="loader-circle8 loader-circle"></div><div class="loader-circle9 loader-circle"></div><div class="loader-circle10 loader-circle"></div><div class="loader-circle11 loader-circle"></div><div class="loader-circle12 loader-circle"></div></div></div><div class="loading-text">{{$ctrl.textToDisplay}}</div></div><div class="alert-splash-screen" data-ng-if="$ctrl.isAlertShowing"><div class="header"></div><div class="notification-text">{{$ctrl.alertText}}</div><div class="buttons"><div class="refresh-button" data-ng-click="$ctrl.refreshPage()"><span class="igz-icon-refresh"></span>Refresh</div></div></div></div>');
 }]);
 })();
 
@@ -15638,6 +15763,18 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('nuclio/projects/new-project-dialog/new-project-dialog.tpl.html',
     '<div class="close-button igz-icon-close" data-ng-click="$ctrl.onClose()"></div><div class="title"><span>New Project</span></div><div class="main-content"><form name="newProjectForm" novalidate data-ng-keydown="$ctrl.createProject($event)"><div class="field-group"><div class="field-label">Project Name</div><div class="field-input"><div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(newProjectForm, \'spec.displayName\')">The inputs you provided are invalid or incorrect</div><div class="error" data-ng-show="$ctrl.nameTakenError">Name already exists</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="spec.displayName" data-input-value="$ctrl.data.spec.displayName" data-is-focused="true" data-form-object="newProjectForm" data-validation-is-required="true" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-validation-pattern="$ctrl.nameValidationPattern" data-placeholder-text="Type project name..."></igz-validating-input-field></div></div><div class="field-group"><div class="field-label">Description</div><div class="field-input"><div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(newProjectForm, \'spec.description\')">The inputs you provided are invalid or incorrect</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="spec.description" data-input-value="$ctrl.data.spec.description" data-form-object="newProjectForm" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-placeholder-text="Type description..."></igz-validating-input-field></div></div></form></div><div class="buttons"><button class="ncl-secondary-button" data-test-id="projects.new-project_cancel.button" tabindex="0" data-ng-click="$ctrl.onClose()" data-ng-keydown="$ctrl.onClose($event)">Cancel</button><button class="ncl-primary-button" data-test-id="projects.new-project_create.button" tabindex="0" data-ng-click="$ctrl.createProject()" data-ng-keydown="$ctrl.createProject($event)" data-ng-hide="$ctrl.isLoadingState">Create</button><button class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">Loading...</button></div><div class="error-text text-centered error-relative" data-ng-show="$ctrl.isServerError()">Error: {{$ctrl.serverError}}</div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('iguazio.dashboard-controls.templates');
+} catch (e) {
+  module = angular.module('iguazio.dashboard-controls.templates', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('nuclio/projects/edit-project-dialog/edit-project-dialog.tpl.html',
+    '<div class="close-button igz-icon-close" data-ng-click="$ctrl.onClose()"></div><div class="title"><span>Edit Project</span></div><div class="main-content"><form name="editProjectForm" novalidate data-ng-keydown="$ctrl.saveProject($event)"><div class="field-group"><div class="field-label">Project Name</div><div class="field-input"><div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(editProjectForm, \'spec.displayName\')">The inputs you provided are invalid or incorrect</div><div class="error" data-ng-show="$ctrl.nameTakenError">Name already exists</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="spec.displayName" data-input-value="$ctrl.data.spec.displayName" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-is-focused="true" data-validation-is-required="true" data-validation-pattern="$ctrl.nameValidationPattern" data-form-object="editProjectForm" data-placeholder-text="Project name..."></igz-validating-input-field></div></div><div class="field-group"><div class="field-label">Description</div><div class="field-input"><div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(editProjectForm, \'description\')">The inputs you provided are invalid or incorrect</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="spec.description" data-input-value="$ctrl.data.spec.description" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-form-object="editProjectForm" data-placeholder-text="Description..."></igz-validating-input-field></div></div></form></div><div class="buttons"><button class="ncl-secondary-button" data-test-id="projects.edit-project_cancel.button" tabindex="0" data-ng-click="$ctrl.onClose()" data-ng-keydown="$ctrl.onClose($event)">Cancel</button><button class="ncl-primary-button" data-test-id="projects.edit-project_apply.button" tabindex="0" data-ng-click="$ctrl.saveProject()" data-ng-keydown="$ctrl.saveProject($event)" data-ng-hide="$ctrl.isLoadingState">Apply</button><button class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">Loading...</button></div><div class="error-text text-centered error-relative" data-ng-show="$ctrl.isServerError()">Error: {{$ctrl.serverError}}</div>');
 }]);
 })();
 
@@ -15793,7 +15930,19 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('nuclio/common/components/edit-item/edit-item.tpl.html',
-    '<div class="ncl-edit-item" data-ng-keydown="$ctrl.onSubmitForm($event)"><form name="$ctrl.editItemForm" novalidate autocomplete="off"><div class="igz-row title-field-row"><div class="igz-col-20 name-field"><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="itemName" data-input-value="$ctrl.getInputValue()" data-is-focused="true" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-placeholder-text="Type name..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="name"></igz-validating-input-field><div class="error" data-ng-show="$ctrl.isShowFieldInvalidState($ctrl.editItemForm, \'itemName\')">The inputs you provided are invalid or incorrect</div></div><div class="igz-col-12-5 class-field"><igz-default-dropdown data-select-property-only="id" data-input-name="itemClass" data-is-required="true" data-placeholder="{{ $ctrl.placeholder }}" data-prevent-drop-up="true" data-values-array="$ctrl.classList" data-selected-item="$ctrl.selectedClass.id" data-form-object="$ctrl.editItemForm" data-item-select-callback="$ctrl.onSelectClass(item)"></igz-default-dropdown></div><div class="igz-col-65"></div></div><div class="igz-row"><div class="igz-col-100 no-class-selected" data-ng-if="!$ctrl.isClassSelected()">{{ $ctrl.placeholder }}</div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && $ctrl.isTriggerType()"><div class="field-label">Worker allocator name</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="itemWorkerAllocatorName" data-input-value="$ctrl.item.workerAllocatorName" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="false" data-placeholder-text="Type worker allocator name..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="workerAllocatorName"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.url)"><div class="field-label">URL</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="itemURL" data-input-value="$ctrl.item.url" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-placeholder-text="Type URL..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="url"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volumeMount.mountPath)"><div class="field-label">Path</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="itemPath" data-input-value="$ctrl.item.volumeMount.mountPath" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-placeholder-text="Type Path..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="volumeMount.mountPath"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.hostPath.path)"><div class="field-label">Host path</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="hostPath" data-input-value="$ctrl.item.volume.hostPath.path" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-placeholder-text="Type host path..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="volume.hostPath.path"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.flexVolume.secretRef.name)"><div class="field-label">Secret name</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="secretRef" data-input-value="$ctrl.item.volume.flexVolume.secretRef.name" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-placeholder-text="Type secret name..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="volume.flexVolume.secretRef.name"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.secret.secretName)"><div class="field-label">Secret name</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="secretName" data-input-value="$ctrl.item.volume.secret.secretName" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-placeholder-text="Type secret name..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="volume.secret.secretName"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.configMap.name)"><div class="field-label">Config map name</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="configMap" data-input-value="$ctrl.item.volume.configMap.name" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-placeholder-text="Type config map name..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="volume.configMap.name"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.maxWorkers)"><div class="field-label">Max workers</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="itemMaxWorkers" data-input-value="$ctrl.item.maxWorkers" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-pattern="$ctrl.numberValidationPattern" data-validation-is-required="true" data-placeholder-text="Type max workers..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="maxWorkers"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.workerAvailabilityTimeoutMilliseconds)"><div class="field-label">Worker availability timeout (Milliseconds)</div><igz-number-input data-form-object="$ctrl.editItemForm" data-input-name="{{$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.name}}" data-current-value="$ctrl.item.workerAvailabilityTimeoutMilliseconds" data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)" data-update-number-input-field="workerAvailabilityTimeoutMilliseconds" data-placeholder="" data-decimal-number="0" data-value-step="1" data-validation-is-required="!$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.allowEmpty" data-allow-empty-field="$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.allowEmpty" data-min-value="0"></igz-number-input></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && attribute.type === \'input\' && attribute.name !== \'schedule\'" data-ng-repeat="attribute in $ctrl.selectedClass.attributes"><div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="{{attribute.fieldType}}" data-input-name="item_{{attribute.name}}" data-input-value="$ctrl.getAttrValue(attribute.name)" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-pattern="$ctrl.getValidationPattern(attribute.pattern)" data-validation-is-required="!attribute.allowEmpty" data-placeholder-text="Type {{$ctrl.convertFromCamelCase(attribute.name) | lowercase}}..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="attributes.{{attribute.name}}"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && attribute.type === \'dropdown\'" data-ng-repeat="attribute in $ctrl.selectedClass.attributes"><div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div><igz-default-dropdown data-select-property-only="id" data-placeholder="{{$ctrl.convertFromCamelCase(attribute.name) | lowercase}}..." data-values-array="attribute.values" data-form-object="$ctrl.editItemForm" data-is-required="true" data-prevent-drop-up="true" data-input-name="{{attribute.name}}" data-selected-item="$ctrl.getAttrValue(attribute.name)" data-item-select-callback="$ctrl.onSelectDropdownValue(item, field)" data-item-select-field="attributes.{{attribute.name}}"></igz-default-dropdown></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && attribute.type === \'number-input\'" data-ng-repeat="attribute in $ctrl.selectedClass.attributes"><div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div><igz-number-input data-form-object="$ctrl.editItemForm" data-input-name="{{attribute.name}}" data-current-value="$ctrl.getAttrValue(attribute.name)" data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)" data-update-number-input-field="attributes.{{attribute.name}}" data-placeholder="" data-decimal-number="0" data-value-step="1" data-suffix-unit="{{attribute.unit}}" data-validation-is-required="!attribute.allowEmpty" data-allow-empty-field="attribute.allowEmpty" data-min-value="0" data-max-value="attribute.maxValue"></igz-number-input></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.username)"><div class="field-label">Username</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="username" data-input-value="$ctrl.item.username" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-pattern="$ctrl.stringValidationPattern" data-validation-is-required="false" data-placeholder-text="Type username..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="username"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.password)"><div class="field-label">Password</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="password" data-input-value="$ctrl.item.password" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-pattern="$ctrl.stringValidationPattern" data-validation-is-required="false" data-placeholder-text="Type password..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="password"></igz-validating-input-field></div><div class="igz-col-45 attribute-field attribute-field-checkbox" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.sasl.enable)"><div class="checkbox-block"><input type="checkbox" class="small" id="saslEnable" data-ng-model="$ctrl.item.attributes.sasl.enable"><label for="saslEnable" class="checkbox-inline field-label">SASL Enable</label></div></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.sasl.user)"><div class="field-label">SASL Username</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="itemSASLUsername" data-input-value="$ctrl.item.attributes.sasl.user" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-pattern="$ctrl.stringValidationPattern" data-validation-is-required="false" data-placeholder-text="Type SASL username..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="attributes.sasl.user"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.sasl.password)"><div class="field-label">SASL Password</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="itemSASLPassword" data-input-value="$ctrl.item.attributes.sasl.password" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-pattern="$ctrl.stringValidationPattern" data-validation-is-required="false" data-placeholder-text="Type SASL password..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="attributes.sasl.password"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.event.body)"><div class="field-label">Event Body</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="eventBody" data-input-value="$ctrl.item.attributes.event.body" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-pattern="$ctrl.stringValidationPattern" data-validation-is-required="false" data-placeholder-text="Type event body..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="attributes.event.body"></igz-validating-input-field></div><div class="igz-col-91 attribute-field ingresses-wrapper" data-ng-if="$ctrl.isClassSelected() && $ctrl.isHttpTrigger()"><div class="field-label">Ingresses</div><div class="table-headers"><div class="key-header">Host</div><div class="value-header">Paths</div></div><div data-ng-if="!$ctrl.isScrollNeeded(\'ingresses\')"><div class="table-body" data-ng-repeat="ingress in $ctrl.ingresses"><ncl-key-value-input class="new-label-input" data-list-class="ingresses-wrapper" data-change-state-broadcast="change-state-deploy-button" data-key-optional="true" data-row-data="ingress" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-action-handler-callback="$ctrl.handleIngressAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div data-ng-if="$ctrl.isScrollNeeded(\'ingresses\')" class="igz-scrollable-container scrollable-ingresses" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="ingress in $ctrl.ingresses"><ncl-key-value-input class="new-label-input" data-list-class="scrollable-ingresses" data-change-state-broadcast="change-state-deploy-button" data-row-data="ingress" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-action-handler-callback="$ctrl.handleIngressAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-ingress-button" data-ng-click="$ctrl.addNewIngress($event)"><span class="igz-icon-add-round"></span>Create a new ingress</div></div><div class="igz-col-91 attribute-field annotations-wrapper" data-ng-if="$ctrl.isClassSelected() && $ctrl.isHttpTrigger()"><div class="field-label">Annotations</div><div class="table-headers"><div class="key-header">Key</div><div class="value-header">Value</div></div><div data-ng-if="!$ctrl.isScrollNeeded(\'annotations\')"><div class="table-body" data-ng-repeat="annotation in $ctrl.annotations"><ncl-key-value-input class="new-label-input" data-list-class="annotations-wrapper" data-change-state-broadcast="change-state-deploy-button" data-key-optional="true" data-row-data="annotation" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-action-handler-callback="$ctrl.handleAnnotationAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div data-ng-if="$ctrl.isScrollNeeded(\'annotations\')" class="igz-scrollable-container scrollable-annotations" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="annotation in $ctrl.annotations"><ncl-key-value-input class="new-label-input" data-list-class="annotations-wrapper" data-change-state-broadcast="change-state-deploy-button" data-key-optional="true" data-row-data="annotation" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-action-handler-callback="$ctrl.handleAnnotationAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-annotation-button" data-ng-click="$ctrl.addNewAnnotation($event)"><span class="igz-icon-add-round"></span>Create a new annotation</div></div><div class="igz-col-91 attribute-field" data-ng-if="$ctrl.isClassSelected() && $ctrl.isCronTrigger()"><div class="field-label">Schedule</div><igz-validating-input-field data-field-type="schedule" data-input-name="item_schedule" data-input-value="$ctrl.item.attributes.schedule" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="attributes.schedule"></igz-validating-input-field></div><div class="igz-col-91 attribute-field event-headers-wrapper" data-ng-if="$ctrl.isClassSelected() && $ctrl.isCronTrigger()"><div class="field-label">Event headers</div><div class="table-headers"><div class="key-header">Key</div><div class="value-header">Value</div></div><div data-ng-if="!$ctrl.isScrollNeeded(\'eventHeaders\')"><div class="table-body" data-ng-repeat="header in $ctrl.eventHeaders"><ncl-key-value-input class="new-label-input" data-list-class="event-headers-wrapper" data-change-state-broadcast="change-state-deploy-button" data-key-optional="true" data-row-data="header" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-action-handler-callback="$ctrl.handleEventHeaderAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div data-ng-if="$ctrl.isScrollNeeded(\'eventHeaders\')" class="igz-scrollable-container scrollable-annotations" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="header in $ctrl.eventHeaders"><ncl-key-value-input class="new-label-input" data-list-class="event-headers-wrapper" data-change-state-broadcast="change-state-deploy-button" data-key-optional="true" data-row-data="header" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-action-handler-callback="$ctrl.handleEventHeaderAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-event-header" data-ng-click="$ctrl.addNewEventHeader($event)"><span class="igz-icon-add-round"></span>Create a new event header</div></div><div class="igz-col-91 attribute-field subscriptions-wrapper" data-ng-if="$ctrl.isClassSelected() && $ctrl.isMQTTTrigger()"><div class="field-label">Subscriptions</div><div class="table-headers"><div class="key-header">Topic</div><div class="value-header">QoS</div></div><div><div class="table-body" data-ng-repeat="subscription in $ctrl.subscriptions"><ncl-key-value-input class="new-label-input" data-list-class="subscriptions-wrapper" data-change-state-broadcast="change-state-deploy-button" data-key-optional="false" data-row-data="subscription" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-value-validation-pattern="$ctrl.subscriptionQoSValidationPattern" data-value-placeholder="0, 1 or 2" data-action-handler-callback="$ctrl.handleSubscriptionAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-subscription-button" data-ng-click="$ctrl.addNewSubscription($event)"><span class="igz-icon-add-round"></span>Create a new subscription</div></div><div class="igz-col-45 attribute-field topics-wrapper" data-ng-if="$ctrl.isClassSelected() && $ctrl.isKafkaTrigger()"><div class="field-label">Topics</div><div><div class="table-body" data-ng-repeat="topic in $ctrl.topics"><ncl-key-value-input class="new-label-input" data-list-class="topics-wrapper" data-change-state-broadcast="change-state-deploy-button" data-row-data="topic" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-only-value-input="true" data-value-validation-pattern="$ctrl.stringValidationPattern" data-action-handler-callback="$ctrl.handleTopicAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-topic-button" data-ng-click="$ctrl.addNewTopic($event)"><span class="igz-icon-add-round"></span>Create a new topic</div></div><div class="igz-col-45 attribute-field brokers-wrapper" data-ng-if="$ctrl.isClassSelected() && $ctrl.isKafkaTrigger()"><div class="field-label">Brokers</div><div><div class="table-body" data-ng-repeat="broker in $ctrl.brokers"><ncl-key-value-input class="new-label-input" data-list-class="brokers-wrapper" data-change-state-broadcast="change-state-deploy-button" data-row-data="broker" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-only-value-input="true" data-value-validation-pattern="$ctrl.stringValidationPattern" data-action-handler-callback="$ctrl.handleBrokerAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-broker-button" data-ng-click="$ctrl.addNewBroker($event)"><span class="igz-icon-add-round"></span>Create a new broker</div></div></div></form></div>');
+    '<div class="ncl-edit-item" data-ng-keydown="$ctrl.onSubmitForm($event)"><form name="$ctrl.editItemForm" novalidate autocomplete="off"><div class="igz-row title-field-row"><div class="igz-col-20 name-field"><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="itemName" data-input-value="$ctrl.getInputValue()" data-is-focused="true" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-placeholder-text="Type name..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="name"></igz-validating-input-field><div class="error" data-ng-show="$ctrl.isShowFieldInvalidState($ctrl.editItemForm, \'itemName\')">The inputs you provided are invalid or incorrect</div></div><div class="igz-col-12-5 class-field"><igz-default-dropdown data-select-property-only="id" data-input-name="itemClass" data-is-required="true" data-placeholder="{{ $ctrl.placeholder }}" data-prevent-drop-up="true" data-values-array="$ctrl.classList" data-selected-item="$ctrl.selectedClass.id" data-form-object="$ctrl.editItemForm" data-item-select-callback="$ctrl.onSelectClass(item)"></igz-default-dropdown></div><div class="igz-col-65"></div></div><div class="igz-row"><div class="igz-col-100 no-class-selected" data-ng-if="!$ctrl.isClassSelected()">{{ $ctrl.placeholder }}</div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && $ctrl.isTriggerType()"><div class="field-label">Worker allocator name</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="itemWorkerAllocatorName" data-input-value="$ctrl.item.workerAllocatorName" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="false" data-placeholder-text="Type worker allocator name..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="workerAllocatorName"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.url)"><div class="field-label">URL</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="itemURL" data-input-value="$ctrl.item.url" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-placeholder-text="Type URL..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="url"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volumeMount.mountPath)"><div class="field-label">Path</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="itemPath" data-input-value="$ctrl.item.volumeMount.mountPath" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-placeholder-text="Type Path..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="volumeMount.mountPath"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.hostPath.path)"><div class="field-label">Host path</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="hostPath" data-input-value="$ctrl.item.volume.hostPath.path" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-placeholder-text="Type host path..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="volume.hostPath.path"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.flexVolume.secretRef.name)"><div class="field-label">Secret name</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="secretRef" data-input-value="$ctrl.item.volume.flexVolume.secretRef.name" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-placeholder-text="Type secret name..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="volume.flexVolume.secretRef.name"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.secret.secretName)"><div class="field-label">Secret name</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="secretName" data-input-value="$ctrl.item.volume.secret.secretName" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-placeholder-text="Type secret name..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="volume.secret.secretName"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.configMap.name)"><div class="field-label">Config map name</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="configMap" data-input-value="$ctrl.item.volume.configMap.name" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-placeholder-text="Type config map name..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="volume.configMap.name"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.maxWorkers)"><div class="field-label">Max workers</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="itemMaxWorkers" data-input-value="$ctrl.item.maxWorkers" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-pattern="$ctrl.numberValidationPattern" data-validation-is-required="true" data-placeholder-text="Type max workers..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="maxWorkers"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.workerAvailabilityTimeoutMilliseconds)"><div class="field-label">Worker availability timeout (Milliseconds)</div><igz-number-input data-form-object="$ctrl.editItemForm" data-input-name="{{$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.name}}" data-current-value="$ctrl.item.workerAvailabilityTimeoutMilliseconds" data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)" data-update-number-input-field="workerAvailabilityTimeoutMilliseconds" data-placeholder="" data-decimal-number="0" data-value-step="1" data-validation-is-required="!$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.allowEmpty" data-allow-empty-field="$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.allowEmpty" data-min-value="0"></igz-number-input></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && attribute.type === \'input\' && attribute.name !== \'schedule\'" data-ng-repeat="attribute in $ctrl.selectedClass.attributes"><div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="{{attribute.fieldType}}" data-input-name="item_{{attribute.name}}" data-input-value="$ctrl.getAttrValue(attribute.name)" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-pattern="$ctrl.getValidationPattern(attribute.pattern)" data-validation-is-required="!attribute.allowEmpty" data-placeholder-text="{{$ctrl.getPlaceholderText(attribute.name)}}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="attributes.{{attribute.name}}"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && attribute.type === \'dropdown\'" data-ng-repeat="attribute in $ctrl.selectedClass.attributes"><div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div><igz-default-dropdown data-select-property-only="id" data-placeholder="{{$ctrl.convertFromCamelCase(attribute.name) | lowercase}}..." data-values-array="attribute.values" data-form-object="$ctrl.editItemForm" data-is-required="true" data-prevent-drop-up="true" data-input-name="{{attribute.name}}" data-selected-item="$ctrl.getAttrValue(attribute.name)" data-item-select-callback="$ctrl.onSelectDropdownValue(item, field)" data-item-select-field="attributes.{{attribute.name}}"></igz-default-dropdown></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && attribute.type === \'number-input\'" data-ng-repeat="attribute in $ctrl.selectedClass.attributes"><div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div><igz-number-input data-form-object="$ctrl.editItemForm" data-input-name="{{attribute.name}}" data-current-value="$ctrl.getAttrValue(attribute.name)" data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)" data-update-number-input-field="attributes.{{attribute.name}}" data-placeholder="" data-decimal-number="0" data-value-step="1" data-suffix-unit="{{attribute.unit}}" data-validation-is-required="!attribute.allowEmpty" data-allow-empty-field="attribute.allowEmpty" data-min-value="0" data-max-value="attribute.maxValue"></igz-number-input></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.username)"><div class="field-label">Username</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="username" data-input-value="$ctrl.item.username" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-pattern="$ctrl.stringValidationPattern" data-validation-is-required="false" data-placeholder-text="Type username..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="username"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.password)"><div class="field-label">Password</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="password" data-input-value="$ctrl.item.password" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-pattern="$ctrl.stringValidationPattern" data-validation-is-required="false" data-placeholder-text="Type password..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="password"></igz-validating-input-field></div><div class="igz-col-45 attribute-field attribute-field-checkbox" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.sasl.enable)"><div class="checkbox-block"><input type="checkbox" class="small" id="saslEnable" data-ng-model="$ctrl.item.attributes.sasl.enable"><label for="saslEnable" class="checkbox-inline field-label">SASL Enable</label></div></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.sasl.user)"><div class="field-label">SASL Username</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="itemSASLUsername" data-input-value="$ctrl.item.attributes.sasl.user" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-pattern="$ctrl.stringValidationPattern" data-validation-is-required="false" data-placeholder-text="Type SASL username..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="attributes.sasl.user"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.sasl.password)"><div class="field-label">SASL Password</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="itemSASLPassword" data-input-value="$ctrl.item.attributes.sasl.password" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-pattern="$ctrl.stringValidationPattern" data-validation-is-required="false" data-placeholder-text="Type SASL password..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="attributes.sasl.password"></igz-validating-input-field></div><div class="igz-col-45 attribute-field" data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.event.body)"><div class="field-label">Event Body</div><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="eventBody" data-input-value="$ctrl.item.attributes.event.body" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-pattern="$ctrl.stringValidationPattern" data-validation-is-required="false" data-placeholder-text="Type event body..." data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="attributes.event.body"></igz-validating-input-field></div><div class="igz-col-91 attribute-field ingresses-wrapper" data-ng-if="$ctrl.isClassSelected() && $ctrl.isHttpTrigger()"><div class="field-label">Ingresses</div><div class="table-headers"><div class="key-header">Host</div><div class="value-header">Paths</div></div><div data-ng-if="!$ctrl.isScrollNeeded(\'ingresses\')"><div class="table-body" data-ng-repeat="ingress in $ctrl.ingresses"><ncl-key-value-input class="new-label-input" data-list-class="ingresses-wrapper" data-change-state-broadcast="change-state-deploy-button" data-key-optional="true" data-row-data="ingress" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-action-handler-callback="$ctrl.handleIngressAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div data-ng-if="$ctrl.isScrollNeeded(\'ingresses\')" class="igz-scrollable-container scrollable-ingresses" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="ingress in $ctrl.ingresses"><ncl-key-value-input class="new-label-input" data-list-class="scrollable-ingresses" data-change-state-broadcast="change-state-deploy-button" data-row-data="ingress" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-action-handler-callback="$ctrl.handleIngressAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-ingress-button" data-ng-click="$ctrl.addNewIngress($event)"><span class="igz-icon-add-round"></span>Create a new ingress</div></div><div class="igz-col-91 attribute-field annotations-wrapper" data-ng-if="$ctrl.isClassSelected() && $ctrl.isHttpTrigger()"><div class="field-label">Annotations</div><div class="table-headers"><div class="key-header">Key</div><div class="value-header">Value</div></div><div data-ng-if="!$ctrl.isScrollNeeded(\'annotations\')"><div class="table-body" data-ng-repeat="annotation in $ctrl.annotations"><ncl-key-value-input class="new-label-input" data-list-class="annotations-wrapper" data-change-state-broadcast="change-state-deploy-button" data-key-optional="true" data-row-data="annotation" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-action-handler-callback="$ctrl.handleAnnotationAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div data-ng-if="$ctrl.isScrollNeeded(\'annotations\')" class="igz-scrollable-container scrollable-annotations" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="annotation in $ctrl.annotations"><ncl-key-value-input class="new-label-input" data-list-class="annotations-wrapper" data-change-state-broadcast="change-state-deploy-button" data-key-optional="true" data-row-data="annotation" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-action-handler-callback="$ctrl.handleAnnotationAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-annotation-button" data-ng-click="$ctrl.addNewAnnotation($event)"><span class="igz-icon-add-round"></span>Create a new annotation</div></div><div class="igz-col-91 attribute-field" data-ng-if="$ctrl.isClassSelected() && $ctrl.isCronTrigger()"><div class="field-label">Schedule</div><igz-validating-input-field data-field-type="schedule" data-input-name="item_schedule" data-input-value="$ctrl.item.attributes.schedule" data-is-focused="false" data-form-object="$ctrl.editItemForm" data-validation-is-required="true" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="attributes.schedule"></igz-validating-input-field></div><div class="igz-col-91 attribute-field event-headers-wrapper" data-ng-if="$ctrl.isClassSelected() && $ctrl.isCronTrigger()"><div class="field-label">Event headers</div><div class="table-headers"><div class="key-header">Key</div><div class="value-header">Value</div></div><div data-ng-if="!$ctrl.isScrollNeeded(\'eventHeaders\')"><div class="table-body" data-ng-repeat="header in $ctrl.eventHeaders"><ncl-key-value-input class="new-label-input" data-list-class="event-headers-wrapper" data-change-state-broadcast="change-state-deploy-button" data-key-optional="true" data-row-data="header" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-action-handler-callback="$ctrl.handleEventHeaderAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div data-ng-if="$ctrl.isScrollNeeded(\'eventHeaders\')" class="igz-scrollable-container scrollable-annotations" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="header in $ctrl.eventHeaders"><ncl-key-value-input class="new-label-input" data-list-class="event-headers-wrapper" data-change-state-broadcast="change-state-deploy-button" data-key-optional="true" data-row-data="header" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-action-handler-callback="$ctrl.handleEventHeaderAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-event-header" data-ng-click="$ctrl.addNewEventHeader($event)"><span class="igz-icon-add-round"></span>Create a new event header</div></div><div class="igz-col-91 attribute-field subscriptions-wrapper" data-ng-if="$ctrl.isClassSelected() && $ctrl.isMQTTTrigger()"><div class="field-label">Subscriptions</div><div class="table-headers"><div class="key-header">Topic</div><div class="value-header">QoS</div></div><div><div class="table-body" data-ng-repeat="subscription in $ctrl.subscriptions"><ncl-key-value-input class="new-label-input" data-list-class="subscriptions-wrapper" data-change-state-broadcast="change-state-deploy-button" data-key-optional="false" data-row-data="subscription" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-value-validation-pattern="$ctrl.subscriptionQoSValidationPattern" data-value-placeholder="0, 1 or 2" data-action-handler-callback="$ctrl.handleSubscriptionAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-subscription-button" data-ng-click="$ctrl.addNewSubscription($event)"><span class="igz-icon-add-round"></span>Create a new subscription</div></div><div class="igz-col-45 attribute-field topics-wrapper" data-ng-if="$ctrl.isClassSelected() && $ctrl.isKafkaTrigger()"><div class="field-label">Topics</div><div><div class="table-body" data-ng-repeat="topic in $ctrl.topics"><ncl-key-value-input class="new-label-input" data-list-class="topics-wrapper" data-change-state-broadcast="change-state-deploy-button" data-row-data="topic" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-only-value-input="true" data-value-validation-pattern="$ctrl.stringValidationPattern" data-action-handler-callback="$ctrl.handleTopicAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-topic-button" data-ng-click="$ctrl.addNewTopic($event)"><span class="igz-icon-add-round"></span>Create a new topic</div></div><div class="igz-col-45 attribute-field brokers-wrapper" data-ng-if="$ctrl.isClassSelected() && $ctrl.isKafkaTrigger()"><div class="field-label">Brokers</div><div><div class="table-body" data-ng-repeat="broker in $ctrl.brokers"><ncl-key-value-input class="new-label-input" data-list-class="brokers-wrapper" data-change-state-broadcast="change-state-deploy-button" data-row-data="broker" data-use-type="false" data-submit-on-fly="true" data-item-index="$index" data-only-value-input="true" data-value-validation-pattern="$ctrl.stringValidationPattern" data-action-handler-callback="$ctrl.handleBrokerAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-broker-button" data-ng-click="$ctrl.addNewBroker($event)"><span class="igz-icon-add-round"></span>Create a new broker</div></div></div></form></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('iguazio.dashboard-controls.templates');
+} catch (e) {
+  module = angular.module('iguazio.dashboard-controls.templates', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('nuclio/common/components/function-config-dialog/function-config-dialog.tpl.html',
+    '<div class="view-yaml-dialog-container"><div class="view-yaml-dialog-header"><div class="title">{{ $ctrl.title }}</div><div class="copy-to-clipboard" data-ng-click="$ctrl.copyToClipboard()" data-uib-tooltip="Copy to clipboard" data-tooltip-placement="right" data-tooltip-popup-delay="300" data-tooltip-append-to-body="true"><div class="ncl-icon-copy"></div></div><div class="close-button igz-icon-close" data-ng-click="$ctrl.closeDialog()"></div></div><div class="main-content"><ncl-monaco class="monaco-code-editor" data-function-source-code="$ctrl.sourceCode" data-mini-monaco="false" data-selected-theme="$ctrl.editorTheme" data-language="yaml" data-read-only="true"></ncl-monaco></div><div class="buttons"><button class="igz-button-primary" tabindex="0" data-ng-click="$ctrl.closeDialog()">Close</button></div></div>');
 }]);
 })();
 
@@ -15819,14 +15968,9 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/common/components/navigation-tabs/navigation-tabs.tpl.html',
-    '<div class="ncl-navigation-tabs clearfix"><div class="navigation-tab" data-ng-repeat="item in $ctrl.tabItems" data-ui-sref="{{item.uiRoute}}" data-ui-sref-active="active" data-ng-class="{\'ncl-status-monitoring\': item.tabName === \'Status\'}">{{item.tabName | uppercase}}<div class="ncl-status-light" data-ng-if="item.status" data-ng-class="{\'ncl-status-ready\': item.status === \'ready\',\n' +
-    '                             \'ncl-status-error\': item.status === \'error\',\n' +
-    '                             \'ncl-status-building\': $ctrl.isFunctionBuilding(item.status)}"><div class="ncl-status-tooltip" data-ng-if="item.status" data-ng-class="{\'ncl-status-tooltip-ready\': item.status === \'ready\',\n' +
-    '                                 \'ncl-status-tooltip-error\': item.status === \'error\',\n' +
-    '                                 \'ncl-status-tooltip-building\': $ctrl.isFunctionBuilding(item.status)}"><div class="ncl-status-icon" data-ng-if="item.status !== \'not yet deployed\'" data-ng-class="{\'ncl-icon-ready\': item.status === \'ready\',\n' +
-    '                                     \'ncl-icon-error\': item.status === \'error\',\n' +
-    '                                     \'ncl-icon-building\': $ctrl.isFunctionBuilding(item.status)}"></div><div class="ncl-status-title">{{item.status}}</div></div></div></div></div><div class="toggle-test-pane-icon-wrapper" data-ng-if="$ctrl.isToggleButtonVisible()" data-ng-class="{\'test-pane-closed\': $ctrl.isTestPaneClosed}" data-ng-click="$ctrl.toggleTestPane()"><span class="igz-icon-test-pane toggle-test-pane-icon"></span></div>');
+  $templateCache.put('nuclio/common/components/monaco/monaco.tpl.html',
+    '<div class="ncl-monaco"><div class="ncl-monaco-wrapper" data-ng-class="{\'ncl-monaco-dark\': $ctrl.selectedTheme === \'vs-dark\',\n' +
+    '                         \'no-top-padding\': $ctrl.noTopPadding}"><div data-ng-if="$ctrl.showTextSizeDropdown" class="ncl-monaco-top-row"><ncl-text-size-dropdown data-update-data-callback="$ctrl.onTextSizeChange(newTextSize)"></ncl-text-size-dropdown></div><div class="ncl-monaco-editor" igz-monaco-editor data-font-size="$ctrl.selectedTextSize" data-code-file="selectedCodeFile" data-editor-theme="$ctrl.selectedTheme" data-file-language="selectedFileLanguage" data-mini-monaco="$ctrl.miniMonaco" data-show-line-numbers="$ctrl.showLineNumbers" data-read-only="$ctrl.readOnly" data-on-code-change="$ctrl.onCodeChange" data-word-wrap="$ctrl.wordWrap"></div></div></div>');
 }]);
 })();
 
@@ -15837,9 +15981,14 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/common/components/monaco/monaco.tpl.html',
-    '<div class="ncl-monaco"><div class="ncl-monaco-wrapper" data-ng-class="{\'ncl-monaco-dark\': $ctrl.selectedTheme === \'vs-dark\',\n' +
-    '                         \'no-top-padding\': $ctrl.noTopPadding}"><div data-ng-if="$ctrl.showTextSizeDropdown" class="ncl-monaco-top-row"><ncl-text-size-dropdown data-update-data-callback="$ctrl.onTextSizeChange(newTextSize)"></ncl-text-size-dropdown></div><div class="ncl-monaco-editor" igz-monaco-editor data-font-size="$ctrl.selectedTextSize" data-code-file="selectedCodeFile" data-editor-theme="$ctrl.selectedTheme" data-file-language="selectedFileLanguage" data-mini-monaco="$ctrl.miniMonaco" data-show-line-numbers="$ctrl.showLineNumbers" data-read-only="$ctrl.readOnly" data-on-code-change="$ctrl.onCodeChange" data-word-wrap="$ctrl.wordWrap"></div></div></div>');
+  $templateCache.put('nuclio/common/components/navigation-tabs/navigation-tabs.tpl.html',
+    '<div class="ncl-navigation-tabs clearfix"><div class="navigation-tab" data-ng-repeat="item in $ctrl.tabItems" data-ui-sref="{{item.uiRoute}}" data-ui-sref-active="active" data-ng-class="{\'ncl-status-monitoring\': item.tabName === \'Status\'}">{{item.tabName | uppercase}}<div class="ncl-status-light" data-ng-if="item.status" data-ng-class="{\'ncl-status-ready\': item.status === \'ready\',\n' +
+    '                             \'ncl-status-error\': item.status === \'error\',\n' +
+    '                             \'ncl-status-building\': $ctrl.isFunctionBuilding(item.status)}"><div class="ncl-status-tooltip" data-ng-if="item.status" data-ng-class="{\'ncl-status-tooltip-ready\': item.status === \'ready\',\n' +
+    '                                 \'ncl-status-tooltip-error\': item.status === \'error\',\n' +
+    '                                 \'ncl-status-tooltip-building\': $ctrl.isFunctionBuilding(item.status)}"><div class="ncl-status-icon" data-ng-if="item.status !== \'not yet deployed\'" data-ng-class="{\'ncl-icon-ready\': item.status === \'ready\',\n' +
+    '                                     \'ncl-icon-error\': item.status === \'error\',\n' +
+    '                                     \'ncl-icon-building\': $ctrl.isFunctionBuilding(item.status)}"></div><div class="ncl-status-title">{{item.status}}</div></div></div></div></div><div class="toggle-test-pane-icon-wrapper" data-ng-if="$ctrl.isToggleButtonVisible()" data-ng-class="{\'test-pane-closed\': $ctrl.isTestPaneClosed}" data-ng-click="$ctrl.toggleTestPane()"><span class="igz-icon-test-pane toggle-test-pane-icon"></span></div>');
 }]);
 })();
 
@@ -15910,8 +16059,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/common/screens/create-function/function-import/function-import.tpl.html',
-    '<div class="function-import-wrapper-content"><form name="$ctrl.functionImportForm" class="function-import-form" novalidate><div class="projects-drop-down" data-ng-if="$ctrl.isProjectsDropDownVisible()"><span class="input-label">Project*</span><igz-default-dropdown data-is-required="true" data-values-array="$ctrl.projectsList" data-selected-item="$ctrl.selectedProject" data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)" data-form-object="$ctrl.functionImportForm" data-input-name="project"><div class="transcluded-item" data-ng-click="$ctrl.createNewProject()">New project</div></igz-default-dropdown></div><div class="function-import-actions-bar"><div class="function-import-file-picker"><label class="file-picker-wrapper ncl-primary-button" for="function-import"><span class="igz-icon-upload"></span>Import</label><input class="function-import-input" type="file" id="function-import" accept=".yml, .yaml"></div><button class="ncl-primary-button" data-ng-click="$ctrl.createFunction()" data-ng-disabled="!$ctrl.isCreateFunctionAllowed()" data-ng-class="{\'disabled\': !$ctrl.isCreateFunctionAllowed()}">CREATE FUNCTION</button></div></form><div class="function-import-monaco"><ncl-monaco class="monaco-code-editor" data-function-source-code="$ctrl.sourceCode" data-mini-monaco="false" data-selected-theme="$ctrl.editorTheme" data-language="\'yaml\'" data-read-only="true"></ncl-monaco></div><div class="bottom-bar"><button class="ncl-secondary-button" data-ng-click="$ctrl.cancelCreating($event)">CANCEL</button></div></div>');
+  $templateCache.put('nuclio/common/screens/create-function/function-from-template/function-from-template.tpl.html',
+    '<div class="function-from-template-content"><form name="$ctrl.functionFromTemplateForm" class="configuration-form" novalidate><div class="function-name-wrapper"><div class="projects-drop-down" data-ng-if="$ctrl.isProjectsDropDownVisible()"><span class="input-label">Project*</span><igz-default-dropdown data-is-required="true" data-values-array="$ctrl.projectsList" data-selected-item="$ctrl.selectedProject" data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)" data-form-object="$ctrl.functionFromTemplateForm" data-input-name="project"><div class="transcluded-item" data-ng-click="$ctrl.createNewProject()">New project</div></igz-default-dropdown></div><div class="function-name"><span class="input-label">Name*</span><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="name" data-input-value="$ctrl.functionName" data-validation-is-required="true" data-form-object="$ctrl.functionFromTemplateForm" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-validation-pattern="$ctrl.validationPatterns.functionName" data-validation-max-length="{{$ctrl.validationPatterns.getMaxLength(\'function.name\')}}" data-hide-counter="false" data-input-model-options="$ctrl.inputModelOptions" data-placeholder-text="Type function name" data-uib-tooltip="Name must be 1-63 characters long, consisting of digits, lower-case letters and hyphens only. It cannot start or end with a hyphen." data-tooltip-popup-delay="500" data-tooltip-append-to-body="true"></igz-validating-input-field></div></div></form><div class="templates-wrapper"><span class="title">Choose a template</span><div class="templates-controls"><div class="templates-search-input"><div class="igz-icon-search search-icon"></div><input class="input-field field" tabindex="0" data-ng-model="$ctrl.searchQuery" data-ng-change="$ctrl.onChangeSearchQuery()" placeholder="Search by text, tags and keywords..." data-igz-input-blur-on-enter></div><div class="templates-runtime-drop-down"><span class="input-label">Runtime</span><igz-default-dropdown data-values-array="$ctrl.runtimeFilters" data-selected-item="$ctrl.selectedRuntimeFilter" data-item-select-callback="$ctrl.onRuntimeFilterChange(item, isItemChanged)"></igz-default-dropdown></div><div class="templates-pagination"><igz-pagination data-page-data="$ctrl.page" data-is-per-page-visible="true" data-pagination-callback="$ctrl.paginationCallback(page, size)"></igz-pagination></div></div><div class="function-templates"><div class="function-template-wrapper" data-ng-repeat="(key, value) in $ctrl.templatesWorkingCopy" data-ng-click="$ctrl.selectTemplate(key)" data-ng-class="{\'selected\': $ctrl.isTemplateSelected(key)}"><div class="add-template-icon-wrapper" data-ng-class="{\'selected\': $ctrl.isTemplateSelected(key), \'disabled\': !$ctrl.isCreateFunctionAllowed}" data-ng-click="$ctrl.createFunction()"><div class="igz-icon-add"></div></div><div class="function-template-content"><div class="template-title">{{key}}</div><div class="template-description">{{value.spec.description}}</div></div></div></div><div class="bottom-bar"><button class="ncl-secondary-button" data-ng-click="$ctrl.cancelCreating($event)">CANCEL</button></div></div></div>');
 }]);
 })();
 
@@ -15922,8 +16071,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/common/screens/create-function/function-from-template/function-from-template.tpl.html',
-    '<div class="function-from-template-content"><form name="$ctrl.functionFromTemplateForm" class="configuration-form" novalidate><div class="function-name-wrapper"><div class="projects-drop-down" data-ng-if="$ctrl.isProjectsDropDownVisible()"><span class="input-label">Project*</span><igz-default-dropdown data-is-required="true" data-values-array="$ctrl.projectsList" data-selected-item="$ctrl.selectedProject" data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)" data-form-object="$ctrl.functionFromTemplateForm" data-input-name="project"><div class="transcluded-item" data-ng-click="$ctrl.createNewProject()">New project</div></igz-default-dropdown></div><div class="function-name"><span class="input-label">Name*</span><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="name" data-input-value="$ctrl.functionName" data-validation-is-required="true" data-form-object="$ctrl.functionFromTemplateForm" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-validation-pattern="$ctrl.validationPatterns.functionName" data-validation-max-length="{{$ctrl.validationPatterns.getMaxLength(\'function.name\')}}" data-hide-counter="false" data-input-model-options="$ctrl.inputModelOptions" data-placeholder-text="Type function name" data-uib-tooltip="Name must be 1-63 characters long, consisting of digits, lower-case letters and hyphens only. It cannot start or end with a hyphen." data-tooltip-popup-delay="500" data-tooltip-append-to-body="true"></igz-validating-input-field></div></div></form><div class="templates-wrapper"><span class="title">Choose a template</span><div class="templates-controls"><div class="templates-search-input"><div class="igz-icon-search search-icon"></div><input class="input-field field" tabindex="0" data-ng-model="$ctrl.searchQuery" data-ng-change="$ctrl.onChangeSearchQuery()" placeholder="Search by text, tags and keywords..." data-igz-input-blur-on-enter></div><div class="templates-runtime-drop-down"><span class="input-label">Runtime</span><igz-default-dropdown data-values-array="$ctrl.runtimeFilters" data-selected-item="$ctrl.selectedRuntimeFilter" data-item-select-callback="$ctrl.onRuntimeFilterChange(item, isItemChanged)"></igz-default-dropdown></div><div class="templates-pagination"><igz-pagination data-page-data="$ctrl.page" data-is-per-page-visible="true" data-pagination-callback="$ctrl.paginationCallback(page, size)"></igz-pagination></div></div><div class="function-templates"><div class="function-template-wrapper" data-ng-repeat="(key, value) in $ctrl.templatesWorkingCopy" data-ng-click="$ctrl.selectTemplate(key)" data-ng-class="{\'selected\': $ctrl.isTemplateSelected(key)}"><div class="add-template-icon-wrapper" data-ng-class="{\'selected\': $ctrl.isTemplateSelected(key), \'disabled\': !$ctrl.isCreateFunctionAllowed}" data-ng-click="$ctrl.createFunction()"><div class="igz-icon-add"></div></div><div class="function-template-content"><div class="template-title">{{key}}</div><div class="template-description">{{value.spec.description}}</div></div></div></div><div class="bottom-bar"><button class="ncl-secondary-button" data-ng-click="$ctrl.cancelCreating($event)">CANCEL</button></div></div></div>');
+  $templateCache.put('nuclio/common/screens/create-function/function-import/function-import.tpl.html',
+    '<div class="function-import-wrapper-content"><form name="$ctrl.functionImportForm" class="function-import-form" novalidate><div class="projects-drop-down" data-ng-if="$ctrl.isProjectsDropDownVisible()"><span class="input-label">Project*</span><igz-default-dropdown data-is-required="true" data-values-array="$ctrl.projectsList" data-selected-item="$ctrl.selectedProject" data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)" data-form-object="$ctrl.functionImportForm" data-input-name="project"><div class="transcluded-item" data-ng-click="$ctrl.createNewProject()">New project</div></igz-default-dropdown></div><div class="function-import-actions-bar"><div class="function-import-file-picker"><label class="file-picker-wrapper ncl-primary-button" for="function-import"><span class="igz-icon-upload"></span>Import</label><input class="function-import-input" type="file" id="function-import" accept=".yml, .yaml"></div><button class="ncl-primary-button" data-ng-click="$ctrl.createFunction()" data-ng-disabled="!$ctrl.isCreateFunctionAllowed()" data-ng-class="{\'disabled\': !$ctrl.isCreateFunctionAllowed()}">CREATE FUNCTION</button></div></form><div class="function-import-monaco"><ncl-monaco class="monaco-code-editor" data-function-source-code="$ctrl.sourceCode" data-mini-monaco="false" data-selected-theme="$ctrl.editorTheme" data-language="\'yaml\'" data-read-only="true"></ncl-monaco></div><div class="bottom-bar"><button class="ncl-secondary-button" data-ng-click="$ctrl.cancelCreating($event)">CANCEL</button></div></div>');
 }]);
 })();
 
@@ -15999,8 +16148,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/projects/project/functions/version/version-configuration/version-configuration.tpl.html',
-    '<div class="ncl-version-configuration ncl-version" data-igz-extend-background><div class="igz-scrollable-container" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="ncl-version-configuration-wrapper"><div class="row"><ncl-version-configuration-basic-settings class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-basic-settings><ncl-version-configuration-resources class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-resources></div><div class="row"><ncl-version-configuration-environment-variables class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-environment-variables></div><div class="row"><ncl-version-configuration-labels class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-labels><ncl-version-configuration-annotations class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-annotations></div><div class="row"><ncl-version-configuration-data-bindings class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-data-bindings><ncl-version-configuration-build class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-build></div><div class="row" data-ng-if="!$ctrl.isInvisibleForCurrentRuntime($ctrl.version.spec.runtime) || $ctrl.isDemoMode()" data-ng-class="{\'shell-runtime\': $ctrl.version.spec.runtime === \'shell\' && !$ctrl.isDemoMode()}"><ncl-version-configuration-logging data-ng-class="{\'invisible-block\': !$ctrl.isDemoMode() && $ctrl.version.spec.runtime !== \'java\'}" class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-logging><ncl-version-configuration-runtime-attributes class="configuration-block runtime-attributes" data-ng-class="{\'invisible-block\': $ctrl.isInvisibleForCurrentRuntime($ctrl.version.spec.runtime)}" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-runtime-attributes></div><div class="row"><ncl-version-configuration-volumes class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback()"></ncl-version-configuration-volumes></div></div></div></div>');
+  $templateCache.put('nuclio/projects/project/functions/version/function-event-dialog/function-event-dialog.tpl.html',
+    '<div class="function-event-wrapper"><div class="header"><div class="title">{{$ctrl.titleText}}</div><div class="close-button igz-icon-close" data-ng-click="$ctrl.closeEventDialog()"></div></div><div class="content"><form name="$ctrl.functionEventForm" class="event-form"><div class="field-wrapper"><div class="field-label">Name</div><div class="field-content"><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="displayName" data-input-model-options="$ctrl.inputModelOptions" data-input-value="$ctrl.workingCopy.spec.displayName" data-validation-is-required="true" data-form-object="$ctrl.functionEventForm" data-update-data-callback="$ctrl.inputValueCallback(newData, \'displayName\')" data-placeholder-text="Type a name of event"></igz-validating-input-field></div></div><div class="field-wrapper"><div class="field-label">Method</div><div class="field-content"><igz-default-dropdown data-values-array="$ctrl.methods" data-selected-item="$ctrl.selectedMethod" data-item-select-callback="$ctrl.onSelectMethod(item, isItemChanged, field)" data-is-required="true" data-form-object="$ctrl.functionEventForm"></igz-default-dropdown></div></div><div class="field-wrapper"><div class="field-label">Path</div><div class="field-content"><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="path" data-input-model-options="$ctrl.inputModelOptions" data-input-value="$ctrl.workingCopy.spec.attributes.path" data-form-object="$ctrl.functionEventForm" data-update-data-callback="$ctrl.inputValueCallback(newData, \'path\')" data-placeholder-text="Type a path"></igz-validating-input-field></div></div><div class="field-wrapper"><div class="field-label">Content type</div><div class="field-content"><igz-default-dropdown data-values-array="$ctrl.headers" data-selected-item="$ctrl.selectedHeader" data-item-select-callback="$ctrl.onSelectHeader(item, isItemChanged, field)" data-is-required="true" data-form-object="$ctrl.functionEventForm"></igz-default-dropdown></div></div><div class="field-wrapper"><div class="field-label">Body</div><div data-ng-if="$ctrl.contentType === \'application/json\'" class="field-content code-edit-section"><ncl-monaco data-function-source-code="$ctrl.workingCopy.spec.body" data-selected-theme="$ctrl.bodyTheme" data-language="json" data-mini-monaco="true" data-on-change-source-code-callback="$ctrl.onChangeSourceCode(sourceCode)" data-read-only="false"></ncl-monaco></div><div data-ng-if="$ctrl.contentType === \'text/plain\'" class="field-content"><textarea class="event-body" data-ng-model="$ctrl.workingCopy.spec.body" data-ng-change="$ctrl.onChangeBody()" data-form-object="$ctrl.functionEventForm" placeholder="Type a body of event"></textarea></div></div></form><div class="event-error" data-ng-if="$ctrl.isDeployFailed">{{$ctrl.errorText}}</div></div><div class="bottom-bar"><div class="ncl-secondary-button" data-ng-click="$ctrl.closeEventDialog()">Cancel</div><div class="ncl-primary-button" tabindex="0" data-ng-class="{\'disabled\' : !$ctrl.isFormChanged}" data-ng-click="$ctrl.applyChanges()" data-ng-keydown="$ctrl.applyChanges($event)" data-ng-hide="$ctrl.isLoadingState">{{$ctrl.buttonText}}</div><div class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">Loading...</div></div></div>');
 }]);
 })();
 
@@ -16011,8 +16160,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/projects/project/functions/version/function-event-dialog/function-event-dialog.tpl.html',
-    '<div class="function-event-wrapper"><div class="header"><div class="title">{{$ctrl.titleText}}</div><div class="close-button igz-icon-close" data-ng-click="$ctrl.closeEventDialog()"></div></div><div class="content"><form name="$ctrl.functionEventForm" class="event-form"><div class="field-wrapper"><div class="field-label">Name</div><div class="field-content"><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="displayName" data-input-model-options="$ctrl.inputModelOptions" data-input-value="$ctrl.workingCopy.spec.displayName" data-validation-is-required="true" data-form-object="$ctrl.functionEventForm" data-update-data-callback="$ctrl.inputValueCallback(newData, \'displayName\')" data-placeholder-text="Type a name of event"></igz-validating-input-field></div></div><div class="field-wrapper"><div class="field-label">Method</div><div class="field-content"><igz-default-dropdown data-values-array="$ctrl.methods" data-selected-item="$ctrl.selectedMethod" data-item-select-callback="$ctrl.onSelectMethod(item, isItemChanged, field)" data-is-required="true" data-form-object="$ctrl.functionEventForm"></igz-default-dropdown></div></div><div class="field-wrapper"><div class="field-label">Path</div><div class="field-content"><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="path" data-input-model-options="$ctrl.inputModelOptions" data-input-value="$ctrl.workingCopy.spec.attributes.path" data-form-object="$ctrl.functionEventForm" data-update-data-callback="$ctrl.inputValueCallback(newData, \'path\')" data-placeholder-text="Type a path"></igz-validating-input-field></div></div><div class="field-wrapper"><div class="field-label">Content type</div><div class="field-content"><igz-default-dropdown data-values-array="$ctrl.headers" data-selected-item="$ctrl.selectedHeader" data-item-select-callback="$ctrl.onSelectHeader(item, isItemChanged, field)" data-is-required="true" data-form-object="$ctrl.functionEventForm"></igz-default-dropdown></div></div><div class="field-wrapper"><div class="field-label">Body</div><div data-ng-if="$ctrl.contentType === \'application/json\'" class="field-content code-edit-section"><ncl-monaco data-function-source-code="$ctrl.workingCopy.spec.body" data-selected-theme="$ctrl.bodyTheme" data-language="json" data-mini-monaco="true" data-on-change-source-code-callback="$ctrl.onChangeSourceCode(sourceCode)" data-read-only="false"></ncl-monaco></div><div data-ng-if="$ctrl.contentType === \'text/plain\'" class="field-content"><textarea class="event-body" data-ng-model="$ctrl.workingCopy.spec.body" data-ng-change="$ctrl.onChangeBody()" data-form-object="$ctrl.functionEventForm" placeholder="Type a body of event"></textarea></div></div></form><div class="event-error" data-ng-if="$ctrl.isDeployFailed">{{$ctrl.errorText}}</div></div><div class="bottom-bar"><div class="ncl-secondary-button" data-ng-click="$ctrl.closeEventDialog()">Cancel</div><div class="ncl-primary-button" tabindex="0" data-ng-class="{\'disabled\' : !$ctrl.isFormChanged}" data-ng-click="$ctrl.applyChanges()" data-ng-keydown="$ctrl.applyChanges($event)" data-ng-hide="$ctrl.isLoadingState">{{$ctrl.buttonText}}</div><div class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">Loading...</div></div></div>');
+  $templateCache.put('nuclio/projects/project/functions/version/version-configuration/version-configuration.tpl.html',
+    '<div class="ncl-version-configuration ncl-version" data-igz-extend-background><div class="igz-scrollable-container" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="ncl-version-configuration-wrapper"><div class="row"><ncl-version-configuration-basic-settings class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-basic-settings><ncl-version-configuration-resources class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-resources></div><div class="row"><ncl-version-configuration-environment-variables class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-environment-variables></div><div class="row"><ncl-version-configuration-labels class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-labels><ncl-version-configuration-annotations class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-annotations></div><div class="row"><ncl-version-configuration-data-bindings class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-data-bindings><ncl-version-configuration-build class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-build></div><div class="row" data-ng-if="!$ctrl.isInvisibleForCurrentRuntime($ctrl.version.spec.runtime) || $ctrl.isDemoMode()" data-ng-class="{\'shell-runtime\': $ctrl.version.spec.runtime === \'shell\' && !$ctrl.isDemoMode()}"><ncl-version-configuration-logging data-ng-class="{\'invisible-block\': !$ctrl.isDemoMode() && $ctrl.version.spec.runtime !== \'java\'}" class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-logging><ncl-version-configuration-runtime-attributes class="configuration-block runtime-attributes" data-ng-class="{\'invisible-block\': $ctrl.isInvisibleForCurrentRuntime($ctrl.version.spec.runtime)}" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-runtime-attributes></div><div class="row"><ncl-version-configuration-volumes class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback()"></ncl-version-configuration-volumes></div></div></div></div>');
 }]);
 })();
 
@@ -16060,8 +16209,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-navigation-tabs/test-events-navigation-tabs.tpl.html',
-    '<div class="ncl-test-events-navigation-tabs"><div class="test-events-navigation-tab" data-ng-repeat="item in $ctrl.tabItems" data-ng-click="$ctrl.changeActiveTab(item)" data-ng-class="{\'active\': $ctrl.isActiveTab(item)}">{{item.tabName | uppercase}}<span class="badge" data-ng-if="item.badge">{{item.badge}}</span></div><igz-default-dropdown data-ng-if="$ctrl.selectedLogLevel" data-values-array="$ctrl.logLevelValues" data-select-property-only="id" data-selected-item="$ctrl.selectedLogLevel" data-item-select-callback="$ctrl.onChangeLogLevel({selectedLogLevel: item})"></igz-default-dropdown></div>');
+  $templateCache.put('nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-logs/test-events-logs.tpl.html',
+    '<div class="ncl-test-events-logs"><div class="functional-buttons" data-ng-if="$ctrl.logs.length > 0"><div class="ncl-icon-expand-all" data-ng-click="$ctrl.expandAllRows(true)" data-uib-tooltip="Expand all" data-tooltip-popup-delay="300" data-tooltip-placement="left" data-tooltip-append-to-body="true"></div><div class="ncl-icon-collapse-all" data-ng-click="$ctrl.expandAllRows(false)" data-uib-tooltip="Collapse all" data-tooltip-popup-delay="300" data-tooltip-placement="left" data-tooltip-append-to-body="true"></div></div><div data-ng-repeat="log in $ctrl.logs track by $index"><div class="collapsed-row text-ellipsis" data-ng-if="log.ui.collapsed"><span class="igz-icon-right" data-ng-click="$ctrl.collapseRow(log, false)"></span><div class="level-icon {{$ctrl.getLevelIconClass(log)}}"></div><span class="date">{{log.time | date: "EEE, MMM d, yyyy, HH:mm:ss\'GMT\'" : "+0000"}}</span><div class="message text-ellipsis">{{log.message}}</div><div class="ncl-icon-parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"></div></div><div class="expanded-row" data-ng-if="!log.ui.collapsed"><div class="header"><span class="igz-icon-down" data-ng-click="$ctrl.collapseRow(log, true)"></span><div class="level-icon {{$ctrl.getLevelIconClass(log)}}"></div><span class="date">{{log.time | date: "EEE, MMM d, yyyy, HH:mm:ss\'GMT\'" : "+0000"}}</span><div class="ncl-icon-parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"></div></div><div class="expanded-body"><div class="message">{{log.message}}</div><div class="error" data-ng-if="log.err">{{log.err}}</div><div class="parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"><span class="parameters-header">Parameters</span><div data-ng-repeat="(key, value) in $ctrl.getParameters(log)"><div class="text-ellipsis labels">{{key}}:</div><div class="text-ellipsis values">{{value}}</div></div></div></div></div></div><div class="no-logs" data-ng-if="$ctrl.logs.length === 0">No logs have been found...</div></div>');
 }]);
 })();
 
@@ -16072,8 +16221,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-logs/test-events-logs.tpl.html',
-    '<div class="ncl-test-events-logs"><div class="functional-buttons" data-ng-if="$ctrl.logs.length > 0"><div class="ncl-icon-expand-all" data-ng-click="$ctrl.expandAllRows(true)" data-uib-tooltip="Expand all" data-tooltip-popup-delay="300" data-tooltip-placement="left" data-tooltip-append-to-body="true"></div><div class="ncl-icon-collapse-all" data-ng-click="$ctrl.expandAllRows(false)" data-uib-tooltip="Collapse all" data-tooltip-popup-delay="300" data-tooltip-placement="left" data-tooltip-append-to-body="true"></div></div><div data-ng-repeat="log in $ctrl.logs track by $index"><div class="collapsed-row text-ellipsis" data-ng-if="log.ui.collapsed"><span class="igz-icon-right" data-ng-click="$ctrl.collapseRow(log, false)"></span><div class="level-icon {{$ctrl.getLevelIconClass(log)}}"></div><span class="date">{{log.time | date: "EEE, MMM d, yyyy, HH:mm:ss\'GMT\'" : "+0000"}}</span><div class="message text-ellipsis">{{log.message}}</div><div class="ncl-icon-parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"></div></div><div class="expanded-row" data-ng-if="!log.ui.collapsed"><div class="header"><span class="igz-icon-down" data-ng-click="$ctrl.collapseRow(log, true)"></span><div class="level-icon {{$ctrl.getLevelIconClass(log)}}"></div><span class="date">{{log.time | date: "EEE, MMM d, yyyy, HH:mm:ss\'GMT\'" : "+0000"}}</span><div class="ncl-icon-parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"></div></div><div class="expanded-body"><div class="message">{{log.message}}</div><div class="error" data-ng-if="log.err">{{log.err}}</div><div class="parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"><span class="parameters-header">Parameters</span><div data-ng-repeat="(key, value) in $ctrl.getParameters(log)"><div class="text-ellipsis labels">{{key}}:</div><div class="text-ellipsis values">{{value}}</div></div></div></div></div></div><div class="no-logs" data-ng-if="$ctrl.logs.length === 0">No logs have been found...</div></div>');
+  $templateCache.put('nuclio/projects/project/functions/version/version-code/function-event-pane/test-events-navigation-tabs/test-events-navigation-tabs.tpl.html',
+    '<div class="ncl-test-events-navigation-tabs"><div class="test-events-navigation-tab" data-ng-repeat="item in $ctrl.tabItems" data-ng-click="$ctrl.changeActiveTab(item)" data-ng-class="{\'active\': $ctrl.isActiveTab(item)}">{{item.tabName | uppercase}}<span class="badge" data-ng-if="item.badge">{{item.badge}}</span></div><igz-default-dropdown data-ng-if="$ctrl.selectedLogLevel" data-values-array="$ctrl.logLevelValues" data-select-property-only="id" data-selected-item="$ctrl.selectedLogLevel" data-item-select-callback="$ctrl.onChangeLogLevel({selectedLogLevel: item})"></igz-default-dropdown></div>');
 }]);
 })();
 
@@ -16120,8 +16269,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-environment-variables/version-configuration-environment-variables.tpl.html',
-    '<div class="ncl-version-configuration-environment-variables"><div class="title">Environment Variables</div><form name="$ctrl.environmentVariablesForm" class="resources-wrapper"><div data-ng-if="!$ctrl.isScrollNeeded()" class="igz-scrollable-container"><div class="table-body" data-ng-repeat="variable in $ctrl.variables track by $index"><ncl-key-value-input class="new-label-input" data-list-class="ncl-version-configuration-environment-variables" data-change-state-broadcast="change-state-deploy-button" data-row-data="variable" data-item-index="$index" data-use-type="true" data-use-labels="true" data-all-value-types="$ctrl.isOnlyValueTypeInputs" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div data-ng-if="$ctrl.isScrollNeeded()" class="igz-scrollable-container scrollable-environment-variables" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="variable in $ctrl.variables track by $index"><ncl-key-value-input class="new-label-input" data-list-class="scrollable-environment-variables" data-change-state-broadcast="change-state-deploy-button" data-row-data="variable" data-item-index="$index" data-use-type="true" data-use-labels="true" data-all-value-types="$ctrl.isOnlyValueTypeInputs" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-variable-button" data-ng-click="$ctrl.addNewVariable($event)"><span class="igz-icon-add-round"></span>Create a new environment variable</div></form></div>');
+  $templateCache.put('nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-data-bindings/version-configuration-data-bindings.tpl.html',
+    '<div class="ncl-version-configuration-data-bindings"><div class="title">Data Bindings</div><form name="$ctrl.dataBindingsForm" class="data-bindings-wrapper"><div class="ncl-version-binding"><div class="common-table"><div class="common-table-header item-header"><div class="common-table-cell item-name">Name</div><div class="common-table-cell item-class">Class</div><div class="igz-col-70 common-table-cell">Info</div></div><div class="common-table-body"><div data-ng-if="!$ctrl.isScrollNeeded()" class="igz-scrollable-container"><ncl-collapsing-row data-ng-repeat="binding in $ctrl.bindings" data-item="binding" data-type="binding" data-list-class="ncl-version-configuration-data-bindings" data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)"><ncl-edit-item class="common-table-cells-container edit-binding-row" data-item="binding" data-type="binding" data-on-submit-callback="$ctrl.editBindingCallback(item)"></ncl-edit-item></ncl-collapsing-row></div><div data-ng-if="$ctrl.isScrollNeeded()" class="igz-scrollable-container scrollable-data-bindings" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><ncl-collapsing-row data-ng-repeat="binding in $ctrl.bindings" data-item="binding" data-type="binding" data-list-class="scrollable-data-bindings" data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)"><ncl-edit-item class="common-table-cells-container edit-binding-row" data-item="binding" data-type="binding" data-on-submit-callback="$ctrl.editBindingCallback(item)"></ncl-edit-item></ncl-collapsing-row></div></div></div></div><div class="create-binding-button" data-ng-click="$ctrl.createBinding($event)"><span class="igz-icon-add-round"></span>Create a new binding</div></form></div>');
 }]);
 })();
 
@@ -16132,8 +16281,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-data-bindings/version-configuration-data-bindings.tpl.html',
-    '<div class="ncl-version-configuration-data-bindings"><div class="title">Data Bindings</div><form name="$ctrl.dataBindingsForm" class="data-bindings-wrapper"><div class="ncl-version-binding"><div class="common-table"><div class="common-table-header item-header"><div class="common-table-cell item-name">Name</div><div class="common-table-cell item-class">Class</div><div class="igz-col-70 common-table-cell">Info</div></div><div class="common-table-body"><div data-ng-if="!$ctrl.isScrollNeeded()" class="igz-scrollable-container"><ncl-collapsing-row data-ng-repeat="binding in $ctrl.bindings" data-item="binding" data-type="binding" data-list-class="ncl-version-configuration-data-bindings" data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)"><ncl-edit-item class="common-table-cells-container edit-binding-row" data-item="binding" data-type="binding" data-on-submit-callback="$ctrl.editBindingCallback(item)"></ncl-edit-item></ncl-collapsing-row></div><div data-ng-if="$ctrl.isScrollNeeded()" class="igz-scrollable-container scrollable-data-bindings" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><ncl-collapsing-row data-ng-repeat="binding in $ctrl.bindings" data-item="binding" data-type="binding" data-list-class="scrollable-data-bindings" data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)"><ncl-edit-item class="common-table-cells-container edit-binding-row" data-item="binding" data-type="binding" data-on-submit-callback="$ctrl.editBindingCallback(item)"></ncl-edit-item></ncl-collapsing-row></div></div></div></div><div class="create-binding-button" data-ng-click="$ctrl.createBinding($event)"><span class="igz-icon-add-round"></span>Create a new binding</div></form></div>');
+  $templateCache.put('nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-environment-variables/version-configuration-environment-variables.tpl.html',
+    '<div class="ncl-version-configuration-environment-variables"><div class="title">Environment Variables</div><form name="$ctrl.environmentVariablesForm" class="resources-wrapper"><div data-ng-if="!$ctrl.isScrollNeeded()" class="igz-scrollable-container"><div class="table-body" data-ng-repeat="variable in $ctrl.variables track by $index"><ncl-key-value-input class="new-label-input" data-list-class="ncl-version-configuration-environment-variables" data-change-state-broadcast="change-state-deploy-button" data-row-data="variable" data-item-index="$index" data-use-type="true" data-use-labels="true" data-all-value-types="$ctrl.isOnlyValueTypeInputs" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div data-ng-if="$ctrl.isScrollNeeded()" class="igz-scrollable-container scrollable-environment-variables" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="variable in $ctrl.variables track by $index"><ncl-key-value-input class="new-label-input" data-list-class="scrollable-environment-variables" data-change-state-broadcast="change-state-deploy-button" data-row-data="variable" data-item-index="$index" data-use-type="true" data-use-labels="true" data-all-value-types="$ctrl.isOnlyValueTypeInputs" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-variable-button" data-ng-click="$ctrl.addNewVariable($event)"><span class="igz-icon-add-round"></span>Create a new environment variable</div></form></div>');
 }]);
 })();
 
@@ -16168,8 +16317,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-resources/version-configuration-resources.tpl.html',
-    '<div class="ncl-version-configuration-resources"><div class="title">Resources</div><form name="$ctrl.resourcesForm" class="resources-wrapper"><div class="row"><div class="sliders-block"><div class="slider-row"><igz-slider-input-block data-slider-config="$ctrl.memorySliderConfig" data-measure-units="null" data-value-unit="$ctrl.memoryValueUnit" data-slider-block-updating-broadcast="" data-on-slider-changing="$ctrl.onSliderChanging" data-on-change-callback="$ctrl.sliderInputCallback" data-update-slider-input="spec.resources.limits.memory"></igz-slider-input-block></div><div class="slider-row"><igz-slider-input-block data-slider-config="$ctrl.cpuSliderConfig" data-measure-units="null" data-slider-block-updating-broadcast="" data-on-change-callback="$ctrl.sliderInputCallback" data-update-slider-input="spec.resources.limits.cpu"></igz-slider-input-block></div><div class="slider-row"><igz-slider-input-block data-slider-config="$ctrl.targetCpuSliderConfig" data-measure-units="null" data-value-unit="$ctrl.targetValueUnit" data-slider-block-updating-broadcast="" data-on-change-callback="$ctrl.sliderInputCallback" data-update-slider-input="spec.targetCPU" data-uib-tooltip="Exceeding this threshold will increase the number of replicas" data-tooltip-append-to-body="true" data-tooltip-placement="bottom" data-tooltip-popup-delay="500" data-allow-full-range="true"></igz-slider-input-block></div></div><div class="replicas-block"><div class="label">Replicas</div><div class="replicas-values"><div class="inputs"><igz-number-input data-form-object="$ctrl.resourcesForm" data-input-name="minReplicas" data-current-value="$ctrl.minReplicas" data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)" data-update-number-input-field="minReplicas" data-allow-empty-field="true" data-placeholder="" data-decimal-number="0" data-value-step="1" data-validation-is-required="true" data-min-value="0" data-max-value="$ctrl.maxReplicas"></igz-number-input><div class="values-label">min</div><igz-number-input data-form-object="$ctrl.resourcesForm" data-input-name="maxReplicas" data-current-value="$ctrl.maxReplicas" data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)" data-update-number-input-field="maxReplicas" data-allow-empty-field="true" data-placeholder="" data-decimal-number="0" data-value-step="1" data-validation-is-required="true" data-min-value="$ctrl.minReplicas"></igz-number-input><div class="values-label">max</div></div></div></div></div></form></div>');
+  $templateCache.put('nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-runtime-attributes/version-configuration-runtime-attributes.tpl.html',
+    '<div class="ncl-version-configuration-runtime-attributes"><div class="title">Runtime Attributes</div><form name="$ctrl.runtimeAttributesForm" class="runtime-attributes-wrapper"><div class="row" data-ng-class="{\'info-row\': $ctrl.version.spec.runtime !== \'shell\'}" data-ng-if="$ctrl.version.spec.runtime !== \'java\'"><div class="runtime-title"><span class="label">Runtime</span><div class="runtime">{{$ctrl.version.spec.runtime}}</div></div><div class="arguments-input" data-ng-if="$ctrl.version.spec.runtime === \'shell\'"><span class="label">Arguments</span><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="arguments" data-input-value="$ctrl.runtimeAttributes.arguments" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="arguments" data-form-object="$ctrl.runtimeAttributesForm" data-placeholder-text="Type..."></igz-validating-input-field></div></div><div class="row igz-col-100 info-row" data-ng-if="$ctrl.version.spec.runtime === \'java\'"><div class="row igz-col-100 info-row"><span class="field-label">JVM options</span><igz-validating-input-field data-field-type="textarea" data-input-name="jvmOptions" data-input-value="$ctrl.runtimeAttributes.jvmOptions" data-is-focused="false" data-form-object="$ctrl.runtimeAttributesForm" data-placeholder-text="Type options" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="jvmOptions" class="nuclio-validating-input build-command-field java-attribute"></igz-validating-input-field></div></div><div class="row info-row" data-ng-if="$ctrl.version.spec.runtime === \'shell\'"><span class="label">Response headers</span><div class="table-headers"><div class="key-header">Key</div><div class="value-header">Value</div></div><div class="igz-scrollable-container" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="attribute in $ctrl.attributes"><ncl-key-value-input class="new-label-input" data-row-data="attribute" data-change-state-broadcast="change-state-deploy-button" data-use-type="false" data-item-index="$index" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-label-button" data-ng-click="$ctrl.addNewAttribute($event)"><span class="igz-icon-add-round"></span>Create a new runtime attribute</div></div></form></div>');
 }]);
 })();
 
@@ -16180,8 +16329,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-runtime-attributes/version-configuration-runtime-attributes.tpl.html',
-    '<div class="ncl-version-configuration-runtime-attributes"><div class="title">Runtime Attributes</div><form name="$ctrl.runtimeAttributesForm" class="runtime-attributes-wrapper"><div class="row" data-ng-class="{\'info-row\': $ctrl.version.spec.runtime !== \'shell\'}" data-ng-if="$ctrl.version.spec.runtime !== \'java\'"><div class="runtime-title"><span class="label">Runtime</span><div class="runtime">{{$ctrl.version.spec.runtime}}</div></div><div class="arguments-input" data-ng-if="$ctrl.version.spec.runtime === \'shell\'"><span class="label">Arguments</span><igz-validating-input-field class="nuclio-validating-input" data-field-type="input" data-input-name="arguments" data-input-value="$ctrl.runtimeAttributes.arguments" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="arguments" data-form-object="$ctrl.runtimeAttributesForm" data-placeholder-text="Type..."></igz-validating-input-field></div></div><div class="row igz-col-100 info-row" data-ng-if="$ctrl.version.spec.runtime === \'java\'"><div class="row igz-col-100 info-row"><span class="field-label">JVM options</span><igz-validating-input-field data-field-type="textarea" data-input-name="jvmOptions" data-input-value="$ctrl.runtimeAttributes.jvmOptions" data-is-focused="false" data-form-object="$ctrl.runtimeAttributesForm" data-placeholder-text="Type options" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="jvmOptions" class="nuclio-validating-input build-command-field java-attribute"></igz-validating-input-field></div></div><div class="row info-row" data-ng-if="$ctrl.version.spec.runtime === \'shell\'"><span class="label">Response headers</span><div class="table-headers"><div class="key-header">Key</div><div class="value-header">Value</div></div><div class="igz-scrollable-container" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"><div class="table-body" data-ng-repeat="attribute in $ctrl.attributes"><ncl-key-value-input class="new-label-input" data-row-data="attribute" data-change-state-broadcast="change-state-deploy-button" data-use-type="false" data-item-index="$index" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input></div></div><div class="create-label-button" data-ng-click="$ctrl.addNewAttribute($event)"><span class="igz-icon-add-round"></span>Create a new runtime attribute</div></div></form></div>');
+  $templateCache.put('nuclio/projects/project/functions/version/version-configuration/tabs/version-configuration-resources/version-configuration-resources.tpl.html',
+    '<div class="ncl-version-configuration-resources"><div class="title">Resources</div><form name="$ctrl.resourcesForm" class="resources-wrapper"><div class="row"><div class="sliders-block"><div class="slider-row"><igz-slider-input-block data-slider-config="$ctrl.memorySliderConfig" data-measure-units="null" data-value-unit="$ctrl.memoryValueUnit" data-slider-block-updating-broadcast="" data-on-slider-changing="$ctrl.onSliderChanging" data-on-change-callback="$ctrl.sliderInputCallback" data-update-slider-input="spec.resources.limits.memory"></igz-slider-input-block></div><div class="slider-row"><igz-slider-input-block data-slider-config="$ctrl.cpuSliderConfig" data-measure-units="null" data-slider-block-updating-broadcast="" data-on-change-callback="$ctrl.sliderInputCallback" data-update-slider-input="spec.resources.limits.cpu"></igz-slider-input-block></div><div class="slider-row"><igz-slider-input-block data-slider-config="$ctrl.targetCpuSliderConfig" data-measure-units="null" data-value-unit="$ctrl.targetValueUnit" data-slider-block-updating-broadcast="" data-on-change-callback="$ctrl.sliderInputCallback" data-update-slider-input="spec.targetCPU" data-uib-tooltip="Exceeding this threshold will increase the number of replicas" data-tooltip-append-to-body="true" data-tooltip-placement="bottom" data-tooltip-popup-delay="500" data-allow-full-range="true"></igz-slider-input-block></div></div><div class="replicas-block"><div class="label">Replicas</div><div class="replicas-values"><div class="inputs"><igz-number-input data-form-object="$ctrl.resourcesForm" data-input-name="minReplicas" data-current-value="$ctrl.minReplicas" data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)" data-update-number-input-field="minReplicas" data-allow-empty-field="true" data-placeholder="" data-decimal-number="0" data-value-step="1" data-validation-is-required="true" data-min-value="0" data-max-value="$ctrl.maxReplicas"></igz-number-input><div class="values-label">min</div><igz-number-input data-form-object="$ctrl.resourcesForm" data-input-name="maxReplicas" data-current-value="$ctrl.maxReplicas" data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)" data-update-number-input-field="maxReplicas" data-allow-empty-field="true" data-placeholder="" data-decimal-number="0" data-value-step="1" data-validation-is-required="true" data-min-value="$ctrl.minReplicas"></igz-number-input><div class="values-label">max</div></div></div></div></div></form></div>');
 }]);
 })();
 
