@@ -9,14 +9,13 @@
                 toggleSplashScreen: '&',
                 getFunctionTemplates: '&',
                 createNewProject: '<',
-                renderTemplate: '&',
                 selectedProject: '<'
             },
             templateUrl: 'nuclio/common/screens/create-function/function-from-template/function-from-template.tpl.html',
             controller: FunctionFromTemplateController
         });
 
-    function FunctionFromTemplateController($scope, $state, $timeout, lodash, ngDialog, YAML, DialogsService, ValidatingPatternsService) {
+    function FunctionFromTemplateController($scope, $state, $timeout, lodash, DialogsService, ValidatingPatternsService) {
         var ctrl = this;
         var templatesOriginalObject = {}; // will always save original templates
 
@@ -106,7 +105,9 @@
 
             // create function only when form is valid
             if (ctrl.functionFromTemplateForm.$valid && !lodash.isNil(ctrl.selectedTemplate)) {
-                lodash.assign(ctrl.functionData.rendered.metadata, {
+                ctrl.toggleSplashScreen({value: true});
+
+                lodash.assign(ctrl.functionData.metadata, {
                     name: ctrl.functionName
                 });
 
@@ -114,30 +115,14 @@
                     ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
                 }
 
-                if (lodash.has(ctrl.functionData, 'template')) {
-                    ngDialog.open({
-                        template: '<ncl-function-from-template-dialog data-close-dialog="closeThisDialog(template)" data-template="$ctrl.functionData"></ncl-function-from-template-dialog>',
-                        plain: true,
-                        scope: $scope,
-                        className: 'ngdialog-theme-nuclio function-from-template-dialog-wrapper'
-                    }).closePromise
-                        .then(function (data) {
-                            if (!lodash.isNil(data.value)) {
-                                lodash.set(ctrl.functionData, 'values', data.value);
-
-                                ctrl.renderTemplate({template: angular.toJson(lodash.omit(ctrl.functionData, 'rendered.spec'))})
-                                    .then(function (response) {
-                                        lodash.set(ctrl.functionData, 'rendered.spec', response.spec);
-
-                                        goToEditCodeScreen();
-                                    });
-                            }
-                        });
-                } else {
-                    goToEditCodeScreen();
-                }
-
-
+                $state.go('app.project.function.edit.code', {
+                    isNewFunction: true,
+                    id: ctrl.project.metadata.name,
+                    functionId: ctrl.functionData.metadata.name,
+                    projectId: ctrl.project.metadata.name,
+                    projectNamespace: ctrl.project.metadata.namespace,
+                    functionData: ctrl.functionData
+                });
             }
         }
 
@@ -240,7 +225,7 @@
          */
         function filterByRuntime(template) {
             return ctrl.selectedRuntimeFilter.id === 'all' ||
-                template.rendered.spec.runtime === ctrl.selectedRuntimeFilter.id;
+                template.spec.runtime === ctrl.selectedRuntimeFilter.id;
         }
 
         /**
@@ -249,8 +234,8 @@
          * @returns {boolean}
          */
         function filterByTitleAndDescription(template) {
-            var title = template.rendered.metadata.name.split(':')[0];
-            var description = template.rendered.spec.description;
+            var title = template.metadata.name.split(':')[0];
+            var description = template.spec.description;
 
             // reset pagination to first page if one of the filters was applied
             if (!lodash.isEmpty(ctrl.searchQuery) || ctrl.selectedRuntimeFilter.id !== 'all') {
@@ -270,22 +255,6 @@
         }
 
         /**
-         * Go to `app.project.function.edit.code` screen
-         */
-        function goToEditCodeScreen() {
-            ctrl.toggleSplashScreen({value: true});
-
-            $state.go('app.project.function.edit.code', {
-                isNewFunction: true,
-                id: ctrl.project.metadata.name,
-                functionId: ctrl.functionData.rendered.metadata.name,
-                projectId: ctrl.project.metadata.name,
-                projectNamespace: ctrl.project.metadata.namespace,
-                functionData: ctrl.functionData.rendered
-            });
-        }
-
-        /**
          * Initialize object for function from template
          */
         function initFunctionData() {
@@ -298,7 +267,7 @@
                     var selectedTemplate = ctrl.templatesWorkingCopy[ctrl.selectedTemplate];
                     ctrl.functionData = angular.copy(selectedTemplate);
 
-                    lodash.assign(ctrl.functionData.rendered.metadata, {
+                    lodash.assign(ctrl.functionData.metadata, {
                         name: ctrl.functionName
                     });
 
@@ -405,7 +374,7 @@
                     return lodash.slice(filteredTemplates, (ctrl.page.number * PAGE_SIZE), (ctrl.page.number * PAGE_SIZE) + PAGE_SIZE);
                 })
                 .keyBy(function (template) {
-                    return template.rendered.metadata.name.split(':')[0] + ' (' + template.rendered.spec.runtime + ')';
+                    return template.metadata.name.split(':')[0] + ' (' + template.spec.runtime + ')';
                 })
                 .value();
         }
