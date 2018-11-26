@@ -1,0 +1,65 @@
+<div class="close-button ncl-icon-close" data-ng-click="$ctrl.onClose()"></div>
+
+<div class="title">
+    <span>
+        Template parameters
+    </span>
+</div>
+
+<div class="main-content ">
+    <form name="$ctrl.templateForm" novalidate>
+        <div class="field-group"
+             data-ng-repeat="(name, value) in $ctrl.template.values">
+            <div class="field-label">
+                {{ value.displayName }}
+            </div>
+
+            <div data-ng-if="value.kind === 'string'">
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-validation-is-required="value.required"
+                                            class="nuclio-validating-input"
+                                            data-input-name="{{name}}"
+                                            data-form-object="$ctrl.templateForm"
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="{{name}}"></igz-validating-input-field>
+            </div>
+
+            <div data-ng-if="value.kind === 'integer'">
+                <igz-number-input data-min-value="value.attributes.minValue"
+                                  data-max-value="value.attributes.maxValue"
+                                  data-default-value="value.attributes.defaultValue"
+                                  data-validation-is-required="value.required"
+                                  data-form-object="$ctrl.templateForm"
+                                  data-allow-empty-field="true"
+                                  data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)"
+                                  data-update-number-input-field="{{name}}"
+                                  data-input-name="{{name}}"
+                                  data-value-step="1"></igz-number-input>
+            </div>
+
+            <div data-ng-if="value.kind === 'choice'">
+                <igz-default-dropdown data-values-array="$ctrl.dropdownOptions[name].options"
+                                      data-selected-item="$ctrl.dropdownOptions[name].defaultValue"
+                                      data-is-required="value.required"
+                                      data-item-select-callback="$ctrl.dropdownCallback(item, isItemChanged, name)"
+                                      data-form-object="$ctrl.templateForm"
+                                      data-input-name="{{name}}"></igz-default-dropdown>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="buttons">
+    <button class="ncl-secondary-button"
+            data-ng-click="$ctrl.onClose()"
+            data-ng-keydown="$ctrl.onClose($event)">
+        Cancel
+    </button>
+    <button class="ncl-primary-button"
+            data-ng-class="{'disabled': !$ctrl.isFormFilled()}"
+            data-ng-click="$ctrl.onApply()"
+            data-ng-keydown="$ctrl.onApply($event)">
+        Apply
+    </button>
+</div>
