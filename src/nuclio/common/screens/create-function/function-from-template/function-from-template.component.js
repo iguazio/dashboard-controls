@@ -124,14 +124,19 @@
                         className: 'ngdialog-theme-nuclio function-from-template-dialog-wrapper'
                     }).closePromise
                         .then(function (data) {
-                            lodash.set(ctrl.functionData, 'values', data.value);
+                            if (!lodash.isNil(data.value)) {
+                                lodash.set(ctrl.functionData, 'values', data.value);
 
-                            ctrl.renderTemplate({template: angular.toJson(lodash.omit(ctrl.functionData, 'rendered'))})
-                                .then(function (response) {
-                                    lodash.set(ctrl.functionData, 'rendered.spec', response.spec);
+                                ctrl.renderTemplate({template: angular.toJson(lodash.omit(ctrl.functionData, 'rendered.spec'))})
+                                    .then(function (response) {
+                                        lodash.set(ctrl.functionData, 'rendered.spec', response.spec);
 
-                                    goToEditCodeScreen();
-                                });
+                                        goToEditCodeScreen();
+                                    });
+                            }
+                        })
+                        .then(function () {
+                            ctrl.toggleSplashScreen({value: false});
                         });
                 } else {
                     goToEditCodeScreen();
