@@ -106,8 +106,6 @@
 
             // create function only when form is valid
             if (ctrl.functionFromTemplateForm.$valid && !lodash.isNil(ctrl.selectedTemplate)) {
-                ctrl.toggleSplashScreen({value: true});
-
                 lodash.assign(ctrl.functionData.rendered.metadata, {
                     name: ctrl.functionName
                 });
@@ -134,9 +132,6 @@
                                         goToEditCodeScreen();
                                     });
                             }
-                        })
-                        .then(function () {
-                            ctrl.toggleSplashScreen({value: false});
                         });
                 } else {
                     goToEditCodeScreen();
@@ -278,6 +273,8 @@
          * Go to `app.project.function.edit.code` screen
          */
         function goToEditCodeScreen() {
+            ctrl.toggleSplashScreen({value: true});
+
             $state.go('app.project.function.edit.code', {
                 isNewFunction: true,
                 id: ctrl.project.metadata.name,
