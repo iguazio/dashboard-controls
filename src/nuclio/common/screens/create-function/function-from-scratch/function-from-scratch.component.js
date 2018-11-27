@@ -14,17 +14,17 @@
             controller: FunctionFromScratchController
         });
 
-    function FunctionFromScratchController($state, $timeout, lodash, ConfigService, FunctionsService,
-                                           ValidatingPatternsService) {
+    function FunctionFromScratchController($document, $state, $timeout, lodash, ConfigService, EventHelperService,
+                                           FunctionsService, ValidatingPatternsService) {
         var ctrl = this;
 
+        ctrl.functionFromScratchForm = {};
         ctrl.inputModelOptions = {
             debounce: {
                 'default': 0
             }
         };
         ctrl.functionData = {};
-        ctrl.isCreateFunctionAllowed = false;
         ctrl.runtimes = [];
         ctrl.selectedRuntime = null;
 
@@ -36,6 +36,7 @@
         ctrl.cancelCreating = cancelCreating;
         ctrl.createFunction = createFunction;
         ctrl.inputValueCallback = inputValueCallback;
+        ctrl.isCreateFunctionAllowed = isCreateFunctionAllowed;
         ctrl.isProjectsDropDownVisible = isProjectsDropDownVisible;
         ctrl.onRuntimeChange = onRuntimeChange;
         ctrl.onProjectChange = onProjectChange;
@@ -46,6 +47,8 @@
         function onInit() {
             ctrl.runtimes = getRuntimes();
             ctrl.selectedRuntime = getDefaultRuntime();
+
+            $document.on('keypress', createFunction);
 
             initFunctionData();
         }
@@ -84,31 +87,35 @@
          * Callback handler for 'create function' button
          * Creates function with defined data.
          */
-        function createFunction() {
+        function createFunction(event) {
+            $timeout(function () {
+                if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) && ctrl.isCreateFunctionAllowed()) {
 
-            // create function only when form is valid
-            if (ctrl.functionFromScratchForm.$valid) {
-                ctrl.toggleSplashScreen({value: true});
+                    // create function only when form is valid
+                    if (ctrl.functionFromScratchForm.$valid) {
+                        ctrl.toggleSplashScreen({value: true});
 
-                lodash.defaultsDeep(ctrl, {
-                    functionData: {
-                        metadata: {}
+                        lodash.defaultsDeep(ctrl, {
+                            functionData: {
+                                metadata: {}
+                            }
+                        });
+
+                        if (lodash.isEmpty(ctrl.project) && ctrl.selectedProject.id !== 'new_project') {
+                            ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
+                        }
+
+                        $state.go('app.project.function.edit.code', {
+                            isNewFunction: true,
+                            id: ctrl.project.metadata.name,
+                            functionId: ctrl.functionData.metadata.name,
+                            projectId: ctrl.project.metadata.name,
+                            projectNamespace: ctrl.project.metadata.namespace,
+                            functionData: ctrl.functionData
+                        });
                     }
-                });
-
-                if (lodash.isEmpty(ctrl.project) && ctrl.selectedProject.id !== 'new_project') {
-                    ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
                 }
-
-                $state.go('app.project.function.edit.code', {
-                    isNewFunction: true,
-                    id: ctrl.project.metadata.name,
-                    functionId: ctrl.functionData.metadata.name,
-                    projectId: ctrl.project.metadata.name,
-                    projectNamespace: ctrl.project.metadata.namespace,
-                    functionData: ctrl.functionData
-                });
-            }
+            }, 100);
         }
 
         /**
@@ -120,10 +127,16 @@
             $timeout(function () {
                 if (!lodash.isNil(data)) {
                     lodash.set(ctrl, 'functionData.metadata.' + field, data);
-
-                    ctrl.isCreateFunctionAllowed = lodash.isEmpty(ctrl.functionFromScratchForm.$error);
                 }
             });
+        }
+
+        /**
+         * Checks permissibility creation of new function.
+         * @returns {boolean}
+         */
+        function isCreateFunctionAllowed() {
+            return lodash.isEmpty(ctrl.functionFromScratchForm.$error);
         }
 
         /**
@@ -149,8 +162,6 @@
                         functionSourceCode: item.sourceCode
                     }
                 });
-
-                ctrl.isCreateFunctionAllowed = true;
             }
         }
 
@@ -161,7 +172,6 @@
          */
         function onProjectChange(item) {
             ctrl.project = lodash.find(ctrl.projects, ['metadata.name', item.id]);
-            ctrl.isCreateFunctionAllowed = lodash.isEmpty(ctrl.functionFromScratchForm.$error);
         }
 
         //
