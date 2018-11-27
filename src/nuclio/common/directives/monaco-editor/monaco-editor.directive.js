@@ -34,7 +34,7 @@
                             this.editor.setValue(scope.codeFile.code);
                         },
                         onCodeFileChanged: function () {
-                            this.editor.setValue(scope.codeFile.code);
+                            this.editor.updateOptions({ value: scope.codeFile.code });
                         },
                         onWrapStateChanged: function onWrapStateChanged(newState) {
                             this.editor.updateOptions({ wordWrap: newState ? 'on' : 'off' });
