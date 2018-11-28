@@ -49,8 +49,8 @@
                     <div class="bottom-bar">
                         <button class="ncl-secondary-button" data-ng-click="$ctrl.cancelCreating($event)">CANCEL</button>
                         <button class="ncl-primary-button" data-ng-click="$ctrl.createFunction()"
-                                data-ng-disabled="!$ctrl.isCreateFunctionAllowed"
-                                data-ng-class="{'disabled': !$ctrl.isCreateFunctionAllowed}">CREATE FUNCTION</button>
+                                data-ng-disabled="!$ctrl.isCreateFunctionAllowed()"
+                                data-ng-class="{'disabled': !$ctrl.isCreateFunctionAllowed()}">CREATE FUNCTION</button>
                     </div>
                 </div>
             </div>
