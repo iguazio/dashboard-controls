@@ -7,6 +7,7 @@
                 getExternalIpAddresses: '&',
                 getProject: '&',
                 getFunctions: '&',
+                getFunction: '&',
                 deleteFunction: '&',
                 onUpdateFunction: '&'
             },

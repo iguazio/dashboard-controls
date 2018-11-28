@@ -9,6 +9,7 @@
                 functionsList: '<',
                 actionHandlerCallback: '&',
                 handleDeleteFunction: '&',
+                getFunction: '&',
                 onUpdateFunction: '&',
                 externalAddress: '<',
                 isSplashShowed: '<'
@@ -17,9 +18,11 @@
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController($state, lodash, ngDialog, ConfigService, DialogsService, ExportService, NuclioHeaderService) {
+    function NclFunctionCollapsingRowController($state, $timeout, $interval, lodash, ngDialog, ConfigService, DialogsService,
+                                                ExportService, NuclioHeaderService) {
         var ctrl = this;
         var tempFunctionCopy = null;
+        var interval = null;
 
         ctrl.actions = [];
         ctrl.isCollapsed = true;
@@ -43,11 +46,12 @@
                 updateOnContentResize: true
             }
         };
+        ctrl.statusIcon = null;
 
         ctrl.$onInit = onInit;
 
         ctrl.isFunctionShowed = isFunctionShowed;
-        ctrl.getStatusIcon = getStatusIcon;
+        ctrl.getTooltip = getTooltip;
         ctrl.handleAction = handleAction;
         ctrl.onFireAction = onFireAction;
         ctrl.onSelectRow = onSelectRow;
@@ -77,6 +81,7 @@
             });
 
             convertStatusState();
+            setStatusIcon();
 
             ctrl.invocationURL =
                 lodash.isNil(ctrl.function.status.httpPort) ? 'Not yet deployed' :
@@ -110,13 +115,11 @@
         }
 
         /**
-         * Returns appropriate css icon class for functions status.
-         * @returns {string} - icon class
+         * Returns appropriate tooltip for functions status.
+         * @returns {string} - tooltip
          */
-        function getStatusIcon() {
-            if (!lodash.includes(['Error', 'Building', 'Not yet deployed'], ctrl.convertedStatusState)) {
-                return ctrl.function.spec.disable ? 'igz-icon-play' : 'igz-icon-pause';
-            }
+        function getTooltip() {
+            return ctrl.function.spec.disable ? 'Run function' : 'Stop function';
         }
 
         /**
@@ -272,7 +275,44 @@
         }
 
         /**
-         * Toggles function 'disabled' propertie and updates it on back-end
+         * Pulls function status.
+         * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
+         */
+        function pullFunctionState() {
+            interval = $interval(function () {
+                ctrl.getFunction({metadata: ctrl.function.metadata, projectID: ctrl.project.metadata.name})
+                    .then(function (response) {
+                        if (response.status.state === 'ready' || response.status.state === 'error') {
+                            terminateInterval();
+                            convertStatusState();
+                            setStatusIcon();
+                        }
+                    });
+            }, 2000);
+        }
+
+        /**
+         * Returns appropriate css icon class for functions status.
+         * @returns {string} - icon class
+         */
+        function setStatusIcon() {
+            if (!lodash.includes(['Error', 'Building', 'Not yet deployed'], ctrl.convertedStatusState)) {
+                ctrl.statusIcon = ctrl.function.spec.disable ? 'igz-icon-play' : 'igz-icon-pause';
+            }
+        }
+
+        /**
+         * Terminates the interval of function state polling.
+         */
+        function terminateInterval() {
+            if (!lodash.isNil(interval)) {
+                $interval.cancel(interval);
+                interval = null;
+            }
+        }
+
+        /**
+         * Toggles function 'disabled' property and updates it on back-end
          * @param {MouseEvent} event
          */
         function toggleFunctionState(event) {
@@ -319,9 +359,9 @@
 
             ctrl.onUpdateFunction({'function': functionCopy, projectID: ctrl.project.metadata.name})
                 .then(function () {
-                    convertStatusState();
-
                     tempFunctionCopy = null;
+
+                    pullFunctionState();
                 })
                 .catch(function (error) {
                     ctrl.function = tempFunctionCopy;
