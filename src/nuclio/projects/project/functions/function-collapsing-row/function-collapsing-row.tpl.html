@@ -21,6 +21,10 @@
             </div>
             <div class="igz-col-10 common-table-cell">
                 {{$ctrl.convertedStatusState}}
+                <div class="status-icon"
+                     data-ng-class="$ctrl.getStatusIcon()"
+                     data-ng-click="$ctrl.toggleFunctionState($event)">
+                </div>
             </div>
             <div class="igz-col-10 common-table-cell">
                 {{$ctrl.function.spec.replicas}}

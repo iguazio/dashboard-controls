@@ -9,6 +9,7 @@
                 functionsList: '<',
                 actionHandlerCallback: '&',
                 handleDeleteFunction: '&',
+                onUpdateFunction: '&',
                 externalAddress: '<',
                 isSplashShowed: '<'
             },
@@ -18,6 +19,7 @@
 
     function NclFunctionCollapsingRowController($state, lodash, ngDialog, ConfigService, DialogsService, ExportService, NuclioHeaderService) {
         var ctrl = this;
+        var tempFunctionCopy = null;
 
         ctrl.actions = [];
         ctrl.isCollapsed = true;
@@ -45,9 +47,11 @@
         ctrl.$onInit = onInit;
 
         ctrl.isFunctionShowed = isFunctionShowed;
+        ctrl.getStatusIcon = getStatusIcon;
         ctrl.handleAction = handleAction;
         ctrl.onFireAction = onFireAction;
         ctrl.onSelectRow = onSelectRow;
+        ctrl.toggleFunctionState = toggleFunctionState;
         ctrl.isDemoMode = ConfigService.isDemoMode;
 
         //
@@ -72,7 +76,7 @@
                 }
             });
 
-            ctrl.convertedStatusState = lodash.chain(ctrl.function.status.state).lowerCase().upperFirst().value();
+            convertStatusState();
 
             ctrl.invocationURL =
                 lodash.isNil(ctrl.function.status.httpPort) ? 'Not yet deployed' :
@@ -106,6 +110,16 @@
         }
 
         /**
+         * Returns appropriate css icon class for functions status.
+         * @returns {string} - icon class
+         */
+        function getStatusIcon() {
+            if (!lodash.includes(['Error', 'Building', 'Not yet deployed'], ctrl.convertedStatusState)) {
+                return ctrl.function.spec.disable ? 'igz-icon-play' : 'igz-icon-pause';
+            }
+        }
+
+        /**
          * According to given action name calls proper action handler
          * @param {string} actionType - a type of action
          */
@@ -116,6 +130,65 @@
         //
         // Private methods
         //
+
+        /**
+         * Converts function status state.
+         */
+        function convertStatusState() {
+            var status = lodash.chain(ctrl.function.status.state).lowerCase().upperFirst().value();
+
+            if (status === 'Ready') {
+                ctrl.convertedStatusState = ctrl.function.spec.disable ? 'Standby' : 'Running';
+            } else {
+                ctrl.convertedStatusState = status;
+            }
+        }
+
+        /**
+         * Disables function.
+         * Sends request to change 'disable' property
+         */
+        function disableFunction() {
+
+            // in case failed request, modified function object will be restored from that copy
+            tempFunctionCopy = angular.copy(ctrl.function);
+
+            var propertiesToDisableFunction = {
+                spec: {
+                    disable: true,
+                    build: {
+                        mode: 'neverBuild'
+                    }
+                }
+            };
+
+            lodash.merge(ctrl.function, propertiesToDisableFunction);
+
+            updateFunction();
+        }
+
+        /**
+         * Enables function.
+         * Sends request to change 'disable' property
+         */
+        function enableFunction() {
+
+            // in case failed request, modified function object will be restored from that copy
+            tempFunctionCopy = angular.copy(ctrl.function);
+
+            var propertiesToEnableFunction = {
+                spec: {
+                    disable: false,
+                    build: {
+                        mode: 'neverBuild'
+                    }
+                }
+            };
+
+            lodash.merge(ctrl.function, propertiesToEnableFunction);
+
+            updateFunction();
+        }
 
         /**
          * Initializes actions
@@ -164,6 +237,7 @@
                 .catch(function (error) {
                     ctrl.isSplashShowed.value = false;
                     var msg = 'Unknown error occurred while deleting the function.';
+
                     return DialogsService.alert(lodash.get(error, 'data.error', msg));
                 });
         }
@@ -198,18 +272,67 @@
         }
 
         /**
+         * Toggles function 'disabled' propertie and updates it on back-end
+         * @param {MouseEvent} event
+         */
+        function toggleFunctionState(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (ctrl.function.spec.disable) {
+                enableFunction();
+            } else {
+                disableFunction();
+            }
+        }
+
+        /**
          * Show dialog with YAML function config
          */
         function viewConfig() {
             ngDialog.open({
                 template: '<ncl-function-config-dialog data-close-dialog="closeThisDialog()" ' +
-                    'data-function="ngDialogData.function"></ncl-function-config-dialog>',
+                'data-function="ngDialogData.function"></ncl-function-config-dialog>',
                 plain: true,
                 data: {
                     function: ctrl.function,
                 },
                 className: 'ngdialog-theme-iguazio view-yaml-dialog-wrapper'
             });
+        }
+
+        /**
+         * Sends request to update function state
+         */
+        function updateFunction() {
+            ctrl.isSplashShowed.value = true;
+
+            var pathsToExcludeOnDeploy = ['status', 'ui', 'versions'];
+
+            if (!ConfigService.isDemoMode()) {
+                pathsToExcludeOnDeploy.push('spec.loggerSinks');
+            }
+            var functionCopy = lodash.omit(ctrl.function, pathsToExcludeOnDeploy);
+
+            // set `nuclio.io/project-name` label to relate this function to its project
+            lodash.set(functionCopy, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.project.metadata.name);
+
+            ctrl.onUpdateFunction({'function': functionCopy, projectID: ctrl.project.metadata.name})
+                .then(function () {
+                    convertStatusState();
+
+                    tempFunctionCopy = null;
+                })
+                .catch(function (error) {
+                    ctrl.function = tempFunctionCopy;
+
+                    var msg = 'Unknown error occurred while updating the function.';
+
+                    return DialogsService.alert(lodash.get(error, 'data.error', msg));
+                })
+                .finally(function () {
+                    ctrl.isSplashShowed.value = false;
+                })
         }
     }
 }());
