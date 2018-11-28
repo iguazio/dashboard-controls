@@ -70,6 +70,7 @@
         ctrl.sortedColumnName = 'displayName';
 
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
 
         ctrl.isColumnSorted = CommonTableService.isColumnSorted;
@@ -107,6 +108,16 @@
             $scope.$on('action-panel_fire-action', onFireAction);
             $scope.$on('action-checkbox-all_check-all', updatePanelActions);
             $scope.$on('action-checkbox_item-checked', updatePanelActions);
+        }
+
+        /**
+         * Changes method
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.projects) && !lodash.isEmpty(changes.projects.currentValue)) {
+                ctrl.projects = $filter('orderBy')(ctrl.projects, 'spec.displayName');
+            }
         }
 
         /**
