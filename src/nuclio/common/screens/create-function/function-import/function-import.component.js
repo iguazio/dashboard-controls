@@ -14,12 +14,13 @@
             controller: FunctionImportController
         });
 
-    function FunctionImportController($rootScope, $scope, $state, lodash, YAML) {
+    function FunctionImportController($document, $rootScope, $scope, $state, $timeout, lodash, YAML, EventHelperService) {
         var ctrl = this;
 
         var importedFunction = null;
         var file = null;
 
+        ctrl.functionImportForm = {};
         ctrl.sourceCode = null;
         ctrl.editorTheme = {
             id: 'vs',
@@ -46,6 +47,7 @@
          * Adds event listener on file input and when some file is loaded call importFunction()
          */
         function onInit() {
+            $document.on('keypress', createFunction);
             angular.element(document).find('.function-import-input').on('change', importFunction);
         }
 
@@ -83,28 +85,32 @@
          * Callback handler for 'create function' button
          * Creates function with imported data.
          */
-        function createFunction() {
+        function createFunction(event) {
+            $timeout(function () {
+                if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) && ctrl.isCreateFunctionAllowed()) {
 
-            // create function only when imported file is .yml
-            if (isYamlFile(file.name)) {
-                ctrl.toggleSplashScreen({value: true});
+                    // create function only when imported file is .yml
+                    if (isYamlFile(file.name)) {
+                        ctrl.toggleSplashScreen({value: true});
 
-                lodash.defaults(importedFunction, {
-                    metadata: {}
-                });
+                        lodash.defaults(importedFunction, {
+                            metadata: {}
+                        });
 
-                if (lodash.isEmpty(ctrl.project) && ctrl.selectedProject.id !== 'new_project') {
-                    ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
+                        if (lodash.isEmpty(ctrl.project) && ctrl.selectedProject.id !== 'new_project') {
+                            ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
+                        }
+
+                        $state.go('app.project.function.edit.code', {
+                            isNewFunction: true,
+                            id: ctrl.project.metadata.name,
+                            functionId: importedFunction.metadata.name,
+                            projectNamespace: ctrl.project.metadata.namespace,
+                            functionData: importedFunction
+                        });
+                    }
                 }
-
-                $state.go('app.project.function.edit.code', {
-                    isNewFunction: true,
-                    id: ctrl.project.metadata.name,
-                    functionId: importedFunction.metadata.name,
-                    projectNamespace: ctrl.project.metadata.namespace,
-                    functionData: importedFunction
-                });
-            }
+            }, 100);
         }
 
         /**
