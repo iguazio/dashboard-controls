@@ -180,7 +180,7 @@
             ctrl.numberInputChanged = true;
             onCurrentValueChange();
 
-            if (lodash.isNil(ctrl.currentValue) && !lodash.isNull(ctrl.defaultValue)) {
+            if (lodash.isNil(ctrl.currentValue) && !lodash.isNull(ctrl.defaultValue) && !ctrl.allowEmptyField) {
                 ctrl.currentValue = ctrl.defaultValue;
             }
         }
