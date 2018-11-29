@@ -288,6 +288,7 @@
          */
         function pullFunctionState() {
             ctrl.convertedStatusState = 'Building';
+            setStatusIcon();
 
             interval = $interval(function () {
                 ctrl.getFunction({metadata: ctrl.function.metadata, projectID: ctrl.project.metadata.name})
@@ -382,7 +383,6 @@
                 .then(function () {
                     tempFunctionCopy = null;
 
-                    setStatusIcon();
                     pullFunctionState();
                 })
                 .catch(function (error) {
