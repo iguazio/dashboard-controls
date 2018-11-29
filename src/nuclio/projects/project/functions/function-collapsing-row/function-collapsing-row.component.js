@@ -49,6 +49,7 @@
         ctrl.statusIcon = null;
 
         ctrl.$onInit = onInit;
+        ctrl.$onDestroy = onDestroy;
 
         ctrl.isFunctionShowed = isFunctionShowed;
         ctrl.getTooltip = getTooltip;
@@ -90,6 +91,13 @@
                                                               ctrl.function.status.httpPort;
 
             ctrl.actions = initActions();
+        }
+
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            terminateInterval();
         }
 
         //
@@ -279,6 +287,8 @@
          * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
          */
         function pullFunctionState() {
+            ctrl.convertedStatusState = 'Building';
+
             interval = $interval(function () {
                 ctrl.getFunction({metadata: ctrl.function.metadata, projectID: ctrl.project.metadata.name})
                     .then(function (response) {
@@ -287,6 +297,15 @@
                             convertStatusState();
                             setStatusIcon();
                         }
+                    })
+                    .catch(function (error) {
+                        var msg = 'Unknown error occurred while updating the function.';
+
+                        terminateInterval();
+                        convertStatusState();
+                        setStatusIcon();
+
+                        return DialogsService.alert(lodash.get(error, 'data.error', msg));
                     });
             }, 2000);
         }
@@ -298,6 +317,8 @@
         function setStatusIcon() {
             if (!lodash.includes(['Error', 'Building', 'Not yet deployed'], ctrl.convertedStatusState)) {
                 ctrl.statusIcon = ctrl.function.spec.disable ? 'igz-icon-play' : 'igz-icon-pause';
+            } else {
+                ctrl.statusIcon = '';
             }
         }
 
@@ -361,6 +382,7 @@
                 .then(function () {
                     tempFunctionCopy = null;
 
+                    setStatusIcon();
                     pullFunctionState();
                 })
                 .catch(function (error) {
