@@ -7,7 +7,9 @@
                 getExternalIpAddresses: '&',
                 getProject: '&',
                 getFunctions: '&',
-                deleteFunction: '&'
+                getFunction: '&',
+                deleteFunction: '&',
+                onUpdateFunction: '&'
             },
             templateUrl: 'nuclio/projects/project/functions/functions.tpl.html',
             controller: FunctionsController

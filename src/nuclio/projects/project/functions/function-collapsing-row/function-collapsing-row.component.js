@@ -9,6 +9,8 @@
                 functionsList: '<',
                 actionHandlerCallback: '&',
                 handleDeleteFunction: '&',
+                getFunction: '&',
+                onUpdateFunction: '&',
                 externalAddress: '<',
                 isSplashShowed: '<'
             },
@@ -16,8 +18,11 @@
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController($state, lodash, ngDialog, ConfigService, DialogsService, ExportService, NuclioHeaderService) {
+    function NclFunctionCollapsingRowController($state, $timeout, $interval, lodash, ngDialog, ConfigService, DialogsService,
+                                                ExportService, NuclioHeaderService) {
         var ctrl = this;
+        var tempFunctionCopy = null;
+        var interval = null;
 
         ctrl.actions = [];
         ctrl.isCollapsed = true;
@@ -41,13 +46,17 @@
                 updateOnContentResize: true
             }
         };
+        ctrl.statusIcon = null;
 
         ctrl.$onInit = onInit;
+        ctrl.$onDestroy = onDestroy;
 
         ctrl.isFunctionShowed = isFunctionShowed;
+        ctrl.getTooltip = getTooltip;
         ctrl.handleAction = handleAction;
         ctrl.onFireAction = onFireAction;
         ctrl.onSelectRow = onSelectRow;
+        ctrl.toggleFunctionState = toggleFunctionState;
         ctrl.isDemoMode = ConfigService.isDemoMode;
 
         //
@@ -72,7 +81,8 @@
                 }
             });
 
-            ctrl.convertedStatusState = lodash.chain(ctrl.function.status.state).lowerCase().upperFirst().value();
+            convertStatusState();
+            setStatusIcon();
 
             ctrl.invocationURL =
                 lodash.isNil(ctrl.function.status.httpPort) ? 'Not yet deployed' :
@@ -81,6 +91,13 @@
                                                               ctrl.function.status.httpPort;
 
             ctrl.actions = initActions();
+        }
+
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            terminateInterval();
         }
 
         //
@@ -106,6 +123,14 @@
         }
 
         /**
+         * Returns appropriate tooltip for functions status.
+         * @returns {string} - tooltip
+         */
+        function getTooltip() {
+            return ctrl.function.spec.disable ? 'Run function' : 'Stop function';
+        }
+
+        /**
          * According to given action name calls proper action handler
          * @param {string} actionType - a type of action
          */
@@ -116,6 +141,65 @@
         //
         // Private methods
         //
+
+        /**
+         * Converts function status state.
+         */
+        function convertStatusState() {
+            var status = lodash.chain(ctrl.function.status.state).lowerCase().upperFirst().value();
+
+            if (status === 'Ready') {
+                ctrl.convertedStatusState = ctrl.function.spec.disable ? 'Standby' : 'Running';
+            } else {
+                ctrl.convertedStatusState = status;
+            }
+        }
+
+        /**
+         * Disables function.
+         * Sends request to change 'disable' property
+         */
+        function disableFunction() {
+
+            // in case failed request, modified function object will be restored from that copy
+            tempFunctionCopy = angular.copy(ctrl.function);
+
+            var propertiesToDisableFunction = {
+                spec: {
+                    disable: true,
+                    build: {
+                        mode: 'neverBuild'
+                    }
+                }
+            };
+
+            lodash.merge(ctrl.function, propertiesToDisableFunction);
+
+            updateFunction();
+        }
+
+        /**
+         * Enables function.
+         * Sends request to change 'disable' property
+         */
+        function enableFunction() {
+
+            // in case failed request, modified function object will be restored from that copy
+            tempFunctionCopy = angular.copy(ctrl.function);
+
+            var propertiesToEnableFunction = {
+                spec: {
+                    disable: false,
+                    build: {
+                        mode: 'neverBuild'
+                    }
+                }
+            };
+
+            lodash.merge(ctrl.function, propertiesToEnableFunction);
+
+            updateFunction();
+        }
 
         /**
          * Initializes actions
@@ -164,6 +248,7 @@
                 .catch(function (error) {
                     ctrl.isSplashShowed.value = false;
                     var msg = 'Unknown error occurred while deleting the function.';
+
                     return DialogsService.alert(lodash.get(error, 'data.error', msg));
                 });
         }
@@ -198,18 +283,118 @@
         }
 
         /**
+         * Pulls function status.
+         * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
+         */
+        function pullFunctionState() {
+            ctrl.convertedStatusState = 'Building';
+            setStatusIcon();
+
+            interval = $interval(function () {
+                ctrl.getFunction({metadata: ctrl.function.metadata, projectID: ctrl.project.metadata.name})
+                    .then(function (response) {
+                        if (response.status.state === 'ready' || response.status.state === 'error') {
+                            terminateInterval();
+                            convertStatusState();
+                            setStatusIcon();
+                        }
+                    })
+                    .catch(function (error) {
+                        var msg = 'Unknown error occurred while updating the function.';
+
+                        terminateInterval();
+                        convertStatusState();
+                        setStatusIcon();
+
+                        return DialogsService.alert(lodash.get(error, 'data.error', msg));
+                    });
+            }, 2000);
+        }
+
+        /**
+         * Returns appropriate css icon class for functions status.
+         * @returns {string} - icon class
+         */
+        function setStatusIcon() {
+            if (!lodash.includes(['Error', 'Building', 'Not yet deployed'], ctrl.convertedStatusState)) {
+                ctrl.statusIcon = ctrl.function.spec.disable ? 'igz-icon-play' : 'igz-icon-pause';
+            } else {
+                ctrl.statusIcon = '';
+            }
+        }
+
+        /**
+         * Terminates the interval of function state polling.
+         */
+        function terminateInterval() {
+            if (!lodash.isNil(interval)) {
+                $interval.cancel(interval);
+                interval = null;
+            }
+        }
+
+        /**
+         * Toggles function 'disabled' property and updates it on back-end
+         * @param {MouseEvent} event
+         */
+        function toggleFunctionState(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (ctrl.function.spec.disable) {
+                enableFunction();
+            } else {
+                disableFunction();
+            }
+        }
+
+        /**
          * Show dialog with YAML function config
          */
         function viewConfig() {
             ngDialog.open({
                 template: '<ncl-function-config-dialog data-close-dialog="closeThisDialog()" ' +
-                    'data-function="ngDialogData.function"></ncl-function-config-dialog>',
+                'data-function="ngDialogData.function"></ncl-function-config-dialog>',
                 plain: true,
                 data: {
                     function: ctrl.function,
                 },
                 className: 'ngdialog-theme-iguazio view-yaml-dialog-wrapper'
             });
+        }
+
+        /**
+         * Sends request to update function state
+         */
+        function updateFunction() {
+            ctrl.isSplashShowed.value = true;
+
+            var pathsToExcludeOnDeploy = ['status', 'ui', 'versions'];
+
+            if (!ConfigService.isDemoMode()) {
+                pathsToExcludeOnDeploy.push('spec.loggerSinks');
+            }
+            var functionCopy = lodash.omit(ctrl.function, pathsToExcludeOnDeploy);
+
+            // set `nuclio.io/project-name` label to relate this function to its project
+            lodash.set(functionCopy, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.project.metadata.name);
+
+            ctrl.onUpdateFunction({'function': functionCopy, projectID: ctrl.project.metadata.name})
+                .then(function () {
+                    tempFunctionCopy = null;
+
+                    pullFunctionState();
+                })
+                .catch(function (error) {
+                    ctrl.function = tempFunctionCopy;
+
+                    var msg = 'Unknown error occurred while updating the function.';
+
+                    return DialogsService.alert(lodash.get(error, 'data.error', msg));
+                })
+                .finally(function () {
+                    ctrl.isSplashShowed.value = false;
+                })
         }
     }
 }());

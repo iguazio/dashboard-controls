@@ -21,6 +21,13 @@
             </div>
             <div class="igz-col-10 common-table-cell">
                 {{$ctrl.convertedStatusState}}
+                <div class="status-icon"
+                     data-uib-tooltip="{{$ctrl.getTooltip()}}"
+                     data-tooltip-append-to-body="true"
+                     data-tooltip-placement="top"
+                     data-ng-class="$ctrl.statusIcon"
+                     data-ng-click="$ctrl.toggleFunctionState($event)">
+                </div>
             </div>
             <div class="igz-col-10 common-table-cell">
                 {{$ctrl.function.spec.replicas}}

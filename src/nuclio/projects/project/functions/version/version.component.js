@@ -202,6 +202,7 @@
 
                 // set `nuclio.io/project-name` label to relate this function to its project
                 lodash.set(versionCopy, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.project.metadata.name);
+                lodash.set(versionCopy, 'spec.build.mode', 'alwaysBuild');
 
                 ctrl.isTestResultShown = false;
                 ctrl.isDeployResultShown = true;
