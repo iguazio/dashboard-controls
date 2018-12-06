@@ -9,7 +9,7 @@
                    data-ng-change="$ctrl.updateEnableStatus()">
             <label for="enable" class="checkbox-inline">Enabled</label>
         </div>
-        <div class="row">
+        <div class="row" data-ng-if="$ctrl.isDemoMode()">
             <div class="timeout-block">
                 <div class="label">
                     <div class="timeout-checkbox">
