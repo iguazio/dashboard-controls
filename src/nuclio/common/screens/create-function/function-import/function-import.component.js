@@ -30,6 +30,7 @@
 
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
+        ctrl.$onDestroy = onDestroy;
 
         ctrl.cancelCreating = cancelCreating;
         ctrl.createFunction = createFunction;
@@ -59,6 +60,13 @@
             if (angular.isDefined(changes.projects)) {
                 prepareProjects();
             }
+        }
+
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            $document.off('keypress', createFunction);
         }
 
         //

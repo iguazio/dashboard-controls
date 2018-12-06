@@ -36,6 +36,9 @@
                         onCodeFileChanged: function () {
                             this.editor.updateOptions({ value: scope.codeFile.code });
                         },
+                        onReadOnlyCodeFileChanged: function () {
+                            this.editor.setValue(scope.codeFile.code);
+                        },
                         onWrapStateChanged: function onWrapStateChanged(newState) {
                             this.editor.updateOptions({ wordWrap: newState ? 'on' : 'off' });
                         },
@@ -96,7 +99,7 @@
                     scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
                     scope.$watch('fontSize', editorContext.onFontSizeChanged.bind(editorContext));
 
-                    scope.$on('function-import-source-code', editorContext.onCodeFileChanged.bind(editorContext));
+                    scope.$on('function-import-source-code', editorContext.onReadOnlyCodeFileChanged.bind(editorContext));
 
                     scope.$on('$destroy', function () {
                         if (interval !== null) {

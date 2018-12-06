@@ -30,6 +30,7 @@
 
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
+        ctrl.$onDestroy = onDestroy;
 
         ctrl.validationPatterns = ValidatingPatternsService;
 
@@ -61,6 +62,13 @@
             if (angular.isDefined(changes.projects)) {
                 prepareProjects();
             }
+        }
+
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            $document.off('keypress', createFunction);
         }
 
         //
