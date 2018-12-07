@@ -171,8 +171,6 @@
 
             lodash.set(ctrl.version, 'spec.build', lodash.merge({
                 image: '',
-                noCache: false,
-                offline: false,
                 dependencies: [],
                 runtimeAttributes: {
                     repositories: []
