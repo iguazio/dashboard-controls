@@ -1,3 +1,4 @@
+/* eslint max-statements: ["error", 100] */
 (function () {
     'use strict';
 
@@ -15,8 +16,8 @@
             controller: NclProjectsController
         });
 
-    function NclProjectsController($filter, $rootScope, $scope, $state, $q, lodash, ngDialog, ActionCheckboxAllService,
-                                   CommonTableService, ConfigService, DialogsService, ExportService, ValidatingPatternsService) {
+    function NclProjectsController($element, $filter, $rootScope, $scope, $state, $timeout, $q, lodash, ngDialog, ActionCheckboxAllService,
+                                   CommonTableService, ConfigService, DialogsService, ExportService, ImportService, ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -24,6 +25,10 @@
             {
                 id: 'exportProjects',
                 name: 'Export all projects'
+            },
+            {
+                id: 'importProject',
+                name: 'Import project'
             }
         ];
         ctrl.checkedItemsCount = 0;
@@ -73,11 +78,12 @@
         ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
 
+        ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.isColumnSorted = CommonTableService.isColumnSorted;
 
         ctrl.createFunction = createFunction;
         ctrl.handleAction = handleAction;
-        ctrl.isDemoMode = ConfigService.isDemoMode;
+        ctrl.importProject = importProject;
         ctrl.isProjectsListEmpty = isProjectsListEmpty;
         ctrl.onApplyFilters = onApplyFilters;
         ctrl.onSortOptionsChange = onSortOptionsChange;
@@ -184,6 +190,11 @@
             });
         }
 
+        function importProject(file) {
+            ImportService.importProject(file)
+                .then(updateProjects);
+        }
+
         /**
          * Checks if functions list is empty
          * @returns {boolean}
@@ -229,6 +240,8 @@
         function onSelectDropdownAction(item) {
             if (item.id === 'exportProjects') {
                 ExportService.exportProjects(ctrl.projects, ctrl.getFunctions);
+            } else if (item.id === 'importProject') {
+                angular.element($element.find('.project-import-input'))[0].click();
             }
         }
 
