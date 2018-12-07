@@ -9,6 +9,9 @@
             <igz-action-panel data-actions="$ctrl.actions"></igz-action-panel>
         </div>
         <div class="actions-bar-right">
+            <button class="project-import-input"
+                    ngf-select="$ctrl.importProject($file)"
+                    accept=".yml, .yaml"></button>
             <div class="actions-bar-left actions-buttons-block">
                 <igz-default-dropdown data-select-property-only="id"
                                       data-placeholder="ACTIONS"
