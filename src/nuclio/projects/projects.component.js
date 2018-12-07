@@ -106,8 +106,8 @@
             updateProjects();
 
             $scope.$on('action-panel_fire-action', onFireAction);
+            $scope.$on('action-checkbox-all_checked-items-count-change', updatePanelActions);
             $scope.$on('action-checkbox-all_check-all', updatePanelActions);
-            $scope.$on('action-checkbox_item-checked', updatePanelActions);
         }
 
         /**
@@ -178,9 +178,7 @@
                             ActionCheckboxAllService.changeCheckedItemsCount(-1);
                         }
                     });
-                } else {
-                    ActionCheckboxAllService.setCheckedItemsCount(0);
-
+                } else if (actionType === 'edit') {
                     ctrl.refreshProjects();
                 }
             });
@@ -342,28 +340,38 @@
                     id: 'edit',
                     icon: 'igz-icon-properties',
                     active: true
+                },
+                {
+                    label: 'Export',
+                    id: 'export',
+                    icon: 'igz-icon-export-yml',
+                    active: true
                 }
             ];
         }
 
         /**
          * Updates actions of action panel according to selected nodes
+         * @param {Object} event - triggering event
+         * @param {Object} data - passed data
          */
-        function updatePanelActions() {
+        function updatePanelActions(event, data) {
             var checkedRows = lodash.filter(ctrl.projects, 'ui.checked');
-            if (checkedRows.length > 0) {
+            var checkedRowsCount = data.checkedCount;
+
+            if (checkedRowsCount > 0) {
 
                 // sets visibility status of `edit action`
                 // visible if only one project is checked
                 var editAction = lodash.find(ctrl.actions, {'id': 'edit'});
                 if (!lodash.isNil(editAction)) {
-                    editAction.visible = checkedRows.length === 1;
+                    editAction.visible = checkedRowsCount === 1;
                 }
 
                 // sets confirm message for `delete action` depending on count of checked rows
                 var deleteAction = lodash.find(ctrl.actions, {'id': 'delete'});
                 if (!lodash.isNil(deleteAction)) {
-                    var message = checkedRows.length === 1 ?
+                    var message = checkedRowsCount === 1 ?
                         'Delete project “' + checkedRows[0].spec.displayName + '”?' : 'Delete selected projects?';
 
                     deleteAction.confirm = {
