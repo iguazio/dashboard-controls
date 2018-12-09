@@ -1821,6 +1821,208 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 (function () {
     'use strict';
 
+    IgzActionItemSubtemplateController.$inject = ['$compile', '$element'];
+    angular.module('iguazio.dashboard-controls').component('igzActionItemSubtemplate', {
+        bindings: {
+            action: '<'
+        },
+        template: '<div class="igz-action-item-subtemplate"></div>',
+        controller: IgzActionItemSubtemplateController
+    });
+
+    function IgzActionItemSubtemplateController($compile, $element) {
+        var ctrl = this;
+
+        ctrl.newScope = null;
+
+        ctrl.$postLink = postLink;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Post linking method
+         */
+        function postLink() {
+            var subTemplate = angular.element(ctrl.action.template);
+            $element.find('.igz-action-item-subtemplate').append(subTemplate);
+
+            ctrl.newScope = ctrl.action.scope.$new();
+            ctrl.newScope.action = ctrl.action;
+            $compile(subTemplate)(ctrl.newScope);
+
+            ctrl.action.destroyNewScope = destroyNewScope;
+        }
+
+        //
+        // Private method
+        //
+
+        /**
+         * Destroy new created scope. Scope needs to be removed to prevent errors when viewing tags on the browse page.
+         * And it needs to be done when updating panel actions
+         */
+        function destroyNewScope() {
+            ctrl.newScope.$destroy();
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
+    IgzActionItem.$inject = ['$document', '$element', '$rootScope', '$scope', '$timeout', 'lodash', 'DialogsService'];
+    angular.module('iguazio.dashboard-controls').component('igzActionItem', {
+        bindings: {
+            action: '<',
+            actions: '<?',
+            template: '@',
+            onFilesDropped: '<?'
+        },
+        templateUrl: 'igz_controls/components/action-item/action-item.tpl.html',
+        controller: IgzActionItem
+    });
+
+    function IgzActionItem($document, $element, $rootScope, $scope, $timeout, lodash, DialogsService) {
+        var ctrl = this;
+
+        ctrl.$onInit = onInit();
+        ctrl.$onDestroy = onDestroy();
+        ctrl.isItemVisible = isItemVisible;
+        ctrl.onClickAction = onClickAction;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            $timeout(function () {
+                lodash.defaults(ctrl.action, {
+                    visible: true
+                });
+            });
+        }
+
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            if (angular.isDefined(ctrl.action) && angular.isDefined(ctrl.action.template)) {
+                detachDocumentEvent();
+            }
+        }
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Handles mouse click on action item
+         * @param {MouseEvent} event
+         */
+        function onClickAction(event) {
+            if (ctrl.action.active) {
+                if (!lodash.isNil(ctrl.action.popupText)) {
+                    $rootScope.$broadcast('browse-action_change-loading-text', { textToDisplay: ctrl.action.popupText });
+                }
+
+                // shows confirmation dialog if action.confirm is true
+                if (lodash.isNonEmpty(ctrl.action.confirm)) {
+                    showConfirmDialog(event);
+                } else {
+                    ctrl.action.handler(ctrl.action, event);
+                }
+
+                // if action has sub-templates shows/hides it
+                if (angular.isDefined(ctrl.action.template)) {
+                    toggleTemplate();
+                }
+
+                // calls callback if defined
+                if (angular.isFunction(ctrl.action.callback)) {
+                    ctrl.action.callback(ctrl.action);
+                }
+            }
+        }
+
+        /**
+         * Checks if the action item should be shown
+         * @param {Object} action
+         * @returns {boolean}
+         */
+        function isItemVisible(action) {
+            return lodash.get(action, 'visible', true);
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Attaches on click event handler to the document
+         */
+        function attachDocumentEvent() {
+            $document.on('click', hideSubtemplate);
+        }
+
+        /**
+         * Removes on click event handler attached to the document
+         */
+        function detachDocumentEvent() {
+            $document.off('click', hideSubtemplate);
+        }
+
+        /**
+         * Hides sub-template dropdown when user clicks outside it
+         * @param {MouseEvent} event
+         */
+        function hideSubtemplate(event) {
+            $scope.$apply(function () {
+                if (event.target !== $element[0] && $element.find(event.target).length === 0) {
+                    ctrl.action.subTemplateProps.isShown = false;
+                    detachDocumentEvent();
+                }
+            });
+        }
+
+        /**
+         * Shows confirm dialog
+         * @param {MouseEvent} event
+         */
+        function showConfirmDialog(event) {
+            var message = lodash.isNil(ctrl.action.confirm.description) ? ctrl.action.confirm.message : {
+                message: ctrl.action.confirm.message,
+                description: ctrl.action.confirm.description
+            };
+
+            DialogsService.confirm(message, ctrl.action.confirm.yesLabel, ctrl.action.confirm.noLabel, ctrl.action.confirm.type).then(function () {
+                ctrl.action.handler(ctrl.action, event);
+            });
+        }
+
+        /**
+         * Shows/hides sub-template
+         */
+        function toggleTemplate() {
+            ctrl.action.subTemplateProps.isShown = !ctrl.action.subTemplateProps.isShown;
+            if (ctrl.action.subTemplateProps.isShown) {
+                attachDocumentEvent();
+            } else {
+                detachDocumentEvent();
+            }
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
     IgzActionMenuController.$inject = ['$scope', '$element', '$document', '$rootScope', '$timeout', 'lodash', 'ConfigService', 'PreventDropdownCutOffService'];
     angular.module('iguazio.dashboard-controls').component('igzActionMenu', {
         bindings: {
@@ -2044,208 +2246,6 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
                 $timeout(function () {
                     dropdownBottom > parentalBottom ? dropdown.addClass('upward-menu') : dropdown.css({ 'visibility': 'visible' });
                 });
-            }
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
-    IgzActionItemSubtemplateController.$inject = ['$compile', '$element'];
-    angular.module('iguazio.dashboard-controls').component('igzActionItemSubtemplate', {
-        bindings: {
-            action: '<'
-        },
-        template: '<div class="igz-action-item-subtemplate"></div>',
-        controller: IgzActionItemSubtemplateController
-    });
-
-    function IgzActionItemSubtemplateController($compile, $element) {
-        var ctrl = this;
-
-        ctrl.newScope = null;
-
-        ctrl.$postLink = postLink;
-
-        //
-        // Hook methods
-        //
-
-        /**
-         * Post linking method
-         */
-        function postLink() {
-            var subTemplate = angular.element(ctrl.action.template);
-            $element.find('.igz-action-item-subtemplate').append(subTemplate);
-
-            ctrl.newScope = ctrl.action.scope.$new();
-            ctrl.newScope.action = ctrl.action;
-            $compile(subTemplate)(ctrl.newScope);
-
-            ctrl.action.destroyNewScope = destroyNewScope;
-        }
-
-        //
-        // Private method
-        //
-
-        /**
-         * Destroy new created scope. Scope needs to be removed to prevent errors when viewing tags on the browse page.
-         * And it needs to be done when updating panel actions
-         */
-        function destroyNewScope() {
-            ctrl.newScope.$destroy();
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
-    IgzActionItem.$inject = ['$document', '$element', '$rootScope', '$scope', '$timeout', 'lodash', 'DialogsService'];
-    angular.module('iguazio.dashboard-controls').component('igzActionItem', {
-        bindings: {
-            action: '<',
-            actions: '<?',
-            template: '@',
-            onFilesDropped: '<?'
-        },
-        templateUrl: 'igz_controls/components/action-item/action-item.tpl.html',
-        controller: IgzActionItem
-    });
-
-    function IgzActionItem($document, $element, $rootScope, $scope, $timeout, lodash, DialogsService) {
-        var ctrl = this;
-
-        ctrl.$onInit = onInit();
-        ctrl.$onDestroy = onDestroy();
-        ctrl.isItemVisible = isItemVisible;
-        ctrl.onClickAction = onClickAction;
-
-        //
-        // Hook methods
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-            $timeout(function () {
-                lodash.defaults(ctrl.action, {
-                    visible: true
-                });
-            });
-        }
-
-        /**
-         * Destructor method
-         */
-        function onDestroy() {
-            if (angular.isDefined(ctrl.action) && angular.isDefined(ctrl.action.template)) {
-                detachDocumentEvent();
-            }
-        }
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Handles mouse click on action item
-         * @param {MouseEvent} event
-         */
-        function onClickAction(event) {
-            if (ctrl.action.active) {
-                if (!lodash.isNil(ctrl.action.popupText)) {
-                    $rootScope.$broadcast('browse-action_change-loading-text', { textToDisplay: ctrl.action.popupText });
-                }
-
-                // shows confirmation dialog if action.confirm is true
-                if (lodash.isNonEmpty(ctrl.action.confirm)) {
-                    showConfirmDialog(event);
-                } else {
-                    ctrl.action.handler(ctrl.action, event);
-                }
-
-                // if action has sub-templates shows/hides it
-                if (angular.isDefined(ctrl.action.template)) {
-                    toggleTemplate();
-                }
-
-                // calls callback if defined
-                if (angular.isFunction(ctrl.action.callback)) {
-                    ctrl.action.callback(ctrl.action);
-                }
-            }
-        }
-
-        /**
-         * Checks if the action item should be shown
-         * @param {Object} action
-         * @returns {boolean}
-         */
-        function isItemVisible(action) {
-            return lodash.get(action, 'visible', true);
-        }
-
-        //
-        // Private methods
-        //
-
-        /**
-         * Attaches on click event handler to the document
-         */
-        function attachDocumentEvent() {
-            $document.on('click', hideSubtemplate);
-        }
-
-        /**
-         * Removes on click event handler attached to the document
-         */
-        function detachDocumentEvent() {
-            $document.off('click', hideSubtemplate);
-        }
-
-        /**
-         * Hides sub-template dropdown when user clicks outside it
-         * @param {MouseEvent} event
-         */
-        function hideSubtemplate(event) {
-            $scope.$apply(function () {
-                if (event.target !== $element[0] && $element.find(event.target).length === 0) {
-                    ctrl.action.subTemplateProps.isShown = false;
-                    detachDocumentEvent();
-                }
-            });
-        }
-
-        /**
-         * Shows confirm dialog
-         * @param {MouseEvent} event
-         */
-        function showConfirmDialog(event) {
-            var message = lodash.isNil(ctrl.action.confirm.description) ? ctrl.action.confirm.message : {
-                message: ctrl.action.confirm.message,
-                description: ctrl.action.confirm.description
-            };
-
-            DialogsService.confirm(message, ctrl.action.confirm.yesLabel, ctrl.action.confirm.noLabel, ctrl.action.confirm.type).then(function () {
-                ctrl.action.handler(ctrl.action, event);
-            });
-        }
-
-        /**
-         * Shows/hides sub-template
-         */
-        function toggleTemplate() {
-            ctrl.action.subTemplateProps.isShown = !ctrl.action.subTemplateProps.isShown;
-            if (ctrl.action.subTemplateProps.isShown) {
-                attachDocumentEvent();
-            } else {
-                detachDocumentEvent();
             }
         }
     }
@@ -7290,7 +7290,11 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
                         var contentType = lodash.get(ctrl.testResult.headers, 'content-type', lodash.get(ctrl.testResult.headers, 'Content-Type', null));
 
                         if (contentType === 'application/json' || lodash.isObject(invocationData.body)) {
-                            ctrl.testResult.body = angular.toJson(angular.fromJson(ctrl.testResult.body), ' ', 4);
+                            try {
+                                ctrl.testResult.body = angular.toJson(angular.fromJson(ctrl.testResult.body), ' ', 4);
+                            } catch (error) {
+                                ctrl.testResult.body = '';
+                            }
                         }
 
                         var responseHeadersTab = lodash.find(ctrl.responseNavigationTabs, ['id', 'headers']);
@@ -12109,6 +12113,71 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 (function () {
     'use strict';
 
+    NclFunctionConfigDialogController.$inject = ['DialogsService', 'ExportService'];
+    angular.module('iguazio.dashboard-controls').component('nclFunctionConfigDialog', {
+        bindings: {
+            closeDialog: '&',
+            function: '<'
+        },
+        templateUrl: 'nuclio/common/components/function-config-dialog/function-config-dialog.tpl.html',
+        controller: NclFunctionConfigDialogController
+    });
+
+    function NclFunctionConfigDialogController(DialogsService, ExportService) {
+        var ctrl = this;
+
+        ctrl.editorTheme = {
+            id: 'vs',
+            name: 'Light',
+            visible: true
+        };
+
+        ctrl.$onInit = onInit;
+        ctrl.copyToClipboard = copyToClipboard;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            ctrl.title = ctrl.function.metadata.name + ' - configuration';
+            ctrl.sourceCode = ExportService.getFunctionConfig(ctrl.function);
+        }
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Copies a string to the clipboard. Must be called from within an event handler such as click
+         */
+        function copyToClipboard() {
+            if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
+                var textarea = document.createElement('textarea');
+                textarea.textContent = ctrl.sourceCode;
+                textarea.style.position = 'fixed';
+                document.body.appendChild(textarea);
+                textarea.select();
+
+                try {
+                    return document.execCommand('copy'); // Security exception may be thrown by some browsers.
+                } catch (ex) {
+                    DialogsService.alert('Copy to clipboard failed.', ex);
+                } finally {
+                    document.body.removeChild(textarea);
+                }
+            }
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
     NclKeyValueInputController.$inject = ['$document', '$element', '$rootScope', '$scope', '$timeout', 'lodash', 'EventHelperService'];
     angular.module('iguazio.dashboard-controls').component('nclKeyValueInput', {
         bindings: {
@@ -12437,71 +12506,6 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
                     if (angular.isDefined(ctrl.changeStateBroadcast)) {
                         $rootScope.$broadcast(ctrl.changeStateBroadcast, { component: ctrl.data.ui.name, isDisabled: true });
                     }
-                }
-            }
-        }
-    }
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
-    NclFunctionConfigDialogController.$inject = ['DialogsService', 'ExportService'];
-    angular.module('iguazio.dashboard-controls').component('nclFunctionConfigDialog', {
-        bindings: {
-            closeDialog: '&',
-            function: '<'
-        },
-        templateUrl: 'nuclio/common/components/function-config-dialog/function-config-dialog.tpl.html',
-        controller: NclFunctionConfigDialogController
-    });
-
-    function NclFunctionConfigDialogController(DialogsService, ExportService) {
-        var ctrl = this;
-
-        ctrl.editorTheme = {
-            id: 'vs',
-            name: 'Light',
-            visible: true
-        };
-
-        ctrl.$onInit = onInit;
-        ctrl.copyToClipboard = copyToClipboard;
-
-        //
-        // Hook methods
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-            ctrl.title = ctrl.function.metadata.name + ' - configuration';
-            ctrl.sourceCode = ExportService.getFunctionConfig(ctrl.function);
-        }
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Copies a string to the clipboard. Must be called from within an event handler such as click
-         */
-        function copyToClipboard() {
-            if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
-                var textarea = document.createElement('textarea');
-                textarea.textContent = ctrl.sourceCode;
-                textarea.style.position = 'fixed';
-                document.body.appendChild(textarea);
-                textarea.select();
-
-                try {
-                    return document.execCommand('copy'); // Security exception may be thrown by some browsers.
-                } catch (ex) {
-                    DialogsService.alert('Copy to clipboard failed.', ex);
-                } finally {
-                    document.body.removeChild(textarea);
                 }
             }
         }
@@ -12866,6 +12870,105 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
 (function () {
     'use strict';
 
+    SearchInputController.$inject = ['$scope', '$timeout'];
+    angular.module('iguazio.dashboard-controls').component('nclSearchInput', {
+        bindings: {
+            dataSet: '<',
+            searchKeys: '<',
+            searchStates: '<',
+            searchCallback: '&?',
+            isSearchHierarchically: '@?',
+            placeholder: '@',
+            type: '@?',
+            ruleType: '@?',
+            searchType: '@?'
+        },
+        templateUrl: 'nuclio/common/components/nuclio-search-input/search-input.tpl.html',
+        controller: SearchInputController
+    });
+
+    function SearchInputController($scope, $timeout) {
+        var ctrl = this;
+
+        ctrl.searchQuery = '';
+
+        ctrl.$onInit = onInit;
+        ctrl.onPressEnter = onPressEnter;
+        ctrl.clearInputField = clearInputField;
+
+        //
+        // Hook method
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            $scope.$watch('$ctrl.searchQuery', onChangeSearchQuery);
+        }
+
+        //
+        // Public methods
+        //
+
+        /**
+         * Initializes search on press enter
+         * @param {Event} e
+         */
+        function onPressEnter(e) {
+            if (e.keyCode === 13) {
+                makeSearch();
+            }
+        }
+
+        /**
+         * Clear search input field
+         */
+        function clearInputField() {
+            ctrl.searchQuery = '';
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Calls service method for search
+         */
+        function makeSearch() {}
+        // TODO
+
+
+        /**
+         * Tracks input changing and initializes search
+         */
+        function onChangeSearchQuery(newValue, oldValue) {
+            if (angular.isDefined(newValue) && newValue !== oldValue) {
+                makeSearch();
+            }
+        }
+
+        /**
+         * Initializes search when all html has been rendered
+         */
+        function onDataChanged() {
+            $timeout(makeSearch);
+        }
+
+        /**
+         * Resets search query and initializes search
+         */
+        function resetSearch() {
+            ctrl.searchQuery = '';
+            $timeout(makeSearch);
+        }
+    }
+})();
+'use strict';
+
+(function () {
+    'use strict';
+
     require.config({ paths: { 'vs': '/assets/monaco-editor/min/vs' } });
 
     angular.module('iguazio.dashboard-controls').directive('igzMonacoEditor', ['$interval', function ($interval) {
@@ -12998,105 +13101,6 @@ angular.module('angular-yamljs', []).provider('YAML', function () {
             }
         });
     });
-})();
-'use strict';
-
-(function () {
-    'use strict';
-
-    SearchInputController.$inject = ['$scope', '$timeout'];
-    angular.module('iguazio.dashboard-controls').component('nclSearchInput', {
-        bindings: {
-            dataSet: '<',
-            searchKeys: '<',
-            searchStates: '<',
-            searchCallback: '&?',
-            isSearchHierarchically: '@?',
-            placeholder: '@',
-            type: '@?',
-            ruleType: '@?',
-            searchType: '@?'
-        },
-        templateUrl: 'nuclio/common/components/nuclio-search-input/search-input.tpl.html',
-        controller: SearchInputController
-    });
-
-    function SearchInputController($scope, $timeout) {
-        var ctrl = this;
-
-        ctrl.searchQuery = '';
-
-        ctrl.$onInit = onInit;
-        ctrl.onPressEnter = onPressEnter;
-        ctrl.clearInputField = clearInputField;
-
-        //
-        // Hook method
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-            $scope.$watch('$ctrl.searchQuery', onChangeSearchQuery);
-        }
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Initializes search on press enter
-         * @param {Event} e
-         */
-        function onPressEnter(e) {
-            if (e.keyCode === 13) {
-                makeSearch();
-            }
-        }
-
-        /**
-         * Clear search input field
-         */
-        function clearInputField() {
-            ctrl.searchQuery = '';
-        }
-
-        //
-        // Private methods
-        //
-
-        /**
-         * Calls service method for search
-         */
-        function makeSearch() {}
-        // TODO
-
-
-        /**
-         * Tracks input changing and initializes search
-         */
-        function onChangeSearchQuery(newValue, oldValue) {
-            if (angular.isDefined(newValue) && newValue !== oldValue) {
-                makeSearch();
-            }
-        }
-
-        /**
-         * Initializes search when all html has been rendered
-         */
-        function onDataChanged() {
-            $timeout(makeSearch);
-        }
-
-        /**
-         * Resets search query and initializes search
-         */
-        function resetSearch() {
-            ctrl.searchQuery = '';
-            $timeout(makeSearch);
-        }
-    }
 })();
 'use strict';
 
@@ -15992,8 +15996,11 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/action-menu/action-menu.tpl.html',
-    '<div class="igz-action-menu" data-ng-if="$ctrl.isVisible()"><div class="menu-button {{$ctrl.iconClass}}" data-ng-class="{active: $ctrl.isMenuShown}" data-ng-click="$ctrl.toggleMenu($event)"></div><div class="menu-dropdown" data-ng-if="$ctrl.isMenuShown"><div class="actions-list" data-ng-click="$ctrl.toggleMenu($event)"><igz-action-item data-ng-repeat="action in $ctrl.actions track by action.id" data-action="action"></igz-action-item></div><div class="shortcuts-list" data-ng-if="$ctrl.shortcuts && $ctrl.shortcuts.length > 0" data-ng-class="{\'first-block\': $ctrl.actions.length === 0}"><div class="shortcuts-header">Shortcuts</div><div class="shortcuts-item" data-ng-repeat="shortcut in $ctrl.shortcuts" data-ng-click="$ctrl.showDetails($event, shortcut.state)">{{shortcut.label}}</div></div></div></div>');
+  $templateCache.put('igz_controls/components/action-item/action-item.tpl.html',
+    '<div class="igz-action-item" data-ng-class="{\'inactive\': !$ctrl.action.active,\n' +
+    '     \'subtemplate-show\': $ctrl.action.subTemplateProps.isShown,\n' +
+    '     \'ng-hide\': !$ctrl.isItemVisible($ctrl.action),\n' +
+    '     \'divider\': $ctrl.action.id === \'divider\'}" data-ng-click="$ctrl.onClickAction($event)" data-ng-if="$ctrl.template !== \'additional\'"><div data-uib-tooltip="{{$ctrl.action.label}}" data-tooltip-popup-delay="1000" data-tooltip-placement="bottom"><div data-ng-if="$ctrl.action.id === \'upload\'" data-ngf-select data-ngf-multiple="true" data-ngf-change="$ctrl.onFilesDropped($files)"><div class="action-icon {{$ctrl.action.icon}}"></div><div class="action-label">{{$ctrl.action.label}}</div></div><div data-ng-if="$ctrl.action.id !== \'upload\'"><div class="action-icon {{$ctrl.action.icon}}" data-ng-style="$ctrl.action.iconColor && {\'color\': $ctrl.action.iconColor}"></div><div class="action-label">{{$ctrl.action.label}}</div><igz-action-item-subtemplate class="action-subtemplate igz-component" data-ng-if="$ctrl.action.template" data-ng-show="$ctrl.action.subTemplateProps.isShown" action="$ctrl.action" data-ng-click="$event.stopPropagation()"></igz-action-item-subtemplate></div></div></div><li data-ng-if="$ctrl.template === \'additional\'" data-ng-click="$ctrl.onClickAction($event)"><div class="action-icon {{$ctrl.action.icon}}" data-ng-style="$ctrl.action.iconColor && {\'color\': $ctrl.action.iconColor}"></div><div class="action-label">{{$ctrl.action.label}}</div><igz-action-item-subtemplate class="action-subtemplate igz-component" data-ng-if="$ctrl.action.template" data-ng-show="$ctrl.action.subTemplateProps.isShown" action="$ctrl.action" data-ng-click="$event.stopPropagation()"></igz-action-item-subtemplate></li>');
 }]);
 })();
 
@@ -16004,11 +16011,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/action-item/action-item.tpl.html',
-    '<div class="igz-action-item" data-ng-class="{\'inactive\': !$ctrl.action.active,\n' +
-    '     \'subtemplate-show\': $ctrl.action.subTemplateProps.isShown,\n' +
-    '     \'ng-hide\': !$ctrl.isItemVisible($ctrl.action),\n' +
-    '     \'divider\': $ctrl.action.id === \'divider\'}" data-ng-click="$ctrl.onClickAction($event)" data-ng-if="$ctrl.template !== \'additional\'"><div data-uib-tooltip="{{$ctrl.action.label}}" data-tooltip-popup-delay="1000" data-tooltip-placement="bottom"><div data-ng-if="$ctrl.action.id === \'upload\'" data-ngf-select data-ngf-multiple="true" data-ngf-change="$ctrl.onFilesDropped($files)"><div class="action-icon {{$ctrl.action.icon}}"></div><div class="action-label">{{$ctrl.action.label}}</div></div><div data-ng-if="$ctrl.action.id !== \'upload\'"><div class="action-icon {{$ctrl.action.icon}}" data-ng-style="$ctrl.action.iconColor && {\'color\': $ctrl.action.iconColor}"></div><div class="action-label">{{$ctrl.action.label}}</div><igz-action-item-subtemplate class="action-subtemplate igz-component" data-ng-if="$ctrl.action.template" data-ng-show="$ctrl.action.subTemplateProps.isShown" action="$ctrl.action" data-ng-click="$event.stopPropagation()"></igz-action-item-subtemplate></div></div></div><li data-ng-if="$ctrl.template === \'additional\'" data-ng-click="$ctrl.onClickAction($event)"><div class="action-icon {{$ctrl.action.icon}}" data-ng-style="$ctrl.action.iconColor && {\'color\': $ctrl.action.iconColor}"></div><div class="action-label">{{$ctrl.action.label}}</div><igz-action-item-subtemplate class="action-subtemplate igz-component" data-ng-if="$ctrl.action.template" data-ng-show="$ctrl.action.subTemplateProps.isShown" action="$ctrl.action" data-ng-click="$event.stopPropagation()"></igz-action-item-subtemplate></li>');
+  $templateCache.put('igz_controls/components/action-menu/action-menu.tpl.html',
+    '<div class="igz-action-menu" data-ng-if="$ctrl.isVisible()"><div class="menu-button {{$ctrl.iconClass}}" data-ng-class="{active: $ctrl.isMenuShown}" data-ng-click="$ctrl.toggleMenu($event)"></div><div class="menu-dropdown" data-ng-if="$ctrl.isMenuShown"><div class="actions-list" data-ng-click="$ctrl.toggleMenu($event)"><igz-action-item data-ng-repeat="action in $ctrl.actions track by action.id" data-action="action"></igz-action-item></div><div class="shortcuts-list" data-ng-if="$ctrl.shortcuts && $ctrl.shortcuts.length > 0" data-ng-class="{\'first-block\': $ctrl.actions.length === 0}"><div class="shortcuts-header">Shortcuts</div><div class="shortcuts-item" data-ng-repeat="shortcut in $ctrl.shortcuts" data-ng-click="$ctrl.showDetails($event, shortcut.state)">{{shortcut.label}}</div></div></div></div>');
 }]);
 })();
 
@@ -16342,11 +16346,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/common/components/key-value-input/key-value-input.tpl.html',
-    '<div class="ncl-key-value-input"><form name="$ctrl.keyValueInputForm" class="input-wrapper" data-ng-mousedown="$ctrl.onEditInput()"><div class="check-row" data-ng-if="$ctrl.allowSelection"><igz-action-checkbox data-item="$ctrl.data"></igz-action-checkbox></div><div class="inputs-container" data-ng-class="{\'use-type\': $ctrl.useType, \'use-checkbox\': $ctrl.allowSelection}"><div class="input-container input-key-wrapper" data-ng-if="!$ctrl.onlyValueInput" data-ng-class="{\'use-type\': $ctrl.useType, \'all-value-types\': $ctrl.allValueTypes}"><label for="key" data-ng-if="$ctrl.useLabels" class="key-label">Key:</label><igz-validating-input-field class="nuclio-validating-input input-key" data-field-type="input" data-input-name="key" data-input-value="$ctrl.data.name" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="name" data-form-object="$ctrl.keyValueInputForm" data-validation-is-required="!$ctrl.keyOptional" data-validation-pattern="$ctrl.keyValidationPattern" data-placeholder-text="Type key"></igz-validating-input-field></div><div class="input-container input-type-wrapper" data-ng-if="$ctrl.useType" data-ng-class="{\'use-type\': $ctrl.useType, \'all-value-types\': $ctrl.allValueTypes}"><label for="type" data-ng-if="$ctrl.useLabels" class="type-label">Type:</label><igz-default-dropdown class="input-type" data-form-object="$ctrl.keyValueInputForm" data-select-property-only="id" data-prevent-drop-up="true" data-input-name="type" data-values-array="$ctrl.typesList" data-selected-item="$ctrl.getType()" data-placeholder="Select type..." data-item-select-callback="$ctrl.onTypeChanged(item, isItemChanged)" data-on-open-dropdown="$ctrl.openDropdown" data-on-close-dropdown="$ctrl.closeDropdown()"></igz-default-dropdown></div><div class="input-container input-value-key-wrapper" data-ng-if="!$ctrl.isVisibleByType(\'value\')" data-ng-class="{\'use-type\': $ctrl.useType}"><label for="value-key" data-ng-if="$ctrl.useLabels"><span data-ng-if="$ctrl.isVisibleByType(\'secret\')">Secret key:</span><span data-ng-if="$ctrl.isVisibleByType(\'configmap\')">ConfigMap key:</span></label><igz-validating-input-field class="nuclio-validating-input input-value-key" data-field-type="input" data-input-name="value-key" data-input-value="$ctrl.getInputKey()" data-update-data-callback="$ctrl.inputKeyCallback(newData)" data-update-data-field="value-key" data-form-object="$ctrl.keyValueInputForm" data-validation-is-required="!$ctrl.valueOptional" data-placeholder-text="Type key..."></igz-validating-input-field></div><div class="input-container input-value-wrapper" data-ng-class="{\'use-type\': $ctrl.useType,\n' +
-    '                                 \'only-value-input\': $ctrl.onlyValueInput,\n' +
-    '                                 \'only-key-value-input\': $ctrl.isVisibleByType(\'value\'),\n' +
-    '                                 \'all-value-types\': $ctrl.allValueTypes}"><label for="value" data-ng-if="$ctrl.useLabels"><span data-ng-if="$ctrl.isVisibleByType(\'value\')">Value:</span><span data-ng-if="$ctrl.isVisibleByType(\'secret\')">Secret name:</span><span data-ng-if="$ctrl.isVisibleByType(\'configmap\')">ConfigMap name:</span></label><igz-validating-input-field class="nuclio-validating-input input-value" data-field-type="input" data-input-name="value" data-input-value="$ctrl.getInputValue()" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="value" data-form-object="$ctrl.keyValueInputForm" data-validation-is-required="!$ctrl.valueOptional" data-validation-pattern="$ctrl.valueValidationPattern" data-placeholder-text="{{$ctrl.valuePlaceholder}}"></igz-validating-input-field></div></div><div class="three-dot-menu"><igz-action-menu data-actions="$ctrl.actions" data-on-fire-action="$ctrl.onFireAction" data-list-class="$ctrl.listClass"></igz-action-menu></div></form></div>');
+  $templateCache.put('nuclio/common/components/function-config-dialog/function-config-dialog.tpl.html',
+    '<div class="view-yaml-dialog-container"><div class="view-yaml-dialog-header"><div class="title">{{ $ctrl.title }}</div><div class="copy-to-clipboard" data-ng-click="$ctrl.copyToClipboard()" data-uib-tooltip="Copy to clipboard" data-tooltip-placement="right" data-tooltip-popup-delay="300" data-tooltip-append-to-body="true"><div class="ncl-icon-copy"></div></div><div class="close-button igz-icon-close" data-ng-click="$ctrl.closeDialog()"></div></div><div class="main-content"><ncl-monaco class="monaco-code-editor" data-function-source-code="$ctrl.sourceCode" data-mini-monaco="false" data-selected-theme="$ctrl.editorTheme" data-language="yaml" data-read-only="true"></ncl-monaco></div><div class="buttons"><button class="igz-button-primary" tabindex="0" data-ng-click="$ctrl.closeDialog()">Close</button></div></div>');
 }]);
 })();
 
@@ -16357,8 +16358,11 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/common/components/function-config-dialog/function-config-dialog.tpl.html',
-    '<div class="view-yaml-dialog-container"><div class="view-yaml-dialog-header"><div class="title">{{ $ctrl.title }}</div><div class="copy-to-clipboard" data-ng-click="$ctrl.copyToClipboard()" data-uib-tooltip="Copy to clipboard" data-tooltip-placement="right" data-tooltip-popup-delay="300" data-tooltip-append-to-body="true"><div class="ncl-icon-copy"></div></div><div class="close-button igz-icon-close" data-ng-click="$ctrl.closeDialog()"></div></div><div class="main-content"><ncl-monaco class="monaco-code-editor" data-function-source-code="$ctrl.sourceCode" data-mini-monaco="false" data-selected-theme="$ctrl.editorTheme" data-language="yaml" data-read-only="true"></ncl-monaco></div><div class="buttons"><button class="igz-button-primary" tabindex="0" data-ng-click="$ctrl.closeDialog()">Close</button></div></div>');
+  $templateCache.put('nuclio/common/components/key-value-input/key-value-input.tpl.html',
+    '<div class="ncl-key-value-input"><form name="$ctrl.keyValueInputForm" class="input-wrapper" data-ng-mousedown="$ctrl.onEditInput()"><div class="check-row" data-ng-if="$ctrl.allowSelection"><igz-action-checkbox data-item="$ctrl.data"></igz-action-checkbox></div><div class="inputs-container" data-ng-class="{\'use-type\': $ctrl.useType, \'use-checkbox\': $ctrl.allowSelection}"><div class="input-container input-key-wrapper" data-ng-if="!$ctrl.onlyValueInput" data-ng-class="{\'use-type\': $ctrl.useType, \'all-value-types\': $ctrl.allValueTypes}"><label for="key" data-ng-if="$ctrl.useLabels" class="key-label">Key:</label><igz-validating-input-field class="nuclio-validating-input input-key" data-field-type="input" data-input-name="key" data-input-value="$ctrl.data.name" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="name" data-form-object="$ctrl.keyValueInputForm" data-validation-is-required="!$ctrl.keyOptional" data-validation-pattern="$ctrl.keyValidationPattern" data-placeholder-text="Type key"></igz-validating-input-field></div><div class="input-container input-type-wrapper" data-ng-if="$ctrl.useType" data-ng-class="{\'use-type\': $ctrl.useType, \'all-value-types\': $ctrl.allValueTypes}"><label for="type" data-ng-if="$ctrl.useLabels" class="type-label">Type:</label><igz-default-dropdown class="input-type" data-form-object="$ctrl.keyValueInputForm" data-select-property-only="id" data-prevent-drop-up="true" data-input-name="type" data-values-array="$ctrl.typesList" data-selected-item="$ctrl.getType()" data-placeholder="Select type..." data-item-select-callback="$ctrl.onTypeChanged(item, isItemChanged)" data-on-open-dropdown="$ctrl.openDropdown" data-on-close-dropdown="$ctrl.closeDropdown()"></igz-default-dropdown></div><div class="input-container input-value-key-wrapper" data-ng-if="!$ctrl.isVisibleByType(\'value\')" data-ng-class="{\'use-type\': $ctrl.useType}"><label for="value-key" data-ng-if="$ctrl.useLabels"><span data-ng-if="$ctrl.isVisibleByType(\'secret\')">Secret key:</span><span data-ng-if="$ctrl.isVisibleByType(\'configmap\')">ConfigMap key:</span></label><igz-validating-input-field class="nuclio-validating-input input-value-key" data-field-type="input" data-input-name="value-key" data-input-value="$ctrl.getInputKey()" data-update-data-callback="$ctrl.inputKeyCallback(newData)" data-update-data-field="value-key" data-form-object="$ctrl.keyValueInputForm" data-validation-is-required="!$ctrl.valueOptional" data-placeholder-text="Type key..."></igz-validating-input-field></div><div class="input-container input-value-wrapper" data-ng-class="{\'use-type\': $ctrl.useType,\n' +
+    '                                 \'only-value-input\': $ctrl.onlyValueInput,\n' +
+    '                                 \'only-key-value-input\': $ctrl.isVisibleByType(\'value\'),\n' +
+    '                                 \'all-value-types\': $ctrl.allValueTypes}"><label for="value" data-ng-if="$ctrl.useLabels"><span data-ng-if="$ctrl.isVisibleByType(\'value\')">Value:</span><span data-ng-if="$ctrl.isVisibleByType(\'secret\')">Secret name:</span><span data-ng-if="$ctrl.isVisibleByType(\'configmap\')">ConfigMap name:</span></label><igz-validating-input-field class="nuclio-validating-input input-value" data-field-type="input" data-input-name="value" data-input-value="$ctrl.getInputValue()" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="value" data-form-object="$ctrl.keyValueInputForm" data-validation-is-required="!$ctrl.valueOptional" data-validation-pattern="$ctrl.valueValidationPattern" data-placeholder-text="{{$ctrl.valuePlaceholder}}"></igz-validating-input-field></div></div><div class="three-dot-menu"><igz-action-menu data-actions="$ctrl.actions" data-on-fire-action="$ctrl.onFireAction" data-list-class="$ctrl.listClass"></igz-action-menu></div></form></div>');
 }]);
 })();
 
