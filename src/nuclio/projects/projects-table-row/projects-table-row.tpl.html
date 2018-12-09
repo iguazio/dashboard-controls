@@ -7,7 +7,7 @@
         <div class="igz-col-25 common-table-cell name">
             {{$ctrl.project.spec.displayName}}
         </div>
-        <div class="igz-col-25 common-table-cell description">
+        <div class="igz-col-{{$ctrl.isDemoMode() ? '25' : '75'}} common-table-cell description">
             {{$ctrl.project.spec.description}}
         </div>
         <div data-ng-if="$ctrl.isDemoMode()"
