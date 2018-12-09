@@ -62,7 +62,7 @@
                                          data-items-count="$ctrl.getVersions().length">
                 </igz-action-checkbox-all>
                 <div class="igz-row common-table-cells-container">
-                    <div class="igz-col-25 common-table-cell sortable"
+                    <div class="igz-col-{{$ctrl.isDemoMode() ? '20' : '25'}} common-table-cell sortable"
                          data-ng-class="$ctrl.isColumnSorted('metadata.name', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                          data-ng-click="$ctrl.sortTableByColumn('metadata.name')">Name
                         <span class="sort-arrow"></span>
@@ -78,6 +78,7 @@
                         <span class="sort-arrow"></span>
                     </div>
                     <div class="igz-col-10 common-table-cell sortable"
+                         data-ng-if="$ctrl.isDemoMode()"
                          data-ng-class="$ctrl.isColumnSorted('spec.replicas', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                          data-ng-click="$ctrl.sortTableByColumn('spec.replicas')">Replicas
                         <span class="sort-arrow"></span>
@@ -91,7 +92,7 @@
                          data-ng-click="$ctrl.sortTableByColumn('spec.runtime')">Runtime
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-15 common-table-cell">
+                    <div class="igz-col-{{$ctrl.isDemoMode() ? '10' : '35'}} common-table-cell">
                         Invocation URL
                     </div>
                     <div data-ng-if="$ctrl.isDemoMode()"
