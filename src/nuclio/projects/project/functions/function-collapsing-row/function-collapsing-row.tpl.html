@@ -10,7 +10,7 @@
 
         <div class="igz-row common-table-cells-container"
              data-ng-click="$ctrl.onSelectRow($event)">
-            <div class="igz-col-25 common-table-cell function-name">
+            <div class="igz-col-{{$ctrl.isDemoMode() ? '20' : '25'}} common-table-cell function-name">
                 {{$ctrl.function.metadata.name}}
             </div>
             <div class="igz-col-20 common-table-cell"
@@ -29,7 +29,8 @@
                      data-ng-click="$ctrl.toggleFunctionState($event)">
                 </div>
             </div>
-            <div class="igz-col-10 common-table-cell">
+            <div data-ng-if="$ctrl.isDemoMode()"
+                 class="igz-col-10 common-table-cell">
                 {{$ctrl.function.spec.replicas}}
             </div>
             <div data-ng-if="$ctrl.isDemoMode()"
@@ -39,7 +40,7 @@
             <div class="igz-col-10 common-table-cell">
                 {{$ctrl.runtimes[$ctrl.function.spec.runtime]}}
             </div>
-            <div class="igz-col-15 common-table-cell"
+            <div class="igz-col-{{$ctrl.isDemoMode() ? '10' : '25'}} common-table-cell"
                  data-uib-tooltip="{{$ctrl.invocationURL}}"
                  data-tooltip-append-to-body="true"
                  data-tooltip-placement="top">
