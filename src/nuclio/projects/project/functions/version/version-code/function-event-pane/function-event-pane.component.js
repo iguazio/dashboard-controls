@@ -671,9 +671,25 @@
 
                             var contentType = lodash.get(ctrl.testResult.headers, 'content-type', lodash.get(ctrl.testResult.headers, 'Content-Type', null));
 
-                            if (contentType === 'application/json' || lodash.isObject(invocationData.body)) {
+                            if (contentType === 'application/json') {
+                                var body = invocationData.body;
+
+                                // if body is a string - attempt to convert to object
+                                if (lodash.isString(body)) {
+                                    try {
+                                        body = angular.fromJson(body);
+                                    } catch (error) {
+                                        try {
+                                            body = angular.fromJson('"' + body + '"');
+                                        } catch (nestedError) {
+                                            body = '""';
+                                        }
+                                    }
+                                }
+
+                                // format JSON body with 4-chars-wide tab indentation
                                 try {
-                                    ctrl.testResult.body = angular.toJson(angular.fromJson(ctrl.testResult.body), ' ', 4);
+                                    ctrl.testResult.body = angular.toJson(body, ' ', 4);
                                 } catch (error) {
                                     ctrl.testResult.body = '';
                                 }
