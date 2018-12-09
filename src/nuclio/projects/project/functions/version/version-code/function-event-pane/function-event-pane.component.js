@@ -672,7 +672,11 @@
                             var contentType = lodash.get(ctrl.testResult.headers, 'content-type', lodash.get(ctrl.testResult.headers, 'Content-Type', null));
 
                             if (contentType === 'application/json' || lodash.isObject(invocationData.body)) {
-                                ctrl.testResult.body = angular.toJson(angular.fromJson(ctrl.testResult.body), ' ', 4);
+                                try {
+                                    ctrl.testResult.body = angular.toJson(angular.fromJson(ctrl.testResult.body), ' ', 4);
+                                } catch (error) {
+                                    ctrl.testResult.body = '';
+                                }
                             }
 
                             var responseHeadersTab = lodash.find(ctrl.responseNavigationTabs, ['id', 'headers']);
