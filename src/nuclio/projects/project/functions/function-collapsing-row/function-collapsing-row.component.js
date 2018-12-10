@@ -150,8 +150,10 @@
 
             if (status === 'Ready') {
                 ctrl.convertedStatusState = ctrl.function.spec.disable ? 'Standby' : 'Running';
+            } else if (status === 'Error') {
+                ctrl.convertedStatusState = 'Error';
             } else {
-                ctrl.convertedStatusState = status;
+                ctrl.convertedStatusState = 'Building';
             }
         }
 
