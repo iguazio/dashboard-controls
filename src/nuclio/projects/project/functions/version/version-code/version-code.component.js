@@ -359,14 +359,6 @@
                     visible: true
                 },
                 {
-                    id: 'pypy',
-                    ext: 'pypy',
-                    name: 'PyPy',
-                    language: 'python',
-                    sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
-                    visible: true
-                },
-                {
                     id: 'dotnetcore',
                     ext: 'cs',
                     name: '.NET Core',
@@ -427,7 +419,7 @@
         function isFileDropValid(type, extension) {
 
             // Drag'n'Drop textual files into the code editor
-            var validFileExtensions = ['cs', 'py', 'pypy', 'go', 'sh', 'txt', 'js', 'java'];
+            var validFileExtensions = ['cs', 'py', 'go', 'sh', 'txt', 'js', 'java'];
 
             return lodash(type).startsWith('text/') || validFileExtensions.includes(extension);
         }
