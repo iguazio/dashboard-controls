@@ -355,11 +355,6 @@
                     visible: true
                 },
                 {
-                    id: 'pypy',
-                    name: 'PyPy',
-                    visible: true
-                },
-                {
                     id: 'dotnetcore',
                     name: '.NET Core',
                     visible: true
