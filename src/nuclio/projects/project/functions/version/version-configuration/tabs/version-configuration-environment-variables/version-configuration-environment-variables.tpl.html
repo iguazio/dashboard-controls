@@ -3,7 +3,7 @@
     <form name="$ctrl.environmentVariablesForm" class="resources-wrapper">
         <div data-ng-if="!$ctrl.isScrollNeeded()"
              class="igz-scrollable-container">
-            <div class="table-body" data-ng-repeat="variable in $ctrl.variables track by $index">
+            <div class="table-body" data-ng-repeat="variable in $ctrl.variables">
                 <ncl-key-value-input class="new-label-input"
                                      data-list-class="ncl-version-configuration-environment-variables"
                                      data-change-state-broadcast="change-state-deploy-button"
@@ -20,7 +20,7 @@
              class="igz-scrollable-container scrollable-environment-variables"
              data-ng-scrollbars
              data-ng-scrollbars-config="$ctrl.scrollConfig">
-            <div class="table-body" data-ng-repeat="variable in $ctrl.variables track by $index">
+            <div class="table-body" data-ng-repeat="variable in $ctrl.variables">
                 <ncl-key-value-input class="new-label-input"
                                      data-list-class="scrollable-environment-variables"
                                      data-change-state-broadcast="change-state-deploy-button"
