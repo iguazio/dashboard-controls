@@ -13,7 +13,7 @@
             controller: IgzEditProjectDialogController
         });
 
-    function IgzEditProjectDialogController($scope, lodash, DialogsService, EventHelperService, FormValidationService) {
+    function IgzEditProjectDialogController($scope, lodash, EventHelperService, FormValidationService) {
         var ctrl = this;
 
         ctrl.data = {};
@@ -59,9 +59,10 @@
                     ctrl.isLoadingState = true;
 
                     // use data from dialog to create a new project
-                    ctrl.updateProjectCallback({ project: lodash.omit(ctrl.data, 'ui') })
+                    var newProjectState = lodash.omit(ctrl.data, 'ui');
+                    ctrl.updateProjectCallback({ project: newProjectState })
                         .then(function () {
-                            ctrl.confirm();
+                            ctrl.confirm({ project: newProjectState });
                         })
                         .catch(function (error) {
                             var status = lodash.get(error, 'status');
@@ -72,8 +73,6 @@
                                 status === 405                   ? 'Failed to create a project'                       :
                                 lodash.inRange(status, 500, 599) ? 'Server error'                                     :
                                                                    'Unknown error occurred. Retry later';
-
-                            DialogsService.alert(ctrl.serverError);
                         })
                         .finally(function () {
                             ctrl.isLoadingState = false;
@@ -105,7 +104,7 @@
          */
         function onClose(event) {
             if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) && !ctrl.isLoadingState) {
-                ctrl.closeDialog();
+                ctrl.closeDialog({ value: 'closed'});
             }
         }
     }

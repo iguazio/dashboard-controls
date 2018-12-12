@@ -15,8 +15,7 @@
             controller: NclProjectsTableRowController
         });
 
-    function NclProjectsTableRowController($scope, $state, lodash, moment, ngDialog, ActionCheckboxAllService,
-                                           ConfigService, DialogsService, ExportService) {
+    function NclProjectsTableRowController($q, $scope, $state, lodash, moment, ngDialog, ConfigService, ExportService) {
         var ctrl = this;
 
         ctrl.actions = {};
@@ -36,15 +35,18 @@
          */
         function onInit() {
 
-            // initialize `deleteProject`, `editProject`, `exportProject` actions and assign them to `ui` property of current project
             // initialize `checked` status to `false`
             lodash.defaultsDeep(ctrl.project, {
                 ui: {
-                    checked: false,
-                    delete: handleDeleteProject,
-                    edit: editProject,
-                    export: exportProject
+                    checked: false
                 }
+            });
+
+            // assign `deleteProject`, `editProject`, `exportProject` actions to `ui` property of current project
+            lodash.assign(ctrl.project.ui, {
+                'delete': handleDeleteProject,
+                'edit': editProject,
+                'export': exportProject
             });
 
             if (ConfigService.isDemoMode()) {
@@ -68,7 +70,7 @@
          * @param {string} actionType - a type of action
          */
         function onFireAction(actionType) {
-            ctrl.actionHandlerCallback({actionType: actionType, checkedItems: [ctrl.project]});
+            ctrl.actionHandlerCallback({ actionType: actionType, checkedItems: [ctrl.project] });
         }
 
         /**
@@ -96,17 +98,21 @@
 
         /**
          * Deletes project from projects list
+         * @returns {Promise}
          */
         function handleDeleteProject() {
-            ctrl.deleteProject({project: ctrl.project})
+            var projectId = lodash.get(ctrl.project, 'metadata.name');
+
+            return ctrl.deleteProject({ project: ctrl.project })
                 .then(function () {
-                    lodash.remove(ctrl.projectsList, ['metadata.name', ctrl.project.metadata.name]);
+                    return projectId;
                 })
                 .catch(function (error) {
                     var status = lodash.get(error, 'status');
-                    var errorMessage = status === 409 ? 'Cannot delete a non-empty project.' :
-                        'Unknown error occurred while deleting the project.';
-                    return DialogsService.alert(errorMessage);
+                    var errorMessage = status === 409 ?
+                        'Cannot delete a non-empty project.' :
+                        'Unknown error occurred while deleting the project (try deleting its functions first).';
+                    return $q.reject(errorMessage);
                 });
         }
 
@@ -149,23 +155,22 @@
          */
         function editProject() {
             return ngDialog.openConfirm({
-                template: '<ncl-edit-project-dialog data-project="$ctrl.project" data-confirm="confirm()"' +
-                'data-close-dialog="closeThisDialog(newProject)" data-update-project-callback="ngDialogData.updateProject({project: project})">' +
+                template: '<ncl-edit-project-dialog ' +
+                    'data-project="$ctrl.project"' +
+                    'data-confirm="confirm(project)" ' +
+                    'data-close-dialog="closeThisDialog(value)" ' +
+                    'data-update-project-callback="ngDialogData.updateProject({project: project})">' +
                 '</ncl-edit-project-dialog>',
                 plain: true,
                 data: {
                     updateProject: ctrl.updateProject
                 },
                 scope: $scope,
-                className: 'ngdialog-theme-nuclio'
+                className: 'ngdialog-theme-nuclio nuclio-project-edit-dialog'
             })
-                .then(function () {
-
-                    // unchecks project before updating list
-                    if (ctrl.project.ui.checked) {
-                        ctrl.project.ui.checked = false;
-
-                        ActionCheckboxAllService.changeCheckedItemsCount(-1);
+                .catch(function (error) {
+                    if (error !== 'closed') {
+                        return $q.reject('Unknown error occurred while updating the project');
                     }
                 });
         }
@@ -175,6 +180,7 @@
          */
         function exportProject() {
             ExportService.exportProject(ctrl.project, ctrl.getFunctions);
+            return $q.when();
         }
     }
 }());

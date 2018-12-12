@@ -65,7 +65,7 @@
                             <span class="sort-arrow"></span>
                             <div data-igz-resizable-table-column data-col-class="common-table-cell.name"></div>
                         </div>
-                        <div class="igz-col-25 common-table-cell sortable description"
+                        <div class="igz-col-{{$ctrl.isDemoMode() ? '25' : '75'}} common-table-cell sortable description"
                              data-ng-class="$ctrl.isColumnSorted('description', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                              data-ng-click="$ctrl.sortTableByColumn('description')">Description
                             <span class="sort-arrow"></span>

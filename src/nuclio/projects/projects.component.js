@@ -16,8 +16,9 @@
             controller: NclProjectsController
         });
 
-    function NclProjectsController($element, $filter, $rootScope, $scope, $state, $timeout, $q, lodash, ngDialog, ActionCheckboxAllService,
-                                   CommonTableService, ConfigService, DialogsService, ExportService, ImportService, ValidatingPatternsService) {
+    function NclProjectsController($element, $filter, $rootScope, $scope, $state, $q, lodash, ngDialog,
+                                   ActionCheckboxAllService, CommonTableService, ConfigService, DialogsService,
+                                   ExportService, ImportService, ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -160,34 +161,44 @@
 
         /**
          * According to given action name calls proper action handler
-         * @param {string} actionType - ex. `delete`
-         * @param {Array} checkedItems - an array of checked projects
+         * @param {string} actionType - e.g. `'delete'`, `'edit'`
+         * @param {Array} projects - an array of checked projects
          * @returns {Promise}
          */
-        function handleAction(actionType, checkedItems) {
-            var promises = [];
+        function handleAction(actionType, projects) {
+            var errorMessages = [];
+            var promises = lodash.map(projects, function (project) {
+                var projectDisplayName = lodash.get(project, 'spec.displayName');
+                return lodash.result(project, 'ui.' + actionType)
+                    .then(function (result) {
+                        if (actionType === 'edit') {
 
-            lodash.forEach(checkedItems, function (checkedItem) {
-                var actionHandler = checkedItem.ui[actionType];
+                            // update the row in view
+                            lodash.merge(project, result);
+                        } else if (actionType === 'delete') {
 
-                if (lodash.isFunction(actionHandler)) {
-                    promises.push(actionHandler());
-                }
-            });
+                            // un-check project
+                            if (project.ui.checked) {
+                                project.ui.checked = false;
 
-            return $q.all(promises).then(function () {
-                if (actionType === 'delete') {
-                    lodash.forEach(checkedItems, function (checkedItem) {
+                                ActionCheckboxAllService.changeCheckedItemsCount(-1);
+                            }
 
-                        // unchecks deleted project
-                        if (checkedItem.ui.checked) {
-                            ActionCheckboxAllService.changeCheckedItemsCount(-1);
+                            // remove from list
+                            lodash.pull(ctrl.projects, project);
                         }
+                    })
+                    .catch(function (errorMessage) {
+                        errorMessages.push(projectDisplayName + ': ' + errorMessage);
                     });
-                } else if (actionType === 'edit') {
-                    ctrl.refreshProjects();
-                }
             });
+
+            return $q.all(promises)
+                .then(function () {
+                    if (lodash.isNonEmpty(errorMessages)) {
+                        return DialogsService.alert(errorMessages);
+                    }
+                });
         }
 
         function importProject(file) {
@@ -268,13 +279,14 @@
         function openNewProjectDialog() {
             ngDialog.open({
                 template: '<ncl-new-project-dialog data-close-dialog="closeThisDialog(project)" ' +
-                'data-create-project-callback="ngDialogData.createProject({project: project})"></ncl-new-project-dialog>',
+                    'data-create-project-callback="ngDialogData.createProject({project: project})">' +
+                    '</ncl-new-project-dialog>',
                 plain: true,
                 scope: $scope,
                 data: {
                     createProject: ctrl.createProject
                 },
-                className: 'ngdialog-theme-nuclio'
+                className: 'ngdialog-theme-nuclio nuclio-project-create-dialog'
             })
                 .closePromise
                 .then(function (data) {
