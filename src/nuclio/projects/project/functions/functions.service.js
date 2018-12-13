@@ -148,7 +148,7 @@
                         attributes: [
                             {
                                 name: 'interval',
-                                pattern: 'string',
+                                pattern: 'interval',
                                 type: 'input',
                                 fieldType: 'input',
                                 allowEmpty: false

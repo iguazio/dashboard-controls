@@ -35,6 +35,7 @@
         ctrl.numberValidationPattern = /^\d+$/;
         ctrl.arrayIntValidationPattern = /^(\d+[-,]?)*\d$/;
         ctrl.arrayStrValidationPattern = /^.{1,128}$/;
+        ctrl.intervalValidationPattern = /^\d+(ms|[smh])$/;
         ctrl.stringValidationPattern = /^.{1,128}$/;
         ctrl.subscriptionQoSValidationPattern = /^[0-2]$/;
         ctrl.placeholder = '';
@@ -421,9 +422,7 @@
          * @returns {RegExp}
          */
         function getValidationPattern(pattern) {
-            return pattern === 'number'   ? ctrl.numberValidationPattern   :
-                   pattern === 'arrayInt' ? ctrl.arrayIntValidationPattern :
-                   pattern === 'arrayStr' ? ctrl.arrayStrValidationPattern : ctrl.stringValidationPattern;
+            return lodash.get(ctrl, pattern + 'ValidationPattern', ctrl.stringValidationPattern);
         }
 
         /**
