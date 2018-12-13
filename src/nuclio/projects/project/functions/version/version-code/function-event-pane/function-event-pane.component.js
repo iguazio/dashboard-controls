@@ -669,51 +669,33 @@
                                 body: invocationData.body
                             };
 
-                            var contentType = lodash.get(ctrl.testResult.headers, 'content-type', lodash.get(ctrl.testResult.headers, 'Content-Type', null));
-
-                            if (contentType === 'application/json') {
-                                var body = invocationData.body;
-
-                                // if body is a string - attempt to convert to object
-                                if (lodash.isString(body)) {
-                                    try {
-                                        body = angular.fromJson(body);
-                                    } catch (error) {
-                                        try {
-                                            body = angular.fromJson('"' + body + '"');
-                                        } catch (nestedError) {
-                                            body = '""';
-                                        }
-                                    }
-                                }
-
-                                // format JSON body with 4-chars-wide tab indentation
-                                try {
-                                    ctrl.testResult.body = angular.toJson(body, ' ', 4);
-                                } catch (error) {
-                                    ctrl.testResult.body = '';
-                                }
-                            }
+                            var lowerCaseHeaders = lodash.mapKeys(ctrl.testResult.headers, function (value, key) {
+                                return key.toLowerCase();
+                            });
 
                             var responseHeadersTab = lodash.find(ctrl.responseNavigationTabs, ['id', 'headers']);
                             responseHeadersTab.badge = lodash.size(ctrl.testResult.headers);
 
                             saveEventToHistory();
 
-                            var logs = lodash.get(invocationData.headers, 'x-nuclio-logs', lodash.get(invocationData.headers, 'X-Nuclio-Logs', null));
+                            var logs = lodash.get(lowerCaseHeaders, 'x-nuclio-logs', null);
                             var responseLogsTab = lodash.find(ctrl.responseNavigationTabs, ['id', 'logs']);
                             ctrl.logs = lodash.isNull(logs) ? [] : angular.fromJson(logs);
                             responseLogsTab.badge = ctrl.logs.length;
 
-                            var size = lodash.get(ctrl.testResult.headers, 'content-length', lodash.get(ctrl.testResult.headers, 'Content-Length', null));
-                            ctrl.responseSize = lodash.isNull(size) ? size : ConvertorService.getConvertedBytes(Number(size), ['B', 'KB', 'MB', 'GB']);
+                            var size = lodash.get(lowerCaseHeaders, 'content-length', null);
+                            ctrl.responseSize = lodash.isNull(size) ? size :
+                                ConvertorService.getConvertedBytes(Number(size), ['B', 'KB', 'MB', 'GB']);
+
+                            var contentType = lodash.get(lowerCaseHeaders, 'content-type', null);
 
                             var textualFile = lodash.includes(contentType, 'text') || contentType === 'application/json';
-                            var imageFile = lodash.startsWith(contentType, 'image/');
-                            ctrl.responseBodyType = textualFile ? 'code'  :
-                                                    imageFile   ? 'image' :
-                                                                  'N/A';
 
+                            if (contentType === 'application/json') {
+                                ctrl.testResult.body = formatJson(invocationData.body);
+                            }
+
+                            var imageFile = lodash.startsWith(contentType, 'image/');
                             if (imageFile) {
                                 var reader = new FileReader();
                                 reader.readAsDataURL(ctrl.testResult.body);
@@ -725,10 +707,15 @@
                                 ctrl.testing = false;
                             }
 
+                            ctrl.responseBodyType = textualFile ? 'code'  :
+                                                    imageFile   ? 'image' :
+                                                                  'N/A';
+
                             ctrl.showResponse = true;
                         } else {
                             if (!canceledInvocation) {
-                                var statusText = angular.isDefined(invocationData.error) ? invocationData.error : invocationData.status + ' ' + invocationData.statusText;
+                                var statusText = angular.isDefined(invocationData.error) ? invocationData.error :
+                                    invocationData.status + ' ' + invocationData.statusText;
                                 DialogsService.alert('Oops: Error occurred while invoking. Status: ' + statusText);
                             }
 
@@ -852,6 +839,37 @@
             return millisec < 1000  ? millisec + ' ms' :
                    seconds  < 60    ? seconds  + ' s'  :
                                       minutes  + ' min';
+        }
+
+        /**
+         * Formats an object as a formatted JSON.
+         * @param {*} value - the object or a JSON-serialized string to format.
+         * @returns {*} JSON-serialized string representation of `value` formatted with newlines and indentation.
+         *      In case of an error in JSON conversion or if `value` is not a string nor an object, returns `value`
+         *      as-is.
+         */
+        function formatJson(value) {
+            try {
+                if (lodash.isString(value)) {
+                    value = angular.fromJson(value);
+                }
+
+                if (!lodash.isObject(value)) {
+                    return returnValue();
+                }
+
+                return angular.toJson(value, 4);
+            } catch (error) {
+                return returnValue();
+            }
+
+            /**
+             * Returns `value`.
+             * @returns {*} `value` as-is.
+             */
+            function returnValue() {
+                return value;
+            }
         }
 
         /**
