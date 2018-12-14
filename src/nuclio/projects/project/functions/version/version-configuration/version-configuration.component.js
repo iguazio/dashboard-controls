@@ -24,6 +24,7 @@
         ctrl.isDemoMode = ConfigService.isDemoMode;
 
         ctrl.isInvisibleForCurrentRuntime = isInvisibleForCurrentRuntime;
+        ctrl.isShowForCurrentRuntime = isShowForCurrentRuntime;
         ctrl.onConfigurationChangeCallback = onConfigurationChangeCallback;
 
         //
@@ -37,6 +38,15 @@
          */
         function isInvisibleForCurrentRuntime(runtime) {
             return runtime !== 'shell' && runtime !== 'java';
+        }
+
+        /**
+         * Checks if row with `Logging` and `Runtime Attributes` is visible for current runtime
+         * @param {string} runtime
+         * @returns {boolean}
+         */
+        function isShowForCurrentRuntime(runtime) {
+            return runtime === 'java' || (runtime === 'shell' && ctrl.isDemoMode());
         }
 
         /**

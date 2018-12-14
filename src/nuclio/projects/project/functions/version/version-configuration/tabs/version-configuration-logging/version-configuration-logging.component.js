@@ -11,8 +11,10 @@
             controller: NclVersionConfigurationLoggingController
         });
 
-    function NclVersionConfigurationLoggingController(lodash) {
+    function NclVersionConfigurationLoggingController(lodash, ConfigService) {
         var ctrl = this;
+
+        ctrl.isDemoMode = ConfigService.isDemoMode;
 
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.setPriority = setPriority;

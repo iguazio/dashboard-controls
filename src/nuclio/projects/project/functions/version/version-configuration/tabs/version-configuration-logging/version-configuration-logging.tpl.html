@@ -12,7 +12,8 @@
                                           data-item-select-callback="$ctrl.setPriority(item)"
                                           data-prevent-drop-up="true"></igz-default-dropdown>
                 </div>
-                <div class="logger-input">
+                <div class="logger-input"
+                     data-ng-if="$ctrl.isDemoMode()">
                     <span class="label">Logger destination</span>
                     <igz-validating-input-field class="nuclio-validating-input"
                                                 data-field-type="input"

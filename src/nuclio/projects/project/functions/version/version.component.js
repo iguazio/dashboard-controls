@@ -192,11 +192,7 @@
 
                 setDeployResult('building');
 
-                var pathsToExcludeOnDeploy = ['status', 'ui'];
-                if (!ConfigService.isDemoMode()) {
-                    pathsToExcludeOnDeploy.push('spec.loggerSinks');
-                }
-                var versionCopy = lodash.omit(ctrl.version, pathsToExcludeOnDeploy);
+                var versionCopy = lodash.omit(ctrl.version, ['status', 'ui']);
 
                 // set `nuclio.io/project-name` label to relate this function to its project
                 lodash.set(versionCopy, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.project.metadata.name);
