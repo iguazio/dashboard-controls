@@ -39,17 +39,14 @@
                         data-version="$ctrl.version"
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-build>
             </div>
-            <div class="row"
-                 data-ng-if="$ctrl.isShowForCurrentRuntime($ctrl.version.spec.runtime)"
-                 data-ng-class="{'shell-runtime': $ctrl.version.spec.runtime === 'shell'}">
+            <div class="row">
                 <ncl-version-configuration-logging
-                        data-ng-class="{'invisible-block': $ctrl.version.spec.runtime !== 'java'}"
                         class="configuration-block"
                         data-version="$ctrl.version"
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-logging>
                 <ncl-version-configuration-runtime-attributes
                         class="configuration-block runtime-attributes"
-                        data-ng-class="{'invisible-block': $ctrl.isInvisibleForCurrentRuntime($ctrl.version.spec.runtime) || !$ctrl.isDemoMode()}"
+                        data-ng-class="{'invisible-block': $ctrl.isInvisibleForCurrentRuntime($ctrl.version.spec.runtime)}"
                         data-version="$ctrl.version"
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-runtime-attributes>
             </div>
