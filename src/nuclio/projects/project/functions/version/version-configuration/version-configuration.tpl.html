@@ -39,11 +39,15 @@
                         data-version="$ctrl.version"
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-build>
             </div>
-            <div class="row"
-                 data-ng-if="!$ctrl.isInvisibleForCurrentRuntime($ctrl.version.spec.runtime) || $ctrl.isDemoMode()"
-                 data-ng-class="{'shell-runtime': $ctrl.version.spec.runtime === 'shell' && !$ctrl.isDemoMode()}">
+            <div class="row">
+                <ncl-version-configuration-volumes
+                        class="configuration-block"
+                        data-version="$ctrl.version"
+                        data-on-change-callback="$ctrl.onConfigurationChangeCallback()">
+                </ncl-version-configuration-volumes>
+            </div>
+            <div class="row">
                 <ncl-version-configuration-logging
-                        data-ng-class="{'invisible-block': !$ctrl.isDemoMode() && $ctrl.version.spec.runtime !== 'java'}"
                         class="configuration-block"
                         data-version="$ctrl.version"
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-logging>
@@ -52,13 +56,6 @@
                         data-ng-class="{'invisible-block': $ctrl.isInvisibleForCurrentRuntime($ctrl.version.spec.runtime)}"
                         data-version="$ctrl.version"
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-runtime-attributes>
-            </div>
-            <div class="row">
-                <ncl-version-configuration-volumes
-                        class="configuration-block"
-                        data-version="$ctrl.version"
-                        data-on-change-callback="$ctrl.onConfigurationChangeCallback()">
-                </ncl-version-configuration-volumes>
             </div>
         </div>
     </div>
