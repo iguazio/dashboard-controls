@@ -691,7 +691,12 @@
 
                             var textualFile = lodash.includes(contentType, 'text') || contentType === 'application/json';
 
-                            if (contentType === 'application/json') {
+                            // if content type is "application/json" then attempt to pretty-print JSON. The body could
+                            // be either a serialized-JSON string, or an object.
+                            // monaco editor must be assigned a string, not an object, then even if the content type is
+                            // not "application/json" but for any reason the body is an object, attempt to pretty-print
+                            // it as JSON.
+                            if (contentType === 'application/json' || lodash.isObject(invocationData.body)) {
                                 ctrl.testResult.body = formatJson(invocationData.body);
                             }
 
