@@ -40,6 +40,13 @@
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-build>
             </div>
             <div class="row">
+                <ncl-version-configuration-volumes
+                        class="configuration-block"
+                        data-version="$ctrl.version"
+                        data-on-change-callback="$ctrl.onConfigurationChangeCallback()">
+                </ncl-version-configuration-volumes>
+            </div>
+            <div class="row">
                 <ncl-version-configuration-logging
                         class="configuration-block"
                         data-version="$ctrl.version"
@@ -49,13 +56,6 @@
                         data-ng-class="{'invisible-block': $ctrl.isInvisibleForCurrentRuntime($ctrl.version.spec.runtime)}"
                         data-version="$ctrl.version"
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback"></ncl-version-configuration-runtime-attributes>
-            </div>
-            <div class="row">
-                <ncl-version-configuration-volumes
-                        class="configuration-block"
-                        data-version="$ctrl.version"
-                        data-on-change-callback="$ctrl.onConfigurationChangeCallback()">
-                </ncl-version-configuration-volumes>
             </div>
         </div>
     </div>

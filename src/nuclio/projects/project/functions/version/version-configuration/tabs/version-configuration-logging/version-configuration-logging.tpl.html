@@ -7,8 +7,8 @@
                 <div class="logger-dropdown">
                     <span class="label">Logger level</span>
                     <igz-default-dropdown data-selected-item="$ctrl.version.spec.loggerSinks[0].level"
-                                          data-select-property-only="type"
-                                          data-dropdown-type="severity"
+                                          data-select-property-only="id"
+                                          data-values-array="$ctrl.logLevelValues"
                                           data-item-select-callback="$ctrl.setPriority(item)"
                                           data-prevent-drop-up="true"></igz-default-dropdown>
                 </div>

@@ -186,7 +186,7 @@
         function prepareFunctionData(version) {
             return {
                 metadata: lodash.omit(version.metadata, 'namespace'),
-                spec: lodash.omit(version.spec, ['build.noBaseImagesPull', 'loggerSinks'])
+                spec: lodash.omit(version.spec, 'build.noBaseImagesPull')
             };
         }
 

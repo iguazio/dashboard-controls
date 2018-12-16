@@ -371,10 +371,6 @@
             ctrl.isSplashShowed.value = true;
 
             var pathsToExcludeOnDeploy = ['status', 'ui', 'versions'];
-
-            if (!ConfigService.isDemoMode()) {
-                pathsToExcludeOnDeploy.push('spec.loggerSinks');
-            }
             var functionCopy = lodash.omit(ctrl.function, pathsToExcludeOnDeploy);
 
             // set `nuclio.io/project-name` label to relate this function to its project
