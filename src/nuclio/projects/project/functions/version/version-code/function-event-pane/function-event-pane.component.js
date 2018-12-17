@@ -506,10 +506,9 @@
          */
         function onChangeRequestBodyType(bodyType) {
             ctrl.requestBodyType = bodyType;
+            ctrl.selectedEvent.spec.body = '';
 
             if (bodyType.id === 'file') {
-                ctrl.selectedEvent.spec.body = '';
-
                 $timeout(onDragNDropFileToBody);
             } else {
                 ctrl.uploadingData = {
