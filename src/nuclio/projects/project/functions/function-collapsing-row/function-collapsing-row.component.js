@@ -18,7 +18,7 @@
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController($state, $timeout, $interval, lodash, ngDialog, ConfigService, DialogsService,
+    function NclFunctionCollapsingRowController($state, $interval, lodash, ngDialog, ConfigService, DialogsService,
                                                 ExportService, NuclioHeaderService) {
         var ctrl = this;
         var tempFunctionCopy = null;
@@ -110,7 +110,7 @@
          * @returns {Promise}
          */
         function handleAction(actionType, checkedItems) {
-            ctrl.actionHandlerCallback({actionType: actionType, checkedItems: checkedItems});
+            ctrl.actionHandlerCallback({ actionType: actionType, checkedItems: checkedItems });
         }
 
         /**
@@ -134,7 +134,7 @@
          * @param {string} actionType - a type of action
          */
         function onFireAction(actionType) {
-            ctrl.actionHandlerCallback({actionType: actionType, checkedItems: [ctrl.function]});
+            ctrl.actionHandlerCallback({ actionType: actionType, checkedItems: [ctrl.function] });
         }
 
         //
@@ -147,23 +147,21 @@
         function convertStatusState() {
             var status = lodash.chain(ctrl.function.status.state).lowerCase().upperFirst().value();
 
-            if (status === 'Ready') {
-                ctrl.convertedStatusState = ctrl.function.spec.disable ? 'Standby' : 'Running';
-            } else if (status === 'Error') {
-                ctrl.convertedStatusState = 'Error';
-            } else {
-                ctrl.convertedStatusState = 'Building';
-            }
+            ctrl.convertedStatusState = status === 'Error'                                ? 'Error'          :
+                                        status === 'Scaled to zero'                       ? 'Scaled to zero' :
+                                        status === 'Ready' && ctrl.function.spec.disable  ? 'Standby'        :
+                                        status === 'Ready' && !ctrl.function.spec.disable ? 'Running'        :
+                                        /* else */                                          'Building';
         }
 
         /**
          * Disables function.
-         * Sends request to change 'disable' property
+         * Sends request to change `spec.disable` property
          */
         function disableFunction() {
 
             // in case failed request, modified function object will be restored from that copy
-            tempFunctionCopy = angular.copy(ctrl.function);
+            tempFunctionCopy = lodash.cloneDeep(ctrl.function);
 
             var propertiesToDisableFunction = {
                 spec: {
@@ -176,17 +174,17 @@
 
             lodash.merge(ctrl.function, propertiesToDisableFunction);
 
-            updateFunction();
+            updateFunction('Disabling…');
         }
 
         /**
          * Enables function.
-         * Sends request to change 'disable' property
+         * Sends request to change `spec.disable` property
          */
         function enableFunction() {
 
             // in case failed request, modified function object will be restored from that copy
-            tempFunctionCopy = angular.copy(ctrl.function);
+            tempFunctionCopy = lodash.cloneDeep(ctrl.function);
 
             var propertiesToEnableFunction = {
                 spec: {
@@ -199,7 +197,7 @@
 
             lodash.merge(ctrl.function, propertiesToEnableFunction);
 
-            updateFunction();
+            updateFunction('Enabling…');
         }
 
         /**
@@ -242,7 +240,7 @@
         function deleteFunction() {
             ctrl.isSplashShowed.value = true;
 
-            return ctrl.handleDeleteFunction({functionData: ctrl.function.metadata})
+            return ctrl.handleDeleteFunction({ functionData: ctrl.function.metadata })
                 .then(function () {
                     lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
                 })
@@ -285,14 +283,15 @@
 
         /**
          * Pulls function status.
-         * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
+         * Periodically sends request to get function's state, until state will not be 'ready' or 'error'.
+         * @param {string} [status='Building'] - The text to display in "Status" cell of the function while polling.
          */
-        function pullFunctionState() {
-            ctrl.convertedStatusState = 'Building';
+        function pullFunctionState(status) {
+            ctrl.convertedStatusState = lodash.defaultTo(status, 'Building');
             setStatusIcon();
 
             interval = $interval(function () {
-                ctrl.getFunction({metadata: ctrl.function.metadata, projectID: ctrl.project.metadata.name})
+                ctrl.getFunction({ metadata: ctrl.function.metadata, projectID: ctrl.project.metadata.name })
                     .then(function (response) {
                         if (response.status.state === 'ready' || response.status.state === 'error') {
                             terminateInterval();
@@ -317,11 +316,9 @@
          * @returns {string} - icon class
          */
         function setStatusIcon() {
-            if (!lodash.includes(['Error', 'Building', 'Not yet deployed'], ctrl.convertedStatusState)) {
-                ctrl.statusIcon = ctrl.function.spec.disable ? 'igz-icon-play' : 'igz-icon-pause';
-            } else {
-                ctrl.statusIcon = '';
-            }
+            ctrl.statusIcon = ctrl.convertedStatusState === 'Running' ? 'igz-icon-pause' :
+                              ctrl.convertedStatusState === 'Standby' ? 'igz-icon-play'  :
+                              /* else */                                '';
         }
 
         /**
@@ -355,10 +352,11 @@
         function viewConfig() {
             ngDialog.open({
                 template: '<ncl-function-config-dialog data-close-dialog="closeThisDialog()" ' +
-                'data-function="ngDialogData.function"></ncl-function-config-dialog>',
+                          '                            data-function="ngDialogData.function">' +
+                          '</ncl-function-config-dialog>',
                 plain: true,
                 data: {
-                    function: ctrl.function,
+                    function: ctrl.function
                 },
                 className: 'ngdialog-theme-iguazio view-yaml-dialog-wrapper'
             });
@@ -366,8 +364,9 @@
 
         /**
          * Sends request to update function state
+         * @param {string} [status='Building'] - The text to display in "Status" cell of the function while polling.
          */
-        function updateFunction() {
+        function updateFunction(status) {
             ctrl.isSplashShowed.value = true;
 
             var pathsToExcludeOnDeploy = ['status', 'ui', 'versions'];
@@ -376,11 +375,11 @@
             // set `nuclio.io/project-name` label to relate this function to its project
             lodash.set(functionCopy, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.project.metadata.name);
 
-            ctrl.onUpdateFunction({'function': functionCopy, projectID: ctrl.project.metadata.name})
+            ctrl.onUpdateFunction({ 'function': functionCopy, projectID: ctrl.project.metadata.name })
                 .then(function () {
                     tempFunctionCopy = null;
 
-                    pullFunctionState();
+                    pullFunctionState(status);
                 })
                 .catch(function (error) {
                     ctrl.function = tempFunctionCopy;
