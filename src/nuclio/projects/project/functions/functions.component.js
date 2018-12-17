@@ -106,8 +106,6 @@
                         title.project = ctrl.project;
                         title.projectName = ctrl.project.spec.displayName;
 
-                        ctrl.refreshFunctions();
-
                         NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
 
                         ctrl.getExternalIpAddresses()
@@ -118,7 +116,12 @@
                                 ctrl.externalIPAddress = '';
                             })
                             .finally(function () {
-                                ctrl.isSplashShowed.value = false;
+
+                                // it is important to render function list only after external IP addresses response is
+                                // back, otherwise the "Invocation URL" column might be "N/A" to a function (even if it
+                                // is deployed, i.e. `status.httpPort` is a number), because as long as the external IP
+                                // address response is not returned, it is empty and is passed to each function row
+                                ctrl.refreshFunctions();
                             });
                     })
                     .catch(function (error) {
