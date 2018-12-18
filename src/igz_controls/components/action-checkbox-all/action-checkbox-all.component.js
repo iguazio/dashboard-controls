@@ -15,9 +15,12 @@
     function IgzActionCheckboxAllController($scope, $rootScope) {
         var ctrl = this;
 
+        ctrl.allItemsChecked = false;
+
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
-        ctrl.allItemsChecked = false;
+        ctrl.$onDestroy = onDestroy;
+
         ctrl.onCheckAll = onCheckAll;
 
         //
@@ -45,6 +48,17 @@
                 ctrl.itemsCount = ctrl.itemsCountOriginal;
                 testAllItemsChecked();
             }
+        }
+
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            ctrl.checkedItemsCount = 0;
+
+            $rootScope.$broadcast('action-checkbox-all_checked-items-count-change', {
+                checkedCount: ctrl.checkedItemsCount
+            });
         }
 
         //
@@ -98,6 +112,10 @@
             ctrl.checkedItemsCount = newCheckedItemsCount;
 
             testAllItemsChecked();
+
+            $rootScope.$broadcast('action-checkbox-all_checked-items-count-change', {
+                checkedCount: ctrl.checkedItemsCount
+            });
         }
 
         /**
