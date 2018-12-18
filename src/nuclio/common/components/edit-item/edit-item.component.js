@@ -70,6 +70,7 @@
         ctrl.isTriggerType = isTriggerType;
         ctrl.isVolumeType = isVolumeType;
         ctrl.onChangeData = onChangeData;
+        ctrl.onClearButtonClick = onClearButtonClick;
         ctrl.onSubmitForm = onSubmitForm;
         ctrl.onSelectClass = onSelectClass;
         ctrl.onSelectDropdownValue = onSelectDropdownValue;
@@ -634,6 +635,17 @@
 
                 checkValidation('brokers');
             }
+        }
+
+        /**
+         * Set empty string to `schedule` field of `cron` trigger
+         */
+        function onClearButtonClick() {
+            lodash.set(ctrl.item, 'attributes.schedule', '');
+
+            $timeout(function () {
+                validateCronClassValues();
+            });
         }
 
         /**
