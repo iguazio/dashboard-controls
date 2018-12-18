@@ -429,7 +429,10 @@
 
             <div class="igz-col-91 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && $ctrl.isCronTrigger()">
-                    <div class="field-label">Schedule</div>
+
+                <div class="field-label">Schedule</div>
+
+                <div class="schedule-input-wrapper">
                     <igz-validating-input-field data-field-type="schedule"
                                                 data-input-name="item_schedule"
                                                 data-input-value="$ctrl.item.attributes.schedule"
@@ -439,6 +442,10 @@
                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                 data-update-data-field="attributes.schedule">
                     </igz-validating-input-field>
+                    <div class="clear-button" data-ng-if="$ctrl.item.attributes.schedule">
+                        <a class="link" data-ng-click="$ctrl.onClearButtonClick()">Clear</a>
+                    </div>
+                </div>
             </div>
 
             <div class="igz-col-91 attribute-field event-headers-wrapper"
