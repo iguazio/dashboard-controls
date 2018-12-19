@@ -3858,147 +3858,6 @@ ncl-projects {
     }
 }
 
-.igz-pagination {
-    .pagination-color-set();
-
-    float: right;
-    padding: 24px 36px 5px 30px;
-
-    > div {
-        vertical-align: top;
-    }
-
-    .rows-title, .per-page, .jump-to-page, .to-page-prev, .to-page-next {
-        display: inline-block;
-        vertical-align: baseline;
-    }
-
-    .rows-title {
-        font-size: 13px;
-        color: @rows-title-color;
-        font-family: @font-family-sans-serif;
-    }
-
-    .per-page {
-        width: 66px;
-
-        .default-dropdown-field {
-            background: none;
-            border: none;
-            box-shadow: none;
-            font-size: 14px;
-            height: 36px;
-
-            .dropdown-selected-item {
-                font-size: 14px;
-            }
-
-            .dropdown-arrow {
-                margin-top: 5px;
-
-                span {
-                    font-size: 12px;
-                }
-            }
-
-            .dropdown-arrow {
-                border: none;
-
-                &:hover, &:active {
-                    border: none;
-                    background: none;
-                    box-shadow: none;
-                }
-            }
-
-            &:focus {
-                .dropdown-selected-item {
-                    border: none;
-                }
-            }
-        }
-
-        .default-dropdown-container {
-            width: 66px;
-
-            .list-item {
-                padding-left: 15px;
-
-                .list-item-label {
-                    margin-right: 10px;
-                }
-            }
-        }
-    }
-
-    .jump-to-page {
-        margin-left: 7px;
-
-        & > div, .jump-to-page-input {
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        .to-page-prev, .to-page-next {
-            width: 41px;
-            line-height: 34px;
-            height: 36px;
-            display: inline-block;
-            vertical-align: top;
-            position: relative;
-            text-align: center;
-            color: @page-prev-next-color;
-            font-size: 12px;
-
-            &.disabled, &.disabled:hover {
-                background-color: @page-prev-next-disabled-hover-bg-color;
-                border: @page-prev-next-disabled-hover-border;
-                box-shadow: none;
-                cursor: default;
-
-                &:before {
-                    color: @page-prev-next-disabled-hover-before-color;
-                }
-            }
-
-            &:before {
-                 line-height: 34px;
-             }
-        }
-
-        .to-page-prev {
-            border-right: 0;
-            border-radius: 2px 0 0 2px;
-        }
-
-        .to-page-next {
-            border-left: 0;
-            border-radius: 0 2px 2px 0;
-        }
-
-        .title {
-            margin: 0 0 0 14px;
-        }
-
-        .validating-input-field .input-field {
-            width: 43px;
-            height: 36px;
-            border-radius: 0;
-            background-color: @input-field-bg-color;
-            box-shadow: @input-field-box-shadow;
-            border: @input-field-border;
-            font-family: @font-family-sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            color: @input-field-color;
-            text-align: center;
-
-            &:hover {
-                border: @input-field-hover-border;
-            }
-        }
-    }
-}
 .search-input {
     .search-input-color-set();
 
@@ -4178,6 +4037,147 @@ ncl-projects {
             font-size: 10px;
             line-height: 15px;
             padding-right: 8px;
+        }
+    }
+}
+.igz-pagination {
+    .pagination-color-set();
+
+    float: right;
+    padding: 24px 36px 5px 30px;
+
+    > div {
+        vertical-align: top;
+    }
+
+    .rows-title, .per-page, .jump-to-page, .to-page-prev, .to-page-next {
+        display: inline-block;
+        vertical-align: baseline;
+    }
+
+    .rows-title {
+        font-size: 13px;
+        color: @rows-title-color;
+        font-family: @font-family-sans-serif;
+    }
+
+    .per-page {
+        width: 66px;
+
+        .default-dropdown-field {
+            background: none;
+            border: none;
+            box-shadow: none;
+            font-size: 14px;
+            height: 36px;
+
+            .dropdown-selected-item {
+                font-size: 14px;
+            }
+
+            .dropdown-arrow {
+                margin-top: 5px;
+
+                span {
+                    font-size: 12px;
+                }
+            }
+
+            .dropdown-arrow {
+                border: none;
+
+                &:hover, &:active {
+                    border: none;
+                    background: none;
+                    box-shadow: none;
+                }
+            }
+
+            &:focus {
+                .dropdown-selected-item {
+                    border: none;
+                }
+            }
+        }
+
+        .default-dropdown-container {
+            width: 66px;
+
+            .list-item {
+                padding-left: 15px;
+
+                .list-item-label {
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+
+    .jump-to-page {
+        margin-left: 7px;
+
+        & > div, .jump-to-page-input {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .to-page-prev, .to-page-next {
+            width: 41px;
+            line-height: 34px;
+            height: 36px;
+            display: inline-block;
+            vertical-align: top;
+            position: relative;
+            text-align: center;
+            color: @page-prev-next-color;
+            font-size: 12px;
+
+            &.disabled, &.disabled:hover {
+                background-color: @page-prev-next-disabled-hover-bg-color;
+                border: @page-prev-next-disabled-hover-border;
+                box-shadow: none;
+                cursor: default;
+
+                &:before {
+                    color: @page-prev-next-disabled-hover-before-color;
+                }
+            }
+
+            &:before {
+                 line-height: 34px;
+             }
+        }
+
+        .to-page-prev {
+            border-right: 0;
+            border-radius: 2px 0 0 2px;
+        }
+
+        .to-page-next {
+            border-left: 0;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .title {
+            margin: 0 0 0 14px;
+        }
+
+        .validating-input-field .input-field {
+            width: 43px;
+            height: 36px;
+            border-radius: 0;
+            background-color: @input-field-bg-color;
+            box-shadow: @input-field-box-shadow;
+            border: @input-field-border;
+            font-family: @font-family-sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: @input-field-color;
+            text-align: center;
+
+            &:hover {
+                border: @input-field-hover-border;
+            }
         }
     }
 }
@@ -5914,44 +5914,6 @@ ncl-breadcrumbs {
         line-height: 51px;
     }
 }
-.ncl-deploy-log-wrapper {
-    .log-panel {
-        .logs-common();
-        background-color: @dark-grey;
-        color: @light-grey-three;
-        padding: 5px;
-        margin: 21px 0 0 4px;
-        min-height: 280px;
-        max-height: 280px;
-        height: 280px;
-
-        .log-entry {
-            .log-entry-time {
-                color: @solid-grey;
-            }
-
-            .log-entry-level-debug{
-                color: @dusty-blue;
-            }
-
-            .log-entry-level-info {
-                color: @cloudy-blue;
-            }
-
-            .log-entry-level-warn{
-                color: @sunflower-yellow;
-            }
-
-            .log-entry-level-error {
-                color: @darkish-pink;
-            }
-
-            .log-entry-message {
-                font-weight: 600;
-            }
-        }
-    }
-}
 .ncl-edit-item {
     width: 100%;
     padding: 6px 0;
@@ -6004,8 +5966,55 @@ ncl-breadcrumbs {
         .duskThree(0.64);
         color: @color;
     }
+
+    .schedule-input-wrapper {
+        display: flex;
+        align-items: center;
+
+        .clear-button {
+            margin-left: 15px;
+        }
+    }
 }
 
+.ncl-deploy-log-wrapper {
+    .log-panel {
+        .logs-common();
+        background-color: @dark-grey;
+        color: @light-grey-three;
+        padding: 5px;
+        margin: 21px 0 0 4px;
+        min-height: 280px;
+        max-height: 280px;
+        height: 280px;
+
+        .log-entry {
+            .log-entry-time {
+                color: @solid-grey;
+            }
+
+            .log-entry-level-debug{
+                color: @dusty-blue;
+            }
+
+            .log-entry-level-info {
+                color: @cloudy-blue;
+            }
+
+            .log-entry-level-warn{
+                color: @sunflower-yellow;
+            }
+
+            .log-entry-level-error {
+                color: @darkish-pink;
+            }
+
+            .log-entry-message {
+                font-weight: 600;
+            }
+        }
+    }
+}
 .view-yaml-dialog-wrapper {
     .ngdialog-content {
         .view-yaml-dialog-header {
