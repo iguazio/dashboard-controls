@@ -16,9 +16,8 @@
 
             <div data-ng-if="value.kind === 'string'">
                 <igz-validating-input-field class="nuclio-validating-input"
-                                            data-field-type="input"
+                                            data-field-type="{{value.attributes.password ? 'password' : 'input'}}"
                                             data-validation-is-required="value.required"
-                                            class="nuclio-validating-input"
                                             data-input-name="{{name}}"
                                             data-form-object="$ctrl.templateForm"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
