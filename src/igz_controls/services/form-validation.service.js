@@ -67,15 +67,15 @@
          * Check if the field of the form is valid
          * @param {Object} form - form which owns the field
          * @param {string} elementName - name of the field to check
-         * @param {boolean} validateOnSubmit - if this parameter was passed, that means next -
-         * validate field only if form was submitted. Otherwise validates field all the time
+         * @param {boolean} [validateOnSubmit=false] - if this parameter was passed, that means next -
+         *     validate field only if form was submitted. Otherwise validates field all the time
          * @returns {boolean}
          */
         function isFieldValid(form, elementName, validateOnSubmit) {
             var formSubmitted = lodash.get(form, '$submitted', false);
             var elementValid = lodash.get(form, elementName + '.$valid', true);
 
-            return (validateOnSubmit && !formSubmitted) || elementValid;
+            return (lodash.defaultTo(validateOnSubmit, false) && !formSubmitted) || elementValid;
         }
     }
 }());
