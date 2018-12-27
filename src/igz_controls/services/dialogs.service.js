@@ -151,7 +151,7 @@
             return ngDialog.open({
                 template: '<div class="header"></div><div class="notification-text">' + alertText + '</div>' +
                 '<div class="buttons">' +
-                '<button class="refresh-button" data-ng-click="closeThisDialog()" ' +
+                '<button class="refresh-button no-padding" data-ng-click="closeThisDialog()" ' +
                 'data-test-id="general.oops_refresh.button" ' +
                 '<span class="igz-icon-refresh"></span>' + buttonText + '</button>' +
                 '</div>',
