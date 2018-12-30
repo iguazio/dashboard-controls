@@ -8,27 +8,33 @@
 
     .main-content {
         width: 300px;
+        max-height: 500px;
 
-        .field-label {
-            font-size: 14px;
-            text-align: left;
-            color: @dusk-three;
-        }
+        form {
+            margin: 0 20px 0 0;
 
-        .validating-input-field {
-            .input-field {
-                padding: 0 10px 0 17px;
-            }
-
-            .input-placeholder {
-                left: 18px;
-                font-style: italic;
+            .field-label {
                 font-size: 14px;
+                text-align: left;
+                color: @dusk-three;
+
+                .igz-icon-help-round::before {
+                    color: @dark-sky-blue;
+                    font-size: 18px;
+                }
+            }
+
+            .validating-input-field {
+                .input-field {
+                    padding: 0 10px 0 17px;
+                }
+
+                .input-placeholder {
+                    left: 18px;
+                    font-style: italic;
+                    font-size: 14px;
+                }
             }
         }
-    }
-
-    .ncl-primary-button {
-        cursor: pointer;
     }
 }
