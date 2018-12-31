@@ -6,44 +6,51 @@
     </span>
 </div>
 
-<div class="main-content ">
+<div class="main-content igz-scrollable-container" data-ng-scrollbars>
     <form name="$ctrl.templateForm" novalidate>
         <div class="field-group"
-             data-ng-repeat="(name, value) in $ctrl.template.values">
+             data-ng-repeat="field in $ctrl.fields track by field.name">
             <div class="field-label">
-                {{ value.displayName }}
+                {{ field.displayName }} <span class="asterisk" data-ng-if="field.required"></span>
+                <span class="igz-icon-help-round pull-right pointer-cursor"
+                      data-uib-tooltip="{{field.description}}"
+                      data-tooltip-append-to-body="true"
+                      data-tooltip-placement="left"
+                      data-tooltip-popup-delay="200"
+                      data-ng-if="field.description"></span>
             </div>
 
-            <div data-ng-if="value.kind === 'string'">
+            <div data-ng-if="field.kind === 'string'">
                 <igz-validating-input-field class="nuclio-validating-input"
-                                            data-field-type="{{value.attributes.password ? 'password' : 'input'}}"
-                                            data-validation-is-required="value.required"
-                                            data-input-name="{{name}}"
+                                            data-field-type="{{field.attributes.password ? 'password' : 'input'}}"
+                                            data-validation-is-required="field.required"
+                                            data-input-value="field.attributes.defaultValue"
+                                            data-input-name="{{field.name}}"
                                             data-form-object="$ctrl.templateForm"
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-update-data-field="{{name}}"></igz-validating-input-field>
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"></igz-validating-input-field>
             </div>
 
-            <div data-ng-if="value.kind === 'number'">
-                <igz-number-input data-min-value="value.attributes.minValue"
-                                  data-max-value="value.attributes.maxValue"
-                                  data-default-value="value.attributes.defaultValue"
-                                  data-validation-is-required="value.required"
+            <div data-ng-if="field.kind === 'number'">
+                <igz-number-input data-min-value="field.attributes.minValue"
+                                  data-max-value="field.attributes.maxValue"
+                                  data-value-step="field.attributes.step"
+                                  data-precision="{{field.attributes.allowDecimal ? 2 : 0}}"
+                                  data-default-value="field.attributes.defaultValue"
+                                  data-validation-is-required="field.required"
                                   data-form-object="$ctrl.templateForm"
                                   data-allow-empty-field="true"
                                   data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)"
-                                  data-update-number-input-field="{{name}}"
-                                  data-input-name="{{name}}"
-                                  data-value-step="1"></igz-number-input>
+                                  data-input-name="{{field.name}}"></igz-number-input>
             </div>
 
-            <div data-ng-if="value.kind === 'choice'">
-                <igz-default-dropdown data-values-array="$ctrl.dropdownOptions[name].options"
-                                      data-selected-item="$ctrl.dropdownOptions[name].defaultValue"
-                                      data-is-required="value.required"
+            <div data-ng-if="field.kind === 'choice'">
+                <igz-default-dropdown data-values-array="field.attributes.choices"
+                                      data-selected-item="field.attributes.defaultValue"
+                                      data-select-property-only="id"
+                                      data-is-required="field.required"
                                       data-item-select-callback="$ctrl.dropdownCallback(item, isItemChanged, name)"
                                       data-form-object="$ctrl.templateForm"
-                                      data-input-name="{{name}}"></igz-default-dropdown>
+                                      data-input-name="{{field.name}}"></igz-default-dropdown>
             </div>
         </div>
     </form>
@@ -56,7 +63,8 @@
         Cancel
     </button>
     <button class="ncl-primary-button"
-            data-ng-class="{'disabled': !$ctrl.isFormFilled()}"
+            data-ng-class="{disabled: !$ctrl.isFormFilled()}"
+            data-ng-disabled="!$ctrl.isFormFilled()"
             data-ng-click="$ctrl.onApply()"
             data-ng-keydown="$ctrl.onApply($event)">
         Apply
