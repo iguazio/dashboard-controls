@@ -83,7 +83,8 @@
                 </div>
             </div>
             <div data-ui-layout="{ flow : 'row', dividerSize: 3 }">
-                <div ui-layout-container size="45%" min-size="100px" class="request-section">
+                <div ui-layout-container size="45%" min-size="100px" class="request-section"
+                     data-ng-class="{'left-bar-pinned': $ctrl.fixedLeftBar}">
                     <div class="igz-scrollable-container scrollable-request-section"
                          data-ng-scrollbars
                          data-ng-scrollbars-config="$ctrl.scrollConfig">
@@ -227,7 +228,8 @@
                         </div>
                     </div>
                 </div>
-                <div ui-layout-container size="55%" min-size="100px" class="response-section">
+                <div ui-layout-container size="55%" min-size="100px" class="response-section"
+                     data-ng-class="{'left-bar-pinned': $ctrl.fixedLeftBar}">
                     <div class="igz-scrollable-container scrollable-response-section"
                          data-ng-scrollbars
                          data-ng-scrollbars-config="$ctrl.scrollConfig">
