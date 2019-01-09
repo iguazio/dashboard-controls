@@ -657,6 +657,10 @@
                     })
                     .catch(function (invocationData) {
                         if (angular.isDefined(invocationData.status) && invocationData.status !== -1) {
+                            var lowerCaseHeaders = lodash.mapKeys(invocationData.headers, function (value, key) {
+                                return key.toLowerCase();
+                            });
+
                             ctrl.invokeTime = convertTime(moment().diff(startTime));
 
                             ctrl.testResult = {
@@ -664,13 +668,11 @@
                                     statusCode: invocationData.status,
                                     statusText: invocationData.statusText
                                 },
+
+                                // not using `lowerCaseHeaders` here so the headers will be displayed as-is
                                 headers: lodash.omit(invocationData.headers, ['x-nuclio-logs', 'X-Nuclio-Logs']),
                                 body: invocationData.body
                             };
-
-                            var lowerCaseHeaders = lodash.mapKeys(ctrl.testResult.headers, function (value, key) {
-                                return key.toLowerCase();
-                            });
 
                             var responseHeadersTab = lodash.find(ctrl.responseNavigationTabs, ['id', 'headers']);
                             responseHeadersTab.badge = lodash.size(ctrl.testResult.headers);
