@@ -4,7 +4,7 @@
     require.config({ paths: { 'vs': '/assets/monaco-editor/min/vs' } });
 
     angular.module('iguazio.dashboard-controls')
-        .directive('igzMonacoEditor', function ($interval) {
+        .directive('igzMonacoEditor', function ($interval, lodash) {
             function link(scope, element, attrs) {
                 var editorElement = element[0];
                 var interval = null;
@@ -34,7 +34,9 @@
                             this.editor.setValue(scope.codeFile.code);
                         },
                         onCodeFileChanged: function () {
-                            this.editor.updateOptions({ value: scope.codeFile.code });
+                            if (!lodash.isEqual(this.editor.getValue(), scope.codeFile.code)) {
+                                this.editor.setValue(scope.codeFile.code);
+                            }
                         },
                         onReadOnlyCodeFileChanged: function () {
                             this.editor.setValue(scope.codeFile.code);
