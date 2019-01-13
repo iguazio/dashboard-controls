@@ -48,7 +48,8 @@
                                       data-selected-item="field.attributes.defaultValue"
                                       data-select-property-only="id"
                                       data-is-required="field.required"
-                                      data-item-select-callback="$ctrl.dropdownCallback(item, isItemChanged, name)"
+                                      data-item-select-field="{{field.name}}"
+                                      data-item-select-callback="$ctrl.dropdownCallback(item, isItemChanged, field)"
                                       data-form-object="$ctrl.templateForm"
                                       data-input-name="{{field.name}}"></igz-default-dropdown>
             </div>
