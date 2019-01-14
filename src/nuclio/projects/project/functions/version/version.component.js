@@ -155,27 +155,35 @@
 
             ctrl.isLayoutCollapsed = true;
 
+            lodash.defaultsDeep(ctrl.version, {
+                spec: {
+                    build: {
+                        image: '',
+                        noCache: false,
+                        offline: false,
+                        dependencies: [],
+                        runtimeAttributes: {
+                            repositories: []
+                        }
+                    }
+                },
+                ui: {
+                    versionCode: ''
+                }
+            });
+
             lodash.merge(ctrl.version, {
                 ui: {
                     deployedVersion: lodash.isNil(ctrl.version.status) ? null : getVersionCopy(),
                     versionChanged: false
                 }
             });
-            ctrl.version.ui.versionCode = lodash.defaultTo(ctrl.version.ui.versionCode, '');
 
             ctrl.getExternalIpAddresses()
                 .then(setInvocationUrl)
                 .catch(function () {
                     ctrl.version.ui.invocationURL = '';
                 });
-
-            lodash.set(ctrl.version, 'spec.build', lodash.merge({
-                image: '',
-                dependencies: [],
-                runtimeAttributes: {
-                    repositories: []
-                }
-            }, ctrl.version.spec.build));
         }
 
         //

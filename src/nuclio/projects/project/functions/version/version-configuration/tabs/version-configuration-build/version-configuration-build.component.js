@@ -57,11 +57,7 @@
             ctrl.build.dependencies = lodash.get(ctrl.version, 'spec.build.dependencies', []).join('\n');
             ctrl.build.runtimeAttributes.repositories = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories', []).join('\n');
 
-            lodash.defaultsDeep(ctrl.version.spec, {
-                build: {
-                    noCache: false,
-                    offline: false
-                },
+            lodash.defaults(ctrl.version.spec, {
                 readinessTimeoutSeconds: 60
             });
         }
