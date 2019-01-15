@@ -80,7 +80,7 @@
         ctrl.$onDestroy = onDestroy;
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
-        ctrl.isColumnSorted = CommonTableService.isColumnSorted;
+        ctrl.getColumnSortingClasses = CommonTableService.getColumnSortingClasses;
 
         ctrl.createFunction = createFunction;
         ctrl.handleAction = handleAction;

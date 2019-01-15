@@ -109,14 +109,12 @@ describe('nclProjectsTableRow component:', function () {
         it('should resolve `ctrl.deleteProject()` method if there is error ' +
             '(missing mandatory fields) is response', function () {
             spyOn(ctrl, 'deleteProject').and.returnValue($q.reject());
-            spyOn(DialogsService, 'alert');
 
             ctrl.project.ui.delete();
             $rootScope.$digest();
             project.ui = ctrl.project.ui;
 
             expect(ctrl.deleteProject).toHaveBeenCalledWith({ project: ctrl.project });
-            expect(DialogsService.alert).toHaveBeenCalledWith('Unknown error occurred while deleting the project.');
         });
     });
 

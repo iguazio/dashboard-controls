@@ -71,7 +71,7 @@
 
         ctrl.$onInit = onInit;
 
-        ctrl.isColumnSorted = CommonTableService.isColumnSorted;
+        ctrl.getColumnSortingClasses = CommonTableService.getColumnSortingClasses;
 
         ctrl.getVersions = getVersions;
         ctrl.handleAction = handleAction;
