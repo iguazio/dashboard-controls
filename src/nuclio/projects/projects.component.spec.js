@@ -52,8 +52,12 @@ describe('nclProjects component: ', function () {
                 getProjects: $q.when.bind($q),
                 getFunctions: $q.when.bind($q)
             };
+            var element = angular.element('<ncl-projects></ncl-projects>');
+            var ImportService = {
+                importService: null
+            };
 
-            ctrl = $componentController('nclProjects', null, bindings);
+            ctrl = $componentController('nclProjects', {$element: element, ImportService: ImportService}, bindings);
             ctrl.$onInit();
             $rootScope.$digest();
         });
@@ -86,6 +90,12 @@ describe('nclProjects component: ', function () {
                     label: 'Edit',
                     id: 'edit',
                     icon: 'igz-icon-properties',
+                    active: true
+                },
+                {
+                    label: 'Export',
+                    id: 'export',
+                    icon: 'igz-icon-export-yml',
                     active: true
                 }
             ];
@@ -133,11 +143,18 @@ describe('nclProjects component: ', function () {
 
     describe('handleAction(): ', function () {
         it('should call action\'s handlers for all checked projects', function () {
+            var mockedValue = {
+                then: function () {
+                    return {
+                        'catch': angular.noop
+                    }
+                }
+            };
             ctrl.projects[1].ui.checked = true;
             projects[1].ui = ctrl.projects[1].ui;
 
-            spyOn(ctrl.projects[0].ui, 'delete');
-            spyOn(ctrl.projects[1].ui, 'delete');
+            spyOn(ctrl.projects[0].ui, 'delete').and.returnValue(mockedValue);
+            spyOn(ctrl.projects[1].ui, 'delete').and.returnValue(mockedValue);
 
             ctrl.handleAction('delete', [ctrl.projects[0], ctrl.projects[1]]);
 
