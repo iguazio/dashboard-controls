@@ -1,6 +1,8 @@
-<div class="igz-browser-sort-dropdown dropdown" data-uib-dropdown
+<div class="igz-custom-dropdown dropdown" data-uib-dropdown
      data-is-open="$ctrl.isOpen">
-    <div class="igz-action-item" data-uib-dropdown-toggle>
+    <div class="igz-action-item"
+         data-ng-class="{'subtemplate-show': $ctrl.isOpen}"
+         data-uib-dropdown-toggle>
         <span class="action-icon igz-icon-sort"></span>
     </div>
     <ul class="dropdown-menu dropdown-list"
@@ -10,7 +12,9 @@
             data-ng-click="$ctrl.toggleSortingOrder(option)">
             <span class="item-name"
                   data-ng-class="$ctrl.getItemClass(option.active)">{{option.label}}</span>
-            <span class="igz-icon-sort-{{$ctrl.reverseSorting ? 'down' : 'up'}}" data-ng-show="option.active"></span>
+            <span class="igz-icon-sort-{{$ctrl.reverseSorting ? 'down' : 'up'}}"
+                  data-ng-show="option.active">
+            </span>
         </li>
     </ul>
 </div>
