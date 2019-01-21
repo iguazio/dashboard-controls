@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('FunctionsService', FunctionsService);
 
-    function FunctionsService($timeout, lodash) {
+    function FunctionsService(lodash) {
         return {
             getClassesList: getClassesList,
             getHandler: getHandler,
@@ -110,14 +110,16 @@
                                 pattern: 'string',
                                 type: 'input',
                                 fieldType: 'input',
-                                allowEmpty: false
+                                allowEmpty: true,
+                                placeholder: 'If empty, a default one will be provided'
                             },
                             {
                                 name: 'topics',
                                 pattern: 'arrayStr',
                                 type: 'input',
                                 fieldType: 'input',
-                                allowEmpty: false
+                                allowEmpty: true,
+                                placeholder: 'Required if Queue Name is empty'
                             }
                         ]
                     },
@@ -151,7 +153,8 @@
                                 pattern: 'interval',
                                 type: 'input',
                                 fieldType: 'input',
-                                allowEmpty: false
+                                allowEmpty: false,
+                                placeholder: 'E.g. 1h, 30m, 10s, 250ms'
                             },
                             {
                                 name: 'schedule',
