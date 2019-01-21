@@ -99,7 +99,7 @@
                 ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
                 ctrl.item.ui.className = ctrl.selectedClass.name;
 
-                $timeout(validateCronClassValues);
+                $timeout(validateValues);
             }
 
             if (ctrl.isTriggerType()) {
@@ -553,7 +553,7 @@
                 lodash.set(ctrl.item, field, newData);
             }
 
-            validateCronClassValues();
+            validateValues();
         }
 
         /**
@@ -644,7 +644,7 @@
             lodash.set(ctrl.item, 'attributes.schedule', '');
 
             $timeout(function () {
-                validateCronClassValues();
+                validateValues();
             });
         }
 
@@ -958,14 +958,11 @@
 
         /**
          * Return placeholder text for input
-         * @param {string} attributeName
+         * @param {Object} attribute
          */
-        function getPlaceholderText(attributeName) {
-            if (attributeName === 'interval') {
-                return 'E.g. 1h, 30m, 10s, 250ms'
-            }
-
-            return 'Type ' + ctrl.convertFromCamelCase(attributeName).toLowerCase() + '...';
+        function getPlaceholderText(attribute) {
+            var defaultPlaceholder = 'Type ' + ctrl.convertFromCamelCase(attribute.name).toLowerCase() + '...';
+            return lodash.defaultTo(attribute.placeholder, defaultPlaceholder);
         }
 
         //
@@ -975,7 +972,7 @@
         /**
          * Validate interval and schedule fields
          */
-        function validateCronClassValues() {
+        function validateValues() {
             if (ctrl.item.kind === 'cron') {
                 var scheduleAttribute = lodash.find(ctrl.selectedClass.attributes, { name: 'schedule' });
                 var intervalAttribute = lodash.find(ctrl.selectedClass.attributes, { name: 'interval' });
@@ -995,6 +992,21 @@
                     scheduleAttribute.allowEmpty = intervalInputIsFilled;
                     intervalAttribute.allowEmpty = scheduleInputIsFilled;
                 }
+            } else if (ctrl.item.kind === 'rabbit-mq') {
+                var queueName = lodash.find(ctrl.selectedClass.attributes, { name: 'queueName' });
+                var topics = lodash.find(ctrl.selectedClass.attributes, { name: 'topics' });
+                var queueNameIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_queueName.$viewValue);
+                var topicsIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_topics.$viewValue);
+
+                // Queue Name and Topics cannot be both empty at the same time
+                // at least one of them should be filled
+                // if one of them is filled, the other is allowed to be empty
+                queueName.allowEmpty = topicsIsFilled;
+                topics.allowEmpty = queueNameIsFilled;
+
+                // update validity: if empty is not allowed and value is currently empty - mark invalid, otherwise valid
+                ctrl.editItemForm.item_queueName.$setValidity('text', queueName.allowEmpty || queueNameIsFilled);
+                ctrl.editItemForm.item_topics.$setValidity('text', topics.allowEmpty || topicsIsFilled);
             }
         }
 
