@@ -35,6 +35,10 @@
             font-size: 12px;
             color: @color;
             margin: 0 8px 0 12px;
+
+            &::before {
+                vertical-align: text-bottom;
+            }
         }
 
         .level-icon {
@@ -43,14 +47,15 @@
             width: 20px;
             text-align: center;
 
-            &:before {
+            &::before {
                 font-size: 16px;
+                vertical-align: text-bottom;
             }
 
             &.ncl-icon-debug {
                 color: @orangish;
 
-                &:before {
+                &::before {
                     font-size: 18px;
                 }
             }
@@ -102,13 +107,17 @@
             position: relative;
             display: flex;
             align-items: center;
-            height: 36px;
+            height: 34px;
 
             .igz-icon-down {
                 .duskThree(0.64);
                 font-size: 12px;
                 color: @color;
                 margin: 0 8px 0 12px;
+
+                &::before {
+                    vertical-align: text-bottom;
+                }
             }
 
             .level-icon {
@@ -117,14 +126,15 @@
                 width: 20px;
                 text-align: center;
 
-                &:before {
+                &::before {
                     font-size: 16px;
+                    vertical-align: text-bottom;
                 }
 
                 &.ncl-icon-debug {
                     color: @orangish;
 
-                    &:before {
+                    &::before {
                         font-size: 18px;
                     }
                 }
