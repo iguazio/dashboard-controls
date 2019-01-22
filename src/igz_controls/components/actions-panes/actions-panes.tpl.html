@@ -2,6 +2,7 @@
     <div class="igz-action-panel">
         <div class="actions-list">
             <div class="igz-action-item"
+                 data-ng-class="{active: $ctrl.isFiltersOpened}"
                  data-ng-if="$ctrl.isShowFilterActionIcon()"
                  data-uib-tooltip="Filter"
                  data-tooltip-append-to-body="true"
@@ -12,7 +13,8 @@
                 <span data-ng-if="$ctrl.filtersCounter" class="filter-counter">{{$ctrl.filtersCounter}}</span>
             </div>
             <div class="igz-action-item last-item"
-                 data-ng-class="{inactive: (!$ctrl.isInfoPaneOpened && !$ctrl.infoPaneToggleMethod) || $ctrl.infoPaneDisable}"
+                 data-ng-class="{inactive: (!$ctrl.isInfoPaneOpened && !$ctrl.infoPaneToggleMethod) || $ctrl.infoPaneDisable,
+                                 active: $ctrl.isInfoPaneOpened}"
                  data-ng-if="$ctrl.closeInfoPane || $ctrl.infoPaneToggleMethod"
                  data-uib-tooltip="Info pane"
                  data-tooltip-append-to-body="true"

@@ -8,6 +8,7 @@
                 isInfoPaneOpened: '<?',
                 filtersToggleMethod: '&?',
                 filtersCounter: '<?',
+                isFiltersOpened: '<?',
                 showFilterIcon: '@?',
                 infoPaneToggleMethod: '&?',
                 closeInfoPane: '&?'

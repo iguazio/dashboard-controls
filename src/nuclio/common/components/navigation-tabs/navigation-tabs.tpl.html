@@ -32,9 +32,16 @@
     </div>
 </div>
 
-<div class="toggle-test-pane-icon-wrapper"
-     data-ng-if="$ctrl.isToggleButtonVisible()"
-     data-ng-class="{'test-pane-closed': $ctrl.isTestPaneClosed}"
-     data-ng-click="$ctrl.toggleTestPane()">
-    <span class="igz-icon-test-pane toggle-test-pane-icon"></span>
+<div class="test-pane-actions-wrapper">
+    <div class="igz-action-panel">
+        <div class="actions-list">
+            <div class="igz-action-item"
+                 data-ng-if="$ctrl.isToggleButtonVisible()"
+                 data-ng-class="{'active': !$ctrl.isTestPaneClosed}"
+                 data-ng-click="$ctrl.toggleTestPane()">
+                <div class="action-icon igz-icon-test-pane"></div>
+            </div>
+        </div>
+    </div>
 </div>
+
