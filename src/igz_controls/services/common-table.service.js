@@ -6,7 +6,7 @@
 
     function CommonTableService() {
         return {
-            isColumnSorted: isColumnSorted
+            getColumnSortingClasses: getColumnSortingClasses
         };
 
         //
@@ -20,7 +20,7 @@
          * @param {boolean} isReversed
          * @returns {{sorted: boolean, reversed: boolean}} - an object with css class names suitable for `ng-class`
          */
-        function isColumnSorted(columnName, lastSortedColumnName, isReversed) {
+        function getColumnSortingClasses(columnName, lastSortedColumnName, isReversed) {
             var classes = {
                 'sorted': false,
                 'reversed': false

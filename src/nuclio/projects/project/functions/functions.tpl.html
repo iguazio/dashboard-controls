@@ -63,23 +63,23 @@
                 </igz-action-checkbox-all>
                 <div class="igz-row common-table-cells-container">
                     <div class="igz-col-{{$ctrl.isDemoMode() ? '20' : '25'}} common-table-cell sortable"
-                         data-ng-class="$ctrl.isColumnSorted('metadata.name', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-class="$ctrl.getColumnSortingClasses('metadata.name', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                          data-ng-click="$ctrl.sortTableByColumn('metadata.name')">Name
                         <span class="sort-arrow"></span>
                     </div>
                     <div class="igz-col-20 common-table-cell sortable"
-                         data-ng-class="$ctrl.isColumnSorted('spec.description', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-class="$ctrl.getColumnSortingClasses('spec.description', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                          data-ng-click="$ctrl.sortTableByColumn('spec.description')">Description
                         <span class="sort-arrow"></span>
                     </div>
                     <div class="igz-col-10 common-table-cell sortable"
-                         data-ng-class="$ctrl.isColumnSorted('status.state', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-class="$ctrl.getColumnSortingClasses('status.state', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                          data-ng-click="$ctrl.sortTableByColumn('status.state')">Status
                         <span class="sort-arrow"></span>
                     </div>
                     <div class="igz-col-10 common-table-cell sortable"
                          data-ng-if="$ctrl.isDemoMode()"
-                         data-ng-class="$ctrl.isColumnSorted('spec.replicas', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-class="$ctrl.getColumnSortingClasses('spec.replicas', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                          data-ng-click="$ctrl.sortTableByColumn('spec.replicas')">Replicas
                         <span class="sort-arrow"></span>
                     </div>
@@ -88,7 +88,7 @@
                         Invocation per sec
                     </div>
                     <div class="igz-col-10 common-table-cell sortable"
-                         data-ng-class="$ctrl.isColumnSorted('spec.runtime', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-class="$ctrl.getColumnSortingClasses('spec.runtime', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                          data-ng-click="$ctrl.sortTableByColumn('spec.runtime')">Runtime
                         <span class="sort-arrow"></span>
                     </div>
