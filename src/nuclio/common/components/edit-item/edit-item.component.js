@@ -850,8 +850,8 @@
                                     lodash.set(ctrl.item, 'attributes[' + attribute.name + ']', numberAttribute);
                                 }
 
-                                if (attribute.pattern === 'arrayStr' && !lodash.isArray(ctrl.item.attributes[attribute.name])) {
-                                    ctrl.item.attributes[attribute.name] = ctrl.item.attributes[attribute.name].split(',');
+                                if (attribute.pattern === 'arrayStr') {
+                                    lodash.update(ctrl.item.attributes, attribute.name, ConverterService.toStringArray);
                                 }
 
                                 if (attribute.pattern === 'arrayInt' && !lodash.isArray(ctrl.item.attributes[attribute.name])) {
