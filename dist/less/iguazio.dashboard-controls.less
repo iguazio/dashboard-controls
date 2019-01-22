@@ -299,6 +299,67 @@
     }
 }
 
+.igz-custom-dropdown {
+    .custom-dropdown-color-set();
+
+    .dropdown-menu {
+        left: auto;
+        margin: 0;
+        padding: 10px 0;
+        box-shadow: @dropdown-menu-box-shadow;
+        top: 39px;
+        right: -1px;
+        color: @dropdown-menu-color;
+        width: 139px;
+        min-width: 139px;
+
+        &.dropdown-list {
+            font-size: 13px;
+            font-weight: 500;
+            text-align: left;
+            list-style: none;
+            max-height: 192px;
+            border: none;
+            box-shadow: @dropdown-menu-list-box-shadow;
+
+            .dropdown-menu-item {
+                font-family: @font-family-sans-serif;
+                font-size: 13px;
+                font-weight: 500;
+                line-height: 32px;
+                position: relative;
+                height: 32px;
+
+                > .item-name {
+                    display: inline-block;
+                    width: 93px;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    margin-left: 15px;
+                    color: @dropdown-menu-item-name-color;
+                    vertical-align:top;
+                    text-decoration: none;
+                    height: 32px;
+
+                    &.active-item {
+                        font-weight: bold;
+                    }
+                }
+
+                .igz-icon-sort-up, .igz-icon-sort-down:before {
+                    margin-right: 18px;
+                }
+
+                &:hover {
+                    height: 32px;
+                    background-color: @dropdown-menu-item-hover-bg-color;
+                }
+            }
+        }
+    }
+}
+
 .igz-main-wrapper {
 
     // preload oops.png image to display in dialog when server is unreachable
@@ -1684,6 +1745,14 @@ h1, h2, h3, h4, h5, h6, .title, .btn {
     width: 7.5%;
 }
 
+&.igz-col-8 {
+    width: 8%;
+}
+
+&.igz-col-9 {
+    width: 9%;
+}
+
 &.igz-col-10 {
     width: 10%;
 }
@@ -1746,6 +1815,10 @@ h1, h2, h3, h4, h5, h6, .title, .btn {
 
 &.igz-col-25 {
     width: 25%;
+}
+
+&.igz-col-28 {
+    width: 28%;
 }
 
 &.igz-col-30 {
@@ -3038,7 +3111,7 @@ ncl-projects {
             }
 
             .action-icon {
-                color: @action-icon-hover-color;
+                color: @action-icon-color;
                 display: inline-block;
                 padding-right: 14px;
 
@@ -3161,18 +3234,72 @@ ncl-projects {
             z-index: 2;
 
             &.inactive {
+                pointer-events: none;
+
                 &:hover {
                     color: @action-item-inactive-hover-color;
                 }
 
                 .action-icon {
-                    color: @action-icon-active-color;
+                    color: @action-icon-inactive-color;
                     cursor: default;
+                }
+            }
+
+            &.active {
+                background-color: @action-item-active-bg-color;
+            }
+
+            &:not(.inactive) {
+                &:hover {
+                    overflow: visible;
+                    background-color: @action-item-hover-bg-color;
+                    box-shadow: @action-item-hover-box-shadow;
+
+                    &:active {
+                        box-shadow: @action-item-hover-active-box-shadow;
+                        background-color: @action-item-hover-active-bg-color;
+                    }
+
+                    .action-icon {
+                        color: @action-icon-hover-color;
+                    }
+                }
+
+                &:focus {
+                    background-color: @action-item-hover-bg-color;
+                    box-shadow: @action-item-focus-box-shadow;
+                    &:hover {
+                        box-shadow: @action-item-focus-hover-box-shadow;
+                    }
+                }
+            }
+
+            &.subtemplate-show {
+                transition: none;
+                background-color: @dropdown-menu-subtemplate-show-bg-color;
+                box-shadow: @dropdown-menu-subtemplate-show-box-shadow;
+
+                &:hover {
+                    background-color: @dropdown-menu-subtemplate-show-hover-bg-color;
+                    box-shadow: @dropdown-menu-subtemplate-show-hover-box-shadow;
+                }
+
+                .action-icon {
+                    color: @action-icon-hover-color;
                 }
             }
 
             &.last-item {
                 margin: 0;
+            }
+
+            .action-icon {
+                color: @action-icon-color;
+            }
+
+            .action-label {
+                display: none;
             }
 
             .filter-counter {
@@ -3221,6 +3348,10 @@ ncl-projects {
 
                         &:hover {
                             background-color: @dropdown-menu-li-hover-bg-color;
+
+                            .action-icon {
+                                color: @action-icon-hover-color;
+                            }
                         }
 
                         .action-label {
@@ -3231,47 +3362,13 @@ ncl-projects {
                         }
 
                         .action-icon {
+                            color: @action-icon-color;
                             font-size: 17px;
                             display: inline-block;
                             margin: 0 13px 0 21px;
                             vertical-align: middle;
                         }
                     }
-                }
-            }
-
-            .action-icon {
-                color: @action-icon-hover-color;
-            }
-
-            .action-label {
-                display: none;
-            }
-
-            &:not(.inactive):hover {
-                overflow: visible;
-                background-color: @dropdown-menu-hover-bg-color;
-                box-shadow: @dropdown-menu-hover-box-shadow;
-
-                &:active {
-                    box-shadow: @dropdown-menu-hover-active-box-shadow;
-                }
-
-                .action-icon {
-                    color: @action-icon-color;
-                }
-            }
-
-            &.subtemplate-show {
-                transition: none;
-                background-color: @dropdown-menu-subtemplate-show-bg-color;
-
-                &:hover {
-                    background-color: @dropdown-menu-subtemplate-show-hover-bg-color;
-                }
-
-                .action-icon {
-                    color: @action-icon-color;
                 }
             }
         }
@@ -4313,67 +4410,6 @@ ncl-projects {
 
                 .dropdown-arrow {
                     margin-right: 0;
-                }
-            }
-        }
-    }
-}
-
-.igz-browser-sort-dropdown {
-    .sort-dropdown-color-set();
-
-    .dropdown-menu {
-        left: auto;
-        margin: 0;
-        padding: 10px 0;
-        box-shadow: @dropdown-menu-box-shadow;
-        top: 39px;
-        right: -1px;
-        color: @dropdown-menu-color;
-        width: 139px;
-        min-width: 139px;
-
-        &.dropdown-list {
-            font-size: 13px;
-            font-weight: 500;
-            text-align: left;
-            list-style: none;
-            max-height: 192px;
-            border: none;
-            box-shadow: @dropdown-menu-list-box-shadow;
-
-            .dropdown-menu-item {
-                font-family: @font-family-sans-serif;
-                font-size: 13px;
-                font-weight: 500;
-                line-height: 32px;
-                position: relative;
-                height: 32px;
-
-                > .item-name {
-                    display: inline-block;
-                    width: 93px;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    margin-left: 15px;
-                    color: @dropdown-menu-item-name-color;
-                    vertical-align:top;
-                    text-decoration: none;
-                    height: 32px;
-
-                    &.active-item {
-                        font-weight: bold;
-                    }
-                }
-
-                .igz-icon-sort-up, .igz-icon-sort-down:before {
-                    margin-right: 18px;
-                }
-
-                &:hover {
-                    height: 32px;
-                    background-color: @dropdown-menu-item-hover-bg-color;
                 }
             }
         }
@@ -5690,100 +5726,6 @@ ncl-breadcrumbs {
     }
 }
 
-.ncl-collapsing-row {
-    margin-bottom: 9px;
-
-    .title-block.common-table-row {
-        border: 1px solid @pale-grey;
-        box-shadow: none;
-        min-height: 49px;
-
-        &.collapsed {
-            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-
-            &:hover {
-                box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
-            }
-        }
-
-        &:hover {
-            .common-table-cells-container {
-                background-color: @white;
-            }
-
-            .actions-menu {
-                visibility: visible;
-                background-color: @white;
-            }
-        }
-    }
-
-    .row-collapse {
-        width: 40px;
-        justify-content: center;
-        align-items: flex-start;
-        line-height: 51px;
-
-        .collapse-icon {
-            background-color: transparent;
-            position: absolute;
-
-            &.igz-icon-right, &.igz-icon-down {
-                font-size: 12px;
-                .duskThree(0.64);
-                color: @color;
-
-                &:hover {
-                    color: @dusk-three;
-                }
-            }
-        }
-    }
-
-    .item-row {
-        line-height: 48px;
-        display: flex;
-
-        .item-name {
-            font-weight: bold;
-            width: 192px;
-        }
-
-        .item-class {
-            width: 168px;
-            padding-left: 16px;
-        }
-
-        .field-label {
-            text-transform: capitalize;
-        }
-    }
-
-    .item-info-row {
-        line-height: 30px;
-    }
-
-    .expanded-item-info-block {
-        width: 100%;
-        height: 100%;
-        top: 0;
-        padding: 10px 0;
-    }
-
-    .collapsed-item-info-block {
-        padding-left: 16px;
-        white-space: nowrap;
-        width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .actions-menu {
-        visibility: hidden;
-        align-items: flex-start;
-        line-height: 51px;
-    }
-}
 .ncl-breadcrumbs-dropdown {
     display: inline-grid;
 
@@ -5924,6 +5866,100 @@ ncl-breadcrumbs {
     }
 }
 
+.ncl-collapsing-row {
+    margin-bottom: 9px;
+
+    .title-block.common-table-row {
+        border: 1px solid @pale-grey;
+        box-shadow: none;
+        min-height: 49px;
+
+        &.collapsed {
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+
+            &:hover {
+                box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+            }
+        }
+
+        &:hover {
+            .common-table-cells-container {
+                background-color: @white;
+            }
+
+            .actions-menu {
+                visibility: visible;
+                background-color: @white;
+            }
+        }
+    }
+
+    .row-collapse {
+        width: 40px;
+        justify-content: center;
+        align-items: flex-start;
+        line-height: 51px;
+
+        .collapse-icon {
+            background-color: transparent;
+            position: absolute;
+
+            &.igz-icon-right, &.igz-icon-down {
+                font-size: 12px;
+                .duskThree(0.64);
+                color: @color;
+
+                &:hover {
+                    color: @dusk-three;
+                }
+            }
+        }
+    }
+
+    .item-row {
+        line-height: 48px;
+        display: flex;
+
+        .item-name {
+            font-weight: bold;
+            width: 192px;
+        }
+
+        .item-class {
+            width: 168px;
+            padding-left: 16px;
+        }
+
+        .field-label {
+            text-transform: capitalize;
+        }
+    }
+
+    .item-info-row {
+        line-height: 30px;
+    }
+
+    .expanded-item-info-block {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        padding: 10px 0;
+    }
+
+    .collapsed-item-info-block {
+        padding-left: 16px;
+        white-space: nowrap;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .actions-menu {
+        visibility: hidden;
+        align-items: flex-start;
+        line-height: 51px;
+    }
+}
 .ncl-deploy-log-wrapper {
     .log-panel {
         .logs-common();
@@ -6206,32 +6242,6 @@ ncl-breadcrumbs {
         }
     }
 }
-.ncl-monaco {
-    .ncl-monaco-wrapper {
-        padding-top: 20px;
-        height: 100%;
-        border: 1px solid @pale-grey;
-        background-color: @white;
-
-        &.no-top-padding {
-            padding-top: 0;
-        }
-
-        .ncl-monaco-top-row {
-            display: block;
-        }
-
-        .ncl-monaco-editor {
-            height: 100%;
-        }
-    }
-
-    .ncl-monaco-dark {
-        background-color: @vs-dark;
-    }
-}
-
-
 ncl-navigation-tabs {
     display: flex;
     align-items: center;
@@ -6380,33 +6390,36 @@ ncl-navigation-tabs {
         }
     }
 
-    .toggle-test-pane-icon-wrapper {
+    .test-pane-actions-wrapper {
         margin-right: 35px;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        background-color: @pale-grey;
-
-        &.test-pane-closed {
-            .toggle-test-pane-icon {
-                .duskThree(0.64);
-                color: @color;
-            }
-
-            background-color: transparent;
-        }
-
-        .toggle-test-pane-icon {
-            color: @dusk-three;
-            font-size: 13px;
-            height: 14px;
-        }
     }
 }
+
+.ncl-monaco {
+    .ncl-monaco-wrapper {
+        padding-top: 20px;
+        height: 100%;
+        border: 1px solid @pale-grey;
+        background-color: @white;
+
+        &.no-top-padding {
+            padding-top: 0;
+        }
+
+        .ncl-monaco-top-row {
+            display: block;
+        }
+
+        .ncl-monaco-editor {
+            height: 100%;
+        }
+    }
+
+    .ncl-monaco-dark {
+        background-color: @vs-dark;
+    }
+}
+
 
 .ncl-search-input {
     position: relative;
@@ -6635,9 +6648,6 @@ ncl-functions {
     }
 }
 .ncl-text-size-dropdown {
-    .action-panel-color-set();
-    .action-icon-color-set();
-
     display: flex;
     justify-content: flex-end;
 
@@ -6647,87 +6657,12 @@ ncl-functions {
         margin: 0 8px 0 0;
         display: flex;
         justify-content: space-evenly;
-        position: relative;
-        border-radius: 50%;
-        color: @action-item-color;
-        background-color: @action-item-bg-color;
         font-size: 18px;
         line-height: 40px;
-        transition: color .2s ease-out;
-        cursor: pointer;
 
         .action-icon {
-            color: @action-icon-hover-color;
-
             &.igz-icon-decrease {
                 font-size: 10px;
-            }
-        }
-
-        &:not(.inactive):hover {
-            overflow: visible;
-            background-color: @dropdown-menu-hover-bg-color;
-            box-shadow: @dropdown-menu-hover-box-shadow;
-
-            &:active {
-                box-shadow: @dropdown-menu-hover-active-box-shadow;
-            }
-
-            .action-icon {
-                color: @action-icon-color;
-            }
-        }
-    }
-
-    .dropdown-menu {
-        left: auto;
-        margin: 0;
-        padding: 10px 0;
-        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
-        top: 35px;
-        right: -1px;
-        color: @dusk-three;
-        width: 139px;
-        min-width: 139px;
-
-        &.dropdown-list {
-            font-size: 13px;
-            font-weight: 500;
-            text-align: left;
-            list-style: none;
-            max-height: 192px;
-            border: none;
-            box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
-
-            .dropdown-menu-item {
-                font-family: @font-family-sans-serif;
-                font-size: 13px;
-                font-weight: 500;
-                line-height: 32px;
-                position: relative;
-                height: 32px;
-
-                > .item-name {
-                    display: inline-block;
-                    width: 93px;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    margin-left: 15px;
-                    color: @dusk-three;
-                    vertical-align:top;
-                    text-decoration: none;
-                    height: 32px;
-
-                    &.active-item {
-                        font-weight: bold;
-                    }
-                }
-
-                &:hover {
-                    height: 32px;
-                    background-color: @pale-grey-two;
-                }
             }
         }
     }
@@ -7902,6 +7837,65 @@ ncl-functions {
     }
 }
 
+.ncl-version-configuration {
+    > .igz-scrollable-container {
+        padding: 24px 25px 22px 41px;
+    }
+
+    .ncl-version-configuration-wrapper {
+        > .row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+
+            .configuration-block {
+                padding: 16px 23px 16px;
+                background-color: @white;
+                border: solid 1px @pale-grey;
+                flex-grow: 1;
+                flex-basis: 500px;
+                overflow: hidden;
+                margin-right: 16px;
+                margin-bottom: 16px;
+
+                .igz-scrollable-container {
+                    max-height: 500px;
+                }
+
+                .title {
+                    font-size: 16px;
+                    font-weight: bold;
+                    font-style: normal;
+                    font-stretch: normal;
+                    letter-spacing: normal;
+                    text-align: left;
+                    color: @dusk-three;
+                    margin-bottom: 12px;
+                }
+
+                .row {
+                    .label {
+                        display: block;
+                        font-family: Roboto, sans-serif;
+                        font-size: 14px;
+                        font-weight: 500;
+                        font-style: normal;
+                        font-stretch: normal;
+                        letter-spacing: normal;
+                        text-align: left;
+                        color: @dusk-three;
+                        padding: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    .invisible-block {
+        visibility: hidden;
+    }
+}
+
 .ncl-version-monitoring {
     > .igz-scrollable-container {
         padding: 24px 25px 22px 41px;
@@ -8009,65 +8003,6 @@ ncl-functions {
                 }
             }
         }
-    }
-}
-
-.ncl-version-configuration {
-    > .igz-scrollable-container {
-        padding: 24px 25px 22px 41px;
-    }
-
-    .ncl-version-configuration-wrapper {
-        > .row {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-
-            .configuration-block {
-                padding: 16px 23px 16px;
-                background-color: @white;
-                border: solid 1px @pale-grey;
-                flex-grow: 1;
-                flex-basis: 500px;
-                overflow: hidden;
-                margin-right: 16px;
-                margin-bottom: 16px;
-
-                .igz-scrollable-container {
-                    max-height: 500px;
-                }
-
-                .title {
-                    font-size: 16px;
-                    font-weight: bold;
-                    font-style: normal;
-                    font-stretch: normal;
-                    letter-spacing: normal;
-                    text-align: left;
-                    color: @dusk-three;
-                    margin-bottom: 12px;
-                }
-
-                .row {
-                    .label {
-                        display: block;
-                        font-family: Roboto, sans-serif;
-                        font-size: 14px;
-                        font-weight: 500;
-                        font-style: normal;
-                        font-stretch: normal;
-                        letter-spacing: normal;
-                        text-align: left;
-                        color: @dusk-three;
-                        padding: 0;
-                    }
-                }
-            }
-        }
-    }
-
-    .invisible-block {
-        visibility: hidden;
     }
 }
 
@@ -9218,6 +9153,89 @@ ncl-functions {
     }
 }
 
+.ncl-version-configuration-data-bindings {
+    .ncl-version-binding {
+        .common-table-header {
+            border: none;
+            padding-left: 24px;
+
+            .common-table-cell {
+                font-size: 14px;
+                font-weight: bold;
+                letter-spacing: normal;
+                color: @dusk-three;
+                height: 46px;
+            }
+
+            &.item-header {
+                display: flex;
+
+                .item-name {
+                    width: 25%;
+                }
+
+                .item-class {
+                    width: 20%;
+                }
+
+                .item-info {
+                    width: 55%;
+                }
+            }
+        }
+
+        .common-table-body {
+            .common-table-row {
+                &:not(.read-only):hover {
+                    .common-table-cells-container {
+                        background-color: @white;
+                    }
+
+                    .actions-menu {
+                        background-color: @white;
+                    }
+                }
+            }
+
+            .ncl-collapsing-row .item-row {
+                .item-name {
+                    width: 22%;
+                }
+
+                .item-class {
+                    width: 20%;
+                }
+
+                .item-info {
+                    width: 58%;
+                }
+            }
+        }
+    }
+
+    .create-binding-button {
+        display: flex;
+        align-items: center;
+        padding-left: 16px;
+        font-size: 14px;
+        line-height: 24px;
+        .duskThree(0.64);
+        color: @color;
+        cursor: pointer;
+        border: 1px solid @pale-grey;
+        box-shadow: none;
+
+        .igz-icon-add-round {
+            font-size: 24px;
+            color: @orange;
+            height: 34px;
+            padding-right: 8px;
+            display: flex;
+            align-items: center;
+        }
+    }
+}
+
 .ncl-version-configuration-build {
     .build-field {
         margin-bottom: 23px;
@@ -9440,89 +9458,6 @@ ncl-functions {
         .menu-dropdown {
             margin-top: 4px;
             right: -18px;
-        }
-    }
-}
-
-.ncl-version-configuration-data-bindings {
-    .ncl-version-binding {
-        .common-table-header {
-            border: none;
-            padding-left: 24px;
-
-            .common-table-cell {
-                font-size: 14px;
-                font-weight: bold;
-                letter-spacing: normal;
-                color: @dusk-three;
-                height: 46px;
-            }
-
-            &.item-header {
-                display: flex;
-
-                .item-name {
-                    width: 25%;
-                }
-
-                .item-class {
-                    width: 20%;
-                }
-
-                .item-info {
-                    width: 55%;
-                }
-            }
-        }
-
-        .common-table-body {
-            .common-table-row {
-                &:not(.read-only):hover {
-                    .common-table-cells-container {
-                        background-color: @white;
-                    }
-
-                    .actions-menu {
-                        background-color: @white;
-                    }
-                }
-            }
-
-            .ncl-collapsing-row .item-row {
-                .item-name {
-                    width: 22%;
-                }
-
-                .item-class {
-                    width: 20%;
-                }
-
-                .item-info {
-                    width: 58%;
-                }
-            }
-        }
-    }
-
-    .create-binding-button {
-        display: flex;
-        align-items: center;
-        padding-left: 16px;
-        font-size: 14px;
-        line-height: 24px;
-        .duskThree(0.64);
-        color: @color;
-        cursor: pointer;
-        border: 1px solid @pale-grey;
-        box-shadow: none;
-
-        .igz-icon-add-round {
-            font-size: 24px;
-            color: @orange;
-            height: 34px;
-            padding-right: 8px;
-            display: flex;
-            align-items: center;
         }
     }
 }
