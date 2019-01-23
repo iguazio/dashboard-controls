@@ -230,6 +230,8 @@
         border-bottom: 1px solid @pale-grey;
         background-color: @white;
         padding: 0 24px 0 12px;
+        position: relative;
+        z-index: 3;
 
         .left-side-elements {
             display: flex;
@@ -317,6 +319,13 @@
             .default-dropdown-field:not(:hover) {
                 border-color: transparent;
             }
+
+            .default-dropdown-container {
+                position: fixed;
+                z-index: 2;
+                width: 97px;
+                min-width: unset;
+            }
         }
 
         .validating-input-field {
@@ -345,6 +354,13 @@
 
                 .default-dropdown-field {
                     border: none;
+                }
+
+                .default-dropdown-container {
+                    position: fixed;
+                    z-index: 2;
+                    width: 97px;
+                    min-width: unset;
                 }
             }
         }
