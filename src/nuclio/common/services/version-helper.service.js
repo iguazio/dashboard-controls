@@ -4,9 +4,9 @@
     angular.module('iguazio.dashboard-controls')
         .factory('VersionHelperService', VersionHelperService);
 
-    function VersionHelperService($rootScope, lodash) {
+    function VersionHelperService(lodash) {
         return {
-            checkVersionChange: checkVersionChange
+            updateIsVersionChanged: updateIsVersionChanged
         };
 
         //
@@ -14,22 +14,15 @@
         //
 
         /**
-         * Checks if current version differs from deployed one
-         * Sends broadcast about current version's deployed status
-         * @param version - an object of selected function's version
-         * @param version.ui.deployedVersion - latest deployed function's version
+         * Updates "version changed" indicator of `version`. Sets it to `true` in case working version differs from
+         * deployed one, or `false` otherwise.
+         * @param {Object} version - the working function's version.
+         * @param {Object} version.ui.deployedVersion - latest deployed function's version.
          */
-        function checkVersionChange(version) {
-            var copyForComparison = cloneObject(version);
-            var versionChanged = !lodash.isEqual(lodash.omit(copyForComparison, 'ui'), copyForComparison.ui.deployedVersion);
-
-            if (versionChanged !== version.ui.versionChanged && versionChanged) {
-                version.ui.versionChanged = versionChanged;
-                $rootScope.$broadcast('change-version-deployed-state', {component: 'version', isDeployed: false});
-            } else if (!versionChanged) {
-                version.ui.versionChanged = versionChanged;
-                $rootScope.$broadcast('change-version-deployed-state', {component: 'version', isDeployed: true});
-            }
+        function updateIsVersionChanged(version) {
+            var working = cloneObject(lodash.omit(version, 'ui'));
+            var deployed = cloneObject(lodash.omit(version.ui.deployedVersion, 'ui'));
+            version.ui.versionChanged = !lodash.isEqual(working, deployed);
         }
 
         //
@@ -47,10 +40,7 @@
 
             // omits all empty values
             var newObj = lodash.omitBy(obj, function (value) {
-                if (lodash.isObject(value) || lodash.isString(value)) {
-                    return lodash.isEmpty(value);
-                }
-                return false;
+                return lodash.isObject(value) || lodash.isString(value) ? lodash.isEmpty(value) : false;
             });
 
             lodash.forOwn(newObj, function (value, key) {

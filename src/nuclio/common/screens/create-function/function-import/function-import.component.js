@@ -14,7 +14,8 @@
             controller: FunctionImportController
         });
 
-    function FunctionImportController($document, $rootScope, $scope, $state, $timeout, lodash, YAML, EventHelperService) {
+    function FunctionImportController($document, $rootScope, $scope, $state, $timeout, YAML, lodash,
+                                      EventHelperService) {
         var ctrl = this;
 
         var importedFunction = null;
@@ -34,10 +35,10 @@
 
         ctrl.cancelCreating = cancelCreating;
         ctrl.createFunction = createFunction;
-        ctrl.onProjectChange = onProjectChange;
         ctrl.importFunction = importFunction;
         ctrl.isCreateFunctionAllowed = isCreateFunctionAllowed;
         ctrl.isProjectsDropDownVisible = isProjectsDropDownVisible;
+        ctrl.onProjectChange = onProjectChange;
 
         //
         // Hook methods
@@ -95,11 +96,12 @@
          */
         function createFunction(event) {
             $timeout(function () {
-                if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) && ctrl.isCreateFunctionAllowed()) {
+                if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) &&
+                    ctrl.isCreateFunctionAllowed()) {
 
                     // create function only when imported file is .yml
                     if (isYamlFile(file.name)) {
-                        ctrl.toggleSplashScreen({value: true});
+                        ctrl.toggleSplashScreen({ value: true });
 
                         lodash.defaults(importedFunction, {
                             metadata: {}
@@ -122,12 +124,12 @@
         }
 
         /**
-         * Projects drop-down callback.
-         * Sets selected project to function.
-         * @param {Object} item - new selected project
+         * Checks permissibility creation of new function.
+         * Checks if source code of function exists into ctrl.sourceCode, and if function import form is valid
+         * @returns {boolean}
          */
-        function onProjectChange(item) {
-            ctrl.project = lodash.find(ctrl.projects, ['metadata.name', item.id]);
+        function isCreateFunctionAllowed() {
+            return !lodash.isNil(ctrl.sourceCode) && lodash.isEmpty(ctrl.functionImportForm.$error);
         }
 
         /**
@@ -151,12 +153,12 @@
         }
 
         /**
-         * Checks permissibility creation of new function.
-         * Checks if source code of function exists into ctrl.sourceCode, and if function import form is valid
-         * @returns {boolean}
+         * Projects drop-down callback.
+         * Sets selected project to function.
+         * @param {Object} item - new selected project
          */
-        function isCreateFunctionAllowed() {
-            return !lodash.isNil(ctrl.sourceCode) && lodash.isEmpty(ctrl.functionImportForm.$error);
+        function onProjectChange(item) {
+            ctrl.project = lodash.find(ctrl.projects, ['metadata.name', item.id]);
         }
 
         /**
@@ -202,8 +204,9 @@
                 .sortBy(['name'])
                 .value();
 
-            ctrl.selectedProject = lodash.isEmpty(ctrl.projectsList)         ? newProject           :
-                                   ctrl.selectedProject.id !== 'new_project' ? ctrl.selectedProject : lodash.first(ctrl.projectsList);
+            ctrl.selectedProject = lodash.isEmpty(ctrl.projectsList)         ? newProject                     :
+                                   ctrl.selectedProject.id !== 'new_project' ? ctrl.selectedProject           :
+                                   /* else */                                  lodash.first(ctrl.projectsList);
         }
     }
 }());

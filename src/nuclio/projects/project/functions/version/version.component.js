@@ -7,12 +7,13 @@
             bindings: {
                 project: '<',
                 version: '<',
+                createVersion: '&',
+                deleteFunction: '&',
                 getProject: '&',
                 getFunction: '&',
                 getExternalIpAddresses: '&',
-                deployVersion: '&',
-                deleteFunction: '&',
-                onEditCallback: '&?'
+                onEditCallback: '&?',
+                updateVersion: '&'
             },
             templateUrl: 'nuclio/projects/project/functions/version/version.tpl.html',
             controller: NclVersionController
@@ -45,17 +46,16 @@
 
         ctrl.isDeployDisabled = false;
         ctrl.isLayoutCollapsed = true;
-        ctrl.versionDeployed = true;
 
         ctrl.$onDestroy = onDestroy;
         ctrl.$onInit = onInit;
 
         ctrl.deployButtonClick = deployButtonClick;
         ctrl.getDeployStatusState = getDeployStatusState;
-        ctrl.checkValidDeployState = checkValidDeployState;
-        ctrl.toggleDeployResult = toggleDeployResult;
+        ctrl.isInValidDeployState = isInValidDeployState;
         ctrl.onRowCollapse = onRowCollapse;
         ctrl.onSelectAction = onSelectAction;
+        ctrl.toggleDeployResult = toggleDeployResult;
 
         //
         // Hook method
@@ -115,37 +115,38 @@
                 {
                     tabName: 'Status',
                     uiRoute: 'app.project.function.edit.monitoring',
-                    status: lodash.isNil(ctrl.version.status) ? 'not yet deployed' : lodash.get(ctrl.version, 'status.state')
+                    status: isVersionDeployed() ? lodash.get(ctrl.version, 'status.state') : 'not yet deployed'
                 }
             ];
 
             ctrl.requiredComponents = {};
 
-            ctrl.getProject({id: $stateParams.projectId}).then(function (response) {
+            ctrl.getProject({ id: $stateParams.projectId })
+                .then(function (response) {
 
-                // set projects data
-                ctrl.project = response;
+                    // set projects data
+                    ctrl.project = response;
 
-                // breadcrumbs config
-                var title = {
-                    project: ctrl.project,
-                    projectName: ctrl.project.spec.displayName,
-                    function: $stateParams.functionId,
-                    version: '$LATEST'
-                };
+                    // breadcrumbs config
+                    var title = {
+                        project: ctrl.project,
+                        projectName: ctrl.project.spec.displayName,
+                        function: $stateParams.functionId,
+                        version: '$LATEST'
+                    };
 
-                NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
-            }).catch(function (error) {
-                var msg = 'Oops: Unknown error occurred while retrieving project';
-                DialogsService.alert(lodash.get(error, 'data.error', msg));
-            });
+                    NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
+                })
+                .catch(function (error) {
+                    var msg = 'Oops: Unknown error occurred while retrieving project';
+                    DialogsService.alert(lodash.get(error, 'data.error', msg));
+                });
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
-            $scope.$on('change-version-deployed-state', setVersionDeployed);
 
             deregisterFunction = $transitions.onStart({}, stateChangeStart);
 
-            if (ctrl.checkValidDeployState()) {
+            if (ctrl.isInValidDeployState()) {
                 ctrl.isFunctionDeployed = false;
                 ctrl.isDeployResultShown = true;
                 ctrl.rowIsCollapsed.deployBlock = true;
@@ -174,7 +175,7 @@
 
             lodash.merge(ctrl.version, {
                 ui: {
-                    deployedVersion: lodash.isNil(ctrl.version.status) ? null : getVersionCopy(),
+                    deployedVersion: isVersionDeployed() ? getVersionCopy(): null,
                     versionChanged: false
                 }
             });
@@ -215,7 +216,9 @@
                     $rootScope.$broadcast('igzWatchWindowResize::resize');
                 });
 
-                ctrl.deployVersion({version: versionCopy, projectID: ctrl.project.metadata.name})
+
+                var method = isVersionDeployed() ? ctrl.updateVersion : ctrl.createVersion;
+                method({ version: versionCopy, projectID: ctrl.project.metadata.name })
                     .then(pullFunctionState)
                     .catch(function (error) {
                         var logs = [{
@@ -236,28 +239,22 @@
         function getDeployStatusState(state) {
             return state === 'ready' ? 'Successfully deployed' :
                    state === 'error' ? 'Failed to deploy'      :
-                                       'Deploying...'          ;
+                   /* else */          'Deploying...'          ;
         }
 
         /**
          * Checks if state of deploy is valid
          * @returns {boolean}
          */
-        function checkValidDeployState() {
-            var validStates = ['building', 'waitingForResourceConfiguration', 'waitingForBuild', 'configuringResources'];
+        function isInValidDeployState() {
+            var validStates = [
+                'building',
+                'waitingForResourceConfiguration',
+                'waitingForBuild',
+                'configuringResources'
+            ];
 
             return lodash.includes(validStates, ctrl.deployResult.status.state);
-        }
-
-        /**
-         * Shows/hides deploy version result
-         */
-        function toggleDeployResult() {
-            ctrl.isDeployResultShown = !ctrl.isDeployResultShown;
-
-            $timeout(function () {
-                $rootScope.$broadcast('igzWatchWindowResize::resize');
-            });
         }
 
         /**
@@ -282,7 +279,7 @@
                     .then(function () {
                         ctrl.isSplashShowed.value = true;
 
-                        ctrl.deleteFunction({functionData: ctrl.version.metadata})
+                        ctrl.deleteFunction({ functionData: ctrl.version.metadata })
                             .then(function () {
                                 $state.go('app.project.functions');
                             })
@@ -300,11 +297,22 @@
                         'data-function="ngDialogData.function"></ncl-function-config-dialog>',
                     plain: true,
                     data: {
-                        function: ctrl.version,
+                        function: ctrl.version
                     },
                     className: 'ngdialog-theme-iguazio view-yaml-dialog-wrapper'
                 });
             }
+        }
+
+        /**
+         * Shows/hides deploy version result
+         */
+        function toggleDeployResult() {
+            ctrl.isDeployResultShown = !ctrl.isDeployResultShown;
+
+            $timeout(function () {
+                $rootScope.$broadcast('igzWatchWindowResize::resize');
+            });
         }
 
         //
@@ -315,32 +323,19 @@
          * Disable deploy button if forms invalid
          * @param {Object} event
          * @param {Object} args
+         * @param {string} args.component
+         * @param {boolean} args.isDisabled
          */
         function changeStateDeployButton(event, args) {
-            if (args.component) {
+            if (lodash.isString(args.component)) {
                 ctrl.requiredComponents[args.component] = args.isDisabled;
-                ctrl.isDeployDisabled = false;
 
+                // disable the "Deploy" button if at least one component is invalid
+                // enable the "Deploy" button if all components are valid
                 ctrl.isDeployDisabled = lodash.some(ctrl.requiredComponents);
             } else {
                 ctrl.isDeployDisabled = args.isDisabled;
             }
-        }
-
-        /**
-         * Sets the invocation URL of the function
-         * @param {{externalIPAddresses: {addresses: Array.<string>}}} result - the response body from
-         *     `getExternalIpAddresses`
-         */
-        function setInvocationUrl(result) {
-            var ip = lodash.get(result, 'externalIPAddresses.addresses[0]', '');
-            var port = lodash.defaultTo(
-                lodash.get(ctrl.version, 'ui.deployResult.status.httpPort'),
-                lodash.get(ctrl.version, 'status.httpPort')
-            );
-
-            ctrl.version.ui.invocationURL =
-                lodash.isEmpty(ip) || !lodash.isNumber(port) ? '' : 'http://' + ip + ':' + port;
         }
 
         /**
@@ -351,6 +346,14 @@
         }
 
         /**
+         * Tests whether the version is deployed.
+         * @returns {boolean} `true` in case version is deployed, or `false` otherwise.
+         */
+        function isVersionDeployed() {
+            return lodash.isObject(ctrl.version.status) && !lodash.isEmpty(ctrl.version.status);
+        }
+
+        /**
          * Pulls function status.
          * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
          */
@@ -358,14 +361,14 @@
             lodash.set(lodash.find(ctrl.navigationTabsConfig, 'status'), 'status', 'building');
 
             interval = $interval(function () {
-                ctrl.getFunction({metadata: ctrl.version.metadata, projectID: ctrl.project.metadata.name})
+                ctrl.getFunction({ metadata: ctrl.version.metadata, projectID: ctrl.project.metadata.name })
                     .then(function (response) {
                         if (response.status.state === 'ready' || response.status.state === 'error') {
                             terminateInterval();
 
                             ctrl.versionDeployed = true;
 
-                            if (lodash.isNil(ctrl.version.status)) {
+                            if (!isVersionDeployed()) {
                                 ctrl.version.status = response.status;
                             }
                             ctrl.version.ui = {
@@ -413,12 +416,19 @@
         }
 
         /**
-         * Dynamically set version deployed state
-         * @param {Object} [event]
-         * @param {Object} data
+         * Sets the invocation URL of the function
+         * @param {{externalIPAddresses: {addresses: Array.<string>}}} result - the response body from
+         *     `getExternalIpAddresses`
          */
-        function setVersionDeployed(event, data) {
-            ctrl.versionDeployed = data.isDeployed;
+        function setInvocationUrl(result) {
+            var ip = lodash.get(result, 'externalIPAddresses.addresses[0]', '');
+            var port = lodash.defaultTo(
+                lodash.get(ctrl.version, 'ui.deployResult.status.httpPort'),
+                lodash.get(ctrl.version, 'status.httpPort')
+            );
+
+            ctrl.version.ui.invocationURL =
+                lodash.isEmpty(ip) || !lodash.isNumber(port) ? '' : 'http://' + ip + ':' + port;
         }
 
         /**
@@ -427,7 +437,7 @@
          */
         function stateChangeStart(transition) {
             var toState = transition.$to();
-            if (lodash.get($state, 'params.functionId') !== transition.params('to').functionId && !ctrl.versionDeployed) {
+            if (lodash.get($state, 'params.functionId') !== transition.params('to').functionId && !isVersionDeployed()) {
                 transition.abort();
                 DialogsService.confirm('Leaving this page will discard your changes.', 'Leave', 'Don\'t leave')
                     .then(function () {

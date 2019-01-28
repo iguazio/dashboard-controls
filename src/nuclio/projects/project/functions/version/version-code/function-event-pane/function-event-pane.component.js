@@ -176,7 +176,7 @@
             ctrl.eventLogLevel = 'debug';
 
             if (lodash.isNil(ctrl.version.ui.deployedVersion)) {
-                VersionHelperService.checkVersionChange(ctrl.version);
+                VersionHelperService.updateIsVersionChanged(ctrl.version);
             }
 
             updateHistory();
