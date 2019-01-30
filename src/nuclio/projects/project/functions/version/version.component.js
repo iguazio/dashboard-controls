@@ -175,7 +175,7 @@
 
             lodash.merge(ctrl.version, {
                 ui: {
-                    deployedVersion: isVersionDeployed() ? getVersionCopy(): null,
+                    deployedVersion: isVersionDeployed() ? getVersionCopy() : null,
                     versionChanged: false
                 }
             });
