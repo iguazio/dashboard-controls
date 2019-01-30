@@ -43,7 +43,7 @@
          * Checks if version's configuration was changed
          */
         function onConfigurationChangeCallback() {
-            VersionHelperService.checkVersionChange(ctrl.version);
+            VersionHelperService.updateIsVersionChanged(ctrl.version);
         }
     }
 }());

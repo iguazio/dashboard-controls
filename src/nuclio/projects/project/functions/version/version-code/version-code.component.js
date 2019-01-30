@@ -127,10 +127,6 @@
          * Initialization method
          */
         function onInit() {
-            if (lodash.isNil(ctrl.version.ui.deployedVersion)) {
-                VersionHelperService.checkVersionChange(ctrl.version);
-            }
-
             ctrl.runtimeArray = getRuntimes();
             ctrl.selectedRuntime = lodash.find(ctrl.runtimeArray, ['id', ctrl.version.spec.runtime]);
             ctrl.editorLanguage = ctrl.selectedRuntime.language;
@@ -241,7 +237,7 @@
             lodash.set(ctrl.version, 'spec.build.functionSourceCode', item.sourceCode);
             lodash.set(ctrl.version, 'ui.versionCode', item.sourceCode);
 
-            VersionHelperService.checkVersionChange(ctrl.version);
+            VersionHelperService.updateIsVersionChanged(ctrl.version);
         }
 
         /**
@@ -254,7 +250,7 @@
 
             ctrl.sourceCode = sourceCode;
 
-            VersionHelperService.checkVersionChange(ctrl.version);
+            VersionHelperService.updateIsVersionChanged(ctrl.version);
         }
 
         /**
@@ -264,7 +260,7 @@
          */
         function inputValueCallback(newData, field) {
             lodash.set(ctrl.version, field, newData);
-            VersionHelperService.checkVersionChange(ctrl.version);
+            VersionHelperService.updateIsVersionChanged(ctrl.version);
 
             $timeout(function () {
                 $rootScope.$broadcast('change-state-deploy-button', {
@@ -501,10 +497,42 @@
          */
         function onLayoutResize(event, beforeContainerResize, afterContainerResize) {
             testPaneWidth = afterContainerResize.size;
+
+            resizeScrollBar(100);
         }
 
         /**
-         * Broadcast callback to toggle test pane
+         * Resize scrollbar container.
+         * Layout directive (splitter) makes changes to width of scrollbar container. But scrollbar doesn't handle
+         * those changes in correct way. So we have to set width manually
+         * @param {integer} timeout - function invocation delay
+         */
+        function resizeScrollBar(timeout) {
+            $timeout(function () {
+                var CODE_CONTAINER_MIN_WIDTH = 700;
+
+                // if scrollbar container is wider than minimal code container width (scrollbar is not needed)
+                if (angular.element($element.find('.code-scrollable-container')).width() >= CODE_CONTAINER_MIN_WIDTH) {
+
+                    // make sure that scrollbar container takes all available width
+                    angular.element($element.find('.mCSB_container')[0]).css('width', '100%');
+
+                    // hide scrollbar
+                    angular.element($element.find('.igz-scrollable-container')[0]).mCustomScrollbar('disable', true);
+                } else {
+
+                    // set code's container minimal width to scrollbar container
+                    angular.element($element.find('.mCSB_container')[0]).css('width', CODE_CONTAINER_MIN_WIDTH + 'px');
+
+                    // show scrollbar
+                    angular.element($element.find('.igz-scrollable-container')[0]).mCustomScrollbar('disable', false);
+                    angular.element($element.find('.igz-scrollable-container')[0]).mCustomScrollbar('update');
+                }
+            }, timeout);
+        }
+
+        /**
+         * Broadcast's callback to toggle test pane
          * @param {Event} event - native broadcast event object
          * @param {Object} data - contains data of test pane state (closed/opened)
          */
@@ -540,6 +568,7 @@
                 // hide splitter
                 angular.element(angular.element('.ui-splitbar')[0]).css('display', 'none');
 
+                resizeScrollBar(500);
 
                 /**
                  * jQuery complete animation callback.
@@ -578,6 +607,7 @@
                     complete: onOpenCompleteAnimation
                 });
 
+                resizeScrollBar(500);
 
                 /**
                  * jQuery complete animation callback.
