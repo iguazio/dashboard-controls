@@ -114,7 +114,7 @@
                 }
             });
 
-            VersionHelperService.checkVersionChange(ctrl.version);
+            VersionHelperService.updateIsVersionChanged(ctrl.version);
         }
 
         //

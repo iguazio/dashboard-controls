@@ -127,10 +127,6 @@
          * Initialization method
          */
         function onInit() {
-            if (lodash.isNil(ctrl.version.ui.deployedVersion)) {
-                VersionHelperService.checkVersionChange(ctrl.version);
-            }
-
             ctrl.runtimeArray = getRuntimes();
             ctrl.selectedRuntime = lodash.find(ctrl.runtimeArray, ['id', ctrl.version.spec.runtime]);
             ctrl.editorLanguage = ctrl.selectedRuntime.language;
@@ -241,7 +237,7 @@
             lodash.set(ctrl.version, 'spec.build.functionSourceCode', item.sourceCode);
             lodash.set(ctrl.version, 'ui.versionCode', item.sourceCode);
 
-            VersionHelperService.checkVersionChange(ctrl.version);
+            VersionHelperService.updateIsVersionChanged(ctrl.version);
         }
 
         /**
@@ -254,7 +250,7 @@
 
             ctrl.sourceCode = sourceCode;
 
-            VersionHelperService.checkVersionChange(ctrl.version);
+            VersionHelperService.updateIsVersionChanged(ctrl.version);
         }
 
         /**
@@ -264,7 +260,7 @@
          */
         function inputValueCallback(newData, field) {
             lodash.set(ctrl.version, field, newData);
-            VersionHelperService.checkVersionChange(ctrl.version);
+            VersionHelperService.updateIsVersionChanged(ctrl.version);
 
             $timeout(function () {
                 $rootScope.$broadcast('change-state-deploy-button', {
