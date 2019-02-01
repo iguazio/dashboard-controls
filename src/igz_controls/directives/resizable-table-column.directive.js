@@ -110,6 +110,8 @@
                 vm.startPosition = event.clientX;
                 resetColumnsWidths();
                 resizeColumn(colDifference);
+
+                $rootScope.$broadcast('multiline-ellipsis_refresh');
             }
 
             /**
@@ -137,7 +139,11 @@
                     $timeout(function () {
                         resetColumnsWidths();
 
-                        $rootScope.$broadcast('resize-cells', {colClass: vm.colClass, columnWidth: vm.columnHeadWidth + 'px', nextColumnWidth: vm.nextBlockWidth + 'px'});
+                        $rootScope.$broadcast('resize-cells', {
+                            colClass: vm.colClass,
+                            columnWidth: vm.columnHeadWidth + 'px',
+                            nextColumnWidth: vm.nextBlockWidth + 'px'
+                        });
                     });
                 }
             }
@@ -179,7 +185,7 @@
 
             /**
              * Resize cells in the table rows according to column width
-             * @param {Object} data - information about column name and difference
+             * @param {Object} colDifference - information about column difference
              */
             function resizeColumn(colDifference) {
                 if (!lodash.isNil(vm.nextBlock)) {
