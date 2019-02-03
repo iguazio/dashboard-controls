@@ -17,7 +17,10 @@
                  data-uib-tooltip="{{$ctrl.function.spec.description}}"
                  data-tooltip-append-to-body="true"
                  data-tooltip-placement="top">
-                <span class="description-content common-table-cell-content" data-ng-bind="$ctrl.function.spec.description" data-ellipsis></span>
+                <span class="description-content common-table-cell-content"
+                      data-ng-bind="$ctrl.function.spec.description"
+                      data-igz-multiline-ellipsis>
+                </span>
             </div>
             <div class="igz-col-10 common-table-cell">
                 {{$ctrl.convertedStatusState}}
