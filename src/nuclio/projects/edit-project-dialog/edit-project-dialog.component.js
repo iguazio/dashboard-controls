@@ -53,6 +53,7 @@
          */
         function saveProject(event) {
             if (angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) {
+                ctrl.nameTakenError = false;
                 $scope.editProjectForm.$submitted = true;
 
                 if ($scope.editProjectForm.$valid) {
@@ -70,9 +71,15 @@
                             ctrl.serverError =
                                 status === 400                   ? 'Missing mandatory fields'                         :
                                 status === 403                   ? 'You do not have permissions to update project'    :
-                                status === 405                   ? 'Failed to create a project'                       :
+                                status === 405                   ? 'Failed to update project'                         :
+                                status === 409                   ? 'Uniqueness violation. See details next to '   +
+                                                                   'fields above.'                                    :
                                 lodash.inRange(status, 500, 599) ? 'Server error'                                     :
                                                                    'Unknown error occurred. Retry later';
+
+                            if (status === 409) {
+                                ctrl.nameTakenError = true;
+                            }
                         })
                         .finally(function () {
                             ctrl.isLoadingState = false;

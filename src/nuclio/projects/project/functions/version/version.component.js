@@ -199,8 +199,6 @@
                 ctrl.isFunctionDeployed = false;
                 $rootScope.$broadcast('deploy-function-version');
 
-                setDeployResult('building');
-
                 var versionCopy = lodash.omit(ctrl.version, ['status', 'ui']);
 
                 // set `nuclio.io/project-name` label to relate this function to its project
@@ -208,7 +206,7 @@
                 lodash.set(versionCopy, 'spec.build.mode', 'alwaysBuild');
 
                 ctrl.isTestResultShown = false;
-                ctrl.isDeployResultShown = true;
+                ctrl.isDeployResultShown = false;
                 ctrl.rowIsCollapsed.deployBlock = true;
                 ctrl.isLayoutCollapsed = false;
 
@@ -216,17 +214,22 @@
                     $rootScope.$broadcast('igzWatchWindowResize::resize');
                 });
 
-
+                ctrl.isSplashShowed.value = true;
                 var method = isVersionDeployed() ? ctrl.updateVersion : ctrl.createVersion;
                 method({ version: versionCopy, projectID: ctrl.project.metadata.name })
                     .then(pullFunctionState)
                     .catch(function (error) {
-                        var logs = [{
-                            err: error.data.error
-                        }];
+                        var status = lodash.get(error, 'status');
 
-                        lodash.set(ctrl.deployResult, 'status.state', 'error');
-                        lodash.set(ctrl.deployResult, 'status.logs', logs);
+                        var msg =
+                            status === 403 ? 'You do not have permissions to deploy the function' :
+                            status === 405 ? 'Failed to deploy function'                          :
+                            status === 409 ? 'Function name already exists in project'            :
+                            /* else */       'An unknown error occurred';
+                        DialogsService.alert(msg);
+                    })
+                    .finally(function () {
+                        ctrl.isSplashShowed.value = false;
                     });
             }
         }
@@ -358,7 +361,8 @@
          * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
          */
         function pullFunctionState() {
-            lodash.set(lodash.find(ctrl.navigationTabsConfig, 'status'), 'status', 'building');
+            ctrl.isDeployResultShown = true;
+            setDeployResult('building');
 
             interval = $interval(function () {
                 ctrl.getFunction({ metadata: ctrl.version.metadata, projectID: ctrl.project.metadata.name })
@@ -413,6 +417,7 @@
                     state: value
                 }
             };
+            lodash.set(lodash.find(ctrl.navigationTabsConfig, 'status'), 'status', value);
         }
 
         /**
