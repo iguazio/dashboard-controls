@@ -102,12 +102,32 @@
                     flex-grow: 1;
                 }
 
+                .input-additional-value {
+                    flex-grow: 1;
+
+                    .validating-input-field {
+                        .input-field {
+                            &[readonly]:focus, &:not(:focus) {
+                                border-left: none;
+                            }
+
+                            &.invalid {
+                                border: 1px solid @darkish-pink;
+                            }
+
+                            &.invalid:hover {
+                                border: 1px solid @pale-grey;
+                            }
+                        }
+                    }
+                }
+
                 &:not(.use-type, .only-value-input) {
                     width: 62%;
                 }
 
                 &.only-key-value-input {
-                    width: 58%;
+                    width: 62%;
                 }
 
                 &.only-value-input {

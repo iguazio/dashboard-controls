@@ -85,6 +85,16 @@
                                             data-validation-pattern="$ctrl.valueValidationPattern"
                                             data-placeholder-text="{{$ctrl.valuePlaceholder}}">
                 </igz-validating-input-field>
+                <igz-validating-input-field class="nuclio-validating-input input-additional-value"
+                                            data-ng-if="$ctrl.useAdditionalValue && $ctrl.isVisibleByType('value')"
+                                            data-field-type="input"
+                                            data-input-name="additionalValue"
+                                            data-input-value="$ctrl.data.additionalValue"
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="additionalValue"
+                                            data-form-object="$ctrl.keyValueInputForm"
+                                            data-validation-is-required="!$ctrl.additionalValueOptional">
+                </igz-validating-input-field>
             </div>
         </div>
         <div class="three-dot-menu">

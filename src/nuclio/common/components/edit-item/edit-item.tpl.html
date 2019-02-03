@@ -332,9 +332,10 @@
 
                 <div class="field-label">Ingresses</div>
 
-                <div class="table-headers">
-                    <div class="key-header">Host</div>
-                    <div class="value-header">Paths</div>
+                <div class="table-headers ingresses-table-headers">
+                    <div class="host-header">Host</div>
+                    <div class="paths-header">Paths</div>
+                    <div class="secret-header">Secret</div>
                 </div>
                 <div data-ng-if="!$ctrl.isScrollNeeded('ingresses')">
                     <div class="table-body" data-ng-repeat="ingress in $ctrl.ingresses">
@@ -344,6 +345,8 @@
                                              data-key-optional="true"
                                              data-row-data="ingress"
                                              data-use-type="false"
+                                             data-use-additional-value="true"
+                                             data-additional-value-optional="true"
                                              data-submit-on-fly="true"
                                              data-item-index="$index"
                                              data-action-handler-callback="$ctrl.handleIngressAction(actionType, index)"
@@ -359,8 +362,11 @@
                         <ncl-key-value-input class="new-label-input"
                                              data-list-class="scrollable-ingresses"
                                              data-change-state-broadcast="change-state-deploy-button"
+                                             data-key-optional="true"
                                              data-row-data="ingress"
                                              data-use-type="false"
+                                             data-use-additional-value="true"
+                                             data-additional-value-optional="true"
                                              data-submit-on-fly="true"
                                              data-item-index="$index"
                                              data-action-handler-callback="$ctrl.handleIngressAction(actionType, index)"

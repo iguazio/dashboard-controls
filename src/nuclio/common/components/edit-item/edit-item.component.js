@@ -131,6 +131,7 @@
                         return {
                             name: ingress.host,
                             value: ingress.paths.join(','),
+                            additionalValue: ingress.secretName,
                             ui: {
                                 editModeActive: false,
                                 isFormValid: true,
@@ -285,6 +286,7 @@
                     ctrl.ingresses.push({
                         name: '',
                         value: '',
+                        additionalValue: '',
                         ui: {
                             editModeActive: true,
                             isFormValid: false,
@@ -868,6 +870,10 @@
 
                                         if (!lodash.isEmpty(ingress.name)) {
                                             newIngresses[key.toString()].host = ingress.name;
+                                        }
+
+                                        if (!lodash.isEmpty(ingress.additionalValue)) {
+                                            newIngresses[key.toString()].secretName = ingress.additionalValue;
                                         }
                                     });
 
