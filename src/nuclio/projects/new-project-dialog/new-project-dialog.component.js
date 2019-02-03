@@ -52,6 +52,7 @@
          */
         function createProject(event) {
             if (angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) {
+                ctrl.nameTakenError = false;
                 $scope.newProjectForm.$submitted = true;
 
                 if ($scope.newProjectForm.$valid) {
@@ -67,24 +68,29 @@
                     }
 
                     // use data from dialog to create a new project
-                    ctrl.createProjectCallback({project: ctrl.data})
+                    ctrl.createProjectCallback({ project: ctrl.data })
                         .then(function () {
-                            ctrl.closeDialog({project: ctrl.data});
+                            ctrl.closeDialog({ project: ctrl.data });
                         })
                         .catch(function (error) {
                             var status = lodash.get(error, 'status');
 
                             ctrl.serverError =
-                                status === 400                   ? 'Missing mandatory fields'                           :
-                                status === 403                   ? 'You do not have permissions to create new projects' :
+                                status === 400                   ? 'Missing mandatory fields'                          :
+                                status === 403                   ? 'You do not have permissions to create new '   +
+                                                                   'projects'                                          :
                                 status === 405                   ? 'Failed to create a new project. '             +
                                                                    'The maximum number of projects is reached. '  +
                                                                    'An existing project should be deleted first ' +
-                                                                   'before creating a new one.'                         :
-                                lodash.inRange(status, 500, 599) ? 'Server error'                                       :
+                                                                   'before creating a new one.'                        :
+                                status === 409                   ? 'Uniqueness violation. See details next to '   +
+                                                                   'fields above.'                                     :
+                                lodash.inRange(status, 500, 599) ? 'Server error'                                      :
                                                                    'Unknown error occurred. Retry later';
 
-                            DialogsService.alert(ctrl.serverError);
+                            if (status === 409) {
+                                ctrl.nameTakenError = true;
+                            }
                         })
                         .finally(function () {
                             ctrl.isLoadingState = false;
