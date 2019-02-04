@@ -1,7 +1,6 @@
 <div class="default-dropdown"
      data-ng-class="{'dropdown-input-invalid': $ctrl.isShowDropdownError($ctrl.formObject, $ctrl.inputName),
-                     'dropdown-input-disabled': $ctrl.isDisabled,
-                     'dropdown-input-opened': $ctrl.isDropdownContainerShown}">
+                     'dropdown-input-disabled': $ctrl.isDisabled}">
 
     <div class="default-dropdown-field" tabindex="0"
          data-ng-click="$ctrl.readOnly || $ctrl.toggleDropdown($event)"
@@ -45,6 +44,7 @@
     <div class="default-dropdown-container" tabindex="-1"
          data-ng-if="$ctrl.isDropdownContainerShown"
          data-ng-style="{'top': $ctrl.topPosition}"
+         data-ng-class="{'dropdown-overlap': $ctrl.enableOverlap}"
          data-ng-scrollbars>
         <ul class="list" tabindex="-1">
             <li class="list-item" tabindex="0"

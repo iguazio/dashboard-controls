@@ -51,6 +51,7 @@
         ctrl.$onInit = onInit;
 
         ctrl.deployButtonClick = deployButtonClick;
+        ctrl.getCurrentStateName = getCurrentStateName;
         ctrl.getDeployStatusState = getDeployStatusState;
         ctrl.checkValidDeployState = checkValidDeployState;
         ctrl.toggleDeployResult = toggleDeployResult;
@@ -226,6 +227,10 @@
                         lodash.set(ctrl.deployResult, 'status.logs', logs);
                     });
             }
+        }
+
+        function getCurrentStateName() {
+            return $state.current.name;
         }
 
         /**

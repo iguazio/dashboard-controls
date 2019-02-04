@@ -73,6 +73,7 @@
             background-color: @default-dropdown-field-hover-focus-bg-color;
             box-shadow: @default-dropdown-field-hover-focus-box-shadow;
         }
+
         &:active {
             background-color: @default-dropdown-field-active-bg-color;
             box-shadow: @default-dropdown-field-active-box-shadow;
@@ -139,6 +140,12 @@
         z-index: 1000;
         min-width: 100%;
         margin-top: 2px;
+        margin-bottom: 2px;
+
+        &.dropdown-overlap {
+            position: fixed;
+            min-width: unset;
+        }
 
         .list {
             padding: 0;
