@@ -6,6 +6,7 @@
             bindings: {
                 actionHandlerCallback: '&',
                 changeDataCallback: '&',
+                dropdownOverlap: '<?',
                 itemIndex: '<',
                 rowData: '<',
                 useType: '<',

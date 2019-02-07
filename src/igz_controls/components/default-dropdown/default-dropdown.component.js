@@ -17,6 +17,7 @@
      * @param {string} bottomButtonText - the text of the toggleable menu`s bottom button.
      * @param {string} dropdownType - type of the predefined dropdown (`badges-dropdown`, `priority`).
      * @param {boolean} enableTyping - set to `true` to allow typing new value in the collapsed dropdown input.
+     * @param {boolean} enableOverlap - set to `true` to dropdown overlap the parental block (please set z-index for `.default-container` if it needed).
      * @param {Object} formObject - form object.
      * @param {string} inputName - name of the input.
      * @param {boolean} isDisabled - set to `true` to make this instance of the component read-only.
@@ -48,6 +49,7 @@
                 bottomButtonText: '@?',
                 dropdownType: '@?',
                 enableTyping: '<?',
+                enableOverlap: '<?',
                 formObject: '<?',
                 iconClass: '@?',
                 inputName: '@?',
@@ -133,6 +135,11 @@
 
             setValuesVisibility();
 
+            if (ctrl.enableOverlap) {
+                resizeDropdownContainer();
+                angular.element($window).on('resize', resizeDropdownContainer);
+            }
+
             // checks if transclude template was passed
             $transclude(function (transclude) {
                 ctrl.isTranscludePassed = transclude.length > 0;
@@ -170,7 +177,9 @@
          * Post linking method
          */
         function postLink() {
-            PreventDropdownCutOffService.preventDropdownCutOff($element, '.default-dropdown-container');
+            if (!ctrl.enableOVerlap) {
+                PreventDropdownCutOffService.preventDropdownCutOff($element, '.default-dropdown-container');
+            }
             $document.on('click', unselectDropdown);
         }
 
@@ -179,6 +188,7 @@
          */
         function onDestroy() {
             $document.off('click', unselectDropdown);
+            angular.element($window).off('resize', resizeDropdownContainer);
         }
 
         //
@@ -350,6 +360,13 @@
             event.stopPropagation();
         }
 
+        function resizeDropdownContainer() {
+            var dropdown = $element.find('.default-dropdown-field')[0];
+            var dropdownWidth = lodash.get(window.getComputedStyle(dropdown), 'width');
+
+            angular.element($element.find('.default-dropdown-container')[0]).css('width', dropdownWidth);
+        }
+
         /**
          * Sets current item as selected
          * @param {Object} item - current item
@@ -455,9 +472,15 @@
                     if (angular.isFunction(ctrl.onOpenDropdown)) {
                         ctrl.onOpenDropdown($element);
                     }
+
+                    if (ctrl.enableOverlap) {
+                        resizeDropdownContainer();
+                    }
                 });
 
-                PreventDropdownCutOffService.preventDropdownCutOff($element, '.default-dropdown-container');
+                if (!ctrl.enableOverlap) {
+                    PreventDropdownCutOffService.preventDropdownCutOff($element, '.default-dropdown-container');
+                }
             } else {
                 if (angular.isFunction(ctrl.onCloseDropdown)) {
                     ctrl.onCloseDropdown();

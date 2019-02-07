@@ -1,15 +1,15 @@
 <div class="ncl-version-configuration-logging">
     <div class="title">Logging</div>
-    <form name="$ctrl.loggingForm" class="logging-wrapper">
-        <div class="igz-scrollable-container"
-             data-ng-scrollbars>
-            <div class="row">
+    <div class="row">
+        <form name="$ctrl.loggingForm" class="logging-wrapper">
+            <div class="inputs-container">
                 <div class="logger-dropdown">
                     <span class="label">Logger level</span>
                     <igz-default-dropdown data-selected-item="$ctrl.version.spec.loggerSinks[0].level"
                                           data-select-property-only="id"
                                           data-values-array="$ctrl.logLevelValues"
                                           data-item-select-callback="$ctrl.setPriority(item)"
+                                          data-enable-overlap="true"
                                           data-prevent-drop-up="true"></igz-default-dropdown>
                 </div>
                 <div class="logger-input"
@@ -25,6 +25,6 @@
                                                 data-placeholder-text="Type a destination..."></igz-validating-input-field>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>

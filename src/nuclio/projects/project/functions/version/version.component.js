@@ -51,6 +51,7 @@
         ctrl.$onInit = onInit;
 
         ctrl.deployButtonClick = deployButtonClick;
+        ctrl.getCurrentStateName = getCurrentStateName;
         ctrl.getDeployStatusState = getDeployStatusState;
         ctrl.isInValidDeployState = isInValidDeployState;
         ctrl.onRowCollapse = onRowCollapse;
@@ -232,6 +233,10 @@
                         ctrl.isSplashShowed.value = false;
                     });
             }
+        }
+
+        function getCurrentStateName() {
+            return $state.current.name;
         }
 
         /**

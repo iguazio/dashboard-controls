@@ -1,144 +1,150 @@
 ncl-navigation-tabs {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid @mystic-two;
-    border-top: none;
+    position: relative;
+    z-index: 1000;
+    background: #f2f2f6;
 
-    .ncl-navigation-tabs {
-        background: @pale-white;
-        height: 54px;
+    .ncl-navigation-tabs-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid @mystic-two;
+        border-top: none;
 
-        .navigation-tab {
-            position: relative;
-            float: left;
-            height: 32px;
-            padding: 20px 40px 0;
-            font-family: @font-family-sans-serif;
-            color: @greyish-purple;
-            font-size: 13px;
-            text-align: center;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            box-sizing: content-box;
+        .ncl-navigation-tabs {
+            background: @pale-white;
+            height: 54px;
 
-            &.active, &.active:hover {
-                background: none;
-                color: @orange;
-                border-bottom: 2px solid @orange;
-                font-weight: bold;
-            }
-
-            &.ncl-status-monitoring {
-                padding-right: 8px;
-
-                &:hover {
-                    .ncl-status-tooltip {
-                        display: flex;
-                    }
-                }
-            }
-
-            .ncl-status-light {
+            .navigation-tab {
                 position: relative;
-                display: inline-block;
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                margin-left: 34px;
-                background-color: @greyish-purple;
+                float: left;
+                height: 32px;
+                padding: 20px 40px 0;
+                font-family: @font-family-sans-serif;
+                color: @greyish-purple;
+                font-size: 13px;
+                text-align: center;
+                cursor: pointer;
+                border-bottom: 2px solid transparent;
+                box-sizing: content-box;
 
-                &.ncl-status-ready {
-                    background-color: @tealish;
+                &.active, &.active:hover {
+                    background: none;
+                    color: @orange;
+                    border-bottom: 2px solid @orange;
+                    font-weight: bold;
                 }
 
-                &.ncl-status-building {
-                    background-color: @sunflower-yellow;
+                &.ncl-status-monitoring {
+                    padding-right: 8px;
+
+                    &:hover {
+                        .ncl-status-tooltip {
+                            display: flex;
+                        }
+                    }
                 }
 
-                &.ncl-status-error {
-                    background-color: @darkish-pink;
-                }
-
-                .ncl-status-tooltip {
-                    position: absolute;
-                    left: 22px;
-                    top: -10px;
-                    z-index: 1;
-                    display: none;
-                    height: 24px;
-                    padding: 4px 12px 22px 10px;
-                    border-radius: 2px;
+                .ncl-status-light {
+                    position: relative;
+                    display: inline-block;
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    margin-left: 34px;
                     background-color: @greyish-purple;
-                    color: @white;
 
-                    &:after {
-                        content: "";
-                        position: absolute;
-                        right: 100%;
-                        top: 50%;
-                        height: 0;
-                        width: 0;
-                        margin-top: -5px;
-                        border: 5px solid transparent;
-                        border-right-color: @greyish-purple;
-                        pointer-events: none;
-                    }
-
-                    &.ncl-status-tooltip-ready {
-                        padding-left: 10px;
+                    &.ncl-status-ready {
                         background-color: @tealish;
-
-                        &:after {
-                            border-right-color: @tealish;
-                        }
                     }
 
-                    &.ncl-status-tooltip-building {
-                        padding-left: 10px;
+                    &.ncl-status-building {
                         background-color: @sunflower-yellow;
-
-                        &:after {
-                            border-right-color: @sunflower-yellow;
-                        }
                     }
 
-                    &.ncl-status-tooltip-error {
-                        padding-left: 10px;
+                    &.ncl-status-error {
                         background-color: @darkish-pink;
+                    }
+
+                    .ncl-status-tooltip {
+                        position: absolute;
+                        left: 22px;
+                        top: -10px;
+                        z-index: 1;
+                        display: none;
+                        height: 24px;
+                        padding: 4px 12px 22px 10px;
+                        border-radius: 2px;
+                        background-color: @greyish-purple;
+                        color: @white;
 
                         &:after {
-                            border-right-color: @darkish-pink;
-                        }
-                    }
-
-                    .ncl-status-icon {
-                        width: 13px;
-                        margin-right: 5px;
-
-                        &.ncl-icon-ready {
-                            margin-top: 3px;
-                            font-size: 10px;
-                        }
-
-                        &.ncl-icon-building {
-                            margin-top: 6px;
-                            font-size: 5px;
+                            content: "";
+                            position: absolute;
+                            right: 100%;
+                            top: 50%;
+                            height: 0;
+                            width: 0;
+                            margin-top: -5px;
+                            border: 5px solid transparent;
+                            border-right-color: @greyish-purple;
+                            pointer-events: none;
                         }
 
-                        &.ncl-icon-error {
-                            margin-top: 3px;
-                            font-size: 10px;
+                        &.ncl-status-tooltip-ready {
+                            padding-left: 10px;
+                            background-color: @tealish;
+
+                            &:after {
+                                border-right-color: @tealish;
+                            }
                         }
-                    }
 
-                    .ncl-status-title {
-                        font-size: 13px;
-                        font-weight: normal;
-                        white-space: nowrap;
+                        &.ncl-status-tooltip-building {
+                            padding-left: 10px;
+                            background-color: @sunflower-yellow;
 
-                        &::first-letter {
-                            text-transform: capitalize;
+                            &:after {
+                                border-right-color: @sunflower-yellow;
+                            }
+                        }
+
+                        &.ncl-status-tooltip-error {
+                            padding-left: 10px;
+                            background-color: @darkish-pink;
+
+                            &:after {
+                                border-right-color: @darkish-pink;
+                            }
+                        }
+
+                        .ncl-status-icon {
+                            width: 13px;
+                            margin-right: 5px;
+
+                            &.ncl-icon-ready {
+                                margin-top: 3px;
+                                font-size: 10px;
+                            }
+
+                            &.ncl-icon-building {
+                                margin-top: 6px;
+                                font-size: 5px;
+                            }
+
+                            &.ncl-icon-error {
+                                margin-top: 3px;
+                                font-size: 10px;
+                            }
+                        }
+
+                        .ncl-status-title {
+                            font-size: 13px;
+                            font-weight: normal;
+                            white-space: nowrap;
+
+                            &::first-letter {
+                                text-transform: capitalize;
+                            }
                         }
                     }
                 }
@@ -148,5 +154,9 @@ ncl-navigation-tabs {
 
     .test-pane-actions-wrapper {
         margin-right: 35px;
+    }
+
+    &.ncl-version-configuration-tabs {
+        padding-bottom: 24px;
     }
 }
