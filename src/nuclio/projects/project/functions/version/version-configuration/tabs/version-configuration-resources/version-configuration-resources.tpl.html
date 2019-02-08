@@ -2,23 +2,106 @@
     <div class="title">Resources</div>
     <form name="$ctrl.resourcesForm" class="resources-wrapper">
         <div class="row">
-            <div class="sliders-block">
-                <div class="slider-row">
-                    <igz-slider-input-block data-slider-config="$ctrl.memorySliderConfig"
-                                            data-measure-units="null"
-                                            data-value-unit="$ctrl.memoryValueUnit"
-                                            data-slider-block-updating-broadcast=""
-                                            data-on-slider-changing="$ctrl.onSliderChanging"
-                                            data-on-change-callback="$ctrl.sliderInputCallback"
-                                            data-update-slider-input="spec.resources.limits.memory"></igz-slider-input-block>
+
+            <div class="igz-row form-row range-inputs-row">
+                <div class="igz-col-10 row-title">Memory</div>
+
+                <div class="igz-col-40 input-wrapper">
+                    <div class="input-title">Request</div>
+                    <div class="row-input memory-input memory-number-input">
+                        <igz-number-input data-allow-empty-field="true"
+                                          data-validation-is-required="false"
+                                          data-form-object="$ctrl.resourcesForm"
+                                          data-input-name="requestMemory"
+                                          data-update-number-input-callback="$ctrl.memoryInputCallback(newData, field)"
+                                          data-update-number-input-field="spec.resources.requests.memory"
+                                          data-min-value="0"
+                                          data-current-value="$ctrl.requestsMemoryValue;"
+                                          data-value-step="1"></igz-number-input>
+                    </div>
+                    <div class="row-input memory-input memory-size-dropdown">
+                        <igz-default-dropdown data-values-array="$ctrl.dropdownOptions"
+                                              data-selected-item="$ctrl.selectedRequestUnit"
+                                              data-item-select-callback="$ctrl.memoryDropdownCallback(item, isItemChanges, field)"
+                                              data-item-select-field="spec.resources.requests.memory"></igz-default-dropdown>
+                    </div>
                 </div>
-                <div class="slider-row">
-                    <igz-slider-input-block data-slider-config="$ctrl.cpuSliderConfig"
-                                            data-measure-units="null"
-                                            data-slider-block-updating-broadcast=""
-                                            data-on-change-callback="$ctrl.sliderInputCallback"
-                                            data-update-slider-input="spec.resources.limits.cpu"></igz-slider-input-block>
+
+                <div class="igz-col-40 input-wrapper">
+                    <div class="input-title">Limit</div>
+                    <div class="row-input memory-input memory-number-input">
+                        <igz-number-input data-allow-empty-field="true"
+                                          data-validation-is-required="false"
+                                          data-form-object="$ctrl.resourcesForm"
+                                          data-input-name="limitsMemory"
+                                          data-update-number-input-callback="$ctrl.memoryInputCallback(newData, field)"
+                                          data-update-number-input-field="spec.resources.limits.memory"
+                                          data-current-value="$ctrl.limitsMemoryValue;"
+                                          data-value-step="1"></igz-number-input>
+                    </div>
+                    <div class="row-input memory-input memory-size-dropdown">
+                        <igz-default-dropdown data-values-array="$ctrl.dropdownOptions"
+                                              data-selected-item="$ctrl.selectedLimitUnit"
+                                              data-item-select-callback="$ctrl.memoryDropdownCallback(item, isItemChanges, field)"
+                                              data-item-select-field="spec.resources.limits.memory"></igz-default-dropdown>
+                    </div>
                 </div>
+            </div>
+
+            <div class="igz-row form-row range-inputs-row">
+                <div class="igz-col-10 row-title">CPU</div>
+
+                <div class="igz-col-40 input-wrapper">
+                    <div class="input-title">Request</div>
+                    <div class="row-input cpu-number-input">
+                        <igz-number-input data-allow-empty-field="true"
+                                          data-validation-is-required="false"
+                                          data-form-object="$ctrl.resourcesForm"
+                                          data-input-name="requestCpu"
+                                          data-suffix-unit="{{ $ctrl.selectedCpuRequestItem.unit }}"
+                                          data-placeholder="{{ $ctrl.selectedCpuRequestItem.placeholder }}"
+                                          data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)"
+                                          data-update-number-input-field="resources.requests.cpu"
+                                          data-min-value="$ctrl.selectedCpuRequestItem.minValue"
+                                          data-precision="{{ $ctrl.selectedCpuRequestItem.precision }}"
+                                          data-value-step="{{ $ctrl.selectedCpuRequestItem.step }}"
+                                          data-current-value="$ctrl.requestsCpuValue"></igz-number-input>
+                    </div>
+                    <div class="row-input cpu-dropdown">
+                        <igz-default-dropdown data-values-array="$ctrl.cpuDropdownOptions"
+                                              data-selected-item="$ctrl.selectedCpuRequestItem"
+                                              data-item-select-callback="$ctrl.cpuDropdownCallback(item, isItemChanged, field)"
+                                              data-item-select-field="selectedCpuRequestItem"></igz-default-dropdown>
+                    </div>
+                </div>
+
+                <div class="igz-col-40 input-wrapper">
+                    <div class="input-title">Limit</div>
+                    <div class="row-input cpu-number-input">
+                        <igz-number-input data-allow-empty-field="true"
+                                          data-validation-is-required="false"
+                                          data-form-object="$ctrl.resourcesForm"
+                                          data-input-name="limitsCpu"
+                                          data-suffix-unit="{{ $ctrl.selectedCpuLimitItem.unit }}"
+                                          data-placeholder="{{ $ctrl.selectedCpuLimitItem.placeholder }}"
+                                          data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)"
+                                          data-update-number-input-field="resources.limits.cpu"
+                                          data-min-value="$ctrl.selectedCpuLimitItem.minValue"
+                                          data-precision="{{ $ctrl.selectedCpuLimitItem.precision }}"
+                                          data-value-step="{{ $ctrl.selectedCpuLimitItem.step }}"
+                                          data-current-value="$ctrl.limitsCpuValue"></igz-number-input>
+                    </div>
+                    <div class="row-input cpu-dropdown">
+                        <igz-default-dropdown data-values-array="$ctrl.cpuDropdownOptions"
+                                              data-selected-item="$ctrl.selectedCpuLimitItem"
+                                              data-item-select-callback="$ctrl.cpuDropdownCallback(item, isItemChanged, field)"
+                                              data-item-select-field="selectedCpuLimitItem"></igz-default-dropdown>
+                    </div>
+                </div>
+            </div>
+
+            <div class="igz-row form-row range-inputs-row slider-block">
+                <div class="igz-col-10 row-title">Target CPU</div>
                 <div class="slider-row">
                     <igz-slider-input-block data-slider-config="$ctrl.targetCpuSliderConfig"
                                             data-measure-units="null"
@@ -34,12 +117,12 @@
                 </div>
             </div>
 
-            <div class="replicas-block">
-                <div class="label">
+            <div class="replicas-block form-row">
+                <div class="label igz-col-100">
                     Replicas
                 </div>
                 <div class="replicas-values">
-                    <div class="inputs">
+                    <div class="inputs igz-col-40">
                         <igz-number-input data-form-object="$ctrl.resourcesForm"
                                           data-input-name="minReplicas"
                                           data-current-value="$ctrl.minReplicas"

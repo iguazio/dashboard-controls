@@ -11,18 +11,156 @@
             controller: NclVersionConfigurationResourcesController
         });
 
-    function NclVersionConfigurationResourcesController($timeout, $rootScope, lodash, ConfigService) {
+    function NclVersionConfigurationResourcesController($timeout, $rootScope, $scope, lodash, ConfigService) {
         var ctrl = this;
+
+        var defaultUnit = {
+            id: 'gb',
+            name: 'GB',
+            unit: 'G',
+            root: 1000,
+            power: 3
+        };
+
+        ctrl.cpuDropdownOptions = [
+            {
+                id: 'millicores',
+                name: 'Millicores',
+                unit: 'm',
+                precision: '0',
+                step: '100',
+                minValue: 1,
+                placeholder: '1500',
+                onChange: function (value) {
+                    return parseFloat(value) * 1000;
+                },
+                convertValue: function (value) {
+                    return parseInt(value);
+                }
+            },
+            {
+                id: 'cpu',
+                name: 'CPU',
+                unit: '',
+                precision: '3',
+                step: '0.1',
+                minValue: 0.1,
+                placeholder: '1.5',
+                onChange: function (value) {
+                    return parseInt(value) / 1000;
+                },
+                convertValue: function (value) {
+                    return parseFloat(value) * 1000;
+                }
+            }
+        ];
+        ctrl.dropdownOptions = [
+            {
+                id: 'bytes',
+                name: 'Bytes',
+                unit: '',
+                root: 0,
+                power: 0
+            },
+            {
+                id: 'kb',
+                name: 'KB',
+                unit: 'K',
+                root: 1000,
+                power: 1
+            },
+            {
+                id: 'kib',
+                name: 'KiB',
+                unit: 'Ki',
+                root: 1024,
+                power: 1
+            },
+            {
+                id: 'mb',
+                name: 'MB',
+                unit: 'M',
+                root: 1000,
+                power: 2
+            },
+            {
+                id: 'mib',
+                name: 'MiB',
+                unit: 'Mi',
+                root: 1024,
+                power: 2
+            },
+            {
+                id: 'gb',
+                name: 'GB',
+                unit: 'G',
+                root: 1000,
+                power: 3
+            },
+            {
+                id: 'gib',
+                name: 'GiB',
+                unit: 'Gi',
+                root: 1024,
+                power: 3
+            },
+            {
+                id: 'tb',
+                name: 'TB',
+                unit: 'T',
+                root: 1000,
+                power: 4
+            },
+            {
+                id: 'tib',
+                name: 'TiB',
+                unit: 'Ti',
+                root: 1024,
+                power: 4
+            },
+            {
+                id: 'pb',
+                name: 'PB',
+                unit: 'P',
+                root: 1000,
+                power: 5
+            },
+            {
+                id: 'pib',
+                name: 'PiB',
+                unit: 'Pi',
+                root: 1024,
+                power: 5
+            },
+            {
+                id: 'eb',
+                name: 'EB',
+                unit: 'E',
+                root: 1000,
+                power: 6
+            },
+            {
+                id: 'eib',
+                name: 'EiB',
+                unit: 'Ei',
+                root: 1024,
+                power: 6
+            }
+        ];
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
 
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
 
-        ctrl.initSliders = initSliders;
-        ctrl.onSliderChanging = onSliderChanging;
+        ctrl.initSlider = initSlider;
         ctrl.numberInputCallback = numberInputCallback;
         ctrl.sliderInputCallback = sliderInputCallback;
+
+        ctrl.cpuDropdownCallback = cpuDropdownCallback;
+        ctrl.memoryInputCallback = memoryInputCallback;
+        ctrl.memoryDropdownCallback = memoryDropdownCallback;
+        ctrl.inputValueCallback = inputValueCallback;
 
         //
         // Hook methods
@@ -32,18 +170,20 @@
          * Initialization method
          */
         function onInit() {
-            var limits = lodash.get(ctrl.version.spec, 'resources.limits');
+            initParametersData();
 
-            ctrl.initSliders();
-
-            if (!lodash.isNil(limits)) {
-                ctrl.version.spec.resources.limits = lodash.mapValues(limits, function (item) {
-                    return Number(item);
-                });
-            }
+            ctrl.initSlider();
 
             ctrl.minReplicas = lodash.chain(ctrl.version).get('spec.minReplicas').defaultTo(1).value();
             ctrl.maxReplicas = lodash.chain(ctrl.version).get('spec.maxReplicas').defaultTo(1).value();
+
+            $scope.$watch('$ctrl.resourcesForm.$invalid', function (value) {
+                $rootScope.$broadcast('change-state-deploy-button', {component: 'resources', isDisabled: value});
+            });
+
+            $timeout(function () {
+                setFormValidity();
+            });
         }
 
         /**
@@ -58,75 +198,35 @@
         //
 
         /**
+         * CPU dropdown callback
+         * @param {Object} item
+         * @param {boolean} isItemChanged
+         * @param {string} field
+         */
+        function cpuDropdownCallback(item, isItemChanged, field) {
+            if (!lodash.isEqual(item, ctrl[field])) {
+                if (isRequestsInput(field)) {
+                    if (ctrl.requestsCpuValue) {
+                        ctrl.requestsCpuValue = item.onChange(ctrl.requestsCpuValue);
+                        lodash.set(ctrl.version, 'spec.resources.requests.cpu', ctrl.requestsCpuValue + item.unit);
+                    }
+                } else if (ctrl.limitsCpuValue) {
+                    ctrl.limitsCpuValue = item.onChange(ctrl.limitsCpuValue);
+                    lodash.set(ctrl.version, 'spec.resources.limits.cpu', ctrl.limitsCpuValue + item.unit);
+                }
+
+                lodash.set(ctrl, field, item);
+
+                checkIfCpuInputsValid();
+            }
+        }
+
+        /**
          * Inits data for sliders
          */
-        function initSliders() {
-            // maximum value of memory in megabytes
-            var maxMemoryValueInMB = 4096;
-            // maximum value of memory in gigabytes
-            var maxMemoryValueInGB = 33;
-            // maximum value of CPU
-            var maxCPUvalue = 65;
-            var memory = lodash.get(ctrl.version.spec, 'resources.limits.memory');
-            // gets the memory value in bytes
-            var memoryBytes = parseInt(lodash.get(ctrl.version.spec, 'resources.limits.memory', Math.pow(1024, 2) * maxMemoryValueInGB));
-            // converts memory value from bytes to megabytes
-            var memoryValue = lodash.round(memoryBytes / Math.pow(1024, 2));
-            var memoryValueLabel = null;
-            // gets the cpu value
-            var cpuValue = lodash.get(ctrl.version.spec, 'resources.limits.cpu', maxCPUvalue);
-            // sets to the cpu label - cpu value if exists or U/L (unlimited) if doesn't
-            var cpuValueLabel = lodash.get(ctrl.version.spec, 'resources.limits.cpu', 'U/L');
+        function initSlider() {
             var targetCPUvalue = lodash.get(ctrl.version, 'spec.targetCPU', 75);
-
-            // converts memory value from megabytes to gigabytes if value too big
-            if (memoryValue <= maxMemoryValueInMB) {
-                ctrl.memoryValueUnit = 'MB';
-            } else {
-                memoryValue = lodash.round(memoryValue / 1024);
-                ctrl.memoryValueUnit = 'GB';
-            }
-            // sets to the memory label - memory value if exists or U/L (unlimited) if doesn't
-            memoryValueLabel = angular.isDefined(memory) ? memoryValue : 'U/L';
-
-            ctrl.targetValueUnit = '%';
-            ctrl.memorySliderConfig = {
-                name: 'Memory',
-                value: memoryValue,
-                valueLabel: memoryValueLabel,
-                valueUnit: ctrl.memoryValueUnit,
-                pow: 2,
-                unitLabel: '',
-                labelHelpIcon: false,
-                options: {
-                    floor: 128,
-                    ceil: maxMemoryValueInGB,
-                    stepsArray: initMemorySteps(),
-                    showSelectionBar: false,
-                    onChange: null,
-                    onEnd: null
-                }
-            };
-            ctrl.cpuSliderConfig = {
-                name: 'CPU',
-                value: cpuValue,
-                valueLabel: cpuValueLabel,
-                pow: 0,
-                unitLabel: '',
-                labelHelpIcon: false,
-                options: {
-                    floor: 1,
-                    id: 'cpu',
-                    ceil: maxCPUvalue,
-                    step: 1,
-                    precision: 1,
-                    showSelectionBar: false,
-                    onChange: null,
-                    onEnd: null
-                }
-            };
             ctrl.targetCpuSliderConfig = {
-                name: 'Target CPU',
                 value: targetCPUvalue,
                 valueLabel: targetCPUvalue,
                 pow: 0,
@@ -142,37 +242,86 @@
                     onEnd: null
                 }
             };
-            ctrl.defaultMemoryMeasureUnits = [
-                {
-                    pow: 2,
-                    name: 'MB'
-                }
-            ];
         }
 
         /**
-         * Handles all slider changes
-         * @param {number} newValue
+         * Number input callback
+         * @param {number} newData
          * @param {string} field
          */
-        function onSliderChanging(newValue, field) {
-            if (lodash.includes(field, 'memory')) {
-                var rangeInGB = {
-                    start: 5,
-                    end: 33
-                };
-
-                // there are two ranges:
-                // 128 - 4096 MB
-                // 5 - 32 GB
-                if (lodash.inRange(newValue, rangeInGB.start, rangeInGB.end)) {
-                    ctrl.memorySliderConfig.pow = 3;
-                    ctrl.memoryValueUnit = 'GB';
+        function inputValueCallback(newData, field) {
+            if (angular.isNumber(newData)) {
+                if (isRequestsInput(field)) {
+                    ctrl.requestsCpuValue = newData;
+                    newData = newData + ctrl.selectedCpuRequestItem.unit;
                 } else {
-                    ctrl.memorySliderConfig.pow = 2;
-                    ctrl.memoryValueUnit = 'MB';
+                    ctrl.limitsCpuValue = newData;
+                    newData = newData + ctrl.selectedCpuLimitItem.unit;
                 }
+
+                lodash.set(ctrl.version, 'spec.' + field, newData);
+                ctrl.onChangeCallback();
+            } else {
+                lodash.unset(ctrl.version, 'spec.' + field);
+                ctrl[isRequestsInput(field) ? 'requestsCpuValue' : 'limitsCpuValue'] = null;
             }
+
+            checkIfCpuInputsValid();
+        }
+
+        /**
+         * Memory number input callback
+         * @param {number} newData
+         * @param {string} field
+         */
+        function memoryInputCallback(newData, field) {
+            var newValue, sizeUnit;
+
+            sizeUnit = isRequestsInput(field) ? lodash.get(ctrl.selectedRequestUnit, 'unit', 'G') :
+                                                lodash.get(ctrl.selectedLimitUnit, 'unit', 'G');
+
+            if (!angular.isNumber(newData)) {
+                lodash.unset(ctrl.version, field);
+
+                // if new value isn't number that both fields will be valid, because one of them is empty
+                ctrl.resourcesForm.requestMemory.$setValidity('equality', true);
+                ctrl.resourcesForm.limitsMemory.$setValidity('equality', true);
+            } else {
+                newValue = newData + sizeUnit;
+                lodash.set(ctrl.version, field, newValue);
+
+                checkIfMemoryInputsValid(newValue, field);
+            }
+
+            ctrl.onChangeCallback();
+        }
+
+        /**
+         * Memory dropdown callback
+         * @param {Object} item
+         * @param {boolean} isItemChanged
+         * @param {string} field
+         */
+        function memoryDropdownCallback(item, isItemChanged, field) {
+            var sizeValue = lodash.parseInt(lodash.get(ctrl.version, field, ' 0G'));
+            var newValue;
+
+            if (lodash.includes(field, 'requests')) {
+                ctrl.selectedRequestUnit = item;
+            } else if (lodash.includes(field, 'limits')) {
+                ctrl.selectedLimitUnit = item;
+            }
+
+            if (!angular.isNumber(sizeValue) || lodash.isNaN(sizeValue)) {
+                lodash.unset(ctrl.version, field);
+            } else {
+                newValue = sizeValue + item.unit;
+                lodash.set(ctrl.version, field, newValue);
+
+                checkIfMemoryInputsValid(newValue, field);
+            }
+
+            ctrl.onChangeCallback();
         }
 
         /**
@@ -181,17 +330,9 @@
          * @param {string} field
          */
         function numberInputCallback(newData, field) {
-            ctrl[field] = newData;
-            $timeout(function () {
-                if (ctrl.resourcesForm.$valid) {
-                    lodash.set(ctrl.version.spec, 'minReplicas', ctrl.minReplicas);
-                    lodash.set(ctrl.version.spec, 'maxReplicas', ctrl.maxReplicas);
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'resources', isDisabled: false});
-                    ctrl.onChangeCallback();
-                } else {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'resources', isDisabled: true});
-                }
-            });
+            lodash.set(ctrl.version.spec, field, newData);
+
+            ctrl.onChangeCallback();
         }
 
         /**
@@ -214,55 +355,149 @@
         //
 
         /**
-         * Creates array of memory slider steps
-         * @returns {Array}
+         * Checks if cpu number inputs and drop-downs valid
+         * Example:
+         * Request: "400m" - Limit: "0.6" are valid
+         * Request: "300m" - Limit: "0.2" are invalid
          */
-        function initMemorySteps() {
-            var stepsArray = [];
-            var value = 128;
+        function checkIfCpuInputsValid() {
+            var requestsCpu = lodash.get(ctrl.version, 'spec.resources.requests.cpu');
+            var limitsCpu = lodash.get(ctrl.version, 'spec.resources.limits.cpu');
+            var isFieldsValid;
 
-            // array of limits and steps
-            var limits = {
-                firstLimit: {
-                    limit: 512,
-                    step: 128
-                },
-                secondLimit: {
-                    limit: 1024,
-                    step: 256
-                },
-                thirdLimit: {
-                    limit: 4096,
-                    step: 512
-                },
-                lastLimit: {
-                    limit: 33280,
-                    step: 1024
-                }
-            };
-            stepsArray.push(value);
-
-            while (value < limits.lastLimit.limit) {
-
-                // if value suits limit - increase value on current step
-                // step will be 128 if value < 512
-                // 256 if value < 1024
-                // 512 if value < 4096
-                // and 1024 from 1024 to 32 * 1024
-                if (value < limits.firstLimit.limit) {
-                    value += limits.firstLimit.step;
-                } else if (value < limits.secondLimit.limit) {
-                    value += limits.secondLimit.step;
-                } else if (value < limits.thirdLimit.limit) {
-                    value += limits.thirdLimit.step;
-                } else {
-                    value += limits.lastLimit.step;
-                }
-
-                // converts value to GB if it greater than 4096MB
-                stepsArray.push(value <= limits.thirdLimit.limit ? value : value / 1024);
+            if (lodash.isNil(requestsCpu) || lodash.isNil(limitsCpu)) {
+                isFieldsValid = true;
+            } else {
+                isFieldsValid = ctrl.selectedCpuRequestItem.convertValue(requestsCpu) <= ctrl.selectedCpuLimitItem.convertValue(limitsCpu);
             }
-            return stepsArray;
+
+            ctrl.resourcesForm.requestCpu.$setValidity('equality', isFieldsValid);
+            ctrl.resourcesForm.limitsCpu.$setValidity('equality', isFieldsValid);
+        }
+
+        /**
+         * Checks if memory number inputs and drop-downs valid
+         * Example:
+         * Request: "4GB" - Limit: "6GB" are valid
+         * Request: "4TB" - Limit: "6GB" are invalid
+         * @param {string} value
+         * @param {string} field
+         */
+        function checkIfMemoryInputsValid(value, field) {
+
+            // oppositeValue is a variable for opposite field of current value
+            // if value argument is a value of 'Request' field that 'oppositeValue' will contain value of 'Limit' field
+            var oppositeValue;
+            var isFieldsValid;
+
+            if (lodash.includes(field, 'requests')) {
+                oppositeValue = lodash.get(ctrl.version, 'spec.resources.limits.memory');
+
+                // compare 'Request' and 'Limit' fields values converted in bytes
+                isFieldsValid = lodash.isNil(oppositeValue) ? true : convertToBytes(value) <= convertToBytes(oppositeValue);
+            } else if (lodash.includes(field, 'limits')) {
+                oppositeValue = lodash.get(ctrl.version, 'spec.resources.requests.memory');
+
+                // compare 'Request' and 'Limit' fields values converted in bytes
+                isFieldsValid = lodash.isNil(oppositeValue) ? true : convertToBytes(value) >= convertToBytes(oppositeValue);
+            }
+
+            ctrl.resourcesForm.requestMemory.$setValidity('equality', isFieldsValid);
+            ctrl.resourcesForm.limitsMemory.$setValidity('equality', isFieldsValid);
+        }
+
+        /**
+         * Converts megabytes, gigabytes and terabytes into bytes
+         * @param {string} value
+         * @returns {number}
+         */
+        function convertToBytes(value) {
+            var unit = extractUnit(value);
+            var unitData = lodash.find(ctrl.dropdownOptions, ['unit', unit]);
+
+            return parseInt(value) * Math.pow(unitData.root, unitData.power);
+        }
+
+        /**
+         * Extracts the unit part of a string consisting of a numerical value then a unit.
+         * @param {string} str - the string with value and unit.
+         * @returns {string} the unit, or the empty-string if unit does not exist in the `str`.
+         * @example
+         * extractUnit('100 GB');
+         * // => 'GB'
+         *
+         * extractUnit('100GB');
+         * // => 'GB'
+         *
+         * extractUnit('100');
+         * // => ''
+         */
+        function extractUnit(str) {
+            return lodash.get(str.match(/[a-zA-Z]+/), '[0]', '');
+        }
+
+        /**
+         * Init default common parameters for new version
+         */
+        function initParametersData() {
+            var requestsMemory = lodash.get(ctrl.version, 'spec.resources.requests.memory');
+            var limitsMemory = lodash.get(ctrl.version, 'spec.resources.limits.memory');
+            var requestsCpu = lodash.get(ctrl.version, 'spec.resources.requests.cpu');
+            var limitsCpu = lodash.get(ctrl.version, 'spec.resources.limits.cpu');
+
+            ctrl.requestsMemoryValue = parseValue(requestsMemory);
+            ctrl.limitsMemoryValue = parseValue(limitsMemory);
+            ctrl.requestsCpuValue = parseValue(requestsCpu);
+            ctrl.limitsCpuValue = parseValue(limitsCpu);
+
+            // get size unit from memory values into int or set default, example: '15G' -> 'G'
+            ctrl.selectedRequestUnit = lodash.isNil(requestsMemory) ? defaultUnit :
+                lodash.find(ctrl.dropdownOptions, ['unit', extractUnit(requestsMemory)]);
+            ctrl.selectedLimitUnit = lodash.isNil(limitsMemory) ? defaultUnit :
+                lodash.find(ctrl.dropdownOptions, ['unit', extractUnit(limitsMemory)]);
+
+            ctrl.selectedCpuRequestItem = lodash.isNil(requestsCpu) ? ctrl.cpuDropdownOptions[0] :
+                lodash.find(ctrl.cpuDropdownOptions, ['unit', extractUnit(requestsCpu)]);
+            ctrl.selectedCpuLimitItem = lodash.isNil(limitsCpu) ? ctrl.cpuDropdownOptions[0] :
+                lodash.find(ctrl.cpuDropdownOptions, ['unit', extractUnit(limitsCpu)]);
+
+            function parseValue(value) {
+                if (lodash.isNil(value)) {
+                    return null;
+                }
+                var parsedValue = parseFloat(value);
+
+                return parsedValue > 0 ? parsedValue : null;
+            }
+        }
+
+        /**
+         * Checks if input is related to `CPU Request`
+         * @param {string} field
+         */
+        function isRequestsInput(field) {
+            return lodash.includes(field.toLowerCase(), 'request');
+        }
+
+        /**
+         * Show form errors if form is invalid
+         */
+        function setFormValidity() {
+            lodash.forEach(['requestMemory', 'limitsMemory', 'requestCpu', 'limitsCpu', 'minReplicas', 'maxReplicas'], prepareToValidity);
+
+            var path = 'spec.resources.requests.memory';
+            checkIfMemoryInputsValid(lodash.get(ctrl.version, path, '0'), path);
+
+            /**
+             * Set `dirty` to true and `ctrl.numberInputChanged` of `number-input.component` to true
+             * for remove `pristine` css class
+             */
+            function prepareToValidity(field) {
+                if (angular.isDefined(ctrl.resourcesForm[field])) {
+                    ctrl.resourcesForm[field].$dirty = true;
+                    ctrl.resourcesForm[field].$$element.scope().$ctrl.numberInputChanged = true;
+                }
+            }
         }
     }
 }());
