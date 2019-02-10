@@ -294,20 +294,24 @@
                                          data-ng-click="$ctrl.cancelInvocation()">Cancel</div>
                                 </div>
                                 <div class="code-section" data-ng-if="$ctrl.showResponse && !$ctrl.testing">
-                                    <div class="top-panel">
-                                        <div data-ng-click="$ctrl.downloadResponseFile()"
-                                             data-uib-tooltip="Download to file"
-                                             data-tooltip-placement="left"
-                                             data-tooltip-popup-delay="300"
-                                             data-tooltip-append-to-body="true">
-                                            <div class="igz-icon-download"></div>
-                                        </div>
-                                        <div data-ng-click="$ctrl.copyToClipboard()"
-                                             data-uib-tooltip="Copy to clipboard"
-                                             data-tooltip-placement="left"
-                                             data-tooltip-popup-delay="300"
-                                             data-tooltip-append-to-body="true">
-                                            <div class="ncl-icon-copy"></div>
+                                    <div class="igz-action-panel">
+                                        <div class="actions-list">
+                                            <div class="igz-action-item"
+                                                 data-ng-click="$ctrl.downloadResponseFile()"
+                                                 data-uib-tooltip="Download to file"
+                                                 data-tooltip-placement="left"
+                                                 data-tooltip-popup-delay="300"
+                                                 data-tooltip-append-to-body="true">
+                                                <div class="action-icon igz-icon-download"></div>
+                                            </div>
+                                            <div class="igz-action-item"
+                                                 data-ng-click="$ctrl.copyToClipboard()"
+                                                 data-uib-tooltip="Copy to clipboard"
+                                                 data-tooltip-placement="left"
+                                                 data-tooltip-popup-delay="300"
+                                                 data-tooltip-append-to-body="true">
+                                                <div class="action-icon ncl-icon-copy"></div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="code-edit-section" data-ng-if="$ctrl.responseBodyType === 'code'">
