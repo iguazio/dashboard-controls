@@ -225,10 +225,12 @@
          * Inits data for sliders
          */
         function initSlider() {
-            var targetCPUvalue = lodash.get(ctrl.version, 'spec.targetCPU', 75);
+            var targetCpuValue = lodash.get(ctrl.version, 'spec.targetCpu', 75);
+
+            ctrl.targetCpuValueUnit = '%';
             ctrl.targetCpuSliderConfig = {
-                value: targetCPUvalue,
-                valueLabel: targetCPUvalue,
+                value: targetCpuValue,
+                valueLabel: targetCpuValue,
                 pow: 0,
                 unitLabel: '%',
                 labelHelpIcon: false,
