@@ -25,7 +25,7 @@
         ctrl.cpuDropdownOptions = [
             {
                 id: 'millicores',
-                name: 'Millicores',
+                name: 'millicpu',
                 unit: 'm',
                 precision: '0',
                 step: '100',
@@ -40,7 +40,7 @@
             },
             {
                 id: 'cpu',
-                name: 'CPU',
+                name: 'cpu',
                 unit: '',
                 precision: '3',
                 step: '0.1',
