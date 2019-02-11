@@ -3,7 +3,7 @@
     .action-icon-color-set();
 
     left: 0;
-    line-height: 1;
+    line-height: 0;
     position: relative;
     transition: @igz-basic-transition;
 
@@ -27,6 +27,9 @@
         }
 
         .igz-action-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             background-color: @action-item-bg-color;
             border-radius: 50%;
             color: @action-item-color;
@@ -34,10 +37,8 @@
             float: left;
             font-size: 18px;
             height: 40px;
-            line-height: 45px;
             margin: 0 8px 0 0;
             position: relative;
-            text-align: center;
             transition: color .2s ease-out;
             width: 40px;
             z-index: 2;
