@@ -30,7 +30,7 @@
                 precision: '0',
                 step: '100',
                 minValue: 1,
-                placeholder: '1500',
+                placeholder: 'Example: 1500',
                 onChange: function (value) {
                     return parseFloat(value) * 1000;
                 },
@@ -45,7 +45,7 @@
                 precision: '3',
                 step: '0.1',
                 minValue: 0.1,
-                placeholder: '1.5',
+                placeholder: 'Example: 1.5',
                 onChange: function (value) {
                     return parseInt(value) / 1000;
                 },
