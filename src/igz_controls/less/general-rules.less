@@ -153,6 +153,21 @@ h1, h2, h3, h4, h5, h6, .title, .btn {
     background-color: @modal-backgrop-bg-color;
 }
 
+.igz-icon-help-round {
+    .descriptive-icons-color-set();
+
+    &:before {
+        color: @icon-help-round-before-color;
+        background-color: @icon-help-round-before-bg-color;
+    }
+
+    &:hover {
+        &:before {
+            color: @icon-help-round-hover-before-color !important;
+        }
+    }
+}
+
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide:not(.ng-hide-animate) {
     display: none !important;
 }
