@@ -29,7 +29,8 @@
                                       data-values-array="$ctrl.classList"
                                       data-selected-item="$ctrl.selectedClass.id"
                                       data-form-object="$ctrl.editItemForm"
-                                      data-item-select-callback="$ctrl.onSelectClass(item)">
+                                      data-item-select-callback="$ctrl.onSelectClass(item)"
+                                      data-enable-overlap="true">
                 </igz-default-dropdown>
             </div>
             <div class="igz-col-65"></div>
@@ -213,7 +214,8 @@
                                       data-input-name="{{attribute.name}}"
                                       data-selected-item="$ctrl.getAttrValue(attribute.name)"
                                       data-item-select-callback="$ctrl.onSelectDropdownValue(item, field)"
-                                      data-item-select-field="attributes.{{attribute.name}}">
+                                      data-item-select-field="attributes.{{attribute.name}}"
+                                      data-enable-overlap="true">
                 </igz-default-dropdown>
             </div>
             <div class="igz-col-45 attribute-field"
