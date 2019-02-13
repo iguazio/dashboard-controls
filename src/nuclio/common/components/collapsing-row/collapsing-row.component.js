@@ -14,7 +14,7 @@
             transclude: true
         });
 
-    function NclCollapsingRowController($timeout, lodash, FunctionsService) {
+    function NclCollapsingRowController($timeout, lodash, DialogsService, FunctionsService) {
         var ctrl = this;
 
         ctrl.actions = [];
@@ -24,10 +24,12 @@
 
         ctrl.isNil = lodash.isNil;
 
-        ctrl.onFireAction = onFireAction;
         ctrl.isVolumeType = isVolumeType;
-        ctrl.toggleItem = toggleItem;
         ctrl.onCollapse = onCollapse;
+        ctrl.onClickAction = onClickAction;
+        ctrl.onFireAction = onFireAction;
+        ctrl.showDotMenu = showDotMenu;
+        ctrl.toggleItem = toggleItem;
 
         //
         // Hook methods
@@ -59,27 +61,12 @@
         //
 
         /**
-         * According to given action name calls proper action handler
-         * @param {string} actionType - a type of action
-         */
-        function onFireAction(actionType) {
-            ctrl.actionHandlerCallback({actionType: actionType, selectedItem: ctrl.item});
-        }
-
-        /**
          * Checks if input have to be visible for specific item type
          * @param {string} name - input name
          * @returns {boolean}
          */
         function isVolumeType(name) {
             return ctrl.type === 'volume';
-        }
-
-        /**
-         * Enables/disables item
-         */
-        function toggleItem() {
-            ctrl.item.enable = !ctrl.item.enable;
         }
 
         /**
@@ -98,9 +85,59 @@
             }
         }
 
+        /**
+         * Handler on action click
+         * @param {Object} action - action that was clicked (e.g. `delete`)
+         */
+        function onClickAction(action) {
+            if (lodash.isNonEmpty(action.confirm)) {
+                showConfirmDialog(action);
+            } else {
+                onFireAction(action.id);
+            }
+        }
+
+        /**
+         * According to given action name calls proper action handler
+         * @param {string} actionType - a type of action
+         */
+        function onFireAction(actionType) {
+            ctrl.actionHandlerCallback({actionType: actionType, selectedItem: ctrl.item});
+        }
+
+        /**
+         * Checks if show dot menu
+         */
+        function showDotMenu() {
+            return ctrl.actions.length > 1;
+        }
+
+        /**
+         * Enables/disables item
+         */
+        function toggleItem() {
+            ctrl.item.enable = !ctrl.item.enable;
+        }
+
         //
         // Private methods
         //
+
+        /**
+         * Shows confirm dialog
+         * @param {Object} action - e.g. `delele`
+         */
+        function showConfirmDialog(action) {
+            var message = lodash.isNil(action.confirm.description) ? action.confirm.message : {
+                message: action.confirm.message,
+                description: action.confirm.description
+            };
+
+            DialogsService.confirm(message, action.confirm.yesLabel, action.confirm.noLabel, action.confirm.type)
+                .then(function () {
+                    onFireAction(action.id);
+                });
+        }
 
         /**
          * Initializes actions
