@@ -23,6 +23,10 @@
                 visibility: visible;
                 background-color: @white;
             }
+
+            .single-action {
+                visibility: visible;
+            }
         }
     }
 
@@ -93,9 +97,12 @@
     }
 
     .single-action {
+        visibility: hidden;
         align-items: flex-start;
 
         .igz-action-panel {
+            transition: unset;
+
             .igz-action-item {
                 margin: 4px 0 0 0;
             }

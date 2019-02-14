@@ -20,15 +20,18 @@
             visibility: hidden;
         }
 
-        &:hover {
-            .three-dot-menu {
-                visibility: visible;
+        .igz-action-panel {
+            visibility: hidden;
+            transition: unset;
+
+            .igz-action-item {
+                margin: 0 0 0 5px;
             }
         }
 
-        .igz-action-panel {
-            .igz-action-item {
-                margin: 0 0 0 5px;
+        &:hover {
+            .three-dot-menu, .igz-action-panel {
+                visibility: visible;
             }
         }
 
