@@ -119,11 +119,23 @@
         </div>
         <div data-ng-transclude class="igz-col-100" data-ng-if="$ctrl.item.ui.editModeActive"></div>
 
-        <div class="common-table-cell actions-menu">
+        <div class="common-table-cell actions-menu" data-ng-if="::$ctrl.showDotMenu()">
             <igz-action-menu data-actions="$ctrl.actions"
                              data-list-class="$ctrl.listClass"
                              data-on-fire-action="$ctrl.onFireAction">
             </igz-action-menu>
+        </div>
+        <div class="common-table-cell single-action" data-ng-if="::!$ctrl.showDotMenu()">
+            <div class="igz-action-panel">
+                <div class="actions-list">
+                    <div class="igz-action-item"
+                         data-ng-click="$ctrl.onClickAction($ctrl.actions[0])">
+                        <span class="action-icon"
+                              data-ng-class="$ctrl.actions[0].icon">
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

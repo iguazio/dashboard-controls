@@ -29,7 +29,8 @@
             controller: NclKeyValueInputController
         });
 
-    function NclKeyValueInputController($document, $element, $rootScope, $scope, $timeout, lodash, EventHelperService) {
+    function NclKeyValueInputController($document, $element, $rootScope, $scope, $timeout, lodash, DialogsService,
+                                        EventHelperService) {
         var ctrl = this;
 
         ctrl.data = {};
@@ -46,9 +47,11 @@
         ctrl.isVisibleByType = isVisibleByType;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.inputKeyCallback = inputKeyCallback;
+        ctrl.onClickAction = onClickAction;
         ctrl.onFireAction = onFireAction;
         ctrl.openDropdown = openDropdown;
         ctrl.onTypeChanged = onTypeChanged;
+        ctrl.showDotMenu = showDotMenu;
 
         //
         // Hook methods
@@ -177,6 +180,18 @@
         }
 
         /**
+         * Handler on action click
+         * @param {Object} action - action that was clicked (e.g. `delete`)
+         */
+        function onClickAction(action) {
+            if (lodash.isNonEmpty(action.confirm)) {
+                showConfirmDialog(action);
+            } else {
+                onFireAction(action.id);
+            }
+        }
+
+        /**
          * According to given action name calls proper action handler
          * @param {string} actionType - a type of action
          */
@@ -249,9 +264,32 @@
             $document.on('keypress', saveChanges);
         }
 
+        /**
+         * Checks if show dot menu
+         */
+        function showDotMenu() {
+            return ctrl.actions.length > 1;
+        }
+
         //
         // Private method
         //
+
+        /**
+         * Shows confirm dialog
+         * @param {Object} action - e.g. `delele`
+         */
+        function showConfirmDialog(action) {
+            var message = lodash.isNil(action.confirm.description) ? action.confirm.message : {
+                message: action.confirm.message,
+                description: action.confirm.description
+            };
+
+            DialogsService.confirm(message, action.confirm.yesLabel, action.confirm.noLabel, action.confirm.type)
+                .then(function () {
+                    onFireAction(action.id);
+                });
+        }
 
         /**
          * Gets types list
