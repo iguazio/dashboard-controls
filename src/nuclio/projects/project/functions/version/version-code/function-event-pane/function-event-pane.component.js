@@ -18,7 +18,8 @@
         });
 
     function NclFunctionEventPaneController($element, $rootScope, $scope, $timeout, $q, lodash, moment, download,
-                                            ConvertorService, DialogsService, EventHelperService, VersionHelperService) {
+                                            CommonService, ConvertorService, DialogsService, EventHelperService,
+                                            VersionHelperService) {
         var ctrl = this;
 
         var canceler = null;
@@ -265,21 +266,7 @@
          * Copies a string to the clipboard. Must be called from within an event handler such as click
          */
         function copyToClipboard() {
-            if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
-                var textarea = document.createElement('textarea');
-                textarea.textContent = ctrl.testResult.body;
-                textarea.style.position = 'fixed';
-                document.body.appendChild(textarea);
-                textarea.select();
-
-                try {
-                    return document.execCommand('copy'); // Security exception may be thrown by some browsers.
-                } catch (ex) {
-                    DialogsService.alert('Copy to clipboard failed.', ex);
-                } finally {
-                    document.body.removeChild(textarea);
-                }
-            }
+            CommonService.copyToClipboard(ctrl.testResult.body);
         }
 
         /**
