@@ -49,6 +49,7 @@
 
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
+        ctrl.$onChanges = onChanges;
 
         ctrl.isFunctionShowed = isFunctionShowed;
         ctrl.getTooltip = getTooltip;
@@ -80,15 +81,6 @@
                 }
             });
 
-            convertStatusState();
-            setStatusIcon();
-
-            ctrl.invocationURL =
-                lodash.isNil(ctrl.function.status.httpPort) ? 'Not yet deployed' :
-                lodash.isEmpty(ctrl.externalAddress)        ? 'N/A'              :
-                                                              'http://' + ctrl.externalAddress + ':' +
-                                                              ctrl.function.status.httpPort;
-
             ctrl.actions = initActions();
         }
 
@@ -97,6 +89,23 @@
          */
         function onDestroy() {
             terminateInterval();
+        }
+
+        /**
+         * On changes hook method
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (lodash.has(changes, 'function')) {
+                convertStatusState();
+                setStatusIcon();
+
+                ctrl.invocationURL =
+                    lodash.isNil(ctrl.function.status.httpPort) ? 'Not yet deployed' :
+                    lodash.isEmpty(ctrl.externalAddress)        ? 'N/A'              :
+                                                                  'http://' + ctrl.externalAddress + ':' +
+                                                                  ctrl.function.status.httpPort;
+            }
         }
 
         //
