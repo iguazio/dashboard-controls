@@ -11,23 +11,61 @@
             scope: {
                 colClass: '@'
             },
-            template: '<div class="resize-block" data-ng-mousedown="resizeTable.onMouseDown($event)" data-ng-click="resizeTable.onClick($event)" data-ng-dblclick="resizeTable.onDoubleClick($event)"></div>',
+            template: '<div class="resize-block" data-ng-mousedown="$ctrl.onMouseDown($event)" data-ng-click="$ctrl.onClick($event)" data-ng-dblclick="$ctrl.onDoubleClick($event)"></div>',
             controller: IgzResizeTableController,
-            controllerAs: 'resizeTable',
+            controllerAs: '$ctrl',
+            link: link,
             bindToController: true
         };
 
+        function link(scope, element) {
+            var parent = element.parent();
+            var timeout = null;
+            onInit();
+
+            /**
+             * Constructor method
+             */
+            function onInit() {
+                scope.$on('$destroy', onDestroy);
+                parent
+                    .on('mouseenter', onMouseEnter)
+                    .on('mouseleave', onMouseLeave);
+            }
+
+            /**
+             * Destructor method
+             */
+            function onDestroy() {
+                $timeout.cancel(timeout);
+                parent
+                    .off('mouseenter', onMouseEnter)
+                    .off('mouseleave', onMouseLeave);
+            }
+
+            function onMouseEnter() {
+                timeout = $timeout(function () {
+                    element.addClass('hover');
+                }, 250);
+            }
+
+            function onMouseLeave() {
+                $timeout.cancel(timeout);
+                element.removeClass('hover');
+            }
+        }
+
         function IgzResizeTableController($element, $scope) {
-            var vm = this;
+            var ctrl = this;
 
-            vm.minWidth = 100;
-            vm.startPosition = 0;
+            ctrl.minWidth = 100;
+            ctrl.startPosition = 0;
 
-            vm.onMouseDown = onMouseDown;
-            vm.onClick = onClick;
-            vm.onDoubleClick = onDoubleClick;
+            ctrl.onMouseDown = onMouseDown;
+            ctrl.onClick = onClick;
+            ctrl.onDoubleClick = onDoubleClick;
 
-            activate();
+            onInit();
 
             //
             // Public methods
@@ -48,13 +86,13 @@
             function onDoubleClick(event) {
 
                 // set min width for selected column
-                if (vm.columnHeadMinWidth < vm.columnHeadWidth) {
-                    var colDifference = vm.columnHeadMinWidth - vm.columnHeadWidth;
+                if (ctrl.columnHeadMinWidth < ctrl.columnHeadWidth) {
+                    var colDifference = ctrl.columnHeadMinWidth - ctrl.columnHeadWidth;
                     resizeColumn(colDifference);
                 }
 
                 // set width of the column to fit the content
-                $rootScope.$broadcast('autofit-col', {colClass: vm.colClass, callbackFunction: resizeColumn});
+                $rootScope.$broadcast('autofit-col', {colClass: ctrl.colClass, callbackFunction: resizeColumn});
             }
 
             /**
@@ -68,7 +106,7 @@
                 event.stopPropagation();
 
                 // saves start position of resize
-                vm.startPosition = event.clientX;
+                ctrl.startPosition = event.clientX;
 
                 // adds event listeners
                 $document.on('mousemove', onMouseMove);
@@ -84,7 +122,7 @@
             /**
              * Constructor
              */
-            function activate() {
+            function onInit() {
 
                 // set header widths of the resizing columns
                 $timeout(initColumnsWidths);
@@ -106,8 +144,8 @@
              * @param {Object} event
              */
             function onMouseMove(event) {
-                var colDifference = event.clientX - vm.startPosition;
-                vm.startPosition = event.clientX;
+                var colDifference = event.clientX - ctrl.startPosition;
+                ctrl.startPosition = event.clientX;
                 resetColumnsWidths();
                 resizeColumn(colDifference);
 
@@ -135,14 +173,14 @@
              * Reloads column cells in the table according to column width
              */
             function reloadColumns() {
-                if (!lodash.isNil(vm.nextBlock)) {
+                if (!lodash.isNil(ctrl.nextBlock)) {
                     $timeout(function () {
                         resetColumnsWidths();
 
                         $rootScope.$broadcast('resize-cells', {
-                            colClass: vm.colClass,
-                            columnWidth: vm.columnHeadWidth + 'px',
-                            nextColumnWidth: vm.nextBlockWidth + 'px'
+                            colClass: ctrl.colClass,
+                            columnWidth: ctrl.columnHeadWidth + 'px',
+                            nextColumnWidth: ctrl.nextBlockWidth + 'px'
                         });
                     });
                 }
@@ -154,20 +192,20 @@
             function initColumnsWidths() {
 
                 // get block which will be resized
-                vm.columnHead = $element[0].parentElement;
-                vm.columnHeadMinWidth = vm.minWidth;
-                if (vm.columnHead.offsetWidth > 0) {
-                    vm.columnHeadMinWidth = lodash.min([vm.columnHead.offsetWidth, vm.minWidth]);
+                ctrl.columnHead = $element[0].parentElement;
+                ctrl.columnHeadMinWidth = ctrl.minWidth;
+                if (ctrl.columnHead.offsetWidth > 0) {
+                    ctrl.columnHeadMinWidth = lodash.min([ctrl.columnHead.offsetWidth, ctrl.minWidth]);
                 }
 
                 // get parent container of the header
-                vm.parentBlock = vm.columnHead.parentElement;
+                ctrl.parentBlock = ctrl.columnHead.parentElement;
 
                 // get block which is next to resizing block
-                vm.nextBlock = vm.columnHead.nextElementSibling;
-                vm.nextBlockMinWidth = vm.minWidth;
-                if (!lodash.isNil(vm.nextBlock) && vm.nextBlock.offsetWidth > 0) {
-                    vm.nextBlockMinWidth = lodash.min([vm.nextBlock.offsetWidth, vm.minWidth]);
+                ctrl.nextBlock = ctrl.columnHead.nextElementSibling;
+                ctrl.nextBlockMinWidth = ctrl.minWidth;
+                if (!lodash.isNil(ctrl.nextBlock) && ctrl.nextBlock.offsetWidth > 0) {
+                    ctrl.nextBlockMinWidth = lodash.min([ctrl.nextBlock.offsetWidth, ctrl.minWidth]);
                 }
                 resetColumnsWidths();
             }
@@ -176,10 +214,10 @@
              * Resets columns widths
              */
             function resetColumnsWidths() {
-                vm.columnHeadWidth = vm.columnHead.offsetWidth;
-                vm.parentBlockWidth = vm.parentBlock.offsetWidth;
-                if (!lodash.isNil(vm.nextBlock)) {
-                    vm.nextBlockWidth = vm.nextBlock.offsetWidth;
+                ctrl.columnHeadWidth = ctrl.columnHead.offsetWidth;
+                ctrl.parentBlockWidth = ctrl.parentBlock.offsetWidth;
+                if (!lodash.isNil(ctrl.nextBlock)) {
+                    ctrl.nextBlockWidth = ctrl.nextBlock.offsetWidth;
                 }
             }
 
@@ -188,13 +226,13 @@
              * @param {Object} colDifference - information about column difference
              */
             function resizeColumn(colDifference) {
-                if (!lodash.isNil(vm.nextBlock)) {
+                if (!lodash.isNil(ctrl.nextBlock)) {
 
                     // calculate new width for the block which need to be resized
-                    var maxColumnHeadDifference = vm.columnHeadWidth - vm.columnHeadMinWidth;
+                    var maxColumnHeadDifference = ctrl.columnHeadWidth - ctrl.columnHeadMinWidth;
 
                     // calculate new width for the  block which is next to resizing block
-                    var maxNextBlockDifference = vm.nextBlockWidth - vm.nextBlockMinWidth;
+                    var maxNextBlockDifference = ctrl.nextBlockWidth - ctrl.nextBlockMinWidth;
 
                     // calculate maximum resizing value of columns
                     var newDifference = 0;
@@ -205,16 +243,16 @@
                     }
 
                     if (newDifference !== 0) {
-                        vm.columnHeadWidth = vm.columnHeadWidth + newDifference;
-                        vm.nextBlockWidth = vm.nextBlockWidth - newDifference;
+                        ctrl.columnHeadWidth = ctrl.columnHeadWidth + newDifference;
+                        ctrl.nextBlockWidth = ctrl.nextBlockWidth - newDifference;
 
-                        setElementWidth(vm.columnHead, vm.columnHeadWidth);
-                        setElementWidth(vm.nextBlock, vm.nextBlockWidth);
+                        setElementWidth(ctrl.columnHead, ctrl.columnHeadWidth);
+                        setElementWidth(ctrl.nextBlock, ctrl.nextBlockWidth);
 
                         $rootScope.$broadcast('resize-cells', {
-                            colClass: vm.colClass,
-                            columnWidth: vm.columnHeadWidth + 'px',
-                            nextColumnWidth: vm.nextBlockWidth + 'px'
+                            colClass: ctrl.colClass,
+                            columnWidth: ctrl.columnHeadWidth + 'px',
+                            nextColumnWidth: ctrl.nextBlockWidth + 'px'
                         });
                         $rootScope.$broadcast('resize-size-cells');
                     }
@@ -227,7 +265,7 @@
              * @param {number} widthInPixels - new width value
              */
             function setElementWidth(element, widthInPixels) {
-                element.style.width = (widthInPixels / vm.parentBlockWidth * 100) + '%';
+                element.style.width = (widthInPixels / ctrl.parentBlockWidth * 100) + '%';
             }
         }
     }
