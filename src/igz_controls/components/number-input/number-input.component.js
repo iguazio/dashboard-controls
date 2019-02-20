@@ -96,8 +96,6 @@
             ctrl.precision = lodash.defaultTo(Number(ctrl.precision), 0);
             ctrl.placeholder = lodash.defaultTo(ctrl.placeholder, '');
 
-            resizeInput();
-
             if (lodash.isNil(ctrl.currentValue) && !lodash.isNil(ctrl.defaultValue)) {
                 ctrl.currentValue = ctrl.defaultValue;
             }
@@ -220,20 +218,7 @@
             validateCurrentValue();
             $timeout(function () {
                 lodash.get(ctrl, 'onChange', angular.noop)(ctrl.checkInvalidation());
-                resizeInput();
             });
-        }
-
-        /**
-         * Resizes number input width
-         */
-        function resizeInput() {
-            var numberInput = $element.find('input')[0];
-            if (!lodash.isNil(numberInput)) {
-                numberInput.size = !lodash.isEmpty(ctrl.currentValue) || lodash.isNumber(ctrl.currentValue) ?
-                                   ctrl.currentValue.toString().length : !lodash.isEmpty(ctrl.placeholder) ?
-                                   ctrl.placeholder.length : 1;
-            }
         }
 
         /**

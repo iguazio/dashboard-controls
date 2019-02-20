@@ -14,7 +14,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 0 38px 0 11px;
+    padding: 0 10px 0 11px;
     z-index: 3;
 
     &:not(.disabled) {
@@ -53,7 +53,7 @@
         padding: 0;
         text-align: left;
         background-color: @number-input-field-bg-color;
-        max-width: 100%;
+        width: 100%;
     }
 
     .additional-left-block {
@@ -65,11 +65,16 @@
         }
     }
 
-    .suffix-unit {
-        color: @number-input-suffix-unit-color;
-        font-size: 14px;
-        font-weight: 400;
-        padding-left: 3px;
+    .suffix-unit-container {
+        display: flex;
+        align-items: center;
+
+        .suffix-unit {
+            color: @number-input-suffix-unit-color;
+            font-size: 14px;
+            font-weight: 400;
+            padding-left: 3px;
+        }
     }
 
     .arrow-block {
@@ -78,9 +83,7 @@
         flex-direction: column;
         justify-content: center;
         height: 100%;
-        position: absolute;
-        right: 10px;
-        top: 1px;
+        margin-left: 6px;
 
         .igz-icon-dropup, .igz-icon-dropdown {
             color: @number-input-arrow-block-icon-color;
