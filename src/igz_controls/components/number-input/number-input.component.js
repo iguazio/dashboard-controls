@@ -79,6 +79,7 @@
         ctrl.isShownUnit = isShownUnit;
         ctrl.onBlurInput = onBlurInput;
         ctrl.onChangeInput = onChangeInput;
+        ctrl.onUnitClick = onUnitClick;
         ctrl.setFocus = setFocus;
 
         //
@@ -181,6 +182,16 @@
             if (lodash.isNil(ctrl.currentValue) && !lodash.isNull(ctrl.defaultValue) && !ctrl.allowEmptyField) {
                 ctrl.currentValue = ctrl.defaultValue;
             }
+        }
+
+        /**
+         * On unit click callback
+         * Sets focus on input.
+         */
+        function onUnitClick() {
+            $element.find('input')[0].focus();
+
+            ctrl.setFocus();
         }
 
         /**
