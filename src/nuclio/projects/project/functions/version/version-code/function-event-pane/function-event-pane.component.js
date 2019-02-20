@@ -18,8 +18,7 @@
         });
 
     function NclFunctionEventPaneController($element, $rootScope, $scope, $timeout, $q, lodash, moment, download,
-                                            CommonService, ConvertorService, DialogsService, EventHelperService,
-                                            VersionHelperService) {
+                                            ConvertorService, DialogsService, EventHelperService, VersionHelperService) {
         var ctrl = this;
 
         var canceler = null;
@@ -141,7 +140,6 @@
 
         ctrl.addNewHeader = addNewHeader;
         ctrl.cancelInvocation = cancelInvocation;
-        ctrl.copyToClipboard = copyToClipboard;
         ctrl.downloadResponseFile = downloadResponseFile;
         ctrl.deleteEvent = deleteEvent;
         ctrl.deleteFile = deleteFile;
@@ -260,13 +258,6 @@
                 canceler = null;
             }
             canceledInvocation = true;
-        }
-
-        /**
-         * Copies a string to the clipboard. Must be called from within an event handler such as click
-         */
-        function copyToClipboard() {
-            CommonService.copyToClipboard(ctrl.testResult.body);
         }
 
         /**

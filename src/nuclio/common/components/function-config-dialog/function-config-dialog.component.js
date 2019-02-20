@@ -11,7 +11,7 @@
             controller: NclFunctionConfigDialogController
         });
 
-    function NclFunctionConfigDialogController(CommonService, DialogsService, ExportService) {
+    function NclFunctionConfigDialogController(DialogsService, ExportService) {
         var ctrl = this;
 
         ctrl.editorTheme = {
@@ -21,7 +21,6 @@
         };
 
         ctrl.$onInit = onInit;
-        ctrl.copyToClipboard = copyToClipboard;
 
         //
         // Hook methods
@@ -33,17 +32,6 @@
         function onInit() {
             ctrl.title = ctrl.function.metadata.name + ' - configuration';
             ctrl.sourceCode = ExportService.getFunctionConfig(ctrl.function);
-        }
-
-        //
-        // Public methods
-        //
-
-        /**
-         * Copies a string to the clipboard. Must be called from within an event handler such as click
-         */
-        function copyToClipboard() {
-            CommonService.copyToClipboard(ctrl.sourceCode);
         }
     }
 }());
