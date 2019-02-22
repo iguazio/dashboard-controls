@@ -207,106 +207,109 @@
                                         </div>
                                     </div>
 
-                                <div class="igz-scrollable-container scrollable-headers table-body-wrapper"
-                                     data-ng-if="$ctrl.isScrollNeeded()"
-                                     data-ng-scrollbars
-                                     data-ng-scrollbars-config="$ctrl.scrollConfig">
-                                    <div class="table-body" data-ng-repeat="header in $ctrl.headers">
-                                        <ncl-key-value-input class="new-header-input"
-                                                             data-list-class="scrollable-headers"
-                                                             data-row-data="header"
-                                                             data-item-index="$index"
-                                                             data-use-type="false"
-                                                             data-allow-selection="true"
-                                                             data-value-optional="true"
-                                                             data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
-                                        </ncl-key-value-input>
+                                    <div class="igz-scrollable-container scrollable-headers table-body-wrapper"
+                                         data-ng-if="$ctrl.isScrollNeeded()"
+                                         data-ng-scrollbars
+                                         data-ng-scrollbars-config="$ctrl.scrollConfig">
+                                        <div class="table-body" data-ng-repeat="header in $ctrl.headers">
+                                            <ncl-key-value-input class="new-header-input"
+                                                                 data-list-class="scrollable-headers"
+                                                                 data-row-data="header"
+                                                                 data-item-index="$index"
+                                                                 data-use-type="false"
+                                                                 data-allow-selection="true"
+                                                                 data-value-optional="true"
+                                                                 data-action-handler-callback="$ctrl.handleAction(actionType, index)"
+                                                                 data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                                            </ncl-key-value-input>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="create-header-button"
-                                     data-ng-click="$ctrl.addNewHeader($event)">
-                                    <span class="igz-icon-add-round"></span>
-                                    Create a new header
+                                    <div class="create-header-button"
+                                         data-ng-click="$ctrl.addNewHeader($event)">
+                                        <span class="igz-icon-add-round"></span>
+                                        Create a new header
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div ui-layout-container size="55%" min-size="100px" class="response-section"
-                     data-ng-class="{'left-bar-pinned': $ctrl.fixedLeftBar}">
-                    <div class="igz-scrollable-container scrollable-response-section"
-                         data-ng-scrollbars
-                         data-ng-scrollbars-config="$ctrl.scrollConfig">
-                        <div class="response-header">
-                            <div class="left-side-elements">
-                                Response
-                            </div>
-                            <div class="right-side-elements"
-                                 data-ng-if="$ctrl.testResult.status">
-                                <div>Status:
-                                    <div class="text-ellipsis status {{$ctrl.isInvocationSuccess ? 'success' : 'fail'}}"
-                                         data-uib-tooltip="{{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}"
-                                         data-tooltip-placement="top"
-                                         data-tooltip-popup-delay="300">
-                                        {{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}
-                                    </div>
+                    <div ui-layout-container size="55%" min-size="100px" class="response-section"
+                         data-ng-class="{'left-bar-pinned': $ctrl.fixedLeftBar}">
+                        <div class="igz-scrollable-container scrollable-response-section"
+                             data-ng-scrollbars
+                             data-ng-scrollbars-config="$ctrl.scrollConfig">
+                            <div class="response-header">
+                                <div class="left-side-elements">
+                                    Response
                                 </div>
-                                <div>Time: <span class="time">{{$ctrl.invokeTime}}</span></div>
-                                <div data-ng-if="$ctrl.responseSize">
-                                    Size: <span class="size">{{$ctrl.responseSize.value + $ctrl.responseSize.label}}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="response-body">
-                            <ncl-test-events-navigation-tabs data-ng-if="$ctrl.showResponse"
-                                                             data-active-tab="$ctrl.selectedResponseTab"
-                                                             data-tab-items="$ctrl.responseNavigationTabs"
-                                                             data-on-change-active-tab="$ctrl.onChangeTab(activeTab, 'selectedResponseTab')">
-                            </ncl-test-events-navigation-tabs>
-                            <div class="body" data-ng-if="$ctrl.selectedResponseTab.id === 'body'">
-                                <div class="no-response"
-                                     data-ng-if="!$ctrl.showResponse && !$ctrl.testing">
-                                    <div class="circle">
-                                        <div class="ncl-icon-test"></div>
-                                        <div class="ncl-icon-hand"></div>
-                                    </div>
-                                    <div class="message">
-                                        Response will be shown here once test button was clicked.
-                                    </div>
-                                </div>
-                                <div class="testing" data-ng-if="$ctrl.testing">
-                                    <span class="message">Loading...</span>
-                                    <div class="loader-wrapper">
-                                        <div class="loader-fading-circle">
-                                            <div class="loader-circle1 loader-circle"></div>
-                                            <div class="loader-circle2 loader-circle"></div>
-                                            <div class="loader-circle3 loader-circle"></div>
-                                            <div class="loader-circle4 loader-circle"></div>
-                                            <div class="loader-circle5 loader-circle"></div>
-                                            <div class="loader-circle6 loader-circle"></div>
-                                            <div class="loader-circle7 loader-circle"></div>
-                                            <div class="loader-circle8 loader-circle"></div>
-                                            <div class="loader-circle9 loader-circle"></div>
-                                            <div class="loader-circle10 loader-circle"></div>
-                                            <div class="loader-circle11 loader-circle"></div>
-                                            <div class="loader-circle12 loader-circle"></div>
+                                <div class="right-side-elements"
+                                     data-ng-if="$ctrl.testResult.status">
+                                    <div>Status:
+                                        <div class="text-ellipsis status {{$ctrl.isInvocationSuccess ? 'success' : 'fail'}}"
+                                             data-uib-tooltip="{{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}"
+                                             data-tooltip-placement="top"
+                                             data-tooltip-popup-delay="300">
+                                            {{$ctrl.testResult.status.statusCode}}
+                                            {{$ctrl.testResult.status.statusText}}
                                         </div>
                                     </div>
-                                    <div class="ncl-secondary-button"
-                                         data-ng-click="$ctrl.cancelInvocation()">Cancel</div>
+                                    <div>Time: <span class="time">{{$ctrl.invokeTime}}</span></div>
+                                    <div data-ng-if="$ctrl.responseSize">
+                                        Size: <span
+                                            class="size">{{$ctrl.responseSize.value + $ctrl.responseSize.label}}</span>
+                                    </div>
                                 </div>
-                                <div class="code-section" data-ng-if="$ctrl.showResponse && !$ctrl.testing">
-                                    <div class="igz-action-panel">
-                                        <div class="actions-list">
-                                            <div class="igz-action-item"
-                                                 data-ng-click="$ctrl.downloadResponseFile()"
-                                                 data-uib-tooltip="Download to file"
-                                                 data-tooltip-placement="left"
-                                                 data-tooltip-popup-delay="300"
-                                                 data-tooltip-append-to-body="true">
-                                                <div class="action-icon igz-icon-download"></div>
+                            </div>
+                            <div class="response-body">
+                                <ncl-test-events-navigation-tabs data-ng-if="$ctrl.showResponse"
+                                                                 data-active-tab="$ctrl.selectedResponseTab"
+                                                                 data-tab-items="$ctrl.responseNavigationTabs"
+                                                                 data-on-change-active-tab="$ctrl.onChangeTab(activeTab, 'selectedResponseTab')">
+                                </ncl-test-events-navigation-tabs>
+                                <div class="body" data-ng-if="$ctrl.selectedResponseTab.id === 'body'">
+                                    <div class="no-response"
+                                         data-ng-if="!$ctrl.showResponse && !$ctrl.testing">
+                                        <div class="circle">
+                                            <div class="ncl-icon-test"></div>
+                                            <div class="ncl-icon-hand"></div>
+                                        </div>
+                                        <div class="message">
+                                            Response will be shown here once test button was clicked.
+                                        </div>
+                                    </div>
+                                    <div class="testing" data-ng-if="$ctrl.testing">
+                                        <span class="message">Loading...</span>
+                                        <div class="loader-wrapper">
+                                            <div class="loader-fading-circle">
+                                                <div class="loader-circle1 loader-circle"></div>
+                                                <div class="loader-circle2 loader-circle"></div>
+                                                <div class="loader-circle3 loader-circle"></div>
+                                                <div class="loader-circle4 loader-circle"></div>
+                                                <div class="loader-circle5 loader-circle"></div>
+                                                <div class="loader-circle6 loader-circle"></div>
+                                                <div class="loader-circle7 loader-circle"></div>
+                                                <div class="loader-circle8 loader-circle"></div>
+                                                <div class="loader-circle9 loader-circle"></div>
+                                                <div class="loader-circle10 loader-circle"></div>
+                                                <div class="loader-circle11 loader-circle"></div>
+                                                <div class="loader-circle12 loader-circle"></div>
                                             </div>
+                                        </div>
+                                        <div class="ncl-secondary-button"
+                                             data-ng-click="$ctrl.cancelInvocation()">Cancel
+                                        </div>
+                                    </div>
+                                    <div class="code-section" data-ng-if="$ctrl.showResponse && !$ctrl.testing">
+                                        <div class="igz-action-panel">
+                                            <div class="actions-list">
+                                                <div class="igz-action-item"
+                                                     data-ng-click="$ctrl.downloadResponseFile()"
+                                                     data-uib-tooltip="Download to file"
+                                                     data-tooltip-placement="left"
+                                                     data-tooltip-popup-delay="300"
+                                                     data-tooltip-append-to-body="true">
+                                                    <div class="action-icon igz-icon-download"></div>
+                                                </div>
 
                                                 <igz-copy-to-clipboard
                                                         data-value="$ctrl.testResult.body"></igz-copy-to-clipboard>
