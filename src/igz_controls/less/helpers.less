@@ -179,3 +179,32 @@
     }
 }
 
+.link {
+    .helpers-color-set();
+
+    color: @link-color;
+    text-decoration: none;
+
+    &:hover, &:focus, &:active {
+        color: @link-hover-active-focus-color;
+        text-decoration: none;
+        outline: none;
+    }
+}
+
+.external-link-icon {
+    .helpers-color-set();
+
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+
+    .igz-icon-external-link();
+
+    &:before {
+        order: 99;
+        color: @link-before-color;
+        font-size: 9px;
+        margin-left: 8px;
+    }
+}

@@ -304,14 +304,8 @@
                                                  data-tooltip-append-to-body="true">
                                                 <div class="action-icon igz-icon-download"></div>
                                             </div>
-                                            <div class="igz-action-item"
-                                                 data-ng-click="$ctrl.copyToClipboard()"
-                                                 data-uib-tooltip="Copy to clipboard"
-                                                 data-tooltip-placement="left"
-                                                 data-tooltip-popup-delay="300"
-                                                 data-tooltip-append-to-body="true">
-                                                <div class="action-icon ncl-icon-copy"></div>
-                                            </div>
+
+                                            <igz-copy-to-clipboard data-value="$ctrl.testResult.body"></igz-copy-to-clipboard>
                                         </div>
                                     </div>
                                     <div class="code-edit-section" data-ng-if="$ctrl.responseBodyType === 'code'">
