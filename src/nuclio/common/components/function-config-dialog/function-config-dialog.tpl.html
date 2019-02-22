@@ -1,11 +1,7 @@
 <div class="view-yaml-dialog-container">
     <div class="view-yaml-dialog-header">
         <div class="title">{{ $ctrl.title }}</div>
-        <div class="copy-to-clipboard"
-            data-ng-click="$ctrl.copyToClipboard()" data-uib-tooltip="Copy to clipboard"
-            data-tooltip-placement="right" data-tooltip-popup-delay="300" data-tooltip-append-to-body="true">
-            <div class="ncl-icon-copy"></div>
-        </div>
+        <igz-copy-to-clipboard data-value="$ctrl.sourceCode"></igz-copy-to-clipboard>
     <div class="close-button igz-icon-close" data-ng-click="$ctrl.closeDialog()"></div>
     </div>
     <div class="main-content">
