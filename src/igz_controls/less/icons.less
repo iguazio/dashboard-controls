@@ -23,6 +23,12 @@
     }
 }
 
+.generateIconClass(@code, @after) {
+    &:after {
+        content: '\e@{code}';
+        &:extend(.igz-icon-default);
+    }
+}
 
 // main side menu
 .igz-icon-containers {
@@ -583,6 +589,10 @@
 
 .igz-icon-external-link {
     .generateIconClass(985);
+}
+
+.igz-icon-external-link-after {
+    .generateIconClass(985, 'after');
 }
 
 .igz-icon-test-pane {

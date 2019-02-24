@@ -194,16 +194,12 @@
 
 .external-link-icon {
     .helpers-color-set();
+    .igz-icon-external-link-after();
 
-    display: inline-flex;
-    align-items: center;
     cursor: pointer;
 
-    .igz-icon-external-link();
-
-    &:before {
-        order: 99;
-        color: @link-before-color;
+    &:after {
+        color: @external-link-icon-after-color;
         font-size: 9px;
         margin-left: 8px;
     }
