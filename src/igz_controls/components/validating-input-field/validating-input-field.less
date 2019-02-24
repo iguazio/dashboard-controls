@@ -54,7 +54,7 @@
                 outline: none;
             }
 
-            &:hover, &:focus {
+            &:focus {
                 outline: 0;
                 border: @input-textarea-field-not-disabled-hover-focus-border;
             }
@@ -106,46 +106,39 @@
         }
     }
 
+    /* make sure not to display built-in clear button on Internet Explorer */
+    input::-ms-clear {
+        display: none;
+    }
+
     //
     // placeholder
     //
 
-    .input-placeholder, .textarea-placeholder {
-        color: @input-textarea-placeholder;
-        left: 11px;
-        position: absolute;
-        line-height: 36px;
-        min-height: 36px;
-        z-index: 1;
-
-        &.with-icon {
-            left: 33px;
-        }
-    }
-
     ::-webkit-input-placeholder {
-        color: @validating-input-field-placeholder;
-        font-size: 0;
+        /* Chrome, Chromium, Edge, Safari, Opera*/
+        color: @input-textarea-placeholder;
     }
+
     :-moz-placeholder {
-        /* Firefox 18- */
-        color: @validating-input-field-placeholder;
-        font-size: 0;
+        /* Firefox 4-18 */
+        color: @input-textarea-placeholder;
     }
 
     ::-moz-placeholder {
         /* Firefox 19+ */
-        color: @validating-input-field-placeholder;
-        font-size: 0;
+        color: @input-textarea-placeholder;
     }
 
     :-ms-input-placeholder {
-        color: @validating-input-field-placeholder;
-        font-size: 0;
+        /* - Internet Explorer 10–11
+           - Internet Explorer Mobile 10-11 */
+        color: @input-textarea-placeholder !important;
     }
 
-    input::-ms-clear {
-        display: none;
+    ::placeholder {
+        /* modern browser versions */
+        color: @input-textarea-placeholder;
     }
 
     //
