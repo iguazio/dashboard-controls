@@ -11,7 +11,7 @@
             controller: NclVersionConfigurationDataBindingsController
         });
 
-    function NclVersionConfigurationDataBindingsController($rootScope, lodash, DialogsService) {
+    function NclVersionConfigurationDataBindingsController($rootScope, $timeout, lodash, DialogsService) {
         var ctrl = this;
 
         ctrl.isCreateModeActive = false;
@@ -87,21 +87,23 @@
          * @param {Event} event
          */
         function createBinding(event) {
-            if (!isBindingInEditMode()) {
-                ctrl.bindings.push({
-                    id: '',
-                    name: '',
-                    kind: '',
-                    attributes: {},
-                    ui: {
-                        editModeActive: true,
-                        isFormValid: false,
-                        name: 'binding'
-                    }
-                });
-                event.stopPropagation();
-                $rootScope.$broadcast('change-state-deploy-button', {component: 'binding', isDisabled: true});
-            }
+            $timeout(function () {
+                if (!isBindingInEditMode()) {
+                    ctrl.bindings.push({
+                        id: '',
+                        name: '',
+                        kind: '',
+                        attributes: {},
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'binding'
+                        }
+                    });
+                    event.stopPropagation();
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'binding', isDisabled: true});
+                }
+            }, 100);
         }
 
         /**

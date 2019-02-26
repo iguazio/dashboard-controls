@@ -10,7 +10,7 @@
             controller: NclVersionTriggersController
         });
 
-    function NclVersionTriggersController($rootScope, lodash, DialogsService, VersionHelperService) {
+    function NclVersionTriggersController($rootScope, $timeout, lodash, DialogsService, VersionHelperService) {
         var ctrl = this;
 
         ctrl.isCreateModeActive = false;
@@ -65,21 +65,23 @@
          * @returns {Promise}
          */
         function createTrigger(event) {
-            if (!isTriggerInEditMode()) {
-                ctrl.triggers.push({
-                    id: '',
-                    name: '',
-                    kind: '',
-                    attributes: {},
-                    ui: {
-                        editModeActive: true,
-                        isFormValid: false,
-                        name: 'trigger'
-                    }
-                });
-                $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: true});
-                event.stopPropagation();
-            }
+            $timeout(function () {
+                if (!isTriggerInEditMode()) {
+                    ctrl.triggers.push({
+                        id: '',
+                        name: '',
+                        kind: '',
+                        attributes: {},
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'trigger'
+                        }
+                    });
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: true});
+                    event.stopPropagation();
+                }
+            }, 100);
         }
 
         /**
