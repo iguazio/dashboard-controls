@@ -43,6 +43,7 @@
     angular.module('iguazio.dashboard-controls')
         .component('igzDefaultDropdown', {
             bindings: {
+                additionalClass: '@',
                 selectedItem: '<',
                 valuesArray: '<',
                 bottomButtonCallback: '<?',
@@ -98,6 +99,7 @@
         ctrl.getIcon = getIcon;
         ctrl.getTooltip = getTooltip;
         ctrl.getValuesArray = getValuesArray;
+        ctrl.getAdditionalClass = getAdditionalClass;
         ctrl.isItemSelected = isItemSelected;
         ctrl.isPlaceholderClass = isPlaceholderClass;
         ctrl.isShowDropdownError = isShowDropdownError;
@@ -246,6 +248,16 @@
          */
         function getValuesArray() {
             return ctrl.valuesArray;
+        }
+
+        /**
+         * Returns additional CSS class
+         * @returns {string}
+         */
+        function getAdditionalClass() {
+            if (!lodash.isNil(ctrl.additionalClass)) {
+                return ctrl.additionalClass;
+            }
         }
 
         /**

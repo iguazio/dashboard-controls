@@ -41,7 +41,7 @@
         </div>
     </div>
 
-    <div class="default-dropdown-container" tabindex="-1"
+    <div class="default-dropdown-container" data-ng-class="$ctrl.getAdditionalClass()" tabindex="-1"
          data-ng-if="$ctrl.isDropdownContainerShown"
          data-ng-style="{'top': $ctrl.topPosition}"
          data-ng-class="{'dropdown-overlap': $ctrl.enableOverlap}"
