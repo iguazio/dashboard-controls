@@ -44,7 +44,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" data-ng-if="$ctrl.version.status.state === 'error'">
+            <div class="row" data-ng-if="$ctrl.checkIsErrorState()">
                 <div class="monitoring-block ncl-monitoring-error-logger">
                     <span class="icon-collapsed general-content"
                           data-ng-class="$ctrl.rowIsCollapsed.errorLog ? 'igz-icon-right' : 'igz-icon-down'"
@@ -56,7 +56,9 @@
                              data-ng-scrollbars
                              data-ng-scrollbars-config="$ctrl.scrollConfig">
                             <div class="log-entry">
-                                <span class="log-entry-error"> {{$ctrl.version.status.message}}</span>
+                                <span class="log-entry-error">
+                                    {{$ctrl.versionStatus.message}}
+                                </span>
                             </div>
                         </div>
                     </div>

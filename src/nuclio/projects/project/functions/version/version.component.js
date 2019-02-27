@@ -398,6 +398,8 @@
 
                         ctrl.deployResult = response;
 
+                        $rootScope.$broadcast('deploy-result-changed');
+
                         lodash.set(lodash.find(ctrl.navigationTabsConfig, 'status'), 'status', response.status.state);
 
                         $timeout(function () {
