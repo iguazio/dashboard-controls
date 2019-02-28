@@ -77,8 +77,14 @@
                     lodash.unset(ctrl.build, field);
                     lodash.unset(ctrl.version, 'spec.build.' + field);
                 } else {
+                    var commands = newData.replace(/\r/g, '\n').split(/\n+/);
+
+                    if (field === 'commands') {
+                        commands = escapeSingleQuote(commands);
+                    }
+
                     lodash.set(ctrl.build, field, newData);
-                    lodash.set(ctrl.version, 'spec.build.' + field, newData.replace(/\r/g, '\n').split(/\n+/));
+                    lodash.set(ctrl.version, 'spec.build.' + field, commands);
                 }
             } else {
                 lodash.set(ctrl.version, field, newData);
@@ -173,6 +179,19 @@
         //
         // Private methods
         //
+
+        /**
+         * Escapes single quotes in array of string
+         * Example:
+         * ['o'ne', 'tw''o', 'three''] => ['o\u0027ne', 'tw\u0027\u0027o', 'three\u0027']
+         * @param {Array} data - array of strings
+         * @returns {Array}
+         */
+        function escapeSingleQuote(data) {
+            return lodash.map(data, function (item) {
+                return item.replace(/'/g, '\\u0027');
+            });
+        }
 
         /**
          * Initializes actions
