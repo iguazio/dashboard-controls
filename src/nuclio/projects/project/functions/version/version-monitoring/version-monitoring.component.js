@@ -82,7 +82,7 @@
          * Sets actual deploying status in `ctrl.versionStatus`
          */
         function setVersionStatus() {
-            if (lodash.isEmpty(lodash.get(ctrl.version, 'ui.deployResult', {}))) {
+            if (lodash.isEmpty(lodash.get(ctrl.version, 'ui.deployResult'))) {
                 ctrl.versionStatus = lodash.get(ctrl.version, 'status');
             } else {
                 ctrl.versionStatus = lodash.get(ctrl.version, 'ui.deployResult.status');
