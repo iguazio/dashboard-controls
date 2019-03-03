@@ -389,7 +389,7 @@
                     $timeout(function () {
                         ctrl.itemSelectCallback({
                             item: item,
-                            isItemChanged: previousItem !== ctrl.selectedItem,
+                            isItemChanged: !lodash.isEqual(previousItem, ctrl.selectedItem),
                             field: angular.isDefined(ctrl.itemSelectField) ? ctrl.itemSelectField : null
                         });
                     });
