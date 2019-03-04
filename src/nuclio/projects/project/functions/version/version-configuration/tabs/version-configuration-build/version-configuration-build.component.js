@@ -181,15 +181,15 @@
         //
 
         /**
-         * Escapes single quotes in array of string
+         * Escapes single quotes in array of string regarding YAML spec
          * Example:
-         * ['o'ne', 'tw''o', 'three''] => ['o\u0027ne', 'tw\u0027\u0027o', 'three\u0027']
+         * ['o'ne', 'tw''o', 'three''] => ['o''ne', 'tw''''o', 'three''']
          * @param {Array} data - array of strings
          * @returns {Array}
          */
         function escapeSingleQuote(data) {
             return lodash.map(data, function (item) {
-                return item.replace(/'/g, '\\u0027');
+                return item.replace(/'/g, '\'\'');
             });
         }
 
