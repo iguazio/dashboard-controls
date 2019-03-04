@@ -43,6 +43,7 @@
     angular.module('iguazio.dashboard-controls')
         .component('igzDefaultDropdown', {
             bindings: {
+                additionalClass: '@?',
                 selectedItem: '<',
                 valuesArray: '<',
                 bottomButtonCallback: '<?',
