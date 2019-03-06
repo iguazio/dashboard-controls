@@ -107,6 +107,13 @@
 
             ctrl.data = angular.copy(lodash.defaultTo(ctrl.inputValue, ''));
             ctrl.startValue = angular.copy(ctrl.inputValue);
+
+            lodash.defaults(ctrl, {
+                hideCounter: false,
+                isDisabled: false,
+                readOnly: false,
+                onlyValidCharacters: false
+            });
         }
 
         /**
@@ -193,7 +200,7 @@
          * @returns {boolean}
          */
         function isCounterVisible() {
-            return !!(!ctrl.isDisabled && !ctrl.onlyValidCharacters && !ctrl.hideCounter);
+            return !ctrl.isDisabled && !ctrl.onlyValidCharacters && !ctrl.hideCounter && !ctrl.readOnly;
         }
 
         /**
