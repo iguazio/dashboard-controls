@@ -125,5 +125,25 @@ describe('igzValidatingInputField component:', function () {
             ctrl.clearInputField();
             expect(ctrl.data).toEqual('');
         });
+    });
+
+    describe('isCounterVisible()', function () {
+        it('should check visibility for symbols counter', function () {
+            expect(ctrl.isCounterVisible()).toBeTruthy();
+
+            ctrl.isDisabled = true;
+            expect(ctrl.isCounterVisible()).toBeFalsy();
+
+            ctrl.isDisabled = false;
+            ctrl.onlyValidCharacters = true;
+            expect(ctrl.isCounterVisible()).toBeFalsy();
+
+            ctrl.onlyValidCharacters = false;
+            ctrl.hideCounter = true;
+            expect(ctrl.isCounterVisible()).toBeFalsy();
+
+            ctrl.hideCounter = false;
+            expect(ctrl.isCounterVisible()).toBeTruthy();
+        });
     })
 });

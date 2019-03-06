@@ -1,9 +1,9 @@
 <div class="validating-input-field"
-     data-ng-class="{'focused': $ctrl.inputFocused, 'with-counter': $ctrl.validationMaxLength && $ctrl.isCounterVisible()}">
+     data-ng-class="{'focused': $ctrl.inputFocused, 'with-counter': $ctrl.isCounterVisible()}">
     <div data-ng-if="$ctrl.fieldType === 'input'">
         <div class="input-counter"
              data-ng-class="{'invalid': $ctrl.getRemainingSymbolsCounter() < 0}"
-             data-ng-if="!$ctrl.onlyValidCharacters || $ctrl.isCounterVisible()">{{$ctrl.getRemainingSymbolsCounter()}}
+             data-ng-if="$ctrl.isCounterVisible()">{{$ctrl.getRemainingSymbolsCounter()}}
         </div>
         <input class="input-field field" tabindex="0"
                data-ng-class="{'invalid': $ctrl.isFieldInvalid(),
@@ -37,7 +37,7 @@
     <div data-ng-if="$ctrl.fieldType === 'textarea'">
         <div class="textarea-counter"
              data-ng-class="{'invalid': $ctrl.getRemainingSymbolsCounter() < 0}"
-             data-ng-if="!$ctrl.onlyValidCharacters || $ctrl.isCounterVisible()">{{$ctrl.getRemainingSymbolsCounter()}}
+             data-ng-if="$ctrl.isCounterVisible()">{{$ctrl.getRemainingSymbolsCounter()}}
         </div>
         <textarea class="textarea-field field" tabindex="0"
                   data-ng-class="{'invalid': $ctrl.isFieldInvalid()}"

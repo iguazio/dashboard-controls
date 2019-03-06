@@ -32,7 +32,7 @@
                 enterCallback: '<?',
                 fieldType: '@',
                 formObject: '<',
-                hideCounter: '@?',
+                hideCounter: '<?',
                 inputIcon: '@',
                 inputModelOptions: '<?',
                 inputName: '@',
@@ -43,7 +43,7 @@
                 itemBlurCallback: '&?',
                 itemFocusCallback: '&?',
                 onBlur: '&?',
-                onlyValidCharacters: '@?',
+                onlyValidCharacters: '<?',
                 placeholderText: '@',
                 readOnly: '<?',
                 spellcheck: '@?',
@@ -193,7 +193,7 @@
          * @returns {boolean}
          */
         function isCounterVisible() {
-            return lodash.isNil(ctrl.hideCounter) || ctrl.hideCounter === 'false' ? true : false;
+            return !!(!ctrl.isDisabled && !ctrl.onlyValidCharacters && !ctrl.hideCounter);
         }
 
         /**
