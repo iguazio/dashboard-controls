@@ -1,610 +1,486 @@
-.test-events-pane {
+.test-events-pane-wrapper {
+    position: absolute;
     height: 100%;
-    border: 1px solid @pale-grey;
-    border-top: none;
-    position: relative;
-    background-color: @white;
-    transition: @igz-basic-transition;
+    width: 100%;
 
-    .ncl-secondary-button {
-        background-color: @pale-grey;
-        color: @dusk-three;
+    .test-events-pane {
+        height: 100%;
+        border: 1px solid @pale-grey;
+        border-top: none;
+        position: relative;
+        background-color: @white;
+        transition: @igz-basic-transition;
 
-        &.disabled {
-            .duskThree(0.24);
-            background-color: @pale-grey-three;
-            color: @color;
-        }
-    }
+        .ncl-secondary-button {
+            background-color: @pale-grey;
+            color: @dusk-three;
 
-    &:not(.fixed-left-bar) {
-        .left-bar {
-            transition: transform 0.3s ease-in-out;
-            transform-origin: left;
-            transform: scaleX(0);
-
-            &.visible {
-                transform: scaleX(1);
+            &.disabled {
+                .duskThree(0.24);
+                background-color: @pale-grey-three;
+                color: @color;
             }
         }
-    }
 
-    &.fixed-left-bar {
-        display: flex;
+        &:not(.fixed-left-bar) {
+            .left-bar {
+                transition: transform 0.3s ease-in-out;
+                transform-origin: left;
+                transform: scaleX(0);
+
+                &.visible {
+                    transform: scaleX(1);
+                }
+            }
+        }
+
+        &.fixed-left-bar {
+            display: flex;
+
+            .left-bar {
+                box-shadow: none;
+                border: none;
+                border-right: solid 1px @pale-grey;
+                display: none;
+                transition: none;
+
+                &.visible {
+                    display: block;
+                }
+            }
+
+            .main-section-wrapper {
+                width: 410px;
+                margin-left: 187px;
+
+                .main-header {
+                    padding-left: 7px;
+
+                    .igz-elastic-input-field {
+                        input {
+                            max-width: 160px !important;
+                        }
+                    }
+                }
+            }
+
+            .request-section {
+                .request-method {
+                    padding-left: 0;
+                }
+
+                .request-body {
+                    .body-types {
+                        padding-left: 2px;
+                    }
+                }
+            }
+
+            .response-section {
+                .response-header {
+                    padding-left: 5px;
+
+                    .left-side-elements {
+                        margin-left: 12px;
+                    }
+
+                    .right-side-elements {
+                        .status {
+                            max-width: 100px;
+                        }
+
+                        > div {
+                            margin-right: 15px;
+                        }
+                    }
+                }
+
+                .headers > div {
+                    .values, .labels {
+                        width: 50%;
+                    }
+                }
+
+                .ncl-test-events-logs .collapsed-row .message {
+                    width: 100px;
+                    margin-right: 39px;
+                }
+            }
+
+            .left-bar-pinned {
+                padding-left: 187px;
+            }
+        }
 
         .left-bar {
-            box-shadow: none;
-            border: none;
-            border-right: solid 1px @pale-grey;
-            display: none;
-            transition: none;
+            .black(0.1);
+            position: absolute;
+            z-index: 5;
+            height: 100%;
+            width: 187px;
+            background-color: @white;
+            color: @dusk-three;
+            box-shadow: 2.5px 1.6px 6px 0 @color;
+            border: solid 1px @pale-grey;
+            border-top: none;
+            border-bottom: none;
 
-            &.visible {
-                display: block;
+            .saved-tabs-list {
+                padding-top: 10px;
+                padding-bottom: 24px !important;
+
+                .list-item {
+                    position: relative;
+                    height: 32px;
+                    line-height: 32px;
+                    font-size: 14px;
+                    padding-right: 27px;
+
+                    &:hover {
+                        background-color: @light-grayish-blue;
+
+                        .igz-icon-close {
+                            visibility: visible;
+                        }
+                    }
+
+                    .igz-icon-close {
+                        .duskThree(0.64);
+                        position: absolute;
+                        top: 1px;
+                        right: 9px;
+                        color: @color;
+                        font-size: 12px;
+                        visibility: hidden;
+                    }
+                }
+            }
+
+            .method-icon {
+                display: inline-block;
+                width: 43px;
+                height: 16px;
+                line-height: 17px;
+                text-align: center;
+                color: @white;
+                border-radius: 3px;
+                margin: 0 8px 0 10px;
+                font-size: 11px;
+            }
+
+            .header {
+                position: relative;
+                display: flex;
+                align-items: center;
+                font-size: 16px;
+                font-weight: bold;
+                color: @dusk-three;
+                height: 39px;
+
+                .igz-icon-close {
+                    .duskThree(0.64);
+                    color: @color;
+                    font-size: 12px;
+                    margin: 0 9px 0 12px;
+                }
+
+                .ncl-icon-pin {
+                    position: absolute;
+                    top: 12px;
+                    right: 12px;
+                    color: @greyish-purple;
+                    font-size: 16px;
+                }
+            }
+
+            .ncl-test-events-navigation-tabs {
+                background-color: @white;
+
+                .test-events-navigation-tab {
+                    padding: 10px 22px 0;
+                    background-color: @white;
+                }
             }
         }
 
         .main-section-wrapper {
-            width: 410px;
-            margin-left: 187px;
+            height: 100%;
+            margin-left: 0;
+            transition: margin-left 0.3s ease-in-out;
 
-            .main-header {
-                padding-left: 7px;
-
-                .igz-elastic-input-field {
-                    input {
-                        max-width: 160px !important;
-                    }
-                }
-            }
-        }
-
-        .request-section {
-            .request-method {
-                padding-left: 0;
-            }
-
-            .request-body {
-                .body-types {
-                    padding-left: 2px;
-                }
-            }
-        }
-
-        .response-section {
-            .response-header {
-                padding-left: 5px;
-
-                .left-side-elements {
-                    margin-left: 12px;
-                }
-
-                .right-side-elements {
-                    .status {
-                        max-width: 100px;
-                    }
-
-                    > div {
-                        margin-right: 15px;
-                    }
-                }
-            }
-
-            .headers > div {
-                .values, .labels {
-                    width: 50%;
-                }
-            }
-
-            .ncl-test-events-logs .collapsed-row .message {
-                width: 100px;
-                margin-right: 39px;
-            }
-        }
-
-        .left-bar-pinned {
-            padding-left: 187px;
-        }
-    }
-
-    .left-bar {
-        .black(0.1);
-        position: absolute;
-        z-index: 5;
-        height: 100%;
-        width: 187px;
-        background-color: @white;
-        color: @dusk-three;
-        box-shadow: 2.5px 1.6px 6px 0 @color;
-        border: solid 1px @pale-grey;
-        border-top: none;
-        border-bottom: none;
-
-        .saved-tabs-list {
-            padding-top: 10px;
-            padding-bottom: 24px !important;
-
-            .list-item {
-                position: relative;
-                height: 32px;
-                line-height: 32px;
-                font-size: 14px;
-                padding-right: 27px;
-
-                &:hover {
-                    background-color: @light-grayish-blue;
-
-                    .igz-icon-close {
-                        visibility: visible;
-                    }
-                }
-
-                .igz-icon-close {
-                    .duskThree(0.64);
-                    position: absolute;
-                    top: 1px;
-                    right: 9px;
-                    color: @color;
-                    font-size: 12px;
-                    visibility: hidden;
-                }
-            }
-        }
-
-        .method-icon {
-            display: inline-block;
-            width: 43px;
-            height: 16px;
-            line-height: 17px;
-            text-align: center;
-            color: @white;
-            border-radius: 3px;
-            margin: 0 8px 0 10px;
-            font-size: 11px;
-        }
-
-        .header {
-            position: relative;
-            display: flex;
-            align-items: center;
-            font-size: 16px;
-            font-weight: bold;
-            color: @dusk-three;
-            height: 39px;
-
-            .igz-icon-close {
-                .duskThree(0.64);
-                color: @color;
-                font-size: 12px;
-                margin: 0 9px 0 12px;
-            }
-
-            .ncl-icon-pin {
-                position: absolute;
-                top: 12px;
-                right: 12px;
-                color: @greyish-purple;
-                font-size: 16px;
-            }
-        }
-
-        .ncl-test-events-navigation-tabs {
-            background-color: @white;
-
-            .test-events-navigation-tab {
-                padding: 10px 22px 0;
-                background-color: @white;
-            }
-        }
-    }
-
-    .main-section-wrapper {
-        height: 100%;
-        margin-left: 0;
-        transition: margin-left 0.3s ease-in-out;
-
-        .ui-layout-row {
-            margin-top: 40px;
-            overflow: hidden;
-
-            .ui-layout-container {
+            .ui-layout-row {
+                margin-top: 40px;
                 overflow: hidden;
-                transition: padding-left 0.2s ease-in-out;
-            }
 
-            .ui-splitbar {
-                background: @pale-grey;
-
-                a {
-                    display: none;
+                .ui-layout-container {
+                    overflow: hidden;
+                    transition: padding-left 0.2s ease-in-out;
                 }
-            }
-        }
-    }
 
-    .main-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        height: 40px;
-        border-bottom: 1px solid @pale-grey;
-        background-color: @white;
-        padding: 0 24px 0 12px;
-        position: relative;
-        z-index: 3;
+                .ui-splitbar {
+                    background: @pale-grey;
 
-        .left-side-elements {
-            display: flex;
-            align-items: center;
-
-            .igz-icon-hamburger-menu {
-                color: @dusk-three;
-                margin-right: 4px;
-                font-size: 12px;
-            }
-
-            .igz-elastic-input-field {
-                .editable{
-                    input {
-                        font-weight: bold;
-                        font-size: 16px;
-
-                        &:not(:focus) {
-                            border-color: transparent;
-                            max-width: 300px;
-
-                            &:hover {
-                                border: solid 1px @pale-grey;
-                            }
-                        }
-                    }
-
-                    &.elastic-input-invalid input {
-                        border: solid 1px @darkish-pink;
+                    a {
+                        display: none;
                     }
                 }
             }
         }
 
-        .right-side-elements {
+        .main-header {
             display: flex;
-
-            .new-test-event {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background-color: @pale-grey-two;
-                border: 1px solid @pale-grey;
-                height: 32px;
-                width: 32px;
-                margin-right: 10px;
-                cursor: pointer;
-
-                .ncl-icon-add {
-                    font-size: 12px;
-                    height: 12px;
-                }
-            }
-
-            .igz-button-primary, .ncl-secondary-button {
-                text-align: center;
-                width: 97px;
-                cursor: pointer;
-            }
-
-            .igz-button-primary {
-                margin-right: 8px;
-            }
-        }
-    }
-
-    .request-method {
-        display: flex;
-        align-items: center;
-        background-color: @pale-grey-three;
-        height: 38px;
-        padding: 0 23px;
-
-        .path {
-            display: flex;
-            align-items: center;
-            color: @cool-grey;
-            font-weight: bold;
-            margin-left: 22px;
-        }
-
-        .default-dropdown {
-            width: 97px;
-
-            .default-dropdown-field:not(:hover) {
-                border-color: transparent;
-            }
-
-            .default-dropdown-container {
-                z-index: 2;
-            }
-        }
-
-        .validating-input-field {
-            font-size: 14px;
-            margin-top: -2px;
-
-            .input-field {
-                padding: 0 1px;
-                border-color: transparent;
-                background-color: @pale-grey-three;
-            }
-        }
-    }
-
-    .request-body {
-        .body-types {
-            display: flex;
+            justify-content: space-between;
             align-items: center;
             height: 40px;
-            background-color: @white;
             border-bottom: 1px solid @pale-grey;
-            padding: 0 24px;
+            background-color: @white;
+            padding: 0 24px 0 12px;
+            position: relative;
+            z-index: 4;
 
-            .default-dropdown {
-                width: 97px;
+            .left-side-elements {
+                display: flex;
+                align-items: center;
 
-                .default-dropdown-field {
-                    border: none;
+                .igz-icon-hamburger-menu {
+                    color: @dusk-three;
+                    margin-right: 4px;
+                    font-size: 12px;
                 }
 
-                .default-dropdown-container {
-                    z-index: 2;
-                }
-            }
-        }
+                .igz-elastic-input-field {
+                    .editable {
+                        input {
+                            font-weight: bold;
+                            font-size: 16px;
 
-        .main-block {
-            .upload-file-section {
-                height: 128px;
-                padding: 8px;
+                            &:not(:focus) {
+                                border-color: transparent;
+                                max-width: 300px;
 
-                &.uploaded {
-                    background-color: @white;
-                }
-
-                .drop-section {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    height: 100%;
-                    width: 100%;
-                    border: 2px dashed @silver;
-                    color: @silver;
-                    font-size: 16px;
-                    font-weight: bold;
-
-                    &.uploaded {
-                        align-items: start;
-                        border: none;
-                    }
-
-                    .drop-message {
-                        width: 110px;
-                        text-align: center;
-
-                        .ncl-icon-drop-file {
-                            color: @silver;
-                            font-size: 40px;
-                            height: 50px;
-                        }
-
-                        &.uploading {
-                            width: 100%;
-
-                            .ncl-icon-drop-file {
-                                height: 40px;
-                            }
-
-                            .progress {
-                                overflow: hidden;
-                                height: 4px;
-                                width: 205px;
-                                background-color: @pale-grey;
-                                border-radius: 2px;
-                                margin: 9px auto 14px;
-
-                                .progress-bar {
-                                    background-color: @dark-sky-blue;
+                                &:hover {
+                                    border: solid 1px @pale-grey;
                                 }
                             }
                         }
 
-                        &.uploaded {
-                            width: 100%;
-                        }
-
-                        .browse {
-                            color: @dark-sky-blue;
-                            cursor: pointer;
-                        }
-
-                        .file-name {
-                            margin-top: 11px;
-                        }
-
-                        .file-name, .file {
-                            font-weight: normal;
-                            color: @dusk-three;
-                            font-size: 14px;
-
-                            .size {
-                                color: @dark-greyish-blue;
-                            }
-                        }
-
-                        .file {
-                            display: flex;
-                            align-items: center;
-                            position: relative;
-                            margin: 25px 0 0 41px;
-                            width: 344px;
-                            height: 32px;
-                            background-color: @light-grayish-blue;
-                            border: solid 1px @pale-grey;
-
-                            .ncl-icon-file {
-                                font-size: 20px;
-                                margin: 0 9px 0 11px;
-                                color: @greyish-purple;
-                            }
-
-                            .name {
-                                display: inline-block;
-                                vertical-align: top;
-                                max-width: 210px;
-                                text-align: left;
-                            }
-
-                            .igz-icon-close {
-                                position: absolute;
-                                color: @dusk-three;
-                                right: 9px;
-                                top: 9px;
-                                font-size: 10px;
-                                cursor: pointer;
-                            }
+                        &.elastic-input-invalid input {
+                            border: solid 1px @darkish-pink;
                         }
                     }
                 }
-            }
-
-            .code-edit-section {
-                height: 208px;
-
-                .monaco-code-editor {
-                    width: 97%;
-
-                    .ncl-monaco {
-                        height: 100%;
-
-                        > div {
-                            border: none;
-                        }
-                    }
-                }
-            }
-        }
-
-        .headers {
-            background-color: @white;
-            padding: 22px 17px;
-
-            .create-header-button {
-                .igz-icon-add-round {
-                    margin: 3px 19px 0 5px;
-                    font-size: 20px;
-                }
-            }
-
-            .key-header {
-                width: 56%;
-                margin-left: 44px;
-            }
-
-            .table-body-wrapper {
-                border-left: 2px solid @pale-grey;
-
-                &.scrollable-headers {
-                    max-height: 185px;
-                }
-            }
-
-            .table-body {
-                margin-bottom: 0;
-
-                .ncl-key-value-input {
-                    border: 1px solid @pale-grey;
-                    border-left: none;
-                    border-bottom: none;
-
-                    .input-wrapper {
-                        border: none;
-                    }
-                }
-            }
-
-            .create-header-button {
-                margin-top: 0;
-            }
-        }
-    }
-
-    .response-section {
-        .response-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: @pale-grey-three;
-            height: 39px;
-
-            .left-side-elements {
-                font-size: 16px;
-                font-weight: bold;
-                color: @dusk-three;
-                margin-left: 40px;
             }
 
             .right-side-elements {
                 display: flex;
-                font-size: 14px;
-                color: @dusk-three;
 
-                .status {
-                    display: inline-block;
-                    max-width: 200px;
-                    width: initial;
-                    vertical-align: top;
-                    margin-left: 4px;
+                .new-test-event {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background-color: @pale-grey-two;
+                    border: 1px solid @pale-grey;
+                    height: 32px;
+                    width: 32px;
+                    margin-right: 10px;
+                    cursor: pointer;
 
-                    &.success {
-                        color: @tealish;
-                    }
-
-                    &.fail {
-                        color: @darkish-pink
+                    .ncl-icon-add {
+                        font-size: 12px;
+                        height: 12px;
                     }
                 }
 
-                > div {
-                    margin-right: 25px;
+                .igz-button-primary, .ncl-secondary-button {
+                    text-align: center;
+                    width: 97px;
+                    cursor: pointer;
+                }
 
-                    > span {
-                        margin-left: 4px;
-
-                        &.time, &.size {
-                            color: @dark-sky-blue;
-                        }
-                    }
+                .igz-button-primary {
+                    margin-right: 8px;
                 }
             }
         }
 
-        .body {
+        .request-method {
             display: flex;
-            background-color: @white;
-            align-items: flex-start;
-            justify-content: center;
+            align-items: center;
+            background-color: @pale-grey-three;
+            height: 38px;
+            padding: 0 23px;
 
-            .code-section {
-                width: 100%;
+            .path {
+                display: flex;
+                align-items: center;
+                color: @cool-grey;
+                font-weight: bold;
+                margin-left: 22px;
+            }
 
-                .actions-list {
-                    display: flex;
-                    justify-content: flex-end;
-                    align-items: center;
-                    height: 54px;
-                    margin-right: 18px;
+            .default-dropdown {
+                width: 97px;
+
+                .default-dropdown-field:not(:hover) {
+                    border-color: transparent;
+                }
+
+                .default-dropdown-container {
+                    z-index: 3;
+                }
+            }
+
+            .validating-input-field {
+                font-size: 14px;
+                margin-top: -2px;
+
+                .input-field {
+                    padding: 0 1px;
+                    border-color: transparent;
+                    background-color: @pale-grey-three;
+                }
+            }
+        }
+
+        .request-body {
+            .body-types {
+                display: flex;
+                align-items: center;
+                height: 40px;
+                background-color: @white;
+                border-bottom: 1px solid @pale-grey;
+                padding: 0 24px;
+
+                .default-dropdown {
+                    width: 97px;
+
+                    .default-dropdown-field {
+                        border: none;
+                    }
+
+                    .default-dropdown-container {
+                        z-index: 3;
+                    }
+                }
+            }
+
+            .main-block {
+                .upload-file-section {
+                    height: 128px;
+                    padding: 8px;
+
+                    &.uploaded {
+                        background-color: @white;
+                    }
+
+                    .drop-section {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        height: 100%;
+                        width: 100%;
+                        border: 2px dashed @silver;
+                        color: @silver;
+                        font-size: 16px;
+                        font-weight: bold;
+
+                        &.uploaded {
+                            align-items: start;
+                            border: none;
+                        }
+
+                        .drop-message {
+                            width: 110px;
+                            text-align: center;
+
+                            .ncl-icon-drop-file {
+                                color: @silver;
+                                font-size: 40px;
+                                height: 50px;
+                            }
+
+                            &.uploading {
+                                width: 100%;
+
+                                .ncl-icon-drop-file {
+                                    height: 40px;
+                                }
+
+                                .progress {
+                                    overflow: hidden;
+                                    height: 4px;
+                                    width: 205px;
+                                    background-color: @pale-grey;
+                                    border-radius: 2px;
+                                    margin: 9px auto 14px;
+
+                                    .progress-bar {
+                                        background-color: @dark-sky-blue;
+                                    }
+                                }
+                            }
+
+                            &.uploaded {
+                                width: 100%;
+                            }
+
+                            .browse {
+                                color: @dark-sky-blue;
+                                cursor: pointer;
+                            }
+
+                            .file-name {
+                                margin-top: 11px;
+                            }
+
+                            .file-name, .file {
+                                font-weight: normal;
+                                color: @dusk-three;
+                                font-size: 14px;
+
+                                .size {
+                                    color: @dark-greyish-blue;
+                                }
+                            }
+
+                            .file {
+                                display: flex;
+                                align-items: center;
+                                position: relative;
+                                margin: 25px 0 0 41px;
+                                width: 344px;
+                                height: 32px;
+                                background-color: @light-grayish-blue;
+                                border: solid 1px @pale-grey;
+
+                                .ncl-icon-file {
+                                    font-size: 20px;
+                                    margin: 0 9px 0 11px;
+                                    color: @greyish-purple;
+                                }
+
+                                .name {
+                                    display: inline-block;
+                                    vertical-align: top;
+                                    max-width: 210px;
+                                    text-align: left;
+                                }
+
+                                .igz-icon-close {
+                                    position: absolute;
+                                    color: @dusk-three;
+                                    right: 9px;
+                                    top: 9px;
+                                    font-size: 10px;
+                                    cursor: pointer;
+                                }
+                            }
+                        }
+                    }
                 }
 
                 .code-edit-section {
-                    height: 300px;
-                    width: 100%;
+                    height: 208px;
 
                     .monaco-code-editor {
                         width: 97%;
@@ -620,89 +496,219 @@
                 }
             }
 
-            .image-section {
-                text-align: center;
+            .headers {
+                background-color: @white;
+                padding: 22px 17px;
 
-                img {
-                    width: 100%;
-                }
-            }
-
-            .no-content-section {
-                margin: 10px auto;
-                font-size: 14px;
-                color: @pale-grey;
-                text-align: center;
-            }
-
-            .testing {
-                margin: 80px 0;
-                text-align: center;
-                font-size: 14px;
-                color: @greyish-purple;
-
-                .loader-wrapper {
-                    margin: 20px 0;
-                }
-            }
-
-            .no-response {
-                margin: 80px 0;
-                text-align: center;
-
-                .circle {
-                    position: relative;
-                    background-color: @pale-grey-two;
-                    height: 130px;
-                    width: 130px;
-                    border-radius: 50%;
-                    margin: 0 auto;
-
-                    .ncl-icon-test {
-                        position: absolute;
-                        top: 12px;
-                        left: 31px;
-                        color: @dark-sky-blue;
-                        font-size: 43px;
-                    }
-
-                    .ncl-icon-hand {
-                        position: absolute;
-                        top: 47px;
-                        left: 42px;
-                        .greyishPurple(0.64);
-                        color: @color;
-                        font-size: 58px;
+                .create-header-button {
+                    .igz-icon-add-round {
+                        margin: 3px 19px 0 5px;
+                        font-size: 20px;
                     }
                 }
 
-                .message {
-                    margin-top: 14px;
-                    width: 245px;
-                    font-size: 16px;
-                    color: @greyish-purple;
-                    line-height: 1.5;
+                .key-header {
+                    width: 56%;
+                    margin-left: 44px;
+                }
+
+                .table-body-wrapper {
+                    border-left: 2px solid @pale-grey;
+
+                    &.scrollable-headers {
+                        max-height: 185px;
+                    }
+                }
+
+                .table-body {
+                    margin-bottom: 0;
+
+                    .ncl-key-value-input {
+                        border: 1px solid @pale-grey;
+                        border-left: none;
+                        border-bottom: none;
+
+                        .input-wrapper {
+                            border: none;
+                        }
+                    }
+                }
+
+                .create-header-button {
+                    margin-top: 0;
                 }
             }
         }
 
-        .headers {
-            padding: 28px 41px;
-
-            > div {
+        .response-section {
+            .response-header {
                 display: flex;
-                line-height: 2;
+                align-items: center;
+                justify-content: space-between;
+                background-color: @pale-grey-three;
+                height: 39px;
 
-                .labels {
-                    color: @greyish-purple;
-                    font-size: 14px;
-                    width: 43%;
+                .left-side-elements {
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: @dusk-three;
+                    margin-left: 40px;
                 }
 
-                .values {
-                    color: @dusk-three;
+                .right-side-elements {
+                    display: flex;
                     font-size: 14px;
-                    width: 57%;
+                    color: @dusk-three;
+
+                    .status {
+                        display: inline-block;
+                        max-width: 200px;
+                        width: initial;
+                        vertical-align: top;
+                        margin-left: 4px;
+
+                        &.success {
+                            color: @tealish;
+                        }
+
+                        &.fail {
+                            color: @darkish-pink
+                        }
+                    }
+
+                    > div {
+                        margin-right: 25px;
+
+                        > span {
+                            margin-left: 4px;
+
+                            &.time, &.size {
+                                color: @dark-sky-blue;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .body {
+                display: flex;
+                background-color: @white;
+                align-items: flex-start;
+                justify-content: center;
+
+                .code-section {
+                    width: 100%;
+
+                    .actions-list {
+                        display: flex;
+                        justify-content: flex-end;
+                        align-items: center;
+                        height: 54px;
+                        margin-right: 18px;
+                    }
+
+                    .code-edit-section {
+                        height: 300px;
+                        width: 100%;
+
+                        .monaco-code-editor {
+                            width: 97%;
+
+                            .ncl-monaco {
+                                height: 100%;
+
+                                > div {
+                                    border: none;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .image-section {
+                    text-align: center;
+
+                    img {
+                        width: 100%;
+                    }
+                }
+
+                .no-content-section {
+                    margin: 10px auto;
+                    font-size: 14px;
+                    color: @pale-grey;
+                    text-align: center;
+                }
+
+                .testing {
+                    margin: 80px 0;
+                    text-align: center;
+                    font-size: 14px;
+                    color: @greyish-purple;
+
+                    .loader-wrapper {
+                        margin: 20px 0;
+                    }
+                }
+
+                .no-response {
+                    margin: 80px 0;
+                    text-align: center;
+
+                    .circle {
+                        position: relative;
+                        background-color: @pale-grey-two;
+                        height: 130px;
+                        width: 130px;
+                        border-radius: 50%;
+                        margin: 0 auto;
+
+                        .ncl-icon-test {
+                            position: absolute;
+                            top: 12px;
+                            left: 31px;
+                            color: @dark-sky-blue;
+                            font-size: 43px;
+                        }
+
+                        .ncl-icon-hand {
+                            position: absolute;
+                            top: 47px;
+                            left: 42px;
+                            .greyishPurple(0.64);
+                            color: @color;
+                            font-size: 58px;
+                        }
+                    }
+
+                    .message {
+                        margin-top: 14px;
+                        width: 245px;
+                        font-size: 16px;
+                        color: @greyish-purple;
+                        line-height: 1.5;
+                    }
+                }
+            }
+
+            .headers {
+                padding: 28px 41px;
+
+                > div {
+                    display: flex;
+                    line-height: 2;
+
+                    .labels {
+                        color: @greyish-purple;
+                        font-size: 14px;
+                        width: 43%;
+                    }
+
+                    .values {
+                        color: @dusk-three;
+                        font-size: 14px;
+                        width: 57%;
+                    }
                 }
             }
         }

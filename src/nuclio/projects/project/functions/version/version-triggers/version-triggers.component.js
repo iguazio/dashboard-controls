@@ -10,7 +10,7 @@
             controller: NclVersionTriggersController
         });
 
-    function NclVersionTriggersController($rootScope, lodash, DialogsService, VersionHelperService) {
+    function NclVersionTriggersController($rootScope, $timeout, lodash, DialogsService, VersionHelperService) {
         var ctrl = this;
 
         ctrl.isCreateModeActive = false;
@@ -45,6 +45,20 @@
 
                 triggersItem.attributes = lodash.defaultTo(triggersItem.attributes, {});
 
+                if (value.kind === 'cron') {
+                    var scheduleValueArray = lodash.chain(triggersItem)
+                        .get('attributes.schedule', '')
+                        .split(' ')
+                        .value();
+
+                    if (scheduleValueArray.length === 6) {
+                        triggersItem.attributes.schedule = lodash.chain(scheduleValueArray)
+                            .takeRight(5)
+                            .join(' ')
+                            .value();
+                    }
+                }
+
                 return triggersItem;
             });
         }
@@ -65,21 +79,23 @@
          * @returns {Promise}
          */
         function createTrigger(event) {
-            if (!isTriggerInEditMode()) {
-                ctrl.triggers.push({
-                    id: '',
-                    name: '',
-                    kind: '',
-                    attributes: {},
-                    ui: {
-                        editModeActive: true,
-                        isFormValid: false,
-                        name: 'trigger'
-                    }
-                });
-                $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: true});
-                event.stopPropagation();
-            }
+            $timeout(function () {
+                if (!isTriggerInEditMode()) {
+                    ctrl.triggers.push({
+                        id: '',
+                        name: '',
+                        kind: '',
+                        attributes: {},
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'trigger'
+                        }
+                    });
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: true});
+                    event.stopPropagation();
+                }
+            }, 100);
         }
 
         /**
@@ -202,6 +218,10 @@
                 triggerItem.attributes = lodash.omitBy(triggerItem.attributes, function (attribute) {
                     return !lodash.isNumber(attribute) && lodash.isEmpty(attribute);
                 });
+
+                if (angular.isDefined(triggerItem.attributes.schedule)) {
+                    triggerItem.attributes.schedule = '* ' + triggerItem.attributes.schedule;
+                }
 
                 if (lodash.isEmpty(triggerItem.attributes)) {
                     triggerItem = lodash.omit(triggerItem, 'attributes');

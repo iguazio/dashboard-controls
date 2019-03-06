@@ -1,6 +1,6 @@
 {
     "name": "iguazio.dashboard-controls",
-    "version": "0.5.5",
+    "version": "0.6.0",
     "main": "dist/js/iguazio.dashboard-controls.js",
     "description": "Collection of resources (such as CSS styles, fonts and images) and AngularJs 1.x components and services to share among different Iguazio repos.",
     "repository": {
@@ -32,7 +32,7 @@
         "babel-plugin-angularjs-annotate": "^0.8.2",
         "babel-polyfill": "^6.26.0",
         "babel-preset-env": "^1.6.1",
-        "bootstrap": "~3.3",
+        "bootstrap": "~3.4.1",
         "del": "^2.2.0",
         "eslint": "3.17.1",
         "eslint-plugin-angular": "1.4.1",

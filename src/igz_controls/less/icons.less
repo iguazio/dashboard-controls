@@ -23,6 +23,12 @@
     }
 }
 
+.generateIconClass(@code, @after) {
+    &:after {
+        content: '\e@{code}';
+        &:extend(.igz-icon-default);
+    }
+}
 
 // main side menu
 .igz-icon-containers {
@@ -589,6 +595,10 @@
     .generateIconClass(985);
 }
 
+.igz-icon-external-link-after {
+    .generateIconClass(985, 'after');
+}
+
 .igz-icon-test-pane {
     .generateIconClass(987);
 }
@@ -609,8 +619,20 @@
     .generateIconClass(a14);
 }
 
-.igz-icon-restart {
+.igz-icon-discard-restart {
     .generateIconClass(a15);
+}
+
+.igz-icon-discard-edit {
+    .generateIconClass(a16);
+}
+
+.igz-icon-discard-delete {
+    .generateIconClass(a17);
+}
+
+.igz-icon-restart {
+    .generateIconClass(a18);
 }
 
 .igz-icon-priority-realtime, .igz-icon-priority-high, .igz-icon-priority-standard, .igz-icon-priority-low {

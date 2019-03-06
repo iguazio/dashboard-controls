@@ -43,6 +43,7 @@
     angular.module('iguazio.dashboard-controls')
         .component('igzDefaultDropdown', {
             bindings: {
+                additionalClass: '@?',
                 selectedItem: '<',
                 valuesArray: '<',
                 bottomButtonCallback: '<?',
@@ -372,29 +373,31 @@
          * @param {Object} item - current item
          */
         function selectItem(item) {
-            var previousItem = angular.copy(ctrl.selectedItem);
+            if (!item.disabled) {
+                var previousItem = angular.copy(ctrl.selectedItem);
 
-            if (!ctrl.skipSelection) {
-                if (angular.isDefined(ctrl.selectPropertyOnly)) {
-                    ctrl.selectedItem = lodash.get(item, ctrl.selectPropertyOnly);
-                    ctrl.selectedItemDescription = item.description;
-                } else {
-                    ctrl.selectedItem = item;
+                if (!ctrl.skipSelection) {
+                    if (angular.isDefined(ctrl.selectPropertyOnly)) {
+                        ctrl.selectedItem = lodash.get(item, ctrl.selectPropertyOnly);
+                        ctrl.selectedItemDescription = item.description;
+                    } else {
+                        ctrl.selectedItem = item;
+                    }
+                    ctrl.typedValue = ctrl.getName(item);
                 }
-                ctrl.typedValue = ctrl.getName(item);
-            }
 
-            if (angular.isFunction(ctrl.itemSelectCallback)) {
-                $timeout(function () {
-                    ctrl.itemSelectCallback({
-                        item: item,
-                        isItemChanged: previousItem !== ctrl.selectedItem,
-                        field: angular.isDefined(ctrl.itemSelectField) ? ctrl.itemSelectField : null
+                if (angular.isFunction(ctrl.itemSelectCallback)) {
+                    $timeout(function () {
+                        ctrl.itemSelectCallback({
+                            item: item,
+                            isItemChanged: !lodash.isEqual(previousItem, ctrl.selectedItem),
+                            field: angular.isDefined(ctrl.itemSelectField) ? ctrl.itemSelectField : null
+                        });
                     });
-                });
-            }
+                }
 
-            ctrl.isDropdownContainerShown = false;
+                ctrl.isDropdownContainerShown = false;
+            }
         }
 
         /**

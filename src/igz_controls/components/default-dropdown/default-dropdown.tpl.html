@@ -41,7 +41,7 @@
         </div>
     </div>
 
-    <div class="default-dropdown-container" tabindex="-1"
+    <div class="default-dropdown-container {{$ctrl.additionalClass}}" tabindex="-1"
          data-ng-if="$ctrl.isDropdownContainerShown"
          data-ng-style="{'top': $ctrl.topPosition}"
          data-ng-class="{'dropdown-overlap': $ctrl.enableOverlap}"
@@ -50,7 +50,9 @@
             <li class="list-item" tabindex="0"
                 data-ng-repeat="item in $ctrl.getValuesArray() track by $index"
                 data-ng-click="$ctrl.selectItem(item)" data-ng-keydown="$ctrl.onItemKeydown($event, item)"
-                data-ng-class="{'list-item-description': $ctrl.getDescription(item), 'active': $ctrl.isItemSelected(item)}"
+                data-ng-class="{'list-item-description': $ctrl.getDescription(item),
+                                'active': $ctrl.isItemSelected(item),
+                                'disabled': item.disabled}"
                 data-ng-show="item.visible"
                 data-uib-tooltip="{{$ctrl.getTooltip(item)}}"
                 data-tooltip-placement="left"

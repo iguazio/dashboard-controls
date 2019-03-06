@@ -165,6 +165,11 @@
                 align-items: center;
                 justify-content: space-between;
 
+                &.disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+
                 &:first-child {
                     margin-top: 7px;
                 }
@@ -213,7 +218,7 @@
                     margin-right: 16px;
                 }
 
-                &:hover, &:focus {
+                &:hover, &:focus:not(.disabled) {
                     background-color: @default-dropdown-container-list-item-hover-focus-bg-color;
                 }
 

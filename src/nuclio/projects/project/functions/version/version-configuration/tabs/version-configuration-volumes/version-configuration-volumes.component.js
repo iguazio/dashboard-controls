@@ -11,7 +11,7 @@
             controller: NclVersionConfigurationVolumesController
         });
 
-    function NclVersionConfigurationVolumesController($rootScope, lodash, DialogsService) {
+    function NclVersionConfigurationVolumesController($rootScope, $timeout, lodash, DialogsService) {
         var ctrl = this;
 
         ctrl.isCreateModeActive = false;
@@ -70,26 +70,28 @@
          * @param {Event} event
          */
         function createVolume(event) {
-            if (!isVolumeInEditMode()) {
-                ctrl.volumes.push(
-                    {
-                        volumeMount: {
-                            name: ''
-                        },
-                        volume: {
-                            name: ''
-                        },
-                        ui: {
-                            editModeActive: true,
-                            isFormValid: false,
-                            name: 'volume'
+            $timeout(function () {
+                if (!isVolumeInEditMode()) {
+                    ctrl.volumes.push(
+                        {
+                            volumeMount: {
+                                name: ''
+                            },
+                            volume: {
+                                name: ''
+                            },
+                            ui: {
+                                editModeActive: true,
+                                isFormValid: false,
+                                name: 'volume'
+                            }
                         }
-                    }
-                );
+                    );
 
-                event.stopPropagation();
-                $rootScope.$broadcast('change-state-deploy-button', { component: 'volume', isDisabled: true });
-            }
+                    event.stopPropagation();
+                    $rootScope.$broadcast('change-state-deploy-button', { component: 'volume', isDisabled: true });
+                }
+            }, 100);
         }
 
         /**

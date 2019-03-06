@@ -5,13 +5,11 @@
              data-ng-class="{'invalid': $ctrl.getRemainingSymbolsCounter() < 0}"
              data-ng-if="!$ctrl.onlyValidCharacters || $ctrl.isCounterVisible()">{{$ctrl.getRemainingSymbolsCounter()}}
         </div>
-        <div data-ng-hide="$ctrl.inputFocused || $ctrl.formObject[$ctrl.inputName].$viewValue"
-             class="input-placeholder" data-ng-class="{'with-icon': $ctrl.inputIcon}">{{$ctrl.placeholderText}}
-        </div>
         <input class="input-field field" tabindex="0"
                data-ng-class="{'invalid': $ctrl.isFieldInvalid(),
                                'with-icon': $ctrl.inputIcon}"
                name="{{$ctrl.inputName}}"
+               placeholder="{{$ctrl.placeholderText}}"
                data-ng-readonly="$ctrl.readOnly"
                data-ng-model="$ctrl.data"
                data-ng-model-options="$ctrl.inputModelOptions"
@@ -41,12 +39,10 @@
              data-ng-class="{'invalid': $ctrl.getRemainingSymbolsCounter() < 0}"
              data-ng-if="!$ctrl.onlyValidCharacters || $ctrl.isCounterVisible()">{{$ctrl.getRemainingSymbolsCounter()}}
         </div>
-        <div data-ng-hide="$ctrl.inputFocused || $ctrl.formObject[$ctrl.inputName].$viewValue"
-             class="textarea-placeholder">{{$ctrl.placeholderText}}
-        </div>
         <textarea class="textarea-field field" tabindex="0"
                   data-ng-class="{'invalid': $ctrl.isFieldInvalid()}"
                   name="{{$ctrl.inputName}}"
+                  placeholder="{{$ctrl.placeholderText}}"
                   data-ng-model="$ctrl.data"
                   data-ng-required="$ctrl.validationIsRequired"
                   data-ng-maxlength="$ctrl.validationMaxLength"
@@ -58,14 +54,12 @@
     </div>
 
     <div data-ng-if="$ctrl.fieldType === 'password'">
-        <div data-ng-hide="$ctrl.inputFocused || $ctrl.formObject[$ctrl.inputName].$viewValue"
-             class="input-placeholder">{{$ctrl.placeholderText}}
-        </div>
         <input class="input-field field" tabindex="0"
                data-ng-class="{'invalid': $ctrl.isFieldInvalid()}"
                data-igz-validate-password-confirmation="$ctrl.compareInputValue"
                type="password"
                name="{{$ctrl.inputName}}"
+               placeholder="{{$ctrl.placeholderText}}"
                data-ng-model="$ctrl.data"
                data-ng-model-options="$ctrl.inputModelOptions"
                data-ng-required="$ctrl.validationIsRequired"

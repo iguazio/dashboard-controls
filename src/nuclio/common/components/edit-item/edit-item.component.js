@@ -544,13 +544,9 @@
          * @param {string} field
          */
         function inputValueCallback(newData, field) {
-            if (ctrl.isVolumeType()) {
-                if (field === 'name') {
-                    lodash.set(ctrl.item, 'volumeMount.name', newData);
-                    lodash.set(ctrl.item, 'volume.name', newData);
-                } else {
-                    lodash.set(ctrl.item, field, newData);
-                }
+            if (ctrl.isVolumeType() && field === 'name') {
+                lodash.set(ctrl.item, 'volumeMount.name', newData);
+                lodash.set(ctrl.item, 'volume.name', newData);
             } else {
                 lodash.set(ctrl.item, field, newData);
             }
