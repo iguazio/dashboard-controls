@@ -9,13 +9,15 @@
             restrict: 'A',
             require: 'ngModel',
             scope: {
-                pattern: '=igzInputOnlyValidCharacters'
+                pattern: '=igzInputOnlyValidCharacters',
+                onlyValidCharacters: '=onlyValidCharacters'
             },
             link: link
         };
 
         function link(scope, element, attr, ngModelCtrl) {
             var REGEXP = scope.pattern;
+            var onlyValidCharacters = scope.onlyValidCharacters;
             var lastValidViewValue;
 
             activate();
@@ -41,7 +43,7 @@
              * @returns {string} the last valid entered value
              */
             function checkForDigits(viewValue) {
-                if (attr.onlyValidCharacters) {
+                if (onlyValidCharacters) {
                     if (REGEXP.test(viewValue)) {
 
                         // Saves as valid view value if it's a not empty string
