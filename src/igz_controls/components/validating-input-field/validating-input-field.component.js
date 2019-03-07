@@ -32,7 +32,7 @@
                 enterCallback: '<?',
                 fieldType: '@',
                 formObject: '<',
-                hideCounter: '@?',
+                hideCounter: '<?',
                 inputIcon: '@',
                 inputModelOptions: '<?',
                 inputName: '@',
@@ -43,7 +43,7 @@
                 itemBlurCallback: '&?',
                 itemFocusCallback: '&?',
                 onBlur: '&?',
-                onlyValidCharacters: '@?',
+                onlyValidCharacters: '<?',
                 placeholderText: '@',
                 readOnly: '<?',
                 spellcheck: '@?',
@@ -107,6 +107,13 @@
 
             ctrl.data = angular.copy(lodash.defaultTo(ctrl.inputValue, ''));
             ctrl.startValue = angular.copy(ctrl.inputValue);
+
+            lodash.defaults(ctrl, {
+                hideCounter: false,
+                isDisabled: false,
+                readOnly: false,
+                onlyValidCharacters: false
+            });
         }
 
         /**
@@ -193,7 +200,7 @@
          * @returns {boolean}
          */
         function isCounterVisible() {
-            return lodash.isNil(ctrl.hideCounter) || ctrl.hideCounter === 'false' ? true : false;
+            return !ctrl.isDisabled && !ctrl.onlyValidCharacters && !ctrl.hideCounter && !ctrl.readOnly;
         }
 
         /**
