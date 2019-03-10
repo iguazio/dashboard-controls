@@ -2,65 +2,83 @@
 
 .ncl-version-configuration-resources {
     .row {
-        display: flex;
-        justify-content: space-between;
+        .range-inputs-row {
+            display: flex;
+            align-items: flex-end;
 
-        > div {
-            flex: 1;
+            .row-title {
+                margin-bottom: 8px;
+            }
+        }
 
-            &:not(:last-child) {
-                margin-right: 84px;
+        .form-row {
+            padding: 12px 0;
+
+            .row-title, .input-title {
+                font-size: 14px;
             }
 
-            .label {
-                padding: 0;
-                margin-bottom: 5px;
+            .row-title {
+                font-weight: 500;
+                margin-right: 25px;
             }
 
-            &.replicas-block {
-                margin-top: 9px;
+            .input-wrapper {
+                display: flex;
+                flex-wrap: wrap;
 
-                .replicas-values {
-                    .inputs {
-                        display: flex;
-                        align-items: center;
+                .input-title {
+                    width: 100%;
+                }
 
-                        .values-label {
-                            .duskThree(0.9);
-                            margin: 0 25px 0 8px;
-                            font-size: 14px;
-                            font-weight: normal;
-                            font-style: normal;
-                            letter-spacing: normal;
-                            text-align: left;
-                            color: @color;
+                .memory-number-input, .cpu-number-input {
+                    width: 50%;
+                }
 
-                            &:last-child {
-                                margin-right: 0;
-                            }
-                        }
+                .memory-size-dropdown, .cpu-dropdown {
+                    width: 35%
+                }
+            }
+        }
 
-                        .container-wizard-number-input {
-                            min-width: 80px;
-                            width: 80px;
-                            padding: 0 5px;
-                        }
+        .replicas-values {
+            .inputs {
+                display: flex;
+                align-items: center;
+                margin-top: 5px;
+
+                .values-label {
+                    .duskThree(0.9);
+                    margin: 0 25px 0 8px;
+                    font-size: 14px;
+                    font-weight: normal;
+                    font-style: normal;
+                    letter-spacing: normal;
+                    text-align: left;
+                    color: @color;
+
+                    &:last-child {
+                        margin-right: 0;
                     }
                 }
+
+                .container-wizard-number-input {
+                    min-width: 80px;
+                    width: 80px;
+                    padding: 0 5px;
+                }
+            }
+        }
+
+        .slider-block {
+            padding-top: 0;
+
+            .target-cpu-title {
+                margin-bottom: 0;
             }
 
-            &.sliders-block {
-                flex-grow: 1.5;
-
-                .slider-row {
-                    margin-bottom: 19px;
-                }
-
-                @media (max-width: @desktop-middle) {
-                    &:not(:last-child) {
-                        margin-right: 54px;
-                    }
-                }
+            .slider-row {
+                width: 74%;
             }
         }
     }
