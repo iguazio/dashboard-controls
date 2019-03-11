@@ -22,6 +22,7 @@
         function registerBeforeUnloadPageCallback(isDataChanged) {
             window.addEventListener('beforeunload', function (e) {
                 if (isDataChanged()) {
+
                     // Cancel the event
                     e.preventDefault();
 
