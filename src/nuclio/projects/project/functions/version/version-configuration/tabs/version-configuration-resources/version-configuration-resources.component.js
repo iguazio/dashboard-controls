@@ -54,98 +54,21 @@
                 }
             }
         ];
+
         ctrl.dropdownOptions = [
-            {
-                id: 'bytes',
-                name: 'Bytes',
-                unit: '',
-                root: 0,
-                power: 0
-            },
-            {
-                id: 'kb',
-                name: 'KB',
-                unit: 'K',
-                root: 1000,
-                power: 1
-            },
-            {
-                id: 'kib',
-                name: 'KiB',
-                unit: 'Ki',
-                root: 1024,
-                power: 1
-            },
-            {
-                id: 'mb',
-                name: 'MB',
-                unit: 'M',
-                root: 1000,
-                power: 2
-            },
-            {
-                id: 'mib',
-                name: 'MiB',
-                unit: 'Mi',
-                root: 1024,
-                power: 2
-            },
-            {
-                id: 'gb',
-                name: 'GB',
-                unit: 'G',
-                root: 1000,
-                power: 3
-            },
-            {
-                id: 'gib',
-                name: 'GiB',
-                unit: 'Gi',
-                root: 1024,
-                power: 3
-            },
-            {
-                id: 'tb',
-                name: 'TB',
-                unit: 'T',
-                root: 1000,
-                power: 4
-            },
-            {
-                id: 'tib',
-                name: 'TiB',
-                unit: 'Ti',
-                root: 1024,
-                power: 4
-            },
-            {
-                id: 'pb',
-                name: 'PB',
-                unit: 'P',
-                root: 1000,
-                power: 5
-            },
-            {
-                id: 'pib',
-                name: 'PiB',
-                unit: 'Pi',
-                root: 1024,
-                power: 5
-            },
-            {
-                id: 'eb',
-                name: 'EB',
-                unit: 'E',
-                root: 1000,
-                power: 6
-            },
-            {
-                id: 'eib',
-                name: 'EiB',
-                unit: 'Ei',
-                root: 1024,
-                power: 6
-            }
+            { id: 'bytes', name: 'Bytes', unit: '',   root: 0,    power: 0 },
+            { id: 'kb',    name: 'KB',    unit: 'K',  root: 1000, power: 1 },
+            { id: 'kib',   name: 'KiB',   unit: 'Ki', root: 1024, power: 1 },
+            { id: 'mb',    name: 'MB',    unit: 'M',  root: 1000, power: 2 },
+            { id: 'mib',   name: 'MiB',   unit: 'Mi', root: 1024, power: 2 },
+            { id: 'gb',    name: 'GB',    unit: 'G',  root: 1000, power: 3 },
+            { id: 'gib',   name: 'GiB',   unit: 'Gi', root: 1024, power: 3 },
+            { id: 'tb',    name: 'TB',    unit: 'T',  root: 1000, power: 4 },
+            { id: 'tib',   name: 'TiB',   unit: 'Ti', root: 1024, power: 4 },
+            { id: 'pb',    name: 'PB',    unit: 'P',  root: 1000, power: 5 },
+            { id: 'pib',   name: 'PiB',   unit: 'Pi', root: 1024, power: 5 },
+            { id: 'eb',    name: 'EB',    unit: 'E',  root: 1000, power: 6 },
+            { id: 'eib',   name: 'EiB',   unit: 'Ei', root: 1024, power: 6 }
         ];
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
@@ -160,6 +83,7 @@
         ctrl.cpuDropdownCallback = cpuDropdownCallback;
         ctrl.memoryInputCallback = memoryInputCallback;
         ctrl.memoryDropdownCallback = memoryDropdownCallback;
+        ctrl.inputGpuValueCallback = inputGpuValueCallback;
         ctrl.inputValueCallback = inputValueCallback;
 
         //
@@ -244,6 +168,27 @@
                     onEnd: null
                 }
             };
+        }
+
+        /**
+         * Number input callback for GPU fields
+         * @param {number} newData
+         * @param {string} field
+         */
+        function inputGpuValueCallback(newData, field) {
+            if (angular.isNumber(newData)) {
+                if (isRequestsInput(field)) {
+                    ctrl.requestsGpuValue = newData;
+                } else {
+                    ctrl.limitsGpuValue = newData;
+                }
+
+                lodash.set(ctrl.version, ['spec', 'resources', field, 'nvidia.com/gpu'], String(newData));
+                ctrl.onChangeCallback();
+            } else {
+                lodash.unset(ctrl.version, ['spec', 'resources', field, 'nvidia.com/gpu']);
+                ctrl[isRequestsInput(field) ? 'requestsGpuValue' : 'limitsGpuValue'] = null;
+            }
         }
 
         /**
@@ -443,14 +388,18 @@
          */
         function initParametersData() {
             var requestsMemory = lodash.get(ctrl.version, 'spec.resources.requests.memory');
-            var limitsMemory = lodash.get(ctrl.version, 'spec.resources.limits.memory');
-            var requestsCpu = lodash.get(ctrl.version, 'spec.resources.requests.cpu');
-            var limitsCpu = lodash.get(ctrl.version, 'spec.resources.limits.cpu');
+            var limitsMemory   = lodash.get(ctrl.version, 'spec.resources.limits.memory');
+            var requestsCpu    = lodash.get(ctrl.version, 'spec.resources.requests.cpu');
+            var limitsCpu      = lodash.get(ctrl.version, 'spec.resources.limits.cpu');
+            var requestsGpu    = lodash.get(ctrl.version, ['spec', 'resources', 'requests', 'nvidia.com/gpu']);
+            var limitsGpu      = lodash.get(ctrl.version, ['spec', 'resources', 'limits', 'nvidia.com/gpu']);
 
             ctrl.requestsMemoryValue = parseValue(requestsMemory);
-            ctrl.limitsMemoryValue = parseValue(limitsMemory);
-            ctrl.requestsCpuValue = parseValue(requestsCpu);
-            ctrl.limitsCpuValue = parseValue(limitsCpu);
+            ctrl.limitsMemoryValue   = parseValue(limitsMemory);
+            ctrl.requestsCpuValue    = parseValue(requestsCpu);
+            ctrl.limitsCpuValue      = parseValue(limitsCpu);
+            ctrl.requestsGpuValue    = parseValue(requestsGpu);
+            ctrl.limitsGpuValue      = parseValue(limitsGpu);
 
             // get size unit from memory values into int or set default, example: '15G' -> 'G'
             ctrl.selectedRequestUnit = lodash.isNil(requestsMemory) ? defaultUnit :
@@ -485,7 +434,8 @@
          * Show form errors if form is invalid
          */
         function setFormValidity() {
-            lodash.forEach(['requestMemory', 'limitsMemory', 'requestCpu', 'limitsCpu', 'minReplicas', 'maxReplicas'], prepareToValidity);
+            lodash.forEach(['requestMemory', 'limitsMemory', 'requestCpu', 'limitsCpu',
+                'requestGpu', 'limitsGpu', 'minReplicas', 'maxReplicas'], prepareToValidity);
 
             var path = 'spec.resources.requests.memory';
             checkIfMemoryInputsValid(lodash.get(ctrl.version, path, '0'), path);

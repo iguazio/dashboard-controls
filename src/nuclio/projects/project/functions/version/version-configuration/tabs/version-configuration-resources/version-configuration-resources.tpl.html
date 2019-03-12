@@ -98,6 +98,44 @@
                 </div>
             </div>
 
+            <div class="igz-row form-row range-inputs-row">
+                <div class="igz-col-10 row-title">GPU</div>
+
+                <div class="igz-col-40 input-wrapper">
+                    <div class="input-title">Request</div>
+                    <div class="row-input gpu-number-input">
+                        <igz-number-input data-allow-empty-field="true"
+                                          data-validation-is-required="false"
+                                          data-form-object="$ctrl.resourcesForm"
+                                          data-input-name="requestGpu"
+                                          data-placeholder="1 - 4"
+                                          data-update-number-input-callback="$ctrl.inputGpuValueCallback(newData, field)"
+                                          data-update-number-input-field="requests"
+                                          data-min-value="1"
+                                          data-max-value="$ctrl.limitsGpuValue || 4"
+                                          data-value-step="1"
+                                          data-current-value="$ctrl.requestsGpuValue"></igz-number-input>
+                    </div>
+                </div>
+
+                <div class="igz-col-40 input-wrapper">
+                    <div class="input-title">Limit</div>
+                    <div class="row-input gpu-number-input">
+                        <igz-number-input data-allow-empty-field="true"
+                                          data-validation-is-required="false"
+                                          data-form-object="$ctrl.resourcesForm"
+                                          data-input-name="limitsGpu"
+                                          data-placeholder="1 - 4"
+                                          data-update-number-input-callback="$ctrl.inputGpuValueCallback(newData, field)"
+                                          data-update-number-input-field="limits"
+                                          data-min-value="$ctrl.requestsGpuValue || 1"
+                                          data-max-value="4"
+                                          data-value-step="1"
+                                          data-current-value="$ctrl.limitsGpuValue"></igz-number-input>
+                    </div>
+                </div>
+            </div>
+
             <div class="igz-row form-row range-inputs-row slider-block">
                 <div class="igz-col-10 row-title target-cpu-title">Target CPU</div>
                 <div class="slider-row">
