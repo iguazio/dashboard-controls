@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('UnloadPageService', UnloadPageService);
 
-    function UnloadPageService() {
+    function UnloadPageService($window) {
         return {
             registerBeforeUnloadPageCallback: registerBeforeUnloadPageCallback
         };
@@ -16,11 +16,11 @@
         /**
          * Registers beforeunload page callback.
          * It calls isDataChanged callback to track if changes has been made on the page.
-         * IF yes - then show confirmation dialog which prevents user to lost unsaved data.
+         * If yes - then show confirmation dialog which prevents from user to lose unsaved data
          * @param {Function} isDataChanged - callback which tracks if changes has been made
          */
         function registerBeforeUnloadPageCallback(isDataChanged) {
-            window.addEventListener('beforeunload', function (e) {
+            $window.addEventListener('beforeunload', function (e) {
                 if (isDataChanged()) {
 
                     // Cancel the event
