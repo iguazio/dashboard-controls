@@ -480,18 +480,10 @@
                     cursor: pointer;
 
                     &:before {
-                        color: @ngdialog-icon-help-before-color;
-                        background-color: @ngdialog-icon-help-before-bg-color;
                         border-radius: 50%;
-                        font-size: 18px;
                     }
 
                     &:hover {
-                        &:before {
-                            color: @ngdialog-icon-help-hover-before-color !important;
-                            background-color: @ngdialog-icon-help-hover-before-bg-color !important;
-                        }
-
                         + div {
                             display: block;
                         }
@@ -500,24 +492,12 @@
 
                 .question-mark {
                     display: none;
-                    margin-left: 21px;
+                    margin-left: 15px;
                     margin-top: 9px;
                 }
 
                 .question-mark-visible {
                     display: block;
-                }
-
-                .row-description {
-                    position: absolute;
-                    font-family: @font-family-sans-serif;
-                    color: @ngdialog-row-description-color;
-                    font-size: 12px;
-                    padding: 0;
-                    margin-left: 8px;
-                    margin-top: 10px;
-                    width: 300px;
-                    display: none;
                 }
 
                 .field-label {
@@ -534,7 +514,6 @@
 
                     .primary-icon-help {
                         margin-left: 5px;
-                        font-size: 10px;
                     }
                 }
 
@@ -858,6 +837,43 @@ h1, h2, h3, h4, h5, h6, .title, .btn {
     background-color: @modal-backgrop-bg-color;
 }
 
+.igz-icon-help-round {
+    .descriptive-icons-color-set();
+
+    &:before {
+        color: @icon-help-round-before-color;
+        background-color: @icon-help-round-before-bg-color;
+    }
+
+    &:hover {
+        &:before {
+            color: @icon-help-round-hover-before-color !important;
+        }
+    }
+}
+
+.wizard-row-description {
+    position: absolute !important;
+    border-radius: 2px;
+    box-shadow: 0 4px 12px 2px rgba(0, 0, 0, 0.25);
+    background-color: @white;
+    font-family: @font-family-sans-serif;
+    color: @dusk-three;
+    font-size: 12px;
+    padding: 16px 19px;
+    width: 280px;
+    display: none;
+
+    &:before {
+        .triangle-arrow(right; @white; 8px; 10px);
+
+        position: absolute;
+        top: 7px;
+        left: -8px;
+        content: '';
+    }
+}
+
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide:not(.ng-hide-animate) {
     display: none !important;
 }
@@ -1127,10 +1143,14 @@ h1, h2, h3, h4, h5, h6, .title, .btn {
     .generateIconClass(905);
 }
 
-.igz-icon-help-round {
+.igz-icon-help {
     .generateIconClass(906);
 }
 
+.igz-icon-help-round {
+    .generateIconClass(a19);
+    font-size: 16px;
+}
 
 // header
 .igz-icon-search {
@@ -1656,7 +1676,7 @@ h1, h2, h3, h4, h5, h6, .title, .btn {
 }
 
 .igz-icon-services {
-    .generateIconClass(986);
+    .generateIconClass(989);
 }
 
 .igz-icon-external-link {
@@ -3280,6 +3300,10 @@ ncl-projects {
             width: 40px;
             z-index: 2;
 
+            &:last-child {
+                margin-right: 0;
+            }
+
             &.inactive {
                 pointer-events: none;
 
@@ -4027,6 +4051,147 @@ ncl-projects {
     }
 }
 
+.igz-pagination {
+    .pagination-color-set();
+
+    float: right;
+    padding: 24px 36px 5px 30px;
+
+    > div {
+        vertical-align: top;
+    }
+
+    .rows-title, .per-page, .jump-to-page, .to-page-prev, .to-page-next {
+        display: inline-block;
+        vertical-align: baseline;
+    }
+
+    .rows-title {
+        font-size: 13px;
+        color: @rows-title-color;
+        font-family: @font-family-sans-serif;
+    }
+
+    .per-page {
+        width: 66px;
+
+        .default-dropdown-field {
+            background: none;
+            border: none;
+            box-shadow: none;
+            font-size: 14px;
+            height: 36px;
+
+            .dropdown-selected-item {
+                font-size: 14px;
+            }
+
+            .dropdown-arrow {
+                margin-top: 5px;
+
+                span {
+                    font-size: 12px;
+                }
+            }
+
+            .dropdown-arrow {
+                border: none;
+
+                &:hover, &:active {
+                    border: none;
+                    background: none;
+                    box-shadow: none;
+                }
+            }
+
+            &:focus {
+                .dropdown-selected-item {
+                    border: none;
+                }
+            }
+        }
+
+        .default-dropdown-container {
+            width: 66px;
+
+            .list-item {
+                padding-left: 15px;
+
+                .list-item-label {
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+
+    .jump-to-page {
+        margin-left: 7px;
+
+        & > div, .jump-to-page-input {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .to-page-prev, .to-page-next {
+            width: 41px;
+            line-height: 34px;
+            height: 36px;
+            display: inline-block;
+            vertical-align: top;
+            position: relative;
+            text-align: center;
+            color: @page-prev-next-color;
+            font-size: 12px;
+
+            &.disabled, &.disabled:hover {
+                background-color: @page-prev-next-disabled-hover-bg-color;
+                border: @page-prev-next-disabled-hover-border;
+                box-shadow: none;
+                cursor: default;
+
+                &:before {
+                    color: @page-prev-next-disabled-hover-before-color;
+                }
+            }
+
+            &:before {
+                 line-height: 34px;
+             }
+        }
+
+        .to-page-prev {
+            border-right: 0;
+            border-radius: 2px 0 0 2px;
+        }
+
+        .to-page-next {
+            border-left: 0;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .title {
+            margin: 0 0 0 14px;
+        }
+
+        .validating-input-field .input-field {
+            width: 43px;
+            height: 36px;
+            border-radius: 0;
+            background-color: @input-field-bg-color;
+            box-shadow: @input-field-box-shadow;
+            border: @input-field-border;
+            font-family: @font-family-sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: @input-field-color;
+            text-align: center;
+
+            &:hover {
+                border: @input-field-hover-border;
+            }
+        }
+    }
+}
 .search-input {
     .search-input-color-set();
 
@@ -4209,147 +4374,6 @@ ncl-projects {
         }
     }
 }
-.igz-pagination {
-    .pagination-color-set();
-
-    float: right;
-    padding: 24px 36px 5px 30px;
-
-    > div {
-        vertical-align: top;
-    }
-
-    .rows-title, .per-page, .jump-to-page, .to-page-prev, .to-page-next {
-        display: inline-block;
-        vertical-align: baseline;
-    }
-
-    .rows-title {
-        font-size: 13px;
-        color: @rows-title-color;
-        font-family: @font-family-sans-serif;
-    }
-
-    .per-page {
-        width: 66px;
-
-        .default-dropdown-field {
-            background: none;
-            border: none;
-            box-shadow: none;
-            font-size: 14px;
-            height: 36px;
-
-            .dropdown-selected-item {
-                font-size: 14px;
-            }
-
-            .dropdown-arrow {
-                margin-top: 5px;
-
-                span {
-                    font-size: 12px;
-                }
-            }
-
-            .dropdown-arrow {
-                border: none;
-
-                &:hover, &:active {
-                    border: none;
-                    background: none;
-                    box-shadow: none;
-                }
-            }
-
-            &:focus {
-                .dropdown-selected-item {
-                    border: none;
-                }
-            }
-        }
-
-        .default-dropdown-container {
-            width: 66px;
-
-            .list-item {
-                padding-left: 15px;
-
-                .list-item-label {
-                    margin-right: 10px;
-                }
-            }
-        }
-    }
-
-    .jump-to-page {
-        margin-left: 7px;
-
-        & > div, .jump-to-page-input {
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        .to-page-prev, .to-page-next {
-            width: 41px;
-            line-height: 34px;
-            height: 36px;
-            display: inline-block;
-            vertical-align: top;
-            position: relative;
-            text-align: center;
-            color: @page-prev-next-color;
-            font-size: 12px;
-
-            &.disabled, &.disabled:hover {
-                background-color: @page-prev-next-disabled-hover-bg-color;
-                border: @page-prev-next-disabled-hover-border;
-                box-shadow: none;
-                cursor: default;
-
-                &:before {
-                    color: @page-prev-next-disabled-hover-before-color;
-                }
-            }
-
-            &:before {
-                 line-height: 34px;
-             }
-        }
-
-        .to-page-prev {
-            border-right: 0;
-            border-radius: 2px 0 0 2px;
-        }
-
-        .to-page-next {
-            border-left: 0;
-            border-radius: 0 2px 2px 0;
-        }
-
-        .title {
-            margin: 0 0 0 14px;
-        }
-
-        .validating-input-field .input-field {
-            width: 43px;
-            height: 36px;
-            border-radius: 0;
-            background-color: @input-field-bg-color;
-            box-shadow: @input-field-box-shadow;
-            border: @input-field-border;
-            font-family: @font-family-sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            color: @input-field-color;
-            text-align: center;
-
-            &:hover {
-                border: @input-field-hover-border;
-            }
-        }
-    }
-}
 .igz-slider-input-block {
     .igz-slider-input-block-color-set();
 
@@ -4369,10 +4393,6 @@ ncl-projects {
         .igz-slider-input-title-text {
             display: table-cell;
             vertical-align: middle;
-
-            .igz-icon-help-round {
-                font-size: 10px;
-            }
         }
     }
 
@@ -5763,6 +5783,24 @@ igz-info-page-content {
 }
 
 
+ncl-breadcrumbs {
+
+    .igz-icon-right {
+        font-size: 11px;
+        font-weight: 100;
+        margin: 0 14px;
+    }
+
+    .ncl-header-subtitle {
+        color: #898593;
+    }
+
+    .ncl-bold-subtitle {
+        color: #474056;
+        font-weight: bold;
+    }
+}
+
 .ncl-breadcrumbs-dropdown {
     display: inline-grid;
 
@@ -5900,24 +5938,6 @@ igz-info-page-content {
                 background-color: @pale-grey-two;
             }
         }
-    }
-}
-
-ncl-breadcrumbs {
-
-    .igz-icon-right {
-        font-size: 11px;
-        font-weight: 100;
-        margin: 0 14px;
-    }
-
-    .ncl-header-subtitle {
-        color: #898593;
-    }
-
-    .ncl-bold-subtitle {
-        color: #474056;
-        font-weight: bold;
     }
 }
 
@@ -6899,92 +6919,6 @@ ncl-functions {
     }
 }
 
-.function-import-wrapper-content {
-    font-family: @font-family-sans-serif;
-    padding-left: 3%;
-    width: 96%;
-
-    .function-import-form {
-        display: flex;
-        align-items: flex-end;
-        margin-bottom: 10px;
-
-        .projects-drop-down {
-            margin-right: 48px;
-
-            .input-label {
-                font-size: 14px;
-                font-weight: 600;
-                color: @dusk-three;
-            }
-
-            igz-default-dropdown {
-                .default-dropdown {
-                    background-color: @white;
-
-                    .default-dropdown-field {
-                        &:focus {
-                            background-color: inherit;
-                        }
-                    }
-                }
-            }
-        }
-
-        .function-import-actions-bar {
-            display: flex;
-
-            .function-import-file-picker {
-                label {
-                    margin: 0;
-                }
-
-                .file-picker-wrapper {
-                    cursor: pointer;
-                    height: 36px;
-                    padding: 12px 21px;
-                    margin-left: unset;
-
-                    .igz-icon-upload {
-                        margin-right: 10px;
-                    }
-                }
-
-                .function-import-input {
-                    opacity: 0;
-                    position: absolute;
-                    z-index: -1;
-                }
-            }
-
-            .ncl-primary-button {
-                height: 36px;
-            }
-        }
-    }
-
-    .splash-screen {
-        top: 0;
-    }
-
-    .function-import-monaco {
-        .ncl-monaco {
-            height: 370px;
-            width: 100%;
-
-            .monaco-code-editor {
-                height: 100%;
-            }
-        }
-    }
-
-    .bottom-bar {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 20px;
-    }
-}
-
 .function-from-template-content {
     padding: 0 72px 0 63px;
 
@@ -7224,6 +7158,92 @@ ncl-functions {
             margin-top: 2px;
             padding-right: 16px;
         }
+    }
+}
+
+.function-import-wrapper-content {
+    font-family: @font-family-sans-serif;
+    padding-left: 3%;
+    width: 96%;
+
+    .function-import-form {
+        display: flex;
+        align-items: flex-end;
+        margin-bottom: 10px;
+
+        .projects-drop-down {
+            margin-right: 48px;
+
+            .input-label {
+                font-size: 14px;
+                font-weight: 600;
+                color: @dusk-three;
+            }
+
+            igz-default-dropdown {
+                .default-dropdown {
+                    background-color: @white;
+
+                    .default-dropdown-field {
+                        &:focus {
+                            background-color: inherit;
+                        }
+                    }
+                }
+            }
+        }
+
+        .function-import-actions-bar {
+            display: flex;
+
+            .function-import-file-picker {
+                label {
+                    margin: 0;
+                }
+
+                .file-picker-wrapper {
+                    cursor: pointer;
+                    height: 36px;
+                    padding: 12px 21px;
+                    margin-left: unset;
+
+                    .igz-icon-upload {
+                        margin-right: 10px;
+                    }
+                }
+
+                .function-import-input {
+                    opacity: 0;
+                    position: absolute;
+                    z-index: -1;
+                }
+            }
+
+            .ncl-primary-button {
+                height: 36px;
+            }
+        }
+    }
+
+    .splash-screen {
+        top: 0;
+    }
+
+    .function-import-monaco {
+        .ncl-monaco {
+            height: 370px;
+            width: 100%;
+
+            .monaco-code-editor {
+                height: 100%;
+            }
+        }
+    }
+
+    .bottom-bar {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
     }
 }
 
@@ -7648,11 +7668,6 @@ ncl-functions {
                 font-size: 14px;
                 text-align: left;
                 color: @dusk-three;
-
-                .igz-icon-help-round::before {
-                    color: @dark-sky-blue;
-                    font-size: 18px;
-                }
             }
 
             .validating-input-field {
@@ -9391,6 +9406,10 @@ ncl-functions {
 
                 .memory-size-dropdown, .cpu-dropdown {
                     width: 35%
+                }
+
+                .gpu-number-input {
+                    width: 85%;
                 }
             }
         }
