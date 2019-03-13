@@ -261,7 +261,13 @@
 
             ctrl.getFunctions({id: ctrl.project.metadata.name})
                 .then(function (functions) {
-                    ctrl.functions = lodash.toArray(functions);
+                    ctrl.functions = lodash.map(functions, function (functionFromResponse) {
+                        var foundFunction = lodash.find(ctrl.functions, ['metadata.name', functionFromResponse.metadata.name]);
+                        var ui = lodash.get(foundFunction, 'ui');
+                        functionFromResponse.ui = lodash.defaultTo(ui, functionFromResponse.ui);
+
+                        return functionFromResponse;
+                    });
 
                     if (lodash.isEmpty(ctrl.functions) && !$stateParams.createCancelled) {
                         ctrl.isSplashShowed.value = false;
@@ -279,13 +285,14 @@
                             lodash.set(functionItem, 'spec.version', 1);
                         });
 
-                        ctrl.isSplashShowed.value = false;
                     }
                 })
                 .catch(function (error) {
-                    ctrl.isSplashShowed.value = false;
                     var msg = 'Oops: Unknown error occurred while retrieving functions';
                     DialogsService.alert(lodash.get(error, 'data.error', msg));
+                })
+                .finally(function () {
+                    ctrl.isSplashShowed.value = false;
                 });
         }
 

@@ -1,24 +1,22 @@
 <div class="close-button igz-icon-close" data-ng-click="$ctrl.onClose()"></div>
 
 <div class="title">
-    <span>
-        Duplicate function
-    </span>
+    Duplicate function
 </div>
 
 <div class="main-content">
-    <form name="duplicateFunctionForm" novalidate data-ng-keydown="$ctrl.duplicateFunction($event)">
-        <div class="field-group">
-            <div class="field-label">
+    <form name="$ctrl.duplicateFunctionForm" novalidate data-ng-keydown="$ctrl.duplicateFunction($event)">
+        <div class="field-group function-name-group">
+            <div class="field-label function-name-label">
                 Function Name
             </div>
-            <div class="field-input">
+            <div class="field-input function-name-input">
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-input-name="spec.displayName"
                                             data-input-value="$ctrl.newFunctionName"
                                             data-is-focused="true"
-                                            data-form-object="duplicateFunctionForm"
+                                            data-form-object="$ctrl.duplicateFunctionForm"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData)"
                                             data-validation-is-required="true"
                                             data-validation-pattern="$ctrl.validationPatterns.functionName"
@@ -27,7 +25,8 @@
                                             data-uib-tooltip="Name must be 1-63 characters long, must consist of lower case alphanumeric characters or hyphen, start with an alphabetic character, and end with an alphanumeric character (e.g. 'my-name',  or 'abc-123')."
                                             data-tooltip-popup-delay="500"
                                             data-tooltip-append-to-body="true"></igz-validating-input-field>
-                <div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(duplicateFunctionForm, 'spec.displayName')">
+                <div class="error"
+                     data-ng-show="$ctrl.isShowFieldInvalidState($ctrl.duplicateFunctionForm, 'spec.displayName')">
                     The inputs you provided are invalid or incorrect
                 </div>
                 <div class="error" data-ng-show="$ctrl.nameTakenError">
@@ -58,4 +57,5 @@
 </div>
 
 <div class="error-text text-centered error-relative"
-     data-ng-show="$ctrl.isServerError()">Error: {{$ctrl.serverError}}</div>
+     data-ng-show="$ctrl.isServerError()">Error: {{$ctrl.serverError}}
+</div>

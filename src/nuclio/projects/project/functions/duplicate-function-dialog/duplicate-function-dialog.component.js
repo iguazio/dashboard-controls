@@ -16,6 +16,7 @@
                                                NuclioCommonService, ValidatingPatternsService) {
         var ctrl = this;
 
+        ctrl.duplicateFunctionForm = {};
         ctrl.inputModelOptions = {
             debounce: {
                 'default': 0
@@ -36,14 +37,14 @@
         //
 
         /**
-         *  Wrapper for `FunctionsService.duplicateFunction` method
+         * Wrapper for `FunctionsService.duplicateFunction` method
          */
         function duplicateFunction(event) {
             if (angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) {
                 ctrl.nameTakenError = false;
-                $scope.duplicateFunctionForm.$submitted = true;
+                ctrl.duplicateFunctionForm.$submitted = true;
 
-                if ($scope.duplicateFunctionForm.$valid) {
+                if (ctrl.duplicateFunctionForm.$valid) {
                     NuclioCommonService.duplicateFunction(ctrl.version, ctrl.newFunctionName, ctrl.project.metadata.name)
                         .then(ctrl.closeDialog)
                         .catch(function () {
@@ -66,7 +67,7 @@
          * @param {Event} [event]
          */
         function onClose(event) {
-            if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) && !ctrl.isLoadingState) {
+            if (angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) {
                 ctrl.closeDialog();
             }
         }
