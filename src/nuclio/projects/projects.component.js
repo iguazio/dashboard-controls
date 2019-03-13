@@ -363,7 +363,7 @@
                 {
                     label: 'Edit',
                     id: 'edit',
-                    icon: 'igz-icon-properties',
+                    icon: 'igz-icon-edit',
                     active: true
                 },
                 {
