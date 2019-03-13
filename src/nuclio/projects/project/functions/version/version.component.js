@@ -95,6 +95,10 @@
                     }
                 },
                 {
+                    id: 'duplicateFunction',
+                    name: 'Duplicate function'
+                },
+                {
                     id: 'viewConfig',
                     name: 'View YAML'
                 }
@@ -309,6 +313,18 @@
                     },
                     className: 'ngdialog-theme-iguazio view-yaml-dialog-wrapper'
                 });
+            } else if (item.id === 'duplicateFunction') {
+                ngDialog.open({
+                    template: '<ncl-duplicate-function-dialog data-close-dialog="closeThisDialog()" ' +
+                              'data-project="ngDialogData.project" data-version="ngDialogData.version">' +
+                              '</ncl-duplicate-function-dialog>',
+                    plain: true,
+                    data: {
+                        project: ctrl.project,
+                        version: ctrl.version
+                    },
+                    className: 'ngdialog-theme-iguazio duplicate-function-dialog-wrapper'
+                });
             }
         }
 
@@ -370,7 +386,7 @@
             setDeployResult('building');
 
             interval = $interval(function () {
-                ctrl.getFunction({ metadata: ctrl.version.metadata, projectID: ctrl.project.metadata.name })
+                ctrl.getFunction({ metadata: ctrl.version.metadata, projectID: lodash.get(ctrl.project, 'metadata.name') })
                     .then(function (response) {
                         if (response.status.state === 'ready' || response.status.state === 'error') {
                             terminateInterval();
