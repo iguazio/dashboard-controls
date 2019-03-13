@@ -152,7 +152,7 @@
          */
         function increaseValue() {
             if (lodash.isNil(ctrl.currentValue) || ctrl.currentValue === '') {
-                ctrl.currentValue = 0;
+                ctrl.currentValue = ctrl.minValue;
             } else {
                 ctrl.currentValue = (Number(ctrl.currentValue) + Number(ctrl.valueStep)).toFixed(ctrl.precision);
             }
