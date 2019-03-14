@@ -2,6 +2,7 @@
      data-ng-class="[{'invalid': $ctrl.checkInvalidation()},
                     {'pristine': !$ctrl.numberInputChanged},
                     {'disabled': $ctrl.isDisabled},
+                    {'focused': $ctrl.inputFocused},
                     {'submitted': $ctrl.formObject.$submitted}]">
     <div class="additional-left-block">
         <span class="prefix-unit" data-ng-show="$ctrl.isShownUnit($ctrl.prefixUnit)">{{$ctrl.prefixUnit}}</span>
