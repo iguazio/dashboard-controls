@@ -11,6 +11,7 @@
                 deleteFunction: '&',
                 getProject: '&',
                 getFunction: '&',
+                getFunctions: '&',
                 getExternalIpAddresses: '&',
                 onEditCallback: '&?',
                 updateVersion: '&'
@@ -316,10 +317,14 @@
             } else if (item.id === 'duplicateFunction') {
                 ngDialog.open({
                     template: '<ncl-duplicate-function-dialog data-close-dialog="closeThisDialog()" ' +
+                              'data-create-function="ngDialogData.createFunction({version: version, projectID: projectID})" ' +
+                              'data-get-functions="ngDialogData.getFunctions({id: id})" ' +
                               'data-project="ngDialogData.project" data-version="ngDialogData.version">' +
                               '</ncl-duplicate-function-dialog>',
                     plain: true,
                     data: {
+                        createFunction: ctrl.createVersion,
+                        getFunctions: ctrl.getFunctions,
                         project: ctrl.project,
                         version: ctrl.version
                     },

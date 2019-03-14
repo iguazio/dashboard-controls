@@ -5,6 +5,8 @@
         .component('nclDuplicateFunctionDialog', {
             bindings: {
                 closeDialog: '&',
+                createFunction: '&',
+                getFunctions: '&',
                 project: '<',
                 version: '<'
             },
@@ -12,8 +14,8 @@
             controller: DuplicateFunctionDialogController
         });
 
-    function DuplicateFunctionDialogController($scope, EventHelperService, FormValidationService, FunctionsService,
-                                               NuclioCommonService, ValidatingPatternsService) {
+    function DuplicateFunctionDialogController(lodash, EventHelperService, FormValidationService,
+                                               ValidatingPatternsService) {
         var ctrl = this;
 
         ctrl.duplicateFunctionForm = {};
@@ -37,7 +39,8 @@
         //
 
         /**
-         * Wrapper for `FunctionsService.duplicateFunction` method
+         * Duplicates selected function with a new name
+         * @param {Object} event
          */
         function duplicateFunction(event) {
             if (angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) {
@@ -45,10 +48,19 @@
                 ctrl.duplicateFunctionForm.$submitted = true;
 
                 if (ctrl.duplicateFunctionForm.$valid) {
-                    NuclioCommonService.duplicateFunction(ctrl.version, ctrl.newFunctionName, ctrl.project.metadata.name)
-                        .then(ctrl.closeDialog)
-                        .catch(function () {
-                            ctrl.nameTakenError = true;
+                    var newFunction = lodash.pick(ctrl.version, 'spec');
+                    var projectID = lodash.get(ctrl.project, 'metadata.name');
+
+                    lodash.set(newFunction, 'metadata.name', ctrl.newFunctionName);
+
+                    ctrl.getFunctions({id: projectID})
+                        .then(function (response) {
+                            if (lodash.isEmpty(lodash.filter(response, ['metadata.name', ctrl.newFunctionName]))) {
+                                ctrl.createFunction({version: newFunction, projectID: projectID})
+                                    .then(ctrl.closeDialog);
+                            } else {
+                                ctrl.nameTakenError = true;
+                            }
                         });
                 }
             }

@@ -4,11 +4,12 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclFunctions', {
             bindings: {
+                deleteFunction: '&',
+                createFunction: '&',
                 getExternalIpAddresses: '&',
                 getProject: '&',
-                getFunctions: '&',
                 getFunction: '&',
-                deleteFunction: '&',
+                getFunctions: '&',
                 onUpdateFunction: '&'
             },
             templateUrl: 'nuclio/projects/project/functions/functions.tpl.html',
