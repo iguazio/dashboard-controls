@@ -110,6 +110,19 @@ describe('nclFunctions component:', function () {
 
     describe('handleAction(): ', function () {
         it('should call action`s handlers for all checked functions', function () {
+            ctrl.functions.push({
+                metadata: {
+                    name: 'functionName1',
+                    namespace: 'nuclio'
+                },
+                spec: {
+                    description: 'Some description',
+                    runtime: 'golang',
+                    replicas: 1,
+                    build: {},
+                    runRegistry: 'localhost:5000'
+                }
+            });
             ctrl.functions[0].ui = {
                 checked: true,
                 delete: angular.noop
