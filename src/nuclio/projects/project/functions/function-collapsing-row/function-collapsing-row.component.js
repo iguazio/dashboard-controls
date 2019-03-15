@@ -237,6 +237,7 @@
                 {
                     label: 'View YAML',
                     id: 'viewConfig',
+                    icon: 'igz-icon-view-file',
                     active: true
                 }
             ];
