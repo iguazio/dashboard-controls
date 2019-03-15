@@ -10,11 +10,12 @@
             controller: NclProjectsWelcomePageController
         });
 
-    function NclProjectsWelcomePageController($scope, $state, ngDialog) {
+    function NclProjectsWelcomePageController($scope, $state, ngDialog, ImportService) {
         var ctrl = this;
 
         ctrl.$onDestroy = onDestroy;
 
+        ctrl.importProject = importProject;
         ctrl.openNewProjectDialog = openNewProjectDialog;
 
         //
@@ -31,6 +32,17 @@
         //
         // Public method
         //
+
+        /**
+         * Imports project and navigates to `projects` screen
+         * @param {File} file
+         */
+        function importProject(file) {
+            ImportService.importProject(file)
+                .then(function () {
+                    $state.go('app.projects');
+                });
+        }
 
         /**
          * Handle click on `Create new project` button

@@ -201,6 +201,10 @@
                 });
         }
 
+        /**
+         * Imports project and updates the projects list
+         * @param {File} file
+         */
         function importProject(file) {
             ImportService.importProject(file)
                 .then(updateProjects);
