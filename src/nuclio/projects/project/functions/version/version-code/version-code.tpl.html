@@ -122,6 +122,19 @@
                                                         data-update-data-field="spec.build.codeEntryAttributes.workDir"
                                                         class="nuclio-validating-input">
                             </igz-validating-input-field>
+
+                            <div class="field-label">Session key</div>
+                            <igz-validating-input-field data-field-type="password"
+                                                        data-input-name="sessionKey"
+                                                        data-input-value="$ctrl.version.spec.build.codeEntryAttributes.headers.xV3IoSessionKey"
+                                                        data-is-focused="false"
+                                                        data-form-object="$ctrl.versionCodeForm"
+                                                        data-validation-is-required="false"
+                                                        data-placeholder-text="Type session key"
+                                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                        data-update-data-field="spec.build.codeEntryAttributes.headers.xV3IoSessionKey"
+                                                        class="nuclio-validating-input">
+                            </igz-validating-input-field>
                         </div>
 
                         <div data-ng-if="$ctrl.selectedEntryType.name === 'GitHub'"
