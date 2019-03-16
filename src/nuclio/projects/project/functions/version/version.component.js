@@ -11,6 +11,7 @@
                 deleteFunction: '&',
                 getProject: '&',
                 getFunction: '&',
+                getFunctions: '&',
                 getExternalIpAddresses: '&',
                 onEditCallback: '&?',
                 updateVersion: '&'
@@ -93,6 +94,10 @@
                         noLabel: 'Cancel',
                         type: 'nuclio_alert'
                     }
+                },
+                {
+                    id: 'duplicateFunction',
+                    name: 'Duplicate function'
                 },
                 {
                     id: 'viewConfig',
@@ -309,6 +314,22 @@
                     },
                     className: 'ngdialog-theme-iguazio view-yaml-dialog-wrapper'
                 });
+            } else if (item.id === 'duplicateFunction') {
+                ngDialog.open({
+                    template: '<ncl-duplicate-function-dialog data-close-dialog="closeThisDialog()" ' +
+                              'data-create-function="ngDialogData.createFunction({version: version, projectID: projectID})" ' +
+                              'data-get-functions="ngDialogData.getFunctions({id: id})" ' +
+                              'data-project="ngDialogData.project" data-version="ngDialogData.version">' +
+                              '</ncl-duplicate-function-dialog>',
+                    plain: true,
+                    data: {
+                        createFunction: ctrl.createVersion,
+                        getFunctions: ctrl.getFunctions,
+                        project: ctrl.project,
+                        version: ctrl.version
+                    },
+                    className: 'ngdialog-theme-iguazio duplicate-function-dialog-wrapper'
+                });
             }
         }
 
@@ -370,7 +391,7 @@
             setDeployResult('building');
 
             interval = $interval(function () {
-                ctrl.getFunction({ metadata: ctrl.version.metadata, projectID: ctrl.project.metadata.name })
+                ctrl.getFunction({ metadata: ctrl.version.metadata, projectID: lodash.get(ctrl.project, 'metadata.name') })
                     .then(function (response) {
                         if (response.status.state === 'ready' || response.status.state === 'error') {
                             terminateInterval();

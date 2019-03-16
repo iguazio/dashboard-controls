@@ -4,15 +4,18 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclFunctionCollapsingRow', {
             bindings: {
-                function: '<',
-                project: '<',
-                functionsList: '<',
                 actionHandlerCallback: '&',
-                handleDeleteFunction: '&',
-                getFunction: '&',
-                onUpdateFunction: '&',
+                createFunction: '&',
                 externalAddress: '<',
-                isSplashShowed: '<'
+                function: '<',
+                functionsList: '<',
+                getFunction: '&',
+                getFunctions: '&',
+                handleDeleteFunction: '&',
+                isSplashShowed: '<',
+                onUpdateFunction: '&',
+                project: '<',
+                refreshFunctionsList: '&'
             },
             templateUrl: 'nuclio/projects/project/functions/function-collapsing-row/function-collapsing-row.tpl.html',
             controller: NclFunctionCollapsingRowController
@@ -76,6 +79,7 @@
             lodash.defaultsDeep(ctrl.function, {
                 ui: {
                     delete: deleteFunction,
+                    duplicate: duplicateFunction,
                     export: exportFunction,
                     viewConfig: viewConfig
                 }
@@ -186,6 +190,27 @@
             updateFunction('Disabling…');
         }
 
+        function duplicateFunction() {
+            ngDialog.open({
+                template: '<ncl-duplicate-function-dialog data-close-dialog="closeThisDialog()" ' +
+                    'data-create-function="ngDialogData.createFunction({version: version, projectID: projectID})" ' +
+                    'data-get-functions="ngDialogData.getFunctions({id: id})" ' +
+                    'data-project="ngDialogData.project" data-version="ngDialogData.version">' +
+                    '</ncl-duplicate-function-dialog>',
+                plain: true,
+                data: {
+                    createFunction: ctrl.createFunction,
+                    getFunctions: ctrl.getFunctions,
+                    project: ctrl.project,
+                    version: ctrl.function
+                },
+                className: 'ngdialog-theme-iguazio duplicate-function-dialog-wrapper'
+            }).closePromise
+                .then(function () {
+                    ctrl.refreshFunctionsList();
+                });
+        }
+
         /**
          * Enables function.
          * Sends request to change `spec.disable` property
@@ -227,6 +252,12 @@
                         noLabel: 'Cancel',
                         type: 'nuclio_alert'
                     }
+                },
+                {
+                    label: 'Duplicate',
+                    id: 'duplicate',
+                    icon: 'igz-icon-duplicate',
+                    active: true
                 },
                 {
                     label: 'Export',
