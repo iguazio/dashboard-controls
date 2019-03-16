@@ -14,7 +14,12 @@ describe('nclProjectsWelcomePage component: ', function () {
             $q = _$q_;
             ngDialog = _ngDialog_;
 
-            ctrl = $componentController('nclProjectsWelcomePage');
+            var element = angular.element('<ncl-projects-welcome-page></ncl-projects-welcome-page>');
+            var ImportService = {
+                importService: null
+            };
+
+            ctrl = $componentController('nclProjectsWelcomePage', {$element: element, ImportService: ImportService});
         });
     });
 

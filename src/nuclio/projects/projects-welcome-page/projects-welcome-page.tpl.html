@@ -12,5 +12,10 @@
             </div>
         </div>
         <div class="ncl-new-entity-button" data-ng-click="$ctrl.openNewProjectDialog()">Create project</div>
+        <div class="ncl-new-entity-button"
+             ngf-select="$ctrl.importProject($file)"
+             accept=".yml, .yaml">
+            Import project
+        </div>
     </div>
 </div>
