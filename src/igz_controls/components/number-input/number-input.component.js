@@ -12,7 +12,7 @@
                 formObject: '<?',
                 inputName: '@?',
                 isDisabled: '<?',
-                isFocused: '@?',
+                isFocused: '<?',
                 itemBlurCallback: '&?',
                 itemFocusCallback: '&?',
                 maxValue: '<?',
@@ -90,12 +90,14 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.validationIsRequired = String(ctrl.validationIsRequired) === 'true';
-            ctrl.allowEmptyField = lodash.defaultTo(ctrl.allowEmptyField, false);
-            ctrl.defaultValue = lodash.defaultTo(ctrl.defaultValue, null);
-            ctrl.minValue = lodash.defaultTo(ctrl.minValue, 0);
-            ctrl.precision = lodash.defaultTo(Number(ctrl.precision), 0);
-            ctrl.placeholder = lodash.defaultTo(ctrl.placeholder, '');
+            lodash.defaults(ctrl, {
+                validationIsRequired: false,
+                allowEmptyField: false,
+                defaultValue: null,
+                minValue: 0,
+                precision: lodash.defaultTo(Number(ctrl.precision), 0),
+                placeholder: ''
+            });
 
             if (lodash.isNil(ctrl.currentValue) && !lodash.isNil(ctrl.defaultValue)) {
                 ctrl.currentValue = ctrl.defaultValue;
@@ -152,7 +154,7 @@
          */
         function increaseValue() {
             if (lodash.isNil(ctrl.currentValue) || ctrl.currentValue === '') {
-                ctrl.currentValue = 0;
+                ctrl.currentValue = ctrl.minValue;
             } else {
                 ctrl.currentValue = (Number(ctrl.currentValue) + Number(ctrl.valueStep)).toFixed(ctrl.precision);
             }
