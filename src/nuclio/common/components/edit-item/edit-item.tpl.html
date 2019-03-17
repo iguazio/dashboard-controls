@@ -73,7 +73,7 @@
 
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volumeMount.mountPath)">
-                <div class="field-label">Path</div>
+                <div class="field-label">Mount path</div>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-input-name="itemPath"
@@ -81,9 +81,41 @@
                                             data-is-focused="false"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
-                                            data-placeholder-text="Type Path..."
+                                            data-placeholder-text="Type mount path..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="volumeMount.mountPath">
+                </igz-validating-input-field>
+            </div>
+
+            <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volumeMount.subPath)">
+                <div class="field-label">Container name</div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-input-name="containerName"
+                                            data-input-value="$ctrl.containerName"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-is-required="true"
+                                            data-placeholder-text="Type container name..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="containerName">
+                </igz-validating-input-field>
+            </div>
+            <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volumeMount.subPath)">
+                <div class="field-label">Sub path</div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-auto-complete="off"
+                                            data-input-name="containerSubPath"
+                                            data-input-value="$ctrl.containerSubPath"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-is-required="true"
+                                            data-placeholder-text="Type path in container..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="containerSubPath">
                 </igz-validating-input-field>
             </div>
 
@@ -105,15 +137,16 @@
 
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.flexVolume.secretRef.name)">
-                <div class="field-label">Secret name</div>
+                <div class="field-label">Session key</div>
                 <igz-validating-input-field class="nuclio-validating-input"
-                                            data-field-type="input"
+                                            data-field-type="password"
+                                            data-auto-complete="current-password"
                                             data-input-name="secretRef"
                                             data-input-value="$ctrl.item.volume.flexVolume.secretRef.name"
                                             data-is-focused="false"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
-                                            data-placeholder-text="Type secret name..."
+                                            data-placeholder-text="Type session key..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="volume.flexVolume.secretRef.name">
                 </igz-validating-input-field>

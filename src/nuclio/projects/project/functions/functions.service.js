@@ -259,7 +259,7 @@
                     },
                     {
                         id: 'v3ioStream',
-                        name: 'v3io stream',
+                        name: 'V3IO stream',
                         url: 'string',
                         username: 'string',
                         password: 'string',
@@ -374,7 +374,7 @@
                 binding: [
                     {
                         id: 'v3io',
-                        name: 'v3io',
+                        name: 'V3IO',
                         url: 'string',
                         attributes: [
                             {
@@ -446,7 +446,7 @@
                 volume: [
                     {
                         id: 'v3io',
-                        name: 'v3io'
+                        name: 'V3IO'
                     },
                     {
                         id: 'hostPath',
