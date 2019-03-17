@@ -33,14 +33,14 @@
                                     </igz-validating-input-field>
                                 </div>
                                 <div class="code-entry-col code-entry-button-col"
-                                     data-ng-if="$ctrl.selectedEntryType.name === 'Upload archive'">
+                                     data-ng-if="$ctrl.selectedEntryType.id === 'archive'">
                                     <button class="igz-button-primary upload-button">
                                         <span>UPLOAD</span>
                                         <i class="igz-icon-upload"></i>
                                     </button>
                                 </div>
                                 <div class="code-entry-col code-entry-theme-col"
-                                     data-ng-if="$ctrl.selectedEntryType.name === 'Edit online' && $ctrl.isDemoMode()">
+                                     data-ng-if="$ctrl.selectedEntryType.id === 'sourceCode' && $ctrl.isDemoMode()">
                                     <div class="col-label runtime">Theme</div>
                                     <igz-default-dropdown data-values-array="$ctrl.themesArray"
                                                           data-item-select-callback="$ctrl.selectThemeValue(item, isItemChanged, field)"
@@ -48,21 +48,9 @@
                                                           data-on-close-dropdown="$ctrl.onCloseDropdown()"></igz-default-dropdown>
                                 </div>
                             </div>
-                            <div ng-if="$ctrl.selectedEntryType.name === 'S3 URL'" class="code-entry-row">
-                                <div class="code-entry-col code-entry-url-col">
-                                    <div class="col-label handler">URL</div>
-                                    <igz-validating-input-field data-field-type="input"
-                                                                data-input-name="url"
-                                                                data-input-value="$ctrl.URL"
-                                                                data-update-data-callback=""
-                                                                data-form-object="$ctrl.versionCodeForm"
-                                                                data-placeholder-text="Type path...">
-                                    </igz-validating-input-field>
-                                </div>
-                            </div>
                         </div>
 
-                        <div data-ng-if="$ctrl.selectedEntryType.name === 'Edit online'"
+                        <div data-ng-if="$ctrl.selectedEntryType.id === 'sourceCode'"
                              class="code-edit-section">
                             <div class="code-editor-drop-zone"></div>
                             <ncl-monaco class="monaco-code-editor"
@@ -76,7 +64,7 @@
                             </ncl-monaco>
                         </div>
 
-                        <div data-ng-if="$ctrl.selectedEntryType.name === 'Image'"
+                        <div data-ng-if="$ctrl.selectedEntryType.id === 'image'"
                              class="ncl-code-entry-url">
                             <div class="field-label">URL</div>
                             <igz-validating-input-field data-field-type="input"
@@ -92,7 +80,7 @@
                             </igz-validating-input-field>
                         </div>
 
-                        <div data-ng-if="$ctrl.selectedEntryType.name === 'Archive' || $ctrl.selectedEntryType.name === 'Jar'"
+                        <div data-ng-if="$ctrl.selectedEntryType.id === 'archive' || $ctrl.selectedEntryType.id === 'jar'"
                              class="ncl-code-entry-url">
                             <div class="field-label">URL</div>
                             <igz-validating-input-field data-field-type="input"
@@ -101,14 +89,14 @@
                                                         data-is-focused="true"
                                                         data-form-object="$ctrl.versionCodeForm"
                                                         data-validation-is-required="true"
-                                                        data-placeholder-text="Type path..."
+                                                        data-placeholder-text="For example: http://example.com:1234/path/to/file"
                                                         data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                         data-update-data-field="spec.build.path"
                                                         class="nuclio-validating-input">
                             </igz-validating-input-field>
                         </div>
 
-                        <div data-ng-if="$ctrl.selectedEntryType.name === 'Archive'"
+                        <div data-ng-if="$ctrl.selectedEntryType.id === 'archive'"
                              class="ncl-code-entry-url">
                             <div class="field-label">Work Dir</div>
                             <igz-validating-input-field data-field-type="input"
@@ -117,7 +105,7 @@
                                                         data-is-focused="false"
                                                         data-form-object="$ctrl.versionCodeForm"
                                                         data-validation-is-required="false"
-                                                        data-placeholder-text="For example: /path/to/functions"
+                                                        data-placeholder-text="For example: /path/to/functions/in/archive"
                                                         data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                         data-update-data-field="spec.build.codeEntryAttributes.workDir"
                                                         class="nuclio-validating-input">
@@ -126,18 +114,18 @@
                             <div class="field-label">Session key</div>
                             <igz-validating-input-field data-field-type="password"
                                                         data-input-name="sessionKey"
-                                                        data-input-value="$ctrl.version.spec.build.codeEntryAttributes.headers.xV3IoSessionKey"
+                                                        data-input-value="$ctrl.version.spec.build.codeEntryAttributes.headers['X-V3io-Session-Key']"
                                                         data-is-focused="false"
                                                         data-form-object="$ctrl.versionCodeForm"
                                                         data-validation-is-required="false"
-                                                        data-placeholder-text="Type session key"
+                                                        data-placeholder-text="Type session key..."
                                                         data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                        data-update-data-field="spec.build.codeEntryAttributes.headers.xV3IoSessionKey"
+                                                        data-update-data-field="spec.build.codeEntryAttributes.headers['X-V3io-Session-Key']"
                                                         class="nuclio-validating-input">
                             </igz-validating-input-field>
                         </div>
 
-                        <div data-ng-if="$ctrl.selectedEntryType.name === 'GitHub'"
+                        <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
                              class="ncl-code-entry-url">
                             <div class="field-label">URL</div>
                             <igz-validating-input-field data-field-type="input"
@@ -153,7 +141,7 @@
                             </igz-validating-input-field>
                         </div>
 
-                        <div data-ng-if="$ctrl.selectedEntryType.name === 'GitHub'"
+                        <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
                              class="ncl-code-entry-url">
                             <div class="field-label">Branch</div>
                             <igz-validating-input-field data-field-type="input"
@@ -169,7 +157,7 @@
                             </igz-validating-input-field>
                         </div>
 
-                        <div data-ng-if="$ctrl.selectedEntryType.name === 'GitHub'"
+                        <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
                              class="ncl-code-entry-url">
                             <div class="field-label">Work Dir</div>
                             <igz-validating-input-field data-field-type="input"
