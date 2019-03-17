@@ -18,8 +18,10 @@
         var ctrl = this;
 
         ctrl.classList = [];
-        ctrl.selectedClass = {};
+        ctrl.containerName = '';
+        ctrl.containerSubPath = '';
         ctrl.editItemForm = {};
+        ctrl.selectedClass = {};
 
         ctrl.scrollConfig = {
             axis: 'y',
@@ -88,12 +90,6 @@
         function onInit() {
             ctrl.placeholder = getPlaceholder();
 
-            $document.on('click', function (event) {
-                if (!lodash.isNil(ctrl.editItemForm)) {
-                    onSubmitForm(event);
-                }
-            });
-
             ctrl.classList = FunctionsService.getClassesList(ctrl.type);
             if (!lodash.isEmpty(ctrl.item.kind)) {
                 ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
@@ -117,6 +113,12 @@
 
                 if (!lodash.isNil(selectedTypeName)) {
                     ctrl.selectedClass = lodash.find(ctrl.classList, ['id', selectedTypeName]);
+                }
+
+                if (selectedTypeName === 'v3io') {
+                    var subPathParts = lodash.get(ctrl.item, 'volumeMount.subPath', '/').split('/');
+                    ctrl.containerName = subPathParts[0];
+                    ctrl.containerSubPath = subPathParts[1];
                 }
             }
 
@@ -198,7 +200,7 @@
                     .value();
             }
 
-            if (ctrl.isTriggerType() && isv3ioTrigger()) {
+            if (ctrl.isTriggerType() && isV3ioTrigger()) {
                 lodash.defaults(ctrl.item, {
                     username: '',
                     password: ''
@@ -253,6 +255,11 @@
          * Post linking method
          */
         function postLink() {
+            $document.on('click', function (event) {
+                if (!lodash.isNil(ctrl.editItemForm)) {
+                    onSubmitForm(event);
+                }
+            });
 
             // Bind DOM-related preventDropdownCutOff method to component's controller
             PreventDropdownCutOffService.preventDropdownCutOff($element, '.three-dot-menu');
@@ -547,6 +554,12 @@
             if (ctrl.isVolumeType() && field === 'name') {
                 lodash.set(ctrl.item, 'volumeMount.name', newData);
                 lodash.set(ctrl.item, 'volume.name', newData);
+            } else if (ctrl.isVolumeType() && field === 'containerName') {
+                ctrl.containerName = newData;
+                lodash.set(ctrl.item, 'volumeMount.subPath', ctrl.containerName + '/' + ctrl.containerSubPath);
+            } else if (ctrl.isVolumeType() && field === 'containerSubPath') {
+                ctrl.containerSubPath = newData;
+                lodash.set(ctrl.item, 'volumeMount.subPath', ctrl.containerName + '/' + ctrl.containerSubPath);
             } else {
                 lodash.set(ctrl.item, field, newData);
             }
@@ -674,15 +687,21 @@
 
                     // delete properties of other classes
                     delete ctrl.item.volume.flexVolume;
+                    delete ctrl.item.volumeMount.subPath;
                     delete ctrl.item.volume.secret;
                     delete ctrl.item.volume.configMap;
                 } else if (item.id === 'v3io') {
-                    lodash.defaultsDeep(ctrl.item.volume, {
-                        flexVolume: {
-                            driver: 'v3io/fuse',
-                            secretRef: {
-                                name: ''
+                    lodash.defaultsDeep(ctrl.item, {
+                        volume: {
+                            flexVolume: {
+                                driver: 'v3io/fuse',
+                                secretRef: {
+                                    name: ''
+                                }
                             }
+                        },
+                        volumeMount: {
+                            subPath: ''
                         }
                     });
 
@@ -700,6 +719,7 @@
                     // delete properties of other classes
                     delete ctrl.item.volume.hostPath;
                     delete ctrl.item.volume.flexVolume;
+                    delete ctrl.item.volumeMount.subPath;
                     delete ctrl.item.volume.configMap;
                 } else if (item.id === 'configMap') {
                     lodash.defaultsDeep(ctrl.item.volume, {
@@ -711,6 +731,7 @@
                     // delete properties of other classes
                     delete ctrl.item.volume.hostPath;
                     delete ctrl.item.volume.flexVolume;
+                    delete ctrl.item.volumeMount.subPath;
                     delete ctrl.item.volume.secret;
                 }
 
@@ -1026,10 +1047,10 @@
         }
 
         /**
-         * Checks for `kafka` triggers
+         * Checks for V3IO triggers
          * @returns {boolean}
          */
-        function isv3ioTrigger() {
+        function isV3ioTrigger() {
             return ctrl.selectedClass.id === 'v3ioStream';
         }
     }

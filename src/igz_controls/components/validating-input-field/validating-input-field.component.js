@@ -24,10 +24,12 @@
      * validationIsRequired: input can't be empty
      * validationMaxLength: value should be shorter or equal this value
      * validationPattern: validation with regex
+     * autoComplete: the string to use as a value to the "autocomplete" HTML attribute of the INPUT tag
      */
     angular.module('iguazio.dashboard-controls')
         .component('igzValidatingInputField', {
             bindings: {
+                autoComplete: '@?',
                 compareInputValue: '<?',
                 enterCallback: '<?',
                 fieldType: '@',
