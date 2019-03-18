@@ -370,9 +370,10 @@
 
         /**
          * Sets current item as selected
+         * @param {Object} event
          * @param {Object} item - current item
          */
-        function selectItem(item) {
+        function selectItem(event, item) {
             if (!item.disabled) {
                 var previousItem = angular.copy(ctrl.selectedItem);
 
@@ -398,6 +399,7 @@
 
                 ctrl.isDropdownContainerShown = false;
             }
+            event.stopPropagation();
         }
 
         /**
