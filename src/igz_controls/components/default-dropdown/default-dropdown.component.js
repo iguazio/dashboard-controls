@@ -347,7 +347,7 @@
                 case EventHelperService.SPACE:
                 case EventHelperService.ENTER:
                     dropdownField.focus();
-                    ctrl.selectItem(item);
+                    ctrl.selectItem(item, event);
                     break;
                 case EventHelperService.ESCAPE:
                 case EventHelperService.TABKEY:
@@ -370,10 +370,10 @@
 
         /**
          * Sets current item as selected
-         * @param {Object} event
          * @param {Object} item - current item
+         * @param {Object} event
          */
-        function selectItem(event, item) {
+        function selectItem(item, event) {
             if (!item.disabled) {
                 var previousItem = angular.copy(ctrl.selectedItem);
 
@@ -399,7 +399,9 @@
 
                 ctrl.isDropdownContainerShown = false;
             }
-            event.stopPropagation();
+            if (!lodash.isNil(event)) {
+                event.stopPropagation();
+            }
         }
 
         /**
