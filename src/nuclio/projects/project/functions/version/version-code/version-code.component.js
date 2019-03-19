@@ -18,6 +18,7 @@
         var testPaneWidth = 650;
         var isAnimationCompleted = true;
 
+        ctrl.githubToken = '';
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -58,12 +59,15 @@
             {
                 id: 'archive',
                 visible: true,
-                name: 'Archive',
+                name: 'Archive in V3IO',
                 defaultValues: {
                     spec: {
                         build: {
                             path: '',
                             codeEntryAttributes: {
+                                headers: {
+                                    'X-V3io-Session-Key': ''
+                                },
                                 workDir: ''
                             }
                         }
@@ -80,6 +84,9 @@
                             path: '',
                             codeEntryAttributes: {
                                 branch: '',
+                                headers: {
+                                    'Authorization': ''
+                                },
                                 workDir: ''
                             }
                         }
@@ -118,6 +125,7 @@
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.inputValueCallback = inputValueCallback;
+        ctrl.onChangeGithubToken = onChangeGithubToken;
         ctrl.onChangeSourceCode = onChangeSourceCode;
         ctrl.selectEntryTypeValue = selectEntryTypeValue;
         ctrl.selectRuntimeValue = selectRuntimeValue;
@@ -142,6 +150,16 @@
 
             if (lodash.has(ctrl.version, 'spec.build.codeEntryType')) {
                 ctrl.selectedEntryType = lodash.find(ctrl.codeEntryTypeArray, ['id', ctrl.version.spec.build.codeEntryType]);
+                if (ctrl.selectedEntryType.id === 'github') {
+                    ctrl.githubToken = lodash.chain(ctrl.version.spec.build)
+                        .get('codeEntryAttributes.headers', {})
+                        .find(function (value, key) {
+                            return key.toLowerCase() === 'authorization'
+                        })
+                        .defaultTo('token ')
+                        .value()
+                        .split(/\s+/g)[1];
+                }
             } else {
                 ctrl.selectedEntryType = ctrl.codeEntryTypeArray[0];
                 lodash.set(ctrl.version, 'spec.build.codeEntryType', ctrl.selectedEntryType.id);
@@ -240,6 +258,12 @@
             VersionHelperService.updateIsVersionChanged(ctrl.version);
         }
 
+        function onChangeGithubToken(newData) {
+            ctrl.githubToken = newData;
+            lodash.unset(ctrl.version, 'spec.build.codeEntryAttributes.headers.authorization');
+            lodash.set(ctrl.version, 'spec.build.codeEntryAttributes.headers.Authorization', 'token ' + newData);
+        }
+
         /**
          * Changes function`s source code
          * @param {string} sourceCode
@@ -278,7 +302,8 @@
          * Extracts a file name from a provided path
          * @param {string} path - the path including a file name (delimiters: '/' or '\' or both, can be consecutive)
          * @param {boolean} [includeExtension=true] - set to `true` to include extension, or `false` to exclude it
-         * @param {boolean} [onlyExtension=false] - set to `true` to include extension only, or `false` to include file name
+         * @param {boolean} [onlyExtension=false] - set to `true` to include extension only, or `false` to include file
+         *     name
          * @returns {string} the file name at the end of the given path with or without its extension (depending on the
          *     value of `extension` parameter)
          *

@@ -91,7 +91,7 @@
 
                         <div data-ng-if="$ctrl.selectedEntryType.id === 'archive'"
                              class="ncl-code-entry-url">
-                            <div class="field-label">Work Dir</div>
+                            <div class="field-label">Work dir</div>
                             <igz-validating-input-field data-field-type="input"
                                                         data-input-name="archiveWorkDir"
                                                         data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir"
@@ -104,7 +104,7 @@
                                                         class="nuclio-validating-input">
                             </igz-validating-input-field>
 
-                            <div class="field-label">Session key</div>
+                            <div class="field-label">Access key</div>
                             <igz-validating-input-field data-field-type="password"
                                                         data-input-name="sessionKey"
                                                         data-input-value="$ctrl.version.spec.build.codeEntryAttributes.headers['X-V3io-Session-Key']"
@@ -136,6 +136,21 @@
 
                         <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
                              class="ncl-code-entry-url">
+                            <div class="field-label">Token</div>
+                            <igz-validating-input-field data-field-type="input"
+                                                        data-input-name="githubToken"
+                                                        data-input-value="$ctrl.githubToken"
+                                                        data-is-focused="false"
+                                                        data-form-object="$ctrl.versionCodeForm"
+                                                        data-validation-is-required="false"
+                                                        data-placeholder-text="For example: 22e3ce5d1aad5e3b88db76df133674ae6da24591"
+                                                        data-update-data-callback="$ctrl.onChangeGithubToken(newData)"
+                                                        class="nuclio-validating-input">
+                            </igz-validating-input-field>
+                        </div>
+
+                        <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
+                             class="ncl-code-entry-url">
                             <div class="field-label">Branch</div>
                             <igz-validating-input-field data-field-type="input"
                                                         data-input-name="githubBranch"
@@ -152,7 +167,7 @@
 
                         <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
                              class="ncl-code-entry-url">
-                            <div class="field-label">Work Dir</div>
+                            <div class="field-label">Work dir</div>
                             <igz-validating-input-field data-field-type="input"
                                                         data-input-name="githubWorkDir"
                                                         data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir"
