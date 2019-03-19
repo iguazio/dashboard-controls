@@ -111,6 +111,12 @@
                             ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
                         }
 
+                        if (lodash.has(importedFunction, 'spec.build.commands')) {
+                            lodash.forEach(importedFunction.spec.build.commands, function (command, index) {
+                                importedFunction.spec.build.commands[index] = command.replace(/'/g, '\'\'');
+                            })
+                        }
+
                         $state.go('app.project.function.edit.code', {
                             isNewFunction: true,
                             id: ctrl.project.metadata.name,
