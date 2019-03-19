@@ -177,17 +177,13 @@
          */
         function inputGpuValueCallback(newData, field) {
             if (angular.isNumber(newData)) {
-                if (isRequestsInput(field)) {
-                    ctrl.requestsGpuValue = newData;
-                } else {
-                    ctrl.limitsGpuValue = newData;
-                }
+                ctrl.limitsGpuValue = newData;
 
                 lodash.set(ctrl.version, ['spec', 'resources', field, 'nvidia.com/gpu'], String(newData));
                 ctrl.onChangeCallback();
             } else {
                 lodash.unset(ctrl.version, ['spec', 'resources', field, 'nvidia.com/gpu']);
-                ctrl[isRequestsInput(field) ? 'requestsGpuValue' : 'limitsGpuValue'] = null;
+                ctrl.limitsGpuValue = null;
             }
         }
 
@@ -398,7 +394,6 @@
             ctrl.limitsMemoryValue   = parseValue(limitsMemory);
             ctrl.requestsCpuValue    = parseValue(requestsCpu);
             ctrl.limitsCpuValue      = parseValue(limitsCpu);
-            ctrl.requestsGpuValue    = parseValue(requestsGpu);
             ctrl.limitsGpuValue      = parseValue(limitsGpu);
 
             // get size unit from memory values into int or set default, example: '15G' -> 'G'
