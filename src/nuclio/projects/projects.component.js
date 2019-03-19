@@ -29,7 +29,7 @@
             },
             {
                 id: 'importProject',
-                name: 'Import project'
+                name: 'Import project(s)'
             }
         ];
         ctrl.checkedItemsCount = 0;
@@ -206,7 +206,7 @@
          * @param {File} file
          */
         function importProject(file) {
-            ImportService.importProject(file)
+            ImportService.importFile(file)
                 .then(updateProjects);
         }
 
