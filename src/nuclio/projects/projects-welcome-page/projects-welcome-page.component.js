@@ -38,7 +38,7 @@
          * @param {File} file
          */
         function importProject(file) {
-            ImportService.importProject(file)
+            ImportService.importFile(file)
                 .then(function () {
                     $state.go('app.projects');
                 });
