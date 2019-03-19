@@ -52,7 +52,7 @@
          */
         function onInit() {
             ctrl.build.commands = lodash.get(ctrl.version, 'spec.build.commands', []);
-            ctrl.build.commands = ctrl.build.commands.join('\n');
+            ctrl.build.commands = ctrl.build.commands.join('\n').replace(/''/g, '\'');
 
             ctrl.build.dependencies = lodash.get(ctrl.version, 'spec.build.dependencies', []).join('\n');
             ctrl.build.runtimeAttributes.repositories = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories', []).join('\n');
