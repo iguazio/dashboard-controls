@@ -59,7 +59,7 @@
             {
                 id: 'archive',
                 visible: true,
-                name: 'Archive in V3IO',
+                name: 'Archive',
                 defaultValues: {
                     spec: {
                         build: {
