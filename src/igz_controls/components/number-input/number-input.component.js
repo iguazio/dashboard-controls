@@ -65,6 +65,8 @@
     function IgzNumberInputController($timeout, $element, lodash, FormValidationService) {
         var ctrl = this;
 
+        var firstValidValue;
+
         ctrl.numberInputChanged = false;
         ctrl.numberInputValid = true;
 
@@ -94,7 +96,8 @@
                 validationIsRequired: false,
                 allowEmptyField: false,
                 defaultValue: null,
-                minValue: 0,
+                minValue: -Infinity,
+                maxValue: Infinity,
                 precision: lodash.defaultTo(Number(ctrl.precision), 0),
                 placeholder: ''
             });
@@ -102,6 +105,8 @@
             if (lodash.isNil(ctrl.currentValue) && !lodash.isNil(ctrl.defaultValue)) {
                 ctrl.currentValue = ctrl.defaultValue;
             }
+
+            firstValidValue = Math.max(ctrl.minValue, ctrl.maxValue) < 0 ? ctrl.maxValue : ctrl.minValue;
         }
 
         /**
@@ -136,33 +141,29 @@
         }
 
         /**
-         * Method subtracts value from current value in input or sets current value to 0 it is below 0
+         * Method subtracts value from current value in input
          */
         function decreaseValue() {
-            if (!lodash.isNil(ctrl.currentValue)) {
-                ctrl.currentValue = Math.max(Number(ctrl.currentValue) - Number(ctrl.valueStep), 0).toFixed(ctrl.precision);
+            var nextValue = isCurrentValueEmpty() ? -Number(ctrl.valueStep) :
+                                                    -Number(ctrl.valueStep) + Number(ctrl.currentValue);
 
-                if (angular.isDefined(ctrl.formObject) && ctrl.currentValue !== 0) {
-                    ctrl.formObject[ctrl.inputName].$setViewValue(ctrl.currentValue.toString());
-                    ctrl.formObject[ctrl.inputName].$render();
-                }
-            }
+            // when input is empty set firstValidValue
+            ctrl.currentValue = lodash.defaultTo(getDecreasedValue(nextValue), firstValidValue);
+
+            renderInput(ctrl.currentValue !== nextValue);
         }
 
         /**
          * Method adds value to current value in input
          */
         function increaseValue() {
-            if (lodash.isNil(ctrl.currentValue) || ctrl.currentValue === '') {
-                ctrl.currentValue = ctrl.minValue;
-            } else {
-                ctrl.currentValue = (Number(ctrl.currentValue) + Number(ctrl.valueStep)).toFixed(ctrl.precision);
-            }
+            var nextValue = isCurrentValueEmpty() ? Number(ctrl.valueStep) :
+                                                    Number(ctrl.valueStep) + Number(ctrl.currentValue);
 
-            if (angular.isDefined(ctrl.formObject)) {
-                ctrl.formObject[ctrl.inputName].$setViewValue(ctrl.currentValue.toString());
-                ctrl.formObject[ctrl.inputName].$render();
-            }
+            // when input is empty set firstValidValue
+            ctrl.currentValue = lodash.defaultTo(getIncreasedValue(nextValue), firstValidValue);
+
+            renderInput(ctrl.currentValue !== nextValue);
         }
 
         /**
@@ -225,6 +226,68 @@
         //
 
         /**
+         * Checks if `nextValue` is inside the range [ctrl.minValue, ctrl.maxValue].
+         * Returns valid value.
+         * @param {number} nextValue
+         * @returns {number|null}
+         */
+        function getDecreasedValue(nextValue) {
+            var validValue = ctrl.currentValue;
+
+            // range is [ctrl.minValue, ctrl.maxValue]
+            if (lodash.inRange(nextValue, ctrl.minValue, ctrl.maxValue)) {
+                // nextValue is inside range --> valid --> nextValue
+                validValue = nextValue;
+            } else if (lodash.inRange(nextValue, ctrl.maxValue, Infinity)) {
+                // nextValue is to right of the range --> not valid --> end of range
+                validValue = ctrl.maxValue;
+            } else if (lodash.inRange(nextValue, ctrl.minValue, ctrl.minValue - Number(ctrl.valueStep))) {
+                // nextValue is to left of the range, but not more then ctrl.valueStep --> not valid --> start of range
+                validValue = ctrl.minValue;
+            }
+
+            // other cases --> nothing changes
+            // when input is empty, ctrl.currentValue is null --> return null
+
+            return validValue;
+        }
+
+        /**
+         * Checks if `nextValue` is inside the range [ctrl.minValue, ctrl.maxValue].
+         * Returns valid value.
+         * @param {number} nextValue
+         * @returns {number|null}
+         */
+        function getIncreasedValue(nextValue) {
+            var validValue = ctrl.currentValue;
+
+            // range is [ctrl.minValue, ctrl.maxValue]
+            if (lodash.inRange(nextValue, ctrl.minValue, ctrl.maxValue)) {
+                // nextValue is inside range --> valid --> nextValue
+                validValue = nextValue;
+            } else if (lodash.inRange(nextValue, -Infinity, ctrl.minValue)) {
+                // nextValue is to the left of the range --> not valid --> start of range
+                validValue = ctrl.minValue;
+            } else if (lodash.inRange(nextValue, ctrl.maxValue, ctrl.maxValue + Number(ctrl.valueStep))) {
+                // nextValue is to right of the range, but not more then ctrl.valueStep --> not valid --> end of range
+                validValue = ctrl.maxValue;
+            }
+
+            // other cases --> nothing changes
+            // when input is empty, ctrl.currentValue is null --> return null
+
+            return validValue;
+        }
+
+        /**
+         * Checks if current value is empty (empty input)
+         * @returns {boolean}
+         */
+        function isCurrentValueEmpty() {
+            return lodash.isNil(ctrl.currentValue) || ctrl.currentValue === '';
+        }
+
+        /**
          * Handles any changes of current value
          */
         function onCurrentValueChange() {
@@ -232,6 +295,20 @@
             $timeout(function () {
                 lodash.get(ctrl, 'onChange', angular.noop)(ctrl.checkInvalidation());
             });
+        }
+
+        /**
+         * Set new value after increase/decrease to input and render it
+         * @param {boolean} focus. Whether focus input.
+         */
+        function renderInput(focus) {
+            if (angular.isDefined(ctrl.formObject)) {
+                ctrl.formObject[ctrl.inputName].$setViewValue(ctrl.currentValue.toFixed(ctrl.precision));
+                ctrl.formObject[ctrl.inputName].$render();
+                if (focus) {
+                    $element.find('input').focus();
+                }
+            }
         }
 
         /**
