@@ -12,14 +12,14 @@
                         Type
                     </div>
                     <div class="igz-col-70 common-table-cell">
-                        Path
+                        Mount Path & Params
                     </div>
                 </div>
 
                 <div class="common-table-body">
                     <div data-ng-if="!$ctrl.isScrollNeeded()"
                          class="igz-scrollable-container">
-                        <ncl-collapsing-row data-ng-repeat="volume in $ctrl.volumes track by $index"
+                        <ncl-collapsing-row data-ng-repeat="volume in $ctrl.volumes"
                                             data-item="volume"
                                             data-type="volume"
                                             data-list-class="ncl-version-configuration-volumes"
@@ -34,7 +34,7 @@
                          class="igz-scrollable-container scrollable-volumes"
                          data-ng-scrollbars
                          data-ng-scrollbars-config="$ctrl.scrollConfig">
-                        <ncl-collapsing-row data-ng-repeat="volume in $ctrl.volumes track by $index"
+                        <ncl-collapsing-row data-ng-repeat="volume in $ctrl.volumes"
                                             data-item="volume"
                                             data-type="volume"
                                             data-list-class="scrollable-volumes"

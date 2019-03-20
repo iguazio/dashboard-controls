@@ -18,8 +18,6 @@
         var ctrl = this;
 
         ctrl.classList = [];
-        ctrl.containerName = '';
-        ctrl.containerSubPath = '';
         ctrl.editItemForm = {};
         ctrl.selectedClass = {};
 
@@ -113,12 +111,6 @@
 
                 if (!lodash.isNil(selectedTypeName)) {
                     ctrl.selectedClass = lodash.find(ctrl.classList, ['id', selectedTypeName]);
-                }
-
-                if (selectedTypeName === 'v3io') {
-                    var subPathParts = lodash.get(ctrl.item, 'volumeMount.subPath', '/').split('/');
-                    ctrl.containerName = subPathParts[0];
-                    ctrl.containerSubPath = subPathParts[1];
                 }
             }
 
@@ -554,12 +546,6 @@
             if (ctrl.isVolumeType() && field === 'name') {
                 lodash.set(ctrl.item, 'volumeMount.name', newData);
                 lodash.set(ctrl.item, 'volume.name', newData);
-            } else if (ctrl.isVolumeType() && field === 'containerName') {
-                ctrl.containerName = newData;
-                lodash.set(ctrl.item, 'volumeMount.subPath', ctrl.containerName + '/' + ctrl.containerSubPath);
-            } else if (ctrl.isVolumeType() && field === 'containerSubPath') {
-                ctrl.containerSubPath = newData;
-                lodash.set(ctrl.item, 'volumeMount.subPath', ctrl.containerName + '/' + ctrl.containerSubPath);
             } else {
                 lodash.set(ctrl.item, field, newData);
             }
@@ -687,21 +673,19 @@
 
                     // delete properties of other classes
                     delete ctrl.item.volume.flexVolume;
-                    delete ctrl.item.volumeMount.subPath;
                     delete ctrl.item.volume.secret;
                     delete ctrl.item.volume.configMap;
-                } else if (item.id === 'v3io') {
+                } else if (item.id === 'v3io') { // see https://github.com/v3io/flex-fuse
                     lodash.defaultsDeep(ctrl.item, {
                         volume: {
                             flexVolume: {
                                 driver: 'v3io/fuse',
-                                secretRef: {
-                                    name: ''
+                                options: {
+                                    accessKey: '',
+                                    container: '',
+                                    subPath: ''
                                 }
                             }
-                        },
-                        volumeMount: {
-                            subPath: ''
                         }
                     });
 
@@ -719,7 +703,6 @@
                     // delete properties of other classes
                     delete ctrl.item.volume.hostPath;
                     delete ctrl.item.volume.flexVolume;
-                    delete ctrl.item.volumeMount.subPath;
                     delete ctrl.item.volume.configMap;
                 } else if (item.id === 'configMap') {
                     lodash.defaultsDeep(ctrl.item.volume, {
@@ -731,7 +714,6 @@
                     // delete properties of other classes
                     delete ctrl.item.volume.hostPath;
                     delete ctrl.item.volume.flexVolume;
-                    delete ctrl.item.volumeMount.subPath;
                     delete ctrl.item.volume.secret;
                 }
 
@@ -1039,8 +1021,8 @@
          */
         function getPlaceholder() {
             var placeholders = {
-                volume: 'Please select a volume',
-                default: 'Please select a class'
+                volume: 'Select type',
+                default: 'Select class'
             };
 
             return lodash.get(placeholders, ctrl.type, placeholders.default);

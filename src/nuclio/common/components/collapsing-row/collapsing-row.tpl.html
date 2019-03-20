@@ -7,20 +7,24 @@
         </div>
 
         <div data-ng-show="!$ctrl.item.ui.editModeActive" class="igz-row common-table-cells-container item-row">
+
+            <!-- Name -->
             <div class="text-ellipsis item-name" data-ng-if="!$ctrl.isNil($ctrl.item.name)">
                 {{$ctrl.item.name}}
             </div>
             <div class="text-ellipsis item-name" data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.name)">
                 {{ $ctrl.item.volumeMount.name }}
             </div>
+
+            <!-- Class/type -->
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.ui.className)">
                 {{$ctrl.item.ui.className}}
             </div>
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)">
                 Host path
             </div>
-            <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.secretRef.name)">
-                v3io
+            <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume)">
+                V3IO
             </div>
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.secret.secretName)">
                 Secret
@@ -29,6 +33,7 @@
                 Config map
             </div>
 
+            <!-- Custom info -->
             <div class="igz-col-70 item-info">
                 <div data-ng-hide="$ctrl.item.ui.editModeActive" class="collapsed-item-info-block">
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.url)">
@@ -58,13 +63,19 @@
 
                     <!-- type Volume block -->
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.mountPath)">
-                        <span class="field-label">Path</span>:&nbsp;{{ $ctrl.item.volumeMount.mountPath }};&nbsp;
+                        <span class="field-label">Mount Path</span>:&nbsp;{{ $ctrl.item.volumeMount.mountPath }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)">
-                        <span class="field-label">Host path</span>:&nbsp;{{ $ctrl.item.volume.hostPath }};&nbsp;
+                        <span class="field-label">Host path</span>:&nbsp;{{ $ctrl.item.volume.hostPath.path }};&nbsp;
                     </span>
-                    <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.secretRef.name)">
-                        <span class="field-label">Secret name</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.secretRef.name }};&nbsp;
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.accessKey)">
+                        <span class="field-label">Access key</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.accessKey }};&nbsp;
+                    </span>
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.container)">
+                        <span class="field-label">Container name</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.container }};&nbsp;
+                    </span>
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.subPath)">
+                        <span class="field-label">Sub path</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.subPath }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.secret.secretName)">
                         <span class="field-label">Secret name</span>:&nbsp;{{ $ctrl.item.volume.secret.secretName }};&nbsp;
