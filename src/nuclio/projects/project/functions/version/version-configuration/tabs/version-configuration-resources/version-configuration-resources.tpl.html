@@ -15,7 +15,7 @@
                                           data-input-name="requestMemory"
                                           data-update-number-input-callback="$ctrl.memoryInputCallback(newData, field)"
                                           data-update-number-input-field="spec.resources.requests.memory"
-                                          data-min-value="0"
+                                          data-min-value="1"
                                           data-current-value="$ctrl.requestsMemoryValue;"
                                           data-value-step="1"></igz-number-input>
                     </div>
@@ -34,6 +34,7 @@
                                           data-validation-is-required="false"
                                           data-form-object="$ctrl.resourcesForm"
                                           data-input-name="limitsMemory"
+                                          data-min-value="1"
                                           data-update-number-input-callback="$ctrl.memoryInputCallback(newData, field)"
                                           data-update-number-input-field="spec.resources.limits.memory"
                                           data-current-value="$ctrl.limitsMemoryValue;"
@@ -119,6 +120,46 @@
                 </div>
             </div>
 
+            <div class="igz-row form-row range-inputs-row">
+                <div class="igz-col-10 row-title">
+                    Replicas
+                </div>
+                <div class="igz-col-40 input-wrapper">
+                    <div class="input-title">Min</div>
+                    <div class="row-input replicas-number-input">
+                        <igz-number-input data-form-object="$ctrl.resourcesForm"
+                                          data-input-name="minReplicas"
+                                          data-current-value="$ctrl.minReplicas"
+                                          data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
+                                          data-update-number-input-field="minReplicas"
+                                          data-allow-empty-field="true"
+                                          data-placeholder=""
+                                          data-decimal-number="0"
+                                          data-value-step="1"
+                                          data-validation-is-required="true"
+                                          data-min-value="0"
+                                          data-max-value="$ctrl.maxReplicas"></igz-number-input>
+                    </div>
+                </div>
+
+                <div class="igz-col-40 input-wrapper">
+                    <div class="input-title">Max</div>
+                    <div class="row-input replicas-number-input">
+                        <igz-number-input data-form-object="$ctrl.resourcesForm"
+                                          data-input-name="maxReplicas"
+                                          data-current-value="$ctrl.maxReplicas"
+                                          data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
+                                          data-update-number-input-field="maxReplicas"
+                                          data-allow-empty-field="true"
+                                          data-placeholder=""
+                                          data-decimal-number="0"
+                                          data-value-step="1"
+                                          data-validation-is-required="true"
+                                          data-min-value="$ctrl.minReplicas"></igz-number-input>
+                    </div>
+                </div>
+            </div>
+
             <div class="igz-row form-row range-inputs-row slider-block">
                 <div class="igz-col-10 row-title target-cpu-title">Target CPU</div>
                 <div class="slider-row">
@@ -133,45 +174,6 @@
                                             data-tooltip-placement="bottom"
                                             data-tooltip-popup-delay="500"
                                             data-allow-full-range="true"></igz-slider-input-block>
-                </div>
-            </div>
-
-            <div class="replicas-block form-row">
-                <div class="label igz-col-100">
-                    Replicas
-                </div>
-                <div class="replicas-values">
-                    <div class="inputs igz-col-40">
-                        <igz-number-input data-form-object="$ctrl.resourcesForm"
-                                          data-input-name="minReplicas"
-                                          data-current-value="$ctrl.minReplicas"
-                                          data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
-                                          data-update-number-input-field="minReplicas"
-                                          data-allow-empty-field="true"
-                                          data-placeholder=""
-                                          data-decimal-number="0"
-                                          data-value-step="1"
-                                          data-validation-is-required="true"
-                                          data-min-value="0"
-                                          data-max-value="$ctrl.maxReplicas"></igz-number-input>
-                        <div class="values-label">
-                            min
-                        </div>
-                        <igz-number-input data-form-object="$ctrl.resourcesForm"
-                                          data-input-name="maxReplicas"
-                                          data-current-value="$ctrl.maxReplicas"
-                                          data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
-                                          data-update-number-input-field="maxReplicas"
-                                          data-allow-empty-field="true"
-                                          data-placeholder=""
-                                          data-decimal-number="0"
-                                          data-value-step="1"
-                                          data-validation-is-required="true"
-                                          data-min-value="$ctrl.minReplicas"></igz-number-input>
-                        <div class="values-label">
-                            max
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

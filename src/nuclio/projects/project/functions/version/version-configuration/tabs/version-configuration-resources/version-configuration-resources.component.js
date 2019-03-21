@@ -274,6 +274,7 @@
          */
         function numberInputCallback(newData, field) {
             lodash.set(ctrl.version.spec, field, newData);
+            lodash.set(ctrl, field, newData);
 
             ctrl.onChangeCallback();
         }

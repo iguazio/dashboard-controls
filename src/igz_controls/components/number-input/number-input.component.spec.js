@@ -35,6 +35,7 @@ describe('igzNumberInput component:', function () {
             suffixUnit: unitValue
         };
         var element = angular.element('<igz-number-input></igz-number-input>');
+        spyOn(element, 'find').and.returnValue({focus: angular.noop});
 
         ctrl = $componentController('igzNumberInput', {$element: element}, bindings);
     });
@@ -56,22 +57,122 @@ describe('igzNumberInput component:', function () {
     });
 
     describe('increaseValue(): ', function () {
-        it('should increase current value', function () {
-            expect(ctrl.currentValue).toEqual(stepSecondServiceObjectives.latencyTargetTimeLimit);
+        it('should increase current value when current value is empty', function () {
+            setConfig(4, 10, 1);
             ctrl.increaseValue();
-            expect(Number(ctrl.currentValue)).toEqual(160);
+            expect(ctrl.currentValue).toEqual(4);
+
+            setConfig(-8, -2, 1);
             ctrl.increaseValue();
+            expect(ctrl.currentValue).toEqual(-2);
+
+            setConfig(-4, 1, 2);
             ctrl.increaseValue();
+            expect(ctrl.currentValue).toEqual(1);
+
+            setConfig(2, 10, 3);
             ctrl.increaseValue();
-            expect(Number(ctrl.currentValue)).toEqual(190);
+            expect(ctrl.currentValue).toEqual(3);
+
+            setConfig(0, 10, 1);
+            ctrl.increaseValue();
+            expect(ctrl.currentValue).toEqual(1);
+
+            setConfig(-2, 2, 5);
+            ctrl.increaseValue();
+            expect(ctrl.currentValue).toEqual(2);
+
+            setConfig(0, 1, 1);
+            ctrl.increaseValue();
+            expect(ctrl.currentValue).toEqual(1);
+        });
+
+        it('should increase current value when current value is settled', function () {
+            setConfig(0, 10, 1, -3);
+            ctrl.increaseValue();
+            expect(ctrl.currentValue).toEqual(0);
+
+            setConfig(4, 10, 1, 14);
+            ctrl.increaseValue();
+            expect(ctrl.currentValue).toEqual(14);
+
+            setConfig(-4, 3, 2, 2);
+            ctrl.increaseValue();
+            expect(ctrl.currentValue).toEqual(3);
+
+            setConfig(2, 10, 3, 1);
+            ctrl.increaseValue();
+            expect(ctrl.currentValue).toEqual(4);
+
+            setConfig(0, 10, 1, 0);
+            ctrl.increaseValue();
+            expect(ctrl.currentValue).toEqual(1);
+
+            setConfig(-2, 2, 5, -1);
+            ctrl.increaseValue();
+            expect(ctrl.currentValue).toEqual(2);
         });
     });
 
     describe('decreaseValue(): ', function () {
-        it('should decrease current value', function () {
-            expect(ctrl.currentValue).toEqual(stepSecondServiceObjectives.latencyTargetTimeLimit);
+        it('should decrease current value when current value is empty', function () {
+            setConfig(0, 10, 1);
             ctrl.decreaseValue();
-            expect(Number(ctrl.currentValue)).toEqual(140);
+            expect(ctrl.currentValue).toEqual(0);
+
+            setConfig(4, 10, 1);
+            ctrl.decreaseValue();
+            expect(ctrl.currentValue).toEqual(4);
+
+            setConfig(-8, -2, 1);
+            ctrl.decreaseValue();
+            expect(ctrl.currentValue).toEqual(-2);
+
+            setConfig(-2, 10, 3);
+            ctrl.decreaseValue();
+            expect(ctrl.currentValue).toEqual(-2);
+
+            setConfig(-8, -1, 2);
+            ctrl.decreaseValue();
+            expect(ctrl.currentValue).toEqual(-2);
+
+            setConfig(-2, 2, 1);
+            ctrl.decreaseValue();
+            expect(ctrl.currentValue).toEqual(-1);
+
+            setConfig(-2, 2, 5);
+            ctrl.decreaseValue();
+            expect(ctrl.currentValue).toEqual(-2);
+
+            setConfig(-2, 2, 2);
+            ctrl.decreaseValue();
+            expect(ctrl.currentValue).toEqual(-2);
+        });
+
+        it('should decrease current value when current value is settled', function () {
+            setConfig(0, 10, 1, -3);
+            ctrl.decreaseValue();
+            expect(ctrl.currentValue).toEqual(-3);
+
+            setConfig(4, 10, 1, 14);
+            ctrl.decreaseValue();
+            expect(ctrl.currentValue).toEqual(10);
+
+            setConfig(-4, -1, 2, -3);
+            ctrl.decreaseValue();
+            expect(ctrl.currentValue).toEqual(-4);
+
+            setConfig(2, 10, 3, 12);
+            ctrl.decreaseValue();
+            expect(ctrl.currentValue).toEqual(9);
+
+            setConfig(0, 10, 1, 5);
+            ctrl.decreaseValue();
+            expect(ctrl.currentValue).toEqual(4);
+
+            setConfig(-2, 2, 5, 1);
+            ctrl.decreaseValue();
+            expect(ctrl.currentValue).toEqual(-2);
         });
     });
 
@@ -115,4 +216,13 @@ describe('igzNumberInput component:', function () {
             expect(ctrl.isShowFieldInvalidState).not.toHaveBeenCalled();
         });
     });
+
+    function setConfig(min, max, step, cv) {
+        ctrl.minValue = min;
+        ctrl.maxValue = max;
+        ctrl.valueStep = step;
+        ctrl.currentValue = cv;
+
+        ctrl.$onInit();
+    }
 });
