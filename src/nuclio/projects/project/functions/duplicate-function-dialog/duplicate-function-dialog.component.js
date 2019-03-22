@@ -57,7 +57,9 @@
                         .then(function (response) {
                             if (lodash.isEmpty(lodash.filter(response, ['metadata.name', ctrl.newFunctionName]))) {
                                 ctrl.createFunction({version: newFunction, projectID: projectID})
-                                    .then(ctrl.closeDialog);
+                                    .then(function () {
+                                        ctrl.closeDialog({version: newFunction});
+                                    });
                             } else {
                                 ctrl.nameTakenError = true;
                             }

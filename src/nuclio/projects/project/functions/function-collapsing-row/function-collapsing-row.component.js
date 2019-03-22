@@ -192,7 +192,7 @@
 
         function duplicateFunction() {
             ngDialog.open({
-                template: '<ncl-duplicate-function-dialog data-close-dialog="closeThisDialog()" ' +
+                template: '<ncl-duplicate-function-dialog data-close-dialog="closeThisDialog(version)" ' +
                     'data-create-function="ngDialogData.createFunction({version: version, projectID: projectID})" ' +
                     'data-get-functions="ngDialogData.getFunctions({id: id})" ' +
                     'data-project="ngDialogData.project" data-version="ngDialogData.version">' +
@@ -206,8 +206,10 @@
                 },
                 className: 'ngdialog-theme-iguazio duplicate-function-dialog-wrapper'
             }).closePromise
-                .then(function () {
-                    ctrl.refreshFunctionsList();
+                .then(function (data) {
+                    if (!lodash.isNil(data.value)) {
+                        ctrl.refreshFunctionsList();
+                    }
                 });
         }
 
