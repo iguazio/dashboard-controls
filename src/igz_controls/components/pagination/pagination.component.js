@@ -23,7 +23,7 @@
         ctrl.page = 0;
         ctrl.pages = [];
         ctrl.perPage = null;
-        ctrl.jumpToPagePattern = '^\\d+$';
+        ctrl.jumpToPagePattern = new RegExp('^\\d+$');
 
         ctrl.$onInit = onInit;
 
@@ -228,7 +228,7 @@
         /**
          * Creates a RegExp pattern that validates only numbers in the range from 1 to `upperBound`
          * @param {number} upperBound
-         * @returns {string} a RegExp pattern as a string, that validates a given string to be a number in the range
+         * @returns {RegExp} a RegExp pattern as a string, that validates a given string to be a number in the range
          *     from 1 to `upperBound`, or the empty-string (`''`) if `upperBound` is not of type `number` or if it is
          *     a non-positive number
          */
@@ -254,7 +254,7 @@
                 lastDigits += digit;
             });
             patterns.push(lastDigits + '[0-' + (upperBound % 10) + ']');
-            return '^(' + patterns.join('|') + ')$';
+            return new RegExp('^(' + patterns.join('|') + ')$');
         }
     }
 }());
