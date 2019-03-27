@@ -184,10 +184,12 @@
          * @returns {Object} data for export
          */
         function prepareFunctionData(version) {
-            return {
+
+            // using `angular.fromJson` & `angular.toJson` to easily get rid of `$$hashKey` property in all levels
+            return angular.fromJson(angular.toJson({
                 metadata: lodash.omit(version.metadata, 'namespace'),
                 spec: lodash.omit(version.spec, 'build.noBaseImagesPull')
-            };
+            }));
         }
 
         /**
