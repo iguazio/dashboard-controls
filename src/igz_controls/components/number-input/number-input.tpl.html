@@ -4,11 +4,11 @@
                     {'disabled': $ctrl.isDisabled},
                     {'focused': $ctrl.inputFocused},
                     {'submitted': $ctrl.formObject.$submitted}]">
-    <div class="additional-left-block">
+    <div class="additional-left-block flex-none">
         <span class="prefix-unit" data-ng-show="$ctrl.isShownUnit($ctrl.prefixUnit)">{{$ctrl.prefixUnit}}</span>
     </div>
 
-    <input class="input-field additional-right-padding field"
+    <input class="input-field additional-right-padding field flex-auto"
            data-ng-class="{'additional-left-padding': $ctrl.isShownUnit($ctrl.prefixUnit)}"
            type="text"
            name="{{$ctrl.inputName}}"
@@ -17,6 +17,7 @@
            data-money
            min="{{$ctrl.minValue}}"
            max="{{$ctrl.maxValue}}"
+           size="1"
            placeholder="{{$ctrl.placeholder}}"
            data-precision="{{$ctrl.precision}}"
            data-ng-focus="$ctrl.setFocus()"
@@ -29,9 +30,9 @@
            data-compare-val-unit="$ctrl.validationValueUnit.power"
            data-current-val-unit="$ctrl.currentValueUnit.power">
 
-    <span class="suffix-unit" data-ng-show="$ctrl.isShownUnit($ctrl.suffixUnit)" data-ng-click="$ctrl.onUnitClick()">{{$ctrl.suffixUnit}}</span>
+    <span class="suffix-unit flex-none" data-ng-show="$ctrl.isShownUnit($ctrl.suffixUnit)" data-ng-click="$ctrl.onUnitClick()">{{$ctrl.suffixUnit}}</span>
 
-    <div class="arrow-block">
+    <div class="arrow-block flex-none">
         <span class="igz-icon-dropup" data-ng-click="$ctrl.isDisabled || $ctrl.increaseValue()"></span>
         <span class="igz-icon-dropdown" data-ng-click="$ctrl.isDisabled || $ctrl.decreaseValue()"></span>
     </div>
