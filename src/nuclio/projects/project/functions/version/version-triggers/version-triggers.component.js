@@ -220,7 +220,7 @@
                 });
 
                 if (angular.isDefined(triggerItem.attributes.schedule)) {
-                    triggerItem.attributes.schedule = '* ' + triggerItem.attributes.schedule;
+                    triggerItem.attributes.schedule = '0 ' + triggerItem.attributes.schedule;
                 }
 
                 if (lodash.isEmpty(triggerItem.attributes)) {
