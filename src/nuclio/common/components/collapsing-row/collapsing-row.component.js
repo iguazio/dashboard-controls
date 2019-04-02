@@ -24,6 +24,7 @@
 
         ctrl.isNil = lodash.isNil;
 
+        ctrl.getAttributeValue = getAttributeValue;
         ctrl.isVolumeType = isVolumeType;
         ctrl.onCollapse = onCollapse;
         ctrl.onClickAction = onClickAction;
@@ -59,6 +60,16 @@
         //
         // Public methods
         //
+
+        /**
+         * Returns attribute value
+         * @param {string} key - attribute key
+         * @param {string|Object} value - attribute value
+         * @returns {string|Object}
+         */
+        function getAttributeValue(key, value) {
+            return key === 'schedule' ? '0 ' + value : value;
+        }
 
         /**
          * Checks if input have to be visible for specific item type

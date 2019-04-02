@@ -49,7 +49,7 @@
                         <span class="field-label">Secret</span>:&nbsp;{{ $ctrl.item.secret }};&nbsp;
                     </span>
                     <span data-ng-repeat="(key, value) in $ctrl.item.attributes">
-                        <span class="field-label">{{ key }}</span>:&nbsp;{{ value }};&nbsp;
+                        <span class="field-label">{{ key }}</span>:&nbsp;{{ $ctrl.getAttributeValue(key, value) }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.annotations)">
                         <span class="field-label">Annotations</span>: {{ $ctrl.item.annotations }};
