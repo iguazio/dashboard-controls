@@ -5,15 +5,16 @@
         .component('igzSearchInput', {
             bindings: {
                 dataSet: '<',
+                isSearchHierarchically: '@?',
+                liveSearch: '<?',
+                onSearchSubmit: '&?',
+                placeholder: '@',
+                ruleType: '@?',
+                searchCallback: '&?',
                 searchKeys: '<',
                 searchStates: '<',
-                placeholder: '@',
-                liveSearch: '<?',
-                searchCallback: '&?',
-                isSearchHierarchically: '@?',
-                type: '@?',
-                ruleType: '@?',
-                searchType: '@?'
+                searchType: '@?',
+                type: '@?'
             },
             templateUrl: 'igz_controls/components/search-input/search-input.tpl.html',
             controller: IgzSearchInputController
@@ -22,12 +23,14 @@
     function IgzSearchInputController($scope, $timeout, lodash, SearchHelperService) {
         var ctrl = this;
 
+        ctrl.isInputFocused = false;
         ctrl.isSearchHierarchically = (String(ctrl.isSearchHierarchically) === 'true');
         ctrl.searchQuery = '';
 
         ctrl.$onInit = onInit;
         ctrl.onPressEnter = onPressEnter;
         ctrl.clearInputField = clearInputField;
+        ctrl.toggleInputFocus = toggleInputFocus;
 
         //
         // Hook method
@@ -57,12 +60,16 @@
         //
 
         /**
-         * Initializes search on press enter
+         * Initializes search and apply filters on press enter
          * @param {Event} e
          */
         function onPressEnter(e) {
             if (e.keyCode === 13) {
                 makeSearch();
+
+                if (angular.isFunction(ctrl.onSearchSubmit) && ctrl.isInputFocused) {
+                    ctrl.onSearchSubmit();
+                }
             }
         }
 
@@ -71,6 +78,13 @@
          */
         function clearInputField() {
             ctrl.searchQuery = '';
+        }
+
+        /**
+         * Toggles input focus
+         */
+        function toggleInputFocus() {
+            ctrl.isInputFocused = !ctrl.isInputFocused;
         }
 
         //
