@@ -16,7 +16,7 @@
             controller: FunctionFromTemplateController
         });
 
-    function FunctionFromTemplateController($scope, $state, $timeout, lodash, ngDialog, DialogsService,
+    function FunctionFromTemplateController($window, $scope, $state, $timeout, lodash, ngDialog, DialogsService,
                                             ValidatingPatternsService) {
         var ctrl = this;
         var templatesOriginalObject = {}; // will always save original templates
@@ -42,6 +42,7 @@
 
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
+        ctrl.$onDestroy = onDestroy;
 
         ctrl.validationPatterns = ValidatingPatternsService;
 
@@ -67,6 +68,8 @@
             ctrl.toggleSplashScreen({ value: true });
 
             initFunctionData();
+
+            angular.element($window).on('resize', paginateTemplates);
         }
 
         /**
@@ -77,6 +80,13 @@
             if (angular.isDefined(changes.projects)) {
                 prepareProjects();
             }
+        }
+
+        /**
+         * Destructor
+         */
+        function onDestroy() {
+            angular.element($window).off('resize', paginateTemplates);
         }
 
         //
@@ -388,15 +398,15 @@
         function paginateTemplates() {
 
             // amount of visible items on one page
-            var PAGE_SIZE = 8;
+            var pageSize = $window.innerWidth > 1486 && $window.innerWidth < 1903 ? 9 : 8;
 
             ctrl.templatesWorkingCopy = lodash.chain(templatesOriginalObject)
                 .filter(filterByRuntime)
                 .filter(filterByTitleAndDescription)
                 .thru(function (filteredTemplates) {
-                    ctrl.page.total = Math.ceil(lodash.size(filteredTemplates) / PAGE_SIZE);
+                    ctrl.page.total = Math.ceil(lodash.size(filteredTemplates) / pageSize);
 
-                    return lodash.slice(filteredTemplates, (ctrl.page.number * PAGE_SIZE), (ctrl.page.number * PAGE_SIZE) + PAGE_SIZE);
+                    return lodash.slice(filteredTemplates, (ctrl.page.number * pageSize), (ctrl.page.number * pageSize) + pageSize);
                 })
                 .keyBy(function (template) {
                     return template.rendered.metadata.name.split(':')[0] + ' (' + template.rendered.spec.runtime + ')';
