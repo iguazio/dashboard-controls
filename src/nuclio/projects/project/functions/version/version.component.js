@@ -406,6 +406,8 @@
                                 versionChanged: false
                             };
 
+                            lodash.assign(ctrl.version.spec, response.spec);
+
                             ctrl.getExternalIpAddresses()
                                 .then(setInvocationUrl)
                                 .catch(function () {
