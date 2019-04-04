@@ -202,7 +202,8 @@
          * @returns {boolean}
          */
         function isCounterVisible() {
-            return !ctrl.isDisabled && !ctrl.onlyValidCharacters && !ctrl.hideCounter && !ctrl.readOnly;
+            return !ctrl.isDisabled && !ctrl.onlyValidCharacters && !ctrl.hideCounter && !ctrl.readOnly &&
+                   ctrl.validationMaxLength;
         }
 
         /**
