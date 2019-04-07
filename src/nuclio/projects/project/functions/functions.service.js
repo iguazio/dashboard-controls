@@ -449,10 +449,6 @@
                         name: 'V3IO'
                     },
                     {
-                        id: 'hostPath',
-                        name: 'Host path'
-                    },
-                    {
                         id: 'secret',
                         name: 'Secret'
                     },
