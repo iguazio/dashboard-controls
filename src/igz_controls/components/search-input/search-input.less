@@ -53,6 +53,11 @@
             &:-ms-input-placeholder {
                 color: @search-input-focus-placeholder-color;
             }
+
+            &::placeholder {
+                /* modern browser versions */
+                color: @search-input-focus-placeholder-color !important;
+            }
         }
     }
 
