@@ -20,6 +20,8 @@
          * @param {Function} isDataChanged - callback which tracks if changes has been made
          */
         function registerBeforeUnloadPageCallback(isDataChanged) {
+
+            // @if !IGZ_E2E_TESTING
             $window.addEventListener('beforeunload', function (e) {
                 if (isDataChanged()) {
 
@@ -30,6 +32,7 @@
                     e.returnValue = true;
                 }
             });
+            // @endif
         }
     }
 }());
