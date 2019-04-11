@@ -15,12 +15,13 @@
                 allowSelection: '<?',
                 changeStateBroadcast: '@?',
                 keyOptional: '<?',
+                keyValidationPattern: '<?',
+                keyPlaceholder: '@?',
+                valueOptional: '<?',
                 valueValidationPattern: '<?',
                 valuePlaceholder: '@?',
-                keyValidationPattern: '<?',
                 listClass: '@?',
                 submitOnFly: '<?',
-                valueOptional: '<?',
                 onlyValueInput: '<?',
                 useAdditionalValue: '<?',
                 additionalValueOptional: '<?'
@@ -61,13 +62,21 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.valuePlaceholder = lodash.defaultTo(ctrl.valuePlaceholder, 'Type value...');
+            ctrl.actions = initActions();
             ctrl.data = lodash.cloneDeep(ctrl.rowData);
             ctrl.editMode = lodash.get(ctrl.data, 'ui.editModeActive', false);
-
-            ctrl.actions = initActions();
-            ctrl.submitOnFly = lodash.defaultTo(ctrl.submitOnFly, false);
             ctrl.typesList = getTypesList();
+
+            lodash.defaults(ctrl, {
+                allowSelection: false,
+                dropdownOverlap: false,
+                keyOptional: false,
+                keyPlaceholder: 'Type key...',
+                onlyValueInput: false,
+                submitOnFly: false,
+                useAdditionalValue: false,
+                valuePlaceholder: 'Type value...',
+            });
 
             $document.on('click', saveChanges);
             $document.on('keypress', saveChanges);
@@ -349,38 +358,40 @@
         function saveChanges(event) {
             if (angular.isUndefined(event) || $element.find(event.target).length === 0 || event.keyCode === EventHelperService.ENTER) {
                 ctrl.keyValueInputForm.$submitted = true;
-                if (ctrl.keyValueInputForm.$valid) {
-                    ctrl.data.ui = {
-                        editModeActive: false,
-                        isFormValid: true,
-                        name: ctrl.data.ui.name,
-                        checked: ctrl.data.ui.checked
-                    };
+                $timeout(function () {
+                    if (ctrl.keyValueInputForm.$valid) {
+                        ctrl.data.ui = {
+                            editModeActive: false,
+                            isFormValid: true,
+                            name: ctrl.data.ui.name,
+                            checked: ctrl.data.ui.checked
+                        };
 
-                    if (angular.isDefined(ctrl.changeStateBroadcast)) {
-                        $rootScope.$broadcast(ctrl.changeStateBroadcast, {component: ctrl.data.ui.name, isDisabled: false});
+                        if (angular.isDefined(ctrl.changeStateBroadcast)) {
+                            $rootScope.$broadcast(ctrl.changeStateBroadcast, {component: ctrl.data.ui.name, isDisabled: false});
+                        }
+
+                        $scope.$evalAsync(function () {
+                            ctrl.editMode = false;
+
+                            $document.off('click', saveChanges);
+                            $document.off('keypress', saveChanges);
+
+                            ctrl.changeDataCallback({newData: ctrl.data, index: ctrl.itemIndex});
+                        });
+                    } else {
+                        ctrl.data.ui = {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: ctrl.data.ui.name,
+                            checked: ctrl.data.ui.checked
+                        };
+
+                        if (angular.isDefined(ctrl.changeStateBroadcast)) {
+                            $rootScope.$broadcast(ctrl.changeStateBroadcast, {component: ctrl.data.ui.name, isDisabled: true});
+                        }
                     }
-
-                    $scope.$evalAsync(function () {
-                        ctrl.editMode = false;
-
-                        $document.off('click', saveChanges);
-                        $document.off('keypress', saveChanges);
-
-                        ctrl.changeDataCallback({newData: ctrl.data, index: ctrl.itemIndex});
-                    });
-                } else {
-                    ctrl.data.ui = {
-                        editModeActive: true,
-                        isFormValid: false,
-                        name: ctrl.data.ui.name,
-                        checked: ctrl.data.ui.checked
-                    };
-
-                    if (angular.isDefined(ctrl.changeStateBroadcast)) {
-                        $rootScope.$broadcast(ctrl.changeStateBroadcast, {component: ctrl.data.ui.name, isDisabled: true});
-                    }
-                }
+                });
             }
         }
     }
