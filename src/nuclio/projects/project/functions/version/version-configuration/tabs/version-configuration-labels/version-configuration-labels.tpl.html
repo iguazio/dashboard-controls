@@ -1,7 +1,7 @@
 <div class="ncl-version-configuration-labels">
     <div class="title">Labels</div>
     <form name="$ctrl.labelsForm" class="labels-wrapper">
-        <div class="table-headers">
+        <div data-ng-if="$ctrl.labels.length > 0" class="table-headers">
             <div class="key-header">Key</div>
             <div class="value-header">Value</div>
         </div>

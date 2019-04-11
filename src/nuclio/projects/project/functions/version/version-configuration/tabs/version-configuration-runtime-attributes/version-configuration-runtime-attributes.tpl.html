@@ -42,7 +42,7 @@
         <div class="row info-row"
              data-ng-if="$ctrl.version.spec.runtime === 'shell'">
             <span class="label">Response headers</span>
-            <div class="table-headers">
+            <div data-ng-if="$ctrl.attributes.length > 0" class="table-headers">
                 <div class="key-header">Key</div>
                 <div class="value-header">Value</div>
             </div>

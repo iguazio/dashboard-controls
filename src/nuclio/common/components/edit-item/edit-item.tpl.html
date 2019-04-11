@@ -358,7 +358,7 @@
 
                 <div class="field-label">Ingresses</div>
 
-                <div class="table-headers ingresses-table-headers">
+                <div data-ng-if="$ctrl.ingresses.length > 0" class="table-headers ingresses-table-headers">
                     <div class="host-header">Host</div>
                     <div class="paths-header">Paths</div>
                     <div class="secret-header">Secret</div>
@@ -413,7 +413,7 @@
 
                 <div class="field-label">Annotations</div>
 
-                <div class="table-headers">
+                <div data-ng-if="$ctrl.annotations.length > 0" class="table-headers">
                     <div class="key-header">Key</div>
                     <div class="value-header">Value</div>
                 </div>
@@ -485,7 +485,7 @@
 
                 <div class="field-label">Event headers</div>
 
-                <div class="table-headers">
+                <div data-ng-if="$ctrl.eventHeaders.length > 0" class="table-headers">
                     <div class="key-header">Key</div>
                     <div class="value-header">Value</div>
                 </div>
@@ -536,7 +536,7 @@
 
                 <div class="field-label">Subscriptions</div>
 
-                <div class="table-headers">
+                <div data-ng-if="$ctrl.subscriptions.length > 0" class="table-headers">
                     <div class="key-header">Topic</div>
                     <div class="value-header">QoS</div>
                 </div>
