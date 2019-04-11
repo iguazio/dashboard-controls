@@ -8,30 +8,25 @@
 
 <div class="main-content igz-scrollable-container" data-ng-scrollbars>
     <form name="$ctrl.templateForm" novalidate>
-        <div class="field-group"
+        <div class="field-group align-items-center"
              data-ng-repeat="field in $ctrl.fields track by field.name">
-            <div class="field-label">
+            <div class="igz-col-40 field-label">
                 {{ field.displayName }} <span class="asterisk" data-ng-if="field.required"></span>
-                <span class="igz-icon-help-round pull-right pointer-cursor"
-                      data-uib-tooltip="{{field.description}}"
-                      data-tooltip-append-to-body="true"
-                      data-tooltip-placement="left"
-                      data-tooltip-popup-delay="200"
-                      data-ng-if="field.description"></span>
             </div>
 
-            <div data-ng-if="field.kind === 'string'">
+            <div class="igz-col-55">
                 <igz-validating-input-field class="nuclio-validating-input"
+                                            data-ng-if="field.kind === 'string'"
                                             data-field-type="{{field.attributes.password ? 'password' : 'input'}}"
                                             data-validation-is-required="field.required"
                                             data-input-value="field.attributes.defaultValue"
                                             data-input-name="{{field.name}}"
                                             data-form-object="$ctrl.templateForm"
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"></igz-validating-input-field>
-            </div>
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)">
+                </igz-validating-input-field>
 
-            <div data-ng-if="field.kind === 'number'">
-                <igz-number-input data-min-value="field.attributes.minValue"
+                <igz-number-input data-ng-if="field.kind === 'number'"
+                                  data-min-value="field.attributes.minValue"
                                   data-max-value="field.attributes.maxValue"
                                   data-value-step="field.attributes.step"
                                   data-precision="{{field.attributes.allowDecimal ? 2 : 0}}"
@@ -40,18 +35,29 @@
                                   data-form-object="$ctrl.templateForm"
                                   data-allow-empty-field="true"
                                   data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)"
-                                  data-input-name="{{field.name}}"></igz-number-input>
-            </div>
+                                  data-input-name="{{field.name}}">
+                </igz-number-input>
 
-            <div data-ng-if="field.kind === 'choice'">
-                <igz-default-dropdown data-values-array="field.attributes.choices"
+                <igz-default-dropdown data-ng-if="field.kind === 'choice'"
+                                      data-values-array="field.attributes.choices"
                                       data-selected-item="field.attributes.defaultValue"
                                       data-select-property-only="id"
                                       data-is-required="field.required"
                                       data-item-select-field="{{field.name}}"
                                       data-item-select-callback="$ctrl.dropdownCallback(item, isItemChanged, field)"
                                       data-form-object="$ctrl.templateForm"
-                                      data-input-name="{{field.name}}"></igz-default-dropdown>
+                                      data-input-name="{{field.name}}">
+                </igz-default-dropdown>
+            </div>
+
+            <div class="igz-col-5">
+                <span class="igz-icon-help-round pull-right pointer-cursor"
+                      data-uib-tooltip="{{field.description}}"
+                      data-tooltip-append-to-body="true"
+                      data-tooltip-placement="bottom"
+                      data-tooltip-popup-delay="200"
+                      data-ng-if="field.description">
+                </span>
             </div>
         </div>
     </form>
