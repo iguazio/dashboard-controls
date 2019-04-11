@@ -1,7 +1,7 @@
 <div class="ncl-version-configuration-annotations">
     <div class="title">Annotations</div>
     <form name="$ctrl.annotationsForm" class="annotations-wrapper">
-        <div class="table-headers">
+        <div data-ng-if="$ctrl.annotations.length > 0" class="table-headers">
             <div class="key-header">Key</div>
             <div class="value-header">Value</div>
         </div>
