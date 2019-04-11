@@ -62,14 +62,21 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.keyPlaceholder = lodash.defaultTo(ctrl.keyPlaceholder, 'Type key...');
-            ctrl.valuePlaceholder = lodash.defaultTo(ctrl.valuePlaceholder, 'Type value...');
+            ctrl.actions = initActions();
             ctrl.data = lodash.cloneDeep(ctrl.rowData);
             ctrl.editMode = lodash.get(ctrl.data, 'ui.editModeActive', false);
-
-            ctrl.actions = initActions();
-            ctrl.submitOnFly = lodash.defaultTo(ctrl.submitOnFly, false);
             ctrl.typesList = getTypesList();
+
+            lodash.defaults(ctrl, {
+                allowSelection: false,
+                dropdownOverlap: false,
+                keyOptional: false,
+                keyPlaceholder: 'Type key...',
+                onlyValueInput: false,
+                submitOnFly: false,
+                useAdditionalValue: false,
+                valuePlaceholder: 'Type value...',
+            });
 
             $document.on('click', saveChanges);
             $document.on('keypress', saveChanges);
