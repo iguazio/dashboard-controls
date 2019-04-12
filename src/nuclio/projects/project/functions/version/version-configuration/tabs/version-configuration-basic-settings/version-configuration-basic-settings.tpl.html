@@ -30,7 +30,8 @@
                                                     data-form-object="$ctrl.basicSettingsForm"
                                                     data-validation-is-required="true"
                                                     data-validation-pattern="$ctrl.validationPatterns.digits"
-                                                    data-placeholder-text="Min..."></igz-validating-input-field>
+                                                    data-placeholder-text="Min...">
+                        </igz-validating-input-field>
                         <div class="values-label">
                             min
                         </div>
@@ -45,7 +46,8 @@
                                                     data-form-object="$ctrl.basicSettingsForm"
                                                     data-validation-is-required="true"
                                                     data-validation-pattern="$ctrl.validationPatterns.digits"
-                                                    data-placeholder-text="Sec..."></igz-validating-input-field>
+                                                    data-placeholder-text="Sec...">
+                        </igz-validating-input-field>
                         <div class="values-label">
                             sec
                         </div>
@@ -66,7 +68,35 @@
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="spec.description"
                                             data-form-object="$ctrl.basicSettingsForm"
-                                            data-placeholder-text="Type description..."></igz-validating-input-field>
+                                            data-placeholder-text="Type description...">
+                </igz-validating-input-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="logger-block">
+                <div class="logger-dropdown">
+                    <span class="label">Logger level</span>
+                    <igz-default-dropdown data-selected-item="$ctrl.version.spec.loggerSinks[0].level"
+                                          data-select-property-only="id"
+                                          data-values-array="$ctrl.logLevelValues"
+                                          data-item-select-callback="$ctrl.setPriority(item)"
+                                          data-enable-overlap="true"
+                                          data-prevent-drop-up="true">
+                    </igz-default-dropdown>
+                </div>
+                <div class="logger-input"
+                     data-ng-if="$ctrl.isDemoMode()">
+                    <span class="label">Logger destination</span>
+                    <igz-validating-input-field class="nuclio-validating-input"
+                                                data-field-type="input"
+                                                data-input-name="arguments"
+                                                data-input-value="$ctrl.version.spec.loggerSinks[0].sink"
+                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                data-update-data-field="spec.loggerSinks[0].sink"
+                                                data-form-object="$ctrl.basicSettingsForm"
+                                                data-placeholder-text="Type a destination...">
+                    </igz-validating-input-field>
+                </div>
             </div>
         </div>
     </form>
