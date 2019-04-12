@@ -10,7 +10,7 @@
             controller: NclVersionConfigurationController
         });
 
-    function NclVersionConfigurationController(ConfigService, VersionHelperService) {
+    function NclVersionConfigurationController(lodash, ConfigService, VersionHelperService) {
         var ctrl = this;
 
         ctrl.scrollConfig = {
@@ -23,7 +23,7 @@
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
 
-        ctrl.isInvisibleForCurrentRuntime = isInvisibleForCurrentRuntime;
+        ctrl.isRuntimeBlockVisible = isRuntimeBlockVisible;
         ctrl.onConfigurationChangeCallback = onConfigurationChangeCallback;
 
         //
@@ -31,12 +31,11 @@
         //
 
         /**
-         * Checks if `Runtime Attributes` block is invisible for current
-         * @param {string} runtime
+         * Checks if `Runtime Attributes` block is visible
          * @returns {boolean}
          */
-        function isInvisibleForCurrentRuntime(runtime) {
-            return runtime !== 'shell' && runtime !== 'java';
+        function isRuntimeBlockVisible() {
+            return lodash.includes(['shell', 'java'], lodash.get(ctrl.version, 'spec.runtime'));
         }
 
         /**

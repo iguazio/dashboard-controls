@@ -21,6 +21,24 @@
             min: 0,
             sec: 0
         };
+        ctrl.logLevelValues = [
+            {
+                id: 'error',
+                name: 'Error'
+            },
+            {
+                id: 'warn',
+                name: 'Warning'
+            },
+            {
+                id: 'info',
+                name: 'Info'
+            },
+            {
+                id: 'debug',
+                name: 'Debug'
+            }
+        ];
 
         ctrl.$onInit = onInit;
 
@@ -28,6 +46,7 @@
         ctrl.validationPatterns = ValidatingPatternsService;
 
         ctrl.inputValueCallback = inputValueCallback;
+        ctrl.setPriority = setPriority;
         ctrl.updateEnableStatus = updateEnableStatus;
 
         //
@@ -46,6 +65,12 @@
                     ctrl.timeout.sec = Math.floor(timeoutSeconds % 60);
                 }
             }
+
+            lodash.defaultsDeep(ctrl.version, {
+                spec: {
+                    loggerSinks: [{level: 'debug'}]
+                }
+            });
 
             ctrl.enableFunction = !lodash.get(ctrl.version, 'spec.disable', false);
         }
@@ -71,6 +96,7 @@
                     }
 
                     $rootScope.$broadcast('change-state-deploy-button', {component: 'settings', isDisabled: false});
+
                     ctrl.onChangeCallback();
                 } else {
                     $rootScope.$broadcast('change-state-deploy-button', {component: 'settings', isDisabled: true});
@@ -79,10 +105,21 @@
         }
 
         /**
+         * Sets logger level
+         * @param {Object} item
+         */
+        function setPriority(item) {
+            lodash.set(ctrl.version, 'spec.loggerSinks[0].level', item.id);
+
+            ctrl.onChangeCallback();
+        }
+
+        /**
          * Switches enable/disable function status
          */
         function updateEnableStatus() {
             lodash.set(ctrl.version, 'spec.disable', !ctrl.enableFunction);
+
             ctrl.onChangeCallback();
         }
     }
