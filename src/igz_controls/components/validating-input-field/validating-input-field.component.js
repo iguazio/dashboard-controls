@@ -66,7 +66,7 @@
         var defaultInputModelOptions = {
             updateOn: 'default blur',
             debounce: {
-                'default': 1000,
+                '*': 200,
                 'blur': 0
             },
             allowInvalid: true
