@@ -6,9 +6,9 @@
             bindings: {
                 description: '@',
                 isDisabled: '<?',
-                isTooltipEnabled: '<?',
-                tooltipPlacement: '@?',
-                tooltipPopupDelay: '@?'
+                isDefaultTooltipEnabled: '<?',
+                defaultTooltipPlacement: '@?',
+                defaultTooltipPopupDelay: '@?'
             },
             templateUrl: 'igz_controls/components/more-info/more-info.tpl.html',
             controller: IgzMoreInfoController
@@ -27,10 +27,12 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.isDisabled = lodash.defaultTo(ctrl.isDisabled, false);
-            ctrl.isTooltipEnabled = lodash.defaultTo(ctrl.isTooltipEnabled, false);
-            ctrl.tooltipPlacement = lodash.defaultTo(ctrl.tooltipPlacement, 'auto');
-            ctrl.tooltipPopupDelay = lodash.defaultTo(ctrl.tooltipPopupDelay, '0');
+            lodash.defaults(ctrl, {
+                isDisabled: false,
+                isDefaultTooltipEnabled: false,
+                defaultTooltipPlacement: 'auto',
+                defaultTooltipPopupDelay: '0'
+            });
         }
     }
 }());
