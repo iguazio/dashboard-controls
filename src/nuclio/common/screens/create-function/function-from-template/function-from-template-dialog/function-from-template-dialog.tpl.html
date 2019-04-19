@@ -51,13 +51,12 @@
             </div>
 
             <div class="igz-col-5">
-                <span class="igz-icon-help-round pull-right pointer-cursor"
-                      data-uib-tooltip="{{field.description}}"
-                      data-tooltip-append-to-body="true"
-                      data-tooltip-placement="bottom"
-                      data-tooltip-popup-delay="200"
-                      data-ng-if="field.description">
-                </span>
+                <igz-more-info data-ng-if="field.description"
+                               data-is-tooltip-enabled="true"
+                               data-tooltip-placement="bottom"
+                               data-tooltip-popup-delay="200"
+                               data-description="{{field.description}}">
+                </igz-more-info>
             </div>
         </div>
     </form>

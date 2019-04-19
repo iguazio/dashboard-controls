@@ -1,0 +1,18 @@
+<div class="more-info-wrapper">
+    <div data-ng-if="!$ctrl.isTooltipEnabled"
+         data-ng-class="{'disabled': $ctrl.isDisabled}"
+         class="question-mark igz-icon-help-round"></div>
+    <div data-ng-if="!$ctrl.isTooltipEnabled"
+         class="row-description wizard-row-description">
+        {{$ctrl.description}}
+    </div>
+
+    <div data-ng-if="$ctrl.isTooltipEnabled"
+         data-ng-class="{'disabled': $ctrl.isDisabled}"
+         class="question-mark igz-icon-help-round"
+         data-uib-tooltip="{{$ctrl.description}}"
+         data-tooltip-placement="$ctrl.tooltipPlacement"
+         data-tooltip-popup-delay="$ctrl.tooltipPopupDelay"
+         data-tooltip-append-to-body="true">
+    </div>
+</div>
