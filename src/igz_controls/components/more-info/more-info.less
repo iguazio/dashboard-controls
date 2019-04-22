@@ -1,0 +1,58 @@
+.more-info-wrapper {
+    .more-info-color-set();
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 36px;
+    padding-left: 15px;
+
+    .question-mark {
+        cursor: pointer;
+
+        &.disabled {
+            cursor: default;
+        }
+
+        &:before {
+            color: @icon-help-round-before-color;
+            background-color: @icon-help-round-before-bg-color;
+        }
+
+        &:hover {
+            &:before {
+                color: @icon-help-round-hover-before-color;
+            }
+
+            + div {
+                color: @icon-help-description-hover-color;
+                display: block;
+            }
+        }
+    }
+
+    .row-description {
+        display: none;
+        width: 280px;
+        margin-left: 35px;
+        padding: 16px 19px;
+        position: absolute;
+        top: calc(50% - 19px);
+        border-radius: 2px;
+        box-shadow: @row-description-box-shadow;
+        background-color: @row-description-bg-color;
+        color: @row-description-color;
+        font-family: @font-family-sans-serif;
+        font-size: 12px;
+        white-space: pre-line;
+
+        &:before {
+            .triangle-arrow(right; @row-description-triangle-color; 8px; 10px);
+
+            position: absolute;
+            top: 7px;
+            left: -8px;
+            content: '';
+        }
+    }
+}
