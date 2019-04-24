@@ -149,6 +149,20 @@
         overflow: hidden;
         padding: 7px 10px 6px 10px;
         resize: none;
+
+        &::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: .black(0.2)[@color];
+            border-radius: 16px;
+        }
+
+        &:focus::-webkit-scrollbar-thumb {
+            background-color: .black(0.9)[@color];
+        }
     }
 
     &.with-counter {
