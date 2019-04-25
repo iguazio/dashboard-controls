@@ -21,12 +21,6 @@
          * @param {Object} version
          */
         function exportFunction(version) {
-            if (lodash.has(version, 'spec.build.commands')) {
-                lodash.forEach(version.spec.build.commands, function (command, index) {
-                    version.spec.build.commands[index] = command.replace(/'/g, '\'\'');
-                });
-            }
-
             var functionToExport = prepareFunctionData(version);
             var blob = prepareBlobObject(functionToExport);
 
@@ -190,11 +184,18 @@
          * @returns {Object} data for export
          */
         function prepareFunctionData(version) {
+            var versionCopy = angular.copy(version);
+
+            if (lodash.has(versionCopy, 'spec.build.commands')) {
+                lodash.forEach(versionCopy.spec.build.commands, function (command, index) {
+                    versionCopy.spec.build.commands[index] = command.replace(/'/g, '\'\'');
+                });
+            }
 
             // using `angular.fromJson` & `angular.toJson` to easily get rid of `$$hashKey` property in all levels
             return angular.fromJson(angular.toJson({
-                metadata: lodash.omit(version.metadata, 'namespace'),
-                spec: lodash.omit(version.spec, 'build.noBaseImagesPull')
+                metadata: lodash.omit(versionCopy.metadata, 'namespace'),
+                spec: lodash.omit(versionCopy.spec, 'build.noBaseImagesPull')
             }));
         }
 
