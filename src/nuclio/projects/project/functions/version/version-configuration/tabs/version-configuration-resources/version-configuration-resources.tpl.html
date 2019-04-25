@@ -140,9 +140,9 @@
                                           data-placeholder=""
                                           data-decimal-number="0"
                                           data-value-step="1"
-                                          data-validation-is-required="true"
+                                          data-validation-is-required="false"
                                           data-min-value="0"
-                                          data-max-value="$ctrl.maxReplicas"></igz-number-input>
+                                          data-max-value="$ctrl.maxReplicas || Infinity"></igz-number-input>
                     </div>
                 </div>
 
@@ -158,14 +158,26 @@
                                           data-placeholder=""
                                           data-decimal-number="0"
                                           data-value-step="1"
-                                          data-validation-is-required="true"
-                                          data-min-value="$ctrl.minReplicas"></igz-number-input>
+                                          data-validation-is-required="false"
+                                          data-min-value="$ctrl.minReplicas || 1"></igz-number-input>
                     </div>
                 </div>
             </div>
 
             <div class="igz-row form-row range-inputs-row slider-block">
                 <div class="igz-col-10 row-title target-cpu-title">Target CPU</div>
+                <input type="checkbox"
+                       class="small"
+                       id="target-cpu-toggle"
+                       data-ng-true-value="false"
+                       data-ng-false-value="true"
+                       data-ng-model="$ctrl.targetCpuSliderConfig.options.disabled"
+                       data-ng-change="$ctrl.toggleTargetCpu()">
+                <label for="target-cpu-toggle" class="checkbox-inline"
+                       data-uib-tooltip="{{$ctrl.targetCpuSliderConfig.options.disabled ? 'Click to enable' : 'Click to disable'}}"
+                       data-tooltip-append-to-body="true"
+                       data-tooltip-placement="top"
+                       data-tooltip-popup-delay="500">&nbsp;</label>
                 <div class="slider-row">
                     <igz-slider-input-block data-slider-config="$ctrl.targetCpuSliderConfig"
                                             data-measure-units="null"

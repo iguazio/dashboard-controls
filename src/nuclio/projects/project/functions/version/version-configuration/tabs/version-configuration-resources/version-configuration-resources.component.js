@@ -76,9 +76,9 @@
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
 
-        ctrl.initSlider = initSlider;
         ctrl.numberInputCallback = numberInputCallback;
         ctrl.sliderInputCallback = sliderInputCallback;
+        ctrl.toggleTargetCpu = toggleTargetCpu;
 
         ctrl.cpuDropdownCallback = cpuDropdownCallback;
         ctrl.memoryInputCallback = memoryInputCallback;
@@ -95,14 +95,13 @@
          */
         function onInit() {
             initParametersData();
+            initSlider();
 
-            ctrl.initSlider();
-
-            ctrl.minReplicas = lodash.chain(ctrl.version).get('spec.minReplicas').defaultTo(1).value();
-            ctrl.maxReplicas = lodash.chain(ctrl.version).get('spec.maxReplicas').defaultTo(1).value();
+            ctrl.minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
+            ctrl.maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
 
             $scope.$watch('$ctrl.resourcesForm.$invalid', function (value) {
-                $rootScope.$broadcast('change-state-deploy-button', {component: 'resources', isDisabled: value});
+                $rootScope.$broadcast('change-state-deploy-button', { component: 'resources', isDisabled: value });
             });
 
             $timeout(function () {
@@ -114,7 +113,7 @@
          * On destroy method
          */
         function onDestroy() {
-            $rootScope.$broadcast('change-state-deploy-button', {component: 'resources', isDisabled: false});
+            $rootScope.$broadcast('change-state-deploy-button', { component: 'resources', isDisabled: false });
         }
 
         //
@@ -143,31 +142,6 @@
 
                 checkIfCpuInputsValid();
             }
-        }
-
-        /**
-         * Inits data for sliders
-         */
-        function initSlider() {
-            var targetCpuValue = lodash.get(ctrl.version, 'spec.targetCpu', 75);
-
-            ctrl.targetCpuValueUnit = '%';
-            ctrl.targetCpuSliderConfig = {
-                value: targetCpuValue,
-                valueLabel: targetCpuValue,
-                pow: 0,
-                unitLabel: '%',
-                labelHelpIcon: false,
-                options: {
-                    floor: 1,
-                    id: 'targetCPU',
-                    ceil: 100,
-                    step: 1,
-                    showSelectionBar: false,
-                    onChange: null,
-                    onEnd: null
-                }
-            };
         }
 
         /**
@@ -269,11 +243,16 @@
 
         /**
          * Update data callback
-         * @param {string} newData
+         * @param {string|number} newData
          * @param {string} field
          */
         function numberInputCallback(newData, field) {
-            lodash.set(ctrl.version.spec, field, newData);
+            if (lodash.isNil(newData) || newData === '') {
+                lodash.unset(ctrl.version.spec, field);
+            } else {
+                lodash.set(ctrl.version.spec, field, newData);
+            }
+
             lodash.set(ctrl, field, newData);
 
             ctrl.onChangeCallback();
@@ -292,6 +271,21 @@
             }
 
             ctrl.onChangeCallback();
+        }
+
+        /**
+         * Sets slider value & unit and updates the corresponding model according to its enabled/disabled state.
+         */
+        function toggleTargetCpu() {
+            if (ctrl.targetCpuSliderConfig.options.disabled) {
+                lodash.unset(ctrl.version, 'spec.targetCPU');
+                ctrl.targetCpuValueUnit = '';
+                ctrl.targetCpuSliderConfig.valueLabel = 'disabled';
+            } else {
+                lodash.set(ctrl.version, 'spec.targetCPU', ctrl.targetCpuSliderConfig.value);
+                ctrl.targetCpuSliderConfig.valueLabel = String(ctrl.targetCpuSliderConfig.value);
+                ctrl.targetCpuValueUnit = '%';
+            }
         }
 
         //
@@ -388,7 +382,6 @@
             var limitsMemory   = lodash.get(ctrl.version, 'spec.resources.limits.memory');
             var requestsCpu    = lodash.get(ctrl.version, 'spec.resources.requests.cpu');
             var limitsCpu      = lodash.get(ctrl.version, 'spec.resources.limits.cpu');
-            var requestsGpu    = lodash.get(ctrl.version, ['spec', 'resources', 'requests', 'nvidia.com/gpu']);
             var limitsGpu      = lodash.get(ctrl.version, ['spec', 'resources', 'limits', 'nvidia.com/gpu']);
 
             ctrl.requestsMemoryValue = parseValue(requestsMemory);
@@ -416,6 +409,34 @@
 
                 return parsedValue > 0 ? parsedValue : null;
             }
+        }
+
+        /**
+         * Inits data for sliders
+         */
+        function initSlider() {
+            var targetCpuValue = lodash.get(ctrl.version, 'spec.targetCPU');
+
+            ctrl.targetCpuValueUnit = '%';
+            ctrl.targetCpuSliderConfig = {
+                value: lodash.defaultTo(targetCpuValue, 75),
+                valueLabel: lodash.defaultTo(targetCpuValue, '75'),
+                pow: 0,
+                unitLabel: '%',
+                labelHelpIcon: false,
+                options: {
+                    disabled: lodash.isNil(targetCpuValue),
+                    floor: 1,
+                    id: 'targetCPU',
+                    ceil: 100,
+                    step: 1,
+                    showSelectionBar: false,
+                    onChange: null,
+                    onEnd: null
+                }
+            };
+
+            toggleTargetCpu();
         }
 
         /**

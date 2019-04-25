@@ -286,10 +286,7 @@
                     runtime: ctrl.selectedRuntime.id,
                     build: {
                         functionSourceCode: ctrl.selectedRuntime.sourceCode
-                    },
-                    targetCPU: 75,
-                    minReplicas: 1,
-                    maxReplicas: 1
+                    }
                 }
             };
 
