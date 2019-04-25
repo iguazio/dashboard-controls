@@ -53,13 +53,16 @@
                 height: 14px;
                 width: 14px;
                 top: -6px;
-                background-color: @rz-pointer-bg-color;
                 box-shadow: @rz-pointer-box-shadow;
                 outline: 0;
 
                 &:after {
                     display: none;
                 }
+            }
+
+            &:not([disabled]) .rz-pointer {
+                background-color: @rz-pointer-bg-color;
             }
         }
     }
