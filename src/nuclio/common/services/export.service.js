@@ -21,6 +21,12 @@
          * @param {Object} version
          */
         function exportFunction(version) {
+            if (lodash.has(version, 'spec.build.commands')) {
+                lodash.forEach(version.spec.build.commands, function (command, index) {
+                    version.spec.build.commands[index] = command.replace(/'/g, '\'\'');
+                });
+            }
+
             var functionToExport = prepareFunctionData(version);
             var blob = prepareBlobObject(functionToExport);
 
