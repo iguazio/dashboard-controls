@@ -33,6 +33,7 @@
             icon: 'ncl-icon-file',
             name: ''
         };
+        ctrl.disabled = true;
 
         ctrl.$onInit = onInit;
 
@@ -51,6 +52,7 @@
          * Initialization method
          */
         function onInit() {
+            ctrl.disabled = lodash.get(ctrl.version, 'spec.build.codeEntryType') !== 'sourceCode';
             ctrl.build.commands = lodash.get(ctrl.version, 'spec.build.commands', []);
             ctrl.build.commands = ctrl.build.commands.join('\n').replace(/''/g, '\'');
 

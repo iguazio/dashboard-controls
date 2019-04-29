@@ -174,11 +174,12 @@ input.igz-text-input {
     }
 }
 
-input[disabled] {
+html input[disabled], html textarea[disabled] {
     .inputs-general-color-set();
 
     background-color: @input-disabled-bg-color;
     opacity: 0.5;
+    cursor: not-allowed;
 }
 
 // Number + Measurement select combo input
