@@ -51,6 +51,8 @@
                   data-ng-focus="$ctrl.focusInput()"
                   data-ng-blur="$ctrl.unfocusInput()"
                   data-ng-change="$ctrl.updateInputValue()"
+                  data-ng-disabled="$ctrl.isDisabled"
+                  data-ng-readonly="$ctrl.readOnly"
                   spellcheck="{{$ctrl.spellcheck}}"></textarea>
     </div>
 
@@ -69,6 +71,8 @@
                data-ng-focus="$ctrl.focusInput()"
                data-ng-blur="$ctrl.unfocusInput()"
                data-ng-change="$ctrl.updateInputValue()"
+               data-ng-disabled="$ctrl.isDisabled"
+               data-ng-readonly="$ctrl.readOnly"
                data-igz-input-blur-on-enter>
     </div>
 

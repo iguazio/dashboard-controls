@@ -1,10 +1,12 @@
-<div class="ncl-version-configuration-build">
+<div class="ncl-version-configuration-build"
+     data-ng-class="{ disabled: $ctrl.disabled }">
     <igz-action-menu data-ng-if="$ctrl.isDemoMode()"
                      data-actions="$ctrl.actions"
                      data-icon-class="ncl-icon-paperclip"
                      data-on-fire-action="$ctrl.onFireAction">
     </igz-action-menu>
-    <div class="title">Build</div>
+    <div class="title pull-left">Build</div>
+    <small class="pull-right" data-ng-if="$ctrl.disabled">Editable for &quot;Edit Online&quot; code entry type only</small>
     <form name="$ctrl.buildForm" class="build-wrapper">
         <div class="igz-row">
             <div class="igz-col-100 build-field">
@@ -17,6 +19,7 @@
                                             data-placeholder-text="Type an image name..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="spec.build.image"
+                                            data-is-disabled="$ctrl.disabled"
                                             class="nuclio-validating-input">
                 </igz-validating-input-field>
             </div>
@@ -30,6 +33,7 @@
                                             data-placeholder-text="Type a base image..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="spec.build.baseImage"
+                                            data-is-disabled="$ctrl.disabled"
                                             class="nuclio-validating-input">
                 </igz-validating-input-field>
             </div>
@@ -43,6 +47,7 @@
                                             data-placeholder-text="Type a onbuild image..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="spec.build.onbuildImage"
+                                            data-is-disabled="$ctrl.disabled"
                                             class="nuclio-validating-input">
                 </igz-validating-input-field>
             </div>
@@ -56,6 +61,7 @@
                                             data-placeholder-text="Type ..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="commands"
+                                            data-is-disabled="$ctrl.disabled"
                                             class="nuclio-validating-input build-textarea-input build-commands-input">
                 </igz-validating-input-field>
             </div>
@@ -70,7 +76,8 @@
                                   data-value-step="1"
                                   data-validation-is-required="false"
                                   data-min-value="1"
-                                  data-default-value="60">
+                                  data-default-value="60"
+                                  data-is-disabled="$ctrl.disabled">
                 </igz-number-input>
             </div>
             <div class="igz-col-100 build-field"
@@ -84,7 +91,8 @@
                                             data-placeholder-text="Type ..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="runtimeAttributes.repositories"
-                                            class="nuclio-validating-input build-textarea-input">
+                                            class="nuclio-validating-input build-textarea-input"
+                                            data-is-disabled="$ctrl.disabled">
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-100 build-field"
@@ -98,7 +106,8 @@
                                             data-placeholder-text="Type ..."
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="dependencies"
-                                            class="nuclio-validating-input build-textarea-input">
+                                            class="nuclio-validating-input build-textarea-input"
+                                            data-is-disabled="$ctrl.disabled">
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-100 build-field build-checkboxes">
@@ -107,7 +116,8 @@
                      data-tooltip-placement="bottom"
                      data-tooltip-append-to-body="true"
                      data-tooltip-popup-delay="500">
-                    <input type="checkbox" class="small" id="noCache" data-ng-model="$ctrl.version.spec.build.noCache">
+                    <input type="checkbox" class="small" id="noCache" data-ng-model="$ctrl.version.spec.build.noCache"
+                           data-ng-disabled="$ctrl.disabled">
                     <label for="noCache" class="checkbox-inline">Disable cache</label>
                 </div>
                 <div class="checkbox-block"
@@ -115,7 +125,8 @@
                      data-tooltip-placement="bottom"
                      data-tooltip-append-to-body="true"
                      data-tooltip-popup-delay="500">
-                    <input type="checkbox" class="small" id="offline" data-ng-model="$ctrl.version.spec.build.offline">
+                    <input type="checkbox" class="small" id="offline" data-ng-model="$ctrl.version.spec.build.offline"
+                           data-ng-disabled="$ctrl.disabled">
                     <label for="offline" class="checkbox-inline">No internet access</label>
                 </div>
             </div>
