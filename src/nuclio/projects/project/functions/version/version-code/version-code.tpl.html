@@ -67,7 +67,7 @@
                                                         data-is-focused="true"
                                                         data-form-object="$ctrl.versionCodeForm"
                                                         data-validation-is-required="true"
-                                                        data-placeholder-text="Type image..."
+                                                        data-placeholder-text="Enter image..."
                                                         data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                         data-update-data-field="spec.image"
                                                         class="nuclio-validating-input">
@@ -92,7 +92,7 @@
 
                         <div data-ng-if="$ctrl.selectedEntryType.id === 'archive'"
                              class="ncl-code-entry-url">
-                            <div class="field-label">Work dir</div>
+                            <div class="field-label">Work directory</div>
                             <igz-validating-input-field data-field-type="input"
                                                         data-input-name="archiveWorkDir"
                                                         data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir"
@@ -112,7 +112,7 @@
                                                         data-is-focused="false"
                                                         data-form-object="$ctrl.versionCodeForm"
                                                         data-validation-is-required="false"
-                                                        data-placeholder-text="Type session key..."
+                                                        data-placeholder-text="Enter access key..."
                                                         data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                         data-update-data-field="spec.build.codeEntryAttributes.headers['X-V3io-Session-Key']"
                                                         class="nuclio-validating-input">
