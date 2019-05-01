@@ -966,7 +966,7 @@
          * @param {Object} attribute
          */
         function getPlaceholderText(attribute) {
-            var defaultPlaceholder = 'Type ' + ctrl.convertFromCamelCase(attribute.name).toLowerCase() + '...';
+            var defaultPlaceholder = 'Enter ' + ctrl.convertFromCamelCase(attribute.name).toLowerCase() + '...';
             return lodash.defaultTo(attribute.placeholder, defaultPlaceholder);
         }
 

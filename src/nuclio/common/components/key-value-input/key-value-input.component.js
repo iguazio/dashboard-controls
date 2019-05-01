@@ -71,11 +71,11 @@
                 allowSelection: false,
                 dropdownOverlap: false,
                 keyOptional: false,
-                keyPlaceholder: 'Type key...',
+                keyPlaceholder: 'Enter key...',
                 onlyValueInput: false,
                 submitOnFly: false,
                 useAdditionalValue: false,
-                valuePlaceholder: 'Type value...',
+                valuePlaceholder: 'Enter value...',
             });
 
             $document.on('click', saveChanges);
