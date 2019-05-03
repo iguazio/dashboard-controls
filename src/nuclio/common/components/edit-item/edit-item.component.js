@@ -824,7 +824,8 @@
             ctrl.item.ui.expandable = !ctrl.editItemForm.$invalid;
 
             if (angular.isUndefined(event.keyCode) || event.keyCode === 13) {
-                if (event.target !== $element[0] && $element.find(event.target).length === 0 && !event.target.closest('ncl-edit-item')) {
+                if (event.target !== $element[0] && $element.find(event.target).length === 0 &&
+                    !event.target.closest('ncl-edit-item') && !event.target.closest('.ngdialog')) {
                     if (ctrl.editItemForm.$invalid) {
                         ctrl.item.ui.isFormValid = false;
 
