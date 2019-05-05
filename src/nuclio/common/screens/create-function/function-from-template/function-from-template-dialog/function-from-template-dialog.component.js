@@ -24,6 +24,7 @@
             number: {
                 defaultValue: 0,
                 step: 1,
+                minValue: -Infinity,
                 allowZero: false,
                 allowNegative: false,
                 allowDecimal: false

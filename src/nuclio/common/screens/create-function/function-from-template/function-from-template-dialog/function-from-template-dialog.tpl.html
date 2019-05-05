@@ -28,7 +28,7 @@
                 <igz-number-input data-ng-if="field.kind === 'number'"
                                   data-min-value="field.attributes.minValue"
                                   data-max-value="field.attributes.maxValue"
-                                  data-value-step="field.attributes.step"
+                                  data-value-step="{{field.attributes.step}}"
                                   data-precision="{{field.attributes.allowDecimal ? 2 : 0}}"
                                   data-default-value="field.attributes.defaultValue"
                                   data-validation-is-required="field.required"
