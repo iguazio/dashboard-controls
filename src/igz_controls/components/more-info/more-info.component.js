@@ -7,6 +7,7 @@
                 description: '@',
                 isDisabled: '<?',
                 isDefaultTooltipEnabled: '<?',
+                isDefaultTooltipHtml: '<?',
                 defaultTooltipPlacement: '@?',
                 defaultTooltipPopupDelay: '@?'
             },
@@ -30,6 +31,7 @@
             lodash.defaults(ctrl, {
                 isDisabled: false,
                 isDefaultTooltipEnabled: false,
+                isDefaultTooltipHtml: false,
                 defaultTooltipPlacement: 'auto',
                 defaultTooltipPopupDelay: '0'
             });
