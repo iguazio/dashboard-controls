@@ -176,6 +176,21 @@
             </div>
 
             <div class="igz-col-45 attribute-field"
+                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.persistentVolumeClaim.claimName)">
+                <div class="field-label text-ellipsis">Persistent Volume Claim Name</div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-input-name="persistentVolumeClaim"
+                                            data-input-value="$ctrl.item.volume.persistentVolumeClaim.claimName"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-is-required="true"
+                                            data-placeholder-text="Enter persistent volume claim name..."
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="volume.persistentVolumeClaim.claimName">
+                </igz-validating-input-field>
+            </div>
+
+            <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.maxWorkers)">
                 <div class="field-label">Max workers</div>
                 <igz-validating-input-field class="nuclio-validating-input"

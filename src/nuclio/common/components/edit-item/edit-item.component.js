@@ -103,11 +103,12 @@
             }
 
             if (ctrl.isVolumeType()) {
-                var selectedTypeName = !lodash.isNil(ctrl.item.volume.hostPath)   ? 'hostPath'  :
-                                       !lodash.isNil(ctrl.item.volume.flexVolume) ? 'v3io'      :
-                                       !lodash.isNil(ctrl.item.volume.secret)     ? 'secret'    :
-                                       !lodash.isNil(ctrl.item.volume.configMap)  ? 'configMap' :
-                                                                                    null;
+                var selectedTypeName = !lodash.isNil(ctrl.item.volume.hostPath)               ? 'hostPath'              :
+                                       !lodash.isNil(ctrl.item.volume.flexVolume)             ? 'v3io'                  :
+                                       !lodash.isNil(ctrl.item.volume.secret)                 ? 'secret'                :
+                                       !lodash.isNil(ctrl.item.volume.configMap)              ? 'configMap'             :
+                                       !lodash.isNil(ctrl.item.volume.persistentVolumeClaim)  ? 'persistentVolumeClaim' :
+                                                                                                null;
 
                 if (!lodash.isNil(selectedTypeName)) {
                     ctrl.selectedClass = lodash.find(ctrl.classList, ['id', selectedTypeName]);
@@ -671,10 +672,7 @@
                         }
                     });
 
-                    // delete properties of other classes
-                    delete ctrl.item.volume.flexVolume;
-                    delete ctrl.item.volume.secret;
-                    delete ctrl.item.volume.configMap;
+                    cleanVolumeClasses('hostPath');
                 } else if (item.id === 'v3io') { // see https://github.com/v3io/flex-fuse
                     lodash.defaultsDeep(ctrl.item, {
                         volume: {
@@ -689,10 +687,7 @@
                         }
                     });
 
-                    // delete properties of other classes
-                    delete ctrl.item.volume.hostPath;
-                    delete ctrl.item.volume.secret;
-                    delete ctrl.item.volume.configMap;
+                    cleanVolumeClasses('flexVolume');
                 } else if (item.id === 'secret') {
                     lodash.defaultsDeep(ctrl.item.volume, {
                         secret: {
@@ -700,10 +695,7 @@
                         }
                     });
 
-                    // delete properties of other classes
-                    delete ctrl.item.volume.hostPath;
-                    delete ctrl.item.volume.flexVolume;
-                    delete ctrl.item.volume.configMap;
+                    cleanVolumeClasses('secret');
                 } else if (item.id === 'configMap') {
                     lodash.defaultsDeep(ctrl.item.volume, {
                         configMap: {
@@ -711,10 +703,15 @@
                         }
                     });
 
-                    // delete properties of other classes
-                    delete ctrl.item.volume.hostPath;
-                    delete ctrl.item.volume.flexVolume;
-                    delete ctrl.item.volume.secret;
+                    cleanVolumeClasses('configMap');
+                } else if (item.id === 'persistentVolumeClaim') {
+                    lodash.defaultsDeep(ctrl.item.volume, {
+                        persistentVolumeClaim: {
+                            claimName: ''
+                        }
+                    });
+
+                    cleanVolumeClasses('persistentVolumeClaim');
                 }
 
                 return;
@@ -795,6 +792,19 @@
             if (nameDirty && nameInvalid) {
                 ctrl.editItemForm.itemName.$setDirty();
             }
+        }
+
+        /**
+         * Removes volume classes except `selectedClass`
+         * @param {string} selectedClass
+         */
+        function cleanVolumeClasses(selectedClass) {
+            var removeVolume = lodash.unset.bind(null, ctrl.item.volume);
+
+            lodash.chain(['hostPath', 'flexVolume', 'secret', 'configMap', 'persistentVolumeClaim'])
+                .without(selectedClass)
+                .forEach(removeVolume)
+                .value();
         }
 
         /**

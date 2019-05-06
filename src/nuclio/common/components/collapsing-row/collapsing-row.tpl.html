@@ -32,6 +32,9 @@
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.configMap.name)">
                 Config map
             </div>
+            <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.persistentVolumeClaim.claimName)">
+                PVC
+            </div>
 
             <!-- Custom info -->
             <div class="igz-col-70 item-info">
@@ -82,6 +85,10 @@
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.configMap.name)">
                         <span class="field-label">Config map name</span>:&nbsp;{{ $ctrl.item.volume.configMap.name }};&nbsp;
+                    </span>
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.persistentVolumeClaim.claimName)">
+                        <span class="field-label">Persistent Volume Claim Name</span>:
+                        &nbsp;{{ $ctrl.item.volume.persistentVolumeClaim.claimName }};&nbsp;
                     </span>
 
                     <!-- Worker Allocator name -->
