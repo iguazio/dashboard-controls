@@ -8,12 +8,21 @@
         {{$ctrl.description}}
     </div>
 
-    <div data-ng-if="$ctrl.isDefaultTooltipEnabled"
+    <div data-ng-if="$ctrl.isDefaultTooltipEnabled && !$ctrl.isDefaultTooltipHtml"
          data-ng-class="{'disabled': $ctrl.isDisabled}"
          class="question-mark igz-icon-help-round"
          data-uib-tooltip="{{$ctrl.description}}"
-         data-tooltip-placement="$ctrl.defaultTooltipPlacement"
-         data-tooltip-popup-delay="$ctrl.defaultTooltipPopupDelay"
+         data-tooltip-placement="{{$ctrl.defaultTooltipPlacement}}"
+         data-tooltip-popup-delay="{{$ctrl.defaultTooltipPopupDelay}}"
+         data-tooltip-append-to-body="true">
+    </div>
+
+    <div data-ng-if="$ctrl.isDefaultTooltipEnabled && $ctrl.isDefaultTooltipHtml"
+         data-ng-class="{'disabled': $ctrl.isDisabled}"
+         class="question-mark igz-icon-help-round"
+         data-uib-tooltip-html="$ctrl.description"
+         data-tooltip-placement="{{$ctrl.defaultTooltipPlacement}}"
+         data-tooltip-popup-delay="{{$ctrl.defaultTooltipPopupDelay}}"
          data-tooltip-append-to-body="true">
     </div>
 </div>
