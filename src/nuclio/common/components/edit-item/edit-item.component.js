@@ -672,7 +672,7 @@
                         }
                     });
 
-                    cleanVolumeClasses('hostPath');
+                    cleanOtherVolumeClasses('hostPath');
                 } else if (item.id === 'v3io') { // see https://github.com/v3io/flex-fuse
                     lodash.defaultsDeep(ctrl.item, {
                         volume: {
@@ -687,7 +687,7 @@
                         }
                     });
 
-                    cleanVolumeClasses('flexVolume');
+                    cleanOtherVolumeClasses('flexVolume');
                 } else if (item.id === 'secret') {
                     lodash.defaultsDeep(ctrl.item.volume, {
                         secret: {
@@ -695,7 +695,7 @@
                         }
                     });
 
-                    cleanVolumeClasses('secret');
+                    cleanOtherVolumeClasses('secret');
                 } else if (item.id === 'configMap') {
                     lodash.defaultsDeep(ctrl.item.volume, {
                         configMap: {
@@ -703,7 +703,7 @@
                         }
                     });
 
-                    cleanVolumeClasses('configMap');
+                    cleanOtherVolumeClasses('configMap');
                 } else if (item.id === 'persistentVolumeClaim') {
                     lodash.defaultsDeep(ctrl.item.volume, {
                         persistentVolumeClaim: {
@@ -711,7 +711,7 @@
                         }
                     });
 
-                    cleanVolumeClasses('persistentVolumeClaim');
+                    cleanOtherVolumeClasses('persistentVolumeClaim');
                 }
 
                 return;
@@ -798,7 +798,7 @@
          * Removes volume classes except `selectedClass`
          * @param {string} selectedClass
          */
-        function cleanVolumeClasses(selectedClass) {
+        function cleanOtherVolumeClasses(selectedClass) {
             var removeVolume = lodash.unset.bind(null, ctrl.item.volume);
 
             lodash.chain(['hostPath', 'flexVolume', 'secret', 'configMap', 'persistentVolumeClaim'])
