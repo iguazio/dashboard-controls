@@ -455,6 +455,10 @@
                     {
                         id: 'configMap',
                         name: 'ConfigMap'
+                    },
+                    {
+                        id: 'persistentVolumeClaim',
+                        name: 'PVC'
                     }
                 ]
             };
