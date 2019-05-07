@@ -73,6 +73,22 @@
             </div>
         </div>
         <div class="row">
+            <div class="account-block">
+                <div class="label">
+                    Service Account
+                </div>
+                <igz-validating-input-field class="nuclio-validating-input"
+                                            data-field-type="input"
+                                            data-input-name="serviceAccount"
+                                            data-input-value="$ctrl.version.spec.serviceAccount"
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="spec.serviceAccount"
+                                            data-form-object="$ctrl.basicSettingsForm"
+                                            data-placeholder-text="myserviceaccount">
+                </igz-validating-input-field>
+            </div>
+        </div>
+        <div class="row">
             <div class="logger-block">
                 <div class="logger-dropdown">
                     <span class="label">Logger level</span>
