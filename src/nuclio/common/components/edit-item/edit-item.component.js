@@ -7,7 +7,8 @@
             bindings: {
                 item: '<',
                 type: '@',
-                onSubmitCallback: '&'
+                onSubmitCallback: '&',
+                defaultFields: '<?'
             },
             templateUrl: 'nuclio/common/components/edit-item/edit-item.tpl.html',
             controller: NclEditItemController
@@ -103,12 +104,12 @@
             }
 
             if (ctrl.isVolumeType()) {
-                var selectedTypeName = !lodash.isNil(ctrl.item.volume.hostPath)               ? 'hostPath'              :
-                                       !lodash.isNil(ctrl.item.volume.flexVolume)             ? 'v3io'                  :
-                                       !lodash.isNil(ctrl.item.volume.secret)                 ? 'secret'                :
-                                       !lodash.isNil(ctrl.item.volume.configMap)              ? 'configMap'             :
-                                       !lodash.isNil(ctrl.item.volume.persistentVolumeClaim)  ? 'persistentVolumeClaim' :
-                                                                                                null;
+                var selectedTypeName = !lodash.isNil(ctrl.item.volume.hostPath)              ? 'hostPath'              :
+                                       !lodash.isNil(ctrl.item.volume.flexVolume)            ? 'v3io'                  :
+                                       !lodash.isNil(ctrl.item.volume.secret)                ? 'secret'                :
+                                       !lodash.isNil(ctrl.item.volume.configMap)             ? 'configMap'             :
+                                       !lodash.isNil(ctrl.item.volume.persistentVolumeClaim) ? 'persistentVolumeClaim' :
+                                                                                               null;
 
                 if (!lodash.isNil(selectedTypeName)) {
                     ctrl.selectedClass = lodash.find(ctrl.classList, ['id', selectedTypeName]);
@@ -284,7 +285,7 @@
             $timeout(function () {
                 if (ctrl.ingresses.length < 1 || lodash.chain(ctrl.ingresses).last().get('ui.isFormValid', true).value()) {
                     ctrl.ingresses.push({
-                        name: '',
+                        name: lodash.get(ctrl.defaultFields, 'ingressHost', ''),
                         value: '',
                         additionalValue: '',
                         ui: {

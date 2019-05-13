@@ -61,6 +61,12 @@
 
                 return triggersItem;
             });
+
+            $timeout(function () {
+                ctrl.defaultFields = {
+                    ingressHost: ctrl.version.ui.ingressHost
+                }
+            }, 1000);
         }
 
         /**
