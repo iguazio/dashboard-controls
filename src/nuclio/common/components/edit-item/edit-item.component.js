@@ -7,7 +7,8 @@
             bindings: {
                 item: '<',
                 type: '@',
-                onSubmitCallback: '&'
+                onSubmitCallback: '&',
+                defaultFields: '<?'
             },
             templateUrl: 'nuclio/common/components/edit-item/edit-item.tpl.html',
             controller: NclEditItemController
@@ -284,7 +285,7 @@
             $timeout(function () {
                 if (ctrl.ingresses.length < 1 || lodash.chain(ctrl.ingresses).last().get('ui.isFormValid', true).value()) {
                     ctrl.ingresses.push({
-                        name: '',
+                        name: lodash.get(ctrl.defaultFields, 'ingressHost', ''),
                         value: '',
                         additionalValue: '',
                         ui: {
