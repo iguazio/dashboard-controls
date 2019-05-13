@@ -13,6 +13,7 @@
                 getFunction: '&',
                 getFunctions: '&',
                 getExternalIpAddresses: '&',
+                getFrontendSpec: '&',
                 onEditCallback: '&?',
                 updateVersion: '&'
             },
@@ -25,6 +26,7 @@
         var ctrl = this;
         var deregisterFunction = null;
         var interval = null;
+        var ingressHostTemplate = '';
 
         ctrl.action = null;
         ctrl.isDemoMode = ConfigService.isDemoMode;
@@ -143,6 +145,7 @@
 
                     NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
                 })
+                .then(setIngressHost)
                 .catch(function (error) {
                     var msg = 'Oops: Unknown error occurred while retrieving project';
                     DialogsService.alert(lodash.get(error, 'data.error', msg));
@@ -186,8 +189,9 @@
                 }
             });
 
-            ctrl.getExternalIpAddresses()
+            ctrl.getFrontendSpec()
                 .then(setInvocationUrl)
+                .then(setIngressHost)
                 .catch(function () {
                     ctrl.version.ui.invocationURL = '';
                 });
@@ -408,8 +412,9 @@
 
                             lodash.assign(ctrl.version.spec, response.spec);
 
-                            ctrl.getExternalIpAddresses()
+                            ctrl.getFrontendSpec()
                                 .then(setInvocationUrl)
+                                .then(setIngressHost)
                                 .catch(function () {
                                     ctrl.version.ui.invocationURL = '';
                                 });
@@ -452,11 +457,11 @@
 
         /**
          * Sets the invocation URL of the function
-         * @param {{externalIPAddresses: {addresses: Array.<string>}}} result - the response body from
-         *     `getExternalIpAddresses`
+         * @param {{externalIPAddresses: Array.<string>, defaultHTTPIngressHostTemplate: <string>,
+         * namespace: <string>}} result - the response body from`getFrontendSpec`
          */
         function setInvocationUrl(result) {
-            var ip = lodash.get(result, 'externalIPAddresses.addresses[0]', '');
+            var ip = lodash.get(result, 'externalIPAddresses[0]', '');
             var port = lodash.defaultTo(
                 lodash.get(ctrl.version, 'ui.deployResult.status.httpPort'),
                 lodash.get(ctrl.version, 'status.httpPort')
@@ -464,6 +469,23 @@
 
             ctrl.version.ui.invocationURL =
                 lodash.isEmpty(ip) || !lodash.isNumber(port) ? '' : 'http://' + ip + ':' + port;
+
+            ingressHostTemplate = lodash.get(result, 'defaultHTTPIngressHostTemplate', '');
+        }
+
+        /**
+         * Sets ingress host based on template
+         */
+        function setIngressHost() {
+            var matches = {
+                '{{ .FunctionName }}': lodash.get(ctrl.version, 'metadata.name'),
+                '{{ .ProjectName }}': lodash.get(ctrl.project, 'metadata.name'),
+                '{{ .Namespace }}': lodash.get(ctrl.project, 'metadata.namespace')
+            };
+
+            ctrl.version.ui.ingressHost = lodash.reduce(matches, function (accum, value, key) {
+                return !lodash.isNil(value) ? lodash.replace(accum, key, value) : accum;
+            }, ingressHostTemplate);
         }
 
         /**
