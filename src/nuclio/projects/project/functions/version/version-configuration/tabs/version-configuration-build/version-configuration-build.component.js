@@ -11,7 +11,7 @@
             controller: NclVersionConfigurationBuildController
         });
 
-    function NclVersionConfigurationBuildController($scope, lodash, ngDialog, Upload, ConfigService) {
+    function NclVersionConfigurationBuildController($rootScope, $scope, $timeout, lodash, ngDialog, Upload, ConfigService) {
         var ctrl = this;
         var uploadType = '';
 
@@ -36,6 +36,7 @@
         ctrl.disabled = true;
 
         ctrl.$onInit = onInit;
+        ctrl.$onDestroy = onDestroy;
 
         ctrl.deleteFile = deleteFile;
         ctrl.getFileConfig = getFileConfig;
@@ -64,6 +65,13 @@
             });
         }
 
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            $rootScope.$broadcast('change-state-deploy-button', {isDisabled: false});
+        }
+
         //
         // Public methods
         //
@@ -87,6 +95,12 @@
             } else {
                 lodash.set(ctrl.version, field, newData);
             }
+
+            $timeout(function () {
+                $rootScope.$broadcast('change-state-deploy-button', {
+                    isDisabled: lodash.get(ctrl.buildForm, '$invalid', false)
+                });
+            });
 
             ctrl.onChangeCallback();
         }
