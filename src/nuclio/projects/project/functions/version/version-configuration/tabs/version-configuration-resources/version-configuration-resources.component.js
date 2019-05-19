@@ -452,7 +452,7 @@
          */
         function setFormValidity() {
             lodash.forEach(['requestMemory', 'limitsMemory', 'requestCpu', 'limitsCpu',
-                'requestGpu', 'limitsGpu', 'minReplicas', 'maxReplicas'], prepareToValidity);
+                'limitsGpu', 'minReplicas', 'maxReplicas'], prepareToValidity);
 
             var path = 'spec.resources.requests.memory';
             checkIfMemoryInputsValid(lodash.get(ctrl.version, path, '0'), path);
