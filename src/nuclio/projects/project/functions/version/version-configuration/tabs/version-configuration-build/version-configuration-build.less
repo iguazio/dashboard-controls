@@ -200,30 +200,33 @@
         }
     }
 
-    .igz-action-menu {
-        float: right;
+    .configuration-build-title-wrapper {
+        display: flex;
+        justify-content: space-between;
 
-        .menu-button {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 22px;
-            margin: -10px -15px 0 0;
-            border-radius: 50%;
-            color: @dusk-three;
-        }
+        .igz-action-menu {
+            .menu-button {
+                width: 40px;
+                height: 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 22px;
+                margin: -10px -15px 0 0;
+                border-radius: 50%;
+                color: @dusk-three;
+            }
 
-        .active {
-            .black(0.1);
-            background-color: @silver;
-            box-shadow: inset 0px 2px 3px 0 @color;
-        }
+            .active {
+                .black(0.1);
+                background-color: @silver;
+                box-shadow: inset 0px 2px 3px 0 @color;
+            }
 
-        .menu-dropdown {
-            margin-top: 4px;
-            right: -18px;
+            .menu-dropdown {
+                margin-top: 4px;
+                right: -18px;
+            }
         }
     }
 }
