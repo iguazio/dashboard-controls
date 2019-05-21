@@ -15,6 +15,7 @@
      * isDataRevert: should incorrect value be immediately replaced by a previous correct one
      * isDisabled: is input should be disabled
      * isFocused: should input be focused when screen is displayed
+     * isTrim: whether the input value will automatically trim
      * onlyValidCharacters: allow only that characters which passed regex pattern
      * placeholderText: text that is displayed when input is empty
      * readOnly: is input should be readonly
@@ -42,6 +43,7 @@
                 isDisabled: '<?',
                 isDataRevert: '@?',
                 isFocused: '<?',
+                isTrim: '<?',
                 itemBlurCallback: '&?',
                 itemFocusCallback: '&?',
                 onBlur: '&?',
@@ -113,6 +115,7 @@
             lodash.defaults(ctrl, {
                 hideCounter: false,
                 isDisabled: false,
+                isTrim: true,
                 readOnly: false,
                 onlyValidCharacters: false
             });
@@ -242,7 +245,7 @@
          */
         function updateInputValue() {
             if (angular.isDefined(ctrl.data)) {
-                ctrl.inputValue = angular.isString(ctrl.data) ? ctrl.data.trim() : ctrl.data;
+                ctrl.inputValue = angular.isString(ctrl.data) && ctrl.isTrim ? ctrl.data.trim() : ctrl.data;
             }
 
             if (angular.isDefined(ctrl.updateDataCallback)) {

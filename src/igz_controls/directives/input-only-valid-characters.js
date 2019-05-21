@@ -34,7 +34,7 @@
                     lastValidViewValue = ngModelCtrl.$viewValue;
                 });
 
-                ngModelCtrl.$parsers.unshift(checkForDigits);
+                ngModelCtrl.$parsers.unshift(validation);
             }
 
             /**
@@ -42,12 +42,10 @@
              * @param {string} viewValue - entered view value
              * @returns {string} the last valid entered value
              */
-            function checkForDigits(viewValue) {
+            function validation(viewValue) {
                 if (onlyValidCharacters) {
                     if (REGEXP.test(viewValue)) {
-
-                        // Saves as valid view value if it's a not empty string
-                        lastValidViewValue = viewValue === '' ? '' : Number(viewValue);
+                        lastValidViewValue = viewValue;
                     } else {
 
                         // Renders the last valid input in the field
