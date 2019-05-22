@@ -15,7 +15,7 @@
      * isDataRevert: should incorrect value be immediately replaced by a previous correct one
      * isDisabled: is input should be disabled
      * isFocused: should input be focused when screen is displayed
-     * isTrim: whether the input value will automatically trim
+     * trim: whether the input value will automatically trim
      * onlyValidCharacters: allow only that characters which passed regex pattern
      * placeholderText: text that is displayed when input is empty
      * readOnly: is input should be readonly
