@@ -212,7 +212,7 @@
                                     'data-form-object="ngDialogData.igzDialogPromptForm" ' +
                                     'data-is-focused="true" ' +
                                     (angular.isUndefined(validation) ? '' : 'data-validation-pattern="ngDialogData.validation" ' +
-                                    'data-only-valid-characters="true" data-is-trim="false" ') +
+                                    'data-only-valid-characters="true" data-trim="false" ') +
                                     (lodash.isEmpty(placeholder) ? '' : 'data-placeholder-text="' + placeholder + '" ') +
                                     (lodash.defaultTo(required, false) ? 'data-validation-is-required="true" ' : '') +
                                     'data-update-data-callback="ngDialogData.inputValueCallback(newData)"' +

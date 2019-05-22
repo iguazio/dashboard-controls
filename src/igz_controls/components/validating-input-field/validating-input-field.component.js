@@ -40,10 +40,10 @@
                 inputModelOptions: '<?',
                 inputName: '@',
                 inputValue: '<',
+                isClearIcon: '<?',
                 isDisabled: '<?',
                 isDataRevert: '@?',
                 isFocused: '<?',
-                isTrim: '<?',
                 itemBlurCallback: '&?',
                 itemFocusCallback: '&?',
                 onBlur: '&?',
@@ -51,12 +51,12 @@
                 placeholderText: '@',
                 readOnly: '<?',
                 spellcheck: '@?',
+                trim: '<?',
                 updateDataCallback: '&?',
                 updateDataField: '@?',
                 validationIsRequired: '<',
                 validationMaxLength: '@',
-                validationPattern: '<',
-                isClearIcon: '<?'
+                validationPattern: '<'
             },
             templateUrl: 'igz_controls/components/validating-input-field/validating-input-field.tpl.html',
             controller: IgzValidatingInputFieldController
@@ -115,7 +115,7 @@
             lodash.defaults(ctrl, {
                 hideCounter: false,
                 isDisabled: false,
-                isTrim: true,
+                trim: true,
                 readOnly: false,
                 onlyValidCharacters: false
             });
@@ -245,7 +245,7 @@
          */
         function updateInputValue() {
             if (angular.isDefined(ctrl.data)) {
-                ctrl.inputValue = angular.isString(ctrl.data) && ctrl.isTrim ? ctrl.data.trim() : ctrl.data;
+                ctrl.inputValue = angular.isString(ctrl.data) && ctrl.trim ? ctrl.data.trim() : ctrl.data;
             }
 
             if (angular.isDefined(ctrl.updateDataCallback)) {
