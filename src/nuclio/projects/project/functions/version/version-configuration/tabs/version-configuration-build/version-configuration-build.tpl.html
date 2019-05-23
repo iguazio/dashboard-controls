@@ -1,12 +1,16 @@
 <div class="ncl-version-configuration-build"
      data-ng-class="{ disabled: $ctrl.disabled }">
-    <igz-action-menu data-ng-if="$ctrl.isDemoMode()"
-                     data-actions="$ctrl.actions"
-                     data-icon-class="ncl-icon-paperclip"
-                     data-on-fire-action="$ctrl.onFireAction">
-    </igz-action-menu>
-    <div class="title pull-left">Build</div>
-    <small class="pull-right" data-ng-if="$ctrl.disabled">Editable for &quot;Edit Online&quot; code entry type only</small>
+    <div class="configuration-build-title-wrapper">
+        <div class="title pull-left">Build</div>
+
+        <igz-action-menu data-ng-if="$ctrl.isDemoMode() && !$ctrl.disabled"
+                         data-actions="$ctrl.actions"
+                         data-icon-class="ncl-icon-paperclip"
+                         data-on-fire-action="$ctrl.onFireAction">
+        </igz-action-menu>
+
+        <small class="pull-right" data-ng-if="$ctrl.disabled">Editable for &quot;Edit Online&quot; code entry type only</small>
+    </div>
     <form name="$ctrl.buildForm" class="build-wrapper">
         <div class="igz-row">
             <div class="igz-col-100 build-field">
