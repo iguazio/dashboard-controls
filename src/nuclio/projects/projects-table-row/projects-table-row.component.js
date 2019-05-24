@@ -15,8 +15,10 @@
             controller: NclProjectsTableRowController
         });
 
-    function NclProjectsTableRowController($q, $scope, $state, lodash, moment, ngDialog, ConfigService, ExportService) {
+    function NclProjectsTableRowController($q, $scope, $state, $i18next, i18next, lodash, moment, ngDialog,
+                                           ConfigService, ExportService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.actions = {};
 
@@ -109,9 +111,9 @@
                 })
                 .catch(function (error) {
                     var status = lodash.get(error, 'status');
-                    var errorMessage = status === 409 ?
-                        'Cannot delete a non-empty project.' :
-                        'Unknown error occurred while deleting the project (try deleting its functions first).';
+                    var errorMessage = status === 409                                       ?
+                        $i18next.t('functions:ERROR_MSG.DELETE_PROJECT.409', {lng: lng})    :
+                        $i18next.t('functions:ERROR_MSG.DELETE_PROJECT.DEFAULT', {lng: lng});
                     return $q.reject(errorMessage);
                 });
         }
@@ -123,26 +125,26 @@
         function initActions() {
             return [
                 {
-                    label: 'Delete',
+                    label: $i18next.t('common:DELETE', {lng: lng}),
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
                     confirm: {
-                        message: 'Delete project “' + ctrl.project.spec.displayName + '“?',
-                        yesLabel: 'Yes, Delete',
-                        noLabel: 'Cancel',
-                        description: 'Deleted project cannot be restored.',
+                        message: $i18next.t('functions:DELETE_PROJECT', {lng: lng}) + ' “' + ctrl.project.spec.displayName + '“?',
+                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
+                        description: $i18next.t('functions:DELETE_PROJECT_DESCRIPTION', {lng: lng}),
                         type: 'nuclio_alert'
                     }
                 },
                 {
-                    label: 'Edit',
+                    label: $i18next.t('common:EDIT', {lng: lng}),
                     id: 'edit',
                     icon: 'igz-icon-edit',
                     active: true
                 },
                 {
-                    label: 'Export',
+                    label: $i18next.t('common:EXPORT', {lng: lng}),
                     id: 'export',
                     icon: 'igz-icon-export-yml',
                     active: true
@@ -170,7 +172,7 @@
             })
                 .catch(function (error) {
                     if (error !== 'closed') {
-                        return $q.reject('Unknown error occurred while updating the project');
+                        return $q.reject($i18next.t('functions:ERROR_MSG.UPDATE_PROJECT.DEFAULT', {lng: lng}));
                     }
                 });
         }

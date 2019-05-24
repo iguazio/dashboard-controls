@@ -1,9 +1,15 @@
 <div class="ncl-version-configuration-annotations">
-    <div class="title">Annotations</div>
+    <div class="title">
+        {{ 'functions:ANNOTATIONS' | i18next }}
+    </div>
     <form name="$ctrl.annotationsForm" class="annotations-wrapper">
         <div data-ng-if="$ctrl.annotations.length > 0" class="table-headers">
-            <div class="key-header">Key</div>
-            <div class="value-header">Value</div>
+            <div class="key-header">
+                {{ 'common:KEY' | i18next }}
+            </div>
+            <div class="value-header">
+                {{ 'common:VALUE' | i18next }}
+            </div>
         </div>
         <div data-ng-if="!$ctrl.isScrollNeeded()">
             <div class="table-body" data-ng-repeat="annotation in $ctrl.annotations">
@@ -14,7 +20,8 @@
                                      data-use-type="false"
                                      data-item-index="$index"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                     data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                </ncl-key-value-input>
             </div>
         </div>
         <div data-ng-if="$ctrl.isScrollNeeded()"
@@ -29,13 +36,14 @@
                                      data-use-type="false"
                                      data-item-index="$index"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                     data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                </ncl-key-value-input>
             </div>
         </div>
         <div class="create-annotation-button"
              data-ng-click="$ctrl.addNewAnnotation($event)">
             <span class="igz-icon-add-round"></span>
-            Create a new annotation
+            {{ 'functions:CREATE_NEW_ANNOTATION' | i18next }}
         </div>
     </form>
 </div>

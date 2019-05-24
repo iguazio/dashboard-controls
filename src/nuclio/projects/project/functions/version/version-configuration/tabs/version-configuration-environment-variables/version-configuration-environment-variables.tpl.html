@@ -1,5 +1,5 @@
 <div class="ncl-version-configuration-environment-variables">
-    <div class="title">Environment Variables</div>
+    <div class="title">{{ 'functions:ENVIRONMENT_VARIABLES' | i18next }}</div>
     <form name="$ctrl.environmentVariablesForm" class="resources-wrapper">
         <div data-ng-if="!$ctrl.isScrollNeeded()"
              class="igz-scrollable-container">
@@ -14,7 +14,8 @@
                                      data-all-value-types="$ctrl.isOnlyValueTypeInputs"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
                                      data-change-data-callback="$ctrl.onChangeData(newData, index)"
-                                     data-dropdown-overlap="true"></ncl-key-value-input>
+                                     data-dropdown-overlap="true">
+                </ncl-key-value-input>
             </div>
         </div>
         <div data-ng-if="$ctrl.isScrollNeeded()"
@@ -31,13 +32,14 @@
                                      data-use-labels="true"
                                      data-all-value-types="$ctrl.isOnlyValueTypeInputs"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                     data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                </ncl-key-value-input>
             </div>
         </div>
         <div class="create-variable-button"
              data-ng-click="$ctrl.addNewVariable($event)">
             <span class="igz-icon-add-round"></span>
-            Create a new environment variable
+            {{ 'functions:CREATE_NEW_ENVIRONMENT_VARIABLE' | i18next }}
         </div>
     </form>
 </div>

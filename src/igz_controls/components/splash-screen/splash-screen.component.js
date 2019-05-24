@@ -10,13 +10,14 @@
             controller: IgzSplashScreenController
         });
 
-    function IgzSplashScreenController($scope, $state) {
+    function IgzSplashScreenController($scope, $state, $i18next, i18next) {
         var ctrl = this;
+        var lng = i18next.language;
 
         // public properties
         ctrl.isLoading = true;
         ctrl.isAlertShowing = false;
-        ctrl.textToDisplay = 'Loading…';
+        ctrl.textToDisplay = $i18next.t('common:LOADING_CAPITALIZE_ELLIPSIS', {lng: lng});
 
         ctrl.$onInit = onInit;
 

@@ -16,9 +16,11 @@
             controller: FunctionsController
         });
 
-    function FunctionsController($filter, $q, $rootScope, $scope, $state, $stateParams, $transitions, $timeout, lodash,
-                                 CommonTableService, ConfigService, DialogsService, NuclioHeaderService) {
+    function FunctionsController($filter, $q, $rootScope, $scope, $state, $stateParams, $transitions, $timeout,
+                                 $i18next, i18next, lodash, CommonTableService, ConfigService, DialogsService,
+                                 NuclioHeaderService) {
         var ctrl = this;
+        var lng = i18next.language;
         var title = {}; // breadcrumbs config
 
         ctrl.actions = [];
@@ -42,27 +44,27 @@
         ];
         ctrl.sortOptions = [
             {
-                label: 'Name',
+                label: $i18next.t('common:NAME', {lng: lng}),
                 value: 'metadata.name',
                 active: true
             },
             {
-                label: 'Description',
+                label: $i18next.t('common:DESCRIPTION', {lng: lng}),
                 value: 'spec.description',
                 active: false
             },
             {
-                label: 'Status',
+                label: $i18next.t('common:STATUS', {lng: lng}),
                 value: 'status.state',
                 active: false
             },
             {
-                label: 'Replicas',
+                label: $i18next.t('common:REPLICAS', {lng: lng}),
                 value: 'spec.replicas',
                 active: false
             },
             {
-                label: 'Runtime',
+                label: $i18next.t('functions:RUNTIME', {lng: lng}),
                 value: 'spec.runtime',
                 active: false
             }
@@ -107,7 +109,7 @@
                         title.project = ctrl.project;
                         title.projectName = ctrl.project.spec.displayName;
 
-                        NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
+                        NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
 
                         ctrl.getExternalIpAddresses()
                             .then(function (response) {
@@ -127,7 +129,7 @@
                     })
                     .catch(function (error) {
                         ctrl.isSplashShowed.value = false;
-                        var msg = 'Oops: Unknown error occurred while retrieving project';
+                        var msg = $i18next.t('functions:ERROR_MSG.GET_PROJECT', {lng: lng});
                         DialogsService.alert(lodash.get(error, 'data.error', msg)).then(function () {
                             $state.go('app.projects');
                         });
@@ -249,7 +251,7 @@
         function openNewFunctionScreen() {
             title.function = 'Create function';
 
-            NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
+            NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
 
             $state.go('app.project.create-function');
         }
@@ -289,7 +291,7 @@
                     }
                 })
                 .catch(function (error) {
-                    var msg = 'Oops: Unknown error occurred while retrieving functions';
+                    var msg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
                     DialogsService.alert(lodash.get(error, 'data.error', msg));
                 })
                 .finally(function () {
@@ -340,20 +342,20 @@
         function initVersionActions() {
             var actions = [
                 {
-                    label: 'Edit',
+                    label: $i18next.t('common:EDIT', {lng: lng}),
                     id: 'edit',
                     icon: 'igz-icon-edit',
                     active: true
                 },
                 {
-                    label: 'Delete',
+                    label: $i18next.t('common:DELETE', {lng: lng}),
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
                     confirm: {
-                        message: 'Are you sure you want to delete selected version?',
-                        yesLabel: 'Yes, Delete',
-                        noLabel: 'Cancel',
+                        message: $i18next.t('functions:DELETE_VERSION_CONFIRM', {lng: lng}),
+                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
                         type: 'critical_alert'
                     }
                 }
@@ -403,12 +405,13 @@
                 var deleteAction = lodash.find(ctrl.actions, {'id': 'delete'});
                 if (!lodash.isNil(deleteAction)) {
                     var message = checkedRows.length === 1 ?
-                        'Delete version “' + checkedRows[0].name + '”?' : 'Are you sure you want to delete selected version?';
+                        $i18next.t('functions:DELETE_VERSION', {lng: lng}) + ' “' + checkedRows[0].name + '”?' :
+                        $i18next.t('functions:DELETE_VERSION_CONFIRM', {lng: lng});
 
                     deleteAction.confirm = {
                         message: message,
-                        yesLabel: 'Yes, Delete',
-                        noLabel: 'Cancel',
+                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
                         type: 'nuclio_alert'
                     };
                 }

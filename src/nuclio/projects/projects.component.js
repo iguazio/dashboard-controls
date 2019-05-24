@@ -16,20 +16,21 @@
             controller: NclProjectsController
         });
 
-    function NclProjectsController($element, $filter, $rootScope, $scope, $state, $q, lodash, ngDialog,
-                                   ActionCheckboxAllService, CommonTableService, ConfigService, DialogsService,
-                                   ExportService, ImportService, ValidatingPatternsService) {
+    function NclProjectsController($element, $filter, $rootScope, $scope, $state, $q, $i18next, i18next, lodash,
+                                   ngDialog, ActionCheckboxAllService, CommonTableService, ConfigService,
+                                   DialogsService, ExportService, ImportService, ValidatingPatternsService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.actions = [];
         ctrl.dropdownActions = [
             {
                 id: 'exportProjects',
-                name: 'Export all projects'
+                name: $i18next.t('functions:EXPORT_ALL_PROJECTS', {lng: lng})
             },
             {
                 id: 'importProject',
-                name: 'Import project(s)'
+                name: $i18next.t('functions:IMPORT_PROJECTS', {lng: lng})
             }
         ];
         ctrl.checkedItemsCount = 0;
@@ -53,22 +54,22 @@
         ctrl.selectedProject = {};
         ctrl.sortOptions = [
             {
-                label: 'Name',
+                label: $i18next.t('common:NAME', {lng: lng}),
                 value: 'displayName',
                 active: true
             },
             {
-                label: 'Description',
+                label: $i18next.t('common:DESCRIPTION', {lng: lng}),
                 value: 'description',
                 active: false
             },
             {
-                label: 'Created by',
+                label: $i18next.t('common:CREATED_BY', {lng: lng}),
                 value: 'created_by',
                 active: false
             },
             {
-                label: 'Created date',
+                label: $i18next.t('functions:CREATED_DATE', {lng: lng}),
                 value: 'created_date',
                 active: false
             }
@@ -353,25 +354,25 @@
         function initActions() {
             return [
                 {
-                    label: 'Delete',
+                    label: $i18next.t('common:DELETE', {lng: lng}),
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
                     confirm: {
-                        message: 'Delete selected projects?',
-                        yesLabel: 'Yes, Delete',
-                        noLabel: 'Cancel',
+                        message: $i18next.t('functions:DELETE_PROJECTS_CONFIRM', {lng: lng}),
+                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
                         type: 'nuclio_alert'
                     }
                 },
                 {
-                    label: 'Edit',
+                    label: $i18next.t('common:EDIT', {lng: lng}),
                     id: 'edit',
                     icon: 'igz-icon-edit',
                     active: true
                 },
                 {
-                    label: 'Export',
+                    label: $i18next.t('common:EXPORT', {lng: lng}),
                     id: 'export',
                     icon: 'igz-icon-export-yml',
                     active: true
@@ -401,13 +402,14 @@
                 var deleteAction = lodash.find(ctrl.actions, {'id': 'delete'});
                 if (!lodash.isNil(deleteAction)) {
                     var message = checkedRowsCount === 1 ?
-                        'Delete project “' + checkedRows[0].spec.displayName + '”?' : 'Delete selected projects?';
+                        $i18next.t('functions:DELETE_PROJECT', {lng: lng}) + ' “' + checkedRows[0].spec.displayName + '”?' :
+                        $i18next.t('functions:DELETE_PROJECTS_CONFIRM', {lng: lng});
 
                     deleteAction.confirm = {
                         message: message,
-                        description: 'Deleted project cannot be restored.',
-                        yesLabel: 'Yes, Delete',
-                        noLabel: 'Cancel',
+                        description: $i18next.t('functions:DELETE_PROJECT_DESCRIPTION', {lng: lng}),
+                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
                         type: 'nuclio_alert'
                     };
                 }

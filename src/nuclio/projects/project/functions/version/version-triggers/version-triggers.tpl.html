@@ -2,13 +2,13 @@
     <div class="common-table">
         <div data-ng-if="$ctrl.triggers.length > 0" class="common-table-header header-row">
             <div class="common-table-cell header-name">
-                Name
+                {{ 'common:NAME' | i18next }}
             </div>
             <div class="common-table-cell header-class">
-                Class
+                {{ 'common:CLASS' | i18next }}
             </div>
             <div class="igz-col-70 common-table-cell">
-                Info
+                {{ 'common:INFO' | i18next }}
             </div>
         </div>
 
@@ -27,7 +27,8 @@
                     </ncl-collapsing-row>
                     <div class="common-table-row create-trigger-button"
                          data-ng-click="$ctrl.createTrigger($event)">
-                        <span class="igz-icon-add-round"></span>Create a new trigger
+                        <span class="igz-icon-add-round"></span>
+                        {{ 'functions:CREATE_NEW_TRIGGER' | i18next }}
                     </div>
                 </div>
             </div>

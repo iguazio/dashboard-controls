@@ -3,7 +3,9 @@
         <div class="common-table-cell row-collapse">
             <span class="collapse-icon"
                   data-ng-click="$ctrl.onCollapse($event)"
-                  data-ng-class="{'collapsed igz-icon-right': !$ctrl.item.ui.editModeActive, 'igz-icon-down': $ctrl.item.ui.editModeActive}"></span>
+                  data-ng-class="{'collapsed igz-icon-right': !$ctrl.item.ui.editModeActive,
+                                  'igz-icon-down': $ctrl.item.ui.editModeActive}">
+            </span>
         </div>
 
         <div data-ng-show="!$ctrl.item.ui.editModeActive" class="igz-row common-table-cells-container item-row">
@@ -21,79 +23,79 @@
                 {{$ctrl.item.ui.className}}
             </div>
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)">
-                Host path
+                {{ 'functions:HOST_PATH' | i18next }}
             </div>
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume)">
-                V3IO
+                {{ 'functions:V3IO' | i18next }}
             </div>
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.secret.secretName)">
-                Secret
+                {{ 'functions:SECRET' | i18next }}
             </div>
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.configMap.name)">
-                Config map
+                {{ 'functions:CONFIG_MAP' | i18next }}
             </div>
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.persistentVolumeClaim.claimName)">
-                PVC
+                {{ 'functions:PVC' | i18next }}
             </div>
 
             <!-- Custom info -->
             <div class="igz-col-70 item-info">
                 <div data-ng-hide="$ctrl.item.ui.editModeActive" class="collapsed-item-info-block">
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.url)">
-                        <span class="field-label">URL</span>:&nbsp;{{ $ctrl.item.url }};&nbsp;
+                        <span class="field-label">{{ 'common:URL' | i18next }}</span>:&nbsp;{{ $ctrl.item.url }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.maxWorkers)">
-                        <span class="field-label">Max Workers</span>:&nbsp;{{ $ctrl.item.maxWorkers }};&nbsp;
+                        <span class="field-label">{{ 'functions:MAX_WORKERS' | i18next }}</span>:&nbsp;{{ $ctrl.item.maxWorkers }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.workerAvailabilityTimeoutMilliseconds)">
-                        <span class="field-label">Worker availability timeout</span>:&nbsp;{{ $ctrl.item.workerAvailabilityTimeoutMilliseconds }};&nbsp;
+                        <span class="field-label">{{ 'functions:WORKER_AVAILABILITY_TIMEOUT' | i18next }}</span>:&nbsp;{{ $ctrl.item.workerAvailabilityTimeoutMilliseconds }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.secret)">
-                        <span class="field-label">Secret</span>:&nbsp;{{ $ctrl.item.secret }};&nbsp;
+                        <span class="field-label">{{ 'functions:SECRET' | i18next }}</span>:&nbsp;{{ $ctrl.item.secret }};&nbsp;
                     </span>
                     <span data-ng-repeat="(key, value) in $ctrl.item.attributes">
                         <span class="field-label">{{ key }}</span>:&nbsp;{{ $ctrl.getAttributeValue(key, value) }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.annotations)">
-                        <span class="field-label">Annotations</span>: {{ $ctrl.item.annotations }};
+                        <span class="field-label">{{ 'functions:ANNOTATIONS' | i18next }}</span>: {{ $ctrl.item.annotations }};
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.username)">
-                        <span class="field-label">Username</span>: {{ $ctrl.item.username }};
+                        <span class="field-label">{{ 'common:USERNAME' | i18next }}</span>: {{ $ctrl.item.username }};
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.password)">
-                        <span class="field-label">Password</span>: {{ $ctrl.item.password }};
+                        <span class="field-label">{{ 'common:PASSWORD' | i18next }}</span>: {{ $ctrl.item.password }};
                     </span>
 
                     <!-- type Volume block -->
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.mountPath)">
-                        <span class="field-label">Mount Path</span>:&nbsp;{{ $ctrl.item.volumeMount.mountPath }};&nbsp;
+                        <span class="field-label">{{ 'functions:MOUNT_PATH' | i18next }}</span>:&nbsp;{{ $ctrl.item.volumeMount.mountPath }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)">
-                        <span class="field-label">Host path</span>:&nbsp;{{ $ctrl.item.volume.hostPath.path }};&nbsp;
+                        <span class="field-label">{{ 'functions:HOST_PATH' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.hostPath.path }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.accessKey)">
-                        <span class="field-label">Access key</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.accessKey }};&nbsp;
+                        <span class="field-label">{{ 'functions:ACCESS_KEY' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.accessKey }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.container)">
-                        <span class="field-label">Container name</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.container }};&nbsp;
+                        <span class="field-label">{{ 'functions:CONTAINER_NAME' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.container }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.subPath)">
-                        <span class="field-label">Sub path</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.subPath }};&nbsp;
+                        <span class="field-label">{{ 'functions:SUB_PATH' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.subPath }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.secret.secretName)">
-                        <span class="field-label">Secret name</span>:&nbsp;{{ $ctrl.item.volume.secret.secretName }};&nbsp;
+                        <span class="field-label">{{ 'functions:SECRET_NAME' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.secret.secretName }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.configMap.name)">
-                        <span class="field-label">Config map name</span>:&nbsp;{{ $ctrl.item.volume.configMap.name }};&nbsp;
+                        <span class="field-label">{{ 'functions:CONFIG_MAP_NAME' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.configMap.name }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.persistentVolumeClaim.claimName)">
-                        <span class="field-label">Persistent Volume Claim Name</span>:
+                        <span class="field-label">{{ 'functions:PERSISTENT_VOLUME_CLAIM_NAME' | i18next }}</span>:
                         &nbsp;{{ $ctrl.item.volume.persistentVolumeClaim.claimName }};&nbsp;
                     </span>
 
                     <!-- Worker Allocator name -->
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.workerAllocatorName)">
-                        <span class="field-label">Worker allocator name</span>:&nbsp;{{ $ctrl.item.workerAllocatorName }};&nbsp;
+                        <span class="field-label">{{ 'functions:WORKER_ALLOCATOR_NAME' | i18next }}</span>:&nbsp;{{ $ctrl.item.workerAllocatorName }};&nbsp;
                     </span>
                 </div>
 
@@ -101,7 +103,7 @@
                     <div class="igz-row common-table-cells-container item-info-row"
                          data-ng-if="!$ctrl.isNil($ctrl.item.url)">
                         <div class="igz-col-30 common-table-cell field-label">
-                            URL:
+                            {{ 'common:URL' | i18next }}:
                         </div>
                         <div class="igz-col-70 common-table-cell">
                             {{ $ctrl.item.url }}
@@ -110,7 +112,7 @@
                     <div class="igz-row common-table-cells-container item-info-row"
                          data-ng-if="!$ctrl.isNil($ctrl.item.maxWorkers)">
                         <div class="igz-col-30 common-table-cell field-label">
-                            Max Workers:
+                            {{ 'functions:MAX_WORKERS' | i18next }}:
                         </div>
                         <div class="igz-col-70 common-table-cell">
                             {{ $ctrl.item.maxWorkers }}
@@ -119,7 +121,7 @@
                     <div class="igz-row common-table-cells-container item-info-row"
                          data-ng-if="!$ctrl.isNil($ctrl.item.secret)">
                         <div class="igz-col-30 common-table-cell field-label">
-                            Secret:
+                            {{ 'functions:SECRET' | i18next }}:
                         </div>
                         <div class="igz-col-70 common-table-cell">
                             {{ $ctrl.item.secret }}

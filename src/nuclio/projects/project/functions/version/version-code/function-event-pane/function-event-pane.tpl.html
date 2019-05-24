@@ -7,7 +7,7 @@
              class="left-bar">
             <div class="header">
                 <div class="igz-icon-close" data-ng-click="$ctrl.toggleLeftBar(false)"></div>
-                Events
+                {{ 'common:EVENTS' | i18next }}
                 <div class="ncl-icon-pin"
                      data-ng-if="!$ctrl.fixedLeftBar"
                      data-ng-click="$ctrl.fixLeftBar()"></div>
@@ -60,7 +60,7 @@
                                                  data-input-name="nameInput"
                                                  data-form-object="$ctrl.testEventsForm"
                                                  data-required="true"
-                                                 data-placeholder="Event name..."
+                                                 data-placeholder="{{ 'functions:PLACEHOLDER.EVENT_NAME' | i18next }}"
                                                  data-max-length="128">
                         </igz-elastic-input-field>
                     </div>
@@ -68,7 +68,7 @@
                     <div class="right-side-elements">
                         <div class="new-test-event"
                              data-ng-click="$ctrl.resetData()"
-                             data-uib-tooltip="New test"
+                             data-uib-tooltip="{{ 'functions:TOOLTIP.NEW_TEST' | i18next }}"
                              data-tooltip-popup-delay="300"
                              data-tooltip-placement="left"
                              data-tooltip-append-to-body="true">
@@ -76,11 +76,13 @@
                         </div>
                         <div class="igz-button-primary"
                              data-ng-class="{'disabled': $ctrl.isDisabledTestButton()}"
-                             data-ng-click="$ctrl.testEvent()">Test
+                             data-ng-click="$ctrl.testEvent()">
+                            {{ 'functions:TEST' | i18next }}
                         </div>
                         <div class="ncl-secondary-button"
                              data-ng-class="{'disabled': $ctrl.uploadingData.name !== ''}"
-                             data-ng-click="$ctrl.uploadingData.name !== '' || $ctrl.saveEvent()">Save
+                             data-ng-click="$ctrl.uploadingData.name !== '' || $ctrl.saveEvent()">
+                            {{ 'common:SAVE' | i18next }}
                         </div>
                     </div>
                 </div>
@@ -133,10 +135,11 @@
                                                          'uploaded': $ctrl.uploadingData.uploaded}">
                                                     <div data-ng-if="!$ctrl.uploadingData.uploaded && !$ctrl.uploadingData.uploading">
                                                         <div class="ncl-icon-drop-file"></div>
-
-                                                        Drop a file here or
+                                                        {{ 'functions:DROP_FILE_HERE_OR' | i18next }}
                                                         <span class="browse"
-                                                              ngf-select="$ctrl.uploadFile($file)">&nbsp;browse</span>
+                                                              ngf-select="$ctrl.uploadFile($file)">
+                                                            {{ 'functions:BROWSE' | i18next }}
+                                                        </span>
                                                     </div>
                                                     <div data-ng-if="$ctrl.uploadingData.uploading">
                                                         <div class="ncl-icon-drop-file"></div>
@@ -188,8 +191,8 @@
                                 </div>
                                 <div class="headers" data-ng-if="$ctrl.selectedRequestTab.id === 'headers'">
                                     <div data-ng-if="$ctrl.headers.length > 0" class="table-headers">
-                                        <div class="key-header">Key</div>
-                                        <div class="value-header">Value</div>
+                                        <div class="key-header">{{ 'common:KEY' | i18next }}</div>
+                                        <div class="value-header">{{ 'common:VALUE' | i18next }}</div>
                                     </div>
                                     <div class="table-body-wrapper" data-ng-if="!$ctrl.isScrollNeeded()">
                                         <div class="table-body" data-ng-repeat="header in $ctrl.headers">
@@ -227,7 +230,7 @@
                                     <div class="create-header-button"
                                          data-ng-click="$ctrl.addNewHeader($event)">
                                         <span class="igz-icon-add-round"></span>
-                                        Create a new header
+                                        {{ 'functions:CREATE_NEW_HEADER' | i18next }}
                                     </div>
                                 </div>
                             </div>
@@ -240,11 +243,11 @@
                              data-ng-scrollbars-config="$ctrl.scrollConfig">
                             <div class="response-header">
                                 <div class="left-side-elements">
-                                    Response
+                                    {{ 'functions:RESPONSE' | i18next }}
                                 </div>
                                 <div class="right-side-elements"
                                      data-ng-if="$ctrl.testResult.status">
-                                    <div>Status:
+                                    <div>{{ 'common:STATUS' | i18next }}:
                                         <div class="text-ellipsis status {{$ctrl.isInvocationSuccess ? 'success' : 'fail'}}"
                                              data-uib-tooltip="{{$ctrl.testResult.status.statusCode}} {{$ctrl.testResult.status.statusText}}"
                                              data-tooltip-placement="top"
@@ -253,10 +256,12 @@
                                             {{$ctrl.testResult.status.statusText}}
                                         </div>
                                     </div>
-                                    <div>Time: <span class="time">{{$ctrl.invokeTime}}</span></div>
+                                    <div>{{ 'common:TIME' | i18next }}: <span class="time">{{$ctrl.invokeTime}}</span></div>
                                     <div data-ng-if="$ctrl.responseSize">
-                                        Size: <span
-                                            class="size">{{$ctrl.responseSize.value + $ctrl.responseSize.label}}</span>
+                                        {{ 'common:SIZE' | i18next }}:
+                                        <span class="size">
+                                            {{$ctrl.responseSize.value + $ctrl.responseSize.label}}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -274,11 +279,11 @@
                                             <div class="ncl-icon-hand"></div>
                                         </div>
                                         <div class="message">
-                                            Response will be shown here once test button was clicked.
+                                            {{ 'functions:EVENT_RESPONSE_MSG' | i18next }}
                                         </div>
                                     </div>
                                     <div class="testing" data-ng-if="$ctrl.testing">
-                                        <span class="message">Loading...</span>
+                                        <span class="message">{{ 'common:LOADING_CAPITALIZE_ELLIPSIS' | i18next }}</span>
                                         <div class="loader-wrapper">
                                             <div class="loader-fading-circle">
                                                 <div class="loader-circle1 loader-circle"></div>
@@ -296,7 +301,7 @@
                                             </div>
                                         </div>
                                         <div class="ncl-secondary-button"
-                                             data-ng-click="$ctrl.cancelInvocation()">Cancel
+                                             data-ng-click="$ctrl.cancelInvocation()">{{ 'common:CANCEL' | i18next }}
                                         </div>
                                     </div>
                                     <div class="code-section" data-ng-if="$ctrl.showResponse && !$ctrl.testing">
@@ -304,15 +309,15 @@
                                             <div class="actions-list">
                                                 <div class="igz-action-item"
                                                      data-ng-click="$ctrl.downloadResponseFile()"
-                                                     data-uib-tooltip="Download to file"
+                                                     data-uib-tooltip="{{ 'common:TOOLTIP.DOWNLOAD_TO_FILE' | i18next }}"
                                                      data-tooltip-placement="left"
                                                      data-tooltip-popup-delay="300"
                                                      data-tooltip-append-to-body="true">
                                                     <div class="action-icon igz-icon-download"></div>
                                                 </div>
 
-                                                <igz-copy-to-clipboard
-                                                        data-value="$ctrl.testResult.body"></igz-copy-to-clipboard>
+                                                <igz-copy-to-clipboard data-value="$ctrl.testResult.body">
+                                                </igz-copy-to-clipboard>
                                             </div>
                                         </div>
                                         <div class="code-edit-section" data-ng-if="$ctrl.responseBodyType === 'code'">
@@ -330,10 +335,10 @@
                                         <div class="image-section" data-ng-if="$ctrl.responseBodyType === 'image'">
                                             <img class="response-body-img"
                                                  data-ng-src="{{$ctrl.responseImage}}"
-                                                 alt="Response image"/>
+                                                 alt="{{ 'functions:RESPONSE_IMAGE' | i18next }}"/>
                                         </div>
                                         <div class="no-content-section" data-ng-if="$ctrl.responseBodyType === 'N/A'">
-                                            You can download response body
+                                            {{ 'functions:YOU_CAN_DOWNLOAD_RESPONSE_BODY' | i18next }}
                                         </div>
                                     </div>
                                 </div>

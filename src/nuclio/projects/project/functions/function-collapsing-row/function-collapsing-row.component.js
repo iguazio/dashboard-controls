@@ -21,11 +21,12 @@
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController($state, $interval, lodash, ngDialog, ConfigService, DialogsService,
-                                                ExportService, NuclioHeaderService) {
+    function NclFunctionCollapsingRowController($state, $interval, $i18next, i18next, lodash, ngDialog, ConfigService,
+                                                DialogsService, ExportService, NuclioHeaderService) {
         var ctrl = this;
         var tempFunctionCopy = null;
         var interval = null;
+        var lng = i18next.language;
 
         ctrl.actions = [];
         ctrl.isCollapsed = true;
@@ -105,8 +106,8 @@
                 setStatusIcon();
 
                 ctrl.invocationURL =
-                    lodash.isNil(ctrl.function.status.httpPort) ? 'Not yet deployed' :
-                    lodash.isEmpty(ctrl.externalAddress)        ? 'N/A'              :
+                    lodash.isNil(ctrl.function.status.httpPort) ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
+                    lodash.isEmpty(ctrl.externalAddress)        ? 'N/A'                                                :
                                                                   'http://' + ctrl.externalAddress + ':' +
                                                                   ctrl.function.status.httpPort;
             }
@@ -139,7 +140,8 @@
          * @returns {string} - tooltip
          */
         function getTooltip() {
-            return ctrl.function.spec.disable ? 'Run function' : 'Stop function';
+            return ctrl.function.spec.disable ? $i18next.t('functions:TOOLTIP.RUN_FUNCTION', {lng: lng}) :
+                                                $i18next.t('functions:TOOLTIP.STOP_FUNCTION', {lng: lng});
         }
 
         /**
@@ -243,32 +245,32 @@
         function initActions() {
             return [
                 {
-                    label: 'Delete',
+                    label: $i18next.t('common:DELETE', {lng: lng}),
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
                     confirm: {
-                        message: 'Delete Function “' + ctrl.function.metadata.name + '”?',
-                        description: 'Deleted function cannot be restored.',
-                        yesLabel: 'Yes, Delete',
-                        noLabel: 'Cancel',
+                        message: $i18next.t('functions:DELETE_FUNCTION', {lng: lng}) + ' “' + ctrl.function.metadata.name + '”?',
+                        description: $i18next.t('functions:DELETED_FUNCTION_DESCRIPTION', {lng: lng}),
+                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
                         type: 'nuclio_alert'
                     }
                 },
                 {
-                    label: 'Duplicate',
+                    label: $i18next.t('common:DUPLICATE', {lng: lng}),
                     id: 'duplicate',
                     icon: 'igz-icon-duplicate',
                     active: true
                 },
                 {
-                    label: 'Export',
+                    label: $i18next.t('common:EXPORT', {lng: lng}),
                     id: 'export',
                     icon: 'igz-icon-export-yml',
                     active: true
                 },
                 {
-                    label: 'View YAML',
+                    label: $i18next.t('functions:VIEW_YAML', {lng: lng}),
                     id: 'viewConfig',
                     icon: 'igz-icon-view-file',
                     active: true
@@ -289,7 +291,7 @@
                 })
                 .catch(function (error) {
                     ctrl.isSplashShowed.value = false;
-                    var msg = 'Unknown error occurred while deleting the function.';
+                    var msg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION.DEFAULT', {lng: lng});
 
                     return DialogsService.alert(lodash.get(error, 'data.error', msg));
                 });
@@ -321,7 +323,7 @@
                 projectNamespace: ctrl.project.metadata.namespace
             });
 
-            NuclioHeaderService.updateMainHeader('Projects', ctrl.title, $state.current.name);
+            NuclioHeaderService.updateMainHeader('common:PROJECTS', ctrl.title, $state.current.name);
         }
 
         /**
@@ -343,7 +345,7 @@
                         }
                     })
                     .catch(function (error) {
-                        var msg = 'Unknown error occurred while updating the function.';
+                        var msg = $i18next.t('functions:ERROR_MSG.GET_FUNCTION.DEFAULT', {lng: lng});
 
                         terminateInterval();
                         convertStatusState();
@@ -427,7 +429,7 @@
                 .catch(function (error) {
                     ctrl.function = tempFunctionCopy;
 
-                    var msg = 'Unknown error occurred while updating the function.';
+                    var msg = $i18next.t('functions:ERROR_MSG.UPDATE_FUNCTION.DEFAULT', {lng: lng});
 
                     return DialogsService.alert(lodash.get(error, 'data.error', msg));
                 })

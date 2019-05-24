@@ -15,8 +15,10 @@
             controller: CreateFunctionController
         });
 
-    function CreateFunctionController($element, $rootScope, $scope, $state, $stateParams, ngDialog, lodash, DialogsService, NuclioHeaderService) {
+    function CreateFunctionController($element, $rootScope, $scope, $state, $stateParams, $i18next, i18next, ngDialog,
+                                      lodash, DialogsService, NuclioHeaderService) {
         var ctrl = this;
+        var lng = i18next.language;
         var selectedFunctionType = 'from_template';
 
         ctrl.isSplashShowed = {
@@ -83,7 +85,7 @@
                         $rootScope.$broadcast('update-main-header-title', title);
                     })
                     .catch(function (error) {
-                        var msg = 'Oops: Unknown error occurred while retrieving projects';
+                        var msg = $i18next.t('functions:ERROR_MSG.GET_PROJECTS', {lng: lng});
 
                         DialogsService.alert(lodash.get(error, 'data.error', msg));
 
@@ -104,10 +106,10 @@
                             function: 'Create function'
                         };
 
-                        NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
+                        NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
                     })
                     .catch(function (error) {
-                        var msg = 'Oops: Unknown error occurred while retrieving project';
+                        var msg = $i18next.t('functions:ERROR_MSG.GET_PROJECT', {lng: lng});
 
                         DialogsService.alert(lodash.get(error, 'data.error', msg));
 
@@ -153,7 +155,7 @@
                                 };
                             })
                             .catch(function (error) {
-                                var msg = 'Oops: Unknown error occurred while retrieving projects';
+                                var msg = $i18next.t('functions:ERROR_MSG.GET_PROJECTS', {lng: lng});
 
                                 DialogsService.alert(lodash.get(error, 'data.error', msg));
                             })

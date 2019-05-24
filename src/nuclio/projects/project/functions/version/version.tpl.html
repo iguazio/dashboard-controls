@@ -6,7 +6,7 @@
         <div class="actions-bar-right">
             <div class="actions-bar-left actions-buttons-block actions-dropdown-block">
                 <igz-default-dropdown data-select-property-only="id"
-                                      data-placeholder="ACTIONS"
+                                      data-placeholder="{{ 'functions:PLACEHOLDER.ACTIONS' | i18next }}"
                                       data-values-array="$ctrl.actions"
                                       data-is-disabled="!$ctrl.isFunctionDeployed"
                                       data-item-select-callback="$ctrl.onSelectAction(item)"
@@ -17,7 +17,7 @@
                 <button class="ncl-new-entity-button"
                         data-ng-class="{'disabled': $ctrl.isInValidDeployState() || $ctrl.isDeployDisabled}"
                         data-ng-click="$ctrl.isInValidDeployState() || $ctrl.deployButtonClick()">
-                    Deploy
+                    {{ 'functions:DEPLOY' | i18next }}
                 </button>
             </div>
         </div>
@@ -43,8 +43,11 @@
                                   'igz-icon-block'      : $ctrl.deployResult.status.state === 'error'}"></span>
             <span class="result-state">{{$ctrl.getDeployStatusState($ctrl.deployResult.status.state)}}</span>
         </div>
-        <div class="ncl-execution-result-block collapsed-block-content-wrapper" data-uib-collapse="$ctrl.rowIsCollapsed.deployBlock">
-            <div class="collapsed-block-title without-collapse">Logs</div>
+        <div class="ncl-execution-result-block collapsed-block-content-wrapper"
+             data-uib-collapse="$ctrl.rowIsCollapsed.deployBlock">
+            <div class="collapsed-block-title without-collapse">
+                {{ 'common:LOGS' | i18next }}
+            </div>
 
             <ncl-deploy-log data-log-entires="$ctrl.deployResult.status.logs"></ncl-deploy-log>
         </div>

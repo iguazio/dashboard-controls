@@ -2,7 +2,7 @@
 
 <div class="title">
     <span>
-        New Project
+        {{ 'functions:NEW_PROJECT' | i18next }}
     </span>
 </div>
 
@@ -10,14 +10,14 @@
     <form name="newProjectForm" novalidate data-ng-keydown="$ctrl.createProject($event)">
         <div class="field-group">
             <div class="field-label">
-                Project Name
+                {{ 'functions:PROJECT_NAME' | i18next }}
             </div>
             <div class="field-input">
                 <div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(newProjectForm, 'spec.displayName')">
-                    The inputs you provided are invalid or incorrect
+                    {{ 'common:ERROR_MSG.INVALID_INPUTS' | i18next }}
                 </div>
                 <div class="error" data-ng-show="$ctrl.nameTakenError">
-                    Name already exists
+                    {{ 'common:ERROR_MSG.NAME_EXISTS' | i18next }}
                 </div>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
@@ -28,16 +28,17 @@
                                             data-validation-is-required="true"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-validation-pattern="$ctrl.nameValidationPattern"
-                                            data-placeholder-text="Enter project name..."></igz-validating-input-field>
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_PROJECT_NAME' | i18next }}">
+                </igz-validating-input-field>
             </div>
         </div>
         <div class="field-group">
             <div class="field-label">
-                Description
+                {{ 'common:DESCRIPTION' | i18next }}
             </div>
             <div class="field-input">
                 <div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(newProjectForm, 'spec.description')">
-                    The inputs you provided are invalid or incorrect
+                    {{ 'common:ERROR_MSG.INVALID_INPUTS' | i18next }}
                 </div>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
@@ -45,7 +46,8 @@
                                             data-input-value="$ctrl.data.spec.description"
                                             data-form-object="newProjectForm"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-placeholder-text="Enter description..."></igz-validating-input-field>
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_DESCRIPTION' | i18next }}">
+                </igz-validating-input-field>
             </div>
         </div>
     </form>
@@ -57,7 +59,7 @@
             tabindex="0"
             data-ng-click="$ctrl.onClose()"
             data-ng-keydown="$ctrl.onClose($event)">
-        Cancel
+        {{ 'common:CANCEL' | i18next }}
     </button>
     <button class="ncl-primary-button"
             data-test-id="projects.new-project_create.button"
@@ -65,10 +67,14 @@
             data-ng-click="$ctrl.createProject()"
             data-ng-keydown="$ctrl.createProject($event)"
             data-ng-hide="$ctrl.isLoadingState">
-        Create
+        {{ 'common:CREATE' | i18next }}
     </button>
-    <button class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">Loading...</button>
+    <button class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">
+        {{ 'common:LOADING_CAPITALIZE_ELLIPSIS' | i18next }}
+    </button>
 </div>
 
 <div class="error-text text-centered error-relative"
-     data-ng-show="$ctrl.isServerError()">Error: {{$ctrl.serverError}}</div>
+     data-ng-show="$ctrl.isServerError()">
+    {{ 'common:ERROR' | i18next }}:&nbsp;{{$ctrl.serverError}}
+</div>

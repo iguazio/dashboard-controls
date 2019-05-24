@@ -12,7 +12,7 @@
             transclude: true
         });
 
-    function IgzActionItemMore($element, $document, $scope, DialogsService) {
+    function IgzActionItemMore($element, $document, $scope) {
         var ctrl = this;
 
         ctrl.isDropdownShown = false;

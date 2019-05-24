@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('PriorityDropdownService', PriorityDropdownService);
 
-    function PriorityDropdownService() {
+    function PriorityDropdownService($i18next, i18next) {
         return {
             getName: getName,
             getPrioritiesArray: getPrioritiesArray
@@ -19,30 +19,32 @@
          * @returns {Array}
          */
         function getPrioritiesArray() {
+            var lng = i18next.language;
+
             return [
                 {
-                    name: 'Real-time',
+                    name: $i18next.t('common:REAL_TIME', {lng: lng}),
                     type: 'realtime',
                     icon: {
                         name: 'igz-icon-priority-realtime'
                     }
                 },
                 {
-                    name: 'High',
+                    name: $i18next.t('common:HIGH', {lng: lng}),
                     type: 'high',
                     icon: {
                         name: 'igz-icon-priority-high'
                     }
                 },
                 {
-                    name: 'Standard',
+                    name: $i18next.t('common:STANDARD', {lng: lng}),
                     type: 'standard',
                     icon: {
                         name: 'igz-icon-priority-standard'
                     }
                 },
                 {
-                    name: 'Low',
+                    name: $i18next.t('common:LOW', {lng: lng}),
                     type: 'low',
                     icon: {
                         name: 'igz-icon-priority-low'
@@ -57,10 +59,12 @@
          * @returns {string}
          */
         function getName(type) {
-            return type === 'realtime' ? 'Real-time' :
-                   type === 'high'     ? 'High'      :
-                   type === 'standard' ? 'Standard'  :
-                   type === 'low'      ? 'Low'       : '';
+            var lng = i18next.language;
+
+            return type === 'realtime' ? $i18next.t('common:REAL_TIME', {lng: lng}) :
+                   type === 'high'     ? $i18next.t('common:HIGH', {lng: lng})      :
+                   type === 'standard' ? $i18next.t('common:STANDARD', {lng: lng})  :
+                   type === 'low'      ? $i18next.t('common:LOW', {lng: lng})       : '';
         }
     }
 }());

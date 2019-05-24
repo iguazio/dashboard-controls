@@ -4,13 +4,15 @@
         .controller('PaginationController', PaginationController);
 
     /*eslint no-shadow: 0*/
-    function PaginationController($rootScope, $injector, $location, $stateParams, $timeout, lodash, entitiesType,
-                                  onChangePageCallback, dataServiceName, ActionCheckboxAllService, PaginationService, vm) {
+    function PaginationController($rootScope, $injector, $location, $stateParams, $timeout, $i18next, i18next, lodash,
+                                  entitiesType, onChangePageCallback, dataServiceName, ActionCheckboxAllService,
+                                  PaginationService, vm) {
 
         // entityId - id of nested entity
         var entityId = lodash.defaultTo($location.search().entityId, $stateParams.id);
         var selectedItemId = $stateParams.selectedItemId || $location.search().id;
         var dataService = null;
+        var lng = i18next.language;
 
         vm.sort = '';
         vm.entityUiConfig = [];
@@ -118,15 +120,15 @@
                 })
                 .catch(function (error) {
                     var errorMessages = {
-                        '400': 'Something is wrong with the request.',
-                        '403': 'Permission error.',
-                        '500': 'Some error occurred on the server side.',
-                        'default': 'Unknown error occurred.'
+                        '400': $i18next.t('common:ERROR_MSG.PAGINATION.400', {lng: lng}),
+                        '403': $i18next.t('common:ERROR_MSG.PAGINATION.403', {lng: lng}),
+                        '500': $i18next.t('common:ERROR_MSG.ERROR_ON_SERVER_SIDE', {lng: lng}),
+                        'default': $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', {lng: lng})
                     };
                     var message = lodash.get(errorMessages, String(error.status), errorMessages.default);
 
                     $rootScope.$broadcast('splash-screen_show-error', {
-                        alertText: message + ' You can try to refresh the page'
+                        alertText: message + ' ' + $i18next.t('common:ERROR_MSG.YOU_CAN_TRY_TO_REFRESH_PAGE', {lng: lng})
                     });
                 });
         }

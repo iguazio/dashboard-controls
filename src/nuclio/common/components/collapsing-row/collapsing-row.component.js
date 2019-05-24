@@ -14,8 +14,9 @@
             transclude: true
         });
 
-    function NclCollapsingRowController($timeout, lodash, DialogsService, FunctionsService) {
+    function NclCollapsingRowController($timeout, $i18next, i18next, lodash, DialogsService, FunctionsService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.actions = [];
         ctrl.isEditModeActive = false;
@@ -157,15 +158,15 @@
         function initActions() {
             return [
                 {
-                    label: 'Delete',
+                    label: $i18next.t('common:DELETE', {lng: lng}),
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
                     confirm: {
-                        message: 'Delete item?',
-                        description: 'Deleted item cannot be restored.',
-                        yesLabel: 'Yes, Delete',
-                        noLabel: 'Cancel',
+                        message: $i18next.t('functions:DELETE_ITEM', {lng: lng}),
+                        description: $i18next.t('functions:DELETE_DESCRIPTION', {lng: lng}),
+                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
                         type: 'nuclio_alert'
                     }
                 }

@@ -13,7 +13,7 @@
                           data-data-set="$ctrl.functions"
                           data-search-keys="$ctrl.searchKeys"
                           data-search-callback="$ctrl.onUpdateFiltersCounter(searchQuery)"
-                          data-placeholder="Search functions..."
+                          data-placeholder="{{ 'functions:PLACEHOLDER.SEARCH_FUNCTIONS' | i18next }}"
                           data-live-search="false"
                           data-search-states="$ctrl.searchStates">
         </igz-search-input>
@@ -28,7 +28,7 @@
             <div class="actions-bar-left actions-buttons-block">
                 <button class="ncl-new-entity-button"
                         data-ng-click="$ctrl.openNewFunctionScreen()">
-                    Create function
+                    {{ 'functions:CREATE_FUNCTION' | i18next }}
                 </button>
             </div>
             <div class="actions-bar-left actions-content-block">
@@ -39,7 +39,7 @@
                                            data-sort-options="$ctrl.sortOptions"
                                            data-reverse-sorting="$ctrl.isReverseSorting"
                                            data-update-data-callback="$ctrl.onSortOptionsChange"
-                                           data-uib-tooltip="Sort"
+                                           data-uib-tooltip="{{ 'common:TOOLTIP.SORT' | i18next }}"
                                            data-tooltip-append-to-body="true"
                                            data-tooltip-placement="top">
                         </igz-sort-dropdown>
@@ -65,40 +65,45 @@
                 <div class="igz-row common-table-cells-container">
                     <div class="igz-col-{{$ctrl.isDemoMode() ? '20' : '25'}} common-table-cell sortable"
                          data-ng-class="$ctrl.getColumnSortingClasses('metadata.name', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
-                         data-ng-click="$ctrl.sortTableByColumn('metadata.name')">Name
+                         data-ng-click="$ctrl.sortTableByColumn('metadata.name')">
+                        {{ 'common:NAME' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
                     <div class="igz-col-20 common-table-cell sortable"
                          data-ng-class="$ctrl.getColumnSortingClasses('spec.description', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
-                         data-ng-click="$ctrl.sortTableByColumn('spec.description')">Description
+                         data-ng-click="$ctrl.sortTableByColumn('spec.description')">
+                        {{ 'common:DESCRIPTION' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
                     <div class="igz-col-10 common-table-cell sortable"
                          data-ng-class="$ctrl.getColumnSortingClasses('status.state', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
-                         data-ng-click="$ctrl.sortTableByColumn('status.state')">Status
+                         data-ng-click="$ctrl.sortTableByColumn('status.state')">
+                        {{ 'common:STATUS' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
                     <div class="igz-col-10 common-table-cell sortable"
                          data-ng-if="$ctrl.isDemoMode()"
                          data-ng-class="$ctrl.getColumnSortingClasses('spec.replicas', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
-                         data-ng-click="$ctrl.sortTableByColumn('spec.replicas')">Replicas
+                         data-ng-click="$ctrl.sortTableByColumn('spec.replicas')">
+                        {{ 'common:REPLICAS' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
                     <div data-ng-if="$ctrl.isDemoMode()"
                          class="igz-col-10 common-table-cell">
-                        Invocation per sec
+                        {{ 'functions:INVOCATION_PER_SEC' | i18next }}
                     </div>
                     <div class="igz-col-10 common-table-cell sortable"
                          data-ng-class="$ctrl.getColumnSortingClasses('spec.runtime', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
-                         data-ng-click="$ctrl.sortTableByColumn('spec.runtime')">Runtime
+                         data-ng-click="$ctrl.sortTableByColumn('spec.runtime')">
+                        {{ 'functions:RUNTIME' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
                     <div class="igz-col-{{$ctrl.isDemoMode() ? '10' : '35'}} common-table-cell">
-                        Invocation URL
+                        {{ 'functions:INVOCATION_URL' | i18next }}
                     </div>
                     <div data-ng-if="$ctrl.isDemoMode()"
                          class="igz-col-10 common-table-cell">
-                        Last modified
+                        {{ 'common:LAST_MODIFIED' | i18next }}
                     </div>
                 </div>
                 <div class="common-table-cell actions-menu">&nbsp;</div>
@@ -106,7 +111,7 @@
 
             <div class="search-input-not-found"
                  data-ng-if="$ctrl.isFunctionsListEmpty()">
-                There are currently no functions, you can create a function by clicking the ‘Create Function’ button
+                {{ 'functions:FUNCTIONS_NOT_FOUND' | i18next }}
             </div>
 
             <div class="common-table-body">
@@ -116,20 +121,22 @@
                         <div class="sortable-wrapper"
                              data-ng-hide="$ctrl.searchStates.searchNotFound && $ctrl.searchStates.searchInProgress"
                              data-ng-model="$ctrl.data.working.ui.children">
-                            <div class="data-lifecycle-layers" data-ng-repeat="aFunction in $ctrl.functions track by aFunction.metadata.name">
+                            <div class="data-lifecycle-layers"
+                                 data-ng-repeat="aFunction in $ctrl.functions track by aFunction.metadata.name">
                                 <div data-igz-show-hide-search-item="function">
-                                    <ncl-function-collapsing-row data-function="aFunction"
-                                                                 data-project="$ctrl.project"
-                                                                 data-is-splash-showed="$ctrl.isSplashShowed"
-                                                                 data-external-address="$ctrl.externalIPAddress"
-                                                                 data-functions-list="$ctrl.functions"
-                                                                 data-action-handler-callback="$ctrl.handleAction(actionType, checkedItems)"
-                                                                 data-handle-delete-function="$ctrl.deleteFunction({functionData: functionData})"
-                                                                 data-on-update-function="$ctrl.onUpdateFunction({function: function, projectID: projectID})"
-                                                                 data-get-function="$ctrl.getFunction({metadata: metadata, projectID: projectID})"
-                                                                 data-get-functions="$ctrl.getFunctions({id: id})"
-                                                                 data-create-function="$ctrl.createFunction({version: version, projectID: projectID})"
-                                                                 data-refresh-functions-list="$ctrl.refreshFunctions()">
+                                    <ncl-function-collapsing-row
+                                            data-function="aFunction"
+                                            data-project="$ctrl.project"
+                                            data-is-splash-showed="$ctrl.isSplashShowed"
+                                            data-external-address="$ctrl.externalIPAddress"
+                                            data-functions-list="$ctrl.functions"
+                                            data-action-handler-callback="$ctrl.handleAction(actionType, checkedItems)"
+                                            data-handle-delete-function="$ctrl.deleteFunction({functionData: functionData})"
+                                            data-on-update-function="$ctrl.onUpdateFunction({function: function, projectID: projectID})"
+                                            data-get-function="$ctrl.getFunction({metadata: metadata, projectID: projectID})"
+                                            data-get-functions="$ctrl.getFunctions({id: id})"
+                                            data-create-function="$ctrl.createFunction({version: version, projectID: projectID})"
+                                            data-refresh-functions-list="$ctrl.refreshFunctions()">
                                     </ncl-function-collapsing-row>
                                 </div>
                             </div>

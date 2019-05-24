@@ -1,0 +1,18 @@
+{
+    "CUSTOM_QUERY": "Custom query",
+    "DOCS": "Docs",
+    "LEVEL": "Level",
+    "MESSAGE": "Message",
+    "MESSAGE_DESCRIPTION": "Surround with double-quotes for space-delimited text (can't be used together with *)",
+    "NO_ENTRIES_HAVE_BEEN_FOUND": "No entries have been found...",
+    "NUCLIO_ONLY": "Nuclio only",
+    "PLACEHOLDER": {
+        "SOME_LOG_MESSAGE": "Some log message"
+    },
+    "REFRESH_RATE": "Refresh Rate",
+    "SERVICE_FUNCTION_NAME": "Service/function name",
+    "TIME_RANGE": "Time Range",
+    "TOOLTIP": {
+        "SHOW_ONLY_NUCLIO_FUNCTIONS_LOGS": "Show only Nuclio functions logs"
+    }
+}

@@ -4,7 +4,7 @@
             <div class="igz-action-item"
                  data-ng-class="{active: $ctrl.isFiltersOpened}"
                  data-ng-if="$ctrl.isShowFilterActionIcon()"
-                 data-uib-tooltip="Filter"
+                 data-uib-tooltip="{{ 'common:FILTER' | i18next }}"
                  data-tooltip-append-to-body="true"
                  data-tooltip-placement="bottom"
                  data-tooltip-popup-delay="1000"
@@ -16,7 +16,7 @@
                  data-ng-class="{inactive: (!$ctrl.isInfoPaneOpened && !$ctrl.infoPaneToggleMethod) || $ctrl.infoPaneDisable,
                                  active: $ctrl.isInfoPaneOpened}"
                  data-ng-if="$ctrl.closeInfoPane || $ctrl.infoPaneToggleMethod"
-                 data-uib-tooltip="Info pane"
+                 data-uib-tooltip="{{ 'common:INFO_PANE' | i18next }}"
                  data-tooltip-append-to-body="true"
                  data-tooltip-placement="bottom"
                  data-tooltip-popup-delay="1000"

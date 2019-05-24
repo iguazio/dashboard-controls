@@ -32,6 +32,7 @@ module.exports = {
         less_files: [
             'src/**/*.less'
         ],
+        i18n: 'src/i18n/**/*',
         templates: [
             'src/**/*.tpl.html'
         ],
@@ -50,10 +51,13 @@ module.exports = {
             'node_modules/jquery-ui/ui/widget.js',
             'node_modules/jquery-ui/ui/widgets/mouse.js',
             'node_modules/jquery-ui/ui/widgets/sortable.js',
+            'node_modules/angular-sanitize/angular-sanitize.js',
             'node_modules/moment/moment.js',
             'node_modules/js-base64/base64.js',
             'node_modules/ng-file-upload/dist/ng-file-upload.js',
             'node_modules/ng-file-upload/dist/FileAPI.js',
+            'node_modules/i18next/i18next.js',
+            'node_modules/ng-i18next/dist/ng-i18next.js',
             'node_modules/bootstrap/js/dropdown.js',
             'node_modules/ng-dialog/js/ngDialog.js',
             'node_modules/lodash/lodash.js',
@@ -81,6 +85,9 @@ module.exports = {
             ],
             tests: [
                 'src/**/*.spec.js'
+            ],
+            i18n: [
+                'src/i18n'
             ],
             karma_config: 'tests/unit/karma.config.js'
         }

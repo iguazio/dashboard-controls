@@ -2,7 +2,7 @@
 
 <div class="title">
     <span>
-        Attach file
+        {{ 'functions:ATTACH_FILE' | i18next }}
     </span>
 </div>
 
@@ -10,26 +10,27 @@
     <form name="attachFileForm" novalidate>
         <div class="field-group">
             <div class="field-label">
-                Remote path
+                {{ 'functions:REMOTE_PATH' | i18next }}
             </div>
             <igz-validating-input-field class="nuclio-validating-input"
                                         data-field-type="input"
                                         data-is-focused="true"
-                                        data-placeholder-text="Enter path..."></igz-validating-input-field>
+                                        data-placeholder-text="{{ 'common:PLACEHOLDER.ENTER_PATH' | i18next }}">
+            </igz-validating-input-field>
         </div>
     </form>
 </div>
 
 <div class="buttons">
     <button class="ncl-secondary-button"
-         tabindex="0"
-         data-ng-click="$ctrl.onClose()"
-         data-ng-keydown="$ctrl.onClose($event)">
-        Cancel
+            tabindex="0"
+            data-ng-click="$ctrl.onClose()"
+            data-ng-keydown="$ctrl.onClose($event)">
+        {{ 'common:CANCEL' | i18next }}
     </button>
     <button class="ncl-primary-button"
-         tabindex="0"
-         ngf-select="$ctrl.uploadFile($file)">
-        Browse
+            tabindex="0"
+            ngf-select="$ctrl.uploadFile($file)">
+        {{ 'common:BROWSE' | i18next }}
     </button>
 </div>

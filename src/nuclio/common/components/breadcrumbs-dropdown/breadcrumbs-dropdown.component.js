@@ -15,12 +15,13 @@
             controller: NclBreadcrumbsDropdown
         });
 
-    function NclBreadcrumbsDropdown($document, $element, $scope, $state, lodash, DialogsService) {
+    function NclBreadcrumbsDropdown($document, $element, $scope, $state, $i18next, i18next, lodash, DialogsService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.itemsList = [];
         ctrl.showDropdownList = false;
-        ctrl.placeholder = 'Search...';
+        ctrl.placeholder = $i18next.t('common:PLACEHOLDER.SEARCH', {lng: lng});
 
         ctrl.$onInit = onInit;
 
@@ -39,13 +40,13 @@
                 ctrl.getProjects()
                     .then(setNuclioItemsList)
                     .catch(function () {
-                        DialogsService.alert('Oops: Unknown error occurred while retrieving projects');
+                        DialogsService.alert($i18next.t('functions:ERROR_MSG.GET_PROJECTS', {lng: lng}));
                     });
             } else if (ctrl.type === 'functions') {
                 ctrl.getFunctions({id: ctrl.project.metadata.name})
                     .then(setNuclioItemsList)
                     .catch(function () {
-                        DialogsService.alert('Oops: Unknown error occurred while retrieving functions');
+                        DialogsService.alert($i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng}));
                     });
             }
 

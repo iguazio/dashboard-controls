@@ -7,7 +7,10 @@
         'ui.bootstrap',
         'ngFileUpload',
         'ngDialog',
+        'ngSanitize',
         'download',
-        'angular-yamljs'
+        'angular-yamljs',
+        'jm.i18next',
+        'angular-i18next'
     ]);
 }());

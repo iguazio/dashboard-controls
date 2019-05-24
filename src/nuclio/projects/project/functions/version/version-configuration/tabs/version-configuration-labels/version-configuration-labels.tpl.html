@@ -1,9 +1,9 @@
 <div class="ncl-version-configuration-labels">
-    <div class="title">Labels</div>
+    <div class="title">{{ 'functions:LABELS' | i18next }}</div>
     <form name="$ctrl.labelsForm" class="labels-wrapper">
         <div data-ng-if="$ctrl.labels.length > 0" class="table-headers">
-            <div class="key-header">Key</div>
-            <div class="value-header">Value</div>
+            <div class="key-header">{{ 'common:KEY' | i18next }}</div>
+            <div class="value-header">{{ 'common:VALUE' | i18next }}</div>
         </div>
         <div data-ng-if="!$ctrl.isScrollNeeded()">
             <div class="table-body" data-ng-repeat="label in $ctrl.labels">
@@ -14,7 +14,8 @@
                                      data-item-index="$index"
                                      data-use-type="false"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                     data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                </ncl-key-value-input>
             </div>
         </div>
 
@@ -30,13 +31,14 @@
                                      data-item-index="$index"
                                      data-use-type="false"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                     data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                </ncl-key-value-input>
             </div>
         </div>
         <div class="create-label-button"
              data-ng-click="$ctrl.addNewLabel($event)">
             <span class="igz-icon-add-round"></span>
-            Create a new label
+            {{ 'functions:CREATE_NEW_LABEL' | i18next }}
         </div>
     </form>
 </div>

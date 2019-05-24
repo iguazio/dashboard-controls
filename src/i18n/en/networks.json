@@ -1,0 +1,34 @@
+{
+    "COPY": " - Copy-",
+    "CREATE_NETWORK": "Create network",
+    "CREATE_NEW_NETWORK": "Create new network",
+    "DEFAULT_GATEWAY": "Default gateway",
+    "DESCRIPTION_DESCRIPTION": "Description is free text and limited up to 150 letters",
+    "ERROR_MSG": {
+        "ADD_NETWORK": {
+            "403": "You do not have permissions to create new networks",
+            "409": "Uniqueness violation: see details next to fields"
+        },
+        "DELETE_NETWORK": {
+            "403": "You do not have permissions to delete networks.",
+            "DEFAULT": "Error occurred while attempting to delete network."
+        },
+        "INVALID_NAME": "Names must be unique to the network and may be between 1 to 30 characters consisting of letters, digits, dots, hyphens, parentheses, slashes and spaces.",
+        "UPDATE_FIELD": {
+            "403": "You do not have permissions to update the network",
+            "409": "The name you provided is already taken. Network name must be unique.",
+            "DEFAULT": "There has been an error with updating the title"
+        },
+        "UPDATE_NETWORK": {
+            "403": "You do not have permissions to update networks.",
+            "DEFAULT": "There has been an error with updating the network."
+        }
+    },
+    "IP_DESCRIPTION": "IP address 0.0.0.0 - 255.255.255.255",
+    "NAME_DESCRIPTION": "Names must be unique to the new network and may be between 1 to 30 characters consisting of letters, digits, dots, hyphens, parentheses, slashes and spaces.",
+    "NETWORK_UNTAGGED": "Untagged",
+    "NEW_NETWORK": "New network",
+    "NO_NETWORK": "No network has been found...",
+    "SEARCH_NETWORKS": "Search networks...",
+    "TAG_DESCRIPTION": "Tag must be an integer"
+}

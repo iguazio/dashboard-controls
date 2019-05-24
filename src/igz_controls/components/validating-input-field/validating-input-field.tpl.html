@@ -54,7 +54,8 @@
                   data-ng-change="$ctrl.updateInputValue()"
                   data-ng-disabled="$ctrl.isDisabled"
                   data-ng-readonly="$ctrl.readOnly"
-                  spellcheck="{{$ctrl.spellcheck}}"></textarea>
+                  spellcheck="{{$ctrl.spellcheck}}">
+        </textarea>
     </div>
 
     <div data-ng-if="$ctrl.fieldType === 'password'">
@@ -81,6 +82,7 @@
         <cron-selection data-ng-class="{'invalid': $ctrl.isFieldValid()}"
                         data-ng-model="$ctrl.data"
                         data-ng-change="$ctrl.updateInputValue()"
-                        name="{{$ctrl.inputName}}"></cron-selection>
+                        name="{{$ctrl.inputName}}">
+        </cron-selection>
     </div>
 </div>

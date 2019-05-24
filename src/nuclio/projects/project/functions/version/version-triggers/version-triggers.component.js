@@ -10,8 +10,10 @@
             controller: NclVersionTriggersController
         });
 
-    function NclVersionTriggersController($rootScope, $timeout, lodash, DialogsService, VersionHelperService) {
+    function NclVersionTriggersController($rootScope, $timeout, $i18next, i18next, lodash, DialogsService,
+                                          VersionHelperService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.isCreateModeActive = false;
         ctrl.triggers = [];
@@ -126,7 +128,7 @@
             } else if (actionType === 'update') {
                 updateHandler(selectedItem);
             } else {
-                DialogsService.alert('This functionality is not implemented yet.');
+                DialogsService.alert($i18next.t('functions:ERROR_MSG.FUNCTIONALITY_IS_NOT_IMPLEMENTED', {lng: lng}));
             }
 
             $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: false});

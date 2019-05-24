@@ -12,7 +12,9 @@
             <div class="input-container input-key-wrapper"
                  data-ng-if="!$ctrl.onlyValueInput"
                  data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
-                <label for="key" data-ng-if="$ctrl.useLabels" class="key-label">Key:</label>
+                <label for="key" data-ng-if="$ctrl.useLabels" class="key-label">
+                    {{ 'common:KEY' | i18next }}:
+                </label>
                 <igz-validating-input-field class="nuclio-validating-input input-key"
                                             data-field-type="input"
                                             data-input-name="key"
@@ -29,7 +31,9 @@
             <div class="input-container input-type-wrapper"
                  data-ng-if="$ctrl.useType"
                  data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
-                <label for="type" data-ng-if="$ctrl.useLabels" class="type-label">Type:</label>
+                <label for="type" data-ng-if="$ctrl.useLabels" class="type-label">
+                    {{ 'common:TYPE' | i18next }}:
+                </label>
                 <igz-default-dropdown class="input-type"
                                       data-form-object="$ctrl.keyValueInputForm"
                                       data-select-property-only="id"
@@ -37,19 +41,22 @@
                                       data-input-name="type"
                                       data-values-array="$ctrl.typesList"
                                       data-selected-item="$ctrl.getType()"
-                                      data-placeholder="Select type..."
+                                      data-placeholder="{{ 'common:PLACEHOLDER.SELECT_TYPE' | i18next }}"
                                       data-item-select-callback="$ctrl.onTypeChanged(item, isItemChanged)"
                                       data-enable-overlap="$ctrl.dropdownOverlap">
                 </igz-default-dropdown>
-
             </div>
 
             <div class="input-container input-value-key-wrapper"
                  data-ng-if="!$ctrl.isVisibleByType('value')"
                  data-ng-class="{'use-type': $ctrl.useType}">
                 <label for="value-key" data-ng-if="$ctrl.useLabels">
-                    <span data-ng-if="$ctrl.isVisibleByType('secret')">Secret key:</span>
-                    <span data-ng-if="$ctrl.isVisibleByType('configmap')">ConfigMap key:</span>
+                    <span data-ng-if="$ctrl.isVisibleByType('secret')">
+                        {{ 'functions:SECRET_KEY' | i18next }}:
+                    </span>
+                    <span data-ng-if="$ctrl.isVisibleByType('configmap')">
+                        {{ 'functions:CONFIGMAP_KEY' | i18next }}:
+                    </span>
                 </label>
                 <igz-validating-input-field class="nuclio-validating-input input-value-key"
                                             data-field-type="input"
@@ -59,7 +66,7 @@
                                             data-update-data-field="value-key"
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.valueOptional"
-                                            data-placeholder-text="Enter key...">
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_KEY' | i18next }}">
                 </igz-validating-input-field>
             </div>
 
@@ -69,9 +76,15 @@
                                  'only-key-value-input': $ctrl.isVisibleByType('value'),
                                  'all-value-types': $ctrl.allValueTypes}">
                 <label for="value" data-ng-if="$ctrl.useLabels">
-                    <span data-ng-if="$ctrl.isVisibleByType('value')">Value:</span>
-                    <span data-ng-if="$ctrl.isVisibleByType('secret')">Secret name:</span>
-                    <span data-ng-if="$ctrl.isVisibleByType('configmap')">ConfigMap name:</span>
+                    <span data-ng-if="$ctrl.isVisibleByType('value')">
+                        {{ 'common:VALUE' | i18next }}:
+                    </span>
+                    <span data-ng-if="$ctrl.isVisibleByType('secret')">
+                        {{ 'functions:SECRET_NAME' | i18next }}:
+                    </span>
+                    <span data-ng-if="$ctrl.isVisibleByType('configmap')">
+                        {{ 'functions:CONFIGMAP_NAME' | i18next }}:
+                    </span>
                 </label>
                 <igz-validating-input-field class="nuclio-validating-input input-value"
                                             data-field-type="input"

@@ -11,21 +11,22 @@
         <div class="actions-bar-right">
             <button class="project-import-input"
                     ngf-select="$ctrl.importProject($file)"
-                    accept=".yml, .yaml"></button>
+                    accept=".yml, .yaml">
+            </button>
             <div class="actions-bar-left actions-buttons-block">
                 <igz-default-dropdown data-select-property-only="id"
-                                      data-placeholder="ACTIONS"
+                                      data-placeholder="{{ 'functions:PLACEHOLDER.ACTIONS' | i18next }}"
                                       data-values-array="$ctrl.dropdownActions"
                                       data-item-select-callback="$ctrl.onSelectDropdownAction(item)"
                                       data-skip-selection="true">
                 </igz-default-dropdown>
                 <button class="ncl-new-entity-button"
                         data-ng-click="$ctrl.openNewProjectDialog()">
-                    Create project
+                    {{ 'functions:CREATE_PROJECT' | i18next }}
                 </button>
                 <button class="ncl-new-entity-button"
                         data-ng-click="$ctrl.createFunction()">
-                    Create function
+                    {{ 'functions:CREATE_FUNCTION' | i18next }}
                 </button>
             </div>
             <div class="actions-bar-left actions-content-block">
@@ -36,7 +37,7 @@
                                            data-sort-options="$ctrl.sortOptions"
                                            data-reverse-sorting="$ctrl.isReverseSorting"
                                            data-update-data-callback="$ctrl.onSortOptionsChange"
-                                           data-uib-tooltip="Sort"
+                                           data-uib-tooltip="{{ 'common:TOOLTIP.SORT' | i18next }}"
                                            data-tooltip-append-to-body="true"
                                            data-tooltip-placement="top">
                         </igz-sort-dropdown>
@@ -63,20 +64,23 @@
                     <div class="igz-row common-table-cells-container">
                         <div class="igz-col-25 common-table-cell sortable name"
                              data-ng-class="$ctrl.getColumnSortingClasses('displayName', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
-                             data-ng-click="$ctrl.sortTableByColumn('displayName')">Name
+                             data-ng-click="$ctrl.sortTableByColumn('displayName')">
+                            {{ 'common:NAME' | i18next }}
                             <span class="sort-arrow"></span>
                             <div data-igz-resizable-table-column data-col-class="common-table-cell.name"></div>
                         </div>
                         <div class="igz-col-{{$ctrl.isDemoMode() ? '25' : '75'}} common-table-cell sortable description"
                              data-ng-class="$ctrl.getColumnSortingClasses('description', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
-                             data-ng-click="$ctrl.sortTableByColumn('description')">Description
+                             data-ng-click="$ctrl.sortTableByColumn('description')">
+                            {{ 'common:DESCRIPTION' | i18next }}
                             <span class="sort-arrow"></span>
                             <div data-igz-resizable-table-column data-col-class="common-table-cell.description"></div>
                         </div>
                         <div data-ng-if="$ctrl.isDemoMode()"
                              class="igz-col-25 common-table-cell sortable created-by"
                              data-ng-class="$ctrl.getColumnSortingClasses('created_by', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
-                             data-ng-click="$ctrl.sortTableByColumn('created_by')">Created by
+                             data-ng-click="$ctrl.sortTableByColumn('created_by')">
+                            {{ 'common:CREATED_BY' | i18next }}
                             <span class="sort-arrow"></span>
                             <div data-igz-resizable-table-column data-col-class="common-table-cell.created-by"></div>
                         </div>
@@ -84,7 +88,7 @@
                              class="igz-col-25 common-table-cell sortable created-date"
                              data-ng-class="$ctrl.getColumnSortingClasses('created_date', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                              data-ng-click="$ctrl.sortTableByColumn('created_date')">
-                            Created date
+                            {{ 'functions:CREATED_DATE' | i18next }}
                             <span class="sort-arrow"></span>
                             <div data-igz-resizable-table-column data-col-class="common-table-cell.created-date"></div>
                         </div>
@@ -94,7 +98,7 @@
 
                 <div class="search-input-not-found"
                      data-ng-if="$ctrl.isProjectsListEmpty()">
-                    There are currently no projects, you can create a project by clicking the ‘Create Project’ button
+                    {{ 'functions:PROJECTS_NOT_FOUND' | i18next }}
                 </div>
 
                 <div data-igz-extend-background
@@ -133,7 +137,7 @@
                           data-data-set="$ctrl.projects"
                           data-search-keys="$ctrl.searchKeys"
                           data-search-callback="$ctrl.onUpdateFiltersCounter(searchQuery)"
-                          data-placeholder="Search projects..."
+                          data-placeholder="{{ 'functions:PLACEHOLDER.SEARCH_PROJECTS' | i18next }}"
                           data-live-search="false"
                           data-search-states="$ctrl.searchStates">
         </igz-search-input>

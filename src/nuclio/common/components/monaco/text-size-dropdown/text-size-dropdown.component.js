@@ -10,27 +10,28 @@
             controller: NclTextSizeDropdownController
         });
 
-    function NclTextSizeDropdownController(lodash) {
+    function NclTextSizeDropdownController($i18next, i18next, lodash) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.textSizes = [
             {
-                label: 'Small',
+                label: $i18next.t('functions:SMALL', {lng: lng}),
                 id: 'small',
                 value: '8px'
             },
             {
-                label: 'Normal',
+                label: $i18next.t('functions:NORMAL', {lng: lng}),
                 id: 'normal',
                 value: '12px'
             },
             {
-                label: 'Large',
+                label: $i18next.t('functions:LARGE', {lng: lng}),
                 id: 'large',
                 value: '16px'
             },
             {
-                label: 'Huge',
+                label: $i18next.t('functions:HUGE', {lng: lng}),
                 id: 'huge',
                 value: '20px'
             },

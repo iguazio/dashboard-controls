@@ -4,7 +4,7 @@
              data-ng-repeat="item in $ctrl.tabItems"
              data-ui-sref="{{item.uiRoute}}"
              data-ui-sref-active="active"
-             data-ng-class="{'ncl-status-monitoring': item.tabName === 'Status'}">
+             data-ng-class="{'ncl-status-monitoring': item.id === 'status'}">
             {{item.tabName | uppercase}}
 
             <div class="ncl-status-light"

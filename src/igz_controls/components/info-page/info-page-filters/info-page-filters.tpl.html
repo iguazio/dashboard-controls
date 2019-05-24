@@ -1,7 +1,12 @@
 <div class="info-page-filters-wrapper">
-    <div class="info-page-filters" data-ng-show="$ctrl.isFiltersShowed" data-ng-keyup="$ctrl.onApplyFilters($event)">
-        <div class="info-page-filters-title">Filter</div>
-        <div class="close-button igz-icon-close" data-ng-click="$ctrl.changeStateCallback({newVal: false})" data-ng-show="$ctrl.changeStateCallback"></div>
+    <div class="info-page-filters"
+         data-ng-show="$ctrl.isFiltersShowed"
+         data-ng-keyup="$ctrl.onApplyFilters($event)">
+        <div class="info-page-filters-title">{{ 'common:FILTER' | i18next }}</div>
+        <div class="close-button igz-icon-close"
+             data-ng-click="$ctrl.changeStateCallback({newVal: false})"
+             data-ng-show="$ctrl.changeStateCallback">
+        </div>
         <div class="info-page-filters-body"
              data-ng-class="{'buttons-shown' : $ctrl.isShowFooterButtons()}"
              data-ng-scrollbars
@@ -9,12 +14,18 @@
             <div data-ng-transclude></div>
         </div>
         <div class="info-page-filters-footer" data-ng-if="$ctrl.isShowFooterButtons()">
-            <button class="igz-button-just-text" tabindex="0"
-                    data-ng-click="$ctrl.onResetFilters()" data-ng-keydown="$ctrl.onResetFilters($event)"
-                    data-ng-if="$ctrl.resetFilters">Reset</button>
-            <button class="igz-button-primary" tabindex="0"
-                    data-ng-click="$ctrl.onApplyFilters()" data-ng-keydown="$ctrl.onApplyFilters($event)"
-                    data-ng-if="$ctrl.applyFilters">Apply</button>
+            <button class="igz-button-just-text"
+                    tabindex="0"
+                    data-ng-click="$ctrl.onResetFilters()"
+                    data-ng-keydown="$ctrl.onResetFilters($event)"
+                    data-ng-if="$ctrl.resetFilters">{{ 'common:RESET' | i18next }}
+            </button>
+            <button class="igz-button-primary"
+                    tabindex="0"
+                    data-ng-click="$ctrl.onApplyFilters()"
+                    data-ng-keydown="$ctrl.onApplyFilters($event)"
+                    data-ng-if="$ctrl.applyFilters">{{ 'common:APPLY' | i18next }}
+            </button>
         </div>
     </div>
 </div>

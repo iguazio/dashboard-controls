@@ -14,9 +14,11 @@
             controller: NclEditItemController
         });
 
-    function NclEditItemController($document, $element, $rootScope, $scope, $timeout, lodash, ConverterService,
-                                   FunctionsService, FormValidationService, PreventDropdownCutOffService) {
+    function NclEditItemController($document, $element, $rootScope, $scope, $timeout, $i18next, i18next, lodash,
+                                   ConverterService, FunctionsService, FormValidationService,
+                                   PreventDropdownCutOffService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.classList = [];
         ctrl.editItemForm = {};
@@ -1033,8 +1035,8 @@
          */
         function getPlaceholder() {
             var placeholders = {
-                volume: 'Select type',
-                default: 'Select class'
+                volume: $i18next.t('functions:PLACEHOLDER.SELECT_TYPE', {lng: lng}),
+                default: $i18next.t('functions:PLACEHOLDER.SELECT_CLASS', {lng: lng})
             };
 
             return lodash.get(placeholders, ctrl.type, placeholders.default);

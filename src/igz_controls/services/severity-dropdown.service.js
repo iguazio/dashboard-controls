@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('SeverityDropdownService', SeverityDropdownService);
 
-    function SeverityDropdownService() {
+    function SeverityDropdownService($i18next, i18next) {
         return {
             getSeveritiesArray: getSeveritiesArray
         };
@@ -18,30 +18,31 @@
          * @returns {Array}
          */
         function getSeveritiesArray() {
+            var lng = i18next.language;
             return [
                 {
-                    name: 'Error',
+                    name: $i18next.t('common:ERROR', {lng: lng}),
                     type: 'error',
                     icon: {
                         name: 'igz-icon-warning severity-icon critical'
                     }
                 },
                 {
-                    name: 'Debug',
+                    name: $i18next.t('common:DEBUG', {lng: lng}),
                     type: 'debug',
                     icon: {
                         name: 'igz-icon-warning severity-icon major'
                     }
                 },
                 {
-                    name: 'Warning',
+                    name: $i18next.t('common:WARNING', {lng: lng}),
                     type: 'warning',
                     icon: {
                         name: 'igz-icon-warning severity-icon warning'
                     }
                 },
                 {
-                    name: 'Info',
+                    name: $i18next.t('common:INFO', {lng: lng}),
                     type: 'info',
                     icon: {
                         name: 'igz-icon-info-round severity-icon info'
