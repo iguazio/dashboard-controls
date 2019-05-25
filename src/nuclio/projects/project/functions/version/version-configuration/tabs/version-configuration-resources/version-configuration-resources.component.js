@@ -57,7 +57,7 @@
 
         ctrl.dropdownOptions = [
             { id: 'bytes', name: 'Bytes', unit: '',   root: 0,    power: 0 },
-            { id: 'kb',    name: 'KB',    unit: 'K',  root: 1000, power: 1 },
+            { id: 'kb',    name: 'KB',    unit: 'k',  root: 1000, power: 1 },
             { id: 'kib',   name: 'KiB',   unit: 'Ki', root: 1024, power: 1 },
             { id: 'mb',    name: 'MB',    unit: 'M',  root: 1000, power: 2 },
             { id: 'mib',   name: 'MiB',   unit: 'Mi', root: 1024, power: 2 },
