@@ -286,7 +286,7 @@
                 if (ctrl.ingresses.length < 1 || lodash.chain(ctrl.ingresses).last().get('ui.isFormValid', true).value()) {
                     ctrl.ingresses.push({
                         name: lodash.get(ctrl.defaultFields, 'ingressHost', ''),
-                        value: '',
+                        value: '/',
                         additionalValue: '',
                         ui: {
                             editModeActive: true,
