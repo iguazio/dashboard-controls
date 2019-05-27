@@ -117,7 +117,7 @@
                              data-ng-hide="$ctrl.searchStates.searchNotFound && $ctrl.searchStates.searchInProgress"
                              data-ng-model="$ctrl.data.working.ui.children">
                             <div class="data-lifecycle-layers" data-ng-repeat="aFunction in $ctrl.functions track by aFunction.metadata.name">
-                                <div data-igz-show-hide-search-item="function">
+                                <div data-igz-show-hide-search-item="aFunction">
                                     <ncl-function-collapsing-row data-function="aFunction"
                                                                  data-project="$ctrl.project"
                                                                  data-is-splash-showed="$ctrl.isSplashShowed"
