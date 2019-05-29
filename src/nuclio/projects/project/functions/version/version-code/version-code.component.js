@@ -104,6 +104,26 @@
                         }
                     }
                 }
+            },
+            {
+                id: 's3',
+                visible: true,
+                name: 'S3',
+                defaultValues: {
+                    spec: {
+                        build: {
+                            code_entry_attributes: {
+                                s3_bucket: '',
+                                s3_item_key: '',
+                                s3_access_key_id: '',
+                                s3_secret_access_key: '',
+                                s3_region: '',
+                                s3_session_token: '',
+                                work_dir: ''
+                            }
+                        }
+                    }
+                }
             }
         ];
         ctrl.themesArray = [
