@@ -35,14 +35,15 @@
 
                 if (childrenElements.length > maxElementsCount) {
                     scrollbarContainerHeight = lodash.chain(childrenElements)
-                                                     .take(maxElementsCount)
-                                                     .reduce(function (result, child) {
-                                                         var styles = window.getComputedStyle(child);
-                                                         var margin = parseFloat(styles['marginTop']) + parseFloat(styles['marginBottom']);
+                        .take(maxElementsCount)
+                        .map(function (child) {
+                            var styles = window.getComputedStyle(child);
+                            var margin = parseFloat(styles['marginTop']) + parseFloat(styles['marginBottom']);
 
-                                                         return result + child.offsetHeight + margin
-                                                     }, 0)
-                                                     .value();
+                            return child.offsetHeight + margin;
+                        })
+                        .sum()
+                        .value();
                 }
 
                 element.css({'max-height': scrollbarContainerHeight > 0 ? scrollbarContainerHeight : 'unset'});
