@@ -17,22 +17,9 @@
                 </div>
 
                 <div class="common-table-body">
-                    <div data-ng-if="!$ctrl.isScrollNeeded()"
-                         class="igz-scrollable-container">
-                        <ncl-collapsing-row data-ng-repeat="volume in $ctrl.volumes"
-                                            data-item="volume"
-                                            data-type="volume"
-                                            data-list-class="ncl-version-configuration-volumes"
-                                            data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)">
-                            <ncl-edit-item class="common-table-cells-container edit-volume-row"
-                                           data-item="volume"
-                                           data-type="volume"
-                                           data-on-submit-callback="$ctrl.editVolumeCallback(item)"></ncl-edit-item>
-                        </ncl-collapsing-row>
-                    </div>
-                    <div data-ng-if="$ctrl.isScrollNeeded()"
-                         class="igz-scrollable-container scrollable-volumes"
+                    <div class="igz-scrollable-container scrollable-volumes"
                          data-ng-scrollbars
+                         data-igz-ng-scrollbars-config="{{$ctrl.igzScrollConfig}}"
                          data-ng-scrollbars-config="$ctrl.scrollConfig">
                         <ncl-collapsing-row data-ng-repeat="volume in $ctrl.volumes"
                                             data-item="volume"
@@ -42,7 +29,8 @@
                             <ncl-edit-item class="common-table-cells-container edit-volume-row"
                                            data-item="volume"
                                            data-type="volume"
-                                           data-on-submit-callback="$ctrl.editVolumeCallback(item)"></ncl-edit-item>
+                                           data-on-submit-callback="$ctrl.editVolumeCallback(item)">
+                            </ncl-edit-item>
                         </ncl-collapsing-row>
                     </div>
                 </div>

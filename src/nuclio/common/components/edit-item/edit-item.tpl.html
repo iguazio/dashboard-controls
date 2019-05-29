@@ -378,26 +378,9 @@
                     <div class="paths-header">Paths</div>
                     <div class="secret-header">Secret</div>
                 </div>
-                <div data-ng-if="!$ctrl.isScrollNeeded('ingresses')">
-                    <div class="table-body" data-ng-repeat="ingress in $ctrl.ingresses">
-                        <ncl-key-value-input class="new-label-input"
-                                             data-list-class="ingresses-wrapper"
-                                             data-change-state-broadcast="change-state-deploy-button"
-                                             data-key-optional="true"
-                                             data-row-data="ingress"
-                                             data-use-type="false"
-                                             data-use-additional-value="true"
-                                             data-additional-value-optional="true"
-                                             data-submit-on-fly="true"
-                                             data-item-index="$index"
-                                             data-action-handler-callback="$ctrl.handleIngressAction(actionType, index)"
-                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
-                        </ncl-key-value-input>
-                    </div>
-                </div>
-                <div data-ng-if="$ctrl.isScrollNeeded('ingresses')"
-                     class="igz-scrollable-container scrollable-ingresses"
+                <div class="igz-scrollable-container scrollable-ingresses"
                      data-ng-scrollbars
+                     data-igz-ng-scrollbars-config="{{$ctrl.igzScrollConfig}}"
                      data-ng-scrollbars-config="$ctrl.scrollConfig">
                     <div class="table-body" data-ng-repeat="ingress in $ctrl.ingresses">
                         <ncl-key-value-input class="new-label-input"
@@ -432,29 +415,13 @@
                     <div class="key-header">Key</div>
                     <div class="value-header">Value</div>
                 </div>
-                <div data-ng-if="!$ctrl.isScrollNeeded('annotations')">
-                    <div class="table-body" data-ng-repeat="annotation in $ctrl.annotations">
-                        <ncl-key-value-input class="new-label-input"
-                                             data-list-class="annotations-wrapper"
-                                             data-change-state-broadcast="change-state-deploy-button"
-                                             data-key-optional="true"
-                                             data-row-data="annotation"
-                                             data-use-type="false"
-                                             data-submit-on-fly="true"
-                                             data-item-index="$index"
-                                             data-action-handler-callback="$ctrl.handleAnnotationAction(actionType, index)"
-                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
-                        </ncl-key-value-input>
-                    </div>
-                </div>
-
-                <div data-ng-if="$ctrl.isScrollNeeded('annotations')"
-                     class="igz-scrollable-container scrollable-annotations"
+                <div class="igz-scrollable-container scrollable-annotations"
                      data-ng-scrollbars
+                     data-igz-ng-scrollbars-config="{{$ctrl.igzScrollConfig}}"
                      data-ng-scrollbars-config="$ctrl.scrollConfig">
                     <div class="table-body" data-ng-repeat="annotation in $ctrl.annotations">
                         <ncl-key-value-input class="new-label-input"
-                                             data-list-class="annotations-wrapper"
+                                             data-list-class="scrollable-annotations"
                                              data-change-state-broadcast="change-state-deploy-button"
                                              data-key-optional="true"
                                              data-row-data="annotation"
@@ -504,29 +471,13 @@
                     <div class="key-header">Key</div>
                     <div class="value-header">Value</div>
                 </div>
-                <div data-ng-if="!$ctrl.isScrollNeeded('eventHeaders')">
-                    <div class="table-body" data-ng-repeat="header in $ctrl.eventHeaders">
-                        <ncl-key-value-input class="new-label-input"
-                                             data-list-class="event-headers-wrapper"
-                                             data-change-state-broadcast="change-state-deploy-button"
-                                             data-key-optional="true"
-                                             data-row-data="header"
-                                             data-use-type="false"
-                                             data-submit-on-fly="true"
-                                             data-item-index="$index"
-                                             data-action-handler-callback="$ctrl.handleEventHeaderAction(actionType, index)"
-                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
-                        </ncl-key-value-input>
-                    </div>
-                </div>
-
-                <div data-ng-if="$ctrl.isScrollNeeded('eventHeaders')"
-                     class="igz-scrollable-container scrollable-annotations"
+                <div class="igz-scrollable-container scrollable-event-headers"
                      data-ng-scrollbars
+                     data-igz-ng-scrollbars-config="{{$ctrl.igzScrollConfig}}"
                      data-ng-scrollbars-config="$ctrl.scrollConfig">
                     <div class="table-body" data-ng-repeat="header in $ctrl.eventHeaders">
                         <ncl-key-value-input class="new-label-input"
-                                             data-list-class="event-headers-wrapper"
+                                             data-list-class="scrollable-event-headers"
                                              data-change-state-broadcast="change-state-deploy-button"
                                              data-key-optional="true"
                                              data-row-data="header"

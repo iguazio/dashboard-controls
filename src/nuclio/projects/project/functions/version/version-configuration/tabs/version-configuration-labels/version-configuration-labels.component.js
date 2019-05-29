@@ -15,6 +15,10 @@
                                                      PreventDropdownCutOffService) {
         var ctrl = this;
 
+        ctrl.igzScrollConfig = {
+            maxElementsCount: 10,
+            childrenSelector: '.table-body'
+        };
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -27,7 +31,6 @@
 
         ctrl.addNewLabel = addNewLabel;
         ctrl.handleAction = handleAction;
-        ctrl.isScrollNeeded = isScrollNeeded;
         ctrl.onChangeData = onChangeData;
 
         //
@@ -116,14 +119,6 @@
             ctrl.labels[index] = label;
 
             updateLabels();
-        }
-
-        /**
-         * Returns true if scrollbar is necessary
-         * @returns {boolean}
-         */
-        function isScrollNeeded() {
-            return ctrl.labels.length > 10;
         }
 
         //

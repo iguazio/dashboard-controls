@@ -48,6 +48,7 @@
             </div>
             <div class="igz-scrollable-container"
                  data-ng-scrollbars
+                 data-igz-ng-scrollbars-config="{{$ctrl.igzScrollConfig}}"
                  data-ng-scrollbars-config="$ctrl.scrollConfig">
                 <div class="table-body" data-ng-repeat="attribute in $ctrl.attributes">
                     <ncl-key-value-input class="new-label-input"
@@ -56,7 +57,8 @@
                                          data-use-type="false"
                                          data-item-index="$index"
                                          data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                         data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                         data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                    </ncl-key-value-input>
                 </div>
             </div>
             <div class="create-label-button"

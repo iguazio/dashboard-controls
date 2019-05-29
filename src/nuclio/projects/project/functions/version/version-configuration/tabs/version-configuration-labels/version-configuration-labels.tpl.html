@@ -5,24 +5,9 @@
             <div class="key-header">Key</div>
             <div class="value-header">Value</div>
         </div>
-        <div data-ng-if="!$ctrl.isScrollNeeded()">
-            <div class="table-body" data-ng-repeat="label in $ctrl.labels">
-                <ncl-key-value-input class="new-label-input"
-                                     data-list-class="ncl-version-configuration-labels"
-                                     data-change-state-broadcast="change-state-deploy-button"
-                                     data-row-data="label"
-                                     data-item-index="$index"
-                                     data-use-type="false"
-                                     data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"
-                                     data-submit-on-fly="true">
-                </ncl-key-value-input>
-            </div>
-        </div>
-
-        <div data-ng-if="$ctrl.isScrollNeeded()"
-             class="igz-scrollable-container scrollable-labels"
+        <div class="igz-scrollable-container scrollable-labels"
              data-ng-scrollbars
+             data-igz-ng-scrollbars-config="{{$ctrl.igzScrollConfig}}"
              data-ng-scrollbars-config="$ctrl.scrollConfig">
             <div class="table-body" data-ng-repeat="label in $ctrl.labels">
                 <ncl-key-value-input class="new-label-input"
@@ -32,7 +17,9 @@
                                      data-item-index="$index"
                                      data-use-type="false"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"
+                                     data-submit-on-fly="true">
+                </ncl-key-value-input>
             </div>
         </div>
         <div class="create-label-button"

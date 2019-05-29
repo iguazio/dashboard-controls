@@ -1,27 +1,9 @@
 <div class="ncl-version-configuration-environment-variables">
     <div class="title">Environment Variables</div>
     <form name="$ctrl.environmentVariablesForm" class="resources-wrapper">
-        <div data-ng-if="!$ctrl.isScrollNeeded()"
-             class="igz-scrollable-container">
-            <div class="table-body" data-ng-repeat="variable in $ctrl.variables">
-                <ncl-key-value-input class="new-label-input"
-                                     data-list-class="ncl-version-configuration-environment-variables"
-                                     data-change-state-broadcast="change-state-deploy-button"
-                                     data-row-data="variable"
-                                     data-item-index="$index"
-                                     data-use-type="true"
-                                     data-use-labels="true"
-                                     data-all-value-types="$ctrl.isOnlyValueTypeInputs"
-                                     data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"
-                                     data-dropdown-overlap="true"
-                                     data-submit-on-fly="true">
-                </ncl-key-value-input>
-            </div>
-        </div>
-        <div data-ng-if="$ctrl.isScrollNeeded()"
-             class="igz-scrollable-container scrollable-environment-variables"
+        <div class="igz-scrollable-container scrollable-environment-variables"
              data-ng-scrollbars
+             data-igz-ng-scrollbars-config="{{$ctrl.igzScrollConfig}}"
              data-ng-scrollbars-config="$ctrl.scrollConfig">
             <div class="table-body" data-ng-repeat="variable in $ctrl.variables">
                 <ncl-key-value-input class="new-label-input"
@@ -33,7 +15,10 @@
                                      data-use-labels="true"
                                      data-all-value-types="$ctrl.isOnlyValueTypeInputs"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"
+                                     data-dropdown-overlap="true"
+                                     data-submit-on-fly="true">
+                </ncl-key-value-input>
             </div>
         </div>
         <div class="create-variable-button"

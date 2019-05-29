@@ -22,6 +22,10 @@
         ctrl.editItemForm = {};
         ctrl.selectedClass = {};
 
+        ctrl.igzScrollConfig = {
+            maxElementsCount: 10,
+            childrenSelector: '.table-body'
+        };
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -63,7 +67,6 @@
         ctrl.handleEventHeaderAction = handleEventHeaderAction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isClassSelected = isClassSelected;
-        ctrl.isScrollNeeded = isScrollNeeded;
         ctrl.isHttpTrigger = isHttpTrigger;
         ctrl.isKafkaTrigger = isKafkaTrigger;
         ctrl.isMQTTTrigger = isMQTTTrigger;
@@ -528,15 +531,6 @@
          */
         function isClassSelected() {
             return !lodash.isEmpty(ctrl.selectedClass);
-        }
-
-        /**
-         * Returns true if scrollbar is necessary
-         * @param {string} itemsType - items where scroll is needed (e.g. 'ingresses', 'annotations')
-         * @returns {boolean}
-         */
-        function isScrollNeeded(itemsType) {
-            return ctrl[itemsType].length > 10;
         }
 
         /**
