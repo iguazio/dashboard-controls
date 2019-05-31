@@ -75,25 +75,25 @@ describe('nclProjects component: ', function () {
         it('should initialize projects actions array', function () {
             var expectedActions = [
                 {
-                    label: 'Delete',
+                    label: 'DELETE',
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
                     confirm: {
-                        message: 'Delete selected projects?',
-                        yesLabel: 'Yes, Delete',
-                        noLabel: 'Cancel',
+                        message: 'DELETE_PROJECTS_CONFIRM',
+                        yesLabel: 'YES_DELETE',
+                        noLabel: 'CANCEL',
                         type: 'nuclio_alert'
                     }
                 },
                 {
-                    label: 'Edit',
+                    label: 'EDIT',
                     id: 'edit',
                     icon: 'igz-icon-edit',
                     active: true
                 },
                 {
-                    label: 'Export',
+                    label: 'EXPORT',
                     id: 'export',
                     icon: 'igz-icon-export-yml',
                     active: true
@@ -112,7 +112,7 @@ describe('nclProjects component: ', function () {
 
             var data = {
                 action: {
-                    label: 'Edit',
+                    label: 'EDIT',
                     id: 'edit',
                     icon: 'igz-icon-properties',
                     active: true

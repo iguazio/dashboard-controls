@@ -75,6 +75,7 @@ module.exports = {
                 'src/iguazio.dashboard-controls.module.js',
                 'src/iguazio.dashboard-controls.config.js',
                 'src/iguazio.dashboard-controls.route.js',
+                'src/iguazio.dashboard-controls.run.js',
                 'src/igz_controls/**/*.js',
                 '!src/igz_controls/**/*.spec.js',
                 'src/nuclio/**/*.js',
