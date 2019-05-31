@@ -127,18 +127,6 @@
                            data-ng-disabled="$ctrl.disabled">
                     <label for="noCache" class="checkbox-inline">{{ 'functions:DISABLE_CACHE' | i18next }}</label>
                 </div>
-                <div class="checkbox-block"
-                     data-uib-tooltip="{{ 'functions:TOOLTIP.NO_INTERNET_ACCESS' | i18next }}"
-                     data-tooltip-placement="bottom"
-                     data-tooltip-append-to-body="true"
-                     data-tooltip-popup-delay="500">
-                    <input type="checkbox"
-                           class="small"
-                           id="offline"
-                           data-ng-model="$ctrl.version.spec.build.offline"
-                           data-ng-disabled="$ctrl.disabled">
-                    <label for="offline" class="checkbox-inline">{{ 'functions:NO_INTERNET_ACCESS' | i18next }}</label>
-                </div>
             </div>
             <div class="igz-col-100 build-field files-field">
                 <div class="uploading-files">
