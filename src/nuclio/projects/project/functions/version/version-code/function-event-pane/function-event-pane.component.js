@@ -121,6 +121,10 @@
         ctrl.selectedResponseTab = ctrl.responseNavigationTabs[0];
         ctrl.selectedLeftBarTab = ctrl.leftBarNavigationTabs[0];
         ctrl.showLeftBar = false;
+        ctrl.igzScrollConfig = {
+            maxElementsCount: 4,
+            childrenSelector: '.table-body'
+        };
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -147,7 +151,6 @@
         ctrl.getInvocationUrl = getInvocationUrl;
         ctrl.getMethodColor = getMethodColor;
         ctrl.handleAction = handleAction;
-        ctrl.isScrollNeeded = isScrollNeeded;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isDisabledTestButton = isDisabledTestButton;
         ctrl.onChangeData = onChangeData;
@@ -395,14 +398,6 @@
 
                 updateHeaders();
             }
-        }
-
-        /**
-         * Returns true if scrollbar is necessary
-         * @returns {boolean}
-         */
-        function isScrollNeeded() {
-            return ctrl.headers.length > 5;
         }
 
         /**

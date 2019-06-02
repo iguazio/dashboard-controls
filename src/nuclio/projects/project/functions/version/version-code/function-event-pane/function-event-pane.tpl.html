@@ -191,25 +191,9 @@
                                         <div class="key-header">Key</div>
                                         <div class="value-header">Value</div>
                                     </div>
-                                    <div class="table-body-wrapper" data-ng-if="!$ctrl.isScrollNeeded()">
-                                        <div class="table-body" data-ng-repeat="header in $ctrl.headers">
-                                            <ncl-key-value-input class="new-header-input"
-                                                                 data-list-class="headers"
-                                                                 data-row-data="header"
-                                                                 data-item-index="$index"
-                                                                 data-use-type="false"
-                                                                 data-allow-selection="true"
-                                                                 data-value-optional="true"
-                                                                 data-on-select-item-callback="$ctrl.onSelectHeader"
-                                                                 data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                                                 data-change-data-callback="$ctrl.onChangeData(newData, index)">
-                                            </ncl-key-value-input>
-                                        </div>
-                                    </div>
-
                                     <div class="igz-scrollable-container scrollable-headers table-body-wrapper"
-                                         data-ng-if="$ctrl.isScrollNeeded()"
                                          data-ng-scrollbars
+                                         data-igz-ng-scrollbars-config="{{$ctrl.igzScrollConfig}}"
                                          data-ng-scrollbars-config="$ctrl.scrollConfig">
                                         <div class="table-body" data-ng-repeat="header in $ctrl.headers">
                                             <ncl-key-value-input class="new-header-input"
@@ -219,6 +203,7 @@
                                                                  data-use-type="false"
                                                                  data-allow-selection="true"
                                                                  data-value-optional="true"
+                                                                 data-on-select-item-callback="$ctrl.onSelectHeader"
                                                                  data-action-handler-callback="$ctrl.handleAction(actionType, index)"
                                                                  data-change-data-callback="$ctrl.onChangeData(newData, index)">
                                             </ncl-key-value-input>

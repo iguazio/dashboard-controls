@@ -5,23 +5,9 @@
             <div class="key-header">Key</div>
             <div class="value-header">Value</div>
         </div>
-        <div data-ng-if="!$ctrl.isScrollNeeded()">
-            <div class="table-body" data-ng-repeat="annotation in $ctrl.annotations">
-                <ncl-key-value-input class="new-label-input"
-                                     data-list-class="ncl-version-configuration-annotations"
-                                     data-change-state-broadcast="change-state-deploy-button"
-                                     data-row-data="annotation"
-                                     data-use-type="false"
-                                     data-item-index="$index"
-                                     data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"
-                                     data-submit-on-fly="true">
-                </ncl-key-value-input>
-            </div>
-        </div>
-        <div data-ng-if="$ctrl.isScrollNeeded()"
-             class="igz-scrollable-container scrollable-annotations"
+        <div class="igz-scrollable-container scrollable-annotations"
              data-ng-scrollbars
+             data-igz-ng-scrollbars-config="{{$ctrl.igzScrollConfig}}"
              data-ng-scrollbars-config="$ctrl.scrollConfig">
             <div class="table-body" data-ng-repeat="annotation in $ctrl.annotations">
                 <ncl-key-value-input class="new-label-input"
@@ -31,7 +17,9 @@
                                      data-use-type="false"
                                      data-item-index="$index"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"></ncl-key-value-input>
+                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"
+                                     data-submit-on-fly="true">
+                </ncl-key-value-input>
             </div>
         </div>
         <div class="create-annotation-button"
