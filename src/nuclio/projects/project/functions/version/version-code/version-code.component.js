@@ -114,11 +114,11 @@
                         build: {
                             codeEntryAttributes: {
                                 s3Bucket: '',
-                                s3Item_key: '',
-                                s3Access_key_id: '',
-                                s3Secret_access_key: '',
+                                s3ItemKey: '',
+                                s3AccessKeyId: '',
+                                s3SecretAccessKey: '',
                                 s3Region: '',
-                                s3Session_token: '',
+                                s3SessionToken: '',
                                 workDir: ''
                             }
                         }
