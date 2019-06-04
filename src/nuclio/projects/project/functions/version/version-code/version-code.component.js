@@ -112,14 +112,14 @@
                 defaultValues: {
                     spec: {
                         build: {
-                            code_entry_attributes: {
-                                s3_bucket: '',
-                                s3_item_key: '',
-                                s3_access_key_id: '',
-                                s3_secret_access_key: '',
-                                s3_region: '',
-                                s3_session_token: '',
-                                work_dir: ''
+                            codeEntryAttributes: {
+                                s3Bucket: '',
+                                s3Item_key: '',
+                                s3Access_key_id: '',
+                                s3Secret_access_key: '',
+                                s3Region: '',
+                                s3Session_token: '',
+                                workDir: ''
                             }
                         }
                     }
