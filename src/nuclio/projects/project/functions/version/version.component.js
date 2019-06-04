@@ -203,11 +203,12 @@
 
         /**
          * Deploys changed version
+         * @param {MouseEvent} event
          */
-        function deployButtonClick() {
+        function deployButtonClick(event) {
             if (!ctrl.isDeployDisabled) {
                 ctrl.isFunctionDeployed = false;
-                $rootScope.$broadcast('deploy-function-version');
+                $rootScope.$broadcast('deploy-function-version', {event: event});
 
                 var versionCopy = lodash.omit(ctrl.version, ['status', 'ui']);
 

@@ -16,7 +16,7 @@
             <div class="actions-bar-left actions-buttons-block">
                 <button class="ncl-new-entity-button"
                         data-ng-class="{'disabled': $ctrl.isInValidDeployState() || $ctrl.isDeployDisabled}"
-                        data-ng-click="$ctrl.isInValidDeployState() || $ctrl.deployButtonClick()">
+                        data-ng-click="$ctrl.isInValidDeployState() || $ctrl.deployButtonClick($event)">
                     Deploy
                 </button>
             </div>
