@@ -6,7 +6,7 @@
             bindings: {
                 description: '@',
                 isDisabled: '<?',
-                trigger: '@?', // 'hover' or 'click'
+                trigger: '@?',
                 isHtmlEnabled: '<?',
                 isDefaultTooltipEnabled: '<?',
                 defaultTooltipPlacement: '@?',
@@ -20,8 +20,8 @@
         var ctrl = this;
 
         ctrl.$onInit = onInit;
-        ctrl.onQuestionMarkClick = onQuestionMarkClick;
         ctrl.isClickMode = isClickMode;
+        ctrl.onQuestionMarkClick = onQuestionMarkClick;
 
         //
         // Hook methods
@@ -36,17 +36,29 @@
                 isHtmlEnabled: false,
                 isDefaultTooltipEnabled: false,
                 defaultTooltipPlacement: 'auto',
-                defaultTooltipPopupDelay: '0',
+                defaultTooltipPopupDelay: '0'
             });
 
-            // Defaults trigger method to 'mouseenter' (hover)
-            ctrl.trigger = ctrl.trigger === 'click' ? 'click' : 'mouseenter';
-            ctrl.isDescriptionVisible = !isClickMode(); // need only for 'click' trigger. Init value - `false`
+            // Defaults trigger method to 'mouseenter'. Available 2 modes: `hover (mouseenter)` and `click`.
+            if (ctrl.trigger !== 'click') {
+                ctrl.trigger = 'mouseenter';
+            }
+
+            // If `click` mode - init value is `false` and will trigger on click. If `hover` mode - always `true`.
+            ctrl.isDescriptionVisible = !isClickMode();
         }
 
         //
         // Public methods
         //
+
+        /**
+         * Determine whether the trigger method is `click`
+         * @returns {boolean}
+         */
+        function isClickMode() {
+            return ctrl.trigger === 'click';
+        }
 
         /**
          * Handles click on question mark. Shows/hides tooltip. Works only for 'click' trigger.
@@ -55,14 +67,6 @@
             if (ctrl.isClickMode()) {
                 ctrl.isDescriptionVisible = !ctrl.isDescriptionVisible;
             }
-        }
-
-        /**
-         * Determine whether the trigger method is `click`
-         * @returns {boolean}
-         */
-        function isClickMode() {
-            return ctrl.trigger === 'click';
         }
     }
 }());

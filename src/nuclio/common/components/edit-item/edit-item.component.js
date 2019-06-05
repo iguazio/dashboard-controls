@@ -44,7 +44,6 @@
         ctrl.stringValidationPattern = /^.{1,128}$/;
         ctrl.subscriptionQoSValidationPattern = /^[0-2]$/;
         ctrl.placeholder = '';
-        ctrl.tooltip = '';
 
         ctrl.isShowFieldError = FormValidationService.isShowFieldError;
         ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
@@ -58,8 +57,9 @@
         ctrl.addNewEventHeader = addNewEventHeader;
         ctrl.convertFromCamelCase = convertFromCamelCase;
         ctrl.getAttrValue = getAttrValue;
-        ctrl.getValidationPattern = getValidationPattern;
         ctrl.getInputValue = getInputValue;
+        ctrl.getTooltip = getTooltip;
+        ctrl.getValidationPattern = getValidationPattern;
         ctrl.handleIngressAction = handleIngressAction;
         ctrl.handleAnnotationAction = handleAnnotationAction;
         ctrl.handleSubscriptionAction = handleSubscriptionAction;
@@ -119,8 +119,6 @@
                 if (!lodash.isNil(selectedTypeName)) {
                     ctrl.selectedClass = lodash.find(ctrl.classList, ['id', selectedTypeName]);
                 }
-
-                setTooltip();
             }
 
             if (ctrl.isTriggerType() && ctrl.isHttpTrigger()) {
@@ -428,21 +426,36 @@
         }
 
         /**
-         * Gets validation patterns depends on type of attribute
-         * @param {string} pattern
-         * @returns {RegExp}
-         */
-        function getValidationPattern(pattern) {
-            return lodash.get(ctrl, pattern + 'ValidationPattern', ctrl.stringValidationPattern);
-        }
-
-        /**
          * Returns value for Name input.
          * Value could has different path depends on item type.
          * @returns {string}
          */
         function getInputValue() {
             return ctrl.type === 'volume' ? ctrl.item.volume.name : ctrl.item.name;
+        }
+
+        /**
+         * Gets corresponding tooltip description
+         * @returns {string}
+         */
+        function getTooltip() {
+            var tooltips = {
+                secret: 'Managing sensitive objects <a class=\'link\' target=\'_blank\' ' +
+                    'href=\'https://kubernetes.io/docs/concepts/configuration/secret/\'>Docs</a>',
+                configMap: 'Storing configuration <a class=\'link\' target=\'_blank\' ' +
+                    'href=\'https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/\'>Docs</a>'
+            };
+
+            return lodash.get(tooltips, ctrl.selectedClass.id, '');
+        }
+
+        /**
+         * Gets validation patterns depends on type of attribute
+         * @param {string} pattern
+         * @returns {RegExp}
+         */
+        function getValidationPattern(pattern) {
+            return lodash.get(ctrl, pattern + 'ValidationPattern', ctrl.stringValidationPattern);
         }
 
         /**
@@ -721,8 +734,6 @@
                     cleanOtherVolumeClasses('persistentVolumeClaim');
                 }
 
-                setTooltip();
-
                 return;
             }
 
@@ -929,21 +940,6 @@
                         });
                     }
                 }
-            }
-        }
-
-        /**
-         * Sets corresponding tooltip
-         */
-        function setTooltip() {
-            if (ctrl.selectedClass.id === 'secret') {
-                ctrl.tooltip = 'Managing sensitive objects <a class=\'link\' target=\'_blank\' ' +
-                    'href=\'https://kubernetes.io/docs/concepts/configuration/secret/\'>Docs</a>';
-            } else if (ctrl.selectedClass.id === 'configMap') {
-                ctrl.tooltip = 'Storing configuration <a class=\'link\' target=\'_blank\' ' +
-                    'href=\'https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/\'>Docs</a>';
-            } else {
-                ctrl.tooltip = '';
             }
         }
 
