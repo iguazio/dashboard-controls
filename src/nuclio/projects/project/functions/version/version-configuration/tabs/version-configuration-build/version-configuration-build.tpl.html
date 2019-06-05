@@ -28,7 +28,13 @@
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-50 build-field build-base-image-field">
-                <div class="field-label">Base image</div>
+                <div class="field-label label-with-tooltip align-items-center">
+                    <span>Base image</span>
+                    <igz-more-info
+                            data-description="The base image from which the function processor image will be built"
+                            data-trigger="click">
+                    </igz-more-info>
+                </div>
                 <igz-validating-input-field data-field-type="input"
                                             data-input-name="baseImage"
                                             data-input-value="$ctrl.version.spec.build.baseImage"
@@ -42,7 +48,7 @@
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-50 build-field build-onbuild-image-field">
-                <div class="field-label">Onbuild image</div>
+                <div class="field-label label-with-tooltip align-items-center">Onbuild image</div>
                 <igz-validating-input-field data-field-type="input"
                                             data-input-name="onbuildImage"
                                             data-input-value="$ctrl.version.spec.build.onbuildImage"
@@ -70,7 +76,13 @@
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-100 build-field">
-                <div class="field-label">Readiness timeout (seconds)</div>
+                <div class="field-label label-with-tooltip align-items-center">
+                    <span>Readiness timeout (seconds)</span>
+                    <igz-more-info
+                            data-description="Number of seconds that the controller will wait for the function to become ready before declaring failure (default: 30)"
+                            data-trigger="click">
+                    </igz-more-info>
+                </div>
                 <igz-number-input data-form-object="$ctrl.buildForm"
                                   data-input-name="readinessTimeoutSeconds"
                                   data-current-value="$ctrl.version.spec.readinessTimeoutSeconds"

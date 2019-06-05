@@ -25,6 +25,8 @@
                 updateOnContentResize: true
             }
         };
+        ctrl.tooltip = 'Add metadata to the function <a class=\'link\' target=\'_blank\' ' +
+            'href=\'https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/\'>Docs</a>';
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;

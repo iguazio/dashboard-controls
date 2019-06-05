@@ -44,6 +44,7 @@
         ctrl.stringValidationPattern = /^.{1,128}$/;
         ctrl.subscriptionQoSValidationPattern = /^[0-2]$/;
         ctrl.placeholder = '';
+        ctrl.tooltip = '';
 
         ctrl.isShowFieldError = FormValidationService.isShowFieldError;
         ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
@@ -71,6 +72,7 @@
         ctrl.isKafkaTrigger = isKafkaTrigger;
         ctrl.isMQTTTrigger = isMQTTTrigger;
         ctrl.isCronTrigger = isCronTrigger;
+        ctrl.isTooltipVisible = isTooltipVisible;
         ctrl.isTriggerType = isTriggerType;
         ctrl.isVolumeType = isVolumeType;
         ctrl.onChangeData = onChangeData;
@@ -117,6 +119,8 @@
                 if (!lodash.isNil(selectedTypeName)) {
                     ctrl.selectedClass = lodash.find(ctrl.classList, ['id', selectedTypeName]);
                 }
+
+                setTooltip();
             }
 
             if (ctrl.isTriggerType() && ctrl.isHttpTrigger()) {
@@ -574,6 +578,14 @@
         }
 
         /**
+         * Checks if tooltip is visible.
+         * @returns {boolean} `true` only for `secret` and `configMap` classes of volume type, `false` otherwise.
+         */
+        function isTooltipVisible() {
+            return lodash.includes(['secret', 'configMap'], ctrl.selectedClass.id);
+        }
+
+        /**
          * Returns `true` if item is a trigger.
          * @returns {boolean} `true` if item is a trigger, or `false` otherwise.
          */
@@ -708,6 +720,8 @@
 
                     cleanOtherVolumeClasses('persistentVolumeClaim');
                 }
+
+                setTooltip();
 
                 return;
             }
@@ -915,6 +929,21 @@
                         });
                     }
                 }
+            }
+        }
+
+        /**
+         * Sets corresponding tooltip
+         */
+        function setTooltip() {
+            if (ctrl.selectedClass.id === 'secret') {
+                ctrl.tooltip = 'Managing sensitive objects <a class=\'link\' target=\'_blank\' ' +
+                    'href=\'https://kubernetes.io/docs/concepts/configuration/secret/\'>Docs</a>';
+            } else if (ctrl.selectedClass.id === 'configMap') {
+                ctrl.tooltip = 'Storing configuration <a class=\'link\' target=\'_blank\' ' +
+                    'href=\'https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/\'>Docs</a>';
+            } else {
+                ctrl.tooltip = '';
             }
         }
 

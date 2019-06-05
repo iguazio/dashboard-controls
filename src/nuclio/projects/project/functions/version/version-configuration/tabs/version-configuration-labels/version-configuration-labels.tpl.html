@@ -1,5 +1,12 @@
 <div class="ncl-version-configuration-labels">
-    <div class="title">Labels</div>
+    <div class="title">
+        <span>Labels</span>
+        <igz-more-info
+                data-description="{{$ctrl.tooltip}}"
+                data-trigger="click"
+                data-is-html-enabled="true">
+        </igz-more-info>
+    </div>
     <form name="$ctrl.labelsForm" class="labels-wrapper">
         <div data-ng-if="$ctrl.labels.length > 0" class="table-headers">
             <div class="key-header">Key</div>

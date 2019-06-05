@@ -450,11 +450,13 @@
                     },
                     {
                         id: 'secret',
-                        name: 'Secret'
+                        name: 'Secret',
+                        tooltip: 'Managing sensitive objects'
                     },
                     {
                         id: 'configMap',
-                        name: 'ConfigMap'
+                        name: 'ConfigMap',
+                        tooltip: 'Storing configuration'
                     },
                     {
                         id: 'persistentVolumeClaim',
