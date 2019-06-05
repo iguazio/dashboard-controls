@@ -24,15 +24,25 @@
                 color: @icon-help-round-hover-before-color;
             }
 
-            + div {
+            + .row-description {
                 color: @icon-help-description-hover-color;
-                display: block;
+            }
+        }
+
+        &:not(.click-trigger) {
+            + .row-description {
+                display: none;
+            }
+
+            &:hover {
+                + .row-description {
+                    display: block;
+                }
             }
         }
     }
 
     .row-description {
-        display: none;
         width: 280px;
         margin-left: 35px;
         padding: 16px 19px;
@@ -44,7 +54,9 @@
         color: @row-description-color;
         font-family: @font-family-sans-serif;
         font-size: 12px;
+        font-weight: 400;
         white-space: pre-line;
+        z-index: 9999;
 
         &:before {
             .triangle-arrow(right; @row-description-triangle-color; 8px; 10px);
