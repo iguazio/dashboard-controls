@@ -830,11 +830,14 @@
 
             if (angular.isUndefined(event.keyCode) || event.keyCode === 13) {
                 if (event.target !== $element[0] && $element.find(event.target).length === 0 &&
-                    !event.target.closest('ncl-edit-item') && !event.target.closest('.ngdialog')) {
+                    areElementsValidOnSubmit(event)) {
                     if (ctrl.editItemForm.$invalid) {
                         ctrl.item.ui.isFormValid = false;
 
-                        $rootScope.$broadcast('change-state-deploy-button', { component: ctrl.item.ui.name, isDisabled: true });
+                        $rootScope.$broadcast('change-state-deploy-button', {
+                            component: ctrl.item.ui.name,
+                            isDisabled: true
+                        });
 
                         ctrl.editItemForm.itemName.$setDirty();
 
@@ -909,7 +912,10 @@
                                 updateBrokers();
                             }
 
-                            $rootScope.$broadcast('change-state-deploy-button', { component: ctrl.item.ui.name, isDisabled: false });
+                            $rootScope.$broadcast('change-state-deploy-button', {
+                                component: ctrl.item.ui.name,
+                                isDisabled: false
+                            });
 
                             ctrl.onSubmitCallback({ item: ctrl.item });
                         });
@@ -981,6 +987,46 @@
         //
 
         /**
+         * Checks if click wasn't on one of the elements from the list
+         * @param {Event} event - JS event object
+         * @returns {boolean} Returns `true` if click wasn't on one of elements from the list
+         */
+        function areElementsValidOnSubmit(event) {
+            var elementsForValidation = [
+                'ncl-edit-item',
+                '.actions-menu',
+                '.single-action',
+                '.ngdialog',
+                '.mCustomScrollbar'
+            ];
+
+            return lodash.every(elementsForValidation, function (element) {
+                return !event.target.closest(element)
+            })
+        }
+
+        /**
+         * Returns placeholder value depends on incoming component type
+         * @returns {string}
+         */
+        function getPlaceholder() {
+            var placeholders = {
+                volume: 'Select type',
+                default: 'Select class'
+            };
+
+            return lodash.get(placeholders, ctrl.type, placeholders.default);
+        }
+
+        /**
+         * Checks for V3IO triggers
+         * @returns {boolean}
+         */
+        function isV3ioTrigger() {
+            return ctrl.selectedClass.id === 'v3ioStream';
+        }
+
+        /**
          * Validate interval and schedule fields
          */
         function validateValues() {
@@ -1019,27 +1065,6 @@
                 ctrl.editItemForm.item_queueName.$setValidity('text', queueName.allowEmpty || queueNameIsFilled);
                 ctrl.editItemForm.item_topics.$setValidity('text', topics.allowEmpty || topicsIsFilled);
             }
-        }
-
-        /**
-         * Returns placeholder value depends on incoming component type
-         * @returns {string}
-         */
-        function getPlaceholder() {
-            var placeholders = {
-                volume: 'Select type',
-                default: 'Select class'
-            };
-
-            return lodash.get(placeholders, ctrl.type, placeholders.default);
-        }
-
-        /**
-         * Checks for V3IO triggers
-         * @returns {boolean}
-         */
-        function isV3ioTrigger() {
-            return ctrl.selectedClass.id === 'v3ioStream';
         }
     }
 }());
