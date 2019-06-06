@@ -44,7 +44,9 @@
                 ctrl.trigger = 'mouseenter';
             }
 
-            // If `click` mode - init value is `false` and will trigger on click. If `hover` mode - always `true`.
+            // In `click` mode this variable is responsible for displaying tooltip.
+            // If it is `true` tooltip is shown and hidden otherwise. Toggles by `onQuestionMarkClick` only in this mode.
+            // In `hover` mode is always `true`.
             ctrl.isDescriptionVisible = !isClickMode();
         }
 

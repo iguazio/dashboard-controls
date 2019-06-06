@@ -44,6 +44,12 @@
         ctrl.stringValidationPattern = /^.{1,128}$/;
         ctrl.subscriptionQoSValidationPattern = /^[0-2]$/;
         ctrl.placeholder = '';
+        ctrl.tooltips = {
+            secret: 'Managing sensitive objects <a class=\'link\' target=\'_blank\' ' +
+                'href=\'https://kubernetes.io/docs/concepts/configuration/secret/\'>Docs</a>',
+            configMap: 'Storing configuration <a class=\'link\' target=\'_blank\' ' +
+                'href=\'https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/\'>Docs</a>'
+        };
 
         ctrl.isShowFieldError = FormValidationService.isShowFieldError;
         ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
@@ -439,14 +445,7 @@
          * @returns {string}
          */
         function getTooltip() {
-            var tooltips = {
-                secret: 'Managing sensitive objects <a class=\'link\' target=\'_blank\' ' +
-                    'href=\'https://kubernetes.io/docs/concepts/configuration/secret/\'>Docs</a>',
-                configMap: 'Storing configuration <a class=\'link\' target=\'_blank\' ' +
-                    'href=\'https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/\'>Docs</a>'
-            };
-
-            return lodash.get(tooltips, ctrl.selectedClass.id, '');
+            return lodash.get(ctrl.tooltips, ctrl.selectedClass.id, '');
         }
 
         /**
@@ -592,10 +591,10 @@
 
         /**
          * Checks if tooltip is visible.
-         * @returns {boolean} `true` only for `secret` and `configMap` classes of volume type, `false` otherwise.
+         * @returns {boolean}
          */
         function isTooltipVisible() {
-            return lodash.includes(['secret', 'configMap'], ctrl.selectedClass.id);
+            return lodash.includes(lodash.keys(ctrl.tooltips), ctrl.selectedClass.id);
         }
 
         /**
