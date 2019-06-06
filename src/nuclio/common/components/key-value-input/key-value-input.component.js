@@ -358,40 +358,44 @@
         function saveChanges(event) {
             if (angular.isUndefined(event) || $element.find(event.target).length === 0 || event.keyCode === EventHelperService.ENTER) {
                 ctrl.keyValueInputForm.$submitted = true;
-                $timeout(function () {
-                    if (ctrl.keyValueInputForm.$valid) {
-                        ctrl.data.ui = {
-                            editModeActive: false,
-                            isFormValid: true,
-                            name: ctrl.data.ui.name,
-                            checked: ctrl.data.ui.checked
-                        };
+                if (ctrl.keyValueInputForm.$valid) {
+                    ctrl.data.ui = {
+                        editModeActive: false,
+                        isFormValid: true,
+                        name: ctrl.data.ui.name,
+                        checked: ctrl.data.ui.checked
+                    };
 
-                        if (angular.isDefined(ctrl.changeStateBroadcast)) {
-                            $rootScope.$broadcast(ctrl.changeStateBroadcast, {component: ctrl.data.ui.name, isDisabled: false});
-                        }
-
-                        $scope.$evalAsync(function () {
-                            ctrl.editMode = false;
-
-                            $document.off('click', saveChanges);
-                            $document.off('keypress', saveChanges);
-
-                            ctrl.changeDataCallback({newData: ctrl.data, index: ctrl.itemIndex});
+                    if (angular.isDefined(ctrl.changeStateBroadcast)) {
+                        $rootScope.$broadcast(ctrl.changeStateBroadcast, {
+                            component: ctrl.data.ui.name,
+                            isDisabled: false
                         });
-                    } else {
-                        ctrl.data.ui = {
-                            editModeActive: true,
-                            isFormValid: false,
-                            name: ctrl.data.ui.name,
-                            checked: ctrl.data.ui.checked
-                        };
-
-                        if (angular.isDefined(ctrl.changeStateBroadcast)) {
-                            $rootScope.$broadcast(ctrl.changeStateBroadcast, {component: ctrl.data.ui.name, isDisabled: true});
-                        }
                     }
-                });
+
+                    $scope.$evalAsync(function () {
+                        ctrl.editMode = false;
+
+                        $document.off('click', saveChanges);
+                        $document.off('keypress', saveChanges);
+
+                        ctrl.changeDataCallback({newData: ctrl.data, index: ctrl.itemIndex});
+                    });
+                } else {
+                    ctrl.data.ui = {
+                        editModeActive: true,
+                        isFormValid: false,
+                        name: ctrl.data.ui.name,
+                        checked: ctrl.data.ui.checked
+                    };
+
+                    if (angular.isDefined(ctrl.changeStateBroadcast)) {
+                        $rootScope.$broadcast(ctrl.changeStateBroadcast, {
+                            component: ctrl.data.ui.name,
+                            isDisabled: true
+                        });
+                    }
+                }
             }
         }
     }
