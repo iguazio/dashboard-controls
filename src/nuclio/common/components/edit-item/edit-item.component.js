@@ -245,7 +245,7 @@
                     .value();
             }
 
-            $scope.$on('deploy-function-version', ctrl.onSubmitForm);
+            $scope.$on('deploy-function-version', onFunctionDeploy);
         }
 
         /**
@@ -847,7 +847,7 @@
                         $timeout(function () {
                             ctrl.item.ui.isFormValid = true;
 
-                            if (!lodash.includes(event.target.parentElement.classList, 'row-collapse')) {
+                            if (!lodash.includes(lodash.get(event.target, 'parentElement.classList'), 'row-collapse')) {
                                 ctrl.item.ui.editModeActive = false;
                             }
 
@@ -1024,6 +1024,15 @@
          */
         function isV3ioTrigger() {
             return ctrl.selectedClass.id === 'v3ioStream';
+        }
+
+        /**
+         * Broadcast's callback to deploy function
+         * @param {Event} event - native broadcast event object
+         * @param {Object} data - broadcast data with event object
+         */
+        function onFunctionDeploy(event, data) {
+            ctrl.onSubmitForm(data.event)
         }
 
         /**
