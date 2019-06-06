@@ -44,6 +44,12 @@
         ctrl.stringValidationPattern = /^.{1,128}$/;
         ctrl.subscriptionQoSValidationPattern = /^[0-2]$/;
         ctrl.placeholder = '';
+        ctrl.tooltips = {
+            secret: 'Managing sensitive objects <a class=\'link\' target=\'_blank\' ' +
+                'href=\'https://kubernetes.io/docs/concepts/configuration/secret/\'>Docs</a>',
+            configMap: 'Storing configuration <a class=\'link\' target=\'_blank\' ' +
+                'href=\'https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/\'>Docs</a>'
+        };
 
         ctrl.isShowFieldError = FormValidationService.isShowFieldError;
         ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
@@ -57,8 +63,9 @@
         ctrl.addNewEventHeader = addNewEventHeader;
         ctrl.convertFromCamelCase = convertFromCamelCase;
         ctrl.getAttrValue = getAttrValue;
-        ctrl.getValidationPattern = getValidationPattern;
         ctrl.getInputValue = getInputValue;
+        ctrl.getTooltip = getTooltip;
+        ctrl.getValidationPattern = getValidationPattern;
         ctrl.handleIngressAction = handleIngressAction;
         ctrl.handleAnnotationAction = handleAnnotationAction;
         ctrl.handleSubscriptionAction = handleSubscriptionAction;
@@ -71,6 +78,7 @@
         ctrl.isKafkaTrigger = isKafkaTrigger;
         ctrl.isMQTTTrigger = isMQTTTrigger;
         ctrl.isCronTrigger = isCronTrigger;
+        ctrl.isTooltipVisible = isTooltipVisible;
         ctrl.isTriggerType = isTriggerType;
         ctrl.isVolumeType = isVolumeType;
         ctrl.onChangeData = onChangeData;
@@ -424,21 +432,29 @@
         }
 
         /**
-         * Gets validation patterns depends on type of attribute
-         * @param {string} pattern
-         * @returns {RegExp}
-         */
-        function getValidationPattern(pattern) {
-            return lodash.get(ctrl, pattern + 'ValidationPattern', ctrl.stringValidationPattern);
-        }
-
-        /**
          * Returns value for Name input.
          * Value could has different path depends on item type.
          * @returns {string}
          */
         function getInputValue() {
             return ctrl.type === 'volume' ? ctrl.item.volume.name : ctrl.item.name;
+        }
+
+        /**
+         * Gets corresponding tooltip description
+         * @returns {string}
+         */
+        function getTooltip() {
+            return lodash.get(ctrl.tooltips, ctrl.selectedClass.id, '');
+        }
+
+        /**
+         * Gets validation patterns depends on type of attribute
+         * @param {string} pattern
+         * @returns {RegExp}
+         */
+        function getValidationPattern(pattern) {
+            return lodash.get(ctrl, pattern + 'ValidationPattern', ctrl.stringValidationPattern);
         }
 
         /**
@@ -571,6 +587,14 @@
          */
         function isCronTrigger() {
             return ctrl.selectedClass.id === 'cron';
+        }
+
+        /**
+         * Checks if tooltip is visible.
+         * @returns {boolean}
+         */
+        function isTooltipVisible() {
+            return lodash.includes(lodash.keys(ctrl.tooltips), ctrl.selectedClass.id);
         }
 
         /**

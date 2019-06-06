@@ -1,5 +1,12 @@
 <div class="ncl-version-configuration-annotations">
-    <div class="title">Annotations</div>
+    <div class="title">
+        <span>Annotations</span>
+        <igz-more-info
+                data-description="{{$ctrl.tooltip}}"
+                data-trigger="click"
+                data-is-html-enabled="true">
+        </igz-more-info>
+    </div>
     <form name="$ctrl.annotationsForm" class="annotations-wrapper">
         <div data-ng-if="$ctrl.annotations.length > 0" class="table-headers">
             <div class="key-header">Key</div>

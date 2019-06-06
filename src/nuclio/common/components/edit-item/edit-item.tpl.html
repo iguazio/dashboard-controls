@@ -34,7 +34,14 @@
                                       data-enable-overlap="true">
                 </igz-default-dropdown>
             </div>
-            <div class="igz-col-65"></div>
+            <div class="igz-col-65 tooltip-wrapper">
+                <igz-more-info
+                        data-ng-if="$ctrl.isTooltipVisible()"
+                        data-description="{{$ctrl.getTooltip()}}"
+                        data-trigger="click"
+                        data-is-html-enabled="true">
+                </igz-more-info>
+            </div>
         </div>
 
         <div class="igz-row">
