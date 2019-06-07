@@ -15,19 +15,24 @@
                                                           PreventDropdownCutOffService) {
         var ctrl = this;
 
+        ctrl.igzScrollConfig = {
+            maxElementsCount: 10,
+            childrenSelector: '.table-body'
+        };
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
                 updateOnContentResize: true
             }
         };
+        ctrl.tooltip = 'Add metadata to the function <a class=\'link\' target=\'_blank\' ' +
+            'href=\'https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/\'>Docs</a>';
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
 
         ctrl.addNewAnnotation = addNewAnnotation;
         ctrl.handleAction = handleAction;
-        ctrl.isScrollNeeded = isScrollNeeded;
         ctrl.onChangeData = onChangeData;
 
         //
@@ -110,14 +115,6 @@
             ctrl.annotations[index] = label;
 
             updateAnnotations();
-        }
-
-        /**
-         * Returns true if scrollbar is necessary
-         * @returns {boolean}
-         */
-        function isScrollNeeded() {
-            return ctrl.annotations.length > 10;
         }
 
         //

@@ -18,6 +18,10 @@
 
         ctrl.isCreateModeActive = false;
         ctrl.volumes = [];
+        ctrl.igzScrollConfig = {
+            maxElementsCount: 5,
+            childrenSelector: '.ncl-collapsing-row'
+        };
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -30,7 +34,6 @@
 
         ctrl.createVolume = createVolume;
         ctrl.editVolumeCallback = editVolumeCallback;
-        ctrl.isScrollNeeded = isScrollNeeded;
         ctrl.handleAction = handleAction;
 
         //
@@ -102,14 +105,6 @@
          */
         function editVolumeCallback(item) {
             ctrl.handleAction('update', item);
-        }
-
-        /**
-         * Returns true if scrollbar is necessary
-         * @returns {boolean}
-         */
-        function isScrollNeeded() {
-            return ctrl.volumes.length > 2;
         }
 
         /**

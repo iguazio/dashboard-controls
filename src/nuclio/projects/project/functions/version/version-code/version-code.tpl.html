@@ -184,6 +184,100 @@
                                                         class="nuclio-validating-input">
                             </igz-validating-input-field>
                         </div>
+
+                        <div data-ng-if="$ctrl.selectedEntryType.id === 's3'"
+                             class="ncl-code-entry-s3">
+                            <div class="field-label">Bucket <span class="asterisk"></span></div>
+                            <igz-validating-input-field data-field-type="input"
+                                                        data-input-name="s3Bucket"
+                                                        data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3Bucket"
+                                                        data-is-focused="false"
+                                                        data-form-object="$ctrl.versionCodeForm"
+                                                        data-validation-is-required="true"
+                                                        data-placeholder-text="my-bucket-name"
+                                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                        data-update-data-field="spec.build.codeEntryAttributes.s3Bucket"
+                                                        class="nuclio-validating-input">
+                            </igz-validating-input-field>
+
+                            <div class="field-label">Item key <span class="asterisk"></span></div>
+                            <igz-validating-input-field data-field-type="input"
+                                                        data-input-name="s3ItemKey"
+                                                        data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3ItemKey"
+                                                        data-is-focused="false"
+                                                        data-form-object="$ctrl.versionCodeForm"
+                                                        data-validation-is-required="true"
+                                                        data-placeholder-text="my-dir/nuclio_funcs.zip"
+                                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                        data-update-data-field="spec.build.codeEntryAttributes.s3ItemKey"
+                                                        class="nuclio-validating-input">
+                            </igz-validating-input-field>
+
+                            <div class="field-label">Access key ID</div>
+                            <igz-validating-input-field data-field-type="input"
+                                                        data-input-name="s3AccessKeyID"
+                                                        data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3AccessKeyId"
+                                                        data-is-focused="false"
+                                                        data-form-object="$ctrl.versionCodeForm"
+                                                        data-validation-is-required="false"
+                                                        data-placeholder-text="myaccesskeyid"
+                                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                        data-update-data-field="spec.build.codeEntryAttributes.s3AccessKeyId"
+                                                        class="nuclio-validating-input">
+                            </igz-validating-input-field>
+
+                            <div class="field-label">Secret access key</div>
+                            <igz-validating-input-field data-field-type="password"
+                                                        data-input-name="s3SecretAccessKey"
+                                                        data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3SecretAccessKey"
+                                                        data-is-focused="false"
+                                                        data-form-object="$ctrl.versionCodeForm"
+                                                        data-validation-is-required="false"
+                                                        data-placeholder-text="mysecretaccesskey"
+                                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                        data-update-data-field="spec.build.codeEntryAttributes.s3SecretAccessKey"
+                                                        class="nuclio-validating-input">
+                            </igz-validating-input-field>
+
+                            <div class="field-label">Region</div>
+                            <igz-validating-input-field data-field-type="input"
+                                                        data-input-name="s3Region"
+                                                        data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3Region"
+                                                        data-is-focused="false"
+                                                        data-form-object="$ctrl.versionCodeForm"
+                                                        data-validation-is-required="false"
+                                                        data-placeholder-text="myregion"
+                                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                        data-update-data-field="spec.build.codeEntryAttributes.s3Region"
+                                                        class="nuclio-validating-input">
+                            </igz-validating-input-field>
+
+                            <div class="field-label">Session token</div>
+                            <igz-validating-input-field data-field-type="password"
+                                                        data-input-name="s3SessionToken"
+                                                        data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3SessionToken"
+                                                        data-is-focused="false"
+                                                        data-form-object="$ctrl.versionCodeForm"
+                                                        data-validation-is-required="false"
+                                                        data-placeholder-text="mys3sessiontoken"
+                                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                        data-update-data-field="spec.build.codeEntryAttributes.s3SessionToken"
+                                                        class="nuclio-validating-input">
+                            </igz-validating-input-field>
+
+                            <div class="field-label">Work directory</div>
+                            <igz-validating-input-field data-field-type="input"
+                                                        data-input-name="workDir"
+                                                        data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir"
+                                                        data-is-focused="false"
+                                                        data-form-object="$ctrl.versionCodeForm"
+                                                        data-validation-is-required="false"
+                                                        data-placeholder-text="path/to/functions/in/archive"
+                                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                        data-update-data-field="spec.build.codeEntryAttributes.workDir"
+                                                        class="nuclio-validating-input">
+                            </igz-validating-input-field>
+                        </div>
                     </form>
                 </div>
             </div>

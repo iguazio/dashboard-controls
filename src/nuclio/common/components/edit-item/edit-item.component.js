@@ -24,6 +24,10 @@
         ctrl.editItemForm = {};
         ctrl.selectedClass = {};
 
+        ctrl.igzScrollConfig = {
+            maxElementsCount: 10,
+            childrenSelector: '.table-body'
+        };
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -42,6 +46,12 @@
         ctrl.stringValidationPattern = /^.{1,128}$/;
         ctrl.subscriptionQoSValidationPattern = /^[0-2]$/;
         ctrl.placeholder = '';
+        ctrl.tooltips = {
+            secret: 'Managing sensitive objects <a class=\'link\' target=\'_blank\' ' +
+                'href=\'https://kubernetes.io/docs/concepts/configuration/secret/\'>Docs</a>',
+            configMap: 'Storing configuration <a class=\'link\' target=\'_blank\' ' +
+                'href=\'https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/\'>Docs</a>'
+        };
 
         ctrl.isShowFieldError = FormValidationService.isShowFieldError;
         ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
@@ -55,8 +65,9 @@
         ctrl.addNewEventHeader = addNewEventHeader;
         ctrl.convertFromCamelCase = convertFromCamelCase;
         ctrl.getAttrValue = getAttrValue;
-        ctrl.getValidationPattern = getValidationPattern;
         ctrl.getInputValue = getInputValue;
+        ctrl.getTooltip = getTooltip;
+        ctrl.getValidationPattern = getValidationPattern;
         ctrl.handleIngressAction = handleIngressAction;
         ctrl.handleAnnotationAction = handleAnnotationAction;
         ctrl.handleSubscriptionAction = handleSubscriptionAction;
@@ -65,11 +76,11 @@
         ctrl.handleEventHeaderAction = handleEventHeaderAction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isClassSelected = isClassSelected;
-        ctrl.isScrollNeeded = isScrollNeeded;
         ctrl.isHttpTrigger = isHttpTrigger;
         ctrl.isKafkaTrigger = isKafkaTrigger;
         ctrl.isMQTTTrigger = isMQTTTrigger;
         ctrl.isCronTrigger = isCronTrigger;
+        ctrl.isTooltipVisible = isTooltipVisible;
         ctrl.isTriggerType = isTriggerType;
         ctrl.isVolumeType = isVolumeType;
         ctrl.onChangeData = onChangeData;
@@ -244,7 +255,7 @@
                     .value();
             }
 
-            $scope.$on('deploy-function-version', ctrl.onSubmitForm);
+            $scope.$on('deploy-function-version', onFunctionDeploy);
         }
 
         /**
@@ -423,21 +434,29 @@
         }
 
         /**
-         * Gets validation patterns depends on type of attribute
-         * @param {string} pattern
-         * @returns {RegExp}
-         */
-        function getValidationPattern(pattern) {
-            return lodash.get(ctrl, pattern + 'ValidationPattern', ctrl.stringValidationPattern);
-        }
-
-        /**
          * Returns value for Name input.
          * Value could has different path depends on item type.
          * @returns {string}
          */
         function getInputValue() {
             return ctrl.type === 'volume' ? ctrl.item.volume.name : ctrl.item.name;
+        }
+
+        /**
+         * Gets corresponding tooltip description
+         * @returns {string}
+         */
+        function getTooltip() {
+            return lodash.get(ctrl.tooltips, ctrl.selectedClass.id, '');
+        }
+
+        /**
+         * Gets validation patterns depends on type of attribute
+         * @param {string} pattern
+         * @returns {RegExp}
+         */
+        function getValidationPattern(pattern) {
+            return lodash.get(ctrl, pattern + 'ValidationPattern', ctrl.stringValidationPattern);
         }
 
         /**
@@ -533,15 +552,6 @@
         }
 
         /**
-         * Returns true if scrollbar is necessary
-         * @param {string} itemsType - items where scroll is needed (e.g. 'ingresses', 'annotations')
-         * @returns {boolean}
-         */
-        function isScrollNeeded(itemsType) {
-            return ctrl[itemsType].length > 10;
-        }
-
-        /**
          * Update data callback
          * @param {string} newData
          * @param {string} field
@@ -579,6 +589,14 @@
          */
         function isCronTrigger() {
             return ctrl.selectedClass.id === 'cron';
+        }
+
+        /**
+         * Checks if tooltip is visible.
+         * @returns {boolean}
+         */
+        function isTooltipVisible() {
+            return lodash.includes(lodash.keys(ctrl.tooltips), ctrl.selectedClass.id);
         }
 
         /**
@@ -838,11 +856,14 @@
 
             if (angular.isUndefined(event.keyCode) || event.keyCode === 13) {
                 if (event.target !== $element[0] && $element.find(event.target).length === 0 &&
-                    !event.target.closest('ncl-edit-item') && !event.target.closest('.ngdialog')) {
+                    areElementsValidOnSubmit(event)) {
                     if (ctrl.editItemForm.$invalid) {
                         ctrl.item.ui.isFormValid = false;
 
-                        $rootScope.$broadcast('change-state-deploy-button', { component: ctrl.item.ui.name, isDisabled: true });
+                        $rootScope.$broadcast('change-state-deploy-button', {
+                            component: ctrl.item.ui.name,
+                            isDisabled: true
+                        });
 
                         ctrl.editItemForm.itemName.$setDirty();
 
@@ -852,7 +873,7 @@
                         $timeout(function () {
                             ctrl.item.ui.isFormValid = true;
 
-                            if (!lodash.includes(event.target.parentElement.classList, 'row-collapse')) {
+                            if (!lodash.includes(lodash.get(event.target, 'parentElement.classList'), 'row-collapse')) {
                                 ctrl.item.ui.editModeActive = false;
                             }
 
@@ -917,7 +938,10 @@
                                 updateBrokers();
                             }
 
-                            $rootScope.$broadcast('change-state-deploy-button', { component: ctrl.item.ui.name, isDisabled: false });
+                            $rootScope.$broadcast('change-state-deploy-button', {
+                                component: ctrl.item.ui.name,
+                                isDisabled: false
+                            });
 
                             ctrl.onSubmitCallback({ item: ctrl.item });
                         });
@@ -989,6 +1013,55 @@
         //
 
         /**
+         * Checks if click wasn't on one of the elements from the list
+         * @param {Event} event - JS event object
+         * @returns {boolean} Returns `true` if click wasn't on one of elements from the list
+         */
+        function areElementsValidOnSubmit(event) {
+            var elementsForValidation = [
+                'ncl-edit-item',
+                '.actions-menu',
+                '.single-action',
+                '.ngdialog',
+                '.mCustomScrollbar'
+            ];
+
+            return lodash.every(elementsForValidation, function (element) {
+                return !event.target.closest(element)
+            })
+        }
+
+        /**
+         * Returns placeholder value depends on incoming component type
+         * @returns {string}
+         */
+        function getPlaceholder() {
+            var placeholders = {
+                volume: $i18next.t('functions:PLACEHOLDER.SELECT_TYPE', {lng: lng}),
+                default: $i18next.t('functions:PLACEHOLDER.SELECT_CLASS', {lng: lng})
+            };
+
+            return lodash.get(placeholders, ctrl.type, placeholders.default);
+        }
+
+        /**
+         * Checks for V3IO triggers
+         * @returns {boolean}
+         */
+        function isV3ioTrigger() {
+            return ctrl.selectedClass.id === 'v3ioStream';
+        }
+
+        /**
+         * Broadcast's callback to deploy function
+         * @param {Event} event - native broadcast event object
+         * @param {Object} data - broadcast data with event object
+         */
+        function onFunctionDeploy(event, data) {
+            ctrl.onSubmitForm(data.event)
+        }
+
+        /**
          * Validate interval and schedule fields
          */
         function validateValues() {
@@ -1027,27 +1100,6 @@
                 ctrl.editItemForm.item_queueName.$setValidity('text', queueName.allowEmpty || queueNameIsFilled);
                 ctrl.editItemForm.item_topics.$setValidity('text', topics.allowEmpty || topicsIsFilled);
             }
-        }
-
-        /**
-         * Returns placeholder value depends on incoming component type
-         * @returns {string}
-         */
-        function getPlaceholder() {
-            var placeholders = {
-                volume: $i18next.t('functions:PLACEHOLDER.SELECT_TYPE', {lng: lng}),
-                default: $i18next.t('functions:PLACEHOLDER.SELECT_CLASS', {lng: lng})
-            };
-
-            return lodash.get(placeholders, ctrl.type, placeholders.default);
-        }
-
-        /**
-         * Checks for V3IO triggers
-         * @returns {boolean}
-         */
-        function isV3ioTrigger() {
-            return ctrl.selectedClass.id === 'v3ioStream';
         }
     }
 }());

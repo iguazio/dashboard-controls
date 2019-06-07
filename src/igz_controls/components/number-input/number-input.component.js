@@ -303,7 +303,7 @@
          */
         function renderInput(focus) {
             if (angular.isDefined(ctrl.formObject)) {
-                ctrl.formObject[ctrl.inputName].$setViewValue(ctrl.currentValue.toFixed(ctrl.precision));
+                ctrl.formObject[ctrl.inputName].$setViewValue(Number(ctrl.currentValue).toFixed(ctrl.precision));
                 ctrl.formObject[ctrl.inputName].$render();
                 if (focus) {
                     $element.find('input').focus();

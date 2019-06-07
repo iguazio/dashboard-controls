@@ -105,6 +105,26 @@
                         }
                     }
                 }
+            },
+            {
+                id: 's3',
+                visible: true,
+                name: 'S3',
+                defaultValues: {
+                    spec: {
+                        build: {
+                            codeEntryAttributes: {
+                                s3Bucket: '',
+                                s3ItemKey: '',
+                                s3AccessKeyId: '',
+                                s3SecretAccessKey: '',
+                                s3Region: '',
+                                s3SessionToken: '',
+                                workDir: ''
+                            }
+                        }
+                    }
+                }
             }
         ];
         ctrl.themesArray = [

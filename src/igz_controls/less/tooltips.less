@@ -97,7 +97,10 @@
 
     transition-duration: 0s;
     z-index: 10001;
-    pointer-events: none;
+
+    &:not(.more-info-tooltip) {
+        pointer-events: none;
+    }
 
     .tooltip-arrow {
         display: none;

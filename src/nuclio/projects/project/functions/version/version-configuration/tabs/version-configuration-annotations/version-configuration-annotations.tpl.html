@@ -1,6 +1,11 @@
 <div class="ncl-version-configuration-annotations">
     <div class="title">
-        {{ 'functions:ANNOTATIONS' | i18next }}
+        <span>{{ 'functions:ANNOTATIONS' | i18next }}</span>
+        <igz-more-info
+                data-description="{{$ctrl.tooltip}}"
+                data-trigger="click"
+                data-is-html-enabled="true">
+        </igz-more-info>
     </div>
     <form name="$ctrl.annotationsForm" class="annotations-wrapper">
         <div data-ng-if="$ctrl.annotations.length > 0" class="table-headers">
@@ -11,23 +16,9 @@
                 {{ 'common:VALUE' | i18next }}
             </div>
         </div>
-        <div data-ng-if="!$ctrl.isScrollNeeded()">
-            <div class="table-body" data-ng-repeat="annotation in $ctrl.annotations">
-                <ncl-key-value-input class="new-label-input"
-                                     data-list-class="ncl-version-configuration-annotations"
-                                     data-change-state-broadcast="change-state-deploy-button"
-                                     data-row-data="annotation"
-                                     data-use-type="false"
-                                     data-item-index="$index"
-                                     data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"
-                                     data-submit-on-fly="true">
-                </ncl-key-value-input>
-            </div>
-        </div>
-        <div data-ng-if="$ctrl.isScrollNeeded()"
-             class="igz-scrollable-container scrollable-annotations"
+        <div class="igz-scrollable-container scrollable-annotations"
              data-ng-scrollbars
+             data-igz-ng-scrollbars-config="{{$ctrl.igzScrollConfig}}"
              data-ng-scrollbars-config="$ctrl.scrollConfig">
             <div class="table-body" data-ng-repeat="annotation in $ctrl.annotations">
                 <ncl-key-value-input class="new-label-input"
@@ -37,7 +28,8 @@
                                      data-use-type="false"
                                      data-item-index="$index"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                     data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                                     data-change-data-callback="$ctrl.onChangeData(newData, index)"
+                                     data-submit-on-fly="true">
                 </ncl-key-value-input>
             </div>
         </div>
