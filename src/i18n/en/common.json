@@ -88,6 +88,7 @@
     "DISCARD": "Discard",
     "DISCARD_ALL_PENDING_CHANGES_CONFIRM": "Discard all pending changes?",
     "DO_NOT_SHOW_AGAIN": "Do not show again",
+    "DOCS": "Docs",
     "DONE": "Done",
     "DONT_LEAVE": "Don't leave",
     "DONT_REFRESH": "Don't refresh",
@@ -153,7 +154,8 @@
             "GET_ERROR": {
                 "400": {
                     "MISSING_PASSWORD": "Oops: Missing password",
-                    "MISSING_USERNAME": "Oops: Missing username"
+                    "MISSING_USERNAME": "Oops: Missing username",
+                    "MISMATCH": "Tenant name mismatch between host and request body"
                 },
                 "401": {
                     "STATUS_IS_DOWN": "Oops: User is disabled and may not create sessions",
@@ -306,6 +308,7 @@
     "PERMISSIONS": "Permissions",
     "PHONE_NUMBER": "Phone number",
     "PHYSICAL_CAPACITY": "Physical capacity",
+    "PIPELINES": "Pipelines",
     "PLACEHOLDER": {
         "ADD_DESCRIPTION": "Click to add a description…",
         "AUTO_COMPLETE_DEFAULT": "Start typing to get suggestion list...",

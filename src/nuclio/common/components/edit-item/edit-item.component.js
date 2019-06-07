@@ -1,4 +1,4 @@
-/* eslint max-statements: ["error", 100] */
+/* eslint max-statements: ["error", 110] */
 (function () {
     'use strict';
 
@@ -47,10 +47,12 @@
         ctrl.subscriptionQoSValidationPattern = /^[0-2]$/;
         ctrl.placeholder = '';
         ctrl.tooltips = {
-            secret: 'Managing sensitive objects <a class=\'link\' target=\'_blank\' ' +
-                'href=\'https://kubernetes.io/docs/concepts/configuration/secret/\'>Docs</a>',
-            configMap: 'Storing configuration <a class=\'link\' target=\'_blank\' ' +
-                'href=\'https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/\'>Docs</a>'
+            secret: $i18next.t('functions:TOOLTIP.SECRET', {lng: lng}) + ' <a class=\'link\' target=\'_blank\' ' +
+                'href=\'https://kubernetes.io/docs/concepts/configuration/secret/\'>' +
+                $i18next.t('common:DOCS', {lng: lng}) + '</a>',
+            configMap: $i18next.t('functions:TOOLTIP.CONFIG_MAP', {lng: lng}) + ' <a class=\'link\' target=\'_blank\' ' +
+                'href=\'https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/\'>' +
+                $i18next.t('common:DOCS', {lng: lng}) + '</a>'
         };
 
         ctrl.isShowFieldError = FormValidationService.isShowFieldError;

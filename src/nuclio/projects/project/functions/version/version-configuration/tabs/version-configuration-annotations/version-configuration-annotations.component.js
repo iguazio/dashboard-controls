@@ -11,9 +11,10 @@
             controller: NclVersionConfigurationAnnotationsController
         });
 
-    function NclVersionConfigurationAnnotationsController($element, $rootScope, $timeout, lodash,
+    function NclVersionConfigurationAnnotationsController($element, $rootScope, $timeout, $i18next, i18next, lodash,
                                                           PreventDropdownCutOffService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.igzScrollConfig = {
             maxElementsCount: 10,
@@ -25,8 +26,9 @@
                 updateOnContentResize: true
             }
         };
-        ctrl.tooltip = 'Add metadata to the function <a class=\'link\' target=\'_blank\' ' +
-            'href=\'https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/\'>Docs</a>';
+        ctrl.tooltip = $i18next.t('functions:TOOLTIP.ANNOTATIONS', {lng: lng}) + ' <a class=\'link\' target=\'_blank\' ' +
+            'href=\'https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/\'>' +
+            $i18next.t('common:DOCS', {lng: lng}) + '</a>';
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
@@ -87,7 +89,10 @@
                         }
                     });
 
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'annotation', isDisabled: true});
+                    $rootScope.$broadcast('change-state-deploy-button', {
+                        component: 'annotation',
+                        isDisabled: true
+                    });
                     event.stopPropagation();
                 }
             }, 50);
@@ -129,7 +134,10 @@
 
             lodash.forEach(ctrl.annotations, function (annotation) {
                 if (!annotation.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: annotation.ui.name, isDisabled: true})
+                    $rootScope.$broadcast('change-state-deploy-button', {
+                        component: annotation.ui.name,
+                        isDisabled: true
+                    })
                 }
                 newAnnotations[annotation.name] = annotation.value;
             });

@@ -1,6 +1,5 @@
 {
     "CUSTOM_QUERY": "Custom query",
-    "DOCS": "Docs",
     "LEVEL": "Level",
     "MESSAGE": "Message",
     "MESSAGE_DESCRIPTION": "Surround with double-quotes for space-delimited text (can't be used together with *)",

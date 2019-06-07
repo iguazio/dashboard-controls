@@ -31,7 +31,7 @@
                 <div class="field-label label-with-tooltip align-items-center">
                     <span>{{ 'functions:BASE_IMAGE' | i18next }}</span>
                     <igz-more-info
-                            data-description="The base image from which the function processor image will be built"
+                            data-description="{{ 'functions:TOOLTIP.BASE_IMAGE' | i18next }}"
                             data-trigger="click">
                     </igz-more-info>
                 </div>
@@ -79,7 +79,7 @@
                 <div class="field-label label-with-tooltip align-items-center">
                     <span>{{ 'functions:READINESS_TIMEOUT_SECONDS' | i18next }}</span>
                     <igz-more-info
-                            data-description="Number of seconds that the controller will wait for the function to become ready before declaring failure (default: 30)"
+                            data-description="{{ 'functions:TOOLTIP.READINESS_TIMEOUT_SECONDS' | i18next }}"
                             data-trigger="click">
                     </igz-more-info>
                 </div>

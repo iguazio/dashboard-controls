@@ -187,7 +187,7 @@
 
                         <div data-ng-if="$ctrl.selectedEntryType.id === 's3'"
                              class="ncl-code-entry-s3">
-                            <div class="field-label">Bucket <span class="asterisk"></span></div>
+                            <div class="field-label">{{ 'functions:BUCKET' | i18next }} <span class="asterisk"></span></div>
                             <igz-validating-input-field data-field-type="input"
                                                         data-input-name="s3Bucket"
                                                         data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3Bucket"
@@ -200,7 +200,7 @@
                                                         class="nuclio-validating-input">
                             </igz-validating-input-field>
 
-                            <div class="field-label">Item key <span class="asterisk"></span></div>
+                            <div class="field-label">{{ 'functions:ITEM_KEY' | i18next }} <span class="asterisk"></span></div>
                             <igz-validating-input-field data-field-type="input"
                                                         data-input-name="s3ItemKey"
                                                         data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3ItemKey"
@@ -213,7 +213,7 @@
                                                         class="nuclio-validating-input">
                             </igz-validating-input-field>
 
-                            <div class="field-label">Access key ID</div>
+                            <div class="field-label">{{ 'functions:ACCESS_KEY_ID' | i18next }}</div>
                             <igz-validating-input-field data-field-type="input"
                                                         data-input-name="s3AccessKeyID"
                                                         data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3AccessKeyId"
@@ -226,7 +226,7 @@
                                                         class="nuclio-validating-input">
                             </igz-validating-input-field>
 
-                            <div class="field-label">Secret access key</div>
+                            <div class="field-label">{{ 'functions:SECRET_ACCESS_KEY' | i18next }}</div>
                             <igz-validating-input-field data-field-type="password"
                                                         data-input-name="s3SecretAccessKey"
                                                         data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3SecretAccessKey"
@@ -239,7 +239,7 @@
                                                         class="nuclio-validating-input">
                             </igz-validating-input-field>
 
-                            <div class="field-label">Region</div>
+                            <div class="field-label">{{ 'functions:REGION' | i18next }}</div>
                             <igz-validating-input-field data-field-type="input"
                                                         data-input-name="s3Region"
                                                         data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3Region"
@@ -252,7 +252,7 @@
                                                         class="nuclio-validating-input">
                             </igz-validating-input-field>
 
-                            <div class="field-label">Session token</div>
+                            <div class="field-label">{{ 'functions:SESSION_TOKEN' | i18next }}</div>
                             <igz-validating-input-field data-field-type="password"
                                                         data-input-name="s3SessionToken"
                                                         data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3SessionToken"
@@ -265,7 +265,7 @@
                                                         class="nuclio-validating-input">
                             </igz-validating-input-field>
 
-                            <div class="field-label">Work directory</div>
+                            <div class="field-label">{{ 'functions:WORK_DIRECTORY' | i18next }}</div>
                             <igz-validating-input-field data-field-type="input"
                                                         data-input-name="workDir"
                                                         data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir"

@@ -451,12 +451,12 @@
                     {
                         id: 'secret',
                         name: 'Secret',
-                        tooltip: 'Managing sensitive objects'
+                        tooltip: $i18next.t('functions:TOOLTIP.SECRET', {lng: i18next.language})
                     },
                     {
                         id: 'configMap',
                         name: 'ConfigMap',
-                        tooltip: 'Storing configuration'
+                        tooltip: $i18next.t('functions:TOOLTIP.CONFIG_MAP', {lng: i18next.language})
                     },
                     {
                         id: 'persistentVolumeClaim',
