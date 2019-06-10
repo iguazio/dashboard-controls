@@ -72,7 +72,6 @@
         function onInit() {
             ctrl.title = {
                 project: ctrl.project,
-                projectName: ctrl.project.spec.displayName,
                 function: ctrl.function.metadata.name
             };
 
