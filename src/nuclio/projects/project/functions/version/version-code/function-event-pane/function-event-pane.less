@@ -514,6 +514,32 @@
 
                 .table-body {
                     margin-bottom: 0;
+
+                    &:not(:last-child) {
+                        .input-wrapper {
+                            border-bottom: none;
+                        }
+                    }
+
+                    .input-wrapper {
+                        border: 1px solid @pale-grey;
+
+                        .input-key-wrapper {
+                            border-left: 1px solid @pale-grey;
+                            border-right: 1px solid @pale-grey
+                        }
+
+                        .input-field {
+                            &:not(.invalid):not(:focus) {
+                                border-color: transparent;
+                            }
+                        }
+
+                        .igz-action-item {
+                            height: 36px;
+                            width: 36px;
+                        }
+                    }
                 }
 
                 .create-header-button {
