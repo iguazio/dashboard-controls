@@ -86,6 +86,16 @@
                     ctrl.changeDataCallback({newData: ctrl.data, index: ctrl.itemIndex});
                 }
             });
+
+            $timeout(function () {
+                if (ctrl.keyValueInputForm.$invalid) {
+                    ctrl.keyValueInputForm.$submitted = true;
+
+                    if (angular.isDefined(ctrl.changeStateBroadcast)) {
+                        $rootScope.$broadcast(ctrl.changeStateBroadcast, {component: ctrl.data.ui.name, isDisabled: true});
+                    }
+                }
+            });
         }
 
         /**
