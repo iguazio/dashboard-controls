@@ -23,10 +23,16 @@
             axis: 'xy',
             advanced: {
                 autoScrollOnFocus: false
+            }
+        };
+        ctrl.scrollConfigHorizontal = {
+            axis: 'x',
+            advanced: {
+                autoScrollOnFocus: false
             },
             callbacks: {
                 onCreate: function () {
-                    scrollContainer = this.querySelector('.code-scrollable-container .mCSB_container');
+                    scrollContainer = this.querySelector('.mCSB_container');
                     scrollContainer.style.height = '100%';
                 }
             }
