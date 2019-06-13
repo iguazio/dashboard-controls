@@ -1,3 +1,30 @@
-.mCSB_scrollTools .mCSB_dragger{ /* the draggable element */
-    z-index: 10;
+.mCSB_inside {
+    .scrollbar-color-set();
+
+    > .mCSB_container {
+        margin-bottom: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    > .mCSB_container_wrapper {
+        margin-right: 0 !important;
+
+        > .mCSB_container {
+            padding-right: 0 !important;
+        }
+    }
+
+    > .mCS-dark.mCSB_scrollTools {
+        .mCSB_dragger_bar {
+            background-color: @scrollbar-dragger-bar-bg-color;
+        }
+    }
+
+    .mCSB_draggerRail {
+        display: none;
+    }
+
+    .mCSB_scrollTools .mCSB_dragger{ /* the draggable element */
+        z-index: 10;
+    }
 }
