@@ -854,7 +854,7 @@
 
             if (angular.isUndefined(event.keyCode) || event.keyCode === 13) {
                 if (event.target !== $element[0] && $element.find(event.target).length === 0 &&
-                    areElementsValidOnSubmit(event)) {
+                    (ctrl.isVolumeType() || areElementsValidOnSubmit(event))) {
                     if (ctrl.editItemForm.$invalid) {
                         ctrl.item.ui.isFormValid = false;
 
