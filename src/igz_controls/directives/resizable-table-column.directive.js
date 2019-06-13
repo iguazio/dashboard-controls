@@ -14,49 +14,12 @@
             template: '<div class="resize-block" data-ng-mousedown="$ctrl.onMouseDown($event)" data-ng-click="$ctrl.onClick($event)" data-ng-dblclick="$ctrl.onDoubleClick($event)"></div>',
             controller: IgzResizeTableController,
             controllerAs: '$ctrl',
-            link: link,
             bindToController: true
         };
 
-        function link(scope, element) {
-            var parent = element.parent();
-            var timeout = null;
-            onInit();
-
-            /**
-             * Constructor method
-             */
-            function onInit() {
-                scope.$on('$destroy', onDestroy);
-                parent
-                    .on('mouseenter', onMouseEnter)
-                    .on('mouseleave', onMouseLeave);
-            }
-
-            /**
-             * Destructor method
-             */
-            function onDestroy() {
-                $timeout.cancel(timeout);
-                parent
-                    .off('mouseenter', onMouseEnter)
-                    .off('mouseleave', onMouseLeave);
-            }
-
-            function onMouseEnter() {
-                timeout = $timeout(function () {
-                    element.addClass('hover');
-                }, 250);
-            }
-
-            function onMouseLeave() {
-                $timeout.cancel(timeout);
-                element.removeClass('hover');
-            }
-        }
-
         function IgzResizeTableController($element, $scope) {
             var ctrl = this;
+            var timeout = null;
 
             ctrl.minWidth = 100;
             ctrl.startPosition = 0;
@@ -66,6 +29,34 @@
             ctrl.onDoubleClick = onDoubleClick;
 
             onInit();
+
+            //
+            // Hook methods
+            //
+
+            /**
+             * Constructor method
+             */
+            function onInit() {
+
+                // set header widths of the resizing columns
+                $timeout(initColumnsWidths);
+                $timeout(initElements);
+
+                angular.element($window).on('resize', reloadColumns);
+                $scope.$on('reload-columns', reloadColumns);
+                $scope.$on('$destroy', onDestroy);
+            }
+
+            /**
+             * Destructor method
+             */
+            function onDestroy() {
+                angular.element($window).off('resize', reloadColumns);
+                ctrl.parentElement
+                    .off('mouseenter', onMouseEnter)
+                    .off('mouseleave', onMouseLeave);
+            }
 
             //
             // Public methods
@@ -112,6 +103,11 @@
                 $document.on('mousemove', onMouseMove);
                 $document.on('mouseup', onMouseUp);
 
+                // Sets extra classes for correct displaying resizing elements
+                ctrl.allElements.addClass('resizing');
+                ctrl.prevElement.addClass('active');
+                $element.addClass('active');
+
                 return false;
             }
 
@@ -120,23 +116,22 @@
             //
 
             /**
-             * Constructor
+             * On mouse enter handler
              */
-            function onInit() {
-
-                // set header widths of the resizing columns
-                $timeout(initColumnsWidths);
-
-                angular.element($window).on('resize', reloadColumns);
-                $scope.$on('reload-columns', reloadColumns);
-                $scope.$on('$destroy', destructor);
+            function onMouseEnter() {
+                timeout = $timeout(function () {
+                    $element.addClass('hover');
+                    ctrl.prevElement.addClass('hover');
+                }, 250);
             }
 
             /**
-             * Destructor method
+             * On mouse leave handler
              */
-            function destructor() {
-                angular.element($window).off('resize', reloadColumns);
+            function onMouseLeave() {
+                $timeout.cancel(timeout);
+                $element.removeClass('hover');
+                ctrl.prevElement.removeClass('hover');
             }
 
             /**
@@ -165,6 +160,11 @@
                 // prevent default dragging of selected content
                 event.preventDefault();
                 event.stopPropagation();
+
+                // Removes extra classes
+                ctrl.prevElement.removeClass('active');
+                $element.removeClass('active');
+                ctrl.allElements.removeClass('resizing');
 
                 $rootScope.$broadcast('resize-tags-cells');
             }
@@ -208,6 +208,19 @@
                     ctrl.nextBlockMinWidth = lodash.min([ctrl.nextBlock.offsetWidth, ctrl.minWidth]);
                 }
                 resetColumnsWidths();
+            }
+
+            /**
+             * Initialises elements and register callbacks for events
+             */
+            function initElements() {
+                ctrl.parentElement = $element.parent();
+                ctrl.prevElement = ctrl.parentElement.prev().find('.resize-block');
+                ctrl.allElements = ctrl.parentElement.parent().find('.resize-block');
+
+                ctrl.parentElement
+                    .on('mouseenter', onMouseEnter)
+                    .on('mouseleave', onMouseLeave);
             }
 
             /**

@@ -11,16 +11,12 @@
         };
 
         function link(scope, element) {
-            activate();
-
-            //
-            // Private methods
-            //
+            onInit();
 
             /**
-             * Constructor
+             * Constructor method
              */
-            function activate() {
+            function onInit() {
                 scope.$on('resize-cells', resizeCells);
                 scope.$on('autofit-col', autoFitColumn);
 
@@ -28,6 +24,10 @@
                     $rootScope.$broadcast('reload-columns');
                 });
             }
+
+            //
+            // Private methods
+            //
 
             /**
              * Checks width of cells column auto-fit
