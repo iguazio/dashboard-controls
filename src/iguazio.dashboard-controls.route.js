@@ -110,7 +110,7 @@
                 url: '',
                 views: {
                     'function': {
-                        template: '<ncl-version"></ncl-version>'
+                        template: '<ncl-version></ncl-version>'
                     }
                 },
                 params: {
@@ -125,7 +125,7 @@
                 url: '/code',
                 views: {
                     version: {
-                        template: '<ncl-version-code"></ncl-version-code>'
+                        template: '<ncl-version-code></ncl-version-code>'
                     }
                 },
                 params: {
@@ -139,7 +139,7 @@
                 url: '/configuration',
                 views: {
                     version: {
-                        template: '<ncl-version-configuration"></ncl-version-configuration>'
+                        template: '<ncl-version-configuration></ncl-version-configuration>'
                     }
                 },
                 params: {
@@ -153,7 +153,7 @@
                 url: '/trigger',
                 views: {
                     version: {
-                        template: '<ncl-version-trigger"></ncl-version-trigger>'
+                        template: '<ncl-version-trigger></ncl-version-trigger>'
                     }
                 },
                 params: {
@@ -167,7 +167,7 @@
                 url: '/monitoring',
                 views: {
                     version: {
-                        template: '<ncl-version-monitoring"></ncl-version-monitoring>'
+                        template: '<ncl-version-monitoring></ncl-version-monitoring>'
                     }
                 },
                 params: {
