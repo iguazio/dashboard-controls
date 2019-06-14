@@ -239,7 +239,10 @@
     position: absolute;
     top: 0;
     right: -1px;
-    cursor: col-resize;
+
+    &:not(.last) {
+        cursor: col-resize;
+    }
 
     &.active, &:not(.resizing).hover {
         background-color: @light-grey-three;

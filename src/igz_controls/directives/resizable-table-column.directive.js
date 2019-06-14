@@ -106,7 +106,9 @@
                 // Sets extra classes for correct displaying resizing elements
                 ctrl.allElements.addClass('resizing');
                 ctrl.prevElement.addClass('active');
-                $element.addClass('active');
+                if (ctrl.isNeedBorder) {
+                    $element.addClass('active');
+                }
 
                 return false;
             }
@@ -120,8 +122,10 @@
              */
             function onMouseEnter() {
                 timeout = $timeout(function () {
-                    $element.addClass('hover');
                     ctrl.prevElement.addClass('hover');
+                    if (ctrl.isNeedBorder) {
+                        $element.addClass('hover');
+                    }
                 }, 250);
             }
 
@@ -130,8 +134,11 @@
              */
             function onMouseLeave() {
                 $timeout.cancel(timeout);
-                $element.removeClass('hover');
+
                 ctrl.prevElement.removeClass('hover');
+                if (ctrl.isNeedBorder) {
+                    $element.removeClass('hover');
+                }
             }
 
             /**
@@ -163,8 +170,10 @@
 
                 // Removes extra classes
                 ctrl.prevElement.removeClass('active');
-                $element.removeClass('active');
                 ctrl.allElements.removeClass('resizing');
+                if (ctrl.isNeedBorder) {
+                    $element.removeClass('active');
+                }
 
                 $rootScope.$broadcast('resize-tags-cells');
             }
@@ -217,6 +226,15 @@
                 ctrl.parentElement = $element.parent();
                 ctrl.prevElement = ctrl.parentElement.prev().find('.resize-block');
                 ctrl.allElements = ctrl.parentElement.parent().find('.resize-block');
+
+                var lastElement = ctrl.allElements.last()[0];
+                var lastColumn = ctrl.parentElement.parent()[0].lastElementChild;
+                ctrl.isNeedBorder = lastElement !== $element[0] || lastElement.parentElement !== lastColumn;
+
+                if (!ctrl.isNeedBorder) {
+                    // to prevent displaying special cursor
+                    $element.addClass('last')
+                }
 
                 ctrl.parentElement
                     .on('mouseenter', onMouseEnter)
