@@ -107,7 +107,6 @@
                         ctrl.project = project;
 
                         title.project = ctrl.project;
-                        title.projectName = ctrl.project.spec.displayName;
 
                         NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
 

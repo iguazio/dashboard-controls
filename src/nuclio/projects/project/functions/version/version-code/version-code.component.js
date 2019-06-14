@@ -21,23 +21,20 @@
 
         ctrl.githubToken = '';
         ctrl.scrollConfig = {
-            axis: 'y',
+            axis: 'xy',
             advanced: {
-                autoScrollOnFocus: false,
-                updateOnContentResize: true
+                autoScrollOnFocus: false
             }
         };
         ctrl.scrollConfigHorizontal = {
             axis: 'x',
             advanced: {
-                autoScrollOnFocus: false,
-                updateOnContentResize: true
+                autoScrollOnFocus: false
             },
             callbacks: {
                 onCreate: function () {
                     scrollContainer = this.querySelector('.mCSB_container');
-
-                    this.querySelector('.mCSB_container').style.height = '100%';
+                    scrollContainer.style.height = '100%';
                 }
             }
         };
@@ -231,6 +228,12 @@
                 lodash.set(ctrl.version, 'spec.build.functionSourceCode', savedSourceCode);
                 ctrl.sourceCode = Base64.decode(savedSourceCode);
 
+                if (!lodash.isNil(scrollContainer)) {
+                    $timeout(function () {
+                        scrollContainer.style.height = '100%';
+                    })
+                }
+
                 $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: false});
             } else {
 
@@ -244,12 +247,6 @@
                     (item.id !== 'image' && lodash.isEmpty(ctrl.version.spec.build.path))) {
                     $rootScope.$broadcast('change-state-deploy-button', {component: 'code', isDisabled: true});
                 }
-            }
-
-            if (!lodash.isNil(scrollContainer)) {
-                $timeout(function () {
-                    scrollContainer.style.height = '100%';
-                })
             }
 
             previousEntryType = ctrl.selectedEntryType;
@@ -551,7 +548,7 @@
          * Resize scrollbar container.
          * Layout directive (splitter) makes changes to width of scrollbar container. But scrollbar doesn't handle
          * those changes in correct way. So we have to set width manually
-         * @param {integer} timeout - function invocation delay
+         * @param {number} timeout - function invocation delay
          */
         function resizeScrollBar(timeout) {
             $timeout(function () {
@@ -559,21 +556,20 @@
 
                 // if scrollbar container is wider than minimal code container width (scrollbar is not needed)
                 if (angular.element($element.find('.code-scrollable-container')).width() >= CODE_CONTAINER_MIN_WIDTH) {
-
                     // make sure that scrollbar container takes all available width
                     angular.element($element.find('.mCSB_container')[0]).css('width', '100%');
 
-                    // hide scrollbar
+                    // hide scrollbar (make it disabled)
                     angular.element($element.find('.igz-scrollable-container')[0]).mCustomScrollbar('disable', true);
                 } else {
-
                     // set code's container minimal width to scrollbar container
                     angular.element($element.find('.mCSB_container')[0]).css('width', CODE_CONTAINER_MIN_WIDTH + 'px');
-
-                    // show scrollbar
-                    angular.element($element.find('.igz-scrollable-container')[0]).mCustomScrollbar('disable', false);
-                    angular.element($element.find('.igz-scrollable-container')[0]).mCustomScrollbar('update');
                 }
+
+                $timeout(function () {
+                    // Enable scrolling again or show scrollbar
+                    angular.element($element.find('.igz-scrollable-container')[0]).mCustomScrollbar('update');
+                }, 100);
             }, timeout);
         }
 
