@@ -32,7 +32,7 @@
                                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                             data-update-data-field="spec.handler"
                                                             data-form-object="$ctrl.versionCodeForm"
-                                                            data-placeholder-text="Handler">
+                                                            data-placeholder-text="{{ 'functions:HANDLER' | i18next }}">
                                 </igz-validating-input-field>
                             </div>
                             <div class="code-entry-col code-entry-theme-col"
@@ -71,20 +71,20 @@
                     <div class="section-wrapper code-entry-section">
                         <div class="code-entry-row">
                             <div class="code-entry-col code-entry-type-col">
-                                <div class="col-label code-entry-type">Code entry type</div>
+                                <div class="col-label code-entry-type">{{ 'functions:CODE_ENTRY_TYPE' | i18next }}</div>
                                 <igz-default-dropdown data-values-array="$ctrl.codeEntryTypeArray"
                                                       data-item-select-callback="$ctrl.selectEntryTypeValue(item, isItemChanged, field)"
                                                       data-selected-item="$ctrl.selectedEntryType"></igz-default-dropdown>
                             </div>
                             <div class="code-entry-col code-entry-runtime-col">
-                                <div class="col-label runtime">Runtime</div>
+                                <div class="col-label runtime">{{ 'functions:RUNTIME' | i18next }}</div>
                                 <igz-default-dropdown data-values-array="$ctrl.runtimeArray"
                                                       data-item-select-callback="$ctrl.selectRuntimeValue(item, isItemChanged, field)"
                                                       data-selected-item="$ctrl.selectedRuntime"
                                                       data-is-disabled="true"></igz-default-dropdown>
                             </div>
                             <div class="code-entry-col code-entry-handler-col">
-                                <div class="col-label handler">Handler</div>
+                                <div class="col-label handler">{{ 'functions:HANDLER' | i18next }}</div>
                                 <igz-validating-input-field class="nuclio-validating-input"
                                                             data-field-type="input"
                                                             data-input-name="handler"
@@ -92,7 +92,7 @@
                                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                             data-update-data-field="spec.handler"
                                                             data-form-object="$ctrl.versionCodeForm"
-                                                            data-placeholder-text="Handler">
+                                                            data-placeholder-text="{{ 'functions:HANDLER' | i18next }}">
                                 </igz-validating-input-field>
                             </div>
                         </div>

@@ -10,7 +10,10 @@
     "ENABLING": "Enabling",
     "ERROR_MSG": {
         "ADD_TENANT": {
-            "403": "You do not have permissions to create tenants",
+            "403": {
+                "EMAIL_SERVICE_DISABLED": "You cannot create a new tenant while SMTP is disabled",
+                "DEFAULT": "You do not have permissions to create tenants"
+            },
             "405": "Failed to create a new tenant. The maximum number of tenants is reached. An existing tenant should be deleted first before creating a new one.",
             "409": "See details next to fields above",
             "503": "Total available capacity was not defined yet, please try again later"
