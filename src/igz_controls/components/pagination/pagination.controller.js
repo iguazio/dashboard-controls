@@ -43,7 +43,7 @@
             selectedItemId = $stateParams.selectedItemId || $location.search().id;
             selectedItemId = isNumeric(selectedItemId) ? lodash.toInteger(selectedItemId) : selectedItemId;
 
-            vm.isSplashShowed.value = true;
+            vm.isSplashShowed.value = lodash.get(additionalParams, 'isSplashShowed', true);
 
             if (angular.isFunction(vm.closeInfoPane)) {
                 vm.closeInfoPane();
