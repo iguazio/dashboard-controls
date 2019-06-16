@@ -14,7 +14,13 @@
     <form name="$ctrl.buildForm" class="build-wrapper">
         <div class="igz-row">
             <div class="igz-col-100 build-field">
-                <div class="field-label">Image name</div>
+                <div class="field-label">
+                    <span>Image name</span>
+                    <igz-more-info
+                            data-description="The name of the built container image (default: the function name)"
+                            data-trigger="click">
+                    </igz-more-info>
+                </div>
                 <igz-validating-input-field data-field-type="input"
                                             data-input-name="imageName"
                                             data-input-value="$ctrl.version.spec.build.image"
@@ -31,7 +37,7 @@
                 <div class="field-label label-with-tooltip align-items-center">
                     <span>Base image</span>
                     <igz-more-info
-                            data-description="The base image from which the function processor image will be built"
+                            data-description="The URL of the base image from which the function processor image will be built"
                             data-trigger="click">
                     </igz-more-info>
                 </div>
@@ -62,7 +68,13 @@
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-100 build-field">
-                <div class="field-label">Build commands</div>
+                <div class="field-label">
+                    <span>Build commands</span>
+                    <igz-more-info
+                            data-description="Custom build commands to execute as part of the container-image build"
+                            data-trigger="click">
+                    </igz-more-info>
+                </div>
                 <igz-validating-input-field data-field-type="textarea"
                                             data-input-name="commands"
                                             data-input-value="$ctrl.build.commands"
@@ -79,7 +91,7 @@
                 <div class="field-label label-with-tooltip align-items-center">
                     <span>Readiness timeout (seconds)</span>
                     <igz-more-info
-                            data-description="Number of seconds that the controller will wait for the function to become ready before declaring failure (default: 30)"
+                            data-description="The time, in seconds, that the controller will wait for the function to become ready before declaring failure"
                             data-trigger="click">
                     </igz-more-info>
                 </div>

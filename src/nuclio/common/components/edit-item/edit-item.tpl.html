@@ -67,7 +67,12 @@
 
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volumeMount.mountPath)">
-                <div class="field-label">Mount path</div>
+                <div class="field-label">
+                    <span>Mount path</span>
+                    <igz-more-info data-description="A mount path for referencing the data from the function"
+                                   data-trigger="click">
+                    </igz-more-info>
+                </div>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-input-name="itemPath"
@@ -84,7 +89,12 @@
 
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.flexVolume.options.accessKey)">
-                <div class="field-label">Access key</div>
+                <div class="field-label">
+                    <span>Access key</span>
+                    <igz-more-info data-description="A platform data-access key"
+                                   data-trigger="click">
+                    </igz-more-info>
+                </div>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="password"
                                             data-auto-complete="current-password"
@@ -102,7 +112,12 @@
 
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.flexVolume.options.container)">
-                <div class="field-label">Container name</div>
+                <div class="field-label">
+                    <span>Container name</span>
+                    <igz-more-info data-description="The name of the data container that contains the data"
+                                   data-trigger="click">
+                    </igz-more-info>
+                </div>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-input-name="containerName"
@@ -118,7 +133,12 @@
             </div>
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.flexVolume.options.subPath)">
-                <div class="field-label">Sub path</div>
+                <div class="field-label">
+                    <span>Path</span>
+                    <igz-more-info data-description="A relative directory path within the data container"
+                                   data-trigger="click">
+                    </igz-more-info>
+                </div>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-auto-complete="off"

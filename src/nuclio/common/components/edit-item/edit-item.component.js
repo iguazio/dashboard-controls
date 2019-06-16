@@ -45,10 +45,13 @@
         ctrl.subscriptionQoSValidationPattern = /^[0-2]$/;
         ctrl.placeholder = '';
         ctrl.tooltips = {
-            secret: 'Managing sensitive objects <a class=\'link\' target=\'_blank\' ' +
-                'href=\'https://kubernetes.io/docs/concepts/configuration/secret/\'>Docs</a>',
-            configMap: 'Storing configuration <a class=\'link\' target=\'_blank\' ' +
-                'href=\'https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/\'>Docs</a>'
+            secret: 'A <a class="link" target="_blank" ' +
+                'href="https://kubernetes.io/docs/concepts/configuration/secret/">Kubernetes secret</a> object for ' +
+                'managing sensitive information',
+            configMap: 'A <a class="link" target="_blank" ' +
+                'href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/">Kubernetes' +
+                'ConfigMap</a> for storing configuration artifacts separately from the container image content',
+            v3io: 'A directory in an Iguazio Data Science Platform data container'
         };
 
         ctrl.isShowFieldError = FormValidationService.isShowFieldError;

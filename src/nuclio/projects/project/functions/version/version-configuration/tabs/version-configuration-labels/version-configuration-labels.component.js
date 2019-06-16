@@ -25,8 +25,9 @@
                 updateOnContentResize: true
             }
         };
-        ctrl.tooltip = 'Used to specify attributes that are meaningful and relevant to users <a class=\'link\' ' +
-            'target=\'_blank\' href=\'https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/\'>Docs</a>';
+        ctrl.tooltip = '<a class="link" target="_blank" ' +
+            'href="https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/">Kubernetes labels</a>' +
+            ' for specifying object attributes that are meaningful and relevant to users';
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;

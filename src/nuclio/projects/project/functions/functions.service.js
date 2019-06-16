@@ -446,7 +446,8 @@
                 volume: [
                     {
                         id: 'v3io',
-                        name: 'V3IO'
+                        name: 'V3IO',
+                        tooltip: 'A directory in an Iguazio Data Science Platform data container'
                     },
                     {
                         id: 'secret',
