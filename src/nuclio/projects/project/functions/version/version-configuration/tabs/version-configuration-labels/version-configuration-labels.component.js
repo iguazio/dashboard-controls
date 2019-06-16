@@ -62,6 +62,13 @@
                 })
                 .value();
             ctrl.labels = lodash.compact(ctrl.labels);
+
+            $timeout(function () {
+                if (ctrl.labelsForm.$invalid) {
+                    ctrl.labelsForm.$setSubmitted();
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'label', isDisabled: true});
+                }
+            })
         }
 
         /**

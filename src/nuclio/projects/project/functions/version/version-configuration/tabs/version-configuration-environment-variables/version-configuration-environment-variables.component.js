@@ -61,6 +61,13 @@
                     ctrl.isOnlyValueTypeInputs = false;
                 }
             });
+
+            $timeout(function () {
+                if (ctrl.environmentVariablesForm.$invalid) {
+                    ctrl.environmentVariablesForm.$setSubmitted();
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'variable', isDisabled: true});
+                }
+            })
         }
 
         /**
