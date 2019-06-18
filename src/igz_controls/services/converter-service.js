@@ -2,9 +2,9 @@
     'use strict';
 
     angular.module('iguazio.dashboard-controls')
-        .factory('ConvertorService', ConvertorService);
+        .factory('ConverterService', ConverterService);
 
-    function ConvertorService(lodash) {
+    function ConverterService(lodash) {
         return {
             getConvertedBytes: getConvertedBytes
         };
