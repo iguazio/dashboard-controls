@@ -115,6 +115,7 @@
                             isNewFunction: true,
                             id: ctrl.project.metadata.name,
                             functionId: importedFunction.metadata.name,
+                            projectId: ctrl.project.metadata.name,
                             projectNamespace: ctrl.project.metadata.namespace,
                             functionData: importedFunction
                         });
