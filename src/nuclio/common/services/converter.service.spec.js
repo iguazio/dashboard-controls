@@ -39,4 +39,18 @@ describe('ConverterService: ', function () {
             expect(JSON.stringify(result)).toBe(JSON.stringify({value: 1024, label: 'GB/s', pow: 3}));
         });
     });
+
+    describe('toNumberArray(): ', function () {
+        it('should return array of numbers', function () {
+            var result = ConverterService.toNumberArray('1, 2,3  , 5');
+            expect(result).toEqual([1, 2, 3, 5]);
+        });
+    });
+
+    describe('toStringArray(): ', function () {
+        it('should return array of strings', function () {
+            var result = ConverterService.toStringArray('foo, bar, , baz');
+            expect(result).toEqual(['foo', 'bar', 'baz']);
+        });
+    });
 });
