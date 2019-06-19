@@ -1,7 +1,7 @@
 describe('igzSliderInputBlock component', function () {
     var $componentController;
     var $rootScope;
-    var mockedConvertorService;
+    var mockedConverterService;
     var ctrl;
     var units = [
         {
@@ -22,10 +22,10 @@ describe('igzSliderInputBlock component', function () {
         module('iguazio.dashboard-controls');
 
         // load needed services
-        inject(function (_$componentController_, _$rootScope_, _ConvertorService_) {
+        inject(function (_$componentController_, _$rootScope_, _ConverterService_) {
             $componentController = _$componentController_;
             $rootScope = _$rootScope_;
-            mockedConvertorService = _ConvertorService_;
+            mockedConverterService = _ConverterService_;
         });
 
         var sliderConfig = {
@@ -67,7 +67,7 @@ describe('igzSliderInputBlock component', function () {
     afterEach(function () {
         $componentController = null;
         $rootScope = null;
-        mockedConvertorService = null;
+        mockedConverterService = null;
         ctrl = null;
     });
 

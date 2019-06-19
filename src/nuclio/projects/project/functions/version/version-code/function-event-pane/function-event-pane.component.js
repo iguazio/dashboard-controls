@@ -18,7 +18,7 @@
         });
 
     function NclFunctionEventPaneController($element, $rootScope, $scope, $timeout, $q, lodash, moment, download,
-                                            ConvertorService, DialogsService, EventHelperService, VersionHelperService) {
+                                            ConverterService, DialogsService, EventHelperService, VersionHelperService) {
         var ctrl = this;
 
         var canceler = null;
@@ -659,7 +659,7 @@
 
                             var size = lodash.get(lowerCaseHeaders, 'content-length', null);
                             ctrl.responseSize = lodash.isNull(size) ? size :
-                                ConvertorService.getConvertedBytes(Number(size), ['B', 'KB', 'MB', 'GB']);
+                                ConverterService.getConvertedBytes(Number(size), ['B', 'KB', 'MB', 'GB']);
 
                             var contentType = lodash.get(lowerCaseHeaders, 'content-type', null);
 
@@ -722,7 +722,7 @@
          */
         function uploadFile(file) {
             var reader = new FileReader();
-            var size = ConvertorService.getConvertedBytes(file.size, ['B', 'KB', 'MB', 'GB']);
+            var size = ConverterService.getConvertedBytes(file.size, ['B', 'KB', 'MB', 'GB']);
 
             ctrl.uploadingData.size = size.value + size.label;
             ctrl.uploadingData.name = file.name;
