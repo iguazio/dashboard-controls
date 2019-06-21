@@ -35,6 +35,9 @@
         }
     },
     "HEALTH_STATUS": "Health status",
+    "LOG_FILES": "Log files",
+    "NOT_YET_AVAILABLE": "Not yet available",
+    "PANEL_PENDING_MSG": "There is already a pending artifact gathering task in progress.",
     "PLACEHOLDER": {
         "SEARCH_CLUSTERS": "Search clusters...",
         "SEARCH_NODES": "Search nodes..."
@@ -48,7 +51,11 @@
     "SWITCH_TO_MAINTENANCE_CONFIRM": "Are you sure you want to switch the cluster to maintenance mode?",
     "TAKE_CLUSTER_OFFLINE": "take the cluster offline",
     "TAKE_OFFLINE_CONFIRM": "Are you sure you want to take the cluster offline?",
+    "TOOLTIP": {
+        "SHOW_MORE": "Show more"
+    },
     "TOTAL_ITEMS": "total",
     "TOTAL_MEMORY": "Total memory",
+    "TRIGGERED_BY": "Triggered by",
     "VERSION_INFORMATION": "Version information"
 }

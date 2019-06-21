@@ -447,17 +447,17 @@
                     {
                         id: 'v3io',
                         name: 'V3IO',
-                        tooltip: 'A directory in an Iguazio Data Science Platform data container'
+                        tooltip: $i18next.t('functions:TOOLTIP.V3IO', {lng: i18next.language})
                     },
                     {
                         id: 'secret',
                         name: 'Secret',
-                        tooltip: $i18next.t('functions:TOOLTIP.SECRET', {lng: i18next.language})
+                        tooltip: $i18next.t('functions:TOOLTIP.SECRET_DEFAULT', {lng: i18next.language})
                     },
                     {
                         id: 'configMap',
                         name: 'ConfigMap',
-                        tooltip: $i18next.t('functions:TOOLTIP.CONFIG_MAP', {lng: i18next.language})
+                        tooltip: $i18next.t('functions:TOOLTIP.CONFIG_MAP_DEFAULT', {lng: i18next.language})
                     },
                     {
                         id: 'persistentVolumeClaim',

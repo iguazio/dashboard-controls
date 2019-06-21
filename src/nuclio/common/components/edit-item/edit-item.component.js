@@ -48,12 +48,12 @@
         ctrl.placeholder = '';
         ctrl.tooltips = {
             secret: 'A <a class="link" target="_blank" ' +
-                'href="https://kubernetes.io/docs/concepts/configuration/secret/">Kubernetes secret</a> object for ' +
-                'managing sensitive information',
+                'href="https://kubernetes.io/docs/concepts/configuration/secret/">Kubernetes secret</a> ' +
+                $i18next.t('functions:TOOLTIP.SECRET', {lng: lng}),
             configMap: 'A <a class="link" target="_blank" ' +
                 'href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/">Kubernetes' +
-                'ConfigMap</a> for storing configuration artifacts separately from the container image content',
-            v3io: 'A directory in an Iguazio Data Science Platform data container'
+                'ConfigMap</a> ' + $i18next.t('functions:TOOLTIP.SECRET', {lng: lng}),
+            v3io: $i18next.t('functions:TOOLTIP.V3IO', {lng: lng})
         };
 
         ctrl.isShowFieldError = FormValidationService.isShowFieldError;

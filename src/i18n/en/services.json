@@ -24,16 +24,20 @@
     "EDIT_SERVICE": "Edit service",
     "ELASTICSEARCH": "Elasticsearch",
     "ELASTICSEARCH_URL": "Elasticsearch URL",
+    "ENABLE_HIVE": "Enable Hive",
     "ERROR_MSG": {
         "GET_SERVICES": "Unknown error occurred while getting services",
         "SERVICES_UPDATING_TASK": "Timed out waiting for the service-configuration update to complete. Refresh the page periodically to see the latest state.",
+        "MODIFICATION_JOB": "Your pending changes aren't synchronized with the latest services state.\n Discard your changes and refresh the list before making new changes.",
         "UPDATE_SERVICES": {
             "NOT_READY": "Some or all services failed to update",
             "UNKNOWN": "One or more services returned unknown status after deployment. Please check the logs"
         }
     },
     "FLAVOR": "Flavor",
-    "INCLUDE_HIVE": "Include Hive",
+    "HIVE_METASTORE_CONTAINER_DESCRIPTION": "The name of the data container that contains the Hive Metastore database",
+    "HIVE_METASTORE_PATH": "Hive Metastore path",
+    "HIVE_METASTORE_PATH_DESCRIPTION": "The relative path to the Hive Metastore database within the configured container.&#13;&#10;If the path doesn’t exist, it will be created by the platform",
     "INGESTION_RATE": "Ingestion rate",
     "INSTALL_DASHBOARD": "Install dashboard",
     "JAVA_KEYSTORE": "Java KeyStore (JKS)",
@@ -41,9 +45,6 @@
     "KUBERNETES_DOCUMENTATION": "Kubernetes documentation",
     "LIMIT_DESCRIPTION": "Setting a limit without setting Request means that Kubernetes will take the entire resources when the service is up.",
     "MORE_ABOUT_RESOURCE_PARAMETERS": "For more information about the resource parameters, see ",
-    "MYSQL_CONTAINER_DESCRIPTION": "The name of the data container that contains the MySQL database",
-    "MYSQL_DB_PATH": "MySQL DB Path",
-    "MYSQL_DB_PATH_DESCRIPTION": "The relative path to an existing MySQL database within the configured container",
     "NAMES_MUST_BE_UNIQUE": "Names must be unique to the new service \n Must be 1 to 128 characters long",
     "NEW_SERVICE": "New service",
     "NOT_AVAILABLE": "Not available",
@@ -99,7 +100,7 @@
     "TSDB_TABLE_NUCLIO_DESCRIPTION": "Configure the TSDB table for the generated Nuclio functions.<br> The table must already exist in the specified location. To learn how to create the table, see the ",
     "TSDB_TABLE_PROMETHEUS_DESCRIPTION": "Configure the TSDB table for the generated Prometheus dashboard.<br> The table must already exist in the specified location. To learn how to create the table, see the ",
     "UI": "UI",
-    "USERNAME_DESCRIPTION": "The name of the MySQL database user",
+    "USERNAME_DESCRIPTION": "The name of a platform user for creating and accessing the Hive Metastore",
     "V3IO_TSDB_DOCUMENTATION": "V3IO TSDB documentation",
     "YOURE_ALL_SET": "You're all set"
 }

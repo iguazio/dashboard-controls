@@ -106,6 +106,7 @@
     "ENABLE": "Enable",
     "ENABLED": "Enabled",
     "ENCRYPTION": "Encryption",
+    "END_TIME": "End Time",
     "ENVIRONMENT_VARIABLES": "Environment Variables",
     "ERROR": "Error",
     "ERROR_COLON": "Error: ",
@@ -155,7 +156,7 @@
                 "400": {
                     "MISSING_PASSWORD": "Oops: Missing password",
                     "MISSING_USERNAME": "Oops: Missing username",
-                    "MISMATCH": "Tenant name mismatch between host and request body"
+                    "MISMATCH": "Tenant name mismatch between URL and provided input"
                 },
                 "401": {
                     "STATUS_IS_DOWN": "Oops: User is disabled and may not create sessions",
@@ -388,11 +389,13 @@
     "STABLE": "Stable",
     "STACKED": "Stacked",
     "STANDARD": "Standard",
+    "START_TIME": "Start time",
     "STATUS": "Status",
     "STORAGE": "Storage",
     "STORAGE_POOLS": "Storage Pools",
     "STORE": "Store",
     "SUBNET": "Subnet",
+    "SUPPORT_LOGS": "Support logs",
     "SWITCH_TO_MAINTENANCE": "Switch to maintenance",
     "SYNC": "Sync",
     "SYSTEM_REPORTS": "System Reports",

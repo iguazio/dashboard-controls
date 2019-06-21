@@ -17,7 +17,7 @@
                 <div class="field-label">
                     <span>{{ 'functions:IMAGE_NAME' | i18next }}</span>
                     <igz-more-info
-                            data-description="The name of the built container image (default: the function name)"
+                            data-description="{{ 'functions:TOOLTIP.IMAGE_NAME' | i18next }}"
                             data-trigger="click">
                     </igz-more-info>
                 </div>
@@ -37,7 +37,7 @@
                 <div class="field-label label-with-tooltip align-items-center">
                     <span>{{ 'functions:BASE_IMAGE' | i18next }}</span>
                     <igz-more-info
-                            data-description="The URL of the base image from which the function processor image will be built"
+                            data-description="{{ 'functions:TOOLTIP.BASE_IMAGE' | i18next }}"
                             data-trigger="click">
                     </igz-more-info>
                 </div>
@@ -71,7 +71,7 @@
                 <div class="field-label">
                     <span>{{ 'functions:BUILD_COMMANDS' | i18next }}</span>
                     <igz-more-info
-                            data-description="Custom build commands to execute as part of the container-image build"
+                            data-description="{{ 'functions:TOOLTIP.BUILD_COMMANDS' | i18next }}"
                             data-trigger="click">
                     </igz-more-info>
                 </div>
@@ -91,7 +91,7 @@
                 <div class="field-label label-with-tooltip align-items-center">
                     <span>{{ 'functions:READINESS_TIMEOUT_SECONDS' | i18next }}</span>
                     <igz-more-info
-                            data-description="The time, in seconds, that the controller will wait for the function to become ready before declaring failure"
+                            data-description="{{ 'functions:TOOLTIP.READINESS_TIMEOUT_SECONDS' | i18next }}"
                             data-trigger="click">
                     </igz-more-info>
                 </div>
