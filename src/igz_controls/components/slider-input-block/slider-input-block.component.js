@@ -17,7 +17,7 @@
             controller: IgzSliderInputBlockController
         });
 
-    function IgzSliderInputBlockController($rootScope, $scope, $timeout, lodash, ConvertorService) {
+    function IgzSliderInputBlockController($rootScope, $scope, $timeout, lodash, ConverterService) {
         var ctrl = this;
 
         var defaultMeasureUnits = [
@@ -110,7 +110,7 @@
          */
         function fillRange() {
             if (ctrl.selectedData) {
-                var result = ConvertorService.getConvertedBytes(ctrl.selectedData[ctrl.sliderConfig.options.id]);
+                var result = ConverterService.getConvertedBytes(ctrl.selectedData[ctrl.sliderConfig.options.id]);
 
                 ctrl.sliderConfig.value = result.value;
                 ctrl.sliderConfig.valueLabel = result.value;

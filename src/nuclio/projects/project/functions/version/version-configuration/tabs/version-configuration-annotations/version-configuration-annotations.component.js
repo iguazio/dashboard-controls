@@ -26,9 +26,9 @@
                 updateOnContentResize: true
             }
         };
-        ctrl.tooltip = $i18next.t('functions:TOOLTIP.ANNOTATIONS', {lng: lng}) + ' <a class=\'link\' target=\'_blank\' ' +
-            'href=\'https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/\'>' +
-            $i18next.t('common:DOCS', {lng: lng}) + '</a>';
+        ctrl.tooltip = '<a class="link" target="_blank" ' +
+            'href="https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/">' +
+            'Kubernetes annotations</a> for adding function metadata';
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;

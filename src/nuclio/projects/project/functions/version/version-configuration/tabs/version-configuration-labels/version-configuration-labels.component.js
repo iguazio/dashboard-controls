@@ -26,9 +26,9 @@
                 updateOnContentResize: true
             }
         };
-        ctrl.tooltip = $i18next.t('functions:TOOLTIP.LABELS', {lng: lng}) + ' <a class=\'link\' ' +
-            'target=\'_blank\' href=\'https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/\'>' +
-            $i18next.t('common:DOCS', {lng: lng}) + '</a>';
+        ctrl.tooltip = '<a class="link" target="_blank" ' +
+            'href="https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/">Kubernetes labels</a>' +
+            ' for specifying object attributes that are meaningful and relevant to users';
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
@@ -64,6 +64,13 @@
                 })
                 .value();
             ctrl.labels = lodash.compact(ctrl.labels);
+
+            $timeout(function () {
+                if (ctrl.labelsForm.$invalid) {
+                    ctrl.labelsForm.$setSubmitted();
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'label', isDisabled: true});
+                }
+            })
         }
 
         /**
