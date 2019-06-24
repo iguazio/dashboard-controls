@@ -52,10 +52,12 @@
              * Destructor method
              */
             function onDestroy() {
-                angular.element($window).off('resize', reloadColumns);
-                ctrl.parentElement
-                    .off('mouseenter', onMouseEnter)
-                    .off('mouseleave', onMouseLeave);
+                $timeout(function () {
+                    angular.element($window).off('resize', reloadColumns);
+                    ctrl.parentElement
+                        .off('mouseenter', onMouseEnter)
+                        .off('mouseleave', onMouseLeave);
+                })
             }
 
             //
