@@ -65,6 +65,9 @@
                 return lodash.pick(el, ['id', 'ui']);
             });
 
+            // is needed to make PushService work correctly.
+            vm[entitiesType] = [];
+
             // abort all pending statistics requests
             $rootScope.$broadcast('statistics-data_abort-requests');
 
