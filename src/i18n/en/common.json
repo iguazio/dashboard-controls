@@ -31,6 +31,7 @@
     "CANCELED": "Canceled",
     "CAPACITY": "Capacity",
     "CAPACITY_OVER_TIME": "Capacity Over Time",
+    "CAPACITY_OVER_TIME_DATE_TIME_PICKER_DESCRIPTION": "Interval is 1 day for ranges up to 60 days, or 1 week for wider ranges.",
     "CHANGE": "Change",
     "CHANGES_DETECTED_MSG": "Pending changes detected. The changes will take effect only after they're applied.",
     "CHANGES_WERENT_SAVED_CONFIRM": "Your changes weren't saved.",
@@ -154,9 +155,9 @@
             "GET_CAPABILITIES": "Oops: Could not fetch your permission list",
             "GET_ERROR": {
                 "400": {
+                    "MISMATCH": "Tenant name mismatch between URL and provided input",
                     "MISSING_PASSWORD": "Oops: Missing password",
-                    "MISSING_USERNAME": "Oops: Missing username",
-                    "MISMATCH": "Tenant name mismatch between URL and provided input"
+                    "MISSING_USERNAME": "Oops: Missing username"
                 },
                 "401": {
                     "STATUS_IS_DOWN": "Oops: User is disabled and may not create sessions",
@@ -414,7 +415,6 @@
     "TIMES": "times",
     "TO": "To",
     "TOOLTIP": {
-        "CAPACITY_OVER_TIME_DATE_TIME_PICKER": "Interval is 1 day for ranges up to 60 days, or 1 week for wider ranges.",
         "CHANGE_VIEW": "Change view",
         "COPY_TO_CLIPBOARD": "Copy to clipboard",
         "DOWNLOAD_TO_FILE": "Download to file",
@@ -423,6 +423,7 @@
         "INFINITY": "Infinity",
         "LAST_10_MINUTES": "last 10 minutes",
         "LAST_MONTH": "last month",
+        "PER_REPLICA": "Per replica",
         "SORT": "Sort",
         "STACKED": "Stacked"
     },
