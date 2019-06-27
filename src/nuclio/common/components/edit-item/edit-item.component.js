@@ -1024,10 +1024,13 @@
                 '.actions-menu',
                 '.single-action',
                 '.ngdialog',
-                '.mCustomScrollbar'
+                '.mCustomScrollBox'
             ];
 
             return lodash.every(elementsForValidation, function (element) {
+                if (element === '.mCustomScrollBox' && event.target.closest('.row-collapse')) {
+                    return true;
+                }
                 return !event.target.closest(element)
             })
         }
