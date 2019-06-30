@@ -13,8 +13,10 @@
             controller: IgzEditProjectDialogController
         });
 
-    function IgzEditProjectDialogController($scope, lodash, EventHelperService, FormValidationService) {
+    function IgzEditProjectDialogController($scope, $i18next, i18next, lodash, EventHelperService,
+                                            FormValidationService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.data = {};
         ctrl.isLoadingState = false;
@@ -69,13 +71,12 @@
                             var status = lodash.get(error, 'status');
 
                             ctrl.serverError =
-                                status === 400                   ? 'Missing mandatory fields'                         :
-                                status === 403                   ? 'You do not have permissions to update project'    :
-                                status === 405                   ? 'Failed to update project'                         :
-                                status === 409                   ? 'Uniqueness violation. See details next to '   +
-                                                                   'fields above.'                                    :
-                                lodash.inRange(status, 500, 599) ? 'Server error'                                     :
-                                                                   'Unknown error occurred. Retry later';
+                                status === 400                   ? $i18next.t('common:ERROR_MSG.MISSING_MANDATORY_FIELDS', {lng: lng}) :
+                                status === 403                   ? $i18next.t('functions:ERROR_MSG.UPDATE_PROJECT.403', {lng: lng})    :
+                                status === 405                   ? $i18next.t('functions:ERROR_MSG.UPDATE_PROJECT.405', {lng: lng})    :
+                                status === 409                   ? $i18next.t('functions:ERROR_MSG.UPDATE_PROJECT.409', {lng: lng})    :
+                                lodash.inRange(status, 500, 599) ? $i18next.t('common:ERROR_MSG.SERVER_ERROR', {lng: lng})             :
+                                                                   $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR_RETRY_LATER', {lng: lng});
 
                             if (status === 409) {
                                 ctrl.nameTakenError = true;

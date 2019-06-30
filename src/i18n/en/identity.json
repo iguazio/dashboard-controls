@@ -1,0 +1,187 @@
+{
+    "ACCOUNT_DETAILS": "Account details",
+    "ACTIVE_DIRECTORY": "Active Directory",
+    "ADDITIONAL_INFO": "Additional info",
+    "APPLY_CHANGES_CONFIRM_1": "Removing the IdP configuration will delete all previously imported IdP users and groups.",
+    "APPLY_CHANGES_CONFIRM_2": "The next synchronization after changing the IdP address or root user directory will overwrite all previously imported IdP users and groups with those of the newly configured IdP.",
+    "AUTO_PASSWORD_DESCRIPTION": "An email will be sent with a link for setting password.",
+    "BY_UID": "By UID",
+    "BY_USERNAME": "By username",
+    "CHANGE_PASSWORD": "Change password",
+    "CHANGE_SYS_USER_PASSWORD_CONFIRM": "Changing sys user password will fail the backup process. Are you sure?",
+    "CHANGE_USER_PASSWORD": "Change user password",
+    "COMPLETED_SUCCESSFULLY": "Completed successfully",
+    "CONFLICTS": "Conflicts",
+    "CREATE_GROUP": "Create group",
+    "CREATE_NEW": "Create New",
+    "CREATE_NEW_GROUP": "Create a new group",
+    "CREATE_NEW_USER": "Create a new user",
+    "CREATE_USER": "Create user",
+    "CREATED_DATE": "Created Date",
+    "DEFAULT_MANAGEMENT_POLICIES": "Default management policies",
+    "DELETE_SYS_USER_CONFIRM": "Deleting sys user will fail the backup process. Are you sure?",
+    "DELETE_TAG_WARNING_MSG": "You have chosen to remove the user&nbsp;<b>{{user}}</b>&nbsp;from their primary (and only) group.",
+    "DEPARTMENT": "Department",
+    "EDIT_GROUP": "Edit group",
+    "ERROR_MSG": {
+        "ADD_NEW_ITEMS": "You do not have permission to create user groups.",
+        "ADD_USER": {
+            "403": "You do not have permissions to create new users",
+            "405": "Failed to create a new user. The maximum number of users is reached. An existing user should be deleted first before creating a new one.",
+            "409": "See details next to fields above"
+        },
+        "ADDRESS_PROPER_FORMAT": "Error! Address proper format is: ",
+        "APPLY_CHANGES": {
+            "400": "Invalid value sent. Please review the fields and try again.",
+            "403": "You do not have permissions to update IdP configuration.",
+            "409": "IdP is syncing/deleting. Please try again later.",
+            "DEFAULT": "An unknown error occurred while updating the IdP configuration."
+        },
+        "CANNOT_SYNC": "Cannot sync while there are pending changes. To enable sync, apply or cancel your changes.",
+        "CANNOT_TRACK_DELETION": "Error: Cannot track deletion. You can try to refresh the page.",
+        "CANNOT_TRACK_SYNC": "Error: Cannot track sync. You can try to refresh the page.",
+        "CHANGE_GROUP_POLICIES": {
+            "403": "You do not have permissions to (un)assign the group's management policies.",
+            "DEFAULT": "Error occurred while updating group's assigned management policies."
+        },
+        "CHANGE_USER_INFO": "You do not have permission to update the user.",
+        "CHANGE_USER_POLICIES": {
+            "403": "You do not have permissions to (un)assign the user's management policies.",
+            "DEFAULT": "Error occurred while updating user's assigned management policies."
+        },
+        "CREATE_GROUP": {
+            "403": "You do not have permissions to create new groups",
+            "405": "Failed to create a new group. The maximum number of groups is reached. An existing group should be deleted first before creating a new one.",
+            "409": "See details next to fields above"
+        },
+        "DELETE_USER": {
+            "403": {
+                "CANNOT_DELETE": "Cannot delete users assigned as service owners.",
+                "DEFAULT": "You do not have permissions to delete this user."
+            },
+            "409": "Cannot delete a user that is managed by IdP.",
+            "DEFAULT": "Unknown error occurred while deleting the user."
+        },
+        "DELETE_USER_GROUP": {
+            "403": "You do not have permissions to delete this group.",
+            "409": "Cannot delete a group that is managed by IdP.",
+            "DEFAULT": "Unknown error occurred while deleting the group."
+        },
+        "EMAIL_EXISTS": "Email already exists.",
+        "GET_IDP": {
+            "403": "You do not have permissions to view the IdP settings.",
+            "500": "Some error occurred on the server side.",
+            "DEFAULT": "Unknown error occurred while retrieving the IdP settings."
+        },
+        "GET_POLICIES": "Error on retrieving available policies list. {{error}} ",
+        "GID_EXISTS": "GID already exists",
+        "LOAD_USERS_COUNT": "Error occurred while retrieving user count",
+        "NO_USERS_FOUND": "No users have been found...",
+        "PASSWORDS_NOT_IDENTICALLY": "Password and Re-enter password do not match.",
+        "PHONE_NUMBER_INVALID_1": "Error! Please, provide the phone number in a proper format: +1-561-6532-233",
+        "PHONE_NUMBER_INVALID_2": "Error! Phone number proper format is: +1-561-6532-233",
+        "POLICY_MUST_BE_SELECTED": "Must select at least one policy.",
+        "PUT_USER_DATA": {
+            "403": {
+                "CANNOT_DISABLE": "Cannot disable users assigned as service owners.",
+                "DEFAULT": "You do not have permissions to change the status of this user."
+            },
+            "DEFAULT": "Unknown error occurred while updating the status of this user."
+        },
+        "REFRESH_SCREEN": "You can try to refresh the screen.",
+        "REFRESH_SCREEN_OR_CHOOSE_GROUP": "You can try to refresh the screen or choose another group.",
+        "REFRESH_SCREEN_OR_CHOOSE_USER": "You can try to refresh the screen or choose another user.",
+        "RESYNC_TENANT": {
+            "400": "Missing required fields for performing sync",
+            "403": "You do not have permissions to resync IdP",
+            "409": "Sync is already in progress",
+            "DEFAULT": "Unknown error occurred during IdP sync"
+        },
+        "TOGGLE_ERROR": "You have chosen to remove a user from their primary group. Reassign the user's primary group, and try again.",
+        "UID_EXISTS": "UID already exists",
+        "UPDATE_FIELD": {
+            "403": "You do not have permissions to update the group"
+        },
+        "UPDATE_USER": {
+            "403": "You do not have permissions to update users.",
+            "DEFAULT": "There has been an error with updating the users."
+        },
+        "UPDATE_USER_GROUP": "There has been an error with updating the group",
+        "USERNAME_EXISTS": "Username already exists."
+    },
+    "FAILED_SYNC": "Failed sync",
+    "FAILED_TO_DELETE_USER": "Failed to delete user: \"{{username}}\"",
+    "FULL": "Full",
+    "FULL_INFO": "Full info",
+    "FULL_SYNC_DESCRIPTION": "Fully synchronize with the IdP. Overwrite the existing imported IdP users and user groups with the updated information.",
+    "GID": "GID",
+    "GROUP_FROM_IDP": "This group was imported from an IdP (e.g. Ldap). to view its users go to the IdP.",
+    "GROUP_MEMBERS": "group members",
+    "GROUP_NOT_FOUND": "No group has been found...",
+    "GROUPS_AND_POLICIES": "Groups & Policies",
+    "GROUPS_NOT_FOUND": "No groups have been found...",
+    "HOURS": " hours",
+    "IN_CONFLICTED_GROUP": "In conflicted groups",
+    "IN_PROGRESS": "In progress",
+    "INACTIVE_USERS_DESCRIPTION": "Inactive users would not be imported by the LDAP import process",
+    "IS_DELETING": "Is deleting",
+    "JOB_TITLE": "Job title",
+    "LAST_ACTIVITY": "Last activity",
+    "LAST_ACTIVITY_CAPITALIZE": "Last Activity",
+    "LAST_CHANGE": "Last change {{duration}} days ago",
+    "MAKE_SURE_SMTP_IS_SET": "Make sure SMTP is set (under \"Settings\" {{- icon}} ).",
+    "MEMBER": "Member",
+    "NAME_ALREADY_TAKEN": "Name already taken: ",
+    "NAME_DESCRIPTION": "Must contain 1 to 30 characters, including letters, hyphens and spaces. Must start with a letter.",
+    "NEW_USER": "New user",
+    "NO_MATCHES": "No matches",
+    "NOT_AUTO_PASSWORD_DESCRIPTION": "A temporary password will be sent to the specified user email, the user will requested to reset password on next sign-in.",
+    "NOTIFY_USER_BY_EMAIL": "Notify user by email",
+    "PARTIAL": "Partial",
+    "PARTIAL_INFO": "Partial info",
+    "PARTIAL_SYNC_DESCRIPTION": "Synchronize addition and removal of users and user groups in the IdP. Do not synchronize record updates for previously imported users and groups.",
+    "PASSWORD_DESCRIPTION": "Must contain 6 to 128 characters.",
+    "PERIODIC_SYNC": "Periodic sync",
+    "PLACEHOLDER": {
+        "BY_FIRST_NAME": "By first name...",
+        "BY_LAST_NAME": "By last name...",
+        "BY_NAME": "Search task by container name…",
+        "BY_USERNAME": "By username...",
+        "DISABLED": "Disabled",
+        "ENTER_DEPARTMENT": "Enter department...",
+        "ENTER_LAST_NAME": "Enter last name...",
+        "ENTER_POSITION": "Enter person position...",
+        "GROUP_DESCRIPTION": "Write group description...",
+        "GROUP_NAME": "Group name...",
+        "LEAVE_EMPTY": "Leave empty to auto-generate",
+        "NO_PRIMARY_GROUP": "No primary group…"
+    },
+    "POSITION": "Position",
+    "PRIMARY_GROUP_DESCRIPTION": "Group permissions in data-access policy rules are checked only against the user's primary group. Data-access policy permissions for any other group that the user belongs to don't affect the user's access to the data.",
+    "PROFILE_IMAGE": "Profile image",
+    "RE_ENTER_PASSWORD": "Re-enter password",
+    "RE_ENTER_PASSWORD_DESCRIPTION": "Must match \"Password\" field",
+    "REMOTE_HOST_SETTINGS": "Remote host settings",
+    "REMOVE_FROM_GROUP": "Remove from group",
+    "ROOT_USER_DIR": "Root user dir",
+    "SEND_EMAIL_DESCRIPTION": "Send an email with the password to the new user",
+    "SEND_LINK": "Send link for password setting",
+    "SET_PASSWORD": "Set password",
+    "SET_PASSWORD_MANUALLY": "Set password manually",
+    "SYNC_MODE": "Sync mode",
+    "SYNC_MODE_FULL": "Fully synchronize with the IdP. Overwrite the existing imported IdP users and user groups with the updated information.",
+    "SYNC_MODE_PARTIAL": "Synchronize addition and removal of users and user groups in the IdP. Do not synchronize record updates for previously imported users and groups.",
+    "SYNC_RESULT": "Sync result",
+    "SYNC_STATUS": "Sync status",
+    "TOOLTIP": {
+        "DELETE_TAG": "A user inherits the data-access-policy rules and permissions of their primary group. 'The data-access policies of the user's other groups do not affect the user's permissions.",
+        "NO_CHANGES_TO_APPLY": "No changes to apply or some fields are invalid or some required fields are empty",
+        "PASSWORD_CHANGE_CLICK": "Click to change password",
+        "SYNC_NOW": "Sync now"
+    },
+    "UID": "UID",
+    "UID_DESCRIPTION": "Must be unique to the new user. Must be an integer between 0 and 2,147,483,647.",
+    "UPLOAD_IMAGE": "Upload image",
+    "USERNAME_DESCRIPTION": "Must be unique to the user. Must contain 1 to 32 characters consisting of letters, digits, underscores and hyphens. Must start with a letter.",
+    "WITH_CONFLICTS": "with conflicts"
+}

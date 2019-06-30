@@ -11,9 +11,10 @@
             controller: NclVersionConfigurationAnnotationsController
         });
 
-    function NclVersionConfigurationAnnotationsController($element, $rootScope, $timeout, lodash,
+    function NclVersionConfigurationAnnotationsController($element, $rootScope, $timeout, $i18next, i18next, lodash,
                                                           PreventDropdownCutOffService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.igzScrollConfig = {
             maxElementsCount: 10,
@@ -27,7 +28,7 @@
         };
         ctrl.tooltip = '<a class="link" target="_blank" ' +
             'href="https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/">' +
-            'Kubernetes annotations</a> for adding function metadata';
+            'Kubernetes annotations</a> ' + $i18next.t('functions:TOOLTIP.ANNOTATIONS', {lng: lng});
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
@@ -95,7 +96,10 @@
                         }
                     });
 
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'annotation', isDisabled: true});
+                    $rootScope.$broadcast('change-state-deploy-button', {
+                        component: 'annotation',
+                        isDisabled: true
+                    });
                     event.stopPropagation();
                 }
             }, 50);
@@ -137,7 +141,10 @@
 
             lodash.forEach(ctrl.annotations, function (annotation) {
                 if (!annotation.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: annotation.ui.name, isDisabled: true})
+                    $rootScope.$broadcast('change-state-deploy-button', {
+                        component: annotation.ui.name,
+                        isDisabled: true
+                    })
                 }
                 newAnnotations[annotation.name] = annotation.value;
             });

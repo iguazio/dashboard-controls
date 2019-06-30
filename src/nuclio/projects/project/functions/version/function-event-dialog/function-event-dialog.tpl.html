@@ -8,7 +8,9 @@
     <div class="content">
         <form name="$ctrl.functionEventForm" class="event-form">
             <div class="field-wrapper">
-                <div class="field-label">Name</div>
+                <div class="field-label">
+                    {{ 'common:NAME' | i18next }}
+                </div>
                 <div class="field-content">
                     <igz-validating-input-field class="nuclio-validating-input"
                                                 data-field-type="input"
@@ -18,12 +20,14 @@
                                                 data-validation-is-required="true"
                                                 data-form-object="$ctrl.functionEventForm"
                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, 'displayName')"
-                                                data-placeholder-text="Enter name of event...">
+                                                data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_NAME_OF_EVENT' | i18next }}">
                     </igz-validating-input-field>
                 </div>
             </div>
             <div class="field-wrapper">
-                <div class="field-label">Method</div>
+                <div class="field-label">
+                    {{ 'functions:METHOD' | i18next }}
+                </div>
                 <div class="field-content">
                     <igz-default-dropdown data-values-array="$ctrl.methods"
                                           data-selected-item="$ctrl.selectedMethod"
@@ -34,7 +38,9 @@
                 </div>
             </div>
             <div class="field-wrapper">
-                <div class="field-label">Path</div>
+                <div class="field-label">
+                    {{ 'common:PATH' | i18next }}
+                </div>
                 <div class="field-content">
                     <igz-validating-input-field class="nuclio-validating-input"
                                                 data-field-type="input"
@@ -43,12 +49,14 @@
                                                 data-input-value="$ctrl.workingCopy.spec.attributes.path"
                                                 data-form-object="$ctrl.functionEventForm"
                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, 'path')"
-                                                data-placeholder-text="Enter path...">
+                                                data-placeholder-text="{{ 'common:PLACEHOLDER.ENTER_PATH' | i18next }}">
                     </igz-validating-input-field>
                 </div>
             </div>
             <div class="field-wrapper">
-                <div class="field-label">Content type</div>
+                <div class="field-label">
+                    {{ 'functions:CONTENT_TYPE' | i18next }}
+                </div>
                 <div class="field-content">
                     <igz-default-dropdown data-values-array="$ctrl.headers"
                                           data-selected-item="$ctrl.selectedHeader"
@@ -59,7 +67,9 @@
                 </div>
             </div>
             <div class="field-wrapper">
-                <div class="field-label">Body</div>
+                <div class="field-label">
+                    {{ 'functions:BODY' | i18next }}
+                </div>
                 <div data-ng-if="$ctrl.contentType === 'application/json'"
                      class="field-content code-edit-section">
                     <ncl-monaco data-function-source-code="$ctrl.workingCopy.spec.body"
@@ -67,7 +77,8 @@
                                 data-language="json"
                                 data-mini-monaco="true"
                                 data-on-change-source-code-callback="$ctrl.onChangeSourceCode(sourceCode)"
-                                data-read-only="false"></ncl-monaco>
+                                data-read-only="false">
+                    </ncl-monaco>
                 </div>
                 <div data-ng-if="$ctrl.contentType === 'text/plain'"
                      class="field-content">
@@ -75,7 +86,8 @@
                               data-ng-model="$ctrl.workingCopy.spec.body"
                               data-ng-change="$ctrl.onChangeBody()"
                               data-form-object="$ctrl.functionEventForm"
-                              placeholder="Enter body of event..."></textarea>
+                              placeholder="{{ 'functions:PLACEHOLDER.ENTER_BODY_OF_EVENT' | i18next }}">
+                    </textarea>
                 </div>
             </div>
         </form>
@@ -85,7 +97,10 @@
     </div>
 
     <div class="bottom-bar">
-        <div class="ncl-secondary-button" data-ng-click="$ctrl.closeEventDialog()">Cancel</div>
+        <div class="ncl-secondary-button"
+             data-ng-click="$ctrl.closeEventDialog()">
+            {{ 'common:CANCEL' | i18next }}
+        </div>
         <div class="ncl-primary-button"
              tabindex="0"
              data-ng-class="{'disabled' : !$ctrl.isFormChanged}"
@@ -94,6 +109,8 @@
              data-ng-hide="$ctrl.isLoadingState">
             {{$ctrl.buttonText}}
         </div>
-        <div class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">Loading...</div>
+        <div class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">
+            {{ 'common:LOADING_CAPITALIZE_ELLIPSIS' | i18next }}
+        </div>
     </div>
 </div>

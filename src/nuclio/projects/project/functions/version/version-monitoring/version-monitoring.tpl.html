@@ -5,7 +5,9 @@
         <div class="ncl-version-monitoring-wrapper">
             <div class="row">
                 <div class="monitoring-block">
-                    <span class="monitoring-block-title">Invocation URL:</span>
+                    <span class="monitoring-block-title">
+                        {{ 'functions:INVOCATION_URL' | i18next }}:
+                    </span>
                     <a data-ng-if="$ctrl.version.status.state === 'ready' && $ctrl.version.ui.invocationURL !== ''"
                        class="monitoring-invocation-url"
                        href="{{$ctrl.version.ui.invocationURL}}">
@@ -14,11 +16,15 @@
                     <span data-ng-if="$ctrl.version.status.state === 'ready' && $ctrl.version.ui.invocationURL === ''"
                           class="monitoring-invocation-field-invalid">N/A</span>
                     <span data-ng-if="$ctrl.version.status.state !== 'ready'"
-                          class="monitoring-invocation-field-invalid">Not yet deployed</span>
+                          class="monitoring-invocation-field-invalid">
+                        {{ 'functions:NOT_YET_DEPLOYED' | i18next }}
+                    </span>
                 </div>
                 <div class="monitoring-block"
                      data-ng-if="$ctrl.isDemoMode()">
-                    <span class="monitoring-block-title">Replicas:</span>
+                    <span class="monitoring-block-title">
+                        {{ 'common:REPLICAS' | i18next }}:
+                    </span>
                     <span data-ng-if="$ctrl.version.status.state === 'ready' && $ctrl.version.spec.maxReplicas !== 0"
                           class="monitoring-replicas">
                             {{$ctrl.version.status.replicas}}/{{$ctrl.version.spec.maxReplicas}}
@@ -29,7 +35,9 @@
                     </span>
 
                     <span data-ng-if="$ctrl.version.status.state !== 'ready'"
-                          class="monitoring-invocation-field-invalid">Not yet deployed</span>
+                          class="monitoring-invocation-field-invalid">
+                        {{ 'functions:NOT_YET_DEPLOYED' | i18next }}
+                    </span>
                 </div>
             </div>
             <div class="row">
@@ -37,7 +45,9 @@
                    <span class="icon-collapsed general-content"
                          data-ng-class="$ctrl.rowIsCollapsed.buildLog ? 'igz-icon-right' : 'igz-icon-down'"
                          data-ng-click="$ctrl.onRowCollapse('buildLog')"></span>
-                    <span class="monitoring-block-title">Build log</span>
+                    <span class="monitoring-block-title">
+                        {{ 'functions:BUILD_LOG' | i18next }}
+                    </span>
                     <div class="ncl-monitoring-build-logs collapsed-block-content-wrapper"
                          data-uib-collapse="$ctrl.rowIsCollapsed.buildLog">
                         <ncl-deploy-log data-log-entires="$ctrl.versionStatus.logs"></ncl-deploy-log>
@@ -48,8 +58,11 @@
                 <div class="monitoring-block ncl-monitoring-error-logger">
                     <span class="icon-collapsed general-content"
                           data-ng-class="$ctrl.rowIsCollapsed.errorLog ? 'igz-icon-right' : 'igz-icon-down'"
-                          data-ng-click="$ctrl.onRowCollapse('errorLog')"></span>
-                    <span class="monitoring-block-title">Error</span>
+                          data-ng-click="$ctrl.onRowCollapse('errorLog')">
+                    </span>
+                    <span class="monitoring-block-title">
+                        {{ 'common:ERROR' | i18next }}
+                    </span>
                     <div class="ncl-monitoring-error-logs collapsed-block-content-wrapper"
                          data-uib-collapse="$ctrl.rowIsCollapsed.errorLog">
                         <div class="error-panel igz-scrollable-container"

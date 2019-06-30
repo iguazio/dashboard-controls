@@ -1,5 +1,5 @@
 <div class="ncl-version-configuration-basic-settings">
-    <div class="title">Basic Settings</div>
+    <div class="title">{{ 'common:BASIC_SETTINGS' | i18next }}</div>
     <form name="$ctrl.basicSettingsForm" class="basic-settings-wrapper">
         <div class="row enable-checkbox">
             <input type="checkbox"
@@ -7,14 +7,14 @@
                    id="enable"
                    data-ng-model="$ctrl.enableFunction"
                    data-ng-change="$ctrl.updateEnableStatus()">
-            <label for="enable" class="checkbox-inline">Enabled</label>
+            <label for="enable" class="checkbox-inline">{{ 'common:ENABLED' | i18next }}</label>
         </div>
         <div class="row" data-ng-if="$ctrl.isDemoMode()">
             <div class="timeout-block">
                 <div class="label">
                     <div class="timeout-checkbox">
                         <input type="checkbox" class="small" id="timeout" data-ng-model="$ctrl.enableTimeout">
-                        <label for="timeout" class="checkbox-inline">Timeout</label>
+                        <label for="timeout" class="checkbox-inline">{{ 'functions:TIMEOUT' | i18next }}</label>
                     </div>
                 </div>
                 <div class="timeout-values">
@@ -30,11 +30,9 @@
                                                     data-form-object="$ctrl.basicSettingsForm"
                                                     data-validation-is-required="true"
                                                     data-validation-pattern="$ctrl.validationPatterns.digits"
-                                                    data-placeholder-text="Min...">
+                                                    data-placeholder-text="{{ 'functions:MIN' | i18next }}...">
                         </igz-validating-input-field>
-                        <div class="values-label">
-                            min
-                        </div>
+                        <div class="values-label">{{ 'functions:MIN' | i18next }}</div>
                         <igz-validating-input-field class="nuclio-validating-input"
                                                     data-field-type="input"
                                                     data-input-name="sec"
@@ -46,20 +44,16 @@
                                                     data-form-object="$ctrl.basicSettingsForm"
                                                     data-validation-is-required="true"
                                                     data-validation-pattern="$ctrl.validationPatterns.digits"
-                                                    data-placeholder-text="Sec...">
+                                                    data-placeholder-text="{{ 'functions:SEC' | i18next }}...">
                         </igz-validating-input-field>
-                        <div class="values-label">
-                            sec
-                        </div>
+                        <div class="values-label">{{ 'functions:SEC' | i18next }}</div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="description-block">
-                <div class="label">
-                    Description
-                </div>
+                <div class="label">{{ 'common:DESCRIPTION' | i18next }}</div>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-input-name="description"
@@ -68,15 +62,13 @@
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="spec.description"
                                             data-form-object="$ctrl.basicSettingsForm"
-                                            data-placeholder-text="Enter description...">
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_DESCRIPTION' | i18next }}">
                 </igz-validating-input-field>
             </div>
         </div>
         <div class="row">
             <div class="account-block">
-                <div class="label">
-                    Service Account
-                </div>
+                <div class="label">{{ 'functions:SERVICE_ACCOUNT' | i18next }}</div>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-input-name="serviceAccount"
@@ -84,14 +76,14 @@
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="spec.serviceAccount"
                                             data-form-object="$ctrl.basicSettingsForm"
-                                            data-placeholder-text="myserviceaccount">
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.MY_SERVICE_ACCOUNT' | i18next }}">
                 </igz-validating-input-field>
             </div>
         </div>
         <div class="row">
             <div class="logger-block">
                 <div class="logger-dropdown">
-                    <span class="label">Logger level</span>
+                    <span class="label">{{ 'functions:LOGGER_LEVEL' | i18next }}</span>
                     <igz-default-dropdown data-selected-item="$ctrl.version.spec.loggerSinks[0].level"
                                           data-select-property-only="id"
                                           data-values-array="$ctrl.logLevelValues"
@@ -102,7 +94,7 @@
                 </div>
                 <div class="logger-input"
                      data-ng-if="$ctrl.isDemoMode()">
-                    <span class="label">Logger destination</span>
+                    <span class="label">{{ 'functions:LOGGER_DESTINATION' | i18next }}</span>
                     <igz-validating-input-field class="nuclio-validating-input"
                                                 data-field-type="input"
                                                 data-input-name="arguments"
@@ -110,7 +102,7 @@
                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                 data-update-data-field="spec.loggerSinks[0].sink"
                                                 data-form-object="$ctrl.basicSettingsForm"
-                                                data-placeholder-text="Enter destination...">
+                                                data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_DESTINATION' | i18next }}">
                     </igz-validating-input-field>
                 </div>
             </div>

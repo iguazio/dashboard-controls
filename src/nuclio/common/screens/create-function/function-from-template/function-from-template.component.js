@@ -16,9 +16,10 @@
             controller: FunctionFromTemplateController
         });
 
-    function FunctionFromTemplateController($window, $scope, $state, $timeout, lodash, ngDialog, DialogsService,
-                                            ValidatingPatternsService) {
+    function FunctionFromTemplateController($window, $scope, $state, $timeout, $i18next, i18next, lodash, ngDialog,
+                                            DialogsService, ValidatingPatternsService) {
         var ctrl = this;
+        var lng = i18next.language;
         var templatesOriginalObject = {}; // will always save original templates
 
         ctrl.functionName = '';
@@ -35,7 +36,7 @@
         ctrl.selectedTemplate = '';
         ctrl.selectedRuntimeFilter = {
             id: 'all',
-            name: 'All',
+            name: $i18next.t('common:ALL', {lng: lng}),
             visible: true
         };
         ctrl.searchQuery = '';
@@ -317,7 +318,7 @@
                     initPagination();
                 })
                 .catch(function (error) {
-                    var msg = 'Oops: Unknown error occurred while getting function\'s templates';
+                    var msg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS_TEMPLATE', {lng: lng});
 
                     DialogsService.alert(lodash.get(error, 'data.error', msg));
                 })
@@ -346,7 +347,7 @@
             return [
                 {
                     id: 'all',
-                    name: 'All',
+                    name: $i18next.t('common:ALL', {lng: lng}),
                     visible: true
                 },
                 {
@@ -420,7 +421,7 @@
         function prepareProjects() {
             var newProject = {
                 id: 'new_project',
-                name: 'New project'
+                name: $i18next.t('functions:NEW_PROJECT', {lng: lng})
             };
 
             ctrl.selectedProject = lodash.isNil(ctrl.selectedProject) ? newProject : ctrl.selectedProject;

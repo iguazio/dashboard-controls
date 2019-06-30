@@ -10,13 +10,14 @@
             controller: NclVersionCodeController
         });
 
-    function NclVersionCodeController($element, $rootScope, $scope, $timeout, lodash, Base64, ConfigService, DialogsService,
-                                      VersionHelperService) {
+    function NclVersionCodeController($element, $rootScope, $scope, $timeout, $i18next, i18next, lodash, Base64,
+                                      ConfigService, DialogsService, VersionHelperService) {
         var ctrl = this;
         var scrollContainer = null;
         var previousEntryType = null;
         var testPaneWidth = 650;
         var isAnimationCompleted = true;
+        var lng = i18next.language;
 
         ctrl.githubToken = '';
         ctrl.scrollConfig = {
@@ -517,14 +518,14 @@
                             codeEditor.css('opacity', '');
                         };
                         reader.onerror = function () {
-                            DialogsService.alert('Could not read file...');
+                            DialogsService.alert($i18next.t('functions.ERROR_MSG:COULD_NOT_READ_FILE', {lng: lng}));
                         };
                         reader.readAsText(file);
                     } else {
                         codeEditorDropZone.removeClass('dragover');
                         codeEditor.css('opacity', '');
 
-                        DialogsService.alert('Invalid file type/extension');
+                        DialogsService.alert($i18next.t('common:INVALID_FILE_TYPE_EXTENSION', {lng: lng}));
                     }
                     event.preventDefault();
                 });

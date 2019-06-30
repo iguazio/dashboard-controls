@@ -6,7 +6,9 @@
         <div class="igz-scrollable-container"
              data-ng-scrollbars data-ng-scrollbars-config="$ctrl.horizontalScrollConfig">
             <div class="new-function-header">
-                <div class="title">Start a new function</div>
+                <div class="title">
+                    {{ 'functions:START_NEW_FUNCTION' | i18next }}
+                </div>
 
                 <div class="new-function-types">
                     <div class="type-wrapper">
@@ -17,9 +19,11 @@
                                 <span class="ncl-icon-template icon"></span>
                             </div>
                             <div class="function-type-info">
-                                <div class="type-title">Templates</div>
-                                <div class="type-description">Choose a preconfigured template as starting point for your
-                                    nuclio function
+                                <div class="type-title">
+                                    {{ 'functions:TEMPLATES' | i18next }}
+                                </div>
+                                <div class="type-description">
+                                    {{ 'functions:CREATE_FUNCTION_DESCRIPTION' | i18next }}
                                 </div>
                             </div>
                         </div>
@@ -33,8 +37,12 @@
                                 <span class="ncl-icon-add icon"></span>
                             </div>
                             <div class="function-type-info">
-                                <div class="type-title">Start from scratch</div>
-                                <div class="type-description">Start with a simple "hello" example</div>
+                                <div class="type-title">
+                                    {{ 'functions:START_FROM_SCRATCH' | i18next }}
+                                </div>
+                                <div class="type-description">
+                                    {{ 'functions:START_FROM_SCRATCH_DESCRIPTION' | i18next }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -47,8 +55,12 @@
                                 <span class="ncl-icon-import icon"></span>
                             </div>
                             <div class="function-type-info function-import">
-                                <div class="type-title">Import</div>
-                                <div class="type-description">Upload a YAML file as a starting point for your nuclio function</div>
+                                <div class="type-title">
+                                    {{ 'functions:IMPORT' | i18next }}
+                                </div>
+                                <div class="type-description">
+                                    {{ 'functions:IMPORT_FUNCTION_DESCRIPTION' | i18next }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -66,7 +78,6 @@
                                        data-selected-project="$ctrl.selectedProject"
                                        data-projects="$ctrl.projects">
             </ncl-function-from-scratch>
-
             <ncl-function-from-template data-ng-if="$ctrl.isTypeSelected('from_template')"
                                         data-get-function-templates="$ctrl.getTemplates()"
                                         data-templates="$ctrl.templates"

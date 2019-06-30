@@ -11,8 +11,10 @@
             controller: NclVersionConfigurationVolumesController
         });
 
-    function NclVersionConfigurationVolumesController($rootScope, $timeout, lodash, DialogsService) {
+    function NclVersionConfigurationVolumesController($rootScope, $timeout, $i18next, i18next, lodash,
+                                                      DialogsService) {
         var ctrl = this;
+        var lng = i18next.languages;
 
         ctrl.isCreateModeActive = false;
         ctrl.volumes = [];
@@ -118,7 +120,7 @@
             } else if (actionType === 'update') {
                 updateHandler(selectedItem);
             } else {
-                DialogsService.alert('This functionality is not implemented yet.');
+                DialogsService.alert($i18next.t('functions:ERROR_MSG.FUNCTIONALITY_IS_NOT_IMPLEMENTED', {lng: lng}));
             }
 
             $rootScope.$broadcast('change-state-deploy-button', { component: 'volume', isDisabled: false });

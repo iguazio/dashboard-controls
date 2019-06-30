@@ -30,7 +30,11 @@
            data-compare-val-unit="$ctrl.validationValueUnit.power"
            data-current-val-unit="$ctrl.currentValueUnit.power">
 
-    <span class="suffix-unit flex-none" data-ng-show="$ctrl.isShownUnit($ctrl.suffixUnit)" data-ng-click="$ctrl.onUnitClick()">{{$ctrl.suffixUnit}}</span>
+    <span class="suffix-unit flex-none"
+          data-ng-show="$ctrl.isShownUnit($ctrl.suffixUnit)"
+          data-ng-click="$ctrl.onUnitClick()">
+        {{$ctrl.suffixUnit}}
+    </span>
 
     <div class="arrow-block flex-none">
         <span class="igz-icon-dropup" data-ng-click="$ctrl.isDisabled || $ctrl.increaseValue()"></span>

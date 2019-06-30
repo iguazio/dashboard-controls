@@ -14,17 +14,18 @@
             controller: NclFunctionEventDialogController
         });
 
-    function NclFunctionEventDialogController($timeout, lodash, EventHelperService) {
+    function NclFunctionEventDialogController($timeout, $i18next, i18next, lodash, EventHelperService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.inputModelOptions = {
             debounce: {
                 'default': 0
             }
         };
-        ctrl.buttonText = 'Create';
-        ctrl.errorText = 'Error occurred while creating the new function event.';
-        ctrl.titleText = 'Create function event';
+        ctrl.buttonText = $i18next.t('common:CREATE', {lng: lng});
+        ctrl.errorText = $i18next.t('functions:ERROR_MSG.CREATE_FUNCTION_EVENT', {lng: lng});
+        ctrl.titleText = $i18next.t('functions:CREATE_FUNCTION_EVENT', {lng: lng});
         ctrl.contentType = 'application/json';
         ctrl.bodyTheme = 'vs';
         ctrl.isLoadingState = false;
@@ -96,9 +97,9 @@
             // if ctrl.createEvent is 'true', that mean dialog was open to create new event.
             // otherwise, for edit existing event, so need to change all corresponding labels.
             if (!ctrl.createEvent) {
-                ctrl.titleText = 'Edit function event';
-                ctrl.buttonText = 'Apply';
-                ctrl.errorText = 'Error occurred while updating the function event.';
+                ctrl.titleText = $i18next.t('functions:EDIT_FUNCTION_EVENT', {lng: lng});
+                ctrl.buttonText = $i18next.t('common:APPLY', {lng: lng});
+                ctrl.errorText = $i18next.t('functions:ERROR_MSG.UPDATE_FUNCTION_EVENT', {lng: lng});
             }
 
             // if ctrl.selectedEvent hasn't specific fields, that means event was not deployed before, so fill it with default data

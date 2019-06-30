@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('FunctionsService', FunctionsService);
 
-    function FunctionsService(lodash) {
+    function FunctionsService($i18next, i18next, lodash) {
         return {
             getClassesList: getClassesList,
             getHandler: getHandler,
@@ -447,17 +447,17 @@
                     {
                         id: 'v3io',
                         name: 'V3IO',
-                        tooltip: 'A directory in an Iguazio Data Science Platform data container'
+                        tooltip: $i18next.t('functions:TOOLTIP.V3IO', {lng: i18next.language})
                     },
                     {
                         id: 'secret',
                         name: 'Secret',
-                        tooltip: 'Managing sensitive objects'
+                        tooltip: $i18next.t('functions:TOOLTIP.SECRET_DEFAULT', {lng: i18next.language})
                     },
                     {
                         id: 'configMap',
                         name: 'ConfigMap',
-                        tooltip: 'Storing configuration'
+                        tooltip: $i18next.t('functions:TOOLTIP.CONFIG_MAP_DEFAULT', {lng: i18next.language})
                     },
                     {
                         id: 'persistentVolumeClaim',
@@ -489,22 +489,24 @@
          * @returns {Object[]} - array of actions
          */
         function initVersionActions() {
+            var lng = i18next.language;
+
             return [
                 {
-                    label: 'Edit',
+                    label: $i18next.t('common:EDIT', {lng: lng}),
                     id: 'edit',
                     icon: 'igz-icon-edit',
                     active: true
                 },
                 {
-                    label: 'Delete',
+                    label: $i18next.t('common:DELETE', {lng: lng}),
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
                     confirm: {
-                        message: 'Are you sure you want to delete selected version?',
-                        yesLabel: 'Yes, Delete',
-                        noLabel: 'Cancel',
+                        message: $i18next.t('functions:DELETE_VERSION_CONFIRM', {lng: lng}),
+                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
                         type: 'critical_alert'
                     }
                 }

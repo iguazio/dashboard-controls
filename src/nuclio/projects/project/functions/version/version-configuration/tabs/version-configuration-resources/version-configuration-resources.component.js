@@ -11,8 +11,10 @@
             controller: NclVersionConfigurationResourcesController
         });
 
-    function NclVersionConfigurationResourcesController($timeout, $rootScope, $scope, lodash, ConfigService) {
+    function NclVersionConfigurationResourcesController($timeout, $rootScope, $scope, $i18next, i18next, lodash,
+                                                        ConfigService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         var defaultUnit = {
             id: 'gb',
@@ -30,7 +32,7 @@
                 precision: '0',
                 step: '100',
                 minValue: 1,
-                placeholder: 'Example: 1500',
+                placeholder: $i18next.t('common:FOR_EXAMPLE', {lng: lng}) + ': 1500',
                 onChange: function (value) {
                     return parseFloat(value) * 1000;
                 },
@@ -45,7 +47,7 @@
                 precision: '3',
                 step: '0.1',
                 minValue: 0.1,
-                placeholder: 'Example: 1.5',
+                placeholder: $i18next.t('common:FOR_EXAMPLE', {lng: lng}) + ': 1.5',
                 onChange: function (value) {
                     return parseInt(value) / 1000;
                 },

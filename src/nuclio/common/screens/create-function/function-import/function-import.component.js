@@ -14,12 +14,13 @@
             controller: FunctionImportController
         });
 
-    function FunctionImportController($document, $rootScope, $scope, $state, $timeout, YAML, lodash,
+    function FunctionImportController($document, $rootScope, $scope, $state, $timeout, $i18next, i18next, YAML, lodash,
                                       EventHelperService) {
         var ctrl = this;
 
         var importedFunction = null;
         var file = null;
+        var lng = i18next.language;
 
         ctrl.functionImportForm = {};
         ctrl.sourceCode = null;
@@ -190,7 +191,7 @@
         function prepareProjects() {
             var newProject = {
                 id: 'new_project',
-                name: 'New project'
+                name: $i18next.t('functions:NEW_PROJECT', {lng: lng})
             };
 
             ctrl.selectedProject = lodash.isNil(ctrl.selectedProject) ? newProject : ctrl.selectedProject;

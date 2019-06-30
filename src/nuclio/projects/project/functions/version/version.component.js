@@ -21,12 +21,14 @@
             controller: NclVersionController
         });
 
-    function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $transitions, $timeout, lodash,
-                                  ngDialog, ConfigService, DialogsService, ExportService, NuclioHeaderService) {
+    function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $transitions, $timeout,
+                                  $i18next, i18next, lodash, ngDialog, ConfigService, DialogsService, ExportService,
+                                  NuclioHeaderService) {
         var ctrl = this;
         var deregisterFunction = null;
         var interval = null;
         var ingressHostTemplate = '';
+        var lng = i18next.language;
 
         ctrl.action = null;
         ctrl.isDemoMode = ConfigService.isDemoMode;
@@ -82,46 +84,50 @@
             ctrl.actions = [
                 {
                     id: 'exportFunction',
-                    name: 'Export function'
+                    name: $i18next.t('functions:EXPORT_FUNCTION', {lng: lng})
                 },
                 {
                     id: 'deleteFunction',
-                    name: 'Delete function',
+                    name: $i18next.t('functions:DELETE_FUNCTION', {lng: lng}),
                     dialog: {
                         message: {
-                            message: 'Delete function “' + ctrl.version.metadata.name + '”?',
-                            description: 'Deleted function cannot be restored.'
+                            message: $i18next.t('functions:DELETE_FUNCTION', {lng: lng}) + ' “' + ctrl.version.metadata.name + '”?',
+                            description: $i18next.t('functions:DELETED_FUNCTION_DESCRIPTION', {lng: lng})
                         },
-                        yesLabel: 'Yes, Delete',
-                        noLabel: 'Cancel',
+                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
                         type: 'nuclio_alert'
                     }
                 },
                 {
                     id: 'duplicateFunction',
-                    name: 'Duplicate function'
+                    name: $i18next.t('functions:DUPLICATE_FUNCTION', {lng: lng})
                 },
                 {
                     id: 'viewConfig',
-                    name: 'View YAML'
+                    name: $i18next.t('functions:VIEW_YAML', {lng: lng})
                 }
             ];
 
             ctrl.navigationTabsConfig = [
                 {
-                    tabName: 'Code',
+                    tabName: $i18next.t('common:CODE', {lng: lng}),
+                    id: 'code',
                     uiRoute: 'app.project.function.edit.code'
                 },
                 {
-                    tabName: 'Configuration',
+                    tabName: $i18next.t('common:CONFIGURATION', {lng: lng}),
+                    id: 'configuration',
                     uiRoute: 'app.project.function.edit.configuration'
                 },
                 {
-                    tabName: 'Triggers',
+                    tabName: $i18next.t('common:TRIGGERS', {lng: lng}),
+                    id: 'triggers',
                     uiRoute: 'app.project.function.edit.triggers'
                 },
                 {
-                    tabName: 'Status',
+                    tabName: $i18next.t('common:STATUS', {lng: lng}),
+                    id: 'status',
                     uiRoute: 'app.project.function.edit.monitoring',
                     status: isVersionDeployed() ? lodash.get(ctrl.version, 'status.state') : 'not yet deployed'
                 }
@@ -142,11 +148,11 @@
                         version: '$LATEST'
                     };
 
-                    NuclioHeaderService.updateMainHeader('Projects', title, $state.current.name);
+                    NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
                 })
                 .then(setIngressHost)
                 .catch(function (error) {
-                    var msg = 'Oops: Unknown error occurred while retrieving project';
+                    var msg = $i18next.t('functions:ERROR_MSG.GET_PROJECT', {lng: lng});
                     DialogsService.alert(lodash.get(error, 'data.error', msg));
                 });
 
@@ -232,10 +238,10 @@
                         var status = lodash.get(error, 'status');
 
                         var msg =
-                            status === 403 ? 'You do not have permissions to deploy the function' :
-                            status === 405 ? 'Failed to deploy function'                          :
-                            status === 409 ? 'Function name already exists in project'            :
-                            /* else */       'An unknown error occurred';
+                            status === 403 ? $i18next.t('functions:ERROR_MSG.DEPLOY_FUNCTION.403', {lng: lng}) :
+                            status === 405 ? $i18next.t('functions:ERROR_MSG.DEPLOY_FUNCTION.405', {lng: lng}) :
+                            status === 409 ? $i18next.t('functions:ERROR_MSG.DEPLOY_FUNCTION.409', {lng: lng}) :
+                            /* else */       $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', {lng: lng});
                         DialogsService.alert(msg);
                     })
                     .finally(function () {
@@ -254,9 +260,9 @@
          * @returns {string}
          */
         function getDeployStatusState(state) {
-            return state === 'ready' ? 'Successfully deployed' :
-                   state === 'error' ? 'Failed to deploy'      :
-                   /* else */          'Deploying...'          ;
+            return state === 'ready' ? $i18next.t('functions:SUCCESSFULLY_DEPLOYED', {lng: lng}) :
+                   state === 'error' ? $i18next.t('functions:FAILED_TO_DEPLOY', {lng: lng})      :
+                   /* else */          $i18next.t('functions:DEPLOYING', {lng: lng});
         }
 
         /**
@@ -302,7 +308,7 @@
                             })
                             .catch(function (error) {
                                 ctrl.isSplashShowed.value = false;
-                                var msg = 'Oops: Unknown error occurred while deleting function';
+                                var msg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION.DEFAULT', {lng: lng});
                                 DialogsService.alert(lodash.get(error, 'data.error', msg));
                             });
                     });
@@ -496,7 +502,9 @@
             var toState = transition.$to();
             if (lodash.get($state, 'params.functionId') !== transition.params('to').functionId && !isVersionDeployed()) {
                 transition.abort();
-                DialogsService.confirm('Leaving this page will discard your changes.', 'Leave', 'Don\'t leave')
+                DialogsService.confirm($i18next.t('common:LEAVE_PAGE_CONFIRM', {lng: lng}),
+                                       $i18next.t('common:LEAVE', {lng: lng}),
+                                       $i18next.t('common:DONT_LEAVE', {lng: lng}))
                     .then(function () {
 
                         // unsubscribe from broadcast event

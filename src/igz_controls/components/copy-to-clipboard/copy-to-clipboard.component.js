@@ -10,8 +10,9 @@
             controller: IgzCopyToClipboard
         });
 
-    function IgzCopyToClipboard(DialogsService) {
+    function IgzCopyToClipboard($i18next, i18next, DialogsService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.copyToClipboard = copyToClipboard;
 
@@ -33,7 +34,7 @@
                 try {
                     return document.execCommand('copy'); // Security exception may be thrown by some browsers.
                 } catch (ex) {
-                    DialogsService.alert('Copy to clipboard failed.', ex);
+                    DialogsService.alert($i18next.t('common:COPY_TO_CLIPBOARD_FAILED', {lng: lng}), ex);
                 } finally {
                     document.body.removeChild(textarea);
                 }

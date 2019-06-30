@@ -1,7 +1,7 @@
 <div class="ncl-version-configuration-build"
      data-ng-class="{ disabled: $ctrl.disabled }">
     <div class="configuration-build-title-wrapper">
-        <div class="title pull-left">Build</div>
+        <div class="title pull-left">{{ 'functions:BUILD' | i18next }}</div>
 
         <igz-action-menu data-ng-if="$ctrl.isDemoMode() && !$ctrl.disabled"
                          data-actions="$ctrl.actions"
@@ -9,15 +9,15 @@
                          data-on-fire-action="$ctrl.onFireAction">
         </igz-action-menu>
 
-        <small class="pull-right" data-ng-if="$ctrl.disabled">Editable for &quot;Edit Online&quot; code entry type only</small>
+        <small class="pull-right" data-ng-if="$ctrl.disabled">{{ 'functions:EDITABLE_FOR_EDIT_ONLINE' | i18next }}</small>
     </div>
     <form name="$ctrl.buildForm" class="build-wrapper">
         <div class="igz-row">
             <div class="igz-col-100 build-field">
                 <div class="field-label">
-                    <span>Image name</span>
+                    <span>{{ 'functions:IMAGE_NAME' | i18next }}</span>
                     <igz-more-info
-                            data-description="The name of the built container image (default: the function name)"
+                            data-description="{{ 'functions:IMAGE_NAME_DESCRIPTION' | i18next }}"
                             data-trigger="click">
                     </igz-more-info>
                 </div>
@@ -26,7 +26,7 @@
                                             data-input-value="$ctrl.version.spec.build.image"
                                             data-is-focused="false"
                                             data-form-object="$ctrl.buildForm"
-                                            data-placeholder-text="Enter image name..."
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_IMAGE_NAME' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="spec.build.image"
                                             data-is-disabled="$ctrl.disabled"
@@ -35,9 +35,9 @@
             </div>
             <div class="igz-col-50 build-field build-base-image-field">
                 <div class="field-label label-with-tooltip align-items-center">
-                    <span>Base image</span>
+                    <span>{{ 'functions:BASE_IMAGE' | i18next }}</span>
                     <igz-more-info
-                            data-description="The URL of the base image from which the function processor image will be built"
+                            data-description="{{ 'functions:BASE_IMAGE_DESCRIPTION' | i18next }}"
                             data-trigger="click">
                     </igz-more-info>
                 </div>
@@ -46,7 +46,7 @@
                                             data-input-value="$ctrl.version.spec.build.baseImage"
                                             data-is-focused="false"
                                             data-form-object="$ctrl.buildForm"
-                                            data-placeholder-text="Enter base image..."
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_BASE_IMAGE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="spec.build.baseImage"
                                             data-is-disabled="$ctrl.disabled"
@@ -54,13 +54,13 @@
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-50 build-field build-onbuild-image-field">
-                <div class="field-label">Onbuild image</div>
+                <div class="field-label">{{ 'functions:ONBUILD_IMAGE' | i18next }}</div>
                 <igz-validating-input-field data-field-type="input"
                                             data-input-name="onbuildImage"
                                             data-input-value="$ctrl.version.spec.build.onbuildImage"
                                             data-is-focused="false"
                                             data-form-object="$ctrl.buildForm"
-                                            data-placeholder-text="Enter onbuild image..."
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_ONBUILD_IMAGE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="spec.build.onbuildImage"
                                             data-is-disabled="$ctrl.disabled"
@@ -69,9 +69,9 @@
             </div>
             <div class="igz-col-100 build-field">
                 <div class="field-label">
-                    <span>Build commands</span>
+                    <span>{{ 'functions:BUILD_COMMANDS' | i18next }}</span>
                     <igz-more-info
-                            data-description="Custom build commands to execute as part of the container-image build"
+                            data-description="{{ 'functions:BUILD_COMMANDS_DESCRIPTION' | i18next }}"
                             data-trigger="click">
                     </igz-more-info>
                 </div>
@@ -80,7 +80,7 @@
                                             data-input-value="$ctrl.build.commands"
                                             data-is-focused="false"
                                             data-form-object="$ctrl.buildForm"
-                                            data-placeholder-text="Enter a command on each line..."
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_COMMAND_ON_EACH_LINE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="commands"
                                             data-is-disabled="$ctrl.disabled"
@@ -89,9 +89,9 @@
             </div>
             <div class="igz-col-100 build-field">
                 <div class="field-label label-with-tooltip align-items-center">
-                    <span>Readiness timeout (seconds)</span>
+                    <span>{{ 'functions:READINESS_TIMEOUT_SECONDS' | i18next }}</span>
                     <igz-more-info
-                            data-description="The time, in seconds, that the controller will wait for the function to become ready before declaring failure"
+                            data-description="{{ 'functions:READINESS_TIMEOUT_SECONDS_DESCRIPTION' | i18next }}"
                             data-trigger="click">
                     </igz-more-info>
                 </div>
@@ -109,13 +109,13 @@
             </div>
             <div class="igz-col-100 build-field"
                  data-ng-if="$ctrl.version.spec.runtime === 'java'">
-                <div class="field-label">Repositories</div>
+                <div class="field-label">{{ 'functions:REPOSITORIES' | i18next }}</div>
                 <igz-validating-input-field data-field-type="textarea"
                                             data-input-name="repositories"
                                             data-input-value="$ctrl.build.runtimeAttributes.repositories"
                                             data-is-focused="false"
                                             data-form-object="$ctrl.buildForm"
-                                            data-placeholder-text="Enter a repository on each line..."
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_REPOSITORY_ON_EACH_LINE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="runtimeAttributes.repositories"
                                             class="nuclio-validating-input build-textarea-input"
@@ -124,13 +124,13 @@
             </div>
             <div class="igz-col-100 build-field"
                  data-ng-if="$ctrl.version.spec.runtime === 'java'">
-                <div class="field-label">Dependencies</div>
+                <div class="field-label">{{ 'functions:DEPENDENCIES' | i18next }}</div>
                 <igz-validating-input-field data-field-type="textarea"
                                             data-input-name="dependencies"
                                             data-input-value="$ctrl.build.dependencies"
                                             data-is-focused="false"
                                             data-form-object="$ctrl.buildForm"
-                                            data-placeholder-text="Enter a dependency on each line..."
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_DEPENDENCY_ON_EACH_LINE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="dependencies"
                                             class="nuclio-validating-input build-textarea-input"
@@ -139,13 +139,16 @@
             </div>
             <div class="igz-col-100 build-field build-checkboxes">
                 <div class="checkbox-block"
-                     data-uib-tooltip="Build the function's Docker image from scratch without reusing any previously built Docker image layers"
+                     data-uib-tooltip="{{ 'functions:TOOLTIP.DISABLE_CACHE' | i18next }}"
                      data-tooltip-placement="bottom"
                      data-tooltip-append-to-body="true"
                      data-tooltip-popup-delay="500">
-                    <input type="checkbox" class="small" id="noCache" data-ng-model="$ctrl.version.spec.build.noCache"
+                    <input type="checkbox"
+                           class="small"
+                           id="noCache"
+                           data-ng-model="$ctrl.version.spec.build.noCache"
                            data-ng-disabled="$ctrl.disabled">
-                    <label for="noCache" class="checkbox-inline">Disable cache</label>
+                    <label for="noCache" class="checkbox-inline">{{ 'functions:DISABLE_CACHE' | i18next }}</label>
                 </div>
             </div>
             <div class="igz-col-100 build-field files-field">

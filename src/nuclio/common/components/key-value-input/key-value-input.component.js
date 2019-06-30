@@ -30,9 +30,10 @@
             controller: NclKeyValueInputController
         });
 
-    function NclKeyValueInputController($document, $element, $rootScope, $scope, $timeout, lodash, DialogsService,
-                                        EventHelperService) {
+    function NclKeyValueInputController($document, $element, $rootScope, $scope, $timeout, $i18next, i18next, lodash,
+                                        DialogsService, EventHelperService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.data = {};
         ctrl.typesList = [];
@@ -71,11 +72,11 @@
                 allowSelection: false,
                 dropdownOverlap: false,
                 keyOptional: false,
-                keyPlaceholder: 'Enter key...',
+                keyPlaceholder: $i18next.t('functions:PLACEHOLDER.ENTER_KEY', {lng: lng}),
                 onlyValueInput: false,
                 submitOnFly: false,
                 useAdditionalValue: false,
-                valuePlaceholder: 'Enter value...',
+                valuePlaceholder: $i18next.t('functions:PLACEHOLDER.ENTER_VALUE', {lng: lng}),
             });
 
             $document.on('click', saveChanges);
@@ -308,15 +309,15 @@
             return [
                 {
                     id: 'value',
-                    name: 'Value'
+                    name: $i18next.t('common:VALUE', {lng: lng})
                 },
                 {
                     id: 'secret',
-                    name: 'Secret'
+                    name: $i18next.t('functions:SECRET', {lng: lng})
                 },
                 {
                     id: 'configmap',
-                    name: 'Configmap'
+                    name: $i18next.t('functions:CONFIGMAP', {lng: lng})
                 }
             ];
         }
@@ -337,14 +338,14 @@
         function initActions() {
             return [
                 {
-                    label: 'Delete',
+                    label: $i18next.t('common:DELETE', {lng: lng}),
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
                     confirm: {
-                        message: 'Are you sure you want to delete selected item?',
-                        yesLabel: 'Yes, Delete',
-                        noLabel: 'Cancel',
+                        message: $i18next.t('common:DELETE_SELECTED_ITEM_CONFIRM', {lng: lng}),
+                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
                         type: 'critical_alert'
                     }
                 }

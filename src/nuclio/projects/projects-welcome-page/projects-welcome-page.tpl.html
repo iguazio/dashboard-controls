@@ -1,9 +1,10 @@
 <div class="projects-welcome-page">
     <div class="create-new-project">
-        <div class="header">Get started with your project.</div>
+        <div class="header">
+            {{ 'functions:GET_STARTED_WITH_YOUR_PROJECT' | i18next }}
+        </div>
         <div class="description">
-            Write from scratch or use an example repository to build
-            an event driven application project.
+            {{ 'functions:WELCOME_DESCRIPTION' | i18next }}
         </div>
         <div class="welcome-icon">
             <div class="ellipse">
@@ -11,11 +12,13 @@
                 <div class="shape-shadow"></div>
             </div>
         </div>
-        <div class="ncl-new-entity-button" data-ng-click="$ctrl.openNewProjectDialog()">Create project</div>
+        <div class="ncl-new-entity-button" data-ng-click="$ctrl.openNewProjectDialog()">
+            {{ 'functions:CREATE_PROJECT' | i18next }}
+        </div>
         <div class="ncl-new-entity-button"
              ngf-select="$ctrl.importProject($file)"
              accept=".yml, .yaml">
-            Import project(s)
+            {{ 'functions:IMPORT_PROJECTS' | i18next }}
         </div>
     </div>
 </div>

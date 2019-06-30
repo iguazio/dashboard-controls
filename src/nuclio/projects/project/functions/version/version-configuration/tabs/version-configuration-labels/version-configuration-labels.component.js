@@ -11,9 +11,10 @@
             controller: NclVersionConfigurationLabelsController
         });
 
-    function NclVersionConfigurationLabelsController($element, $rootScope, $timeout, lodash,
+    function NclVersionConfigurationLabelsController($element, $rootScope, $timeout, $i18next, i18next, lodash,
                                                      PreventDropdownCutOffService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.igzScrollConfig = {
             maxElementsCount: 10,
@@ -26,8 +27,8 @@
             }
         };
         ctrl.tooltip = '<a class="link" target="_blank" ' +
-            'href="https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/">Kubernetes labels</a>' +
-            ' for specifying object attributes that are meaningful and relevant to users';
+            'href="https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/">Kubernetes labels</a> ' +
+            $i18next.t('functions:TOOLTIP.ANNOTATIONS', {lng: lng});
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;

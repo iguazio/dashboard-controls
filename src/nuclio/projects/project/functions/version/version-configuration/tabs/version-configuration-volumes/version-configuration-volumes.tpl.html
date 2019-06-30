@@ -1,18 +1,18 @@
 <div class="ncl-version-configuration-volumes">
-    <div class="title">Volumes</div>
+    <div class="title">{{ 'functions:VOLUMES' | i18next }}</div>
     <form name="$ctrl.volumesForm" class="volumes-wrapper">
 
         <div class="ncl-version-volume">
             <div class="common-table">
                 <div data-ng-if="$ctrl.volumes.length > 0" class="common-table-header item-header">
                     <div class="common-table-cell item-name">
-                        Name
+                        {{ 'common:NAME' | i18next }}
                     </div>
                     <div class="common-table-cell item-class">
-                        Type
+                        {{ 'common:TYPE' | i18next }}
                     </div>
                     <div class="igz-col-70 common-table-cell">
-                        Mount Path & Params
+                        {{ 'functions:MOUNT_PATH_PARAMS' | i18next }}
                     </div>
                 </div>
 
@@ -39,7 +39,7 @@
         <div class="create-volume-button"
              data-ng-click="$ctrl.createVolume($event)">
             <span class="igz-icon-add-round"></span>
-            Create a new volume
+            {{ 'functions:CREATE_NEW_VOLUME' | i18next }}
         </div>
     </form>
 </div>

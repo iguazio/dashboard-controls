@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('DialogsService', DialogsService);
 
-    function DialogsService($q, lodash, ngDialog, FormValidationService) {
+    function DialogsService($q, $i18next, i18next, lodash, ngDialog, FormValidationService) {
         return {
             alert: alert,
             confirm: confirm,
@@ -27,7 +27,7 @@
          * @returns {Promise} a promise that resolves on closing dialog
          */
         function alert(alertText, buttonText) {
-            buttonText = lodash.defaultTo(buttonText, 'OK');
+            buttonText = lodash.defaultTo(buttonText, $i18next.t('common:OK', {lng: i18next.language}));
 
             if (lodash.isArray(alertText)) {
                 alertText = alertText.length === 1 ? lodash.first(alertText) :
@@ -65,7 +65,9 @@
             var confirmButtonClass = lodash.includes(['critical_alert', 'nuclio_alert'], type) ?
                 'igz-button-remove' : 'igz-button-primary';
 
-            var cancelButtonCaption = lodash.defaultTo(cancelButton, 'Cancel');
+            var cancelButtonCaption = lodash.defaultTo(cancelButton, $i18next.t('common:CANCEL', {
+                lng: i18next.language
+            }));
             var noDescription = type !== 'nuclio_alert' || lodash.isEmpty(confirmText.description);
 
             var template = '<div class="close-button igz-icon-close" data-ng-click="closeThisDialog()"></div>' +
@@ -124,17 +126,20 @@
          * @returns {Promise}
          */
         function image(src, label) {
-            label = angular.isString(label) ? label : 'Image preview:';
+            label = angular.isString(label) ? label :
+                $i18next.t('common:TOOLTIP.IMAGE_PREVIEW', {lng: i18next.language}) + ':';
 
             return ngDialog.open({
                 template: '<div class="title text-ellipsis"' +
-                'data-uib-tooltip="' + label + '"' +
-                'data-tooltip-popup-delay="400"' +
-                'data-tooltip-append-to-body="true"' +
-                'data-tooltip-placement="bottom-left">' + label + '</div>' +
-                '<div class="close-button igz-icon-close" data-ng-click="closeThisDialog()"></div>' +
-                '<div class="image-preview-container">' +
-                '<img class="image-preview" src="' + src + '" alt="You have no permissions to read the file"/></div>',
+                    'data-uib-tooltip="' + label + '"' +
+                    'data-tooltip-popup-delay="400"' +
+                    'data-tooltip-append-to-body="true"' +
+                    'data-tooltip-placement="bottom-left">' + label + '</div>' +
+                    '<div class="close-button igz-icon-close" data-ng-click="closeThisDialog()"></div>' +
+                    '<div class="image-preview-container">' +
+                    '<img class="image-preview" src="' + src + '" alt="' +
+                    $i18next.t('common:HAVE_NO_PERMISSIONS_TO_READ_FILE', {lng: i18next.language}) +
+                    '"/></div>',
                 plain: true,
                 className: 'ngdialog-theme-iguazio image-dialog'
             })
@@ -174,8 +179,9 @@
          * @returns {Object}
          */
         function prompt(promptText, okButton, cancelButton, defaultValue, placeholder, validation, required) {
-            var okButtonCaption = lodash.defaultTo(okButton, 'OK');
-            var cancelButtonCaption = lodash.defaultTo(cancelButton, 'Cancel');
+            var lng = i18next.language;
+            var okButtonCaption = lodash.defaultTo(okButton, $i18next.t('common:OK', {lng: lng}));
+            var cancelButtonCaption = lodash.defaultTo(cancelButton, $i18next.t('common:CANCEL', {lng: lng}));
             var data = {
                 value: lodash.defaultTo(defaultValue, ''),
                 igzDialogPromptForm: {},
@@ -218,7 +224,7 @@
                                     'data-update-data-callback="ngDialogData.inputValueCallback(newData)"' +
                                 '></igz-validating-input-field>' +
                                 (angular.isDefined(validation) ? '<div class="error-text" data-ng-show="ngDialogData.isShowFieldInvalidState(ngDialogData.igzDialogPromptForm, ngDialogData.inputName)">' +
-                                'The input is Invalid, please try again.' +
+                                    $i18next.t('common:ERROR_MSG.INVALID_INPUT_PLEASE_TRY_AGAIN', {lng: lng}) +
                                 '</div>' : '') +
                             '</div>' +
                         '</div>' +
@@ -236,7 +242,7 @@
             })
                 .closePromise
                 .then(function (dialog) { // if Cancel is clicked, reject the promise
-                    return angular.isDefined(dialog.value) ? dialog.value : $q.reject('Cancelled');
+                    return angular.isDefined(dialog.value) ? dialog.value : $q.reject($i18next.t('common:ERROR_MSG.CANCELLED', {lng: lng}));
                 });
         }
 
@@ -250,9 +256,10 @@
          * @returns {Promise}
          */
         function text(content, node, submitData, language) {
+            var lng = i18next.language;
             var data = {
-                closeButtonText: 'Close',
-                submitButtonText: 'Save',
+                closeButtonText: $i18next.t('common:CLOSE', {lng: lng}),
+                submitButtonText: $i18next.t('common:SAVE', {lng: lng}),
                 submitData: submitData,
                 label: angular.isString(node.label) ? node.label : 'Text preview:',
                 node: node,

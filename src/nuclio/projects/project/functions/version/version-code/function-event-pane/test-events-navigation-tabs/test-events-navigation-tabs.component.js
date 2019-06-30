@@ -14,28 +14,29 @@
             controller: NclTestEventsNavigationTabsController
         });
 
-    function NclTestEventsNavigationTabsController(lodash) {
+    function NclTestEventsNavigationTabsController($i18next, i18next) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.logLevelValues = [
             {
                 id: 'error',
-                name: 'Error',
+                name: $i18next.t('common:ERROR', {lng: lng}),
                 visible: true
             },
             {
                 id: 'warn',
-                name: 'Warning',
+                name: $i18next.t('common:WARNING', {lng: lng}),
                 visible: true
             },
             {
                 id: 'info',
-                name: 'Info',
+                name: $i18next.t('common:INFO', {lng: lng}),
                 visible: true
             },
             {
                 id: 'debug',
-                name: 'Debug',
+                name: $i18next.t('common:DEBUG', {lng: lng}),
                 visible: true
             }
         ];

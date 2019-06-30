@@ -1,0 +1,15 @@
+{
+    "ASYNCHRONOUS_TRANSACTION": "Asynchronous transaction",
+    "DELETE_CONTAINER": "Delete container",
+    "DELETE_IDP": "Delete IdP",
+    "DELETE_TENANT": "Delete tenant",
+    "DELETE_USER": "Delete user",
+    "DISABLE_TENANT": "Disable tenant",
+    "NO_TASKS_HAVE_BEEN_FOUND": "No tasks have been found...",
+    "PLACEHOLDER": {
+        "SEARCH_TASK_BY_CONTAINER": "Search task by container name…",
+        "SEARCH_TASK_BY_NAME": "Search task by name…"
+    },
+    "SYNC_IDP": "Sync IdP",
+    "UPDATE_SERVICE_CONFIGURATION": "Update service configuration"
+}

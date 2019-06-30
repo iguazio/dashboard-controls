@@ -17,13 +17,15 @@
             controller: NclFunctionEventPaneController
         });
 
-    function NclFunctionEventPaneController($element, $rootScope, $scope, $timeout, $q, lodash, moment, download,
-                                            ConverterService, DialogsService, EventHelperService, VersionHelperService) {
+    function NclFunctionEventPaneController($element, $rootScope, $scope, $timeout, $q, $i18next, i18next, lodash,
+                                            moment, download, ConverterService, DialogsService, EventHelperService,
+                                            VersionHelperService) {
         var ctrl = this;
 
         var canceler = null;
         var canceledInvocation = false;
         var HISTORY_LIMIT = 100;
+        var lng = i18next.language;
 
         ctrl.createEvent = true;
         ctrl.externalIPAddress = '';
@@ -34,11 +36,11 @@
         ctrl.leftBarNavigationTabs = [
             {
                 id: 'saved',
-                tabName: 'Saved'
+                tabName: $i18next.t('functions:SAVED', {lng: lng})
             },
             {
                 id: 'history',
-                tabName: 'History'
+                tabName: $i18next.t('functions:HISTORY', {lng: lng})
             }
         ];
         ctrl.logs = [];
@@ -72,11 +74,11 @@
         ctrl.requestNavigationTabs = [
             {
                 id: 'body',
-                tabName: 'Body'
+                tabName: $i18next.t('functions:BODY', {lng: lng})
             },
             {
                 id: 'headers',
-                tabName: 'Headers'
+                tabName: $i18next.t('functions:HEADERS', {lng: lng})
             }
         ];
         ctrl.requestBodyTypes = [
@@ -102,16 +104,16 @@
         ctrl.responseNavigationTabs = [
             {
                 id: 'body',
-                tabName: 'Body'
+                tabName: $i18next.t('functions:BODY', {lng: lng})
             },
             {
                 id: 'headers',
-                tabName: 'Headers',
+                tabName: $i18next.t('functions:HEADERS', {lng: lng}),
                 badge: 0
             },
             {
                 id: 'logs',
-                tabName: 'Logs',
+                tabName: $i18next.t('common:LOGS', {lng: lng}),
                 badge: 0
             }
         ];
@@ -209,7 +211,7 @@
                     ctrl.savedEvents = response;
                 })
                 .catch(function () {
-                    DialogsService.alert('Oops: Unknown error occurred while retrieving events');
+                    DialogsService.alert($i18next.t('functions:ERROR_MSG.GET_EVENTS', {lng: lng}));
                 })
                 .finally(function () {
                     ctrl.isSplashShowed.value = false;
@@ -285,11 +287,11 @@
         function deleteEvent(event) {
             var dialogConfig = {
                 message: {
-                    message: 'Delete event “' + event.spec.displayName + '”?',
-                    description: 'Deleted event cannot be restored.'
+                    message: $i18next.t('functions:DELETE_EVENT', {lng: lng}) + ' “' + event.spec.displayName + '”?',
+                    description: $i18next.t('functions:DELETE_EVENT_DESCRIPTION', {lng: lng})
                 },
-                yesLabel: 'Yes, Delete',
-                noLabel: 'Cancel',
+                yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                noLabel: $i18next.t('common:CANCEL', {lng: lng}),
                 type: 'nuclio_alert'
             };
 
@@ -316,12 +318,12 @@
                                     }
                                 })
                                 .catch(function (error) {
-                                    var msg = 'Oops: Unknown error occurred while retrieving events';
+                                    var msg = $i18next.t('functions:ERROR_MSG.GET_EVENTS', {lng: lng});
                                     DialogsService.alert(lodash.get(error, 'data.error', msg));
                                 });
                         })
                         .catch(function (error) {
-                            var msg = 'Oops: Unknown error occurred while deleting events';
+                            var msg = $i18next.t('functions:ERROR_MSG.DELETE_EVENTS', {lng: lng});
                             DialogsService.alert(lodash.get(error, 'data.error', msg));
                         })
                         .finally(function () {
@@ -371,7 +373,8 @@
 
             setInvocationUrl(ctrl.externalIPAddress, httpPort);
 
-            return lodash.isNull(httpPort) ? 'Not yet deployed' : ctrl.version.ui.invocationURL + '/';
+            return lodash.isNull(httpPort) ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
+                                             ctrl.version.ui.invocationURL + '/';
         }
 
         /**
@@ -570,7 +573,7 @@
                         ctrl.isSplashShowed.value = false;
                     })
                     .catch(function () {
-                        DialogsService.alert('Error occurred while creating/updating the new function event.');
+                        DialogsService.alert($i18next.t('functions:ERROR_MSG.CREATE_UPDATE_FUNCTION_EVENT', {lng: lng}));
                         ctrl.isSplashShowed.value = false;
                     });
             }
@@ -695,7 +698,7 @@
                             if (!canceledInvocation) {
                                 var statusText = angular.isDefined(invocationData.error) ? invocationData.error :
                                     invocationData.status + ' ' + invocationData.statusText;
-                                DialogsService.alert('Oops: Error occurred while invoking. Status: ' + statusText);
+                                DialogsService.alert($i18next.t('functions:ERROR_MSG.INVOKE_FUNCTION', {lng: lng}) + statusText);
                             }
 
                             ctrl.testing = false;
@@ -734,7 +737,7 @@
                     ctrl.uploadingData.progress = '100%';
 
                     if (onloadEvent.target.result === '') {
-                        DialogsService.alert('Oops: Unknown error occurred while uploading a file');
+                        DialogsService.alert($i18next.t('functions:ERROR_MSG.UPLOAD_FILE.UNKNOWN', {lng: lng}));
 
                         deleteFile();
                     } else {
@@ -744,7 +747,7 @@
                             ctrl.selectedEvent.spec.attributes.headers['Content-Type'] = file.type;
                             updateRequestHeaders();
                         } catch (ex) {
-                            DialogsService.alert('Oops: Error occurred while uploading a file. ' + ex);
+                            DialogsService.alert($i18next.t('functions:ERROR_MSG.UPLOAD_FILE.DEFAULT', {lng: lng}) + ex);
 
                             deleteFile();
                         }

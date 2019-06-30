@@ -16,9 +16,10 @@
             controller: IgzActionMenuController
         });
 
-    function IgzActionMenuController($scope, $element, $document, $rootScope, $timeout, lodash, ConfigService,
-                                     PreventDropdownCutOffService) {
+    function IgzActionMenuController($scope, $element, $document, $rootScope, $timeout, $i18next, i18next, lodash,
+                                     ConfigService, PreventDropdownCutOffService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.isMenuShown = false;
         ctrl.preventDropdownCutOff = null;
@@ -66,9 +67,9 @@
 
                             if (action.id === 'delete' && angular.isUndefined(action.confirm)) {
                                 action.confirm = {
-                                    message: 'Are you sure you want to delete selected item?',
-                                    yesLabel: 'Yes, Delete',
-                                    noLabel: 'Cancel',
+                                    message: $i18next.t('common:DELETE_SELECTED_ITEM_CONFIRM', {lng: lng}),
+                                    yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                                    noLabel: $i18next.t('common:CANCEL', {lng: lng}),
                                     type: 'critical_alert'
                                 };
                             }

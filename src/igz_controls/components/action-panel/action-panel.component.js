@@ -12,8 +12,9 @@
             transclude: true
         });
 
-    function IgzActionPanel($scope, $rootScope, lodash) {
+    function IgzActionPanel($scope, $rootScope, $i18next, i18next, lodash) {
         var ctrl = this;
+        var lng = i18next.language;
 
         var checkedItemsCount = 0;
         var mainActionsCount = 5;
@@ -103,9 +104,9 @@
 
                     if (action.id === 'delete' && angular.isUndefined(action.confirm)) {
                         action.confirm = {
-                            message: 'Are you sure you want to delete selected items?',
-                            yesLabel: 'Yes, Delete',
-                            noLabel: 'Cancel',
+                            message: $i18next.t('common:DELETE_SELECTED_ITEMS_CONFIRM', {lng: lng}),
+                            yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                            noLabel: $i18next.t('common:CANCEL', {lng: lng}),
                             type: 'critical_alert'
                         };
                     }

@@ -1,14 +1,14 @@
 <div class="close-button igz-icon-close" data-ng-click="$ctrl.onClose()"></div>
 
 <div class="title">
-    Duplicate function
+    {{ 'functions:DUPLICATE_FUNCTION' | i18next }}
 </div>
 
 <div class="main-content">
     <form name="$ctrl.duplicateFunctionForm" novalidate data-ng-keydown="$ctrl.duplicateFunction($event)">
         <div class="field-group function-name-group">
             <div class="field-label function-name-label">
-                Function Name
+                {{ 'functions:FUNCTION_NAME' | i18next }}
             </div>
             <div class="field-input function-name-input">
                 <igz-validating-input-field class="nuclio-validating-input"
@@ -20,17 +20,18 @@
                                             data-update-data-callback="$ctrl.inputValueCallback(newData)"
                                             data-validation-is-required="true"
                                             data-validation-pattern="$ctrl.validationPatterns.functionName"
-                                            data-placeholder-text="Enter function name..."
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_FUNCTION_NAME' | i18next }}"
                                             data-validation-max-length="{{$ctrl.validationPatterns.getMaxLength('function.name')}}"
-                                            data-uib-tooltip="Name must be 1-63 characters long, must consist of lower case alphanumeric characters or hyphen, start with an alphabetic character, and end with an alphanumeric character (e.g. 'my-name',  or 'abc-123')."
+                                            data-uib-tooltip="{{ 'functions:TOOLTIP.FUNCTION_NAME' | i18next }}"
                                             data-tooltip-popup-delay="500"
-                                            data-tooltip-append-to-body="true"></igz-validating-input-field>
+                                            data-tooltip-append-to-body="true">
+                </igz-validating-input-field>
                 <div class="error"
                      data-ng-show="$ctrl.isShowFieldInvalidState($ctrl.duplicateFunctionForm, 'spec.displayName')">
-                    The inputs you provided are invalid or incorrect
+                    {{ 'common:ERROR_MSG.INVALID_INPUTS' | i18next }}
                 </div>
                 <div class="error" data-ng-show="$ctrl.nameTakenError">
-                    Name already exists
+                    {{ 'common:ERROR_MSG.NAME_EXISTS' | i18next }}
                 </div>
             </div>
         </div>
@@ -43,7 +44,7 @@
             tabindex="0"
             data-ng-click="$ctrl.onClose()"
             data-ng-keydown="$ctrl.onClose($event)">
-        Cancel
+        {{ 'common:CANCEL' | i18next }}
     </button>
     <button class="ncl-primary-button"
             data-test-id="functions.duplicate_function_duplicate.button"
@@ -51,11 +52,14 @@
             data-ng-click="$ctrl.duplicateFunction()"
             data-ng-keydown="$ctrl.duplicateFunction($event)"
             data-ng-hide="$ctrl.isLoadingState">
-        Duplicate
+        {{ 'common:DUPLICATE' | i18next }}
     </button>
-    <button class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">Loading...</button>
+    <button class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">
+        {{ 'common:LOADING_CAPITALIZE_ELLIPSIS' | i18next }}
+    </button>
 </div>
 
 <div class="error-text text-centered error-relative"
-     data-ng-show="$ctrl.isServerError()">Error: {{$ctrl.serverError}}
+     data-ng-show="$ctrl.isServerError()">
+    {{ 'common:ERROR' | i18next }}:&nbsp;{{$ctrl.serverError}}
 </div>

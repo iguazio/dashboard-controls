@@ -1,4 +1,4 @@
-/* eslint max-statements: ["error", 100] */
+/* eslint max-statements: ["error", 110] */
 (function () {
     'use strict';
 
@@ -14,9 +14,11 @@
             controller: NclEditItemController
         });
 
-    function NclEditItemController($document, $element, $rootScope, $scope, $timeout, lodash, ConverterService,
-                                   FunctionsService, FormValidationService, PreventDropdownCutOffService) {
+    function NclEditItemController($document, $element, $rootScope, $scope, $timeout, $i18next, i18next, lodash,
+                                   ConverterService, FunctionsService, FormValidationService,
+                                   PreventDropdownCutOffService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.classList = [];
         ctrl.editItemForm = {};
@@ -46,12 +48,12 @@
         ctrl.placeholder = '';
         ctrl.tooltips = {
             secret: 'A <a class="link" target="_blank" ' +
-                'href="https://kubernetes.io/docs/concepts/configuration/secret/">Kubernetes secret</a> object for ' +
-                'managing sensitive information',
+                'href="https://kubernetes.io/docs/concepts/configuration/secret/">Kubernetes secret</a> ' +
+                $i18next.t('functions:TOOLTIP.SECRET', {lng: lng}),
             configMap: 'A <a class="link" target="_blank" ' +
                 'href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/">Kubernetes' +
-                'ConfigMap</a> for storing configuration artifacts separately from the container image content',
-            v3io: 'A directory in an Iguazio Data Science Platform data container'
+                'ConfigMap</a> ' + $i18next.t('functions:TOOLTIP.SECRET', {lng: lng}),
+            v3io: $i18next.t('functions:TOOLTIP.V3IO', {lng: lng})
         };
 
         ctrl.isShowFieldError = FormValidationService.isShowFieldError;
@@ -1041,8 +1043,8 @@
          */
         function getPlaceholder() {
             var placeholders = {
-                volume: 'Select type',
-                default: 'Select class'
+                volume: $i18next.t('functions:PLACEHOLDER.SELECT_TYPE', {lng: lng}),
+                default: $i18next.t('functions:PLACEHOLDER.SELECT_CLASS', {lng: lng})
             };
 
             return lodash.get(placeholders, ctrl.type, placeholders.default);

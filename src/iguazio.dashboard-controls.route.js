@@ -21,7 +21,7 @@
                     }
                 },
                 data: {
-                    pageTitle: 'Monaco'
+                    pageTitle: 'common:MONACO'
                 }
             })
             .state('app.nuclio-welcome', {
@@ -32,8 +32,8 @@
                     }
                 },
                 data: {
-                    pageTitle: 'Welcome',
-                    mainHeaderTitle: 'Welcome'
+                    pageTitle: 'common:WELCOME',
+                    mainHeaderTitle: 'common:WELCOME'
                 }
             })
             .state('app.projects', {
@@ -44,8 +44,8 @@
                     }
                 },
                 data: {
-                    pageTitle: 'Projects',
-                    mainHeaderTitle: 'Projects'
+                    pageTitle: 'common:PROJECTS',
+                    mainHeaderTitle: 'common:PROJECTS'
                 }
             })
             .state('app.project', {
@@ -60,8 +60,8 @@
                     createCancelled: false
                 },
                 data: {
-                    pageTitle: 'Functions',
-                    mainHeaderTitle: 'Functions'
+                    pageTitle: 'common:FUNCTIONS',
+                    mainHeaderTitle: 'common:FUNCTIONS'
                 }
             })
             .state('app.project.functions', {
@@ -72,8 +72,8 @@
                     }
                 },
                 data: {
-                    pageTitle: 'Functions',
-                    mainHeaderTitle: 'Functions'
+                    pageTitle: 'common:FUNCTIONS',
+                    mainHeaderTitle: 'common:FUNCTIONS'
                 }
             })
             .state('app.project.create-function', {
@@ -84,7 +84,7 @@
                     }
                 },
                 data: {
-                    pageTitle: 'Create Function'
+                    pageTitle: 'common:CREATE_FUNCTION'
                 }
             })
             .state('app.project.function', {
@@ -101,8 +101,8 @@
                     functionData: {}
                 },
                 data: {
-                    pageTitle: 'Functions',
-                    mainHeaderTitle: 'Functions'
+                    pageTitle: 'common:FUNCTIONS',
+                    mainHeaderTitle: 'common:FUNCTIONS'
                 }
             })
             .state('app.project.function.edit', {
@@ -117,8 +117,8 @@
                     functionData: {}
                 },
                 data: {
-                    pageTitle: 'Edit version',
-                    mainHeaderTitle: 'Edit version'
+                    pageTitle: 'common:EDIT_VERSION',
+                    mainHeaderTitle: 'common:EDIT_VERSION'
                 }
             })
             .state('app.project.function.edit.code', {
@@ -132,7 +132,7 @@
                     functionData: {}
                 },
                 data: {
-                    pageTitle: 'Code'
+                    pageTitle: 'common:CODE'
                 }
             })
             .state('app.project.function.edit.configuration', {
@@ -146,7 +146,7 @@
                     functionData: {}
                 },
                 data: {
-                    pageTitle: 'Configuration'
+                    pageTitle: 'common:CONFIGURATION'
                 }
             })
             .state('app.project.function.edit.trigger', {
@@ -160,7 +160,7 @@
                     functionData: {}
                 },
                 data: {
-                    pageTitle: 'Trigger'
+                    pageTitle: 'common:TRIGGER'
                 }
             })
             .state('app.project.function.edit.monitoring', {
@@ -174,7 +174,7 @@
                     functionData: {}
                 },
                 data: {
-                    pageTitle: 'Monitoring'
+                    pageTitle: 'common:MONITORING'
                 }
             });
 

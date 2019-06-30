@@ -3,16 +3,18 @@
          data-ng-if="$ctrl.logs.length > 0">
         <div class="ncl-icon-expand-all"
              data-ng-click="$ctrl.expandAllRows(true)"
-             data-uib-tooltip="Expand all"
+             data-uib-tooltip="{{ 'functions:EXPAND_ALL' | i18next }}"
              data-tooltip-popup-delay="300"
              data-tooltip-placement="left"
-             data-tooltip-append-to-body="true"></div>
+             data-tooltip-append-to-body="true">
+        </div>
         <div class="ncl-icon-collapse-all"
              data-ng-click="$ctrl.expandAllRows(false)"
-             data-uib-tooltip="Collapse all"
+             data-uib-tooltip="{{ 'functions:COLLAPSE_ALL' | i18next }}"
              data-tooltip-popup-delay="300"
              data-tooltip-placement="left"
-             data-tooltip-append-to-body="true"></div>
+             data-tooltip-append-to-body="true">
+        </div>
     </div>
     <div data-ng-repeat="log in $ctrl.logs track by $index">
         <div class="collapsed-row text-ellipsis" data-ng-if="log.ui.collapsed">
@@ -37,7 +39,9 @@
                      data-ng-if="log.err">{{log.err}}</div>
                 <div class="parameters"
                      data-ng-if="$ctrl.hasAdditionalParameters(log)">
-                    <span class="parameters-header">Parameters</span>
+                    <span class="parameters-header">
+                        {{ 'common:PARAMETERS' | i18next }}
+                    </span>
                     <div data-ng-repeat="(key, value) in $ctrl.getParameters(log)">
                         <div class="text-ellipsis labels">{{key}}:</div>
                         <div class="text-ellipsis values">{{value}}</div>
@@ -47,5 +51,7 @@
         </div>
     </div>
     <div class="no-logs"
-         data-ng-if="$ctrl.logs.length === 0">No logs have been found...</div>
+         data-ng-if="$ctrl.logs.length === 0">
+        {{ 'functions:NO_LOGS_HAVE_BEEN_FOUND' | i18next }}
+    </div>
 </div>

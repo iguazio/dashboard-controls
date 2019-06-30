@@ -24,6 +24,7 @@ var del = require('del');
 var vinylPaths = require('vinyl-paths');
 var exec = require('child_process').exec;
 var buildVersion = null;
+var path = require('path');
 
 /**
  * Set up configuration
@@ -136,6 +137,13 @@ gulp.task('lint', function () {
         .pipe(eslint.failAfterError());
 });
 
+gulp.task('i18n', function () {
+    var distFolder = config.assets_dir + '/i18n';
+
+    return gulp.src(config.app_files.i18n)
+        .pipe(gulp.dest(distFolder));
+});
+
 gulp.task('inject-version', function () {
     exec('git describe --tags --abbrev=40', function (err, stdout) {
         buildVersion = stdout;
@@ -156,6 +164,9 @@ gulp.task('test-unit-run', function (done) {
     new karmaServer({
         configFile: __dirname + '/' + config.test_files.unit.karma_config,
         files: files,
+        proxies: {
+            '/assets/i18n/': path.resolve(__dirname + '/' + config.test_files.unit.i18n)
+        },
         action: 'run'
     }, done).start();
 });
@@ -187,5 +198,5 @@ gulp.task('test-unit', function (next) {
  * Base build task
  */
 gulp.task('build', function (next) {
-    runSequence('lint', 'clean', 'inject-version', 'vendor.js', ['app.less', 'app.js', 'fonts', 'images'], next);
+    runSequence('lint', 'clean', 'inject-version', 'vendor.js', ['app.less', 'app.js', 'fonts', 'images', 'i18n'], next);
 });

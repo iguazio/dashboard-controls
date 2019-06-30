@@ -2,7 +2,7 @@
 
 <div class="title">
     <span>
-        Template parameters
+        {{ 'functions:TEMPLATE_PARAMETERS' | i18next }}
     </span>
 </div>
 
@@ -66,13 +66,13 @@
     <button class="ncl-secondary-button"
             data-ng-click="$ctrl.onClose()"
             data-ng-keydown="$ctrl.onClose($event)">
-        Cancel
+        {{ 'common:CANCEL' | i18next }}
     </button>
     <button class="ncl-primary-button"
             data-ng-class="{disabled: !$ctrl.isFormFilled()}"
             data-ng-disabled="!$ctrl.isFormFilled()"
             data-ng-click="$ctrl.onApply()"
             data-ng-keydown="$ctrl.onApply($event)">
-        Apply
+        {{ 'common:APPLY' | i18next }}
     </button>
 </div>

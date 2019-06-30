@@ -1,18 +1,18 @@
 <div class="ncl-version-configuration-runtime-attributes">
-    <div class="title">Runtime Attributes</div>
+    <div class="title">{{ 'functions:RUNTIME_ATTRIBUTES' | i18next }}</div>
     <form name="$ctrl.runtimeAttributesForm" class="runtime-attributes-wrapper">
         <div class="row"
              data-ng-class="{'info-row': $ctrl.version.spec.runtime !== 'shell'}"
              data-ng-if="$ctrl.version.spec.runtime !== 'java'">
             <div class="runtime-title">
-                <span class="label">Runtime</span>
+                <span class="label">{{ 'functions:RUNTIME' | i18next }}</span>
                 <div class="runtime">
                     {{$ctrl.version.spec.runtime}}
                 </div>
             </div>
             <div class="arguments-input"
                  data-ng-if="$ctrl.version.spec.runtime === 'shell'">
-                <span class="label">Arguments</span>
+                <span class="label">{{ 'common:ARGUMENTS' | i18next }}</span>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-input-name="arguments"
@@ -20,19 +20,20 @@
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="arguments"
                                             data-form-object="$ctrl.runtimeAttributesForm"
-                                            data-placeholder-text="Enter arguments..."></igz-validating-input-field>
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_ARGUMENTS' | i18next }}">
+                </igz-validating-input-field>
             </div>
         </div>
         <div class="row igz-col-100 info-row"
              data-ng-if="$ctrl.version.spec.runtime === 'java'">
             <div class="row igz-col-100 info-row">
-                <span class="field-label">JVM options</span>
+                <span class="field-label">{{ 'functions:JVM_OPTIONS' | i18next }}</span>
                 <igz-validating-input-field data-field-type="textarea"
                                             data-input-name="jvmOptions"
                                             data-input-value="$ctrl.runtimeAttributes.jvmOptions"
                                             data-is-focused="false"
                                             data-form-object="$ctrl.runtimeAttributesForm"
-                                            data-placeholder-text="Enter an option on each line..."
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_OPTION_ON_EACH_LINE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="jvmOptions"
                                             class="nuclio-validating-input build-command-field java-attribute">
@@ -41,10 +42,10 @@
         </div>
         <div class="row info-row"
              data-ng-if="$ctrl.version.spec.runtime === 'shell'">
-            <span class="label">Response headers</span>
+            <span class="label">{{ 'functions:RESPONSE_HEADERS' | i18next }}</span>
             <div data-ng-if="$ctrl.attributes.length > 0" class="table-headers">
-                <div class="key-header">Key</div>
-                <div class="value-header">Value</div>
+                <div class="key-header">{{ 'common:KEY' | i18next }}</div>
+                <div class="value-header">{{ 'common:VALUE' | i18next }}</div>
             </div>
             <div class="igz-scrollable-container"
                  data-ng-scrollbars
@@ -64,7 +65,7 @@
             <div class="create-label-button"
                  data-ng-click="$ctrl.addNewAttribute($event)">
                 <span class="igz-icon-add-round"></span>
-                Create a new runtime attribute
+                {{ 'functions:CREATE_NEW_RUNTIME_ATTRIBUTE' | i18next }}
             </div>
         </div>
     </form>

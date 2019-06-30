@@ -11,8 +11,10 @@
             controller: NclVersionConfigurationBuildController
         });
 
-    function NclVersionConfigurationBuildController($rootScope, $scope, $timeout, lodash, ngDialog, Upload, ConfigService) {
+    function NclVersionConfigurationBuildController($rootScope, $scope, $timeout, $i18next, i18next, lodash, ngDialog,
+                                                    Upload, ConfigService) {
         var ctrl = this;
+        var lng = i18next.language;
         var uploadType = '';
 
         ctrl.actions = initActions();
@@ -196,13 +198,13 @@
             return [
                 {
                     id: 'script',
-                    label: 'Script',
+                    label: $i18next.t('functions:SCRIPT', {lng: lng}),
                     icon: 'ncl-icon-script',
                     active: true
                 },
                 {
                     id: 'file',
-                    label: 'File',
+                    label: $i18next.t('common:FILE', {lng: lng}),
                     icon: 'ncl-icon-file',
                     active: true
                 }

@@ -11,8 +11,9 @@
             controller: NclFunctionFromTemplateDialogController
         });
 
-    function NclFunctionFromTemplateDialogController(lodash, EventHelperService) {
+    function NclFunctionFromTemplateDialogController($i18next, i18next, lodash, EventHelperService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         var FILED_KINDS = ['string', 'number', 'choice'];
 
@@ -73,7 +74,7 @@
 
                     // setting default values to various properties
                     lodash.defaults(field, {
-                        displayName: 'Unspecified field name',
+                        displayName: $i18next.t('functions:UNSPECIFIED_FIELD_NAME', {lng: lng}),
                         description: '',
                         required: false,
                         order: Infinity,

@@ -2,7 +2,7 @@
     <span class="main-header-title-text"
           data-ng-click="$ctrl.goToProjectsList()"
           data-ng-class="{'disable-behavior': !$ctrl.mainHeaderTitle.project && $ctrl.mainHeaderTitle.function !== 'Create function'}">
-        {{$ctrl.mainHeaderTitle.title}}
+        {{ $ctrl.mainHeaderTitle.title | i18next }}
     </span>
     <span class="igz-icon-right ncl-header-subtitle"></span>
 </span>

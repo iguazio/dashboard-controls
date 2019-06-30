@@ -18,7 +18,7 @@
         <div class="shortcuts-list"
              data-ng-if="$ctrl.shortcuts && $ctrl.shortcuts.length > 0"
              data-ng-class="{'first-block': $ctrl.actions.length === 0}">
-            <div class="shortcuts-header">Shortcuts</div>
+            <div class="shortcuts-header">{{ 'common:SHORTCUTS' | i18next }}</div>
             <div class="shortcuts-item"
                  data-ng-repeat="shortcut in $ctrl.shortcuts"
                  data-ng-click="$ctrl.showDetails($event, shortcut.state)">

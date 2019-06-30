@@ -1,6 +1,6 @@
 <div class="ncl-version-configuration-labels">
     <div class="title">
-        <span>Labels</span>
+        <span>{{ 'functions:LABELS' | i18next }}</span>
         <igz-more-info
                 data-description="{{$ctrl.tooltip}}"
                 data-trigger="click"
@@ -9,8 +9,8 @@
     </div>
     <form name="$ctrl.labelsForm" class="labels-wrapper">
         <div data-ng-if="$ctrl.labels.length > 0" class="table-headers">
-            <div class="key-header">Key</div>
-            <div class="value-header">Value</div>
+            <div class="key-header">{{ 'common:KEY' | i18next }}</div>
+            <div class="value-header">{{ 'common:VALUE' | i18next }}</div>
         </div>
         <div class="igz-scrollable-container scrollable-labels"
              data-ng-scrollbars
@@ -32,7 +32,7 @@
         <div class="create-label-button"
              data-ng-click="$ctrl.addNewLabel($event)">
             <span class="igz-icon-add-round"></span>
-            Create a new label
+            {{ 'functions:CREATE_NEW_LABEL' | i18next }}
         </div>
     </form>
 </div>

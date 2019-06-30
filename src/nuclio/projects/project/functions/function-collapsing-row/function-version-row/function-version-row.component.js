@@ -15,8 +15,10 @@
             controller: NclFunctionVersionRowController
         });
 
-    function NclFunctionVersionRowController($state, lodash, ConfigService, NuclioHeaderService, FunctionsService) {
+    function NclFunctionVersionRowController($state, $i18next, i18next, lodash, ConfigService, NuclioHeaderService,
+                                             FunctionsService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.actions = [];
         ctrl.title = null;
@@ -56,9 +58,9 @@
 
             if (!lodash.isNil(deleteAction)) {
                 deleteAction.confirm = {
-                    message: 'Delete version “' + ctrl.version.name + '”?',
-                    yesLabel: 'Yes, Delete',
-                    noLabel: 'Cancel',
+                    message: $i18next.t('functions:DELETE_VERSION', {lng: lng}) + ' “' + ctrl.version.name + '”?',
+                    yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                    noLabel: $i18next.t('common:CANCEL', {lng: lng}),
                     type: 'nuclio_alert'
                 };
             }
@@ -116,7 +118,7 @@
                 projectNamespace: ctrl.project.metadata.namespace
             });
 
-            NuclioHeaderService.updateMainHeader('Projects', ctrl.title, $state.current.name);
+            NuclioHeaderService.updateMainHeader('common:PROJECTS', ctrl.title, $state.current.name);
         }
 
         //

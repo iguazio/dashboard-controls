@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('ExportService', ExportService);
 
-    function ExportService($q, $timeout, DialogsService, lodash, YAML) {
+    function ExportService($q, $timeout, $i18next, i18next, DialogsService, lodash, YAML) {
         return {
             exportFunction: exportFunction,
             getFunctionConfig: getFunctionConfig,
@@ -69,7 +69,7 @@
                     downloadExportedFunction(blob, project.spec.displayName);
                 })
                 .catch(function (error) {
-                    var msg = 'Oops: Unknown error occurred while exporting the project';
+                    var msg = $i18next.t('functions:ERROR_MSG.EXPORT_PROJECT', {lng: i18next.language});
                     DialogsService.alert(lodash.get(error, 'data.error', msg));
                 });
 
@@ -112,7 +112,7 @@
                     downloadExportedFunction(blob, 'projects');
                 })
                 .catch(function (error) {
-                    var msg = 'Oops: Unknown error occurred while exporting projects';
+                    var msg = $i18next.t('functions:ERROR_MSG.EXPORT_PROJECTS', {lng: i18next.language});
                     DialogsService.alert(lodash.get(error, 'data.error', msg));
                 });
         }

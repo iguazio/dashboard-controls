@@ -11,9 +11,10 @@
             controller: NclVersionConfigurationBasicSettingsController
         });
 
-    function NclVersionConfigurationBasicSettingsController($rootScope, $timeout, lodash, ConfigService,
-                                                            ValidatingPatternsService) {
+    function NclVersionConfigurationBasicSettingsController($rootScope, $timeout, $i18next, i18next, lodash,
+                                                            ConfigService, ValidatingPatternsService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.enableFunction = false;
         ctrl.enableTimeout = false;
@@ -24,19 +25,19 @@
         ctrl.logLevelValues = [
             {
                 id: 'error',
-                name: 'Error'
+                name: $i18next.t('common:ERROR', {lng: lng})
             },
             {
                 id: 'warn',
-                name: 'Warning'
+                name: $i18next.t('common:WARNING', {lng: lng})
             },
             {
                 id: 'info',
-                name: 'Info'
+                name: $i18next.t('common:INFO', {lng: lng})
             },
             {
                 id: 'debug',
-                name: 'Debug'
+                name: $i18next.t('common:DEBUG', {lng: lng})
             }
         ];
 

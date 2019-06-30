@@ -2,7 +2,9 @@
     <form name="$ctrl.functionFromTemplateForm" class="configuration-form" novalidate>
         <div class="function-name-wrapper">
             <div class="projects-drop-down" data-ng-if="$ctrl.isProjectsDropDownVisible()">
-                <span class="input-label">Project*</span>
+                <span class="input-label">
+                    {{ 'functions:PROJECT' | i18next }}*
+                </span>
                 <igz-default-dropdown data-is-required="true"
                                       data-values-array="$ctrl.projectsList"
                                       data-selected-item="$ctrl.selectedProject"
@@ -10,11 +12,15 @@
                                       data-form-object="$ctrl.functionFromTemplateForm"
                                       data-input-name="project">
                     <div class="transcluded-item"
-                         data-ng-click="$ctrl.createNewProject()">New project</div>
+                         data-ng-click="$ctrl.createNewProject()">
+                        {{ 'functions:NEW_PROJECT' | i18next }}
+                    </div>
                 </igz-default-dropdown>
             </div>
             <div class="function-name">
-                <span class="input-label">Name*</span>
+                <span class="input-label">
+                    {{ 'common:NAME' | i18next }}*
+                </span>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-input-name="name"
@@ -26,26 +32,32 @@
                                             data-validation-max-length="{{$ctrl.validationPatterns.getMaxLength('function.name')}}"
                                             data-hide-counter="false"
                                             data-input-model-options="$ctrl.inputModelOptions"
-                                            data-placeholder-text="Enter function name..."
-                                            data-uib-tooltip="Name must be 1-63 characters long, must consist of lower case alphanumeric characters or hyphen, start with an alphabetic character, and end with an alphanumeric character (e.g. 'my-name',  or 'abc-123')."
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_FUNCTION_NAME' | i18next }}"
+                                            data-uib-tooltip="{{ 'functions:TOOLTIP.FUNCTION_NAME' | i18next }}"
                                             data-tooltip-popup-delay="500"
-                                            data-tooltip-append-to-body="true"></igz-validating-input-field>
+                                            data-tooltip-append-to-body="true">
+                </igz-validating-input-field>
             </div>
         </div>
     </form>
     <div class="templates-wrapper">
-        <span class="title">Choose a template</span>
+        <span class="title">
+            {{ 'functions:CHOOSE_TEMPLATE' | i18next }}
+        </span>
         <div class="templates-controls">
             <div class="templates-search-input">
                 <div class="igz-icon-search search-icon"></div>
-                <input class="input-field field" tabindex="0"
+                <input class="input-field field"
+                       tabindex="0"
                        data-ng-model="$ctrl.searchQuery"
                        data-ng-change="$ctrl.onChangeSearchQuery()"
-                       placeholder="Search by text, tags and keywords..."
+                       placeholder="{{ 'functions:PLACEHOLDER.SEARCH_TEMPLATE' | i18next }}"
                        data-igz-input-blur-on-enter>
             </div>
             <div class="templates-runtime-drop-down">
-                <span class="input-label">Runtime</span>
+                <span class="input-label">
+                    {{ 'functions:RUNTIME' | i18next }}
+                </span>
                 <igz-default-dropdown data-values-array="$ctrl.runtimeFilters"
                                       data-selected-item="$ctrl.selectedRuntimeFilter"
                                       data-item-select-callback="$ctrl.onRuntimeFilterChange(item, isItemChanged)">
@@ -59,7 +71,8 @@
             </div>
         </div>
         <div class="function-templates">
-            <div class="function-template-wrapper" data-ng-repeat="(key, value) in $ctrl.templatesWorkingCopy"
+            <div class="function-template-wrapper"
+                 data-ng-repeat="(key, value) in $ctrl.templatesWorkingCopy"
                  data-ng-click="$ctrl.selectTemplate(key)"
                  data-ng-class="{'selected': $ctrl.isTemplateSelected(key)}">
                 <div class="add-template-icon-wrapper"
@@ -75,7 +88,9 @@
             </div>
         </div>
         <div class="bottom-bar">
-            <button class="ncl-secondary-button" data-ng-click="$ctrl.cancelCreating($event)">CANCEL</button>
+            <button class="ncl-secondary-button" data-ng-click="$ctrl.cancelCreating($event)">
+                {{ 'common:CANCEL' | i18next }}
+            </button>
         </div>
     </div>
 </div>
