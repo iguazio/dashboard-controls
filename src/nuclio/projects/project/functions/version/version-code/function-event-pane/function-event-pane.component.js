@@ -421,6 +421,10 @@
         function isDisabledTestButton() {
             var httpPort = lodash.get(ctrl.version, 'ui.deployResult.status.httpPort', null);
 
+            if (lodash.get(ctrl.version, 'status.state') === 'ready' && lodash.get(ctrl.version, 'spec.disable')) {
+                return true;
+            }
+
             if (lodash.isNil(httpPort)) {
                 httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
             }
