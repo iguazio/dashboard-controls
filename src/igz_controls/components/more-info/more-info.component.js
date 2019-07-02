@@ -16,7 +16,7 @@
             controller: IgzMoreInfoController
         });
 
-    function IgzMoreInfoController(lodash) {
+    function IgzMoreInfoController($document, $element, $timeout, lodash) {
         var ctrl = this;
 
         ctrl.$onInit = onInit;
@@ -68,6 +68,26 @@
         function onQuestionMarkClick() {
             if (ctrl.isClickMode()) {
                 ctrl.isDescriptionVisible = !ctrl.isDescriptionVisible;
+
+                $timeout(function () {
+                    ctrl.isDescriptionVisible ? $document.on('click', hideTooltip) : $document.off('click', hideTooltip);
+                })
+            }
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Hides tooltip by clicking anywhere outside of the tooltip or the question mark icon.
+         * @param {Event} event
+         */
+        function hideTooltip(event) {
+            if (!event.target.closest('.row-description') && $element.find('.question-mark')[0] !== event.target) {
+                ctrl.isDescriptionVisible = false;
+
+                $document.off('click', hideTooltip);
             }
         }
     }
