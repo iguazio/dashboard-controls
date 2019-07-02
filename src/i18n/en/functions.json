@@ -258,6 +258,7 @@
         "CONFIG_MAP": "for storing configuration artifacts separately from the container image content",
         "CONFIG_MAP_DEFAULT": "Storing configuration",
         "DISABLE_CACHE": "Build the function's Docker image from scratch without reusing any previously built Docker image layers",
+        "DISABLED_FUNCTION": "Cannot test disabled functions",
         "FUNCTION_NAME": "Name must be 1-63 characters long, must consist of lower case alphanumeric characters or hyphen, start with an alphabetic character, and end with an alphanumeric character (e.g. 'my-name',  or 'abc-123').",
         "LABELS": "for specifying object attributes that are meaningful and relevant to users",
         "NEW_TEST": "New test",

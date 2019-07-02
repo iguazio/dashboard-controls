@@ -76,7 +76,11 @@
                         </div>
                         <div class="igz-button-primary"
                              data-ng-class="{'disabled': $ctrl.isDisabledTestButton()}"
-                             data-ng-click="$ctrl.testEvent()">
+                             data-ng-click="$ctrl.testEvent()"
+                             data-uib-tooltip="{{$ctrl.version.status.state === 'ready' && $ctrl.version.spec.disable ? ('functions:TOOLTIP.DISABLED_FUNCTION' | i18next) : ''}}"
+                             data-tooltip-popup-delay="300"
+                             data-tooltip-placement="top"
+                             data-tooltip-append-to-body="true">
                             {{ 'functions:TEST' | i18next }}
                         </div>
                         <div class="ncl-secondary-button"
