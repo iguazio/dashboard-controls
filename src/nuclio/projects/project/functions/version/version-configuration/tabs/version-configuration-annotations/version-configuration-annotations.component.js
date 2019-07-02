@@ -28,7 +28,8 @@
         };
         ctrl.tooltip = '<a class="link" target="_blank" ' +
             'href="https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/">' +
-            'Kubernetes annotations</a> ' + $i18next.t('functions:TOOLTIP.ANNOTATIONS', {lng: lng});
+            $i18next.t('functions:TOOLTIP.ANNOTATIONS.HEAD', {lng: lng}) + '</a> ' +
+            $i18next.t('functions:TOOLTIP.ANNOTATIONS.REST', {lng: lng});
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;

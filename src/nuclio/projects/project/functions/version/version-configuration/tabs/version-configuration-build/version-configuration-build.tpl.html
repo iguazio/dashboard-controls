@@ -54,7 +54,13 @@
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-50 build-field build-onbuild-image-field">
-                <div class="field-label">{{ 'functions:ONBUILD_IMAGE' | i18next }}</div>
+                <div class="field-label label-with-tooltip align-items-center">
+                    <span>{{ 'functions:ONBUILD_IMAGE' | i18next }}</span>
+                    <igz-more-info
+                            data-description="{{ 'functions:ONBUILD_IMAGE_DESCRIPTION' | i18next }}"
+                            data-trigger="click">
+                    </igz-more-info>
+                </div>
                 <igz-validating-input-field data-field-type="input"
                                             data-input-name="onbuildImage"
                                             data-input-value="$ctrl.version.spec.build.onbuildImage"

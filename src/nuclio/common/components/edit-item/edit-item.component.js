@@ -48,11 +48,13 @@
         ctrl.placeholder = '';
         ctrl.tooltips = {
             secret: 'A <a class="link" target="_blank" ' +
-                'href="https://kubernetes.io/docs/concepts/configuration/secret/">Kubernetes secret</a> ' +
-                $i18next.t('functions:TOOLTIP.SECRET', {lng: lng}),
+                'href="https://kubernetes.io/docs/concepts/configuration/secret/">' +
+                $i18next.t('functions:TOOLTIP.SECRET.HEAD', {lng: lng}) + '</a> ' +
+                $i18next.t('functions:TOOLTIP.SECRET.REST', {lng: lng}),
             configMap: 'A <a class="link" target="_blank" ' +
-                'href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/">Kubernetes' +
-                'ConfigMap</a> ' + $i18next.t('functions:TOOLTIP.SECRET', {lng: lng}),
+                'href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/">' +
+                $i18next.t('functions:TOOLTIP.CONFIG_MAP.HEAD', {lng: lng}) + '</a> ' +
+                $i18next.t('functions:TOOLTIP.CONFIG_MAP.REST', {lng: lng}),
             v3io: $i18next.t('functions:TOOLTIP.V3IO', {lng: lng})
         };
 

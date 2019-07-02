@@ -27,8 +27,9 @@
             }
         };
         ctrl.tooltip = '<a class="link" target="_blank" ' +
-            'href="https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/">Kubernetes labels</a> ' +
-            $i18next.t('functions:TOOLTIP.ANNOTATIONS', {lng: lng});
+            'href="https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/">' +
+            $i18next.t('functions:TOOLTIP.LABELS.HEAD', {lng: lng}) + '</a> ' +
+            $i18next.t('functions:TOOLTIP.LABELS.REST', {lng: lng});
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
