@@ -61,13 +61,23 @@
 
             ctrl.build.dependencies = lodash.get(ctrl.version, 'spec.build.dependencies', []).join('\n');
             ctrl.build.runtimeAttributes.repositories = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories', []).join('\n');
+
+            $timeout(function () {
+                if (ctrl.buildForm.$invalid) {
+                    ctrl.buildForm.$setSubmitted();
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'build', isDisabled: true});
+                }
+            });
         }
 
         /**
          * Destructor method
          */
         function onDestroy() {
-            $rootScope.$broadcast('change-state-deploy-button', {isDisabled: false});
+            $rootScope.$broadcast('change-state-deploy-button', {
+                component: 'build',
+                isDisabled: lodash.get(ctrl.buildForm, '$invalid', false)
+            });
         }
 
         //
@@ -96,6 +106,7 @@
 
             $timeout(function () {
                 $rootScope.$broadcast('change-state-deploy-button', {
+                    component: 'build',
                     isDisabled: lodash.get(ctrl.buildForm, '$invalid', false)
                 });
             });
