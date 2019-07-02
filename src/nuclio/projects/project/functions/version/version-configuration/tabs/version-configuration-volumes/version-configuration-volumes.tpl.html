@@ -1,5 +1,11 @@
 <div class="ncl-version-configuration-volumes">
-    <div class="title">{{ 'functions:VOLUMES' | i18next }}</div>
+    <div class="title">
+        <span>{{ 'functions:VOLUMES' | i18next }}</span>
+        <igz-more-info
+                data-description="{{ 'functions:TOOLTIP.VOLUMES' | i18next }}"
+                data-trigger="click">
+        </igz-more-info>
+    </div>
     <form name="$ctrl.volumesForm" class="volumes-wrapper">
 
         <div class="ncl-version-volume">

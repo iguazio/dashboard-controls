@@ -452,12 +452,14 @@
                     {
                         id: 'secret',
                         name: 'Secret',
-                        tooltip: $i18next.t('functions:TOOLTIP.SECRET_DEFAULT', {lng: i18next.language})
+                        tooltip: $i18next.t('functions:TOOLTIP.SECRET.HEAD', {lng: i18next.language}) + ' ' +
+                            $i18next.t('functions:TOOLTIP.SECRET.REST', {lng: i18next.language})
                     },
                     {
                         id: 'configMap',
                         name: 'ConfigMap',
-                        tooltip: $i18next.t('functions:TOOLTIP.CONFIG_MAP_DEFAULT', {lng: i18next.language})
+                        tooltip: $i18next.t('functions:TOOLTIP.CONFIG_MAP.HEAD', {lng: i18next.language}) + ' ' +
+                            $i18next.t('functions:TOOLTIP.CONFIG_MAP.REST', {lng: i18next.language})
                     },
                     {
                         id: 'persistentVolumeClaim',
