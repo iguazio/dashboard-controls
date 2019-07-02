@@ -85,7 +85,7 @@
          */
         function hideTooltip(event) {
             if (!event.target.closest('.row-description') && $element.find('.question-mark')[0] !== event.target) {
-                ctrl.isDescriptionVisible = !ctrl.isDescriptionVisible;
+                ctrl.isDescriptionVisible = false;
 
                 $document.off('click', hideTooltip);
             }
