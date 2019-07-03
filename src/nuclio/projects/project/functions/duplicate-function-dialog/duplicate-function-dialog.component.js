@@ -5,7 +5,6 @@
         .component('nclDuplicateFunctionDialog', {
             bindings: {
                 closeDialog: '&',
-                createFunction: '&',
                 getFunctions: '&',
                 project: '<',
                 version: '<'
@@ -14,7 +13,7 @@
             controller: DuplicateFunctionDialogController
         });
 
-    function DuplicateFunctionDialogController(lodash, EventHelperService, FormValidationService,
+    function DuplicateFunctionDialogController($state, lodash, EventHelperService, FormValidationService,
                                                ValidatingPatternsService) {
         var ctrl = this;
 
@@ -56,10 +55,16 @@
                     ctrl.getFunctions({id: projectID})
                         .then(function (response) {
                             if (lodash.isEmpty(lodash.filter(response, ['metadata.name', ctrl.newFunctionName]))) {
-                                ctrl.createFunction({version: newFunction, projectID: projectID})
-                                    .then(function () {
-                                        ctrl.closeDialog({version: newFunction});
-                                    });
+                                ctrl.closeDialog();
+
+                                $state.go('app.project.function.edit.code', {
+                                    isNewFunction: true,
+                                    id: ctrl.project.metadata.name,
+                                    functionId: newFunction.metadata.name,
+                                    projectId: projectID,
+                                    projectNamespace: ctrl.project.metadata.namespace,
+                                    functionData: newFunction
+                                });
                             } else {
                                 ctrl.nameTakenError = true;
                             }
