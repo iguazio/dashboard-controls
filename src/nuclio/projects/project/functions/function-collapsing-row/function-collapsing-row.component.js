@@ -5,7 +5,6 @@
         .component('nclFunctionCollapsingRow', {
             bindings: {
                 actionHandlerCallback: '&',
-                createFunction: '&',
                 externalAddress: '<',
                 function: '<',
                 functionsList: '<',
@@ -193,25 +192,18 @@
 
         function duplicateFunction() {
             ngDialog.open({
-                template: '<ncl-duplicate-function-dialog data-close-dialog="closeThisDialog(version)" ' +
-                    'data-create-function="ngDialogData.createFunction({version: version, projectID: projectID})" ' +
+                template: '<ncl-duplicate-function-dialog data-close-dialog="closeThisDialog()" ' +
                     'data-get-functions="ngDialogData.getFunctions({id: id})" ' +
                     'data-project="ngDialogData.project" data-version="ngDialogData.version">' +
                     '</ncl-duplicate-function-dialog>',
                 plain: true,
                 data: {
-                    createFunction: ctrl.createFunction,
                     getFunctions: ctrl.getFunctions,
                     project: ctrl.project,
                     version: ctrl.function
                 },
                 className: 'ngdialog-theme-iguazio duplicate-function-dialog-wrapper'
-            }).closePromise
-                .then(function (data) {
-                    if (!lodash.isNil(data.value)) {
-                        ctrl.refreshFunctionsList();
-                    }
-                });
+            });
         }
 
         /**

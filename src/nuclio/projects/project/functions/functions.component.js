@@ -5,7 +5,6 @@
         .component('nclFunctions', {
             bindings: {
                 deleteFunction: '&',
-                createFunction: '&',
                 getExternalIpAddresses: '&',
                 getProject: '&',
                 getFunction: '&',
