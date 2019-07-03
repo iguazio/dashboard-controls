@@ -421,6 +421,10 @@
         function isDisabledTestButton() {
             var httpPort = lodash.get(ctrl.version, 'ui.deployResult.status.httpPort', null);
 
+            if (lodash.get(ctrl.version, 'status.state') === 'ready' && lodash.get(ctrl.version, 'spec.disable')) {
+                return true;
+            }
+
             if (lodash.isNil(httpPort)) {
                 httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
             }
@@ -615,8 +619,8 @@
             ctrl.testEventsForm.$setPristine();
             var httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
 
-            if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) &&
-                !lodash.isNull(httpPort) && !ctrl.uploadingData.uploading && !ctrl.testing) {
+            if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) && !ctrl.testing &&
+                !lodash.isNull(httpPort) && !ctrl.uploadingData.uploading && !ctrl.isDisabledTestButton()) {
                 var startTime = moment();
                 canceler = $q.defer();
                 canceledInvocation = false;
