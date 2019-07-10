@@ -164,9 +164,6 @@ gulp.task('test-unit-run', function (done) {
     new karmaServer({
         configFile: __dirname + '/' + config.test_files.unit.karma_config,
         files: files,
-        proxies: {
-            '/assets/i18n/': path.resolve(__dirname + '/' + config.test_files.unit.i18n)
-        },
         action: 'run'
     }, done).start();
 });
