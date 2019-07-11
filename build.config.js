@@ -87,9 +87,6 @@ module.exports = {
             tests: [
                 'src/**/*.spec.js'
             ],
-            i18n: [
-                'src/i18n'
-            ],
             karma_config: 'tests/unit/karma.config.js'
         }
     },
