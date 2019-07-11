@@ -245,6 +245,10 @@
             }
         }
 
+        /**
+         * Unselects template.
+         * @param {Event} event
+         */
         function unselectTemplate(event) {
             ctrl.selectedTemplate = null;
             ctrl.functionData = null;
@@ -252,6 +256,7 @@
             event.preventDefault();
             event.stopPropagation();
         }
+
         //
         // Private methods
         //

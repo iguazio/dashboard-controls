@@ -211,8 +211,7 @@
         "SEARCH_TEMPLATE": "Search by text, tags and keywords...",
         "SEC": "Sec...",
         "SELECT_CLASS": "Select class",
-        "SELECT_TYPE": "Select type",
-        "TYPE_FUNCTION_NAME": "Type function name"
+        "SELECT_TYPE": "Select type"
     },
     "PROJECT": "Project",
     "PROJECT_NAME": "Project Name",
