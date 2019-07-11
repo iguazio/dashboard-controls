@@ -369,6 +369,7 @@
     "SCAN_REQUESTS": "Scan Requests",
     "SCANNED_ITEMS": "Scanned Items",
     "SCHEDULE": "Schedule",
+    "SELECT_LANGUAGE": "Select a language",
     "SELECT_RANGE": "Select range",
     "SEND": "Send",
     "SERVER_UNREACHABLE_ALERT": "Server unreachable. You can try to refresh the page.",
@@ -416,6 +417,7 @@
     "TO": "To",
     "TOOLTIP": {
         "CHANGE_VIEW": "Change view",
+        "CLOSE_HEADER": "Close header",
         "COPY_TO_CLIPBOARD": "Copy to clipboard",
         "DOWNLOAD_TO_FILE": "Download to file",
         "EXIT_EDIT_MODE": "Apply or cancel changes to exit edit mode",
@@ -423,6 +425,7 @@
         "INFINITY": "Infinity",
         "LAST_10_MINUTES": "last 10 minutes",
         "LAST_MONTH": "last month",
+        "OPEN_HEADER": "Open header",
         "PER_REPLICA": "Per replica",
         "SORT": "Sort",
         "STACKED": "Stacked"
