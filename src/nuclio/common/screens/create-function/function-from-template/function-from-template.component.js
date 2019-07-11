@@ -1,3 +1,4 @@
+/* eslint max-statements: ["error", 100] */
 (function () {
     'use strict';
 
@@ -16,7 +17,7 @@
             controller: FunctionFromTemplateController
         });
 
-    function FunctionFromTemplateController($window, $scope, $state, $timeout, $i18next, i18next, lodash, ngDialog,
+    function FunctionFromTemplateController($element, $window, $scope, $state, $timeout, $i18next, i18next, lodash, ngDialog,
                                             DialogsService, ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
@@ -57,6 +58,7 @@
         ctrl.onProjectChange = onProjectChange;
         ctrl.paginationCallback = paginationCallback;
         ctrl.selectTemplate = selectTemplate;
+        ctrl.unselectTemplate = unselectTemplate;
 
         //
         // Hook methods
@@ -223,6 +225,10 @@
             ctrl.page.number = page;
 
             paginateTemplates();
+
+            $timeout(function () {
+                setReadMoreButtonsState(ctrl.templatesWorkingCopy);
+            });
         }
 
         /**
@@ -239,6 +245,13 @@
             }
         }
 
+        function unselectTemplate(event) {
+            ctrl.selectedTemplate = null;
+            ctrl.functionData = null;
+
+            event.preventDefault();
+            event.stopPropagation();
+        }
         //
         // Private methods
         //
@@ -272,14 +285,6 @@
         }
 
         /**
-         * Gets default selected template
-         * @returns {Object} template to be set as selected
-         */
-        function getSelectedTemplate() {
-            return lodash.keys(ctrl.templatesWorkingCopy)[0];
-        }
-
-        /**
          * Go to `app.project.function.edit.code` screen
          */
         function goToEditCodeScreen() {
@@ -304,18 +309,15 @@
             ctrl.getFunctionTemplates()
                 .then(function (response) {
                     ctrl.templatesWorkingCopy = response;
-                    ctrl.selectedTemplate = getSelectedTemplate();
-                    var selectedTemplate = ctrl.templatesWorkingCopy[ctrl.selectedTemplate];
-                    ctrl.functionData = angular.copy(selectedTemplate);
-
-                    lodash.assign(ctrl.functionData.rendered.metadata, {
-                        name: ctrl.functionName
-                    });
 
                     templatesOriginalObject = angular.copy(ctrl.templatesWorkingCopy);
                     ctrl.runtimeFilters = getRuntimeFilters();
 
                     initPagination();
+
+                    $timeout(function () {
+                        setReadMoreButtonsState(ctrl.templatesWorkingCopy);
+                    });
                 })
                 .catch(function (error) {
                     var msg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS_TEMPLATE', {lng: lng});
@@ -439,6 +441,22 @@
             ctrl.selectedProject = lodash.isEmpty(ctrl.projectsList)         ? newProject                     :
                                    ctrl.selectedProject.id !== 'new_project' ? ctrl.selectedProject           :
                                                                                lodash.first(ctrl.projectsList);
+        }
+
+        /**
+         * Sets the flag to show `Read more...` in the end of template's description
+         * when it is bigger than template's block can contain.
+         * @param {Array} templates
+         */
+        function setReadMoreButtonsState(templates) {
+            var templatesElements = $element.find('.template-description');
+
+            lodash.forEach(templates, function (template) {
+                var description = lodash.get(template, 'rendered.spec.description');
+                var templateElement = lodash.find(templatesElements, ['innerHTML', description]);
+
+                lodash.set(template, 'ui.readMore', templateElement.scrollHeight > angular.element(templateElement).height());
+            });
         }
     }
 }());
