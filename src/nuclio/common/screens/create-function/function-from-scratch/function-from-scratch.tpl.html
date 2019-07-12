@@ -58,10 +58,6 @@
                                           data-form-object="$ctrl.functionFromScratchForm"
                                           data-input-name="runtime"></igz-default-dropdown>
                     <div class="bottom-bar">
-                        <button class="ncl-secondary-button"
-                                data-ng-click="$ctrl.cancelCreating($event)">
-                            {{ 'common:CANCEL' | i18next }}
-                        </button>
                         <button class="ncl-primary-button"
                                 data-ng-click="$ctrl.createFunction()"
                                 data-ng-disabled="!$ctrl.isCreateFunctionAllowed()"

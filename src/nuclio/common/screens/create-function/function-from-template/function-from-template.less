@@ -117,7 +117,7 @@
             }
 
             .templates-pagination {
-                min-width: 237px;
+                min-width: 241px;
                 display: flex;
                 align-items: flex-end;
                 justify-content: flex-end;
@@ -145,7 +145,7 @@
                 width: 352px;
                 min-height: 169px;
                 box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-                margin: 0 16px 30px 0;
+                margin: 0 16px 14px 0;
                 position: relative;
 
                 &:hover,
@@ -169,6 +169,7 @@
                 &.selected {
                     .function-template {
                         border: 2px solid @orange;
+                        z-index: 2;
 
                         .function-template-content {
                             .template-create-button {
@@ -240,13 +241,6 @@
                     }
                 }
             }
-        }
-
-        .bottom-bar {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 2px;
-            padding-right: 16px;
         }
     }
 }

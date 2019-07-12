@@ -45,6 +45,7 @@
 
         ctrl.$onInit = onInit;
 
+        ctrl.cancelCreating = cancelCreating;
         ctrl.createNewProject = createNewProject;
         ctrl.toggleSplashScreen = toggleSplashScreen;
         ctrl.isTypeSelected = isTypeSelected;
@@ -123,6 +124,22 @@
         //
         // Public methods
         //
+
+        /**
+         * Cancels creating a function
+         */
+        function cancelCreating(event) {
+            event.preventDefault();
+
+            if (!lodash.isEmpty(ctrl.project)) {
+                $state.go('app.project.functions', {
+                    projectId: ctrl.project.metadata.name,
+                    createCancelled: true
+                });
+            } else {
+                $state.go('app.projects');
+            }
+        }
 
         /**
          * New project dialog
@@ -206,7 +223,7 @@
             var templatesWrapper = $element.find('.templates-wrapper');
 
             // width of one template
-            var templateWidth = 416;
+            var templateWidth = 368;
 
             if (selectedFunctionType === 'from_template') {
                 templatesWrapper.css('width', '100%');

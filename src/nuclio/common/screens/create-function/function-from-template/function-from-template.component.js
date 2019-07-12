@@ -48,7 +48,6 @@
 
         ctrl.validationPatterns = ValidatingPatternsService;
 
-        ctrl.cancelCreating = cancelCreating;
         ctrl.createFunction = createFunction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isTemplateSelected = isTemplateSelected;
@@ -95,22 +94,6 @@
         //
         // Public methods
         //
-
-        /**
-         * Cancels creating a function
-         */
-        function cancelCreating(event) {
-            event.preventDefault();
-
-            if (!lodash.isEmpty(ctrl.project)) {
-                $state.go('app.project.functions', {
-                    projectId: ctrl.project.metadata.name,
-                    createCancelled: true
-                });
-            } else {
-                $state.go('app.projects');
-            }
-        }
 
         /**
          * Callback handler for 'create function' button
