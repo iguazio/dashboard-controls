@@ -31,7 +31,6 @@
             }
         };
         ctrl.functionData = {};
-        ctrl.isCreateFunctionAllowed = false;
         ctrl.page = {};
         ctrl.runtimeFilters = [];
         ctrl.selectedTemplate = '';
@@ -50,6 +49,7 @@
 
         ctrl.createFunction = createFunction;
         ctrl.inputValueCallback = inputValueCallback;
+        ctrl.isCreateFunctionAllowed = isCreateFunctionAllowed;
         ctrl.isTemplateSelected = isTemplateSelected;
         ctrl.isProjectsDropDownVisible = isProjectsDropDownVisible;
         ctrl.onChangeSearchQuery = onChangeSearchQuery;
@@ -145,10 +145,16 @@
             $timeout(function () {
                 if (!lodash.isNil(data)) {
                     lodash.set(ctrl, 'functionName', data);
-
-                    ctrl.isCreateFunctionAllowed = lodash.isEmpty(ctrl.functionFromTemplateForm.$error);
                 }
             });
+        }
+
+        /**
+         * Checks if function creation is allowed
+         * @returns {boolean}
+         */
+        function isCreateFunctionAllowed() {
+            return lodash.isEmpty(ctrl.functionFromTemplateForm.$error);
         }
 
         /**
@@ -197,7 +203,6 @@
          */
         function onProjectChange(item) {
             ctrl.project = lodash.find(ctrl.projects, ['metadata.name', item.id]);
-            ctrl.isCreateFunctionAllowed = lodash.isEmpty(ctrl.functionFromTemplateForm.$error);
         }
 
         /**
