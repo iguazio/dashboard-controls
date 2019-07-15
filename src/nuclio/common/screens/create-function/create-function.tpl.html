@@ -6,8 +6,10 @@
         <div class="igz-scrollable-container"
              data-ng-scrollbars data-ng-scrollbars-config="$ctrl.horizontalScrollConfig">
             <div class="new-function-header">
-                <div class="title">
-                    {{ 'functions:START_NEW_FUNCTION' | i18next }}
+                <div class="title-wrapper">
+                    <div class="title">{{ 'functions:START_NEW_FUNCTION' | i18next }}</div>
+                    <div class="igz-icon-close"
+                         data-ng-click="$ctrl.cancelCreating($event)"></div>
                 </div>
 
                 <div class="new-function-types">

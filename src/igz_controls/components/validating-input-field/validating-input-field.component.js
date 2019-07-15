@@ -185,7 +185,7 @@
         function getRemainingSymbolsCounter() {
             if (ctrl.formObject) {
                 var maxLength = parseInt(ctrl.validationMaxLength);
-                var inputViewValue = ctrl.formObject[ctrl.inputName].$viewValue;
+                var inputViewValue = lodash.get(ctrl.formObject, ctrl.inputName + '.$viewValue');
 
                 return (maxLength >= 0 && inputViewValue) ? (maxLength - inputViewValue.length).toString() : null;
             }
