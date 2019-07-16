@@ -226,11 +226,11 @@
         }
 
         /**
-         * Creates a RegExp pattern that validates only numbers in the range from 1 to `upperBound`
-         * @param {number} upperBound
+         * Creates a RegExp pattern that validates only numbers in the range from 1 to `upperBound`.
+         * @param {number} upperBound - the maximum number to consider valid by the returned RegExp pattern.
          * @returns {RegExp} a RegExp pattern as a string, that validates a given string to be a number in the range
          *     from 1 to `upperBound`, or the empty-string (`''`) if `upperBound` is not of type `number` or if it is
-         *     a non-positive number
+         *     a non-positive number.
          */
         function createNumberPattern(upperBound) {
             var str = String(upperBound);
@@ -244,7 +244,7 @@
                 return '^[1-' + str + ']$';
             }
 
-            var patterns = ['\\d{0,' + (len - 2) + '}[1-9]'];
+            var patterns = ['\\d{1,' + (len - 1) + '}'];
             var lastDigits = '';
             lodash.forEach(lodash.initial(str), function (digit, index) {
                 var upper = Number(digit) - 1;
@@ -254,7 +254,7 @@
                 lastDigits += digit;
             });
             patterns.push(lastDigits + '[0-' + (upperBound % 10) + ']');
-            return new RegExp('^(' + patterns.join('|') + ')$');
+            return new RegExp('^(?!0+$)(' + patterns.join('|') + ')$');
         }
     }
 }());
