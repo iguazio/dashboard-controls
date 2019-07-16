@@ -154,7 +154,7 @@
          * @returns {boolean}
          */
         function isCreateFunctionAllowed() {
-            return lodash.isEmpty(ctrl.functionFromTemplateForm.$error);
+            return lodash.isEmpty(lodash.get(ctrl, 'functionFromTemplateForm.$error'));
         }
 
         /**

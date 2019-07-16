@@ -231,17 +231,7 @@
                 // count amount of templates in one line
                 var elementsPerLine = Math.floor(parseInt(templatesWrapper.css('width')) / templateWidth);
 
-                // find last template in first line
-                var template = $element.find('.function-template-wrapper:eq(' + (elementsPerLine - 1) + ')');
-
-                if (template.length !== 0) {
-
-                    // calculate needed width for current amount of templates
-                    var neededWidth = template.offset().left - templatesWrapper.offset().left + templateWidth;
-
-                    // set width of templates wrapper corresponding to amount of templates
-                    templatesWrapper.css('width', neededWidth + 'px');
-                }
+                templatesWrapper.css('width', templateWidth * elementsPerLine + 'px');
             }
         }
     }
