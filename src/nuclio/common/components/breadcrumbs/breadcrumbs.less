@@ -1,4 +1,15 @@
 ncl-breadcrumbs {
+    .main-header-title {
+        &:not(.disable-behavior) {
+            &:hover .main-header-title-text {
+                color: @dark-sky-blue;
+            }
+        }
+
+        &.disable-behavior {
+            color: @dusk-three;
+        }
+    }
 
     .igz-icon-right {
         font-size: 11px;
@@ -7,11 +18,11 @@ ncl-breadcrumbs {
     }
 
     .ncl-header-subtitle {
-        color: #898593;
+        color: @greyish-purple;
     }
 
     .ncl-bold-subtitle {
-        color: #474056;
+        color: @dusk-three;
         font-weight: bold;
     }
 }
