@@ -44,6 +44,8 @@
         .component('igzDefaultDropdown', {
             bindings: {
                 additionalClass: '@?',
+                autocomplete: '<?',
+                autocompleteIgnoreCase: '<?',
                 selectedItem: '<',
                 valuesArray: '<',
                 bottomButtonCallback: '<?',
@@ -81,6 +83,8 @@
                                           PriorityDropdownService, SeverityDropdownService) {
         var ctrl = this;
 
+        var valuesArrayCopy = [];
+
         ctrl.topPosition = 'inherit';
         ctrl.typedValue = '';
         ctrl.isDropdownContainerShown = false;
@@ -117,8 +121,12 @@
          * Initialization method
          */
         function onInit() {
+            ctrl.autocomplete = lodash.defaultTo(ctrl.autocomplete, false);
+            ctrl.autocompleteIgnoreCase = lodash.defaultTo(ctrl.autocompleteIgnoreCase, false);
             ctrl.isCapitalized = lodash.defaultTo(ctrl.isCapitalized, 'false').toLowerCase() === 'true';
             ctrl.iconClass = lodash.defaultTo(ctrl.iconClass, 'igz-icon-dropdown');
+
+            valuesArrayCopy = angular.copy(ctrl.valuesArray);
 
             if (!lodash.isNil(ctrl.dropdownType) && ctrl.dropdownType === 'priority') {
                 ctrl.valuesArray = PriorityDropdownService.getPrioritiesArray();
@@ -287,13 +295,28 @@
          */
         function onChangeTypingInput() {
             if (!lodash.isNil(ctrl.typedValue)) {
-                var newItem = {
-                    id: ctrl.typedValue,
-                    visible: true
-                };
-                lodash.set(newItem, ctrl.nameKey || 'name', ctrl.typedValue);
+                if (ctrl.autocomplete) {
+                    ctrl.isDropdownContainerShown = false;
 
-                ctrl.selectItem(lodash.find(ctrl.valuesArray, ['name', ctrl.typedValue]) || newItem);
+                    ctrl.valuesArray = lodash.filter(valuesArrayCopy, function (item) {
+                        var itemName = ctrl.autocompleteIgnoreCase ? item.name.toLowerCase() : item.name;
+                        var typedValue = ctrl.autocompleteIgnoreCase ? ctrl.typedValue.toLowerCase() : ctrl.typedValue;
+
+                        return itemName.indexOf(typedValue) === 0;
+                    });
+
+                    if (ctrl.valuesArray.length > 0) {
+                        $element.find('.default-dropdown-field')[0].dispatchEvent(new Event('click'));
+                    }
+                } else {
+                    var newItem = {
+                        id: ctrl.typedValue,
+                        visible: true
+                    };
+                    lodash.set(newItem, ctrl.nameKey || 'name', ctrl.typedValue);
+
+                    ctrl.selectItem(lodash.find(ctrl.valuesArray, ['name', ctrl.typedValue]) || newItem);
+                }
             }
         }
 
