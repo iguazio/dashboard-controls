@@ -106,6 +106,7 @@
         ctrl.isItemSelected = isItemSelected;
         ctrl.isPlaceholderClass = isPlaceholderClass;
         ctrl.isShowDropdownError = isShowDropdownError;
+        ctrl.isTypingEnabled = isTypingEnabled;
         ctrl.onChangeTypingInput = onChangeTypingInput;
         ctrl.onDropDownKeydown = onDropDownKeydown;
         ctrl.onItemKeydown = onItemKeydown;
@@ -291,24 +292,41 @@
         }
 
         /**
+         * Checks if the typing in dropdown's field is enabled
+         * @returns {boolean}
+         */
+        function isTypingEnabled() {
+            return ctrl.enableTyping || ctrl.autocomplete;
+        }
+
+        /**
          * Changes selected item depending on typed value
          */
         function onChangeTypingInput() {
-            if (!lodash.isNil(ctrl.typedValue)) {
+            ctrl.isDropdownContainerShown = false;
+
+            if (lodash.isEmpty(ctrl.typedValue)) {
+                ctrl.valuesArray = valuesArrayCopy;
+
+                $element.find('.default-dropdown-field')[0].dispatchEvent(new Event('click'));
+            } else {
                 if (ctrl.autocomplete) {
-                    ctrl.isDropdownContainerShown = false;
+                    var typedValue = ctrl.autocompleteIgnoreCase ? ctrl.typedValue.toLowerCase() : ctrl.typedValue;
 
                     ctrl.valuesArray = lodash.filter(valuesArrayCopy, function (item) {
                         var itemName = ctrl.autocompleteIgnoreCase ? item.name.toLowerCase() : item.name;
-                        var typedValue = ctrl.autocompleteIgnoreCase ? ctrl.typedValue.toLowerCase() : ctrl.typedValue;
 
-                        return itemName.indexOf(typedValue) === 0;
+                        return lodash.startsWith(itemName, typedValue);
                     });
 
                     if (ctrl.valuesArray.length > 0) {
                         $element.find('.default-dropdown-field')[0].dispatchEvent(new Event('click'));
+                    } else if (!ctrl.enableTyping) {
+                        ctrl.formObject[ctrl.inputName].$setValidity('text', false);
                     }
-                } else {
+                }
+
+                if (ctrl.enableTyping) {
                     var newItem = {
                         id: ctrl.typedValue,
                         visible: true
@@ -420,7 +438,10 @@
                     });
                 }
 
-                ctrl.isDropdownContainerShown = false;
+                if (angular.isDefined(event)) {
+                    ctrl.isDropdownContainerShown = false;
+                    ctrl.valuesArray = valuesArrayCopy;
+                }
             }
             if (!lodash.isNil(event)) {
                 event.stopPropagation();

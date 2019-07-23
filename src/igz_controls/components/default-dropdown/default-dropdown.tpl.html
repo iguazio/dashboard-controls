@@ -24,13 +24,14 @@
             </div>
             <input type="text"
                    class="input-name text-ellipsis"
-                   data-ng-class="{'non-editable': !$ctrl.enableTyping && !$ctrl.isDisabled, capitalized: $ctrl.isCapitalized}"
+                   data-ng-class="{'non-editable': !$ctrl.isTypingEnabled() && !$ctrl.isDisabled, capitalized: $ctrl.isCapitalized}"
                    data-ng-model="$ctrl.typedValue"
                    data-ng-change="$ctrl.onChangeTypingInput()"
-                   data-ng-readonly="!$ctrl.enableTyping"
+                   data-ng-readonly="!$ctrl.isTypingEnabled()"
                    data-ng-required="$ctrl.checkIsRequired()"
-                   data-ng-disabled="$ctrl.isDisabled || !$ctrl.enableTyping"
+                   data-ng-disabled="$ctrl.isDisabled || !$ctrl.isTypingEnabled()"
                    data-ng-pattern="$ctrl.matchPattern"
+                   autocomplete="off"
                    name="{{$ctrl.inputName}}"
                    placeholder="{{$ctrl.placeholder}}">
             <span data-ng-if="$ctrl.getDescription($ctrl.showSelectedItem().description)"
