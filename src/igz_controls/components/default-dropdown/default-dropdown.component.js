@@ -294,15 +294,20 @@
          * Changes selected item depending on typed value
          */
         function onChangeTypingInput() {
-            if (!lodash.isNil(ctrl.typedValue)) {
+            ctrl.isDropdownContainerShown = false;
+
+            if (lodash.isEmpty(ctrl.typedValue)) {
+                ctrl.valuesArray = valuesArrayCopy;
+
+                $element.find('.default-dropdown-field')[0].dispatchEvent(new Event('click'));
+            } else {
                 if (ctrl.autocomplete) {
-                    ctrl.isDropdownContainerShown = false;
+                    var typedValue = ctrl.autocompleteIgnoreCase ? ctrl.typedValue.toLowerCase() : ctrl.typedValue;
 
                     ctrl.valuesArray = lodash.filter(valuesArrayCopy, function (item) {
                         var itemName = ctrl.autocompleteIgnoreCase ? item.name.toLowerCase() : item.name;
-                        var typedValue = ctrl.autocompleteIgnoreCase ? ctrl.typedValue.toLowerCase() : ctrl.typedValue;
 
-                        return itemName.indexOf(typedValue) === 0;
+                        return lodash.startsWith(itemName, typedValue);
                     });
 
                     if (ctrl.valuesArray.length > 0) {

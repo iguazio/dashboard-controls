@@ -31,6 +31,7 @@
                    data-ng-required="$ctrl.checkIsRequired()"
                    data-ng-disabled="$ctrl.isDisabled || !$ctrl.enableTyping"
                    data-ng-pattern="$ctrl.matchPattern"
+                   autocomplete="off"
                    name="{{$ctrl.inputName}}"
                    placeholder="{{$ctrl.placeholder}}">
             <span data-ng-if="$ctrl.getDescription($ctrl.showSelectedItem().description)"
