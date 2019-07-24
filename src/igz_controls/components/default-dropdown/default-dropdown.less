@@ -419,3 +419,16 @@
         }
     }
 }
+
+.no-selected-option-style {
+    .default-dropdown {
+        .default-dropdown-field {
+            border: none;
+
+            &:active, &:focus, &:hover {
+                background-color: unset;
+                box-shadow: none;
+            }
+        }
+    }
+}
