@@ -31,7 +31,7 @@
         </div>
         <div class="function-templates">
             <div class="function-template-wrapper"
-                 data-ng-repeat="(key, value) in $ctrl.templatesWorkingCopy"
+                 data-ng-repeat="(key, value) in $ctrl.templatesWorkingCopy track by $index"
                  data-ng-class="{'selected': $ctrl.isTemplateSelected(key)}"
                  data-ng-click="$ctrl.selectTemplate(key)">
                 <div class="function-template">
