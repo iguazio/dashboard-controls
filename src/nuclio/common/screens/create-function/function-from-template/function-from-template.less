@@ -136,107 +136,109 @@
         }
 
         .function-templates {
-            display: flex;
-            position: relative;
-            flex-flow: row wrap;
-            margin-top: 32px;
-
-            .function-template-wrapper {
-                width: 352px;
-                min-height: 169px;
-                box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-                margin: 0 16px 14px 0;
+            .function-templates-form {
+                display: flex;
                 position: relative;
+                flex-flow: row wrap;
+                margin-top: 32px;
 
-                &:hover,
-                &.selected {
+                .function-template-wrapper {
+                    width: 352px;
+                    min-height: 169px;
+                    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+                    margin: 0 16px 14px 0;
+                    position: relative;
+
+                    &:hover,
+                    &.selected {
+                        .function-template {
+                            position: absolute;
+                            box-shadow: inherit;
+
+                            .function-template-content {
+                                .template-description {
+                                    max-height: unset;
+                                }
+
+                                .template-read-more {
+                                    display: none;
+                                }
+                            }
+                        }
+                    }
+
+                    &.selected {
+                        .function-template {
+                            border: 2px solid @orange;
+                            z-index: 2;
+
+                            .function-template-content {
+                                .template-create-button {
+                                    width: 100%;
+                                    display: flex;
+                                    margin-top: 24px;
+
+                                    .ncl-primary-button {
+                                        margin-left: unset;
+                                    }
+                                }
+
+                                .template-create-button {
+                                    justify-content: center;
+                                }
+
+                                .function-name {
+                                    margin-top: 16px;
+                                }
+
+                                .projects-drop-down,
+                                .function-name {
+                                    .input-label {
+                                        color: @dusk-three;
+                                        font-size: 14px;
+                                        font-weight: 500;
+                                        margin-bottom: 8px;
+                                    }
+                                }
+
+                                .buttons-wrapper {
+                                    display: flex;
+                                    justify-content: flex-end;
+                                    margin-top: 24px;
+                                }
+                            }
+                        }
+                    }
+
                     .function-template {
-                        position: absolute;
-                        box-shadow: inherit;
+                        width: 100%;
+                        min-height: 169px;
+                        padding: 24px;
+                        background-color: @white;
+                        border-radius: 2px;
+                        z-index: 1;
 
                         .function-template-content {
+                            color: @dusk-three;
+
+                            .template-title {
+                                font-size: 18px;
+                                font-weight: bold;
+                                width: 100%;
+                                margin-bottom: 15px;
+                            }
+
                             .template-description {
-                                max-height: unset;
+                                width: 100%;
+                                max-height: 62px;
+                                font-size: 14px;
+                                overflow: hidden;
                             }
 
                             .template-read-more {
-                                display: none;
+                                color: @greyish-purple;
+                                font-style: italic;
                             }
-                        }
-                    }
-                }
-
-                &.selected {
-                    .function-template {
-                        border: 2px solid @orange;
-                        z-index: 2;
-
-                        .function-template-content {
-                            .template-create-button {
-                                width: 100%;
-                                display: flex;
-                                margin-top: 24px;
-
-                                .ncl-primary-button {
-                                    margin-left: unset;
-                                }
-                            }
-
-                            .template-create-button {
-                                justify-content: center;
-                            }
-
-                            .function-name {
-                                margin-top: 16px;
-                            }
-
-                            .projects-drop-down,
-                            .function-name {
-                                .input-label {
-                                    color: @dusk-three;
-                                    font-size: 14px;
-                                    font-weight: 500;
-                                    margin-bottom: 8px;
-                                }
-                            }
-
-                            .buttons-wrapper {
-                                display: flex;
-                                justify-content: flex-end;
-                                margin-top: 24px;
-                            }
-                        }
-                    }
-                }
-
-                .function-template {
-                    width: 100%;
-                    min-height: 169px;
-                    padding: 24px;
-                    background-color: @white;
-                    border-radius: 2px;
-                    z-index: 1;
-
-                    .function-template-content {
-                        color: @dusk-three;
-
-                        .template-title {
-                            font-size: 18px;
-                            font-weight: bold;
-                            width: 100%;
-                            margin-bottom: 15px;
-                        }
-
-                        .template-description {
-                            width: 100%;
-                            max-height: 62px;
-                            font-size: 14px;
-                            overflow: hidden;
-                        }
-
-                        .template-read-more {
-                            color: @greyish-purple;
-                            font-style: italic;
                         }
                     }
                 }
