@@ -439,6 +439,26 @@
         }
 
         /**
+         * Sets class `last-line` to elements from the last row of the templates list.
+         */
+        function setLastLineClass() {
+            var TEMPLATE_WIDTH = 368;
+            var templates = $element.find('.function-template-wrapper');
+            var templatesWrapper = $element.find('.templates-wrapper');
+            var elementsPerLine = Math.floor(parseInt(templatesWrapper.css('width')) / TEMPLATE_WIDTH);
+            var countLastLineElements = lodash.size(templates) % elementsPerLine || elementsPerLine;
+            var lastLineElements = lodash.takeRight(templates, countLastLineElements);
+
+            lodash.forEach(templates, function (tmp) {
+                angular.element(tmp).removeClass('last-line');
+            });
+
+            lodash.forEach(lastLineElements, function (tmp) {
+                angular.element(tmp).addClass('last-line');
+            });
+        }
+
+        /**
          * Sets the flag to show `Read more...` in the end of template's description
          * when it is bigger than template's block can contain.
          * @param {Array} templates
@@ -451,23 +471,6 @@
                 var templateElement = lodash.find(templatesElements, ['innerHTML', description]);
 
                 lodash.set(template, 'ui.readMore', templateElement.scrollHeight > angular.element(templateElement).height());
-            });
-        }
-
-        function setLastLineClass() {
-            var TEMPLATE_WIDTH = 368;
-            var templates = $element.find('.function-templates').children();
-            var templatesWrapper = $element.find('.templates-wrapper');
-            var elementsPerLine = Math.floor(parseInt(templatesWrapper.css('width')) / TEMPLATE_WIDTH);
-            var countLastLineElements = lodash.size(templates) % elementsPerLine || elementsPerLine;
-            var lastLineElements = lodash.takeRight(templates, countLastLineElements);
-
-            lodash.forEach(templates, function (tmp) {
-                angular.element(tmp).removeClass('last-line');
-            });
-
-            lodash.forEach(lastLineElements, function (tmp) {
-                angular.element(tmp).addClass('last-line');
             });
         }
     }
