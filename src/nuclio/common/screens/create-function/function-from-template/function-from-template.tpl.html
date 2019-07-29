@@ -30,78 +30,81 @@
             </div>
         </div>
         <div class="function-templates">
-            <div class="function-template-wrapper"
-                 data-ng-repeat="(key, value) in $ctrl.templatesWorkingCopy"
-                 data-ng-class="{'selected': $ctrl.isTemplateSelected(key)}"
-                 data-ng-click="$ctrl.selectTemplate(key)">
-                <div class="function-template">
-                    <div data-ng-show="!$ctrl.isTemplateSelected(key)"
-                         class="function-template-content">
-                        <div class="template-title">{{key}}</div>
-                        <div class="template-description">{{value.rendered.spec.description}}</div>
-                        <div data-ng-if="value.ui.readMore"
-                             class="template-read-more">
-                            {{ 'functions:READ_MORE' | i18next }}...
+            <form name="$ctrl.functionFromTemplateForm"
+                  class="function-templates-form"
+                  novalidate>
+                <div class="function-template-wrapper"
+                     data-ng-repeat="(key, value) in $ctrl.templatesWorkingCopy track by $index"
+                     data-ng-class="{'selected': $ctrl.isTemplateSelected(key)}"
+                     data-ng-click="$ctrl.selectTemplate(key)">
+                    <div class="function-template">
+                        <div data-ng-show="!$ctrl.isTemplateSelected(key)"
+                             class="function-template-content">
+                            <div class="template-title">{{key}}</div>
+                            <div class="template-description">{{value.rendered.spec.description}}</div>
+                            <div data-ng-if="value.ui.readMore"
+                                 class="template-read-more">
+                                {{ 'functions:READ_MORE' | i18next }}...
+                            </div>
                         </div>
-                    </div>
 
-                    <div data-ng-show="$ctrl.isTemplateSelected(key)"
-                         class="function-template-content">
-                        <form name="$ctrl.functionFromTemplateForm"
-                              novalidate>
-                            <div data-ng-if="$ctrl.isProjectsDropDownVisible()"
-                                 class="projects-drop-down">
+                        <div data-ng-show="$ctrl.isTemplateSelected(key)"
+                             class="function-template-content">
+                            <ng-form name="templateForm">
+                                <div data-ng-if="$ctrl.isProjectsDropDownVisible()"
+                                     class="projects-drop-down">
                                 <span class="input-label">
                                     {{ 'common:PROJECTS' | i18next }}
                                 </span>
-                                <igz-default-dropdown data-is-required="true"
-                                                      data-values-array="$ctrl.projectsList"
-                                                      data-selected-item="$ctrl.selectedProject"
-                                                      data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)"
-                                                      data-form-object="$ctrl.functionFromTemplateForm"
-                                                      data-input-name="project">
-                                    <div class="transcluded-item"
-                                         data-ng-click="$ctrl.createNewProject()">
-                                        {{ 'functions:NEW_PROJECT' | i18next }}
-                                    </div>
-                                </igz-default-dropdown>
-                            </div>
-                            <div class="function-name">
+                                    <igz-default-dropdown data-is-required="true"
+                                                          data-values-array="$ctrl.projectsList"
+                                                          data-selected-item="$ctrl.selectedProject"
+                                                          data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)"
+                                                          data-form-object="$ctrl.functionFromTemplateForm"
+                                                          data-input-name="project">
+                                        <div class="transcluded-item"
+                                             data-ng-click="$ctrl.createNewProject()">
+                                            {{ 'functions:NEW_PROJECT' | i18next }}
+                                        </div>
+                                    </igz-default-dropdown>
+                                </div>
+                                <div class="function-name">
                                 <span class="input-label">
                                     {{ 'common:NAME' | i18next }}
                                  </span>
-                                <igz-validating-input-field class="nuclio-validating-input"
-                                                            data-field-type="input"
-                                                            data-input-name="name"
-                                                            data-input-value="$ctrl.functionName"
-                                                            data-validation-is-required="true"
-                                                            data-form-object="$ctrl.functionFromTemplateForm"
-                                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                            data-validation-pattern="$ctrl.validationPatterns.functionName"
-                                                            data-validation-max-length="{{$ctrl.validationPatterns.getMaxLength('function.name')}}"
-                                                            data-hide-counter="false"
-                                                            data-input-model-options="$ctrl.inputModelOptions"
-                                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_FUNCTION_NAME' | i18next }}..."
-                                                            data-uib-tooltip="{{ 'functions:TOOLTIP.FUNCTION_NAME' | i18next }}"
-                                                            data-tooltip-popup-delay="500"
-                                                            data-tooltip-append-to-body="true">
-                                </igz-validating-input-field>
-                            </div>
-                            <div class="buttons-wrapper">
-                                <button class="ncl-secondary-button"
-                                        data-ng-click="$ctrl.unselectTemplate($event)">
-                                    {{ 'common:CANCEL' | i18next }}
-                                </button>
-                                <button class="ncl-primary-button"
-                                        data-ng-click="$ctrl.createFunction()"
-                                        data-ng-class="{'disabled': !$ctrl.isCreateFunctionAllowed()}">
-                                    {{ 'common:CREATE' | i18next }}
-                                </button>
-                            </div>
-                        </form>
+                                    <igz-validating-input-field class="nuclio-validating-input"
+                                                                data-field-type="input"
+                                                                data-input-name="name"
+                                                                data-input-value="$ctrl.functionName"
+                                                                data-validation-is-required="true"
+                                                                data-form-object="$ctrl.functionFromTemplateForm"
+                                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                                data-validation-pattern="$ctrl.validationPatterns.functionName"
+                                                                data-validation-max-length="{{$ctrl.validationPatterns.getMaxLength('function.name')}}"
+                                                                data-hide-counter="false"
+                                                                data-input-model-options="$ctrl.inputModelOptions"
+                                                                data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_FUNCTION_NAME' | i18next }}..."
+                                                                data-uib-tooltip="{{ 'functions:TOOLTIP.FUNCTION_NAME' | i18next }}"
+                                                                data-tooltip-popup-delay="500"
+                                                                data-tooltip-append-to-body="true">
+                                    </igz-validating-input-field>
+                                </div>
+                                <div class="buttons-wrapper">
+                                    <button class="ncl-secondary-button"
+                                            data-ng-click="$ctrl.unselectTemplate($event)">
+                                        {{ 'common:CANCEL' | i18next }}
+                                    </button>
+                                    <button class="ncl-primary-button"
+                                            data-ng-click="$ctrl.createFunction()"
+                                            data-ng-class="{'disabled': !$ctrl.isCreateFunctionAllowed()}">
+                                        {{ 'common:CREATE' | i18next }}
+                                    </button>
+                                </div>
+                            </ng-form>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
