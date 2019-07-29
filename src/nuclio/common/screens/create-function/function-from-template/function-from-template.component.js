@@ -449,13 +449,8 @@
             var countLastLineElements = lodash.size(templates) % elementsPerLine || elementsPerLine;
             var lastLineElements = lodash.takeRight(templates, countLastLineElements);
 
-            lodash.forEach(templates, function (tmp) {
-                angular.element(tmp).removeClass('last-line');
-            });
-
-            lodash.forEach(lastLineElements, function (tmp) {
-                angular.element(tmp).addClass('last-line');
-            });
+            templates.removeClass('last-line');
+            angular.element(lastLineElements).addClass('last-line');
         }
 
         /**
