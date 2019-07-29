@@ -139,6 +139,7 @@
             display: flex;
             position: relative;
             flex-flow: row wrap;
+            align-items: flex-start;
             margin-top: 32px;
 
             .function-template-wrapper {
@@ -148,8 +149,7 @@
                 margin: 0 16px 14px 0;
                 position: relative;
 
-                &:hover,
-                &.selected {
+                &:hover, &.selected {
                     .function-template {
                         position: absolute;
                         box-shadow: inherit;
@@ -163,6 +163,12 @@
                                 display: none;
                             }
                         }
+                    }
+                }
+
+                &.last-line.selected, &:hover.last-line {
+                    .function-template {
+                        position: relative;
                     }
                 }
 

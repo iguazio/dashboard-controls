@@ -408,6 +408,8 @@
                     return template.rendered.metadata.name.split(':')[0] + ' (' + template.rendered.spec.runtime + ')';
                 })
                 .value();
+
+            $timeout(setLastLineClass);
         }
 
         /**
@@ -449,6 +451,23 @@
                 var templateElement = lodash.find(templatesElements, ['innerHTML', description]);
 
                 lodash.set(template, 'ui.readMore', templateElement.scrollHeight > angular.element(templateElement).height());
+            });
+        }
+
+        function setLastLineClass() {
+            var TEMPLATE_WIDTH = 368;
+            var templates = $element.find('.function-templates').children();
+            var templatesWrapper = $element.find('.templates-wrapper');
+            var elementsPerLine = Math.floor(parseInt(templatesWrapper.css('width')) / TEMPLATE_WIDTH);
+            var countLastLineElements = lodash.size(templates) % elementsPerLine || elementsPerLine;
+            var lastLineElements = lodash.takeRight(templates, countLastLineElements);
+
+            lodash.forEach(templates, function (tmp) {
+                angular.element(tmp).removeClass('last-line');
+            });
+
+            lodash.forEach(lastLineElements, function (tmp) {
+                angular.element(tmp).addClass('last-line');
             });
         }
     }
