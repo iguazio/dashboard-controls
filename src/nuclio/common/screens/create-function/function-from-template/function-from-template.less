@@ -140,6 +140,7 @@
                 display: flex;
                 position: relative;
                 flex-flow: row wrap;
+                align-items: flex-start;
                 margin-top: 32px;
 
                 .function-template-wrapper {
@@ -167,10 +168,16 @@
                         }
                     }
 
-                    &.selected {
-                        .function-template {
-                            border: 2px solid @orange;
-                            z-index: 2;
+                &.last-line.selected, &:hover.last-line {
+                    .function-template {
+                        position: relative;
+                    }
+                }
+
+                &.selected {
+                    .function-template {
+                        border: 2px solid @orange;
+                        z-index: 2;
 
                             .function-template-content {
                                 .template-create-button {
