@@ -394,7 +394,7 @@
         function paginateTemplates() {
 
             // amount of visible items on one page
-            var pageSize = $window.innerWidth > 1486 && $window.innerWidth < 1903 ? 9 : 8;
+            var pageSize = $window.innerWidth > 1453 && $window.innerWidth < 1822 ? 9 : 8;
 
             ctrl.templatesWorkingCopy = lodash.chain(templatesOriginalObject)
                 .filter(filterByRuntime)
