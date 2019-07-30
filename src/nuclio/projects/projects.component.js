@@ -55,26 +55,26 @@
         ctrl.sortOptions = [
             {
                 label: $i18next.t('common:NAME', {lng: lng}),
-                value: 'displayName',
+                value: 'spec.displayName',
                 active: true
             },
             {
                 label: $i18next.t('common:DESCRIPTION', {lng: lng}),
-                value: 'description',
+                value: 'spec.description',
                 active: false
             },
             {
                 label: $i18next.t('common:CREATED_BY', {lng: lng}),
-                value: 'created_by',
+                value: 'spec.created_by',
                 active: false
             },
             {
                 label: $i18next.t('functions:CREATED_DATE', {lng: lng}),
-                value: 'created_date',
+                value: 'spec.created_date',
                 active: false
             }
         ];
-        ctrl.sortedColumnName = 'displayName';
+        ctrl.sortedColumnName = 'spec.displayName';
 
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
@@ -124,7 +124,7 @@
          */
         function onChanges(changes) {
             if (angular.isDefined(changes.projects) && !lodash.isEmpty(changes.projects.currentValue)) {
-                ctrl.projects = $filter('orderBy')(ctrl.projects, 'spec.displayName');
+                ctrl.projects = $filter('orderBy')(ctrl.projects, getName, ctrl.isReverseSorting);
             }
         }
 
@@ -169,7 +169,7 @@
         function handleAction(actionType, projects) {
             var errorMessages = [];
             var promises = lodash.map(projects, function (project) {
-                var projectDisplayName = lodash.get(project, 'spec.displayName');
+                var projectName = getName(project);
                 return lodash.result(project, 'ui.' + actionType)
                     .then(function (result) {
                         if (actionType === 'edit') {
@@ -190,7 +190,7 @@
                         }
                     })
                     .catch(function (errorMessage) {
-                        errorMessages.push(projectDisplayName + ': ' + errorMessage);
+                        errorMessages.push(projectName + ': ' + errorMessage);
                     });
             });
 
@@ -314,8 +314,9 @@
          * @param {boolean} isJustSorting - if it is needed just to sort data without changing reverse
          */
         function sortTableByColumn(columnName, isJustSorting) {
-            if (!isJustSorting) {
+            var expression = columnName === 'spec.displayName' ? getName : columnName;
 
+            if (!isJustSorting) {
                 // changes the order of sorting the column
                 ctrl.isReverseSorting = (columnName === ctrl.sortedColumnName) ? !ctrl.isReverseSorting : false;
             }
@@ -323,7 +324,7 @@
             // saves the name of sorted column
             ctrl.sortedColumnName = columnName;
 
-            ctrl.projects = $filter('orderBy')(ctrl.projects, 'spec.' + columnName, ctrl.isReverseSorting);
+            ctrl.projects = $filter('orderBy')(ctrl.projects, expression, ctrl.isReverseSorting);
         }
 
         /**
@@ -336,6 +337,15 @@
         //
         // Private methods
         //
+
+        /**
+         * Returns correct project name
+         * @param {Object} project
+         * @returns {string}
+         */
+        function getName(project) {
+            return lodash.defaultTo(project.spec.displayName, project.metadata.name);
+        }
 
         /**
          * Handler on action-panel broadcast
@@ -402,7 +412,7 @@
                 var deleteAction = lodash.find(ctrl.actions, {'id': 'delete'});
                 if (!lodash.isNil(deleteAction)) {
                     var message = checkedRowsCount === 1 ?
-                        $i18next.t('functions:DELETE_PROJECT', {lng: lng}) + ' “' + checkedRows[0].spec.displayName + '”?' :
+                        $i18next.t('functions:DELETE_PROJECT', {lng: lng}) + ' “' + getName(checkedRows[0]) + '”?' :
                         $i18next.t('functions:DELETE_PROJECTS_CONFIRM', {lng: lng});
 
                     deleteAction.confirm = {

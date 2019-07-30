@@ -79,7 +79,7 @@
 
                             ctrl.selectedProject = {
                                 id: project.metadata.name,
-                                name: project.spec.displayName
+                                name: lodash.defaultTo(project.spec.displayName, project.metadata.name)
                             };
                         }
 
@@ -163,11 +163,11 @@
                         ctrl.getProjects()
                             .then(function (response) {
                                 ctrl.projects = response;
-                                var createdProject = lodash.find(ctrl.projects, ['spec.displayName', data.value.spec.displayName]);
+                                var createdProject = lodash.find(ctrl.projects, ['metadata.name', data.value.metadata.name]);
 
                                 ctrl.selectedProject = {
                                     id: createdProject.metadata.name,
-                                    name: createdProject.spec.displayName
+                                    name: createdProject.metadata.name
                                 };
                             })
                             .catch(function (error) {
