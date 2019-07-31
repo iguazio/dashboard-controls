@@ -48,6 +48,7 @@
         ctrl.nameValidationPattern = ValidatingPatternsService.name;
         ctrl.searchStates = {};
         ctrl.searchKeys = [
+            'metadata.name',
             'spec.displayName',
             'spec.description'
         ];
