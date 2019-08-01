@@ -130,7 +130,8 @@
                     icon: 'igz-icon-trash',
                     active: true,
                     confirm: {
-                        message: $i18next.t('functions:DELETE_PROJECT', {lng: lng}) + ' “' + ctrl.project.spec.displayName + '“?',
+                        message: $i18next.t('functions:DELETE_PROJECT', {lng: lng}) + ' “' +
+                            lodash.defaultTo(ctrl.project.spec.displayName, ctrl.project.metadata.name) + '“?',
                         yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
                         noLabel: $i18next.t('common:CANCEL', {lng: lng}),
                         description: $i18next.t('functions:DELETE_PROJECT_DESCRIPTION', {lng: lng}),

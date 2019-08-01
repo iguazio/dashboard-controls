@@ -9,11 +9,11 @@
 
 <span class="main-header-title" data-ng-if="$ctrl.mainHeaderTitle.project">
     <span class="main-header-title-text" data-ng-click="$ctrl.goToFunctionsList()">
-        {{$ctrl.mainHeaderTitle.project.spec.displayName}}
+        {{$ctrl.mainHeaderTitle.project.spec.displayName || $ctrl.mainHeaderTitle.project.metadata.name}}
     </span>
 
     <ncl-breadcrumbs-dropdown data-state="$ctrl.mainHeaderTitle.state"
-                              data-title="$ctrl.mainHeaderTitle.project.spec.displayName"
+                              data-title="$ctrl.mainHeaderTitle.project.spec.displayName || $ctrl.mainHeaderTitle.project.metadata.name"
                               data-project="$ctrl.mainHeaderTitle.project"
                               data-type="projects"
                               data-get-functions="$ctrl.getFunctions({id: id})"

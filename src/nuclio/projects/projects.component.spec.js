@@ -24,7 +24,6 @@ describe('nclProjects component: ', function () {
                         namespace: 'nuclio'
                     },
                     spec: {
-                        displayName: 'My project #1',
                         description: 'Some description'
                     },
                     ui: {
@@ -38,7 +37,6 @@ describe('nclProjects component: ', function () {
                         namespace: 'nuclio'
                     },
                     spec: {
-                        displayName: 'My project #2',
                         description: 'Some description'
                     },
                     ui: {
@@ -222,9 +220,6 @@ describe('nclProjects component: ', function () {
             expect(ExportService.exportProjects).toHaveBeenCalledWith(jasmine.arrayContaining([jasmine.objectContaining({
                 metadata: jasmine.objectContaining({
                     name: jasmine.any(String)
-                }),
-                spec: jasmine.objectContaining({
-                    displayName: jasmine.any(String)
                 })
             })]), jasmine.any(Function));
         });

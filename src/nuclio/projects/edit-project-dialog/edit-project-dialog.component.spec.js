@@ -25,7 +25,6 @@ describe('nclEditProjectDialog component:', function () {
                 namespace: 'nuclio'
             },
             spec: {
-                displayName: 'My project #1',
                 description: 'Some description'
             }
         };
@@ -85,9 +84,9 @@ describe('nclEditProjectDialog component:', function () {
         it('should set new value from input to `name` field', function () {
             var expectedName = 'new name';
 
-            ctrl.inputValueCallback(expectedName, 'spec.displayName');
+            ctrl.inputValueCallback(expectedName, 'metadata.name');
 
-            expect(ctrl.data.spec.displayName).toBe(expectedName);
+            expect(ctrl.data.metadata.name).toBe(expectedName);
         });
 
         it('should set new value from input to `description` field', function () {

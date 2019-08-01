@@ -12,14 +12,14 @@
         });
 
     function IgzNewProjectDialogController($scope, $i18next, i18next, lodash, moment, ConfigService, DialogsService,
-                                           EventHelperService, FormValidationService) {
+                                           EventHelperService, FormValidationService, ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
 
         ctrl.data = {};
         ctrl.isLoadingState = false;
         ctrl.nameTakenError = false;
-        ctrl.nameValidationPattern = /^.{1,128}$/;
+        ctrl.nameValidationPattern = ValidatingPatternsService.functionName;
         ctrl.serverError = '';
 
         ctrl.$onInit = onInit;
@@ -132,9 +132,10 @@
          */
         function getBlankData() {
             return {
-                metadata: {},
+                metadata: {
+                    name: ''
+                },
                 spec: {
-                    displayName: '',
                     description: ''
                 }
             };
