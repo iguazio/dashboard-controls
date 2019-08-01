@@ -277,11 +277,12 @@
     }
 
     .dropdown-icon {
-        display: inline-block;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         margin-right: 7px;
         font-size: 15px;
         width: 22px;
-        text-align: center;
 
         &:not(.custom-color) {
             color: @dropdown-icon-not-custom-color;
@@ -415,6 +416,19 @@
 
             &:after {
                 content: ")";
+            }
+        }
+    }
+}
+
+.no-selected-option-style {
+    .default-dropdown {
+        .default-dropdown-field {
+            border: none;
+
+            &:active, &:focus, &:hover {
+                background-color: unset;
+                box-shadow: none;
             }
         }
     }
