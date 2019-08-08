@@ -69,7 +69,10 @@
 
                     // set new value for cells width
                     currentCell.style.width = data.columnWidth;
-                    nextCell.style.width = data.nextColumnWidth;
+
+                    if (!lodash.isNil(nextCell)) {
+                        nextCell.style.width = data.nextColumnWidth;
+                    }
                 }
             }
         }
