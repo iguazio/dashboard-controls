@@ -6,12 +6,21 @@
 
     function VersionHelperService(lodash) {
         return {
+            isVersionDeployed: isVersionDeployed,
             updateIsVersionChanged: updateIsVersionChanged
         };
 
         //
         // Public methods
         //
+
+        /**
+         * Tests whether the version is deployed.
+         * @returns {boolean} `true` in case version is deployed, or `false` otherwise.
+         */
+        function isVersionDeployed(version) {
+            return lodash.isObject(version.status) && !lodash.isEmpty(version.status);
+        }
 
         /**
          * Updates "version changed" indicator of `version`. Sets it to `true` in case working version differs from

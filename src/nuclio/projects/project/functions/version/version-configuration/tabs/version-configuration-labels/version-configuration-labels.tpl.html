@@ -23,6 +23,7 @@
                                      data-row-data="label"
                                      data-item-index="$index"
                                      data-use-type="false"
+                                     data-is-disabled="$ctrl.isVersionDeployed($ctrl.version)"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
                                      data-change-data-callback="$ctrl.onChangeData(newData, index)"
                                      data-submit-on-fly="true">
@@ -30,6 +31,7 @@
             </div>
         </div>
         <div class="create-label-button"
+             data-ng-class="{'disabled': $ctrl.isVersionDeployed($ctrl.version)}"
              data-ng-click="$ctrl.addNewLabel($event)">
             <span class="igz-icon-add-round"></span>
             {{ 'functions:CREATE_NEW_LABEL' | i18next }}

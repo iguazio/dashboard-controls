@@ -18,6 +18,7 @@
                 <igz-validating-input-field class="nuclio-validating-input input-key"
                                             data-field-type="input"
                                             data-input-name="key"
+                                            data-is-disabled="$ctrl.isDisabled"
                                             data-input-value="$ctrl.data.name"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="name"
@@ -39,6 +40,7 @@
                                       data-select-property-only="id"
                                       data-prevent-drop-up="true"
                                       data-input-name="type"
+                                      data-is-disabled="$ctrl.isDisabled"
                                       data-values-array="$ctrl.typesList"
                                       data-selected-item="$ctrl.getType()"
                                       data-placeholder="{{ 'common:PLACEHOLDER.SELECT_TYPE' | i18next }}"
@@ -64,6 +66,7 @@
                                             data-input-value="$ctrl.getInputKey()"
                                             data-update-data-callback="$ctrl.inputKeyCallback(newData)"
                                             data-update-data-field="value-key"
+                                            data-is-disabled="$ctrl.isDisabled"
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.valueOptional"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_KEY' | i18next }}">
@@ -92,6 +95,7 @@
                                             data-input-value="$ctrl.getInputValue()"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="value"
+                                            data-is-disabled="$ctrl.isDisabled"
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.valueOptional"
                                             data-validation-pattern="$ctrl.valueValidationPattern"
@@ -101,6 +105,7 @@
                                             data-ng-if="$ctrl.useAdditionalValue && $ctrl.isVisibleByType('value')"
                                             data-field-type="input"
                                             data-input-name="additionalValue"
+                                            data-is-disabled="$ctrl.isDisabled"
                                             data-input-value="$ctrl.data.additionalValue"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="additionalValue"
@@ -109,13 +114,13 @@
                 </igz-validating-input-field>
             </div>
         </div>
-        <div class="three-dot-menu" data-ng-if="::$ctrl.showDotMenu()">
+        <div class="three-dot-menu" data-ng-if="::$ctrl.showDotMenu() && !$ctrl.isDisabled">
             <igz-action-menu data-actions="$ctrl.actions"
                              data-on-fire-action="$ctrl.onFireAction"
                              data-list-class="$ctrl.listClass">
             </igz-action-menu>
         </div>
-        <div class="igz-action-panel" data-ng-if="::!$ctrl.showDotMenu()">
+        <div class="igz-action-panel" data-ng-if="::!$ctrl.showDotMenu() && !$ctrl.isDisabled">
             <div class="actions-list">
                 <div class="igz-action-item"
                      data-ng-click="$ctrl.onClickAction($ctrl.actions[0])">

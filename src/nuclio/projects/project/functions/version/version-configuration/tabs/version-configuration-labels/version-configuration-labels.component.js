@@ -12,7 +12,7 @@
         });
 
     function NclVersionConfigurationLabelsController($element, $rootScope, $timeout, $i18next, i18next, lodash,
-                                                     PreventDropdownCutOffService) {
+                                                     PreventDropdownCutOffService, VersionHelperService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -33,6 +33,8 @@
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
+
+        ctrl.isVersionDeployed = VersionHelperService.isVersionDeployed;
 
         ctrl.addNewLabel = addNewLabel;
         ctrl.handleAction = handleAction;
@@ -91,6 +93,11 @@
          * Adds new label
          */
         function addNewLabel(event) {
+            // prevent adding labels for deployed functions
+            if (ctrl.isVersionDeployed(ctrl.version)) {
+                return;
+            }
+
             $timeout(function () {
                 if (ctrl.labels.length < 1 || lodash.last(ctrl.labels).ui.isFormValid) {
                     ctrl.labels.push({
