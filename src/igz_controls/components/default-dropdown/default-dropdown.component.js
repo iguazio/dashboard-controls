@@ -308,6 +308,8 @@
             if (lodash.isEmpty(ctrl.typedValue)) {
                 ctrl.valuesArray = valuesArrayCopy;
 
+                ctrl.formObject[ctrl.inputName].$setValidity('text', true);
+
                 $element.find('.default-dropdown-field')[0].dispatchEvent(new Event('click'));
             } else {
                 if (ctrl.autocomplete) {
@@ -443,6 +445,7 @@
                     ctrl.valuesArray = valuesArrayCopy;
                 }
             }
+
             if (!lodash.isNil(event)) {
                 event.stopPropagation();
             }
