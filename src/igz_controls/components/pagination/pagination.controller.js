@@ -165,7 +165,7 @@
          */
         function checkPageNumber(additionalParams) {
             var oldPageNumber = vm.page.number;
-            vm.page.number = Math.min(vm.page.number, vm.page.total - 1);
+            vm.page.number = lodash.clamp(vm.page.number, 0, vm.page.total - 1);
             if (oldPageNumber !== vm.page.number) {
                 vm.updatePagination(additionalParams);
             }
