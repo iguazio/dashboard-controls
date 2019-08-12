@@ -21,13 +21,15 @@
          * @param {string} entitiesType name of entities type
          * @param {string} [dataServiceName] Name of DataService
          * @param {function} [onChangePageCallback] Additional code that should be executed after page changed
+         * @param {boolean} [emptyOnPageChange=true] Set to `false` to prevent list from emptying before repopulating
          */
-        function addPagination(controller, entitiesType, dataServiceName, onChangePageCallback) {
+        function addPagination(controller, entitiesType, dataServiceName, onChangePageCallback, emptyOnPageChange) {
             $controller('PaginationController', {
                 entitiesType: entitiesType,
                 onChangePageCallback: onChangePageCallback,
                 dataServiceName: dataServiceName,
-                vm: controller
+                vm: controller,
+                emptyOnPageChange: emptyOnPageChange
             });
         }
 

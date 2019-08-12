@@ -25,7 +25,6 @@ describe('nclProjectsTableRow component:', function () {
                 namespace: 'nuclio'
             },
             spec: {
-                displayName: 'My project #1',
                 description: 'Some description'
             },
             ui: {
@@ -39,7 +38,6 @@ describe('nclProjectsTableRow component:', function () {
                     namespace: 'nuclio'
                 },
                 spec: {
-                    displayName: 'My project #1',
                     description: 'Some description'
                 },
                 ui: {
@@ -52,7 +50,6 @@ describe('nclProjectsTableRow component:', function () {
                     namespace: 'nuclio'
                 },
                 spec: {
-                    displayName: 'My project #2',
                     description: 'Some description'
                 },
                 ui: {

@@ -45,6 +45,7 @@
 
                 angular.element($window).on('resize', reloadColumns);
                 $scope.$on('reload-columns', reloadColumns);
+                $scope.$on('resizable-table-column_reset-data', resetData);
                 $scope.$on('$destroy', onDestroy);
             }
 
@@ -113,6 +114,18 @@
                 }
 
                 return false;
+            }
+
+            /**
+             * Reset initial data
+             */
+            function resetData() {
+                ctrl.parentElement
+                    .off('mouseenter', onMouseEnter)
+                    .off('mouseleave', onMouseLeave);
+
+                initColumnsWidths();
+                initElements();
             }
 
             //
@@ -233,10 +246,7 @@
                 var lastColumn = ctrl.parentElement.parent()[0].lastElementChild;
                 ctrl.isNeedBorder = lastElement !== $element[0] || lastElement.parentElement !== lastColumn;
 
-                if (!ctrl.isNeedBorder) {
-                    // to prevent displaying special cursor
-                    $element.addClass('last')
-                }
+                !ctrl.isNeedBorder ? $element.addClass('last') : $element.removeClass('last');
 
                 ctrl.parentElement
                     .on('mouseenter', onMouseEnter)

@@ -22,7 +22,6 @@
         ctrl.isLoadingState = false;
         ctrl.nameTakenError = false;
         ctrl.serverError = '';
-        ctrl.nameValidationPattern = /^.{1,128}$/;
 
         ctrl.$onInit = onInit;
 

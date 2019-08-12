@@ -56,7 +56,7 @@
                     var projectToExport = {
                         project: {
                             metadata: {
-                                name: project.spec.displayName
+                                name: lodash.defaultTo(project.spec.displayName, project.metadata.name)
                             },
                             spec: {
                                 functions: functionsList
@@ -66,7 +66,7 @@
 
                     var blob = prepareBlobObject(projectToExport);
 
-                    downloadExportedFunction(blob, project.spec.displayName);
+                    downloadExportedFunction(blob, lodash.defaultTo(project.spec.displayName, project.metadata.name));
                 })
                 .catch(function (error) {
                     var msg = $i18next.t('functions:ERROR_MSG.EXPORT_PROJECT', {lng: i18next.language});
@@ -93,7 +93,7 @@
 
                         return {
                             metadata: {
-                                name: project.spec.displayName
+                                name: lodash.defaultTo(project.spec.displayName, project.metadata.name)
                             },
                             spec: {
                                 functions: functionsList

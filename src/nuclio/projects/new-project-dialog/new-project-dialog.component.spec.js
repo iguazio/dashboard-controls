@@ -38,9 +38,10 @@ describe('nclNewProjectDialog component:', function () {
     describe('$onInit(): ', function () {
         it('should set blank data', function () {
             var data = {
-                metadata: {},
+                metadata: {
+                    name: ''
+                },
                 spec: {
-                    displayName: '',
                     description: ''
                 }
             };
@@ -55,10 +56,10 @@ describe('nclNewProjectDialog component:', function () {
             spyOn(ctrl, 'closeDialog').and.callThrough();
             var newData = {
                 metadata: {
+                    name: 'project-1',
                     namespace: 'nuclio'
                 },
                 spec: {
-                    displayName: 'project-1',
                     description: 'project-description',
                     created_by: 'admin',
                     created_date: '2017-06-20T08:15:56.000Z'
@@ -82,10 +83,10 @@ describe('nclNewProjectDialog component:', function () {
 
             ctrl.data = {
                 metadata: {
+                    name: 'project-1',
                     namespace: 'nuclio'
                 },
                 spec: {
-                    displayName: 'project-1',
                     description: 'project-description',
                     created_by: 'admin',
                     created_date: '2017-06-20T08:15:56.000Z'
@@ -104,12 +105,12 @@ describe('nclNewProjectDialog component:', function () {
         it('should set new value from input to `name` field', function () {
             var expectedName = 'new name';
 
-            ctrl.inputValueCallback(expectedName, 'spec.displayName');
+            ctrl.inputValueCallback(expectedName, 'metadata.name');
 
-            expect(ctrl.data.spec.displayName).toBe(expectedName);
+            expect(ctrl.data.metadata.name).toBe(expectedName);
         });
 
-        it('should set new value from input to `name` field', function () {
+        it('should set new value from input to the `description` field', function () {
             var expectedDescription = 'new description';
 
             ctrl.inputValueCallback(expectedDescription, 'spec.description');

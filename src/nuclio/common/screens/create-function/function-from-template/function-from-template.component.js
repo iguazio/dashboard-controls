@@ -394,7 +394,7 @@
         function paginateTemplates() {
 
             // amount of visible items on one page
-            var pageSize = $window.innerWidth > 1486 && $window.innerWidth < 1903 ? 9 : 8;
+            var pageSize = $window.innerWidth > 1453 && $window.innerWidth < 1822 ? 9 : 8;
 
             ctrl.templatesWorkingCopy = lodash.chain(templatesOriginalObject)
                 .filter(filterByRuntime)
@@ -408,6 +408,8 @@
                     return template.rendered.metadata.name.split(':')[0] + ' (' + template.rendered.spec.runtime + ')';
                 })
                 .value();
+
+            $timeout(setLastLineClass);
         }
 
         /**
@@ -425,7 +427,7 @@
                 .map(function (project) {
                     return {
                         id: project.metadata.name,
-                        name: project.spec.displayName
+                        name: lodash.defaultTo(project.spec.displayName, project.metadata.name)
                     };
                 })
                 .sortBy(['name'])
@@ -434,6 +436,21 @@
             ctrl.selectedProject = lodash.isEmpty(ctrl.projectsList)         ? newProject                     :
                                    ctrl.selectedProject.id !== 'new_project' ? ctrl.selectedProject           :
                                                                                lodash.first(ctrl.projectsList);
+        }
+
+        /**
+         * Sets class `last-line` to elements from the last row of the templates list.
+         */
+        function setLastLineClass() {
+            var TEMPLATE_WIDTH = 368;
+            var templates = $element.find('.function-template-wrapper');
+            var templatesWrapper = $element.find('.templates-wrapper');
+            var elementsPerLine = Math.floor(parseInt(templatesWrapper.css('width')) / TEMPLATE_WIDTH);
+            var countLastLineElements = lodash.size(templates) % elementsPerLine || elementsPerLine;
+            var lastLineElements = lodash.takeRight(templates, countLastLineElements);
+
+            templates.removeClass('last-line');
+            angular.element(lastLineElements).addClass('last-line');
         }
 
         /**

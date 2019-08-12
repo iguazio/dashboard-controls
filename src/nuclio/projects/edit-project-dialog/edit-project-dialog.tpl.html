@@ -13,20 +13,12 @@
                 {{ 'functions:PROJECT_NAME' | i18next }}
             </div>
             <div class="field-input">
-                <div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(editProjectForm, 'spec.displayName')">
-                    {{ 'common:ERROR_MSG.INVALID_INPUTS' | i18next }}
-                </div>
-                <div class="error" data-ng-show="$ctrl.nameTakenError">
-                    {{ 'common:ERROR_MSG.NAME_EXISTS' | i18next }}
-                </div>
                 <igz-validating-input-field class="nuclio-validating-input"
+                                            data-is-disabled="true"
                                             data-field-type="input"
-                                            data-input-name="spec.displayName"
-                                            data-input-value="$ctrl.data.spec.displayName"
+                                            data-input-name="metadata.name"
+                                            data-input-value="$ctrl.data.metadata.name"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-is-focused="true"
-                                            data-validation-is-required="true"
-                                            data-validation-pattern="$ctrl.nameValidationPattern"
                                             data-form-object="editProjectForm"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.PROJECT_NAME' | i18next }}">
                 </igz-validating-input-field>
