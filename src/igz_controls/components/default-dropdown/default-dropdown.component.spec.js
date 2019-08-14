@@ -215,6 +215,7 @@ describe('igzDefaultDropdown component:', function () {
         it('should change selected item after typing value if this value present in valuesArray', function () {
             spyOn(ctrl, 'itemSelectCallback').and.callThrough();
 
+            ctrl.enableTyping = true;
             ctrl.selectedItem = ctrl.valuesArray[0];
             ctrl.typedValue = 'Performance - Read/Write';
             ctrl.itemSelectField = 'attr';
@@ -233,6 +234,7 @@ describe('igzDefaultDropdown component:', function () {
         it('should change selected item after typing value if this value isn\'t present in valuesArray (add new item) when nameKey is not defined', function () {
             spyOn(ctrl, 'itemSelectCallback').and.callThrough();
 
+            ctrl.enableTyping = true;
             ctrl.nameKey = null;
             ctrl.typedValue = 'Performance1234';
             ctrl.itemSelectField = 'attr';
@@ -255,6 +257,7 @@ describe('igzDefaultDropdown component:', function () {
         it('should change selected item after typing value if this value isn\'t present in valuesArray (add new item) when nameKey is defined', function () {
             spyOn(ctrl, 'itemSelectCallback').and.callThrough();
 
+            ctrl.enableTyping = true;
             ctrl.nameKey = 'attr.name';
             ctrl.typedValue = 'Performance1234';
             ctrl.itemSelectField = 'attr';
@@ -301,8 +304,10 @@ describe('igzDefaultDropdown component:', function () {
         });
 
         it('should set property "isDropdownContainerShown" to false', function () {
+            var event = new Event('click');
+
             ctrl.isDropdownContainerShown = true;
-            ctrl.selectItem(ctrl.valuesArray[0]);
+            ctrl.selectItem(ctrl.valuesArray[0], event);
 
             expect(ctrl.isDropdownContainerShown).toBeFalsy();
         });

@@ -44,6 +44,8 @@
         .component('igzDefaultDropdown', {
             bindings: {
                 additionalClass: '@?',
+                autocomplete: '<?',
+                autocompleteIgnoreCase: '<?',
                 selectedItem: '<',
                 valuesArray: '<',
                 bottomButtonCallback: '<?',
@@ -81,6 +83,8 @@
                                           PriorityDropdownService, SeverityDropdownService) {
         var ctrl = this;
 
+        var valuesArrayCopy = [];
+
         ctrl.topPosition = 'inherit';
         ctrl.typedValue = '';
         ctrl.isDropdownContainerShown = false;
@@ -102,6 +106,7 @@
         ctrl.isItemSelected = isItemSelected;
         ctrl.isPlaceholderClass = isPlaceholderClass;
         ctrl.isShowDropdownError = isShowDropdownError;
+        ctrl.isTypingEnabled = isTypingEnabled;
         ctrl.onChangeTypingInput = onChangeTypingInput;
         ctrl.onDropDownKeydown = onDropDownKeydown;
         ctrl.onItemKeydown = onItemKeydown;
@@ -117,8 +122,12 @@
          * Initialization method
          */
         function onInit() {
+            ctrl.autocomplete = lodash.defaultTo(ctrl.autocomplete, false);
+            ctrl.autocompleteIgnoreCase = lodash.defaultTo(ctrl.autocompleteIgnoreCase, false);
             ctrl.isCapitalized = lodash.defaultTo(ctrl.isCapitalized, 'false').toLowerCase() === 'true';
             ctrl.iconClass = lodash.defaultTo(ctrl.iconClass, 'igz-icon-dropdown');
+
+            valuesArrayCopy = angular.copy(ctrl.valuesArray);
 
             if (!lodash.isNil(ctrl.dropdownType) && ctrl.dropdownType === 'priority') {
                 ctrl.valuesArray = PriorityDropdownService.getPrioritiesArray();
@@ -283,17 +292,51 @@
         }
 
         /**
+         * Checks if the typing in dropdown's field is enabled
+         * @returns {boolean}
+         */
+        function isTypingEnabled() {
+            return ctrl.enableTyping || ctrl.autocomplete;
+        }
+
+        /**
          * Changes selected item depending on typed value
          */
         function onChangeTypingInput() {
-            if (!lodash.isNil(ctrl.typedValue)) {
-                var newItem = {
-                    id: ctrl.typedValue,
-                    visible: true
-                };
-                lodash.set(newItem, ctrl.nameKey || 'name', ctrl.typedValue);
+            ctrl.isDropdownContainerShown = false;
 
-                ctrl.selectItem(lodash.find(ctrl.valuesArray, ['name', ctrl.typedValue]) || newItem);
+            if (lodash.isEmpty(ctrl.typedValue)) {
+                ctrl.valuesArray = valuesArrayCopy;
+
+                ctrl.formObject[ctrl.inputName].$setValidity('text', true);
+
+                $element.find('.default-dropdown-field')[0].dispatchEvent(new Event('click'));
+            } else {
+                if (ctrl.autocomplete) {
+                    var typedValue = ctrl.autocompleteIgnoreCase ? ctrl.typedValue.toLowerCase() : ctrl.typedValue;
+
+                    ctrl.valuesArray = lodash.filter(valuesArrayCopy, function (item) {
+                        var itemName = ctrl.autocompleteIgnoreCase ? item.name.toLowerCase() : item.name;
+
+                        return lodash.startsWith(itemName, typedValue);
+                    });
+
+                    if (ctrl.valuesArray.length > 0) {
+                        $element.find('.default-dropdown-field')[0].dispatchEvent(new Event('click'));
+                    } else if (!ctrl.enableTyping) {
+                        ctrl.formObject[ctrl.inputName].$setValidity('text', false);
+                    }
+                }
+
+                if (ctrl.enableTyping) {
+                    var newItem = {
+                        id: ctrl.typedValue,
+                        visible: true
+                    };
+                    lodash.set(newItem, ctrl.nameKey || 'name', ctrl.typedValue);
+
+                    ctrl.selectItem(lodash.find(ctrl.valuesArray, ['name', ctrl.typedValue]) || newItem);
+                }
             }
         }
 
@@ -397,8 +440,12 @@
                     });
                 }
 
-                ctrl.isDropdownContainerShown = false;
+                if (angular.isDefined(event)) {
+                    ctrl.isDropdownContainerShown = false;
+                    ctrl.valuesArray = valuesArrayCopy;
+                }
             }
+
             if (!lodash.isNil(event)) {
                 event.stopPropagation();
             }
