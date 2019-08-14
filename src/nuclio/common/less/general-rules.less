@@ -73,6 +73,15 @@ body {
         text-align: left;
         color: @color;
 
+        &.disabled {
+            color: @pale-grey;
+            cursor: default;
+
+            .igz-icon-add-round {
+                color: @pale-grey;
+            }
+        }
+
         .igz-icon-add-round {
             margin: 3px 8px 0 15px;
             color: @orange;

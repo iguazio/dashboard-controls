@@ -23,7 +23,7 @@
 
     function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $transitions, $timeout,
                                   $i18next, i18next, lodash, ngDialog, ConfigService, DialogsService, ExportService,
-                                  NuclioHeaderService) {
+                                  NuclioHeaderService, VersionHelperService) {
         var ctrl = this;
         var deregisterFunction = null;
         var interval = null;
@@ -129,7 +129,8 @@
                     tabName: $i18next.t('common:STATUS', {lng: lng}),
                     id: 'status',
                     uiRoute: 'app.project.function.edit.monitoring',
-                    status: isVersionDeployed() ? lodash.get(ctrl.version, 'status.state') : 'not yet deployed'
+                    status: VersionHelperService.isVersionDeployed(ctrl.version) ? lodash.get(ctrl.version, 'status.state') :
+                                                                                   'not yet deployed'
                 }
             ];
 
@@ -189,7 +190,7 @@
 
             lodash.merge(ctrl.version, {
                 ui: {
-                    deployedVersion: isVersionDeployed() ? getVersionCopy() : null,
+                    deployedVersion: VersionHelperService.isVersionDeployed(ctrl.version) ? getVersionCopy() : null,
                     versionChanged: false
                 }
             });
@@ -231,7 +232,7 @@
                 });
 
                 ctrl.isSplashShowed.value = true;
-                var method = isVersionDeployed() ? ctrl.updateVersion : ctrl.createVersion;
+                var method = VersionHelperService.isVersionDeployed(ctrl.version) ? ctrl.updateVersion : ctrl.createVersion;
                 method({ version: versionCopy, projectID: ctrl.project.metadata.name })
                     .then(pullFunctionState)
                     .catch(function (error) {
@@ -383,14 +384,6 @@
         }
 
         /**
-         * Tests whether the version is deployed.
-         * @returns {boolean} `true` in case version is deployed, or `false` otherwise.
-         */
-        function isVersionDeployed() {
-            return lodash.isObject(ctrl.version.status) && !lodash.isEmpty(ctrl.version.status);
-        }
-
-        /**
          * Pulls function status.
          * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
          */
@@ -406,7 +399,7 @@
 
                             ctrl.versionDeployed = true;
 
-                            if (!isVersionDeployed()) {
+                            if (!VersionHelperService.isVersionDeployed(ctrl.version)) {
                                 ctrl.version.status = response.status;
                             }
                             ctrl.version.ui = {
@@ -498,8 +491,11 @@
          */
         function stateChangeStart(transition) {
             var toState = transition.$to();
-            if (lodash.get($state, 'params.functionId') !== transition.params('to').functionId && !isVersionDeployed()) {
+            if (lodash.get($state, 'params.functionId') !== transition.params('to').functionId &&
+                !VersionHelperService.isVersionDeployed(ctrl.version)) {
+
                 transition.abort();
+
                 DialogsService.confirm($i18next.t('common:LEAVE_PAGE_CONFIRM', {lng: lng}),
                                        $i18next.t('common:LEAVE', {lng: lng}),
                                        $i18next.t('common:DONT_LEAVE', {lng: lng}))
