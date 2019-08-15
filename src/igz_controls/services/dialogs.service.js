@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('DialogsService', DialogsService);
 
-    function DialogsService($q, $i18next, i18next, lodash, ngDialog, FormValidationService) {
+    function DialogsService($document, $q, $i18next, i18next, lodash, ngDialog, FormValidationService) {
         return {
             alert: alert,
             confirm: confirm,
@@ -204,7 +204,7 @@
                 });
             }
 
-            return ngDialog.open({
+            var promptDialog = ngDialog.open({
                 template: '<div data-ng-form="ngDialogData.igzDialogPromptForm">' +
                     '<div class="close-button igz-icon-close" data-ng-click="closeThisDialog()"></div>' +
                     '<div class="notification-text title">' + promptText + '</div>' +
@@ -239,10 +239,23 @@
                 '</div>',
                 plain: true,
                 data: data
-            })
+            });
+
+            function confirmCallback(event) {
+                if (event.keyCode === 13) {
+                    data.checkInput() && promptDialog.close(data.value);
+                }
+            }
+
+            $document.on('keypress', confirmCallback);
+
+            return promptDialog
                 .closePromise
                 .then(function (dialog) { // if Cancel is clicked, reject the promise
-                    return angular.isDefined(dialog.value) ? dialog.value : $q.reject($i18next.t('common:ERROR_MSG.CANCELLED', {lng: lng}));
+                    $document.off('keypress', confirmCallback);
+
+                    return angular.isDefined(dialog.value) ?
+                        dialog.value : $q.reject($i18next.t('common:ERROR_MSG.CANCELLED', {lng: lng}));
                 });
         }
 
