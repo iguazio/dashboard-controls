@@ -1,6 +1,6 @@
 <div class="ncl-version-configuration-runtime-attributes">
     <div class="title">{{ 'functions:RUNTIME_ATTRIBUTES' | i18next }}</div>
-    <form name="$ctrl.runtimeAttributesForm" class="runtime-attributes-wrapper">
+    <form name="$ctrl.runtimeAttributesForm" class="runtime-attributes-wrapper" novalidate>
         <div class="row"
              data-ng-class="{'info-row': $ctrl.version.spec.runtime !== 'shell'}"
              data-ng-if="$ctrl.version.spec.runtime !== 'java'">

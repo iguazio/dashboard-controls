@@ -180,7 +180,7 @@
                     },
                     {
                         id: 'eventhub',
-                        name: 'Eventhub',
+                        name: 'Azure Event Hubs',
                         attributes: [
                             {
                                 name: 'sharedAccessKeyName',

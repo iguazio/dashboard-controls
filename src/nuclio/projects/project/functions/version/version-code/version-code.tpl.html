@@ -1,6 +1,6 @@
 <div data-ui-layout="{ flow : 'column', dividerSize: 3 }" class="ncl-edit-version-code ncl-version">
     <div ui-layout-container min-size="200px" class="code-section">
-        <form name="$ctrl.versionCodeForm" class="code-wrapper-block" igz-extend-background>
+        <form name="$ctrl.versionCodeForm" class="code-wrapper-block" igz-extend-background novalidate>
             <div data-ng-if="$ctrl.selectedEntryType.id === 'sourceCode'"
                  class="igz-scrollable-container code-scrollable-container"
                  data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfigHorizontal">
@@ -48,6 +48,7 @@
                     </div>
 
                     <div class="code-edit-section">
+                        <div class="field-label asterisk">{{ 'functions:SOURCE_CODE' | i18next }}</div>
                         <div class="code-editor-drop-zone"></div>
                         <ncl-monaco class="monaco-code-editor"
                                     igz-extend-background
@@ -100,14 +101,17 @@
 
                     <div data-ng-if="$ctrl.selectedEntryType.id === 'image'"
                          class="ncl-code-entry-url">
-                        <div class="field-label">{{ 'common:URL' | i18next }}</div>
+                        <div class="field-label">
+                            <span class="asterisk">{{ 'functions:IMAGE_NAME' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.IMAGE_NAME' | i18next }}"></igz-more-info>
+                        </div>
                         <igz-validating-input-field data-field-type="input"
                                                     data-input-name="image"
                                                     data-input-value="$ctrl.version.spec.image"
                                                     data-is-focused="true"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="true"
-                                                    data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_IMAGE' | i18next }}"
+                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: mydockeruser/my-func:latest"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.image"
                                                     class="nuclio-validating-input">
@@ -116,14 +120,17 @@
 
                     <div data-ng-if="$ctrl.selectedEntryType.id === 'archive' || $ctrl.selectedEntryType.id === 'jar'"
                          class="ncl-code-entry-url">
-                        <div class="field-label">{{ 'common:URL' | i18next }}</div>
+                        <div class="field-label">
+                            <span class="asterisk">{{ 'common:URL' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.URL' | i18next }}"></igz-more-info>
+                        </div>
                         <igz-validating-input-field data-field-type="input"
                                                     data-input-name="archive"
                                                     data-input-value="$ctrl.version.spec.build.path"
                                                     data-is-focused="true"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="true"
-                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: http://example.com:1234/path/to/file"
+                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: https://webapi.default-tenant.app.mycluster.iguazio.com/users/myuser/my-functions.zip"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.path"
                                                     class="nuclio-validating-input">
@@ -132,20 +139,10 @@
 
                     <div data-ng-if="$ctrl.selectedEntryType.id === 'archive'"
                          class="ncl-code-entry-url">
-                        <div class="field-label">{{ 'functions:WORK_DIRECTORY' | i18next }}</div>
-                        <igz-validating-input-field data-field-type="input"
-                                                    data-input-name="archiveWorkDir"
-                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir"
-                                                    data-is-focused="false"
-                                                    data-form-object="$ctrl.versionCodeForm"
-                                                    data-validation-is-required="false"
-                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: /path/to/functions/in/archive"
-                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.workDir"
-                                                    class="nuclio-validating-input">
-                        </igz-validating-input-field>
-
-                        <div class="field-label">{{ 'functions:ACCESS_KEY_V3IO_ONLY' | i18next }}</div>
+                        <div class="field-label">
+                            <span>{{ 'functions:ACCESS_KEY_V3IO_ONLY' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.V3IO_ACCESS_KEY' | i18next }}"></igz-more-info>
+                        </div>
                         <igz-validating-input-field data-field-type="password"
                                                     data-input-name="sessionKey"
                                                     data-input-value="$ctrl.version.spec.build.codeEntryAttributes.headers['X-V3io-Session-Key']"
@@ -157,18 +154,37 @@
                                                     data-update-data-field="spec.build.codeEntryAttributes.headers['X-V3io-Session-Key']"
                                                     class="nuclio-validating-input">
                         </igz-validating-input-field>
+
+                        <div class="field-label">
+                            <span>{{ 'functions:WORK_DIRECTORY' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.WORK_DIR' | i18next }}"></igz-more-info>
+                        </div>
+                        <igz-validating-input-field data-field-type="input"
+                                                    data-input-name="archiveWorkDir"
+                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir"
+                                                    data-is-focused="false"
+                                                    data-form-object="$ctrl.versionCodeForm"
+                                                    data-validation-is-required="false"
+                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: /nuclio-functions/myfunc"
+                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                    data-update-data-field="spec.build.codeEntryAttributes.workDir"
+                                                    class="nuclio-validating-input">
+                        </igz-validating-input-field>
                     </div>
 
                     <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
                          class="ncl-code-entry-url">
-                        <div class="field-label">{{ 'common:URL' | i18next }}</div>
+                        <div class="field-label">
+                            <span class="asterisk">{{ 'common:URL' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.GITHUB.URL' | i18next }}"></igz-more-info>
+                        </div>
                         <igz-validating-input-field data-field-type="input"
                                                     data-input-name="githubUrl"
                                                     data-input-value="$ctrl.version.spec.build.path"
                                                     data-is-focused="true"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="true"
-                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: https://github.com/nuclio/nuclio"
+                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: https://github.com/my-organization/my-repository"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.path"
                                                     class="nuclio-validating-input">
@@ -177,22 +193,10 @@
 
                     <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
                          class="ncl-code-entry-url">
-                        <div class="field-label">{{ 'functions:TOKEN' | i18next }}</div>
-                        <igz-validating-input-field data-field-type="input"
-                                                    data-input-name="githubToken"
-                                                    data-input-value="$ctrl.githubToken"
-                                                    data-is-focused="false"
-                                                    data-form-object="$ctrl.versionCodeForm"
-                                                    data-validation-is-required="false"
-                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: 22e3ce5d1aad5e3b88db76df133674ae6da24591"
-                                                    data-update-data-callback="$ctrl.onChangeGithubToken(newData)"
-                                                    class="nuclio-validating-input">
-                        </igz-validating-input-field>
-                    </div>
-
-                    <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
-                         class="ncl-code-entry-url">
-                        <div class="field-label">{{ 'functions:BRANCH' | i18next }}</div>
+                        <div class="field-label">
+                            <span class="asterisk">{{ 'functions:BRANCH' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.GITHUB.BRANCH' | i18next }}"></igz-more-info>
+                        </div>
                         <igz-validating-input-field data-field-type="input"
                                                     data-input-name="githubBranch"
                                                     data-input-value="$ctrl.version.spec.build.codeEntryAttributes.branch"
@@ -208,14 +212,35 @@
 
                     <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
                          class="ncl-code-entry-url">
-                        <div class="field-label">{{ 'functions:WORK_DIRECTORY' | i18next }}</div>
+                        <div class="field-label">
+                            <span>{{ 'functions:TOKEN' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.GITHUB.TOKEN' | i18next }}"></igz-more-info>
+                        </div>
+                        <igz-validating-input-field data-field-type="input"
+                                                    data-input-name="githubToken"
+                                                    data-input-value="$ctrl.githubToken"
+                                                    data-is-focused="false"
+                                                    data-form-object="$ctrl.versionCodeForm"
+                                                    data-validation-is-required="false"
+                                                    data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_TOKEN' | i18next }}"
+                                                    data-update-data-callback="$ctrl.onChangeGithubToken(newData)"
+                                                    class="nuclio-validating-input">
+                        </igz-validating-input-field>
+                    </div>
+
+                    <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
+                         class="ncl-code-entry-url">
+                        <div class="field-label">
+                            <span>{{ 'functions:WORK_DIRECTORY' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.GITHUB.WORK_DIR' | i18next }}"></igz-more-info>
+                        </div>
                         <igz-validating-input-field data-field-type="input"
                                                     data-input-name="githubWorkDir"
                                                     data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir"
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
-                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: /path/to/functions"
+                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: /nuclio-functions/myfunc"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.workDir"
                                                     class="nuclio-validating-input">
@@ -224,92 +249,113 @@
 
                     <div data-ng-if="$ctrl.selectedEntryType.id === 's3'"
                          class="ncl-code-entry-s3">
-                        <div class="field-label">{{ 'functions:BUCKET' | i18next }} <span class="asterisk"></span></div>
+                        <div class="field-label">
+                            <span class="asterisk">{{ 'functions:BUCKET' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.S3.BUCKET' | i18next }}"></igz-more-info>
+                        </div>
                         <igz-validating-input-field data-field-type="input"
                                                     data-input-name="s3Bucket"
                                                     data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3Bucket"
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="true"
-                                                    data-placeholder-text="my-bucket-name"
+                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: my-s3-bucket"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.s3Bucket"
                                                     class="nuclio-validating-input">
                         </igz-validating-input-field>
 
-                        <div class="field-label">{{ 'functions:ITEM_KEY' | i18next }} <span class="asterisk"></span></div>
+                        <div class="field-label">
+                            <span class="asterisk">{{ 'functions:ITEM_KEY' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.S3.ITEM_KEY' | i18next }}"></igz-more-info>
+                        </div>
                         <igz-validating-input-field data-field-type="input"
                                                     data-input-name="s3ItemKey"
                                                     data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3ItemKey"
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="true"
-                                                    data-placeholder-text="my-dir/nuclio_funcs.zip"
+                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: my-dir/nuclio_funcs.zip"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.s3ItemKey"
                                                     class="nuclio-validating-input">
                         </igz-validating-input-field>
 
-                        <div class="field-label">{{ 'functions:ACCESS_KEY_ID' | i18next }}</div>
+                        <div class="field-label">
+                            <span>{{ 'functions:ACCESS_KEY_ID' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.S3.ACCESS_KEY_ID' | i18next }}"></igz-more-info>
+                        </div>
                         <igz-validating-input-field data-field-type="input"
                                                     data-input-name="s3AccessKeyID"
                                                     data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3AccessKeyId"
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
-                                                    data-placeholder-text="myaccesskeyid"
+                                                    data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_ACCESS_KEY_ID' | i18next }}"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.s3AccessKeyId"
                                                     class="nuclio-validating-input">
                         </igz-validating-input-field>
 
-                        <div class="field-label">{{ 'functions:SECRET_ACCESS_KEY' | i18next }}</div>
+                        <div class="field-label">
+                            <span>{{ 'functions:SECRET_ACCESS_KEY' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.S3.SECRET_ACCESS_KEY' | i18next }}"></igz-more-info>
+                        </div>
                         <igz-validating-input-field data-field-type="password"
                                                     data-input-name="s3SecretAccessKey"
                                                     data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3SecretAccessKey"
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
-                                                    data-placeholder-text="mysecretaccesskey"
+                                                    data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_SECRET_ACCESS_KEY' | i18next }}"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.s3SecretAccessKey"
                                                     class="nuclio-validating-input">
                         </igz-validating-input-field>
 
-                        <div class="field-label">{{ 'functions:REGION' | i18next }}</div>
-                        <igz-validating-input-field data-field-type="input"
-                                                    data-input-name="s3Region"
-                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3Region"
-                                                    data-is-focused="false"
-                                                    data-form-object="$ctrl.versionCodeForm"
-                                                    data-validation-is-required="false"
-                                                    data-placeholder-text="myregion"
-                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.s3Region"
-                                                    class="nuclio-validating-input">
-                        </igz-validating-input-field>
-
-                        <div class="field-label">{{ 'functions:SESSION_TOKEN' | i18next }}</div>
+                        <div class="field-label">
+                            <span>{{ 'functions:SESSION_TOKEN' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.S3.SESSION_TOKEN' | i18next }}"></igz-more-info>
+                        </div>
                         <igz-validating-input-field data-field-type="password"
                                                     data-input-name="s3SessionToken"
                                                     data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3SessionToken"
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
-                                                    data-placeholder-text="mys3sessiontoken"
+                                                    data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_SESSION_TOKEN' | i18next }}"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.s3SessionToken"
                                                     class="nuclio-validating-input">
                         </igz-validating-input-field>
 
-                        <div class="field-label">{{ 'functions:WORK_DIRECTORY' | i18next }}</div>
+                        <div class="field-label">
+                            <span>{{ 'functions:REGION' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.S3.REGION' | i18next }}"></igz-more-info>
+                        </div>
+                        <igz-validating-input-field data-field-type="input"
+                                                    data-input-name="s3Region"
+                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3Region"
+                                                    data-is-focused="false"
+                                                    data-form-object="$ctrl.versionCodeForm"
+                                                    data-validation-is-required="false"
+                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: us-east-1"
+                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                    data-update-data-field="spec.build.codeEntryAttributes.s3Region"
+                                                    class="nuclio-validating-input">
+                        </igz-validating-input-field>
+
+                        <div class="field-label">
+                            <span>{{ 'functions:WORK_DIRECTORY' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.S3.WORK_DIR' | i18next }}"></igz-more-info>
+                        </div>
                         <igz-validating-input-field data-field-type="input"
                                                     data-input-name="workDir"
                                                     data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir"
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
-                                                    data-placeholder-text="path/to/functions/in/archive"
+                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: /nuclio-functions/myfunc"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.workDir"
                                                     class="nuclio-validating-input">
