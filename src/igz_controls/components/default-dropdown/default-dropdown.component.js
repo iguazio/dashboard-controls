@@ -158,9 +158,12 @@
             // set focus (for using keyboard) if ctrl.isFocused is true
             $timeout(function () {
                 if (ctrl.isFocused) {
-                    $element.find('.default-dropdown-field').first().focus();
+                    var elementToFocus = ctrl.isTypingEnabled() ? '.default-dropdown-field input' :
+                                                                  '.default-dropdown-field';
+
+                    $element.find(elementToFocus).first().focus();
                 }
-            });
+            }, 500);
 
             $scope.$on('close-drop-down', unselectDropdown);
         }
