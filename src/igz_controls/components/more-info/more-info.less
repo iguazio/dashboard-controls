@@ -8,11 +8,7 @@
     padding-left: 15px;
 
     .question-mark {
-        cursor: pointer;
-
-        &.disabled {
-            cursor: default;
-        }
+        cursor: default;
 
         &:before {
             color: @icon-help-round-before-color;
@@ -27,6 +23,10 @@
             + .row-description {
                 color: @icon-help-description-hover-color;
             }
+        }
+
+        &.click-trigger {
+            cursor: pointer;
         }
 
         &:not(.click-trigger) {
