@@ -4,7 +4,8 @@
     angular.module('iguazio.dashboard-controls')
         .factory('DialogsService', DialogsService);
 
-    function DialogsService($document, $q, $i18next, i18next, lodash, ngDialog, FormValidationService) {
+    function DialogsService($document, $q, $i18next, i18next, lodash, ngDialog, EventHelperService,
+                            FormValidationService) {
         return {
             alert: alert,
             confirm: confirm,
@@ -242,7 +243,7 @@
             });
 
             function confirmCallback(event) {
-                if (event.keyCode === 13) {
+                if (event.keyCode === EventHelperService.ENTER) {
                     data.checkInput() && promptDialog.close(data.value);
                 }
             }
@@ -283,7 +284,7 @@
             return ngDialog.open({
                 template: '<igz-text-edit data-label="{{ngDialogData.label}}" data-language="{{ngDialogData.language}}" data-content="{{ngDialogData.content}}"' +
                           'data-submit-button-text="{{ngDialogData.submitButtonText}}" data-submit-data="ngDialogData.submitData(newContent)"' +
-                          'data-close-button-text="{{ngDialogData.closeButtonText}}" data-close-dialog="closeThisDialog()" data-node="ngDialogData.node">' +
+                          'data-close-button-text="{{ngDialogData.closeButtonText}}" data-close-dialog="closeThisDialog(value)">' +
                           '</igz-text-edit>',
                 plain: true,
                 data: data,
