@@ -48,45 +48,5 @@ body {
     .table-body:not(:last-child) {
         margin-bottom: 5px;
     }
-
-    .create-variable-button,
-    .create-header-button,
-    .create-annotation-button,
-    .create-event-header,
-    .create-label-button,
-    .create-binding-button,
-    .create-ingress-button,
-    .create-topic-button,
-    .create-broker-button,
-    .create-subscription-button {
-        display: inline-flex;
-        align-items: center;
-        height: 36px;
-        margin-top: 7px;
-        .duskThree(0.64);
-        background-color: @white;
-        font-size: 14px;
-        font-weight: normal;
-        font-style: normal;
-        font-stretch: normal;
-        letter-spacing: normal;
-        text-align: left;
-        color: @color;
-
-        &.disabled {
-            color: @pale-grey;
-            cursor: default;
-
-            .igz-icon-add-round {
-                color: @pale-grey;
-            }
-        }
-
-        .igz-icon-add-round {
-            margin: 3px 8px 0 15px;
-            color: @orange;
-            font-size: 24px;
-        }
-    }
 }
 

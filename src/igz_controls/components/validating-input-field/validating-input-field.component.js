@@ -128,21 +128,11 @@
             if (ctrl.isFocused) {
 
                 // check is this input field is in dialog
-                if (angular.isDefined($element.closest('.ngdialog')[0])) {
-                    angular.element($window).on('animationend', function (event) {
+                var timer = angular.isDefined($element.closest('.ngdialog')[0]) ? 300 : 0;
 
-                        if (event.originalEvent.animationName === 'ngdialog-fadein' && event.target.className === 'ngdialog-content') {
-                            $timeout(function () {
-                                $element.find('.field')[0].focus();
-                                angular.element($window).off('animationend');
-                            }, 300);
-                        }
-                    });
-                } else {
-                    $timeout(function () {
-                        $element.find('.field')[0].focus();
-                    });
-                }
+                $timeout(function () {
+                    $element.find('.field')[0].focus();
+                }, timer);
             }
         }
 
