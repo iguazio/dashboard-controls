@@ -6,39 +6,49 @@
      * @name igzDefaultDropdown
      * @description
      * Default drop down component. This component is a toggleable menu that allows the user to choose one value from a
-     * predefined list.
+     * predefined list. It can also become a combo-box where the user can enter text. It can also auto-complete the
+     * option by the partially enetered value.
      *
      * @param {Object|string} selectedItem - an object/string to be set by the component.
      *     The value that will be set as selected item from predefined list.
-     *     Note: if @param enableTyping is equal to true it means that the user can mutate this value. In this case
+     *     Note: if `enableTyping` is equal to `true` it means that the user can mutate this value. In this case
      *     after modifying the value the new list item will be created.
      * @param {Array.<Object>} valuesArray - an array of objects describing the available options that user can select.
-     * @param {Object} bottomButtonCallback - callback on toggleable menu`s bottom button click.
-     * @param {string} bottomButtonText - the text of the toggleable menu`s bottom button.
-     * @param {string} dropdownType - type of the predefined dropdown (`badges-dropdown`, `priority`).
-     * @param {boolean} enableTyping - set to `true` to allow typing new value in the collapsed dropdown input.
-     * @param {boolean} enableOverlap - set to `true` to dropdown overlap the parental block (please set z-index for `.default-container` if it needed).
-     * @param {Object} formObject - form object.
-     * @param {string} inputName - name of the input.
-     * @param {boolean} isDisabled - set to `true` to make this instance of the component read-only.
-     * @param {boolean} isFocused - should input be focused when screen is displayed
-     * @param {boolean} isCapitalized - set to `true` to make capitalized all text from listing and selected value.
-     * @param {boolean} isPagination - set to `true` to remove check mark from selected list`s item.
+     * @param {boolean} [additionalClass] - optionally add another CSS class name to the containing HTML element of the drop-down.
+     * @param {boolean} [autocomplete=false] - set to `true` to allow filtering of options by entered text.
+     * @param {boolean} [autocompleteIgnoreCase=false] - set to `true` to ignore case while filtering options.
+     * @param {boolean} [autocompleteMatch='prefix'] - set to `'prefix'` to match the entered text as a prefix of an
+     *     option, or `'contains'` to match it as a substring anywhere in the option.
+     * @param {function} [bottomButtonCallback] - callback on toggleable menu's bottom button click.
+     * @param {string} [bottomButtonText] - the text of the toggleable menu's bottom button.
+     * @param {string} [dropdownType='regular'] - type of the predefined dropdown (`'regular'`, `'badges-dropdown'`,
+     *     `'priority'`).
+     * @param {boolean} [enableTyping=false] - set to `true` to allow typing new value in the collapsed dropdown input.
+     * @param {boolean} [enableOverlap=false] - set to `true` to dropdown overlap the parental block (please set z-index
+     *     for `.default-container` if it needed).
+     * @param {Object} [formObject] - form object.
+     * @param {string} [inputName] - name of the input.
+     * @param {boolean} [iconClass='igz-icon-dropdown'] - a CSS class name to use for the drop-down arrow icon.
+     * @param {boolean} [isDisabled=false] - set to `true` to make this instance of the component read-only.
+     * @param {boolean} [isFocused=false] - should input be focused when screen is displayed
+     * @param {boolean} [isCapitalized=false] - set to `true` to make capitalized all text from listing and selected
+     *     value.
+     * @param {boolean} [isPagination=false] - set to `true` to remove check mark from selected list`s item.
      *     Note: only for pagination dropdown.
-     * @param {boolean} isRequired - set to `true` to make required selection of a value.
-     * @param {string} itemSelectField - name of the field that should be set from the selected value.
-     * @param {Object} itemSelectCallback - callback on selecting item from a list.
-     * @param {Object} matchPattern - pattern for validating typed value if enableTyping is `true`.
-     * @param {string} nameKey - name of the list`s item which should be shown.
-     * @param {Object} onOpenDropdown - callback on opening dropdown menu.
-     * @param {Object} onCloseDropdown - callback on closing dropdown menu.
-     * @param {boolean} readOnly - marked dropdown as `readonly`.
-     * @param {boolean} preventDropUp - set to `true` to prevent drop up the menu.
-     * @param {string} placeholder - text which should be shown if no value is selected.
-     * @param {string} selectPropertyOnly - name of the property which should be set to selectedItem.
-     *     Note: in that case ctrl.selectedItem will be a string value
-     * @param {boolean} skipSelection - make the dropdown unselectable. On selecting any item, dropdown doesn't select
-     *     it, and always shows placeholder..
+     * @param {boolean} [isRequired=false] - set to `true` to make required selection of a value.
+     * @param {string} [itemSelectField] - name of the field that should be set from the selected value.
+     * @param {function} [itemSelectCallback] - callback on selecting item from a list.
+     * @param {Object} [matchPattern] - pattern for validating typed value if enableTyping is `true`.
+     * @param {string} [nameKey] - name of the list`s item which should be shown.
+     * @param {function} [onOpenDropdown] - callback on opening dropdown menu.
+     * @param {function} [onCloseDropdown] - callback on closing dropdown menu.
+     * @param {boolean} [readOnly=false] - marked dropdown as `readonly`.
+     * @param {boolean} [preventDropUp=false] - set to `true` to prevent drop up the menu.
+     * @param {string} [placeholder] - text which should be shown if no value is selected.
+     * @param {string} [selectPropertyOnly] - name of the property which should be set to selectedItem.
+     *     Note: in that case ctrl.selectedItem will be a string value.
+     * @param {boolean} [skipSelection=false] - make the dropdown unselectable. On selecting any item, dropdown doesn't
+     *     select it, and always shows placeholder.
      */
     angular.module('iguazio.dashboard-controls')
         .component('igzDefaultDropdown', {
@@ -46,6 +56,7 @@
                 additionalClass: '@?',
                 autocomplete: '<?',
                 autocompleteIgnoreCase: '<?',
+                autocompleteMatch: '@?',
                 selectedItem: '<',
                 valuesArray: '<',
                 bottomButtonCallback: '<?',
@@ -58,14 +69,14 @@
                 inputName: '@?',
                 isDisabled: '<?',
                 isFocused: '<?',
-                isCapitalized: '@?',
+                isCapitalized: '<?',
                 isPagination: '<?',
                 isRequired: '<?',
                 itemSelectField: '@?',
                 itemSelectCallback: '&?',
                 matchPattern: '<?',
                 nameKey: '@?',
-                onOpenDropdown: '<?',
+                onOpenDropdown: '&?',
                 onCloseDropdown: '&?',
                 readOnly: '<?',
                 preventDropUp: '<?',
@@ -122,18 +133,31 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.autocomplete = lodash.defaultTo(ctrl.autocomplete, false);
-            ctrl.autocompleteIgnoreCase = lodash.defaultTo(ctrl.autocompleteIgnoreCase, false);
-            ctrl.isCapitalized = lodash.defaultTo(ctrl.isCapitalized, 'false').toLowerCase() === 'true';
-            ctrl.iconClass = lodash.defaultTo(ctrl.iconClass, 'igz-icon-dropdown');
+            lodash.defaults(ctrl, {
+                autocomplete: false,
+                autocompleteIgnoreCase: false,
+                autocompleteMatch: 'prefix',
+                dropdownType: 'regular',
+                enableOverlap: false,
+                enableTyping: false,
+                iconClass: 'igz-icon-dropdown',
+                isCapitalized: false,
+                isDisabled: false,
+                isFocused: false,
+                isPagination: false,
+                isRequired: false,
+                preventDropUp: false,
+                readOnly: false,
+                skipSelection: false
+            });
 
             valuesArrayCopy = angular.copy(ctrl.valuesArray);
 
-            if (!lodash.isNil(ctrl.dropdownType) && ctrl.dropdownType === 'priority') {
+            if (ctrl.dropdownType === 'priority') {
                 ctrl.valuesArray = PriorityDropdownService.getPrioritiesArray();
             }
 
-            if (!lodash.isNil(ctrl.dropdownType) && ctrl.dropdownType === 'severity') {
+            if (ctrl.dropdownType === 'severity') {
                 ctrl.valuesArray = SeverityDropdownService.getSeveritiesArray();
             }
 
@@ -321,7 +345,8 @@
                     ctrl.valuesArray = lodash.filter(valuesArrayCopy, function (item) {
                         var itemName = ctrl.autocompleteIgnoreCase ? item.name.toLowerCase() : item.name;
 
-                        return lodash.startsWith(itemName, typedValue);
+                        return ctrl.autocompleteMatch === 'contains' ? lodash.includes(itemName, typedValue) :
+                            lodash.startsWith(itemName, typedValue);
                     });
 
                     if (ctrl.valuesArray.length > 0) {
@@ -498,7 +523,7 @@
 
             ctrl.isDropUp = false;
 
-            if (angular.isUndefined(ctrl.preventDropUp) || !ctrl.preventDropUp) {
+            if (!ctrl.preventDropUp) {
                 if (!ctrl.isDropdownContainerShown) {
                     $timeout(function () {
                         var dropdownMenu = $element.find('.default-dropdown-container');
@@ -527,7 +552,7 @@
                     setWidth();
 
                     if (angular.isFunction(ctrl.onOpenDropdown)) {
-                        ctrl.onOpenDropdown($element);
+                        ctrl.onOpenDropdown({ element: $element });
                     }
 
                     if (ctrl.enableOverlap) {
