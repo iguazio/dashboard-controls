@@ -225,7 +225,7 @@
                 {
                     id: 'shell',
                     name: 'Shell',
-                    sourceCode: '',
+                    sourceCode: 'ZWNobyAiSGVsbG8gZnJvbSBOdWNsaW8i',
                     visible: true
                 },
                 {
