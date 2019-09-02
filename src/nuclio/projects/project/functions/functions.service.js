@@ -154,7 +154,7 @@
                                 type: 'input',
                                 fieldType: 'input',
                                 allowEmpty: false,
-                                placeholder: 'E.g. 1h, 30m, 10s, 250ms'
+                                placeholder: 'E.g. 1h, 30m, 10s'
                             },
                             {
                                 name: 'schedule',
