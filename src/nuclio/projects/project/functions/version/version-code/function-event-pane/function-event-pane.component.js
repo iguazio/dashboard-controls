@@ -16,9 +16,9 @@
             controller: NclFunctionEventPaneController
         });
 
-    function NclFunctionEventPaneController($element, $rootScope, $scope, $timeout, $q, $i18next, i18next, lodash,
-                                            moment, download, ConfigService, ConverterService, DialogsService,
-                                            EventHelperService, VersionHelperService) {
+    function NclFunctionEventPaneController($element, $i18next, $timeout, $q, download, i18next, lodash, moment,
+                                            ConfigService, ConverterService, DialogsService, EventHelperService,
+                                            VersionHelperService) {
         var ctrl = this;
 
         var canceler = null;
@@ -355,20 +355,19 @@
          * @returns {string}
          */
         function getInvocationUrl() {
-            var httpPort = lodash.get(ctrl.version, 'ui.deployResult.status.httpPort', null);
+            var status = lodash.defaultTo(
+                lodash.get(ctrl.version, 'ui.deployResult.status'),
+                lodash.get(ctrl.version, 'status', {})
+            );
 
-            if (lodash.isNil(httpPort)) {
-                httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
+            if (lodash.toFinite(status.httpPort) === 0 || !lodash.includes(['ready', 'scaleToZero'], status.state)) {
+                status.httpPort = null;
             }
 
-            if (httpPort && lodash.includes(['building', 'error'], lodash.get(ctrl.version, 'ui.deployResult.status.state'))) {
-                httpPort = null;
-            }
+            setInvocationUrl(ConfigService.nuclio.externalIPAddress, status.httpPort);
 
-            setInvocationUrl(ConfigService.nuclio.externalIPAddress, httpPort);
-
-            return lodash.isNull(httpPort) ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
-                                             ctrl.version.ui.invocationURL + '/';
+            return lodash.isNull(status.httpPort) ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
+                                                    lodash.trimEnd(ctrl.version.ui.invocationUrl, '/') + '/';
         }
 
         /**
@@ -377,11 +376,11 @@
          * @returns {string}
          */
         function getMethodColor(method) {
-            return method === 'POST'    ? '#fdbc5a' :
-                   method === 'GET'     ? '#21d4ac' :
-                   method === 'PUT'     ? '#239bca' :
-                   method === 'DELETE'  ? '#e54158' :
-                                          '#96a8d3';
+            return method === 'POST'   ? '#fdbc5a' :
+                   method === 'GET'    ? '#21d4ac' :
+                   method === 'PUT'    ? '#239bca' :
+                   method === 'DELETE' ? '#e54158' :
+                                         '#96a8d3';
         }
 
         /**
@@ -918,8 +917,8 @@
          * @param {number} port - HTTP port
          */
         function setInvocationUrl(ip, port) {
-            ctrl.version.ui.invocationURL =
-                lodash.isEmpty(ip) || !lodash.isNumber(port) ? '' : 'http://' + ip + ':' + port;
+            ctrl.version.ui.invocationUrl =
+                lodash.isEmpty(ip) || lodash.toFinite(port) === 0 ? '' : 'http://' + ip + ':' + port;
         }
 
         /**

@@ -32,7 +32,7 @@
 
         ctrl.functionActions = [];
         ctrl.functionNameTooltip = '';
-        ctrl.invocationURL = '';
+        ctrl.invocationUrl = '';
         ctrl.isFunctionCollapsed = true;
         ctrl.runtimes = {
             'golang': 'Go',
@@ -128,17 +128,17 @@
          * @param {Object} changes
          */
         function onChanges(changes) {
+            var httpPort = lodash.get(ctrl.function, 'status.httpPort', 0);
             if (lodash.has(changes, 'function')) {
                 var externalAddress = ConfigService.nuclio.externalIPAddress;
 
                 convertStatusState();
                 setStatusIcon();
 
-                ctrl.invocationURL =
-                    lodash.isNil(ctrl.function.status.httpPort) ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
-                    lodash.isEmpty(externalAddress)             ? 'N/A'                                                :
-                                                                  'http://' + externalAddress + ':' +
-                                                                  ctrl.function.status.httpPort;
+                ctrl.invocationUrl =
+                    lodash.isEmpty(externalAddress) ? 'N/A'                                                :
+                    lodash.toFinite(httpPort) === 0 ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
+                                                      'http://' + externalAddress + ':' + httpPort;
             }
         }
 
