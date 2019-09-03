@@ -5,6 +5,7 @@
         .component('igzSearchInput', {
             bindings: {
                 dataSet: '<',
+                initSearchQuery: '@?',
                 isSearchHierarchically: '@?',
                 liveSearch: '<?',
                 onSearchSubmit: '&?',
@@ -42,6 +43,10 @@
         function onInit() {
             ctrl.searchStates.searchNotFound = false;
             ctrl.searchStates.searchInProgress = false;
+
+            if (!lodash.isUndefined(ctrl.initSearchQuery)) {
+                ctrl.searchQuery = ctrl.initSearchQuery;
+            }
 
             if (angular.isUndefined(ctrl.searchType)) {
                 ctrl.searchType = 'infoPage';
