@@ -7,7 +7,7 @@
                 data-is-html-enabled="true">
         </igz-more-info>
     </div>
-    <form name="$ctrl.labelsForm" class="labels-wrapper">
+    <form name="$ctrl.labelsForm" class="labels-wrapper" novalidate>
         <div data-ng-if="$ctrl.labels.length > 0" class="table-headers">
             <div class="key-header">{{ 'common:KEY' | i18next }}</div>
             <div class="value-header">{{ 'common:VALUE' | i18next }}</div>
@@ -30,7 +30,7 @@
                 </ncl-key-value-input>
             </div>
         </div>
-        <div class="create-label-button"
+        <div class="ncl-create-button create-label-button"
              data-ng-class="{'disabled': $ctrl.isVersionDeployed($ctrl.version)}"
              data-ng-click="$ctrl.addNewLabel($event)">
             <span class="igz-icon-add-round"></span>

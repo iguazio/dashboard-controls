@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="main-section-wrapper">
-            <form name="$ctrl.testEventsForm">
+            <form name="$ctrl.testEventsForm" novalidate>
                 <div class="main-header">
                     <div class="left-side-elements">
                 <span class="igz-icon-hamburger-menu"
@@ -216,7 +216,7 @@
                                             </ncl-key-value-input>
                                         </div>
                                     </div>
-                                    <div class="create-header-button"
+                                    <div class="ncl-create-button create-header-button"
                                          data-ng-click="$ctrl.addNewHeader($event)">
                                         <span class="igz-icon-add-round"></span>
                                         {{ 'functions:CREATE_NEW_HEADER' | i18next }}

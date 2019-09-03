@@ -1,7 +1,8 @@
 <div class="ncl-key-value-input">
     <form name="$ctrl.keyValueInputForm"
           class="input-wrapper"
-          data-ng-mousedown="$ctrl.onEditInput()">
+          data-ng-mousedown="$ctrl.onEditInput()"
+          novalidate>
         <div class="check-row"
              data-ng-if="$ctrl.allowSelection">
             <igz-action-checkbox data-item="$ctrl.data"></igz-action-checkbox>

@@ -1,6 +1,6 @@
 <div class="ncl-version-configuration-resources">
     <div class="title">{{ 'common:RESOURCES' | i18next }}</div>
-    <form name="$ctrl.resourcesForm" class="resources-wrapper">
+    <form name="$ctrl.resourcesForm" class="resources-wrapper" novalidate>
         <div class="row">
 
             <div class="igz-row form-row range-inputs-row">
@@ -111,7 +111,7 @@
                 <div class="igz-col-10 row-title">{{ 'common:GPU' | i18next }}</div>
                 <div class="igz-col-40 input-wrapper"></div>
                 <div class="igz-col-40 input-wrapper"
-                     data-uib-tooltip="{{ 'common:TOOLTIP.PER_REPLICA' | i18next }}"
+                     data-uib-tooltip="{{ 'functions:TOOLTIP.GPU_LIMIT' | i18next }}"
                      data-tooltip-append-to-body="true"
                      data-tooltip-placement="bottom"
                      data-tooltip-popup-delay="500">

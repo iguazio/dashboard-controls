@@ -1,6 +1,6 @@
 <div class="ncl-version-configuration-environment-variables">
     <div class="title">{{ 'functions:ENVIRONMENT_VARIABLES' | i18next }}</div>
-    <form name="$ctrl.environmentVariablesForm" class="resources-wrapper">
+    <form name="$ctrl.environmentVariablesForm" class="resources-wrapper" novalidate>
         <div class="igz-scrollable-container scrollable-environment-variables"
              data-ng-scrollbars
              data-igz-ng-scrollbars-config="{{$ctrl.igzScrollConfig}}"
@@ -21,7 +21,7 @@
                 </ncl-key-value-input>
             </div>
         </div>
-        <div class="create-variable-button"
+        <div class="ncl-create-button create-variable-button"
              data-ng-click="$ctrl.addNewVariable($event)">
             <span class="igz-icon-add-round"></span>
             {{ 'functions:CREATE_NEW_ENVIRONMENT_VARIABLE' | i18next }}
