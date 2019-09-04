@@ -418,6 +418,7 @@
     "TIMES": "times",
     "TO": "To",
     "TOOLTIP": {
+        "ADD_NEW": "Add new",
         "CHANGE_VIEW": "Change view",
         "CLOSE_HEADER": "Close header",
         "COPY_TO_CLIPBOARD": "Copy to clipboard",
@@ -426,6 +427,7 @@
         "IMAGE_PREVIEW": "Image preview",
         "INFINITY": "Infinity",
         "LAST_10_MINUTES": "last 10 minutes",
+        "LAST_HOUR": "Last hour",
         "LAST_MONTH": "last month",
         "OPEN_HEADER": "Open header",
         "SORT": "Sort",
