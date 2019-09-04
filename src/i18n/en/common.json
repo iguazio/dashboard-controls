@@ -418,6 +418,7 @@
     "TIMES": "times",
     "TO": "To",
     "TOOLTIP": {
+        "ADD_NEW": "Add new",
         "CHANGE_VIEW": "Change view",
         "CLOSE_HEADER": "Close header",
         "COPY_TO_CLIPBOARD": "Copy to clipboard",
