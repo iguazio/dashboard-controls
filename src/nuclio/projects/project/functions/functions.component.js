@@ -462,28 +462,44 @@
          */
         function updateStatistics() {
             var args = {
-                metric: METRICS.FUNCTION_CPU,
+                metric: METRICS.FUNCTION_EVENTS,
                 from: '-1h',
                 until: '0s',
                 interval: '5m'
             };
 
             ctrl.getStatistics(args)
-                .then(parseData.bind(null, args.metric));
+                .then(parseData.bind(null, args.metric))
+                .catch(handleError.bind(null, args.metric));
+
+            args.metric = METRICS.FUNCTION_CPU;
+            ctrl.getStatistics(args)
+                .then(parseData.bind(null, args.metric))
+                .catch(handleError.bind(null, args.metric));
 
             args.metric = METRICS.FUNCTION_MEMORY;
             ctrl.getStatistics(args)
-                .then(parseData.bind(null, args.metric));
-
-            args.metric = METRICS.FUNCTION_EVENTS;
-            ctrl.getStatistics(args)
-                .then(parseData.bind(null, args.metric));
+                .then(parseData.bind(null, args.metric))
+                .catch(handleError.bind(null, args.metric));
 
             /**
              * Returns CPU value
              */
             function getCpuValue(value) {
                 return Number(value) / METRICS.MAX_CPU_VALUE * 100;
+            }
+
+            /**
+             * Sets error message to the relevant function
+             */
+            function handleError(type, error) {
+                lodash.forEach(ctrl.functions, function (aFunction) {
+                    lodash.set(aFunction, 'ui.error.' + type, error.msg);
+
+                    $timeout(function () {
+                        $rootScope.$broadcast('element-loading-status_hide-spinner', {name: type + '-' + aFunction.metadata.name});
+                    });
+                });
             }
 
             /**
@@ -526,7 +542,9 @@
                         })
                     }
 
-                    $rootScope.$broadcast('element-loading-status_hide-spinner', {name: type + '-' + result.metric.function});
+                    $timeout(function () {
+                        $rootScope.$broadcast('element-loading-status_hide-spinner', {name: type + '-' + result.metric.function});
+                    });
                 });
             }
         }
