@@ -1,0 +1,76 @@
+<div class="igz-size">
+
+    <!-- if display value without tooltip -->
+    <div data-ng-if="$ctrl.justDisplayValue"
+         class="size-value text-ellipsis"
+         data-ng-class="$ctrl.displayValueClasses">
+        {{$ctrl.getDisplayValue()}}
+    </div>
+
+    <!-- if display value with tooltip -->
+    <div data-ng-if="$ctrl.displayValueWithTooltip"
+         class="size-value text-ellipsis">
+        <span data-uib-tooltip="{{$ctrl.getDisplayValue()}}"
+              data-tooltip-append-to-body="true">
+            {{$ctrl.getDisplayValue()}}
+        </span>
+    </div>
+
+    <!-- if storage-pools -->
+    <div data-ng-if="$ctrl.type === 'storage-pools'"
+         class="size-value text-ellipsis">
+        <span data-uib-tooltip="{{$ctrl.getDisplayValue()}}"
+              data-tooltip-append-to-body="true">
+            {{$ctrl.getDisplayValue()}}
+        </span>
+        <div data-ng-if="$ctrl.outOf !== ''"
+             class="size-reserved text-ellipsis">
+            {{ 'common:OF' | i18next }} {{$ctrl.outOf}}
+        </div>
+    </div>
+
+    <!-- if storage-pools_containers -->
+    <div data-ng-if="$ctrl.type === 'storage-pools_containers'"
+         class="size-value">
+        <div class="text-centered text-ellipsis">
+            <span data-uib-tooltip="{{$ctrl.getDisplayValue()}}"
+                  data-tooltip-append-to-body="true">
+                {{$ctrl.getDisplayValue()}}
+            </span>
+
+            <div data-ng-if="$ctrl.type === 'storage-pools_containers'"
+                 class="size-reserved text-ellipsis">
+                <span data-uib-tooltip="{{$ctrl.reserved}}"
+                      data-tooltip-append-to-body="true">
+                    {{$ctrl.reserved}}
+                </span>
+                <span data-ng-if="$ctrl.quota === -1"
+                      class="size-quota icon-font-arrow-right">
+                    &nbsp;
+                </span>
+                <span data-ng-if="$ctrl.quota === -1"
+                      class="size-quota icon-font-infinity"
+                      data-uib-tooltip="{{ 'common:TOOLTIP.INFINITY' | i18next }}"
+                      data-tooltip-append-to-body="true">
+                    &nbsp;
+                </span>
+                <span data-ng-if="$ctrl.quota !== -1"
+                      class="size-quota icon-font-arrow-right text-ellipsis"
+                      data-uib-tooltip="{{$ctrl.quota}}"
+                      data-tooltip-append-to-body="true">
+                    {{$ctrl.quota}}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="size-chart" id="size-chart-{{$ctrl.entity.id}}">
+        <highchart data-config="$ctrl.entity.ui.lineChartOptions[$ctrl.type]"
+                   class="igz-highcharts-wrapper"
+                   data-uib-tooltip="{{$ctrl.tooltip}}"
+                   data-tooltip-append-to-body="true"
+                   data-tooltip-placement="bottom"
+                   data-tooltip-popup-delay="500">
+        </highchart>
+    </div>
+</div>
