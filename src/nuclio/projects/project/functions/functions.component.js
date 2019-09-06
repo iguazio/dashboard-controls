@@ -1,3 +1,4 @@
+/* eslint max-statements: ["error", 60] */
 (function () {
     'use strict';
 
@@ -10,18 +11,29 @@
                 getProject: '&',
                 getFunction: '&',
                 getFunctions: '&',
+                getStatistics: '&',
                 onUpdateFunction: '&'
             },
             templateUrl: 'nuclio/projects/project/functions/functions.tpl.html',
             controller: FunctionsController
         });
 
-    function FunctionsController($filter, $q, $rootScope, $scope, $state, $stateParams, $transitions, $timeout,
+    function FunctionsController($filter, $interval, $q, $rootScope, $scope, $state, $stateParams, $transitions, $timeout,
                                  $i18next, i18next, lodash, CommonTableService, ConfigService, DialogsService,
                                  NuclioHeaderService) {
         var ctrl = this;
         var lng = i18next.language;
         var title = {}; // breadcrumbs config
+
+        var METRICS = {
+            FUNCTION_CPU: 'nuclio_function_cpu',
+            FUNCTION_MEMORY: 'nuclio_function_mem',
+            FUNCTION_EVENTS: 'nuclio_processor_handled_events_total',
+            MAX_CPU_VALUE: 200
+        };
+
+        var updatingInterval = null;
+        var updatingIntervalTime = 30000;
 
         ctrl.actions = [];
         ctrl.filtersCounter = 0;
@@ -73,6 +85,7 @@
         ctrl.externalIPAddress = '';
 
         ctrl.$onInit = onInit;
+        ctrl.$onDestroy = onDestroy;
 
         ctrl.getColumnSortingClasses = CommonTableService.getColumnSortingClasses;
 
@@ -123,7 +136,8 @@
                                 // back, otherwise the "Invocation URL" column might be "N/A" to a function (even if it
                                 // is deployed, i.e. `status.httpPort` is a number), because as long as the external IP
                                 // address response is not returned, it is empty and is passed to each function row
-                                ctrl.refreshFunctions();
+                                ctrl.refreshFunctions()
+                                    .then(startAutoUpdate);
                             });
                     })
                     .catch(function (error) {
@@ -146,6 +160,13 @@
             $transitions.onStart({}, stateChangeStart);
 
             updatePanelActions();
+        }
+
+        /**
+         * Destroying method
+         */
+        function onDestroy() {
+            stopAutoUpdate();
         }
 
         //
@@ -261,7 +282,7 @@
         function refreshFunctions() {
             ctrl.isSplashShowed.value = true;
 
-            ctrl.getFunctions({id: ctrl.project.metadata.name})
+            return ctrl.getFunctions({id: ctrl.project.metadata.name})
                 .then(function (functions) {
                     ctrl.functions = lodash.map(functions, function (functionFromResponse) {
                         var foundFunction = lodash.find(ctrl.functions, ['metadata.name', functionFromResponse.metadata.name]);
@@ -281,14 +302,14 @@
                         lodash.forEach(ctrl.functions, function (functionItem) {
                             lodash.set(functionItem, 'versions', [{
                                 name: '$LATEST',
-                                invocation: '30',
-                                last_modified: '2018-02-05T17:07:48.509Z'
+                                invocation: '30'
                             }]);
                             lodash.set(functionItem, 'spec.version', 1);
                         });
 
                     }
                 })
+                .then(updateStatistics)
                 .catch(function (error) {
                     var msg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
                     DialogsService.alert(lodash.get(error, 'data.error', msg));
@@ -381,6 +402,25 @@
         }
 
         /**
+         * Starts auto-update statistics.
+         */
+        function startAutoUpdate() {
+            if (lodash.isNull(updatingInterval)) {
+                updatingInterval = $interval(updateStatistics, updatingIntervalTime)
+            }
+        }
+
+        /**
+         * Stops auto-update statistics
+         */
+        function stopAutoUpdate() {
+            if (!lodash.isNull(updatingInterval)) {
+                $interval.cancel(updatingInterval);
+                updatingInterval = null;
+            }
+        }
+
+        /**
          * Updates actions of action panel according to selected versions
          */
         function updatePanelActions() {
@@ -414,6 +454,80 @@
                         type: 'nuclio_alert'
                     };
                 }
+            }
+        }
+
+        /**
+         * Gets and parses data for Invocation #, CPU and Memory columns
+         */
+        function updateStatistics() {
+            var args = {
+                metric: METRICS.FUNCTION_CPU,
+                from: '-1h',
+                until: '0s',
+                interval: '5m'
+            };
+
+            ctrl.getStatistics(args)
+                .then(parseData.bind(null, args.metric));
+
+            args.metric = METRICS.FUNCTION_MEMORY;
+            ctrl.getStatistics(args)
+                .then(parseData.bind(null, args.metric));
+
+            args.metric = METRICS.FUNCTION_EVENTS;
+            ctrl.getStatistics(args)
+                .then(parseData.bind(null, args.metric));
+
+            /**
+             * Returns CPU value
+             */
+            function getCpuValue(value) {
+                return Number(value) / METRICS.MAX_CPU_VALUE * 100;
+            }
+
+            /**
+             * Parses data for charts
+             * @param {string} type
+             * @param {Object} data
+             */
+            function parseData(type, data) {
+                var results = lodash.get(data, 'result', []);
+
+                lodash.forEach(ctrl.functions, function (aFunction) {
+                    var result = lodash.find(results, {metric: {function: aFunction.metadata.name}});
+
+                    if (type === METRICS.FUNCTION_CPU) {
+                        lodash.merge(aFunction.ui, {
+                            metrics: {
+                                'cpu.idle': 100 - getCpuValue(lodash.last(result.values)[1]),
+                                cpuLineChartData: lodash.map(result.values, function (dataPoint) {
+                                    return [dataPoint[0] * 1000, getCpuValue(dataPoint[1])]; // [time, value]
+                                })
+                            }
+                        })
+                    } else if (type === METRICS.FUNCTION_MEMORY) {
+                        lodash.merge(aFunction.ui, {
+                            metrics: {
+                                size: Number(lodash.last(result.values)[1]),
+                                sizeLineChartData: lodash.map(result.values, function (dataPoint) {
+                                    return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
+                                })
+                            }
+                        })
+                    } else { // type === METRICS.FUNCTION_COUNT
+                        lodash.merge(aFunction.ui, {
+                            metrics: {
+                                count: Number(lodash.last(result.values)[1]),
+                                countLineChartData: lodash.map(result.values, function (dataPoint) {
+                                    return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
+                                })
+                            }
+                        })
+                    }
+
+                    $rootScope.$broadcast('element-loading-status_hide-spinner', {name: type + '-' + result.metric.function});
+                });
             }
         }
     }

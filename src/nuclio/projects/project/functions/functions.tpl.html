@@ -63,25 +63,19 @@
                                          data-items-count="$ctrl.getVersions().length">
                 </igz-action-checkbox-all>
                 <div class="igz-row common-table-cells-container">
-                    <div class="igz-col-{{$ctrl.isDemoMode() ? '20' : '25'}} common-table-cell sortable"
+                    <div class="igz-col-{{$ctrl.isDemoMode() ? '10' : '15'}} common-table-cell sortable"
                          data-ng-class="$ctrl.getColumnSortingClasses('metadata.name', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                          data-ng-click="$ctrl.sortTableByColumn('metadata.name')">
                         {{ 'common:NAME' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-20 common-table-cell sortable"
-                         data-ng-class="$ctrl.getColumnSortingClasses('spec.description', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
-                         data-ng-click="$ctrl.sortTableByColumn('spec.description')">
-                        {{ 'common:DESCRIPTION' | i18next }}
-                        <span class="sort-arrow"></span>
-                    </div>
-                    <div class="igz-col-10 common-table-cell sortable"
+                    <div class="igz-col-{{$ctrl.isDemoMode() ? '7-5' : '10'}} common-table-cell sortable"
                          data-ng-class="$ctrl.getColumnSortingClasses('status.state', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                          data-ng-click="$ctrl.sortTableByColumn('status.state')">
                         {{ 'common:STATUS' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-10 common-table-cell sortable"
+                    <div class="igz-col-7-5 common-table-cell sortable"
                          data-ng-if="$ctrl.isDemoMode()"
                          data-ng-class="$ctrl.getColumnSortingClasses('spec.replicas', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                          data-ng-click="$ctrl.sortTableByColumn('spec.replicas')">
@@ -92,18 +86,23 @@
                          class="igz-col-10 common-table-cell">
                         {{ 'functions:INVOCATION_PER_SEC' | i18next }}
                     </div>
-                    <div class="igz-col-10 common-table-cell sortable"
+                    <div class="igz-col-7-5 common-table-cell sortable"
                          data-ng-class="$ctrl.getColumnSortingClasses('spec.runtime', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                          data-ng-click="$ctrl.sortTableByColumn('spec.runtime')">
                         {{ 'functions:RUNTIME' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-{{$ctrl.isDemoMode() ? '10' : '35'}} common-table-cell">
+                    <div class="igz-col-{{$ctrl.isDemoMode() ? '12-5' : '15'}} common-table-cell">
                         {{ 'functions:INVOCATION_URL' | i18next }}
                     </div>
-                    <div data-ng-if="$ctrl.isDemoMode()"
-                         class="igz-col-10 common-table-cell">
-                        {{ 'common:LAST_MODIFIED' | i18next }}
+                    <div class="igz-col-{{$ctrl.isDemoMode() ? '15' : '17-5'}} common-table-cell">
+                        {{ 'functions:INVOCATION' | i18next }}&nbsp;#
+                    </div>
+                    <div class="igz-col-{{$ctrl.isDemoMode() ? '15' : '17-5'}} common-table-cell">
+                        {{ 'common:CPU' | i18next }}
+                    </div>
+                    <div class="igz-col-{{$ctrl.isDemoMode() ? '15' : '17-5'}} common-table-cell">
+                        {{ 'common:MEMORY' | i18next }}
                     </div>
                 </div>
                 <div class="common-table-cell actions-menu">&nbsp;</div>

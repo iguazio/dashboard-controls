@@ -11,19 +11,15 @@
 
         <div class="igz-row common-table-cells-container"
              data-ng-click="$ctrl.onSelectRow($event)">
-            <div class="igz-col-{{$ctrl.isDemoMode() ? '20' : '25'}} common-table-cell function-name">
-                {{$ctrl.function.metadata.name}}
-            </div>
-            <div class="igz-col-20 common-table-cell"
+            <div class="igz-col-{{$ctrl.isDemoMode() ? '10' : '15'}} common-table-cell function-name"
                  data-uib-tooltip="{{$ctrl.function.spec.description}}"
                  data-tooltip-append-to-body="true"
-                 data-tooltip-placement="top">
-                <span class="description-content common-table-cell-content"
-                      data-ng-bind="$ctrl.function.spec.description"
-                      data-igz-multiline-ellipsis>
-                </span>
+                 data-tooltip-placement="top"
+                 data-tooltip-popup-delay="200">
+                {{$ctrl.function.metadata.name}}
             </div>
-            <div class="igz-col-10 common-table-cell">
+
+            <div class="igz-col-{{$ctrl.isDemoMode() ? '7-5' : '10'}} common-table-cell">
                 {{$ctrl.convertedStatusState}}
                 <div class="status-icon"
                      data-uib-tooltip="{{$ctrl.getTooltip()}}"
@@ -34,26 +30,46 @@
                 </div>
             </div>
             <div data-ng-if="$ctrl.isDemoMode()"
-                 class="igz-col-10 common-table-cell">
+                 class="igz-col-7-5 common-table-cell">
                 {{$ctrl.function.spec.replicas}}
             </div>
             <div data-ng-if="$ctrl.isDemoMode()"
                  class="igz-col-10 common-table-cell">
                 {{$ctrl.function.spec.invocation || 0}}
             </div>
-            <div class="igz-col-10 common-table-cell">
+            <div class="igz-col-7-5 common-table-cell">
                 {{$ctrl.runtimes[$ctrl.function.spec.runtime]}}
             </div>
-            <div class="igz-col-{{$ctrl.isDemoMode() ? '10' : '25'}} common-table-cell"
+            <div class="igz-col-{{$ctrl.isDemoMode() ? '12-5' : '15'}} common-table-cell"
                  data-uib-tooltip="{{$ctrl.invocationURL}}"
                  data-tooltip-append-to-body="true"
                  data-tooltip-placement="top">
                 <span class="common-table-cell-content">{{$ctrl.invocationURL}}</span>
             </div>
-            <div data-ng-if="$ctrl.isDemoMode()"
-                 class="igz-col-10 common-table-cell">
-                {{$ctrl.function.attr.last_modified | date:"MMM dd, yyyy"}}
-            </div>
+
+            <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-{{$ctrl.isDemoMode() ? '15' : '17-5'}}"
+                                        data-name="nuclio_processor_handled_events_total-{{$ctrl.function.metadata.name}}"
+                                        data-loading-status-size="small">
+                <igz-size data-type="functions_events"
+                          data-entity="$ctrl.function">
+                </igz-size>
+            </igz-element-loading-status>
+
+            <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-{{$ctrl.isDemoMode() ? '15' : '17-5'}}"
+                                        data-name="nuclio_function_cpu-{{$ctrl.function.metadata.name}}"
+                                        data-loading-status-size="small">
+                <igz-size data-type="functions_cpu"
+                          data-entity="$ctrl.function">
+                </igz-size>
+            </igz-element-loading-status>
+
+            <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-{{$ctrl.isDemoMode() ? '15' : '17-5'}}"
+                                        data-name="nuclio_function_mem-{{$ctrl.function.metadata.name}}"
+                                        data-loading-status-size="small">
+                <igz-size data-type="functions_memory"
+                          data-entity="$ctrl.function">
+                </igz-size>
+            </igz-element-loading-status>
         </div>
 
         <div class="common-table-cell actions-menu">
