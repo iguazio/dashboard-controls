@@ -5,7 +5,7 @@ describe('igzElementLoadingStatus component:', function () {
     var ctrl;
 
     beforeEach(function () {
-        module('iguazio.app');
+        module('iguazio.dashboard-controls');
 
         inject(function (_$componentController_, _$state_) {
             $componentController = _$componentController_;
