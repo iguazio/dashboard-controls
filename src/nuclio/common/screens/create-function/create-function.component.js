@@ -86,9 +86,9 @@
                         $rootScope.$broadcast('update-main-header-title', title);
                     })
                     .catch(function (error) {
-                        var msg = $i18next.t('functions:ERROR_MSG.GET_PROJECTS', {lng: lng});
+                        var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_PROJECTS', {lng: lng});
 
-                        DialogsService.alert(lodash.get(error, 'data.error', msg));
+                        DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
 
                         $state.go($stateParams.navigatedFrom === 'home-page' ? 'app.home' : 'app.projects');
                     })
@@ -109,9 +109,9 @@
                         NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
                     })
                     .catch(function (error) {
-                        var msg = $i18next.t('functions:ERROR_MSG.GET_PROJECT', {lng: lng});
+                        var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_PROJECT', {lng: lng});
 
-                        DialogsService.alert(lodash.get(error, 'data.error', msg));
+                        DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
 
                         $state.go('app.projects');
                     })
@@ -171,9 +171,9 @@
                                 };
                             })
                             .catch(function (error) {
-                                var msg = $i18next.t('functions:ERROR_MSG.GET_PROJECTS', {lng: lng});
+                                var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_PROJECTS', {lng: lng});
 
-                                DialogsService.alert(lodash.get(error, 'data.error', msg));
+                                DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                             })
                             .finally(function () {
                                 ctrl.isSplashShowed.value = false;

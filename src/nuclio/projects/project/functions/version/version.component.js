@@ -153,8 +153,9 @@
                 })
                 .then(setIngressHost)
                 .catch(function (error) {
-                    var msg = $i18next.t('functions:ERROR_MSG.GET_PROJECT', {lng: lng});
-                    DialogsService.alert(lodash.get(error, 'data.error', msg));
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_PROJECT', {lng: lng});
+
+                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                 });
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
@@ -236,14 +237,9 @@
                 method({ version: versionCopy, projectID: ctrl.project.metadata.name })
                     .then(pullFunctionState)
                     .catch(function (error) {
-                        var status = lodash.get(error, 'status');
+                        var defaultMsg = $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', {lng: lng});
 
-                        var msg =
-                            status === 403 ? $i18next.t('functions:ERROR_MSG.DEPLOY_FUNCTION.403', {lng: lng}) :
-                            status === 405 ? $i18next.t('functions:ERROR_MSG.DEPLOY_FUNCTION.405', {lng: lng}) :
-                            status === 409 ? $i18next.t('functions:ERROR_MSG.DEPLOY_FUNCTION.409', {lng: lng}) :
-                            /* else */       $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', {lng: lng});
-                        DialogsService.alert(msg);
+                        DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                     })
                     .finally(function () {
                         ctrl.isSplashShowed.value = false;
@@ -309,8 +305,9 @@
                             })
                             .catch(function (error) {
                                 ctrl.isSplashShowed.value = false;
-                                var msg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION.DEFAULT', {lng: lng});
-                                DialogsService.alert(lodash.get(error, 'data.error', msg));
+                                var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', {lng: lng});
+
+                                DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                             });
                     });
             } else if (item.id === 'exportFunction') {

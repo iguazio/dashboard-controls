@@ -18,7 +18,6 @@
 
         ctrl.data = {};
         ctrl.isLoadingState = false;
-        ctrl.nameTakenError = false;
         ctrl.nameValidationPattern = ValidatingPatternsService.functionName;
         ctrl.serverError = '';
 
@@ -53,7 +52,6 @@
          */
         function createProject(event) {
             if (angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) {
-                ctrl.nameTakenError = false;
                 $scope.newProjectForm.$submitted = true;
 
                 if ($scope.newProjectForm.$valid) {
@@ -74,19 +72,9 @@
                             ctrl.closeDialog({ project: ctrl.data });
                         })
                         .catch(function (error) {
-                            var status = lodash.get(error, 'status');
+                            var defaultMsg = $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR_RETRY_LATER', {lng: lng});
 
-                            ctrl.serverError =
-                                status === 400                   ? $i18next.t('common:ERROR_MSG.MISSING_MANDATORY_FIELDS', {lng: lng}) :
-                                status === 403                   ? $i18next.t('functions:ERROR_MSG.CREATE_PROJECT.403', {lng: lng})    :
-                                status === 405                   ? $i18next.t('functions:ERROR_MSG.CREATE_PROJECT.405', {lng: lng})    :
-                                status === 409                   ? $i18next.t('functions:ERROR_MSG.CREATE_PROJECT.409', {lng: lng})    :
-                                lodash.inRange(status, 500, 599) ? $i18next.t('common:ERROR_MSG.SERVER_ERROR', {lng: lng})             :
-                                                                   $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR_RETRY_LATER', {lng: lng});
-
-                            if (status === 409) {
-                                ctrl.nameTakenError = true;
-                            }
+                            ctrl.serverError = lodash.get(error, 'data.error', defaultMsg)
                         })
                         .finally(function () {
                             ctrl.isLoadingState = false;

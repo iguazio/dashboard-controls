@@ -69,8 +69,9 @@
                     downloadExportedFunction(blob, lodash.defaultTo(project.spec.displayName, project.metadata.name));
                 })
                 .catch(function (error) {
-                    var msg = $i18next.t('functions:ERROR_MSG.EXPORT_PROJECT', {lng: i18next.language});
-                    DialogsService.alert(lodash.get(error, 'data.error', msg));
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.EXPORT_PROJECT', {lng: i18next.language});
+
+                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                 });
 
         }
@@ -112,8 +113,9 @@
                     downloadExportedFunction(blob, 'projects');
                 })
                 .catch(function (error) {
-                    var msg = $i18next.t('functions:ERROR_MSG.EXPORT_PROJECTS', {lng: i18next.language});
-                    DialogsService.alert(lodash.get(error, 'data.error', msg));
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.EXPORT_PROJECTS', {lng: i18next.language});
+
+                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                 });
         }
 

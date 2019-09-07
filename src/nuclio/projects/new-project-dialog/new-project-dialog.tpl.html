@@ -16,9 +16,6 @@
                 <div class="error" data-ng-show="$ctrl.isShowFieldInvalidState(newProjectForm, 'metadata.name')">
                     {{ 'common:ERROR_MSG.INVALID_INPUTS' | i18next }}
                 </div>
-                <div class="error" data-ng-show="$ctrl.nameTakenError">
-                    {{ 'common:ERROR_MSG.NAME_EXISTS' | i18next }}
-                </div>
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-input-name="metadata.name"

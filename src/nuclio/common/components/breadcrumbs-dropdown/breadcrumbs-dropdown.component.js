@@ -39,14 +39,18 @@
             if (ctrl.type === 'projects') {
                 ctrl.getProjects()
                     .then(setNuclioItemsList)
-                    .catch(function () {
-                        DialogsService.alert($i18next.t('functions:ERROR_MSG.GET_PROJECTS', {lng: lng}));
+                    .catch(function (error) {
+                        var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_PROJECTS', {lng: lng});
+
+                        DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                     });
             } else if (ctrl.type === 'functions') {
                 ctrl.getFunctions({id: ctrl.project.metadata.name})
                     .then(setNuclioItemsList)
-                    .catch(function () {
-                        DialogsService.alert($i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng}));
+                    .catch(function (error) {
+                        var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
+
+                        DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                     });
             }
 
