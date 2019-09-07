@@ -519,7 +519,7 @@
                         var functionName = lodash.get(aFunction, 'metadata.name');
                         var metric = lodash.get(result, 'metric', {});
                         var resultName = lodash.defaultTo(metric.function, metric.function_name);
-                        return lodash.startsWith(resultName, functionName);
+                        return resultName === functionName;
                     });
 
                     if (lodash.isObject(funcStats)) {
