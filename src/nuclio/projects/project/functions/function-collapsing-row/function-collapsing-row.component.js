@@ -77,6 +77,16 @@
 
             lodash.defaultsDeep(ctrl.function, {
                 ui: {
+                    metrics: {
+                        count: null,
+                        'cpu.idle': null,
+                        size: null
+                    }
+                }
+            });
+
+            lodash.merge(ctrl.function, {
+                ui: {
                     delete: deleteFunction,
                     duplicate: duplicateFunction,
                     export: exportFunction,
