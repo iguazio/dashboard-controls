@@ -110,11 +110,9 @@
                     return projectId;
                 })
                 .catch(function (error) {
-                    var status = lodash.get(error, 'status');
-                    var errorMessage = status === 409                                       ?
-                        $i18next.t('functions:ERROR_MSG.DELETE_PROJECT.409', {lng: lng})    :
-                        $i18next.t('functions:ERROR_MSG.DELETE_PROJECT.DEFAULT', {lng: lng});
-                    return $q.reject(errorMessage);
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_PROJECT', {lng: lng});
+
+                    return $q.reject(lodash.get(error, 'data.error', defaultMsg));
                 });
         }
 
@@ -173,7 +171,7 @@
             })
                 .catch(function (error) {
                     if (error !== 'closed') {
-                        return $q.reject($i18next.t('functions:ERROR_MSG.UPDATE_PROJECT.DEFAULT', {lng: lng}));
+                        return $q.reject($i18next.t('functions:ERROR_MSG.UPDATE_PROJECT', {lng: lng}));
                     }
                 });
         }

@@ -313,9 +313,9 @@
                     });
                 })
                 .catch(function (error) {
-                    var msg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS_TEMPLATE', {lng: lng});
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS_TEMPLATE', {lng: lng});
 
-                    DialogsService.alert(lodash.get(error, 'data.error', msg));
+                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                 })
                 .finally(function () {
                     ctrl.toggleSplashScreen({value: false});

@@ -142,8 +142,9 @@
                     })
                     .catch(function (error) {
                         ctrl.isSplashShowed.value = false;
-                        var msg = $i18next.t('functions:ERROR_MSG.GET_PROJECT', {lng: lng});
-                        DialogsService.alert(lodash.get(error, 'data.error', msg)).then(function () {
+                        var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_PROJECT', {lng: lng});
+
+                        DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
                             $state.go('app.projects');
                         });
                     });
@@ -311,8 +312,9 @@
                 })
                 .then(updateStatistics)
                 .catch(function (error) {
-                    var msg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
-                    DialogsService.alert(lodash.get(error, 'data.error', msg));
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
+
+                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                 })
                 .finally(function () {
                     ctrl.isSplashShowed.value = false;

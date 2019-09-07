@@ -292,9 +292,9 @@
                 })
                 .catch(function (error) {
                     ctrl.isSplashShowed.value = false;
-                    var msg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION.DEFAULT', {lng: lng});
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', {lng: lng});
 
-                    return DialogsService.alert(lodash.get(error, 'data.error', msg));
+                    return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                 });
         }
 
@@ -346,13 +346,13 @@
                         }
                     })
                     .catch(function (error) {
-                        var msg = $i18next.t('functions:ERROR_MSG.GET_FUNCTION.DEFAULT', {lng: lng});
+                        var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTION', {lng: lng});
 
                         terminateInterval();
                         convertStatusState();
                         setStatusIcon();
 
-                        return DialogsService.alert(lodash.get(error, 'data.error', msg));
+                        return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                     });
             }, 2000);
         }
@@ -430,9 +430,9 @@
                 .catch(function (error) {
                     ctrl.function = tempFunctionCopy;
 
-                    var msg = $i18next.t('functions:ERROR_MSG.UPDATE_FUNCTION.DEFAULT', {lng: lng});
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.UPDATE_FUNCTION', {lng: lng});
 
-                    return DialogsService.alert(lodash.get(error, 'data.error', msg));
+                    return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                 })
                 .finally(function () {
                     ctrl.isSplashShowed.value = false;

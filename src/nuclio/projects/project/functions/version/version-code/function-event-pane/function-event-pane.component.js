@@ -210,8 +210,10 @@
                 .then(function (response) {
                     ctrl.savedEvents = response;
                 })
-                .catch(function () {
-                    DialogsService.alert($i18next.t('functions:ERROR_MSG.GET_EVENTS', {lng: lng}));
+                .catch(function (error) {
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_EVENTS', {lng: lng});
+
+                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                 })
                 .finally(function () {
                     ctrl.isSplashShowed.value = false;
@@ -318,13 +320,15 @@
                                     }
                                 })
                                 .catch(function (error) {
-                                    var msg = $i18next.t('functions:ERROR_MSG.GET_EVENTS', {lng: lng});
-                                    DialogsService.alert(lodash.get(error, 'data.error', msg));
+                                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_EVENTS', {lng: lng});
+
+                                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                                 });
                         })
                         .catch(function (error) {
-                            var msg = $i18next.t('functions:ERROR_MSG.DELETE_EVENTS', {lng: lng});
-                            DialogsService.alert(lodash.get(error, 'data.error', msg));
+                            var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_EVENTS', {lng: lng});
+
+                            DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                         })
                         .finally(function () {
                             ctrl.isSplashShowed.value = false;
@@ -576,8 +580,10 @@
                         ctrl.createEvent = false;
                         ctrl.isSplashShowed.value = false;
                     })
-                    .catch(function () {
-                        DialogsService.alert($i18next.t('functions:ERROR_MSG.CREATE_UPDATE_FUNCTION_EVENT', {lng: lng}));
+                    .catch(function (error) {
+                        var defaultMsg = $i18next.t('functions:ERROR_MSG.CREATE_UPDATE_FUNCTION_EVENT', {lng: lng});
+
+                        DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                         ctrl.isSplashShowed.value = false;
                     });
             }
