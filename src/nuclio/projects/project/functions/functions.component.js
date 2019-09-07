@@ -552,11 +552,11 @@
                             })
                         }
                     }
-
-                    ElementLoadingStatusService.hideSpinnerGroup(lodash.map(ctrl.functions, function (aFunction) {
-                        return type + '-' + lodash.get(aFunction, 'metadata.name');
-                    }));
                 });
+
+                ElementLoadingStatusService.hideSpinnerGroup(lodash.map(ctrl.functions, function (aFunction) {
+                    return type + '-' + lodash.get(aFunction, 'metadata.name');
+                }));
             }
         }
     }
