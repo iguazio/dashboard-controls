@@ -404,7 +404,7 @@
                 'nodes': prepareCpuData,
                 'functions_cpu': prepareCpuData,
                 'functions_memory': prepareSizeData,
-                'functions_events': prepareSizeData,
+                'functions_events': prepareCountData,
                 'services_cpu': prepareCpuData,
                 'services_memory': prepareSizeData,
                 'storage-pools': prepareStoragePoolsData,
@@ -420,6 +420,10 @@
 
             function prepareSizeData() {
                 lodash.defaults(ctrl.entity.ui.metrics, {size: 0});
+            }
+
+            function prepareCountData() {
+                lodash.defaults(ctrl.entity.ui.metrics, {count: 0});
             }
 
             function prepareStoragePoolsData() {

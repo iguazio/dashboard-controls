@@ -20,7 +20,7 @@
 
     function FunctionsController($filter, $interval, $q, $rootScope, $scope, $state, $stateParams, $transitions, $timeout,
                                  $i18next, i18next, lodash, CommonTableService, ConfigService, DialogsService,
-                                 NuclioHeaderService) {
+                                 ElementLoadingStatusService, NuclioHeaderService) {
         var ctrl = this;
         var lng = i18next.language;
         var title = {}; // breadcrumbs config
@@ -461,10 +461,14 @@
          * Gets and parses data for Invocation #, CPU and Memory columns
          */
         function updateStatistics() {
+            var MILLIS_IN_AN_HOUR = 60 * 60 * 1000;
+            var now = Date.now();
+            var from = new Date(now - MILLIS_IN_AN_HOUR).toISOString();
+            var until = new Date(now).toISOString();
             var args = {
                 metric: METRICS.FUNCTION_EVENTS,
-                from: '-1h',
-                until: '0s',
+                from: from,
+                until: until,
                 interval: '5m'
             };
 
@@ -511,40 +515,47 @@
                 var results = lodash.get(data, 'result', []);
 
                 lodash.forEach(ctrl.functions, function (aFunction) {
-                    var result = lodash.find(results, {metric: {function: aFunction.metadata.name}});
+                    var funcStats = lodash.find(results, function (result) {
+                        var functionName = lodash.get(aFunction, 'metadata.name');
+                        var metric = lodash.get(result, 'metric', {});
+                        var resultName = lodash.defaultTo(metric.function, metric.function_name);
+                        return lodash.startsWith(resultName, functionName);
+                    });
 
-                    if (type === METRICS.FUNCTION_CPU) {
-                        lodash.merge(aFunction.ui, {
-                            metrics: {
-                                'cpu.idle': 100 - getCpuValue(lodash.last(result.values)[1]),
-                                cpuLineChartData: lodash.map(result.values, function (dataPoint) {
-                                    return [dataPoint[0] * 1000, getCpuValue(dataPoint[1])]; // [time, value]
-                                })
-                            }
-                        })
-                    } else if (type === METRICS.FUNCTION_MEMORY) {
-                        lodash.merge(aFunction.ui, {
-                            metrics: {
-                                size: Number(lodash.last(result.values)[1]),
-                                sizeLineChartData: lodash.map(result.values, function (dataPoint) {
-                                    return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
-                                })
-                            }
-                        })
-                    } else { // type === METRICS.FUNCTION_COUNT
-                        lodash.merge(aFunction.ui, {
-                            metrics: {
-                                count: Number(lodash.last(result.values)[1]),
-                                countLineChartData: lodash.map(result.values, function (dataPoint) {
-                                    return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
-                                })
-                            }
-                        })
+                    if (lodash.isObject(funcStats)) {
+                        if (type === METRICS.FUNCTION_CPU) {
+                            lodash.merge(aFunction.ui, {
+                                metrics: {
+                                    'cpu.idle': 100 - getCpuValue(lodash.last(funcStats.values)[1]),
+                                    cpuLineChartData: lodash.map(funcStats.values, function (dataPoint) {
+                                        return [dataPoint[0] * 1000, getCpuValue(dataPoint[1])]; // [time, value]
+                                    })
+                                }
+                            })
+                        } else if (type === METRICS.FUNCTION_MEMORY) {
+                            lodash.merge(aFunction.ui, {
+                                metrics: {
+                                    size: Number(lodash.last(funcStats.values)[1]),
+                                    sizeLineChartData: lodash.map(funcStats.values, function (dataPoint) {
+                                        return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
+                                    })
+                                }
+                            })
+                        } else { // type === METRICS.FUNCTION_COUNT
+                            lodash.merge(aFunction.ui, {
+                                metrics: {
+                                    count: Number(lodash.last(funcStats.values)[1]),
+                                    countLineChartData: lodash.map(funcStats.values, function (dataPoint) {
+                                        return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
+                                    })
+                                }
+                            })
+                        }
                     }
 
-                    $timeout(function () {
-                        $rootScope.$broadcast('element-loading-status_hide-spinner', {name: type + '-' + result.metric.function});
-                    });
+                    ElementLoadingStatusService.hideSpinnerGroup(lodash.map(ctrl.functions, function (aFunction) {
+                        return type + '-' + lodash.get(aFunction, 'metadata.name');
+                    }));
                 });
             }
         }
