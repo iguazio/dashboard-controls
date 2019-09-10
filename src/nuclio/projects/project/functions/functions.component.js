@@ -525,19 +525,20 @@
                     });
 
                     if (lodash.isObject(funcStats)) {
+                        var latestValue = lodash.last(funcStats.values)[1];
                         if (type === METRICS.FUNCTION_CPU) {
                             lodash.merge(aFunction.ui, {
                                 metrics: {
-                                    'cpu.idle': 100 - getCpuValue(lodash.last(funcStats.values)[1]),
-                                    cpuLineChartData: lodash.map(funcStats.values, function (dataPoint) {
-                                        return [dataPoint[0] * 1000, getCpuValue(dataPoint[1])]; // [time, value]
+                                    'cpu.cores': latestValue,
+                                    cpuCoresLineChartData: lodash.map(funcStats.values, function (dataPoint) {
+                                        return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
                                     })
                                 }
                             })
                         } else if (type === METRICS.FUNCTION_MEMORY) {
                             lodash.merge(aFunction.ui, {
                                 metrics: {
-                                    size: Number(lodash.last(funcStats.values)[1]),
+                                    size: Number(latestValue),
                                     sizeLineChartData: lodash.map(funcStats.values, function (dataPoint) {
                                         return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
                                     })
@@ -546,7 +547,7 @@
                         } else { // type === METRICS.FUNCTION_COUNT
                             lodash.merge(aFunction.ui, {
                                 metrics: {
-                                    count: Number(lodash.last(funcStats.values)[1]),
+                                    count: Number(latestValue),
                                     countLineChartData: lodash.map(funcStats.values, function (dataPoint) {
                                         return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
                                     })

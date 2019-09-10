@@ -26,7 +26,8 @@
             tenant: $i18next.t('common:TOOLTIP.LAST_MONTH', {lng: lng})
         };
 
-        var CPU_TYPES = ['nodes', 'clusters', 'services_cpu', 'functions_cpu'];
+        var CPU_TYPES = ['nodes', 'clusters'];
+        var CPU_CORES_TYPES = ['services_cpu', 'functions_cpu'];
         var SIZE_TYPES = ['containers', 'storage-pools', 'tenants', 'services_memory', 'functions_memory'];
         var COUNT_TYPES = ['functions_events'];
 
@@ -55,7 +56,10 @@
 
             prepareData(ctrl.type);
 
-            ctrl.metricType = isCpu() ? 'cpuLineChartData' : isSize() ? 'sizeLineChartData' : 'countLineChartData';
+            ctrl.metricType = isCpu()      ? 'cpuLineChartData'      :
+                              isCpuCores() ? 'cpuCoresLineChartData' :
+                              isSize()     ? 'sizeLineChartData'     :
+                                             'countLineChartData'    ;
 
             ctrl.displayValueWithTooltip = lodash.includes(['containers', 'tenants'], ctrl.type);
             ctrl.justDisplayValue = lodash.includes(['clusters', 'nodes', 'functions_cpu', 'functions_memory',
@@ -64,7 +68,7 @@
             ctrl.displayValueClasses = {
                 'short': lodash.includes(['functions_memory'], ctrl.type),
                 'shorten': lodash.includes(['functions_events'], ctrl.type),
-                'shortest': lodash.includes(['clusters', 'nodes', 'services_cpu', 'functions_cpu'], ctrl.type),
+                'shortest': lodash.includes(['clusters', 'nodes', 'services_cpu', 'functions_cpu'], ctrl.type)
             };
 
             lodash.defaults(ctrl.entity.ui, {
@@ -279,7 +283,9 @@
                     },
                     formatter: function () {
                         var formattedDate = moment(this.points[0].key).format('DD MMM, YYYY, hh:mm:ss A');
-                        var tooltipValue = isCount() ? $filter('scale')(this.y) : $filter('bytes')(this.y, 2);
+                        var tooltipValue = isCount()    ? $filter('scale')(this.y)             :
+                                           isCpuCores() ? $filter('scale')(this.y, 0, 'nanos') :
+                                                          $filter('bytes')(this.y, 2);
 
                         return '<div class="igz-tooltip-wrapper used-capacity-tooltip-wrapper">' +
                             '<div class="tooltip-header">' + formattedDate + '</div>' +
@@ -295,7 +301,9 @@
                 $scope.$on('size_hide-tooltip', hideChartTooltip);
             }
 
-            if (ctrl.type === 'storage-pools_containers' && angular.isDefined(ctrl.entity.attr.quota) && ctrl.entity.attr.quota !== 0 && isMaxQuotaValueAppropriate()) {
+            if (ctrl.type === 'storage-pools_containers' && angular.isDefined(ctrl.entity.attr.quota) &&
+                ctrl.entity.attr.quota !== 0 && isMaxQuotaValueAppropriate()) {
+
                 ctrl.entity.ui.lineChartOptions[ctrl.type].options.yAxis.plotLines = [{
                     color: PaletteService.sizeChartLineChartOptionsYAxisPlotLinesColor,
                     width: 1,
@@ -324,15 +332,22 @@
          * @returns {string}
          */
         function getDisplayValue() {
-            var defaultValue = isCpu() ? '0%' : isSize() ? '0 bytes' : '0';
-            var value = ctrl.entity.ui.metrics[isCpu() ? 'cpu.idle' : isSize() ? 'size' : 'count'];
+            var defaultValue = isCpu()  ? '0%'      :
+                               isSize() ? '0 bytes' :
+                                          '0';
+            var metricName = isCpu()      ? 'cpu.idle'  :
+                             isCpuCores() ? 'cpu.cores' :
+                             isSize()     ? 'size'      :
+                                            'count';
+            var value = ctrl.entity.ui.metrics[metricName];
             var sizePercentage = ctrl.entity.ui.metrics.sizePercentage;
             sizePercentage = lodash.isUndefined(sizePercentage) ? '' : ' (' + sizePercentage + '%)';
 
             return lodash.isNil(value) ? defaultValue :
-                   isCpu()             ? $filter('number')(value > 0 ? 100 - value : 0, 0) + '%' :
-                   isSize()            ? $filter('bytes')(value, 2) + sizePercentage :
-                                         $filter('scale')(value);
+                   isCpu()      ? $filter('number')(value > 0 ? 100 - value : 0, 0) + '%' :
+                   isCpuCores() ? $filter('scale')(value, 0, 'nanos')                     :
+                   isSize()     ? $filter('bytes')(value, 2) + sizePercentage             :
+                                  $filter('scale')(value);
         }
 
         //
@@ -365,6 +380,14 @@
         }
 
         /**
+         * Determines whether this chart is for CPU cores
+         * @returns {boolean} `true` if this chart is for CPU cores or `false` otherwise
+         */
+        function isCpuCores() {
+            return lodash.includes(CPU_CORES_TYPES, ctrl.type);
+        }
+
+        /**
          * Defines if max quota value and max point in chart data has difference less than 20%
          * @returns {boolean}
          */
@@ -389,8 +412,8 @@
          * @returns {boolean}
          */
         function isTooltipEnabled() {
-            return lodash.includes(['containers', 'storage-pools', 'tenants', 'services_memory',
-                'functions_memory', 'functions_events'], ctrl.type);
+            return lodash.includes(['containers', 'storage-pools', 'tenants', 'services_memory', 'services_cpu',
+                'functions_memory', 'functions_cpu', 'functions_events'], ctrl.type);
         }
 
         /**
@@ -402,7 +425,7 @@
                 'clusters': prepareCpuData,
                 'containers': prepareSizeData,
                 'nodes': prepareCpuData,
-                'functions_cpu': prepareCpuData,
+                'functions_cpu': prepareCpuCoresData,
                 'functions_memory': prepareSizeData,
                 'functions_events': prepareCountData,
                 'services_cpu': prepareCpuData,
@@ -416,6 +439,10 @@
 
             function prepareCpuData() {
                 lodash.defaults(ctrl.entity.ui.metrics, {'cpu.idle': 0});
+            }
+
+            function prepareCpuCoresData() {
+                lodash.defaults(ctrl.entity.ui.metrics, {'cpu.cores': 0});
             }
 
             function prepareSizeData() {
