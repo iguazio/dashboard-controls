@@ -56,6 +56,7 @@
     "COPY": "Copy",
     "COPY_TO_CLIPBOARD_FAILED": "Copy to clipboard failed.",
     "CPU": "CPU",
+    "CPU_CORES": "CPU (cores)",
     "CPU_USED": "CPU used",
     "CREATE": "Create",
     "CREATE_FUNCTION": "Create Function",
