@@ -49,6 +49,7 @@
      *     Note: in that case ctrl.selectedItem will be a string value.
      * @param {boolean} [skipSelection=false] - make the dropdown unselectable. On selecting any item, dropdown doesn't
      *     select it, and always shows placeholder.
+     * @param {boolean} [trim=true] - whether the input value will automatically trim
      */
     angular.module('iguazio.dashboard-controls')
         .component('igzDefaultDropdown', {
@@ -82,7 +83,8 @@
                 preventDropUp: '<?',
                 placeholder: '@?',
                 selectPropertyOnly: '@?',
-                skipSelection: '<?'
+                skipSelection: '<?',
+                trim: '<?'
             },
             templateUrl: 'igz_controls/components/default-dropdown/default-dropdown.tpl.html',
             transclude: true,
@@ -148,7 +150,8 @@
                 isRequired: false,
                 preventDropUp: false,
                 readOnly: false,
-                skipSelection: false
+                skipSelection: false,
+                trim: true
             });
 
             valuesArrayCopy = angular.copy(ctrl.valuesArray);
@@ -351,6 +354,9 @@
 
                     if (ctrl.valuesArray.length > 0) {
                         $element.find('.default-dropdown-field')[0].dispatchEvent(new Event('click'));
+                        if (ctrl.formObject[ctrl.inputName].$invalid) {
+                            ctrl.formObject[ctrl.inputName].$setValidity('text', true);
+                        }
                     } else if (!ctrl.enableTyping) {
                         ctrl.formObject[ctrl.inputName].$setValidity('text', false);
                     }
@@ -386,6 +392,10 @@
                     ctrl.isDropdownContainerShown = false;
                     break;
                 case EventHelperService.SPACE:
+                    if (ctrl.trim) {
+                        ctrl.isDropdownContainerShown = !ctrl.isDropdownContainerShown;
+                    }
+                    break;
                 case EventHelperService.ENTER:
                     ctrl.isDropdownContainerShown = !ctrl.isDropdownContainerShown;
                     break;

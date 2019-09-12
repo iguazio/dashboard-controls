@@ -97,7 +97,7 @@ describe('nclNewProjectDialog component:', function () {
             $rootScope.$digest();
 
             expect(ctrl.createProjectCallback).toHaveBeenCalledWith({ project: ctrl.data });
-            expect(ctrl.serverError).toBe('ERROR_MSG.MISSING_MANDATORY_FIELDS');
+            expect(ctrl.serverError).toBe('ERROR_MSG.UNKNOWN_ERROR_RETRY_LATER');
         });
     });
 
