@@ -76,7 +76,7 @@ describe('nclEditProjectDialog component:', function () {
             $rootScope.$digest();
 
             expect(ctrl.updateProjectCallback).toHaveBeenCalledWith({ project: ctrl.data });
-            expect(ctrl.serverError).toBe('ERROR_MSG.MISSING_MANDATORY_FIELDS');
+            expect(ctrl.serverError).toBe('ERROR_MSG.UPDATE_PROJECT');
         });
     });
 
