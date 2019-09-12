@@ -31,6 +31,7 @@
                    data-ng-required="$ctrl.checkIsRequired()"
                    data-ng-disabled="$ctrl.isDisabled || !$ctrl.isTypingEnabled()"
                    data-ng-pattern="$ctrl.matchPattern"
+                   data-ng-trim="{{$ctrl.trim}}"
                    autocomplete="off"
                    name="{{$ctrl.inputName}}"
                    placeholder="{{$ctrl.placeholder}}">
