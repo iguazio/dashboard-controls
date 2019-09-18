@@ -550,6 +550,9 @@
                                     count: Number(latestValue),
                                     countLineChartData: lodash.map(funcStats.values, function (dataPoint) {
                                         return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
+                                    }),
+                                    invocation: lodash.sumBy(funcStats.values, function (value) {
+                                        return Number(value[1]);
                                     })
                                 }
                             })
