@@ -208,6 +208,8 @@
 
             if (angular.isDefined(changes.valuesArray)) {
                 if (!changes.valuesArray.isFirstChange()) {
+                    valuesArrayCopy = angular.copy(changes.valuesArray.currentValue);
+
                     setDefaultInputValue();
                 }
             }
