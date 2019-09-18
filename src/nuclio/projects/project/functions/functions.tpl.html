@@ -69,7 +69,7 @@
                         {{ 'common:NAME' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-{{$ctrl.isDemoMode() ? '7-5' : '10'}} common-table-cell sortable"
+                    <div class="igz-col-{{$ctrl.isDemoMode() ? '7-5' : '10'}} common-table-cell sortable function-status"
                          data-ng-class="$ctrl.getColumnSortingClasses('status.state', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
                          data-ng-click="$ctrl.sortTableByColumn('status.state')">
                         {{ 'common:STATUS' | i18next }}
