@@ -6,7 +6,9 @@
 
     function CommonTableService() {
         return {
-            getColumnSortingClasses: getColumnSortingClasses
+            getColumnSortingClasses: getColumnSortingClasses,
+
+            rowInitTimer: null
         };
 
         //

@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .directive('igzResizableRowCells', igzResizableRowCells);
 
-    function igzResizableRowCells($rootScope, $timeout, lodash) {
+    function igzResizableRowCells($rootScope, $timeout, lodash, CommonTableService) {
         return {
             restrict: 'A',
             link: link
@@ -19,10 +19,24 @@
             function onInit() {
                 scope.$on('resize-cells', resizeCells);
                 scope.$on('autofit-col', autoFitColumn);
+                scope.$on('$destroy', onDestroy);
 
-                $timeout(function () {
+                $timeout.cancel(CommonTableService.rowInitTimer);
+
+                CommonTableService.rowInitTimer = $timeout(function () {
                     $rootScope.$broadcast('reload-columns');
-                });
+
+                    CommonTableService.rowInitTimer = null;
+                }, 100)
+            }
+
+            /**
+             * Destructor method
+             */
+            function onDestroy() {
+                if (CommonTableService.rowInitTimer) {
+                    CommonTableService.rowInitTimer = null;
+                }
             }
 
             //
