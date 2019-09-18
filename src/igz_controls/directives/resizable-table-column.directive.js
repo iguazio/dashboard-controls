@@ -24,9 +24,9 @@
             ctrl.minWidth = 100;
             ctrl.startPosition = 0;
 
-            ctrl.onMouseDown = onMouseDown;
             ctrl.onClick = onClick;
             ctrl.onDoubleClick = onDoubleClick;
+            ctrl.onMouseDown = onMouseDown;
 
             onInit();
 
@@ -58,7 +58,7 @@
                     ctrl.parentElement
                         .off('mouseenter', onMouseEnter)
                         .off('mouseleave', onMouseLeave);
-                })
+                });
             }
 
             //
@@ -116,21 +116,55 @@
                 return false;
             }
 
-            /**
-             * Reset initial data
-             */
-            function resetData() {
-                ctrl.parentElement
-                    .off('mouseenter', onMouseEnter)
-                    .off('mouseleave', onMouseLeave);
-
-                initColumnsWidths();
-                initElements();
-            }
-
             //
             // Private methods
             //
+
+            /**
+             * Initialises columns and their min width
+             */
+            function initColumnsWidths() {
+
+                // get block which will be resized
+                ctrl.columnHead = $element[0].parentElement;
+                ctrl.columnHeadMinWidth = ctrl.minWidth;
+
+                if (ctrl.columnHead.offsetWidth > 0) {
+                    ctrl.columnHeadMinWidth = lodash.min([ctrl.columnHead.offsetWidth, ctrl.minWidth]);
+                }
+
+                // get parent container of the header
+                ctrl.parentBlock = ctrl.columnHead.parentElement;
+
+                // get block which is next to resizing block
+                ctrl.nextBlock = ctrl.columnHead.nextElementSibling;
+                ctrl.nextBlockMinWidth = ctrl.minWidth;
+
+                if (!lodash.isNil(ctrl.nextBlock) && ctrl.nextBlock.offsetWidth > 0) {
+                    ctrl.nextBlockMinWidth = lodash.min([ctrl.nextBlock.offsetWidth, ctrl.minWidth]);
+                }
+
+                resetColumnsWidths();
+            }
+
+            /**
+             * Initialises elements and register callbacks for events
+             */
+            function initElements() {
+                ctrl.parentElement = $element.parent();
+                ctrl.prevElement = ctrl.parentElement.prev().find('.resize-block');
+                ctrl.allElements = ctrl.parentElement.parent().find('.resize-block');
+
+                var lastElement = ctrl.allElements.last()[0];
+                var lastColumn = ctrl.parentElement.parent()[0].lastElementChild;
+                ctrl.isNeedBorder = lastElement !== $element[0] || lastElement.parentElement !== lastColumn;
+
+                !ctrl.isNeedBorder ? $element.addClass('last') : $element.removeClass('last');
+
+                ctrl.parentElement
+                    .on('mouseenter', onMouseEnter)
+                    .on('mouseleave', onMouseLeave);
+            }
 
             /**
              * On mouse enter handler
@@ -151,6 +185,7 @@
                 $timeout.cancel(timeout);
 
                 ctrl.prevElement.removeClass('hover');
+
                 if (ctrl.isNeedBorder) {
                     $element.removeClass('hover');
                 }
@@ -163,6 +198,7 @@
             function onMouseMove(event) {
                 var colDifference = event.clientX - ctrl.startPosition;
                 ctrl.startPosition = event.clientX;
+
                 resetColumnsWidths();
                 resizeColumn(colDifference);
 
@@ -186,6 +222,7 @@
                 // Removes extra classes
                 ctrl.prevElement.removeClass('active');
                 ctrl.allElements.removeClass('resizing');
+
                 if (ctrl.isNeedBorder) {
                     $element.removeClass('active');
                 }
@@ -211,57 +248,27 @@
             }
 
             /**
-             * Initialises columns and their min width
-             */
-            function initColumnsWidths() {
-
-                // get block which will be resized
-                ctrl.columnHead = $element[0].parentElement;
-                ctrl.columnHeadMinWidth = ctrl.minWidth;
-                if (ctrl.columnHead.offsetWidth > 0) {
-                    ctrl.columnHeadMinWidth = lodash.min([ctrl.columnHead.offsetWidth, ctrl.minWidth]);
-                }
-
-                // get parent container of the header
-                ctrl.parentBlock = ctrl.columnHead.parentElement;
-
-                // get block which is next to resizing block
-                ctrl.nextBlock = ctrl.columnHead.nextElementSibling;
-                ctrl.nextBlockMinWidth = ctrl.minWidth;
-                if (!lodash.isNil(ctrl.nextBlock) && ctrl.nextBlock.offsetWidth > 0) {
-                    ctrl.nextBlockMinWidth = lodash.min([ctrl.nextBlock.offsetWidth, ctrl.minWidth]);
-                }
-                resetColumnsWidths();
-            }
-
-            /**
-             * Initialises elements and register callbacks for events
-             */
-            function initElements() {
-                ctrl.parentElement = $element.parent();
-                ctrl.prevElement = ctrl.parentElement.prev().find('.resize-block');
-                ctrl.allElements = ctrl.parentElement.parent().find('.resize-block');
-
-                var lastElement = ctrl.allElements.last()[0];
-                var lastColumn = ctrl.parentElement.parent()[0].lastElementChild;
-                ctrl.isNeedBorder = lastElement !== $element[0] || lastElement.parentElement !== lastColumn;
-
-                !ctrl.isNeedBorder ? $element.addClass('last') : $element.removeClass('last');
-
-                ctrl.parentElement
-                    .on('mouseenter', onMouseEnter)
-                    .on('mouseleave', onMouseLeave);
-            }
-
-            /**
              * Resets columns widths
              */
             function resetColumnsWidths() {
                 ctrl.columnHeadWidth = ctrl.columnHead.offsetWidth;
                 ctrl.parentBlockWidth = ctrl.parentBlock.offsetWidth;
+
                 if (!lodash.isNil(ctrl.nextBlock)) {
                     ctrl.nextBlockWidth = ctrl.nextBlock.offsetWidth;
                 }
+            }
+
+            /**
+             * Reset initial data
+             */
+            function resetData() {
+                ctrl.parentElement
+                    .off('mouseenter', onMouseEnter)
+                    .off('mouseleave', onMouseLeave);
+
+                initColumnsWidths();
+                initElements();
             }
 
             /**
@@ -279,6 +286,7 @@
 
                     // calculate maximum resizing value of columns
                     var newDifference = 0;
+
                     if (colDifference > 0 && maxNextBlockDifference > 0) {
                         newDifference = lodash.min([colDifference, maxNextBlockDifference]);
                     } else if (colDifference < 0 && maxColumnHeadDifference > 0) {
