@@ -17,6 +17,7 @@
                 { threshold: 1000000000, unit: ' G', precision: 2 },
                 { threshold: 1000000, unit: ' M', precision: 2 },
                 { threshold: 1000, unit: ' K', precision: 2 },
+                { threshold: 1, unit: '', precision: 0 },
                 { threshold: 0.05, unit: '', precision: 1 },
                 '0'
             ]
@@ -27,10 +28,13 @@
             var step = lodash.find(units, function (item) {
                 return value >= item.threshold;
             });
+
             if (lodash.isUndefined(step)) {
                 return lodash.last(units);
             }
+
             var precisionToUse = lodash.defaultTo(lodash.defaultTo(precision, step.precision), 0);
+
             return (value / step.threshold).toFixed(precisionToUse) + step.unit;
         };
     }
