@@ -530,6 +530,17 @@
                             return Number(lodash.last(lodash.get(stat, 'values[1]')));
                         }));
 
+                        // calculating of invocations regarding last timestamps
+                        var invocations = lodash.map(funcStats, function (stat) {
+                            var lastStat = lodash.last(stat.values);
+                            var preLastStat = stat.values[stat.values.length - 2];
+
+                            var valuesDiff = Number(lastStat[1]) - Number(preLastStat[1]);
+                            var timestampsDiff = lastStat[0] - preLastStat[0];
+
+                            return valuesDiff / timestampsDiff;
+                        });
+
                         var funcValues = lodash.get(funcStats, '[0].values', []);
 
                         if (funcStats.length > 1) {
@@ -569,7 +580,7 @@
                                     countLineChartData: lodash.map(funcValues, function (dataPoint) {
                                         return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
                                     }),
-                                    invocationPerSec: (Number(latestValue) / 3600).toFixed(2)
+                                    invocationPerSec: lodash.sum(invocations)
                                 }
                             })
                         }
