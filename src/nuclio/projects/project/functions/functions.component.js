@@ -530,8 +530,8 @@
                             return Number(lodash.last(lodash.get(stat, 'values[1]')));
                         }));
 
-                        // calculating of invocations regarding last timestamps
-                        var invocations = lodash.map(funcStats, function (stat) {
+                        // calculating of invocations per second regarding last timestamps
+                        var invocationsPerSec = lodash.map(funcStats, function (stat) {
                             var lastStat = lodash.last(stat.values);
                             var preLastStat = stat.values[stat.values.length - 2];
 
@@ -580,7 +580,7 @@
                                     countLineChartData: lodash.map(funcValues, function (dataPoint) {
                                         return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
                                     }),
-                                    invocationPerSec: lodash.sum(invocations)
+                                    invocationPerSec: lodash.sum(invocationsPerSec)
                                 }
                             })
                         }
