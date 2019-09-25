@@ -519,18 +519,47 @@
                 lodash.forEach(ctrl.functions, function (aFunction) {
                     var funcStats = lodash.find(results, function (result) {
                         var functionName = lodash.get(aFunction, 'metadata.name');
-                        var metric = lodash.get(result, 'metric', {});
+                        var metric = lodash.get(result, '[0].metric', {});
                         var resultName = lodash.defaultTo(metric.function, metric.function_name);
+
                         return resultName === functionName;
                     });
 
                     if (lodash.isObject(funcStats)) {
-                        var latestValue = lodash.last(funcStats.values)[1];
+                        var latestValue = lodash.sum(lodash.map(funcStats, function (stat) {
+                            return Number(lodash.last(lodash.get(stat, 'values[1]')));
+                        }));
+
+                        // calculating of invocations per second regarding last timestamps
+                        var invocationsPerSec = lodash.map(funcStats, function (stat) {
+                            var lastStat = lodash.last(stat.values);
+                            var preLastStat = stat.values[stat.values.length - 2];
+
+                            var valuesDiff = Number(lastStat[1]) - Number(preLastStat[1]);
+                            var timestampsDiff = lastStat[0] - preLastStat[0];
+
+                            return valuesDiff / timestampsDiff;
+                        });
+
+                        var funcValues = lodash.get(funcStats, '[0].values', []);
+
+                        if (funcStats.length > 1) {
+                            for (var i = 1; i < funcStats.length; i++) {
+                                var values = lodash.get(funcStats, '[' + i + '].values', []);
+
+                                lodash.forEach(values, function (value, index) {
+                                    if (funcValues[index][0] === value[0]) {
+                                        funcValues[index][1] = Number(funcValues[index][1]) + Number(value[1]);
+                                    }
+                                });
+                            }
+                        }
+
                         if (type === METRICS.FUNCTION_CPU) {
                             lodash.merge(aFunction.ui, {
                                 metrics: {
                                     'cpu.cores': latestValue,
-                                    cpuCoresLineChartData: lodash.map(funcStats.values, function (dataPoint) {
+                                    cpuCoresLineChartData: lodash.map(funcValues, function (dataPoint) {
                                         return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
                                     })
                                 }
@@ -539,7 +568,7 @@
                             lodash.merge(aFunction.ui, {
                                 metrics: {
                                     size: Number(latestValue),
-                                    sizeLineChartData: lodash.map(funcStats.values, function (dataPoint) {
+                                    sizeLineChartData: lodash.map(funcValues, function (dataPoint) {
                                         return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
                                     })
                                 }
@@ -548,12 +577,10 @@
                             lodash.merge(aFunction.ui, {
                                 metrics: {
                                     count: Number(latestValue),
-                                    countLineChartData: lodash.map(funcStats.values, function (dataPoint) {
+                                    countLineChartData: lodash.map(funcValues, function (dataPoint) {
                                         return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
                                     }),
-                                    invocation: lodash.sumBy(funcStats.values, function (value) {
-                                        return Number(value[1]);
-                                    })
+                                    invocationPerSec: lodash.sum(invocationsPerSec)
                                 }
                             })
                         }
