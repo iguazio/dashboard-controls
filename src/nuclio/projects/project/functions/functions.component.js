@@ -517,12 +517,16 @@
                 var results = lodash.get(data, 'result', []);
 
                 lodash.forEach(ctrl.functions, function (aFunction) {
-                    var funcStats = lodash.find(results, function (result) {
+                    var funcStats = [];
+
+                    lodash.forEach(results, function (result) {
                         var functionName = lodash.get(aFunction, 'metadata.name');
-                        var metric = lodash.get(result, '[0].metric', {});
+                        var metric = lodash.get(result, 'metric', {});
                         var resultName = lodash.defaultTo(metric.function, metric.function_name);
 
-                        return resultName === functionName;
+                        if (resultName === functionName) {
+                            funcStats.push(result);
+                        }
                     });
 
                     if (lodash.isObject(funcStats)) {
@@ -530,16 +534,19 @@
                             return Number(lodash.last(lodash.get(stat, 'values[1]')));
                         }));
 
-                        // calculating of invocations per second regarding last timestamps
-                        var invocationsPerSec = lodash.map(funcStats, function (stat) {
-                            var lastStat = lodash.last(stat.values);
-                            var preLastStat = stat.values[stat.values.length - 2];
+                        // calculating of invocation per second regarding last timestamps
+                        var invocationPerSec = lodash.chain(funcStats)
+                            .map(function (stat) {
+                                var lastStat = lodash.last(stat.values);
+                                var preLastStat = stat.values[stat.values.length - 2];
 
-                            var valuesDiff = Number(lastStat[1]) - Number(preLastStat[1]);
-                            var timestampsDiff = lastStat[0] - preLastStat[0];
+                                var valuesDiff = Number(lastStat[1]) - Number(preLastStat[1]);
+                                var timestampsDiff = lastStat[0] - preLastStat[0];
 
-                            return valuesDiff / timestampsDiff;
-                        });
+                                return valuesDiff / timestampsDiff;
+                            })
+                            .sum()
+                            .value();
 
                         var funcValues = lodash.get(funcStats, '[0].values', []);
 
@@ -580,7 +587,7 @@
                                     countLineChartData: lodash.map(funcValues, function (dataPoint) {
                                         return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
                                     }),
-                                    invocationPerSec: lodash.sum(invocationsPerSec)
+                                    invocationPerSec: $filter('scale')(invocationPerSec, Number.isInteger(invocationPerSec) ? 0 : 2)
                                 }
                             })
                         }
