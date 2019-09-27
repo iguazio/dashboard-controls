@@ -551,7 +551,7 @@
                                 // when querying up to current time prometheus
                                 // may duplicate the last value, so we calculate an earlier
                                 // interval [pre-last] to get a meaningful value
-                                if (stat.valus.length > 2) {
+                                if (stat.values.length > 2) {
                                     firstValue = stat.values[stat.values.length - 3];
                                     secondValue = stat.values[stat.values.length - 2];
                                 }
