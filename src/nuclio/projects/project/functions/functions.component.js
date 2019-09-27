@@ -531,7 +531,7 @@
 
                     if (lodash.isObject(funcStats)) {
                         var latestValue = lodash.sum(lodash.map(funcStats, function (stat) {
-                            return Number(lodash.last(lodash.get(stat, 'values[1]')));
+                            return Number(lodash.last(stat.values)[1]);
                         }));
 
                         // calculating of invocation per second regarding last timestamps
