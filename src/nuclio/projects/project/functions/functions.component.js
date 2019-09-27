@@ -540,7 +540,7 @@
                                 var firstValue;
                                 var secondValue;
 
-                                if (stat.valus.length < 2) {
+                                if (stat.values.length < 2) {
                                     return 0;
                                 }
 
