@@ -537,11 +537,27 @@
                         // calculating of invocation per second regarding last timestamps
                         var invocationPerSec = lodash.chain(funcStats)
                             .map(function (stat) {
-                                var lastStat = lodash.last(stat.values);
-                                var preLastStat = stat.values[stat.values.length - 2];
+                                var firstValue;
+                                var secondValue;
 
-                                var valuesDiff = Number(lastStat[1]) - Number(preLastStat[1]);
-                                var timestampsDiff = lastStat[0] - preLastStat[0];
+                                if (stat.valus.length < 2) {
+                                    return 0;
+                                }
+
+                                // handle array of length 2
+                                firstValue = stat.values[0];
+                                secondValue = stat.values[1];
+
+                                // when querying up to current time prometheus
+                                // may duplicate the last value, so we calculate an earlier
+                                // interval [pre-last] to get a meaningful value
+                                if (stat.valus.length > 2) {
+                                    firstValue = stat.values[stat.values.length - 3];
+                                    secondValue = stat.values[stat.values.length - 2];
+                                }
+
+                                var valuesDiff = Number(secondValue[1]) - Number(firstValue[1]);
+                                var timestampsDiff = secondValue[0] - firstValue[0];
 
                                 return valuesDiff / timestampsDiff;
                             })
