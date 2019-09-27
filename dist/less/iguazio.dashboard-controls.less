@@ -4217,6 +4217,147 @@ ncl-projects {
     }
 }
 
+.igz-pagination {
+    .pagination-color-set();
+
+    float: right;
+    padding: 24px 36px 5px 30px;
+
+    > div {
+        vertical-align: top;
+    }
+
+    .rows-title, .per-page, .jump-to-page, .to-page-prev, .to-page-next {
+        display: inline-block;
+        vertical-align: baseline;
+    }
+
+    .rows-title {
+        font-size: 13px;
+        color: @rows-title-color;
+        font-family: @font-family-sans-serif;
+    }
+
+    .per-page {
+        width: 66px;
+
+        .default-dropdown-field {
+            background: none;
+            border: none;
+            box-shadow: none;
+            font-size: 14px;
+            height: 36px;
+
+            .dropdown-selected-item {
+                font-size: 14px;
+            }
+
+            .dropdown-arrow {
+                margin-top: 5px;
+
+                span {
+                    font-size: 12px;
+                }
+            }
+
+            .dropdown-arrow {
+                border: none;
+
+                &:hover, &:active {
+                    border: none;
+                    background: none;
+                    box-shadow: none;
+                }
+            }
+
+            &:focus {
+                .dropdown-selected-item {
+                    border: none;
+                }
+            }
+        }
+
+        .default-dropdown-container {
+            width: 66px;
+
+            .list-item {
+                padding-left: 15px;
+
+                .list-item-label {
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+
+    .jump-to-page {
+        margin-left: 7px;
+
+        & > div, .jump-to-page-input {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .to-page-prev, .to-page-next {
+            width: 41px;
+            line-height: 34px;
+            height: 36px;
+            display: inline-block;
+            vertical-align: top;
+            position: relative;
+            text-align: center;
+            color: @page-prev-next-color;
+            font-size: 12px;
+
+            &.disabled, &.disabled:hover {
+                background-color: @page-prev-next-disabled-hover-bg-color;
+                border: @page-prev-next-disabled-hover-border;
+                box-shadow: none;
+                cursor: default;
+
+                &:before {
+                    color: @page-prev-next-disabled-hover-before-color;
+                }
+            }
+
+            &:before {
+                 line-height: 34px;
+             }
+        }
+
+        .to-page-prev {
+            border-right: 0;
+            border-radius: 2px 0 0 2px;
+        }
+
+        .to-page-next {
+            border-left: 0;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .title {
+            margin: 0 0 0 14px;
+        }
+
+        .validating-input-field .input-field {
+            width: 43px;
+            height: 36px;
+            border-radius: 0;
+            background-color: @input-field-bg-color;
+            box-shadow: @input-field-box-shadow;
+            border: @input-field-border;
+            font-family: @font-family-sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: @input-field-color;
+            text-align: center;
+
+            &:hover {
+                border: @input-field-hover-border;
+            }
+        }
+    }
+}
 .igz-number-input {
     .number-input-color-set();
 
@@ -4369,147 +4510,6 @@ ncl-projects {
     }
 }
 
-.igz-pagination {
-    .pagination-color-set();
-
-    float: right;
-    padding: 24px 36px 5px 30px;
-
-    > div {
-        vertical-align: top;
-    }
-
-    .rows-title, .per-page, .jump-to-page, .to-page-prev, .to-page-next {
-        display: inline-block;
-        vertical-align: baseline;
-    }
-
-    .rows-title {
-        font-size: 13px;
-        color: @rows-title-color;
-        font-family: @font-family-sans-serif;
-    }
-
-    .per-page {
-        width: 66px;
-
-        .default-dropdown-field {
-            background: none;
-            border: none;
-            box-shadow: none;
-            font-size: 14px;
-            height: 36px;
-
-            .dropdown-selected-item {
-                font-size: 14px;
-            }
-
-            .dropdown-arrow {
-                margin-top: 5px;
-
-                span {
-                    font-size: 12px;
-                }
-            }
-
-            .dropdown-arrow {
-                border: none;
-
-                &:hover, &:active {
-                    border: none;
-                    background: none;
-                    box-shadow: none;
-                }
-            }
-
-            &:focus {
-                .dropdown-selected-item {
-                    border: none;
-                }
-            }
-        }
-
-        .default-dropdown-container {
-            width: 66px;
-
-            .list-item {
-                padding-left: 15px;
-
-                .list-item-label {
-                    margin-right: 10px;
-                }
-            }
-        }
-    }
-
-    .jump-to-page {
-        margin-left: 7px;
-
-        & > div, .jump-to-page-input {
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        .to-page-prev, .to-page-next {
-            width: 41px;
-            line-height: 34px;
-            height: 36px;
-            display: inline-block;
-            vertical-align: top;
-            position: relative;
-            text-align: center;
-            color: @page-prev-next-color;
-            font-size: 12px;
-
-            &.disabled, &.disabled:hover {
-                background-color: @page-prev-next-disabled-hover-bg-color;
-                border: @page-prev-next-disabled-hover-border;
-                box-shadow: none;
-                cursor: default;
-
-                &:before {
-                    color: @page-prev-next-disabled-hover-before-color;
-                }
-            }
-
-            &:before {
-                 line-height: 34px;
-             }
-        }
-
-        .to-page-prev {
-            border-right: 0;
-            border-radius: 2px 0 0 2px;
-        }
-
-        .to-page-next {
-            border-left: 0;
-            border-radius: 0 2px 2px 0;
-        }
-
-        .title {
-            margin: 0 0 0 14px;
-        }
-
-        .validating-input-field .input-field {
-            width: 43px;
-            height: 36px;
-            border-radius: 0;
-            background-color: @input-field-bg-color;
-            box-shadow: @input-field-box-shadow;
-            border: @input-field-border;
-            font-family: @font-family-sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            color: @input-field-color;
-            text-align: center;
-
-            &:hover {
-                border: @input-field-hover-border;
-            }
-        }
-    }
-}
 .search-input {
     .search-input-color-set();
 
@@ -4914,6 +4914,113 @@ ncl-projects {
     }
 }
 
+.splash-screen {
+    .splash-screen-color-set();
+
+    position: absolute;
+    z-index: 996;
+    width: 100%;
+    height: 100%;
+    background-color: @splash-screen-bg-color;
+    transform-style: preserve-3d;
+
+    // ngAnimate appearance for show/hide
+    transition: opacity linear .25s 0s;
+
+    &.ng-hide-remove {
+        opacity: 0;
+    }
+
+    .loading-splash-screen {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: @loading-splash-screen-color;
+        font-size: 20px;
+        text-align: center;
+        font-weight: 500;
+        width: 217px;
+        border-radius: 6px;
+        background-image: @loading-splash-screen-bg-image;
+        padding: 49px 0;
+
+        .splash-logo-wrapper {
+            position: relative;
+            text-align: center;
+
+            .loader-fading-circle {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        .loading-text {
+            padding: 31px 0 0 12px;
+            font-family: @font-family-sans-serif;
+            font-size: 20px;
+            color: @loading-splash-screen-text-color;
+        }
+    }
+
+    .alert-splash-screen {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: @alert-splash-screen-color;
+        font-size: 20px;
+        font-weight: 500;
+        width: 504px;
+        border-radius: 6px;
+        background-image: @alert-splash-screen-bg-image;
+        box-shadow: none;
+        padding: 0 0 49px;
+
+        .header {
+            background: url('/assets/images/oops.png') no-repeat center;
+            margin: 47px 0 24px;
+            height: 59px;
+            background-size: contain;
+        }
+
+        .notification-text {
+            color: @alert-splash-screen-notification-text-color;
+            padding: 0 60px;
+            text-align: center;
+            margin: 0 0 36px;
+            line-height: 1.5;
+        }
+
+        .buttons {
+            text-align: center;
+            height: 36px;
+
+            .refresh-button {
+                margin: 0 auto;
+                padding-top: 8px;
+                height: 36px;
+                width: 124px;
+                font-size: 12px;
+                border-radius: 2px;
+                background-color: @alert-splash-screen-refresh-btn-bg-color;
+                border: @alert-splash-screen-refresh-btn-border;
+                text-transform: uppercase;
+
+                &:hover {
+                    background-color: @alert-splash-screen-refresh-btn-hover-bg-color;
+                    box-shadow: @alert-splash-screen-refresh-btn-hover-box-shadow;
+                }
+
+                .igz-icon-refresh {
+                    font-size: 16px;
+                    margin-right: 8px;
+                    vertical-align: middle;
+                }
+            }
+        }
+    }
+}
 .validating-input-field {
     .validating-input-field-color-set();
 
@@ -5092,113 +5199,6 @@ ncl-projects {
     }
 }
 
-.splash-screen {
-    .splash-screen-color-set();
-
-    position: absolute;
-    z-index: 996;
-    width: 100%;
-    height: 100%;
-    background-color: @splash-screen-bg-color;
-    transform-style: preserve-3d;
-
-    // ngAnimate appearance for show/hide
-    transition: opacity linear .25s 0s;
-
-    &.ng-hide-remove {
-        opacity: 0;
-    }
-
-    .loading-splash-screen {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: @loading-splash-screen-color;
-        font-size: 20px;
-        text-align: center;
-        font-weight: 500;
-        width: 217px;
-        border-radius: 6px;
-        background-image: @loading-splash-screen-bg-image;
-        padding: 49px 0;
-
-        .splash-logo-wrapper {
-            position: relative;
-            text-align: center;
-
-            .loader-fading-circle {
-                width: 60px;
-                height: 60px;
-            }
-        }
-
-        .loading-text {
-            padding: 31px 0 0 12px;
-            font-family: @font-family-sans-serif;
-            font-size: 20px;
-            color: @loading-splash-screen-text-color;
-        }
-    }
-
-    .alert-splash-screen {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: @alert-splash-screen-color;
-        font-size: 20px;
-        font-weight: 500;
-        width: 504px;
-        border-radius: 6px;
-        background-image: @alert-splash-screen-bg-image;
-        box-shadow: none;
-        padding: 0 0 49px;
-
-        .header {
-            background: url('/assets/images/oops.png') no-repeat center;
-            margin: 47px 0 24px;
-            height: 59px;
-            background-size: contain;
-        }
-
-        .notification-text {
-            color: @alert-splash-screen-notification-text-color;
-            padding: 0 60px;
-            text-align: center;
-            margin: 0 0 36px;
-            line-height: 1.5;
-        }
-
-        .buttons {
-            text-align: center;
-            height: 36px;
-
-            .refresh-button {
-                margin: 0 auto;
-                padding-top: 8px;
-                height: 36px;
-                width: 124px;
-                font-size: 12px;
-                border-radius: 2px;
-                background-color: @alert-splash-screen-refresh-btn-bg-color;
-                border: @alert-splash-screen-refresh-btn-border;
-                text-transform: uppercase;
-
-                &:hover {
-                    background-color: @alert-splash-screen-refresh-btn-hover-bg-color;
-                    box-shadow: @alert-splash-screen-refresh-btn-hover-box-shadow;
-                }
-
-                .igz-icon-refresh {
-                    font-size: 16px;
-                    margin-right: 8px;
-                    vertical-align: middle;
-                }
-            }
-        }
-    }
-}
 .igz-info-page-actions-bar {
     .actions-buttons-block {
         margin-top: 3px;
@@ -6421,44 +6421,6 @@ ncl-breadcrumbs {
     }
 }
 
-.ncl-deploy-log-wrapper {
-    .log-panel {
-        .logs-common();
-        background-color: @dark-grey;
-        color: @light-grey-three;
-        padding: 5px;
-        margin: 21px 0 0 4px;
-        min-height: 280px;
-        max-height: 280px;
-        height: 280px;
-
-        .log-entry {
-            .log-entry-time {
-                color: @solid-grey;
-            }
-
-            .log-entry-level-debug{
-                color: @dusty-blue;
-            }
-
-            .log-entry-level-info {
-                color: @cloudy-blue;
-            }
-
-            .log-entry-level-warn{
-                color: @sunflower-yellow;
-            }
-
-            .log-entry-level-error {
-                color: @darkish-pink;
-            }
-
-            .log-entry-message {
-                font-weight: 600;
-            }
-        }
-    }
-}
 .ncl-collapsing-row {
     margin-bottom: 9px;
 
@@ -6571,6 +6533,62 @@ ncl-breadcrumbs {
     }
 }
 
+.ncl-deploy-log-wrapper {
+    .log-panel {
+        .logs-common();
+        background-color: @dark-grey;
+        color: @light-grey-three;
+        padding: 5px;
+        margin: 21px 0 0 4px;
+        min-height: 280px;
+        max-height: 280px;
+        height: 280px;
+
+        .log-entry {
+            .log-entry-time {
+                color: @solid-grey;
+            }
+
+            .log-entry-level-debug{
+                color: @dusty-blue;
+            }
+
+            .log-entry-level-info {
+                color: @cloudy-blue;
+            }
+
+            .log-entry-level-warn{
+                color: @sunflower-yellow;
+            }
+
+            .log-entry-level-error {
+                color: @darkish-pink;
+            }
+
+            .log-entry-message {
+                font-weight: 600;
+            }
+        }
+    }
+}
+.view-yaml-dialog-wrapper {
+    .ngdialog-content {
+        .view-yaml-dialog-header {
+            .title {
+                margin-bottom: 10px;
+            }
+
+            .copy-to-clipboard {
+                width: 20px;
+            }
+        }
+
+        .monaco-editor {
+            min-width: 700px;
+            min-height: 450px;
+        }
+    }
+}
 .ncl-edit-item {
     width: 100%;
     padding: 6px 0;
@@ -6665,24 +6683,6 @@ ncl-breadcrumbs {
     }
 }
 
-.view-yaml-dialog-wrapper {
-    .ngdialog-content {
-        .view-yaml-dialog-header {
-            .title {
-                margin-bottom: 10px;
-            }
-
-            .copy-to-clipboard {
-                width: 20px;
-            }
-        }
-
-        .monaco-editor {
-            min-width: 700px;
-            min-height: 450px;
-        }
-    }
-}
 .ncl-key-value-input {
     .input-wrapper {
         width: 100%;
@@ -6906,6 +6906,76 @@ ncl-breadcrumbs {
 }
 
 
+.ncl-search-input {
+    position: relative;
+    color: @silver;
+
+    .container-search-input {
+        background-color: transparent;
+        border-bottom: 1px solid @silver;
+        font-size: 13px;
+        font-weight: 400;
+        height: 36px;
+        line-height: 36px;
+        margin: 0;
+        outline: 0;
+        padding: 0 0 3px 31px;
+        width: 100%;
+
+        &::-webkit-input-placeholder {
+            color: @silver;
+        }
+
+        &:-moz-placeholder { /* Firefox 18- */
+            color: @silver;
+        }
+
+        &::-moz-placeholder {  /* Firefox 19+ */
+            color: @silver;
+        }
+
+        &:-ms-input-placeholder {
+            color: @silver;
+        }
+
+        &:focus {
+            border-bottom: 1px solid @light-blue;
+
+            &, & + .igz-icon-search:before {
+                color: @dusk-three;
+            }
+
+            &::-webkit-input-placeholder {
+                color: transparent;
+            }
+
+            &:-moz-placeholder { /* Firefox 18- */
+                color: transparent;
+            }
+
+            &::-moz-placeholder {  /* Firefox 19+ */
+                color: transparent;
+            }
+
+            &:-ms-input-placeholder {
+                color: transparent;
+            }
+        }
+    }
+
+    .igz-icon-search {
+        font-size: 18px;
+        position: absolute;
+        left: 8px;
+        top: 5px;
+        z-index: 1;
+        color: @silver;
+    }
+
+    input::-ms-clear {
+        display: none;
+    }
+}
 ncl-navigation-tabs {
     position: relative;
     z-index: 999;
@@ -7069,76 +7139,6 @@ ncl-navigation-tabs {
     }
 }
 
-.ncl-search-input {
-    position: relative;
-    color: @silver;
-
-    .container-search-input {
-        background-color: transparent;
-        border-bottom: 1px solid @silver;
-        font-size: 13px;
-        font-weight: 400;
-        height: 36px;
-        line-height: 36px;
-        margin: 0;
-        outline: 0;
-        padding: 0 0 3px 31px;
-        width: 100%;
-
-        &::-webkit-input-placeholder {
-            color: @silver;
-        }
-
-        &:-moz-placeholder { /* Firefox 18- */
-            color: @silver;
-        }
-
-        &::-moz-placeholder {  /* Firefox 19+ */
-            color: @silver;
-        }
-
-        &:-ms-input-placeholder {
-            color: @silver;
-        }
-
-        &:focus {
-            border-bottom: 1px solid @light-blue;
-
-            &, & + .igz-icon-search:before {
-                color: @dusk-three;
-            }
-
-            &::-webkit-input-placeholder {
-                color: transparent;
-            }
-
-            &:-moz-placeholder { /* Firefox 18- */
-                color: transparent;
-            }
-
-            &::-moz-placeholder {  /* Firefox 19+ */
-                color: transparent;
-            }
-
-            &:-ms-input-placeholder {
-                color: transparent;
-            }
-        }
-    }
-
-    .igz-icon-search {
-        font-size: 18px;
-        position: absolute;
-        left: 8px;
-        top: 5px;
-        z-index: 1;
-        color: @silver;
-    }
-
-    input::-ms-clear {
-        display: none;
-    }
-}
 .new-function-wrapper {
     position: relative;
 
@@ -7685,6 +7685,27 @@ ncl-functions {
     }
 }
 
+.duplicate-function-dialog-wrapper {
+    .main-content {
+        .field-group {
+            display: flex;
+            flex-wrap: wrap;
+            width: 450px;
+
+            .field-label.function-name-label,
+            .field-input.function-name-input {
+                width: 100%;
+            }
+
+            .field-input.function-name-input {
+                .error {
+                    top: 38px;
+                }
+            }
+        }
+    }
+}
+
 .function-import-wrapper-content {
     font-family: @font-family-sans-serif;
     padding-left: 3%;
@@ -7760,27 +7781,6 @@ ncl-functions {
 
             .monaco-code-editor {
                 height: 100%;
-            }
-        }
-    }
-}
-
-.duplicate-function-dialog-wrapper {
-    .main-content {
-        .field-group {
-            display: flex;
-            flex-wrap: wrap;
-            width: 450px;
-
-            .field-label.function-name-label,
-            .field-input.function-name-input {
-                width: 100%;
-            }
-
-            .field-input.function-name-input {
-                .error {
-                    top: 38px;
-                }
             }
         }
     }
@@ -8476,6 +8476,61 @@ ncl-functions {
     }
 }
 
+.ncl-version-configuration {
+    > .igz-scrollable-container {
+        padding: 0px 25px 22px 41px;
+    }
+
+    .ncl-version-configuration-wrapper {
+        > .row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+
+            .configuration-block {
+                padding: 16px 23px 16px;
+                background-color: @white;
+                border: solid 1px @pale-grey;
+                flex-grow: 1;
+                flex-basis: 500px;
+                overflow: hidden;
+                margin-right: 16px;
+                margin-bottom: 16px;
+
+                &.invisible {
+                    visibility: hidden;
+                }
+
+                .title {
+                    font-size: 16px;
+                    font-weight: bold;
+                    font-style: normal;
+                    font-stretch: normal;
+                    letter-spacing: normal;
+                    text-align: left;
+                    color: @dusk-three;
+                    margin-bottom: 12px;
+                }
+
+                .row {
+                    .label {
+                        display: block;
+                        font-family: Roboto, sans-serif;
+                        font-size: 14px;
+                        font-weight: 500;
+                        font-style: normal;
+                        font-stretch: normal;
+                        letter-spacing: normal;
+                        text-align: left;
+                        color: @dusk-three;
+                        padding: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
 .ncl-version-monitoring {
     > .igz-scrollable-container {
         padding: 24px 25px 22px 41px;
@@ -8579,61 +8634,6 @@ ncl-functions {
                         padding: 5px;
                         margin-left: 24px;
                         max-height: 232px;
-                    }
-                }
-            }
-        }
-    }
-}
-
-.ncl-version-configuration {
-    > .igz-scrollable-container {
-        padding: 0px 25px 22px 41px;
-    }
-
-    .ncl-version-configuration-wrapper {
-        > .row {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-
-            .configuration-block {
-                padding: 16px 23px 16px;
-                background-color: @white;
-                border: solid 1px @pale-grey;
-                flex-grow: 1;
-                flex-basis: 500px;
-                overflow: hidden;
-                margin-right: 16px;
-                margin-bottom: 16px;
-
-                &.invisible {
-                    visibility: hidden;
-                }
-
-                .title {
-                    font-size: 16px;
-                    font-weight: bold;
-                    font-style: normal;
-                    font-stretch: normal;
-                    letter-spacing: normal;
-                    text-align: left;
-                    color: @dusk-three;
-                    margin-bottom: 12px;
-                }
-
-                .row {
-                    .label {
-                        display: block;
-                        font-family: Roboto, sans-serif;
-                        font-size: 14px;
-                        font-weight: 500;
-                        font-style: normal;
-                        font-stretch: normal;
-                        letter-spacing: normal;
-                        text-align: left;
-                        color: @dusk-three;
-                        padding: 0;
                     }
                 }
             }
@@ -10060,6 +10060,17 @@ ncl-functions {
     }
 }
 
+.ncl-version-configuration-logging {
+    .row {
+        display: flex;
+        position: relative;
+
+        .logging-wrapper {
+            width: 100%;
+        }
+    }
+}
+
 @desktop-middle: 1550px;
 
 .ncl-version-configuration-resources {
@@ -10169,17 +10180,6 @@ ncl-functions {
         .textarea-field {
             height: 70px;
             overflow-y: auto;
-        }
-    }
-}
-
-.ncl-version-configuration-logging {
-    .row {
-        display: flex;
-        position: relative;
-
-        .logging-wrapper {
-            width: 100%;
         }
     }
 }
