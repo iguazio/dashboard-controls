@@ -567,15 +567,25 @@
                         var funcValues = lodash.get(funcStats, '[0].values', []);
 
                         if (funcStats.length > 1) {
+                            funcValues = lodash.fromPairs(funcValues);
+
                             for (var i = 1; i < funcStats.length; i++) {
                                 var values = lodash.get(funcStats, '[' + i + '].values', []);
 
-                                lodash.forEach(values, function (value, index) {
-                                    if (funcValues[index][0] === value[0]) {
-                                        funcValues[index][1] = Number(funcValues[index][1]) + Number(value[1]);
-                                    }
+                                lodash.forEach(values, function (value) { // eslint-disable-line no-loop-func
+                                    var timestamp = value[0];
+
+                                    lodash.set(funcValues, timestamp, lodash.has(funcValues, timestamp) ?
+                                        Number(funcValues[timestamp]) + Number(value[1]) : Number(value[1]));
                                 });
                             }
+
+                            funcValues = lodash.chain(funcValues)
+                                .toPairs()
+                                .sortBy(function (value) {
+                                    return value[0];
+                                })
+                                .value();
                         }
 
                         if (type === METRICS.FUNCTION_CPU) {
