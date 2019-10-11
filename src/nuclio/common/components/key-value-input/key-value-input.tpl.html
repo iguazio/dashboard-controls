@@ -13,7 +13,12 @@
             <div class="input-container input-key-wrapper"
                  data-ng-if="!$ctrl.onlyValueInput"
                  data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
-                <label for="key" data-ng-if="$ctrl.useLabels" class="key-label">
+                <label data-ng-if="$ctrl.useLabels"
+                       class="key-label"
+                       data-uib-tooltip-html="$ctrl.keyTooltip"
+                       data-tooltip-placement="right"
+                       data-tooltip-popup-delay="300"
+                       data-tooltip-append-to-body="true">
                     {{ 'common:KEY' | i18next }}:
                 </label>
                 <igz-validating-input-field class="nuclio-validating-input input-key"
@@ -33,7 +38,7 @@
             <div class="input-container input-type-wrapper"
                  data-ng-if="$ctrl.useType"
                  data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
-                <label for="type" data-ng-if="$ctrl.useLabels" class="type-label">
+                <label data-ng-if="$ctrl.useLabels" class="type-label">
                     {{ 'common:TYPE' | i18next }}:
                 </label>
                 <igz-default-dropdown class="input-type"
@@ -53,11 +58,15 @@
             <div class="input-container input-value-key-wrapper"
                  data-ng-if="!$ctrl.isVisibleByType('value')"
                  data-ng-class="{'use-type': $ctrl.useType}">
-                <label for="value-key" data-ng-if="$ctrl.useLabels">
+                <label data-ng-if="$ctrl.useLabels">
                     <span data-ng-if="$ctrl.isVisibleByType('secret')">
                         {{ 'functions:SECRET_KEY' | i18next }}:
                     </span>
-                    <span data-ng-if="$ctrl.isVisibleByType('configmap')">
+                    <span data-ng-if="$ctrl.isVisibleByType('configmap')"
+                          data-uib-tooltip-html="$ctrl.configMapKeyTooltip"
+                          data-tooltip-placement="right"
+                          data-tooltip-popup-delay="300"
+                          data-tooltip-append-to-body="true">
                         {{ 'functions:CONFIGMAP_KEY' | i18next }}:
                     </span>
                 </label>
@@ -70,6 +79,7 @@
                                             data-is-disabled="$ctrl.isDisabled"
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.valueOptional"
+                                            data-validation-pattern="$ctrl.configMapKeyValidationPattern"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_KEY' | i18next }}">
                 </igz-validating-input-field>
             </div>
@@ -79,7 +89,7 @@
                                  'only-value-input': $ctrl.onlyValueInput,
                                  'only-key-value-input': $ctrl.isVisibleByType('value'),
                                  'all-value-types': $ctrl.allValueTypes}">
-                <label for="value" data-ng-if="$ctrl.useLabels">
+                <label data-ng-if="$ctrl.useLabels">
                     <span data-ng-if="$ctrl.isVisibleByType('value')">
                         {{ 'common:VALUE' | i18next }}:
                     </span>

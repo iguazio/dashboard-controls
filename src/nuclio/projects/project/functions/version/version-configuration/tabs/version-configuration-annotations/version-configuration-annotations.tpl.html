@@ -10,7 +10,12 @@
     <form name="$ctrl.annotationsForm" class="annotations-wrapper" novalidate>
         <div data-ng-if="$ctrl.annotations.length > 0" class="table-headers">
             <div class="key-header">
-                {{ 'common:KEY' | i18next }}
+                <span data-uib-tooltip-html="$ctrl.keyTooltip"
+                      data-tooltip-placement="right"
+                      data-tooltip-popup-delay="300"
+                      data-tooltip-append-to-body="true">
+                    {{ 'common:KEY' | i18next }}
+                </span>
             </div>
             <div class="value-header">
                 {{ 'common:VALUE' | i18next }}
@@ -27,6 +32,7 @@
                                      data-row-data="annotation"
                                      data-use-type="false"
                                      data-item-index="$index"
+                                     data-key-validation-pattern="$ctrl.keyValidationPattern"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
                                      data-change-data-callback="$ctrl.onChangeData(newData, index)"
                                      data-submit-on-fly="true">

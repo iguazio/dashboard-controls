@@ -29,6 +29,8 @@
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_IMAGE_NAME' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="spec.build.image"
+                                            data-validation-max-length="255"
+                                            data-validation-pattern="$ctrl.imageNameValidationPattern"
                                             data-is-disabled="$ctrl.disabled"
                                             class="nuclio-validating-input">
                 </igz-validating-input-field>

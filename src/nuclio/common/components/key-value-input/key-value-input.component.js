@@ -5,27 +5,30 @@
         .component('nclKeyValueInput', {
             bindings: {
                 actionHandlerCallback: '&',
-                changeDataCallback: '&',
-                dropdownOverlap: '<?',
-                itemIndex: '<',
-                rowData: '<',
-                useType: '<',
-                useLabels: '<',
-                allValueTypes: '<',
+                additionalValueOptional: '<?',
                 allowSelection: '<?',
+                allValueTypes: '<',
+                changeDataCallback: '&',
                 changeStateBroadcast: '@?',
+                configMapKeyTooltip: '@?',
+                configMapKeyValidationPattern: '<?',
+                dropdownOverlap: '<?',
                 isDisabled: '<?',
+                itemIndex: '<',
                 keyOptional: '<?',
-                keyValidationPattern: '<?',
                 keyPlaceholder: '@?',
-                valueOptional: '<?',
-                valueValidationPattern: '<?',
-                valuePlaceholder: '@?',
+                keyTooltip: '@?',
+                keyValidationPattern: '<?',
                 listClass: '@?',
-                submitOnFly: '<?',
                 onlyValueInput: '<?',
+                rowData: '<',
+                submitOnFly: '<?',
+                valueOptional: '<?',
                 useAdditionalValue: '<?',
-                additionalValueOptional: '<?'
+                useLabels: '<',
+                useType: '<',
+                valuePlaceholder: '@?',
+                valueValidationPattern: '<?'
             },
             templateUrl: 'nuclio/common/components/key-value-input/key-value-input.tpl.html',
             controller: NclKeyValueInputController
@@ -222,6 +225,7 @@
                 if (newType.id === 'secret' || newType.id === 'configmap') {
                     var specificType = newType.id === 'secret' ? 'secretKeyRef' : 'configMapKeyRef';
                     var value = {
+                        key: '',
                         name: ''
                     };
 
@@ -235,7 +239,7 @@
                 }
 
                 if (ctrl.submitOnFly) {
-                    saveChanges();
+                    $timeout(saveChanges);
                 }
             }
         }

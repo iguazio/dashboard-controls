@@ -6,6 +6,7 @@
 
     function VersionHelperService(lodash) {
         return {
+            generateTooltip: generateTooltip,
             isVersionDeployed: isVersionDeployed,
             updateIsVersionChanged: updateIsVersionChanged
         };
@@ -13,6 +14,41 @@
         //
         // Public methods
         //
+
+        /**
+         * Recursive generates tooltip based on `config` object.
+         * @param {Array.<Object>} config - list of objects with following structure:
+         *      {
+         *          head: {string},
+         *          values: {Array.<Object>}
+         *      },
+         *      where the `values` consists of objects of the same structure
+         * @param {string} type - type of tags: `block` or `list`
+         * @returns {string} string with correct html tags
+         */
+        function generateTooltip(config, type) {
+            var tags = {
+                block: {
+                    open: '<div class="tooltip-block">',
+                    close: '</div>'
+                },
+                list: {
+                    open: '<li>',
+                    close: '</li>'
+                }
+            };
+            type = lodash.defaultTo(type, 'block');
+
+            return lodash.reduce(config, function (result, item) {
+                result += tags[type].open + '<div>' + item.head + '</div>';
+                if (!lodash.isUndefined(item.values)) {
+                    result += '<ul>' + generateTooltip(item.values, 'list') + '</ul>';
+                }
+                result += tags[type].close;
+
+                return result
+            }, '');
+        }
 
         /**
          * Tests whether the version is deployed.

@@ -8,6 +8,7 @@
                 item: '<',
                 type: '@',
                 onSubmitCallback: '&',
+                onInputValueCallback: '&?',
                 defaultFields: '<?'
             },
             templateUrl: 'nuclio/common/components/edit-item/edit-item.tpl.html',
@@ -16,7 +17,7 @@
 
     function NclEditItemController($document, $element, $rootScope, $scope, $timeout, $i18next, i18next, lodash,
                                    ConverterService, FunctionsService, FormValidationService,
-                                   PreventDropdownCutOffService) {
+                                   PreventDropdownCutOffService, ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -45,6 +46,8 @@
         ctrl.intervalValidationPattern = /^\d+(ms|[smh])$/;
         ctrl.stringValidationPattern = /^.{1,128}$/;
         ctrl.subscriptionQoSValidationPattern = /^[0-2]$/;
+        ctrl.containerNameValidationPattern = ValidatingPatternsService.container;
+
         ctrl.placeholder = '';
         ctrl.tooltips = {
             secret: 'A <a class="link" target="_blank" ' +
@@ -132,6 +135,8 @@
                 if (!lodash.isNil(selectedTypeName)) {
                     ctrl.selectedClass = lodash.find(ctrl.classList, ['id', selectedTypeName]);
                 }
+
+                ctrl.nameValidationPattern = ValidatingPatternsService.k8s.dns1123Label;
             }
 
             if (ctrl.isTriggerType() && ctrl.isHttpTrigger()) {
@@ -570,6 +575,10 @@
             }
 
             validateValues();
+
+            if (lodash.isFunction(ctrl.onInputValueCallback)) {
+                ctrl.onInputValueCallback({newItem: ctrl.item});
+            }
         }
 
         /**
