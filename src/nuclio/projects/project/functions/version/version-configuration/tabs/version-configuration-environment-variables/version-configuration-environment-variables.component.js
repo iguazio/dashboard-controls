@@ -191,7 +191,7 @@
                                 {head: $i18next.t('functions:TOOLTIP.CONFIGURATION.ALPHANUMERIC_CHARACTERS', {lng: lng}) + ' (a–z, A–Z, 0–9)'},
                                 {head: $i18next.t('functions:TOOLTIP.CONFIGURATION.HYPHENS', {lng: lng}) + ' (-)'},
                                 {head: $i18next.t('functions:TOOLTIP.CONFIGURATION.UNDERSCORES', {lng: lng}) + ' (_)'},
-                                {head: $i18next.t('functions:TOOLTIP.CONFIGURATION.PERIODS', {lng: lng}) + ' (.)'},
+                                {head: $i18next.t('functions:TOOLTIP.CONFIGURATION.PERIODS', {lng: lng}) + ' (.)'}
                             ]
                         },
                         {
