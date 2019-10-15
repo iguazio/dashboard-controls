@@ -123,7 +123,7 @@
                             if (!lodash.isNil(data.value)) {
                                 lodash.set(ctrl.functionData, 'values', data.value);
 
-                                ctrl.renderTemplate({ template: lodash.omit(ctrl.functionData, ['rendered', 'metadata']) })
+                                ctrl.renderTemplate({ template: lodash.omit(ctrl.functionData, ['rendered', 'metadata', 'ui']) })
                                     .then(function (response) {
                                         lodash.set(ctrl.functionData, 'rendered.spec', response.spec);
 
