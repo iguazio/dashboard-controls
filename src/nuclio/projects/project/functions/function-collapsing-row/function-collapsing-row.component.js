@@ -11,26 +11,29 @@
                 getFunction: '&',
                 getFunctions: '&',
                 handleDeleteFunction: '&',
+                isProjectsView: '<',
                 isSplashShowed: '<',
-                onUpdateFunction: '&',
+                isProjectCollapsed: '<',
                 project: '<',
-                refreshFunctionsList: '&'
+                refreshFunctionsList: '&',
+                updateFunction: '&'
             },
             templateUrl: 'nuclio/projects/project/functions/function-collapsing-row/function-collapsing-row.tpl.html',
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController($state, $interval, $i18next, i18next, lodash, ngDialog, ConfigService,
-                                                DialogsService, ExportService, NuclioHeaderService) {
+    function NclFunctionCollapsingRowController($interval, $scope, $state, $timeout, $i18next, i18next, lodash,
+                                                ngDialog, ActionCheckboxAllService, ConfigService, DialogsService,
+                                                ExportService, FunctionsService, NuclioHeaderService, ProjectsService,
+                                                TableSizeService) {
         var ctrl = this;
         var tempFunctionCopy = null;
         var interval = null;
         var lng = i18next.language;
 
-        ctrl.actions = [];
-        ctrl.isCollapsed = true;
-        ctrl.title = null;
+        ctrl.functionActions = [];
         ctrl.invocationURL = '';
+        ctrl.isFunctionCollapsed = true;
         ctrl.runtimes = {
             'golang': 'Go',
             'python:2.7': 'Python 2.7',
@@ -41,7 +44,6 @@
             'shell': 'Shell',
             'ruby': 'Ruby'
         };
-
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -49,18 +51,23 @@
             }
         };
         ctrl.statusIcon = null;
+        ctrl.title = null;
 
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
         ctrl.$onChanges = onChanges;
 
-        ctrl.isFunctionShowed = isFunctionShowed;
         ctrl.getTooltip = getTooltip;
         ctrl.handleAction = handleAction;
+        ctrl.isFunctionShowed = isFunctionShowed;
         ctrl.onFireAction = onFireAction;
         ctrl.onSelectRow = onSelectRow;
+        ctrl.toggleFunctionRow = toggleFunctionRow;
         ctrl.toggleFunctionState = toggleFunctionState;
+
+        ctrl.getFunctionsTableColSize = TableSizeService.getFunctionsTableColSize;
         ctrl.isDemoMode = ConfigService.isDemoMode;
+        ctrl.projectsService = ProjectsService;
 
         //
         // Hook methods
@@ -87,6 +94,7 @@
 
             lodash.merge(ctrl.function, {
                 ui: {
+                    checked: false,
                     delete: deleteFunction,
                     duplicate: duplicateFunction,
                     export: exportFunction,
@@ -94,7 +102,10 @@
                 }
             });
 
-            ctrl.actions = initActions();
+            initFunctionActions();
+
+            $scope.$on('expand-all-rows', onExpandAllRows);
+            $scope.$on('collapse-all-rows', onCollapseAllRows);
         }
 
         /**
@@ -102,6 +113,12 @@
          */
         function onDestroy() {
             terminateInterval();
+
+            if (lodash.get(ctrl.function, 'ui.checked')) {
+                lodash.set(ctrl.function, 'ui.checked', false);
+
+                ActionCheckboxAllService.changeCheckedItemsCount(-1);
+            }
         }
 
         /**
@@ -126,6 +143,15 @@
         //
 
         /**
+         * Returns appropriate tooltip for functions status.
+         * @returns {string} - tooltip
+         */
+        function getTooltip() {
+            return ctrl.function.spec.disable ? $i18next.t('functions:TOOLTIP.RUN_FUNCTION', {lng: lng}) :
+                $i18next.t('functions:TOOLTIP.STOP_FUNCTION', {lng: lng});
+        }
+
+        /**
          * According to given action name calls proper action handler
          * @param {string} actionType
          * @param {Array} checkedItems
@@ -144,20 +170,63 @@
         }
 
         /**
-         * Returns appropriate tooltip for functions status.
-         * @returns {string} - tooltip
-         */
-        function getTooltip() {
-            return ctrl.function.spec.disable ? $i18next.t('functions:TOOLTIP.RUN_FUNCTION', {lng: lng}) :
-                                                $i18next.t('functions:TOOLTIP.STOP_FUNCTION', {lng: lng});
-        }
-
-        /**
          * According to given action name calls proper action handler
          * @param {string} actionType - a type of action
          */
         function onFireAction(actionType) {
             ctrl.actionHandlerCallback({ actionType: actionType, checkedItems: [ctrl.function] });
+        }
+
+        /**
+         * Handles mouse click on a table row and navigates to Code page of latest version
+         * @param {MouseEvent} event
+         * @param {string} state - absolute state name or relative state path
+         */
+        function onSelectRow(event, state) {
+            if (!angular.isString(state)) {
+                state = 'app.project.function.edit.code';
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            $state.go(state, {
+                id: ctrl.project.metadata.name,
+                projectId: ctrl.project.metadata.name,
+                functionId: ctrl.function.metadata.name,
+                projectNamespace: ctrl.project.metadata.namespace
+            });
+
+            NuclioHeaderService.updateMainHeader('common:PROJECTS', ctrl.title, $state.current.name);
+        }
+
+        /**
+         * Toggles function row
+         * @param {MouseEvent} event
+         */
+        function toggleFunctionRow(event) {
+            if (angular.isDefined(event) && event.target.closest('.function-row-collapse')) {
+                event.stopPropagation();
+
+                if (event.target.closest('.collapse-icon')) {
+                    ctrl.isFunctionCollapsed = !ctrl.isFunctionCollapsed;
+                }
+            }
+        }
+
+        /**
+         * Toggles function 'disabled' property and updates it on back-end
+         * @param {MouseEvent} event
+         */
+        function toggleFunctionState(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (ctrl.function.spec.disable) {
+                enableFunction();
+            } else {
+                disableFunction();
+            }
         }
 
         //
@@ -175,6 +244,25 @@
                                         status === 'Ready' && ctrl.function.spec.disable  ? 'Standby'        :
                                         status === 'Ready' && !ctrl.function.spec.disable ? 'Running'        :
                                         /* else */                                          'Building';
+        }
+
+        /**
+         * Deletes function from functions list
+         * @returns {Promise}
+         */
+        function deleteFunction() {
+            ctrl.isSplashShowed.value = true;
+
+            return ctrl.handleDeleteFunction({functionData: ctrl.function.metadata})
+                .then(function () {
+                    lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
+                })
+                .catch(function (error) {
+                    ctrl.isSplashShowed.value = false;
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', {lng: lng});
+
+                    return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                });
         }
 
         /**
@@ -240,65 +328,6 @@
         }
 
         /**
-         * Initializes actions
-         * @returns {Object[]} - list of actions
-         */
-        function initActions() {
-            return [
-                {
-                    label: $i18next.t('common:DELETE', {lng: lng}),
-                    id: 'delete',
-                    icon: 'igz-icon-trash',
-                    active: true,
-                    confirm: {
-                        message: $i18next.t('functions:DELETE_FUNCTION', {lng: lng}) + ' “' + ctrl.function.metadata.name + '”?',
-                        description: $i18next.t('functions:DELETED_FUNCTION_DESCRIPTION', {lng: lng}),
-                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
-                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
-                        type: 'nuclio_alert'
-                    }
-                },
-                {
-                    label: $i18next.t('common:DUPLICATE', {lng: lng}),
-                    id: 'duplicate',
-                    icon: 'igz-icon-duplicate',
-                    active: true
-                },
-                {
-                    label: $i18next.t('common:EXPORT', {lng: lng}),
-                    id: 'export',
-                    icon: 'igz-icon-export-yml',
-                    active: true
-                },
-                {
-                    label: $i18next.t('functions:VIEW_YAML', {lng: lng}),
-                    id: 'viewConfig',
-                    icon: 'igz-icon-view-file',
-                    active: true
-                }
-            ];
-        }
-
-        /**
-         * Deletes function from functions list
-         * @returns {Promise}
-         */
-        function deleteFunction() {
-            ctrl.isSplashShowed.value = true;
-
-            return ctrl.handleDeleteFunction({ functionData: ctrl.function.metadata })
-                .then(function () {
-                    lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
-                })
-                .catch(function (error) {
-                    ctrl.isSplashShowed.value = false;
-                    var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', {lng: lng});
-
-                    return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
-                });
-        }
-
-        /**
          * Exports the function
          */
         function exportFunction() {
@@ -306,25 +335,45 @@
         }
 
         /**
-         * Handles mouse click on a table row and navigates to Code page of latest version
-         * @param {MouseEvent} event
-         * @param {string} state - absolute state name or relative state path
+         * Initializes function actions
+         * @returns {Object[]} - list of actions
          */
-        function onSelectRow(event, state) {
-            if (!angular.isString(state)) {
-                state = 'app.project.function.edit.code';
+        function initFunctionActions() {
+            ctrl.functionActions = angular.copy(FunctionsService.initFunctionActions());
+
+            var deleteAction = lodash.find(ctrl.functionActions, {'id': 'delete'});
+
+            if (!lodash.isNil(deleteAction)) {
+                deleteAction.confirm.message = $i18next.t('functions:DELETE_FUNCTION', {lng: lng}) + ' “' + ctrl.function.metadata.name + '”?';
             }
+        }
 
-            event.preventDefault();
-            event.stopPropagation();
+        /**
+         * Expands current function row
+         * @param {Event} event - broadcast event
+         * @param {Object} data - broadcast data
+         */
+        function onExpandAllRows(event, data) {
+            if (data.rowsType === 'functions' && (angular.isUndefined(data.onlyForProject) ||
+                data.onlyForProject.metadata.name === ctrl.project.metadata.name)) {
+                $timeout(function () {
+                    ctrl.isFunctionCollapsed = false;
+                });
+            }
+        }
 
-            $state.go(state, {
-                id: ctrl.project.metadata.name,
-                functionId: ctrl.function.metadata.name,
-                projectNamespace: ctrl.project.metadata.namespace
-            });
-
-            NuclioHeaderService.updateMainHeader('common:PROJECTS', ctrl.title, $state.current.name);
+        /**
+         * Collapses current function row
+         * @param {Event} event - broadcast event
+         * @param {Object} data - broadcast data
+         */
+        function onCollapseAllRows(event, data) {
+            if (data.rowsType === 'functions' && (angular.isUndefined(data.onlyForProject) ||
+                data.onlyForProject.metadata.name === ctrl.project.metadata.name)) {
+                $timeout(function () {
+                    ctrl.isFunctionCollapsed = true;
+                });
+            }
         }
 
         /**
@@ -378,18 +427,34 @@
         }
 
         /**
-         * Toggles function 'disabled' property and updates it on back-end
-         * @param {MouseEvent} event
+         * Sends request to update function state
+         * @param {string} [status='Building'] - The text to display in "Status" cell of the function while polling.
          */
-        function toggleFunctionState(event) {
-            event.preventDefault();
-            event.stopPropagation();
+        function updateFunction(status) {
+            ctrl.isSplashShowed.value = true;
 
-            if (ctrl.function.spec.disable) {
-                enableFunction();
-            } else {
-                disableFunction();
-            }
+            var pathsToExcludeOnDeploy = ['status', 'ui', 'versions'];
+            var functionCopy = lodash.omit(ctrl.function, pathsToExcludeOnDeploy);
+
+            // set `nuclio.io/project-name` label to relate this function to its project
+            lodash.set(functionCopy, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.project.metadata.name);
+
+            ctrl.updateFunction({'function': functionCopy, projectID: ctrl.project.metadata.name})
+                .then(function () {
+                    tempFunctionCopy = null;
+
+                    pullFunctionState(status);
+                })
+                .catch(function (error) {
+                    ctrl.function = tempFunctionCopy;
+
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.UPDATE_FUNCTION', {lng: lng});
+
+                    return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                })
+                .finally(function () {
+                    ctrl.isSplashShowed.value = false;
+                })
         }
 
         /**
@@ -406,37 +471,6 @@
                 },
                 className: 'ngdialog-theme-iguazio view-yaml-dialog-wrapper'
             });
-        }
-
-        /**
-         * Sends request to update function state
-         * @param {string} [status='Building'] - The text to display in "Status" cell of the function while polling.
-         */
-        function updateFunction(status) {
-            ctrl.isSplashShowed.value = true;
-
-            var pathsToExcludeOnDeploy = ['status', 'ui', 'versions'];
-            var functionCopy = lodash.omit(ctrl.function, pathsToExcludeOnDeploy);
-
-            // set `nuclio.io/project-name` label to relate this function to its project
-            lodash.set(functionCopy, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.project.metadata.name);
-
-            ctrl.onUpdateFunction({ 'function': functionCopy, projectID: ctrl.project.metadata.name })
-                .then(function () {
-                    tempFunctionCopy = null;
-
-                    pullFunctionState(status);
-                })
-                .catch(function (error) {
-                    ctrl.function = tempFunctionCopy;
-
-                    var defaultMsg = $i18next.t('functions:ERROR_MSG.UPDATE_FUNCTION', {lng: lng});
-
-                    return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
-                })
-                .finally(function () {
-                    ctrl.isSplashShowed.value = false;
-                })
         }
     }
 }());

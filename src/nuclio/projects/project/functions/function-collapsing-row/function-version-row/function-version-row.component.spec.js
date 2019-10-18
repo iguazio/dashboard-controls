@@ -1,6 +1,8 @@
 describe('nclFunctionVersionRow component:', function () {
     var $componentController;
+    var $state;
     var ctrl;
+    var NuclioHeaderService;
     var functionItem;
     var project;
     var version;
@@ -8,8 +10,10 @@ describe('nclFunctionVersionRow component:', function () {
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_) {
+        inject(function (_$componentController_, _$state_, _NuclioHeaderService_) {
             $componentController = _$componentController_;
+            $state = _$state_;
+            NuclioHeaderService = _NuclioHeaderService_;
         });
 
         functionItem = {
@@ -26,13 +30,13 @@ describe('nclFunctionVersionRow component:', function () {
             }
         };
         project = {
-            "metadata": {
-                "name": "my-project-1",
-                "namespace": "nuclio"
+            'metadata': {
+                'name': 'my-project-1',
+                'namespace': 'nuclio'
             },
-            "spec": {
-                "displayName": "My project #1",
-                "description": "Some description"
+            'spec': {
+                'displayName': 'My project #1',
+                'description': 'Some description'
             }
         };
         version = {
@@ -46,7 +50,8 @@ describe('nclFunctionVersionRow component:', function () {
             project: project,
             function: functionItem,
             versionsList: [version],
-            actionHandlerCallback: angular.noop
+            actionHandlerCallback: angular.noop,
+            toggleFunctionState: angular.noop
         };
 
         ctrl = $componentController('nclFunctionVersionRow', null, bindings);
@@ -56,7 +61,9 @@ describe('nclFunctionVersionRow component:', function () {
 
     afterEach(function () {
         $componentController = null;
+        $state = null;
         ctrl = null;
+        NuclioHeaderService = null;
         functionItem = null;
         project = null;
         version = null;
@@ -80,6 +87,28 @@ describe('nclFunctionVersionRow component:', function () {
 
             expect(ctrl.actionHandlerCallback).toHaveBeenCalled();
             expect(ctrl.actionHandlerCallback).toHaveBeenCalledWith({actionType: 'delete', checkedItems: [ctrl.version]});
+        });
+    });
+
+    describe('onSelectRow(): ', function () {
+        it('should call $state.go() method and update header title', function () {
+            spyOn($state, 'go');
+            spyOn(NuclioHeaderService, 'updateMainHeader');
+
+            ctrl.onSelectRow(new MouseEvent('click'));
+
+            expect($state.go).toHaveBeenCalled();
+            expect(NuclioHeaderService.updateMainHeader).toHaveBeenCalled();
+        });
+    });
+
+    describe('onToggleFunctionState(): ', function () {
+        it('should call ctrl.toggleFunctionState() method', function () {
+            spyOn(ctrl, 'toggleFunctionState');
+
+            ctrl.onToggleFunctionState();
+
+            expect(ctrl.toggleFunctionState).toHaveBeenCalled();
         });
     });
 });

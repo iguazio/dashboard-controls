@@ -1,0 +1,37 @@
+.ncl-project-collapsing-row {
+    margin-bottom: 8px;
+
+    .common-table-row {
+        &:hover {
+            igz-action-checkbox:not(.invisible) {
+                visibility: visible;
+            }
+        }
+
+        igz-action-checkbox {
+            visibility: hidden;
+
+            &.visible {
+                visibility: visible;
+            }
+        }
+
+        .project-name {
+            font-weight: bold;
+        }
+
+        .project-row-collapse {
+            justify-content: center;
+
+            .collapse-icon {
+                background-color: transparent;
+                position: absolute;
+
+                &.igz-icon-right, &.igz-icon-down {
+                    font-size: 12px;
+                    color: @dusk-three;
+                }
+            }
+        }
+    }
+}

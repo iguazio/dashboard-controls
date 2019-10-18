@@ -5,6 +5,7 @@
         .component('igzActionCheckboxAll', {
             bindings: {
                 itemsCountOriginal: '<itemsCount',
+                itemsType: '@?',
                 checkedItemsCount: '<?',
                 onCheckChange: '&?'
             },
@@ -12,7 +13,7 @@
             controller: IgzActionCheckboxAllController
         });
 
-    function IgzActionCheckboxAllController($scope, $rootScope) {
+    function IgzActionCheckboxAllController($scope, $rootScope, lodash) {
         var ctrl = this;
 
         ctrl.allItemsChecked = false;
@@ -74,7 +75,8 @@
 
             $rootScope.$broadcast('action-checkbox-all_check-all', {
                 checked: ctrl.allItemsChecked,
-                checkedCount: ctrl.checkedItemsCount
+                checkedCount: ctrl.checkedItemsCount,
+                itemsType: !lodash.isEmpty(ctrl.itemsType) ? ctrl.itemsType : null
             });
 
             if (angular.isFunction(ctrl.onCheckChange)) {

@@ -8,6 +8,7 @@
         return {
             getClassesList: getClassesList,
             getHandler: getHandler,
+            initFunctionActions: initFunctionActions,
             initVersionActions: initVersionActions
         };
 
@@ -487,7 +488,49 @@
         }
 
         /**
-         * Actions for Action panel
+         * Function actions
+         * @returns {Object[]} - array of actions
+         */
+        function initFunctionActions() {
+            var lng = i18next.language;
+
+            return [
+                {
+                    label: $i18next.t('common:DELETE', {lng: lng}),
+                    id: 'delete',
+                    icon: 'igz-icon-trash',
+                    active: true,
+                    confirm: {
+                        message: $i18next.t('functions:DELETE_FUNCTIONS_CONFIRM', {lng: lng}),
+                        description: $i18next.t('functions:DELETE_FUNCTION_DESCRIPTION', {lng: lng}),
+                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
+                        type: 'nuclio_alert'
+                    }
+                },
+                {
+                    label: $i18next.t('common:DUPLICATE', {lng: lng}),
+                    id: 'duplicate',
+                    icon: 'igz-icon-duplicate',
+                    active: true
+                },
+                {
+                    label: $i18next.t('common:EXPORT', {lng: lng}),
+                    id: 'export',
+                    icon: 'igz-icon-export-yml',
+                    active: true
+                },
+                {
+                    label: $i18next.t('functions:VIEW_YAML', {lng: lng}),
+                    id: 'viewConfig',
+                    icon: 'igz-icon-view-file',
+                    active: true
+                }
+            ];
+        }
+
+        /**
+         * Version actions
          * @returns {Object[]} - array of actions
          */
         function initVersionActions() {
@@ -506,10 +549,10 @@
                     icon: 'igz-icon-trash',
                     active: true,
                     confirm: {
-                        message: $i18next.t('functions:DELETE_VERSION_CONFIRM', {lng: lng}),
+                        message: $i18next.t('functions:DELETE_VERSIONS_CONFIRM', {lng: lng}),
                         yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
                         noLabel: $i18next.t('common:CANCEL', {lng: lng}),
-                        type: 'critical_alert'
+                        type: 'nuclio_alert'
                     }
                 }
             ];
