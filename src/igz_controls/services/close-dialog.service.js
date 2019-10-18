@@ -57,10 +57,9 @@
          */
         function onKeyUp(event) {
             if (event.keyCode === EventHelperService.ESCAPE) {
-                if (isUploadImageWindowOpen || (isChangesHaveBeenMade && scope.ngDialogs.length === 1)) {
+                if (isUploadImageWindowOpen || isChangesHaveBeenMade) {
                     isUploadImageWindowOpen = false;
-
-                    $rootScope.$broadcast('close-dialog-service_close-dialog');
+                    $rootScope.$broadcast('close-dialog-service_close-dialog', {dialogId: lodash.last(scope.ngDialogs)});
                 } else {
                     ngDialog.close(lodash.last(scope.ngDialogs));
 
