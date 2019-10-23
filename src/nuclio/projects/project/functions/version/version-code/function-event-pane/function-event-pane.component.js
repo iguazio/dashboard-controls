@@ -18,8 +18,8 @@
         });
 
     function NclFunctionEventPaneController($element, $rootScope, $scope, $timeout, $q, $i18next, i18next, lodash,
-                                            moment, download, ConverterService, DialogsService, EventHelperService,
-                                            VersionHelperService) {
+                                            moment, download, ConfigService, ConverterService, DialogsService,
+                                            EventHelperService, VersionHelperService) {
         var ctrl = this;
 
         var canceler = null;
@@ -95,7 +95,7 @@
             {
                 id: 'file',
                 name: 'File',
-                visible: true
+                visible: ConfigService.isDemoMode()
             }
         ];
         ctrl.requestBodyType = ctrl.requestBodyTypes[0];
