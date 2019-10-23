@@ -27,7 +27,7 @@
         ctrl.templatesWorkingCopy = {};
         ctrl.inputModelOptions = {
             debounce: {
-                'default': 0
+                'default': 300
             }
         };
         ctrl.functionData = {};
