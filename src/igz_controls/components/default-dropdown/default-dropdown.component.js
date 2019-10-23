@@ -1,4 +1,5 @@
 /* eslint max-statements: ["error", 100] */
+/* eslint complexity: ["error", 12] */
 (function () {
     'use strict';
 
@@ -337,7 +338,7 @@
         function onChangeTypingInput() {
             ctrl.isDropdownContainerShown = false;
 
-            if (lodash.isEmpty(ctrl.typedValue)) {
+            if ((ctrl.enableTyping || ctrl.autocomplete) && lodash.isEmpty(ctrl.typedValue)) {
                 ctrl.valuesArray = valuesArrayCopy;
 
                 ctrl.formObject[ctrl.inputName].$setValidity('text', true);
