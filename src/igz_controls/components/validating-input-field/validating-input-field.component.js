@@ -209,9 +209,7 @@
         }
 
         function isValueInvalid() {
-            if (angular.isDefined(ctrl.validationRules)) {
-                return lodash.some(ctrl.validationRules, ['isValid', false]);
-            }
+            return lodash.some(ctrl.validationRules, ['isValid', false]);
         }
 
         /**
