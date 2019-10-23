@@ -58,6 +58,7 @@
         ctrl.deployButtonClick = deployButtonClick;
         ctrl.getCurrentStateName = getCurrentStateName;
         ctrl.getDeployStatusState = getDeployStatusState;
+        ctrl.isDeployButtonDisabled = isDeployButtonDisabled;
         ctrl.isInValidDeployState = isInValidDeployState;
         ctrl.onRowCollapse = onRowCollapse;
         ctrl.onSelectAction = onSelectAction;
@@ -260,6 +261,14 @@
             return state === 'ready' ? $i18next.t('functions:SUCCESSFULLY_DEPLOYED', {lng: lng}) :
                    state === 'error' ? $i18next.t('functions:FAILED_TO_DEPLOY', {lng: lng})      :
                    /* else */          $i18next.t('functions:DEPLOYING', {lng: lng});
+        }
+
+        /**
+         * Checks if "Deploy" button is disabled
+         * @returns {boolean}
+         */
+        function isDeployButtonDisabled() {
+            return ctrl.isInValidDeployState() || ctrl.isDeployDisabled;
         }
 
         /**
