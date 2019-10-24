@@ -60,7 +60,7 @@
                         value: value,
                         ui: {
                             editModeActive: false,
-                            isFormValid: true,
+                            isFormValid: false,
                             name: 'label'
                         }
                     }
@@ -148,19 +148,26 @@
          * Updates function`s labels
          */
         function updateLabels() {
+            var isFormValid = true;
             var labels = lodash.get(ctrl.version, 'metadata.labels', []);
-
             var nuclioLabels = lodash.pickBy(labels, function (value, key) {
                 return lodash.includes(key, 'nuclio.io/');
             });
-
             var newLabels = {};
+
             lodash.forEach(ctrl.labels, function (label) {
                 if (!label.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: label.ui.name, isDisabled: true});
+                    isFormValid = false;
                 }
+
                 newLabels[label.name] = label.value;
             });
+
+            $rootScope.$broadcast('change-state-deploy-button', {
+                component: 'label',
+                isDisabled: !isFormValid
+            });
+
             newLabels = lodash.merge(newLabels, nuclioLabels);
 
             lodash.set(ctrl.version, 'metadata.labels', newLabels);
