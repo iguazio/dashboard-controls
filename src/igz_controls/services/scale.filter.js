@@ -18,7 +18,7 @@
                 { threshold: 1000000, unit: ' M', precision: 2 },
                 { threshold: 1000, unit: ' K', precision: 2 },
                 { threshold: 1, unit: '', precision: 0 },
-                { threshold: 0.05, unit: '', precision: 1 },
+                { threshold: 0.05, unit: '', precision: 1, divisor: 1 },
                 '0'
             ]
         };
@@ -35,7 +35,7 @@
 
             var precisionToUse = lodash.defaultTo(lodash.defaultTo(precision, step.precision), 0);
 
-            return (value / step.threshold).toFixed(precisionToUse) + step.unit;
+            return (value / lodash.defaultTo(step.divisor, step.threshold)).toFixed(precisionToUse) + step.unit;
         };
     }
 }());
