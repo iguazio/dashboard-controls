@@ -102,12 +102,16 @@
             ctrl.minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
             ctrl.maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
 
-            $scope.$watch('$ctrl.resourcesForm.$invalid', function (value) {
-                $rootScope.$broadcast('change-state-deploy-button', { component: 'resources', isDisabled: value });
-            });
-
             $timeout(function () {
                 setFormValidity();
+                checkIfCpuInputsValid();
+
+                $scope.$watch('$ctrl.resourcesForm.$invalid', function (value) {
+                    $rootScope.$broadcast('change-state-deploy-button', {
+                        component: 'resources',
+                        isDisabled: value
+                    });
+                });
             });
         }
 
@@ -115,7 +119,10 @@
          * On destroy method
          */
         function onDestroy() {
-            $rootScope.$broadcast('change-state-deploy-button', { component: 'resources', isDisabled: false });
+            $rootScope.$broadcast('change-state-deploy-button', {
+                component: 'resources',
+                isDisabled: lodash.get(ctrl.resourcesForm, '$invalid', false)
+            });
         }
 
         //
