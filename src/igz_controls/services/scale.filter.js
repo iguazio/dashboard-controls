@@ -10,7 +10,7 @@
                 { threshold: 1000000000, unit: '' },
                 { threshold: 1000000, unit: 'm' },
                 { threshold: 1000, unit: 'µ' },
-                { threshold: 0.05, unit: 'n' },
+                { threshold: 0.05, unit: 'n', divisor: 1 },
                 '0'
             ],
             'default': [
