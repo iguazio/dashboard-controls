@@ -2,6 +2,7 @@
      data-ng-class="{'focused': $ctrl.inputFocused, 'with-counter': $ctrl.isCounterVisible()}">
     <div data-ng-if="$ctrl.fieldType === 'input'">
         <div class="validation-icon"
+             data-ng-if="$ctrl.validationRules.length > 0"
              data-ng-class="{'igz-icon-verify-info': $ctrl.inputIsTouched && $ctrl.data === '',
                              'igz-icon-verify-error': $ctrl.isValueInvalid() && $ctrl.data !== '',
                              'igz-icon-verify-ok': !$ctrl.isValueInvalid() && $ctrl.data !== ''}">
