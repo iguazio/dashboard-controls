@@ -63,7 +63,7 @@
             controller: IgzValidatingInputFieldController
         });
 
-    function IgzValidatingInputFieldController($element, $timeout, $window, lodash, EventHelperService, FormValidationService) {
+    function IgzValidatingInputFieldController($document, $element, $timeout, $window, lodash, EventHelperService, FormValidationService) {
         var ctrl = this;
 
         var defaultInputModelOptions = {
@@ -92,7 +92,6 @@
         ctrl.isValueInvalid = isValueInvalid;
         ctrl.focusInput = focusInput;
         ctrl.keyDown = keyDown;
-        ctrl.openValidationPopUp = openValidationPopUp;
         ctrl.unfocusInput = unfocusInput;
         ctrl.updateInputValue = updateInputValue;
         ctrl.clearInputField = clearInputField;
@@ -128,6 +127,8 @@
             if (angular.isDefined(ctrl.validationRules) && !lodash.isEmpty(ctrl.data)) {
                 checkPatternsValidity(ctrl.data);
             }
+
+            $document.on('click', handleValidationIconClick);
         }
 
         /**
@@ -150,6 +151,7 @@
          */
         function onDestroy() {
             angular.element($window).off('animationend');
+            $document.off('click', handleValidationIconClick);
         }
 
         /**
@@ -196,7 +198,11 @@
          * @returns {boolean}
          */
         function isFieldInvalid() {
-            return !ctrl.onlyValidCharacters ? FormValidationService.isShowFieldInvalidState(ctrl.formObject, ctrl.inputName) : false;
+            if (!ctrl.inputFocused) {
+                return ctrl.isValueInvalid() && ctrl.data !== '';
+            } else {
+                return !ctrl.onlyValidCharacters ? FormValidationService.isShowFieldInvalidState(ctrl.formObject, ctrl.inputName) : false;
+            }
         }
 
         /**
@@ -237,19 +243,11 @@
             }
         }
 
-        function openValidationPopUp() {
-            if (angular.isDefined(ctrl.validationRules)) {
-                ctrl.isValidationPopUpShown = true;
-                ctrl.inputFocused = true;
-            }
-        }
-
         /**
          * Method to make input unfocused
          */
-        function unfocusInput() {
+        function unfocusInput(event) {
             ctrl.inputFocused = false;
-            ctrl.isValidationPopUpShown = false;
 
             // If 'data revert' option is enabled - set or revert outer model value
             setOrRevertInputValue();
@@ -289,6 +287,27 @@
             lodash.forEach(ctrl.validationRules, function (rule) {
                 rule.isValid = lodash.isFunction(rule.pattern) ? rule.pattern(value) : rule.pattern.test(value);
             });
+        }
+
+        /**
+         * Handles click on validation icon and show/hide validation pop-up
+         * @param event
+         */
+        function handleValidationIconClick(event) {
+            var validationIcon = $element.find('.validation-icon')[0];
+
+            if (event.target === validationIcon) {
+                if (angular.isDefined(ctrl.validationRules)) {
+                    $timeout(function () {
+                        $element.find('.field')[0].focus();
+
+                        ctrl.inputFocused = true;
+                        ctrl.isValidationPopUpShown = !ctrl.isValidationPopUpShown;
+                    });
+                }
+            } else if (!event.target.closest('.input-field')) {
+                ctrl.isValidationPopUpShown = false;
+            }
         }
 
         /**
