@@ -85,20 +85,35 @@ describe('igzValidatingInputField component:', function () {
     describe('focusInput():', function () {
         it('should call ctrl.itemFocusCallback', function () {
             var spy = spyOn(ctrl, 'itemFocusCallback');
+
+            ctrl.validationRules = [
+                {
+                    label: 'Alphanumeric characters (a–z, A–Z, 0–9)',
+                    pattern: /^[a-zA-Z0-9]*$/,
+                    isValid: true
+                }
+            ];
+
             ctrl.focusInput();
 
             expect(spy).toHaveBeenCalled();
+            expect(ctrl.inputIsTouched).toBeTruthy();
         });
     });
 
     describe('unfocusInput():', function () {
         it('should call ctrl.itemBlurCallback with ctrl.inputValue', function () {
             ctrl.data = 'new value';
+
             var spy = spyOn(ctrl, 'itemBlurCallback');
+
             ctrl.unfocusInput();
+
             $timeout(function () {
                 expect(spy).toHaveBeenCalledWith({inputValue: ctrl.inputValue, inputName: ctrl.inputName});
+                expect(ctrl.isValidationPopUpShown).toBeFalsy();
             });
+
             $timeout.flush();
         });
     });
@@ -146,4 +161,59 @@ describe('igzValidatingInputField component:', function () {
             expect(ctrl.isCounterVisible()).toBeTruthy();
         });
     })
+
+    describe('isValueInvalid()', function () {
+        it('checks if the value invalid regarding validation rules', function () {
+            ctrl.validationRules = [
+                {
+                    label: 'Alphanumeric characters (a–z, A–Z, 0–9)',
+                    pattern: /^[a-zA-Z0-9]*$/,
+                    isValid: false
+                },
+                {
+                    label: 'Max length — 253 characters',
+                    pattern: /^(?=.{0,253})$/,
+                    isValid: true
+                }
+            ];
+
+            expect(ctrl.isValueInvalid()).toBeTruthy();
+        });
+
+        it('checks if the value invalid regarding validation rules', function () {
+            ctrl.validationRules = [
+                {
+                    label: 'Alphanumeric characters (a–z, A–Z, 0–9)',
+                    pattern: /^[a-zA-Z0-9]*$/,
+                    isValid: true
+                },
+                {
+                    label: 'Max length — 253 characters',
+                    pattern: /^(?=.{0,253})$/,
+                    isValid: true
+                }
+            ];
+
+            expect(ctrl.isValueInvalid()).toBeFalsy();
+        });
+    });
+
+    describe('openValidationPopUp()', function () {
+        it('opens validation pop-up', function () {
+            ctrl.validationRules = [
+                {
+                    label: 'Alphanumeric characters (a–z, A–Z, 0–9)',
+                    pattern: /^[a-zA-Z0-9]*$/,
+                    isValid: false
+                }
+            ];
+            ctrl.isValidationPopUpShown = false;
+            ctrl.inputFocused = false;
+
+            ctrl.openValidationPopUp();
+
+            expect(ctrl.isValidationPopUpShown).toBeTruthy();
+            expect(ctrl.inputFocused).toBeTruthy();
+        });
+    });
 });

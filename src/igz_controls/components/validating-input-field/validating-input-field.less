@@ -17,6 +17,36 @@
         color: @validating-input-icon-color;
     }
 
+    .validation-icon {
+        position: absolute;
+        right: 9px;
+        bottom: 0;
+        z-index: 3;
+
+        &.igz-icon-verify-error {
+            font-size: 13px;
+            color: @darkish-pink;
+        }
+
+        &.igz-icon-verify-info {
+            font-size: 16px;
+            color: @dusk-three;
+        }
+    }
+
+    .validation-icon,
+    .validation-rule-icon {
+        &.igz-icon-verify-ok {
+            font-size: 11px;
+            color: @tealish;
+        }
+
+        &.ncl-icon-close {
+            font-size: 10px;
+            color: @darkish-pink;
+        }
+    }
+
     //
     // inputs
     //
@@ -28,7 +58,7 @@
         line-height: 32px;
         position: absolute;
         right: 6px;
-        bottom: 2px;
+        top: 30px;
         z-index: 3;
 
         &.invalid {
@@ -112,6 +142,34 @@
     }
 
     //
+    // validation pop-up
+    //
+
+    .validation-pop-up {
+        position: absolute;
+        bottom: 37px;
+        border-radius: 3px;
+        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+        background-color: @white;
+        padding: 5px 18px 5px 14px;
+        z-index: 4;
+
+        .validation-rule {
+            .validation-rule-icon {
+                margin-right: 8px;
+            }
+
+            .validation-rule-valid {
+                color: @pale-grey;
+            }
+
+            .validation-rule-invalid {
+                color: @dusk-three;
+            }
+        }
+    }
+
+    //
     // placeholder
     //
 
@@ -166,6 +224,8 @@
     }
 
     &.with-counter {
+        margin-bottom: 7px;
+
         .input-field {
             padding: 0 32px 0 10px;
         }

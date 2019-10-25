@@ -56,13 +56,14 @@
                 updateDataField: '@?',
                 validationIsRequired: '<',
                 validationMaxLength: '@',
-                validationPattern: '<'
+                validationPattern: '<',
+                validationRules: '<'
             },
             templateUrl: 'igz_controls/components/validating-input-field/validating-input-field.tpl.html',
             controller: IgzValidatingInputFieldController
         });
 
-    function IgzValidatingInputFieldController($element, $timeout, $window, lodash, EventHelperService, FormValidationService) {
+    function IgzValidatingInputFieldController($document, $element, $timeout, $window, lodash, EventHelperService, FormValidationService) {
         var ctrl = this;
 
         var defaultInputModelOptions = {
@@ -76,6 +77,8 @@
 
         ctrl.data = '';
         ctrl.inputFocused = false;
+        ctrl.inputIsTouched = false;
+        ctrl.isValidationPopUpShown = false;
         ctrl.startValue = '';
 
         ctrl.$onInit = onInit;
@@ -86,6 +89,7 @@
         ctrl.getRemainingSymbolsCounter = getRemainingSymbolsCounter;
         ctrl.isFieldInvalid = isFieldInvalid;
         ctrl.isCounterVisible = isCounterVisible;
+        ctrl.isValueInvalid = isValueInvalid;
         ctrl.focusInput = focusInput;
         ctrl.keyDown = keyDown;
         ctrl.unfocusInput = unfocusInput;
@@ -119,6 +123,12 @@
                 readOnly: false,
                 onlyValidCharacters: false
             });
+
+            if (angular.isDefined(ctrl.validationRules) && !lodash.isEmpty(ctrl.data)) {
+                checkPatternsValidity(ctrl.data);
+            }
+
+            $document.on('click', handleValidationIconClick);
         }
 
         /**
@@ -141,6 +151,7 @@
          */
         function onDestroy() {
             angular.element($window).off('animationend');
+            $document.off('click', handleValidationIconClick);
         }
 
         /**
@@ -187,7 +198,11 @@
          * @returns {boolean}
          */
         function isFieldInvalid() {
-            return !ctrl.onlyValidCharacters ? FormValidationService.isShowFieldInvalidState(ctrl.formObject, ctrl.inputName) : false;
+            if (!ctrl.inputFocused) {
+                return ctrl.isValueInvalid() && ctrl.data !== '';
+            } else {
+                return !ctrl.onlyValidCharacters ? FormValidationService.isShowFieldInvalidState(ctrl.formObject, ctrl.inputName) : false;
+            }
         }
 
         /**
@@ -199,11 +214,20 @@
                    ctrl.validationMaxLength;
         }
 
+        function isValueInvalid() {
+            return lodash.some(ctrl.validationRules, ['isValid', false]);
+        }
+
         /**
          * Method to make input unfocused
          */
         function focusInput() {
             ctrl.inputFocused = true;
+
+            if (angular.isDefined(ctrl.validationRules)) {
+                ctrl.inputIsTouched = true;
+            }
+
             if (angular.isFunction(ctrl.itemFocusCallback)) {
                 ctrl.itemFocusCallback({inputName: ctrl.inputName});
             }
@@ -222,7 +246,7 @@
         /**
          * Method to make input unfocused
          */
-        function unfocusInput() {
+        function unfocusInput(event) {
             ctrl.inputFocused = false;
 
             // If 'data revert' option is enabled - set or revert outer model value
@@ -241,6 +265,10 @@
             if (angular.isDefined(ctrl.updateDataCallback)) {
                 ctrl.updateDataCallback({newData: ctrl.inputValue, field: angular.isDefined(ctrl.updateDataField) ? ctrl.updateDataField : ctrl.inputName});
             }
+
+            if (angular.isDefined(ctrl.validationRules) && !lodash.isEmpty(ctrl.data)) {
+                checkPatternsValidity(ctrl.data);
+            }
         }
 
         /**
@@ -254,6 +282,33 @@
         //
         // Private methods
         //
+
+        function checkPatternsValidity(value) {
+            lodash.forEach(ctrl.validationRules, function (rule) {
+                rule.isValid = lodash.isFunction(rule.pattern) ? rule.pattern(value) : rule.pattern.test(value);
+            });
+        }
+
+        /**
+         * Handles click on validation icon and show/hide validation pop-up
+         * @param event
+         */
+        function handleValidationIconClick(event) {
+            var validationIcon = $element.find('.validation-icon')[0];
+
+            if (event.target === validationIcon) {
+                if (angular.isDefined(ctrl.validationRules)) {
+                    $timeout(function () {
+                        $element.find('.field')[0].focus();
+
+                        ctrl.inputFocused = true;
+                        ctrl.isValidationPopUpShown = !ctrl.isValidationPopUpShown;
+                    });
+                }
+            } else if (!event.target.closest('.input-field')) {
+                ctrl.isValidationPopUpShown = false;
+            }
+        }
 
         /**
          * Sets or reverts outer model value
