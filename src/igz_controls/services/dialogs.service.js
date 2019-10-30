@@ -87,6 +87,7 @@
             return ngDialog.openConfirm({
                 template: template,
                 plain: true,
+                name: 'confirm',
                 className: type === 'nuclio_alert' ?
                     'ngdialog-theme-nuclio delete-entity-dialog-wrapper' : 'ngdialog-theme-iguazio'
             });
@@ -282,7 +283,7 @@
             };
 
             return ngDialog.open({
-                template: '<igz-text-edit data-label="{{ngDialogData.label}}" data-language="{{ngDialogData.language}}" data-content="{{ngDialogData.content}}"' +
+                template: '<igz-text-edit data-label="{{ngDialogData.label}}" data-ng-dialog-id="{{ngDialogData.ngDialogId}}" data-language="{{ngDialogData.language}}" data-content="{{ngDialogData.content}}"' +
                           'data-submit-button-text="{{ngDialogData.submitButtonText}}" data-submit-data="ngDialogData.submitData(newContent)"' +
                           'data-close-button-text="{{ngDialogData.closeButtonText}}" data-close-dialog="closeThisDialog(value)">' +
                           '</igz-text-edit>',
