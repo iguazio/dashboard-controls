@@ -6,13 +6,12 @@
 
     function TableSizeService(lodash, ConfigService) {
         var clustersTableColSizes = {
-            name: '15',
-            type: '5',
+            name: '17-5',
             status: '7-5',
             alerts: '7-5',
             nodes: '7',
             sessions: ConfigService.isStagingMode() ? '5' : '6',
-            cpu: '15',
+            cpu: '17-5',
             size: '10',
             bandwidth: ConfigService.isStagingMode() ? '7' : '9',
             io: ConfigService.isStagingMode() ? '7' : '9',
