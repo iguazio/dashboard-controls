@@ -1,6 +1,9 @@
 .ncl-function-collapsing-row {
     background-color: @white;
-    margin-bottom: 9px;
+
+    &:not(.in-projects-view) {
+        margin-bottom: 8px;
+    }
 
     .function-title-block {
         height: 50px;
@@ -17,7 +20,6 @@
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-
                 min-width: 0;
             }
 
@@ -40,10 +42,11 @@
         }
 
         .function-row-collapse {
-            width: 48px;
             justify-content: center;
+            cursor: default;
 
             .collapse-icon {
+                cursor: pointer;
                 background-color: transparent;
                 position: absolute;
 
@@ -70,10 +73,9 @@
             height: 49px;
 
             &:hover {
-                .common-table-cells-container {
-                    background-color: @white;
+                .function-row-collapse {
+                    background-color: @white
                 }
-
                 .actions-menu {
                     visibility: visible;
                     background-color: @white;

@@ -33,14 +33,16 @@ describe('igzActionCheckboxAll component:', function () {
             expect(ctrl.checkedItemsCount).toBe(10);
             expect($rootScope.$broadcast).toHaveBeenCalledWith('action-checkbox-all_check-all', {
                 checked: true,
-                checkedCount: 10
+                checkedCount: 10,
+                itemsType: null
             });
 
             ctrl.onCheckAll();
             expect(ctrl.checkedItemsCount).toBe(0);
             expect($rootScope.$broadcast).toHaveBeenCalledWith('action-checkbox-all_check-all', {
                 checked: false,
-                checkedCount: 0
+                checkedCount: 0,
+                itemsType: null
             });
         });
     });

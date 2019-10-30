@@ -93,7 +93,7 @@
                     dialog: {
                         message: {
                             message: $i18next.t('functions:DELETE_FUNCTION', {lng: lng}) + ' “' + ctrl.version.metadata.name + '”?',
-                            description: $i18next.t('functions:DELETED_FUNCTION_DESCRIPTION', {lng: lng})
+                            description: $i18next.t('functions:DELETE_FUNCTION_DESCRIPTION', {lng: lng})
                         },
                         yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
                         noLabel: $i18next.t('common:CANCEL', {lng: lng}),

@@ -12,7 +12,7 @@ describe('igzActionCheckbox component:', function () {
         });
 
         var bindings = {
-            item : {
+            item: {
                 id: 1,
                 ui: {
                     checked: false
@@ -45,7 +45,11 @@ describe('igzActionCheckbox component:', function () {
             ctrl.onCheck(event);
 
             expect(ctrl.item.ui.checked).toBe(true);
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('action-checkbox_item-checked', {checked: true});
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('action-checkbox_item-checked', {
+                checked: true,
+                item: ctrl.item,
+                itemType: null
+            });
         });
     });
 });
