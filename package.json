@@ -34,7 +34,7 @@
         "babel-preset-env": "^1.6.1",
         "bootstrap": "~3.4.1",
         "del": "^2.2.0",
-        "eslint": "3.17.1",
+        "eslint": "6.6.0",
         "eslint-plugin-angular": "1.4.1",
         "express": "4.12.3",
         "gulp": "^3.9.1",
