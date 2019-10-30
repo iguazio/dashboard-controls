@@ -63,11 +63,11 @@
     "DEPLOY": "Deploy",
     "DEPLOYING": "Deploying...",
     "DISABLE_CACHE": "Disable cache",
+    "DISABLED_FOR_IMAGE_CODE_ENTRY_TYPE": "Disabled for \"Image\" code entry type only",
     "DROP_FILE_HERE_OR": "Drop a file here or ",
     "DUPLICATE_FUNCTION": "Duplicate function",
     "EDIT_FUNCTION_EVENT": "Edit function event",
     "EDIT_PROJECT": "Edit Project",
-    "EDITABLE_FOR_EDIT_ONLINE": "Editable for \"Edit Online\" code entry type only",
     "ENVIRONMENT_VARIABLES": "Environment Variables",
     "ERROR_MSG": {
         "COULD_NOT_READ_FILE": "Could not read file...",
