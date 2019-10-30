@@ -12,7 +12,8 @@
             controller: IgzSizeController
         });
 
-    function IgzSizeController($filter, $scope, $i18next, i18next, lodash, moment, ConfigService, PaletteService) {
+    function IgzSizeController($filter, $scope, $i18next, $timeout, i18next, lodash, moment, ConfigService,
+                               PaletteService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -47,6 +48,7 @@
          * Initialization method
          */
         function onInit() {
+            ctrl.chartObjName = ctrl.type + '-chartObj';
             ctrl.tooltip = tooltipByType[ctrl.entity.type];
 
             if (lodash.startsWith(ctrl.type, 'services')) {
@@ -168,7 +170,7 @@
                 loading: false,
                 useHighStocks: false,
                 func: function (chart) {
-                    ctrl.entity.ui.chartObj = chart;
+                    ctrl.entity.ui[ctrl.chartObjName] = chart;
                 }
             };
 
@@ -322,6 +324,8 @@
             $scope.$on('size_update-charts', updateChart);
             $scope.$on('info-page-pane_toggled', updateChart);
             $scope.$on('resize-size-cells', updateChart);
+
+            $timeout(updateChart);
         }
 
         //
@@ -359,8 +363,8 @@
          * Hides chart tooltip
          */
         function hideChartTooltip() {
-            if (!ctrl.entity.ui.chartObj.tooltip.isHidden) {
-                ctrl.entity.ui.chartObj.tooltip.hide();
+            if (!ctrl.entity.ui[ctrl.chartObjName].tooltip.isHidden) {
+                ctrl.entity.ui[ctrl.chartObjName].tooltip.hide();
             }
         }
 
@@ -471,9 +475,9 @@
          * Updates chart on broadcasted event
          */
         function updateChart() {
-            var reflow = lodash.get(ctrl.entity, 'ui.chartObj.reflow');
+            var reflow = lodash.get(ctrl.entity.ui, ctrl.chartObjName + '.reflow');
             if (angular.isFunction(reflow)) {
-                ctrl.entity.ui.chartObj.reflow();
+                ctrl.entity.ui[ctrl.chartObjName].reflow();
             }
         }
 
