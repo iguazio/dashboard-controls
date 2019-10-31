@@ -12,7 +12,6 @@
                 getProject: '&',
                 getFunction: '&',
                 getFunctions: '&',
-                getExternalIpAddresses: '&',
                 getFrontendSpec: '&',
                 onEditCallback: '&?',
                 updateVersion: '&'

@@ -10,7 +10,7 @@
                 createProject: '&',
                 deleteFunction: '&',
                 deleteProject: '&',
-                getExternalIpAddresses: '&',
+                getFrontendSpec: '&',
                 getFunction: '&',
                 getFunctions: '&',
                 getProject: '&',
@@ -563,9 +563,9 @@
             }
 
             return $q.when(getProjectPromise).then(function () {
-                return ctrl.getExternalIpAddresses()
+                return ctrl.getFrontendSpec()
                     .then(function (response) {
-                        ctrl.externalIPAddress = lodash.get(response, 'externalIPAddresses.addresses[0]', '');
+                        ctrl.externalIPAddress = lodash.get(response, 'externalIPAddresses[0]', '');
                     })
                     .catch(function () {
                         ctrl.externalIPAddress = '';

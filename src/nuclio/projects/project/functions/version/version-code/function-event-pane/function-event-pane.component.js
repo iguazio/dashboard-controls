@@ -8,7 +8,7 @@
             bindings: {
                 version: '<',
                 createFunctionEvent: '&',
-                getExternalIpAddresses: '&',
+                getFrontendSpec: '&',
                 getFunctionEvents: '&',
                 deleteFunctionEvent: '&',
                 invokeFunction: '&'
@@ -219,9 +219,9 @@
                     ctrl.isSplashShowed.value = false;
                 });
 
-            ctrl.getExternalIpAddresses()
+            ctrl.getFrontendSpec()
                 .then(function (result) {
-                    ctrl.externalIPAddress = lodash.get(result, 'externalIPAddresses.addresses[0]', '');
+                    ctrl.externalIPAddress = lodash.get(result, 'externalIPAddresses[0]', '');
                 })
                 .catch(function () {
                     ctrl.version.ui.invocationURL = '';
