@@ -28,6 +28,7 @@ describe('igzValidatingInputField component:', function () {
         };
         var bindings = {
             formObject: formObject,
+            inputModelOptions: {},
             inputName: 'attributeName',
             inputValue: 'some input value',
             itemBlurCallback: angular.noop,
@@ -195,25 +196,6 @@ describe('igzValidatingInputField component:', function () {
             ];
 
             expect(ctrl.isValueInvalid()).toBeFalsy();
-        });
-    });
-
-    describe('openValidationPopUp()', function () {
-        it('opens validation pop-up', function () {
-            ctrl.validationRules = [
-                {
-                    label: 'Alphanumeric characters (a–z, A–Z, 0–9)',
-                    pattern: /^[a-zA-Z0-9]*$/,
-                    isValid: false
-                }
-            ];
-            ctrl.isValidationPopUpShown = false;
-            ctrl.inputFocused = false;
-
-            ctrl.openValidationPopUp();
-
-            expect(ctrl.isValidationPopUpShown).toBeTruthy();
-            expect(ctrl.inputFocused).toBeTruthy();
         });
     });
 });
