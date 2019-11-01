@@ -12,7 +12,6 @@
                 getProject: '&',
                 getFunction: '&',
                 getFunctions: '&',
-                getFrontendSpec: '&',
                 onEditCallback: '&?',
                 updateVersion: '&'
             },
@@ -26,7 +25,6 @@
         var ctrl = this;
         var deregisterFunction = null;
         var interval = null;
-        var ingressHostTemplate = '';
         var lng = i18next.language;
 
         ctrl.action = null;
@@ -196,12 +194,8 @@
                 }
             });
 
-            ctrl.getFrontendSpec()
-                .then(setInvocationUrl)
-                .then(setIngressHost)
-                .catch(function () {
-                    ctrl.version.ui.invocationURL = '';
-                });
+            setInvocationUrl();
+            setIngressHost();
         }
 
         //
@@ -414,12 +408,8 @@
 
                             lodash.assign(ctrl.version.spec, response.spec);
 
-                            ctrl.getFrontendSpec()
-                                .then(setInvocationUrl)
-                                .then(setIngressHost)
-                                .catch(function () {
-                                    ctrl.version.ui.invocationURL = '';
-                                });
+                            setInvocationUrl();
+                            setIngressHost();
 
                             ctrl.isFunctionDeployed = true;
                         }
@@ -459,11 +449,9 @@
 
         /**
          * Sets the invocation URL of the function
-         * @param {{externalIPAddresses: Array.<string>, defaultHTTPIngressHostTemplate: <string>,
-         * namespace: <string>}} result - the response body from`getFrontendSpec`
          */
-        function setInvocationUrl(result) {
-            var ip = lodash.get(result, 'externalIPAddresses[0]', '');
+        function setInvocationUrl() {
+            var ip = ConfigService.nuclio.externalIPAddress;
             var port = lodash.defaultTo(
                 lodash.get(ctrl.version, 'ui.deployResult.status.httpPort'),
                 lodash.get(ctrl.version, 'status.httpPort')
@@ -471,8 +459,6 @@
 
             ctrl.version.ui.invocationURL =
                 lodash.isEmpty(ip) || !lodash.isNumber(port) ? '' : 'http://' + ip + ':' + port;
-
-            ingressHostTemplate = lodash.get(result, 'defaultHTTPIngressHostTemplate', '');
         }
 
         /**
@@ -487,7 +473,7 @@
 
             ctrl.version.ui.ingressHost = lodash.reduce(matches, function (accum, value, key) {
                 return !lodash.isNil(value) ? lodash.replace(accum, key, value) : accum;
-            }, ingressHostTemplate);
+            }, ConfigService.nuclio.ingressHostTemplate);
         }
 
         /**

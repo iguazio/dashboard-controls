@@ -5,7 +5,6 @@
         .component('nclFunctionCollapsingRow', {
             bindings: {
                 actionHandlerCallback: '&',
-                externalAddress: '<',
                 function: '<',
                 functionsList: '<',
                 getFunction: '&',
@@ -127,13 +126,15 @@
          */
         function onChanges(changes) {
             if (lodash.has(changes, 'function')) {
+                var externalAddress = ConfigService.nuclio.externalIPAddress;
+
                 convertStatusState();
                 setStatusIcon();
 
                 ctrl.invocationURL =
                     lodash.isNil(ctrl.function.status.httpPort) ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
-                    lodash.isEmpty(ctrl.externalAddress)        ? 'N/A'                                                :
-                                                                  'http://' + ctrl.externalAddress + ':' +
+                    lodash.isEmpty(externalAddress)             ? 'N/A'                                                :
+                                                                  'http://' + externalAddress + ':' +
                                                                   ctrl.function.status.httpPort;
             }
         }

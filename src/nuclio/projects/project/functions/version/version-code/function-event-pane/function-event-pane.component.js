@@ -8,7 +8,6 @@
             bindings: {
                 version: '<',
                 createFunctionEvent: '&',
-                getFrontendSpec: '&',
                 getFunctionEvents: '&',
                 deleteFunctionEvent: '&',
                 invokeFunction: '&'
@@ -28,7 +27,6 @@
         var lng = i18next.language;
 
         ctrl.createEvent = true;
-        ctrl.externalIPAddress = '';
         ctrl.headers = [];
         ctrl.isSplashShowed = {
             value: false
@@ -219,14 +217,6 @@
                     ctrl.isSplashShowed.value = false;
                 });
 
-            ctrl.getFrontendSpec()
-                .then(function (result) {
-                    ctrl.externalIPAddress = lodash.get(result, 'externalIPAddresses[0]', '');
-                })
-                .catch(function () {
-                    ctrl.version.ui.invocationURL = '';
-                });
-
             updateRequestHeaders();
         }
 
@@ -375,7 +365,7 @@
                 httpPort = null;
             }
 
-            setInvocationUrl(ctrl.externalIPAddress, httpPort);
+            setInvocationUrl(ConfigService.nuclio.externalIPAddress, httpPort);
 
             return lodash.isNull(httpPort) ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
                                              ctrl.version.ui.invocationURL + '/';
