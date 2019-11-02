@@ -76,8 +76,8 @@
         var defaultInputModelOptions = {
             updateOn: 'default blur',
             debounce: {
-                '*': 200,
-                'blur': 0
+                'default': 250,
+                '*': 0
             },
             allowInvalid: true
         };
@@ -113,6 +113,7 @@
         function onInit() {
             lodash.defaults(ctrl, {
                 hideCounter: false,
+                inputModelOptions: {},
                 inputValue: '',
                 isClearIcon: false,
                 isDisabled: false,
