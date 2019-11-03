@@ -10,7 +10,6 @@
                 createProject: '&',
                 deleteFunction: '&',
                 deleteProject: '&',
-                getExternalIpAddresses: '&',
                 getFunction: '&',
                 getFunctions: '&',
                 getProject: '&',
@@ -55,7 +54,6 @@
                 name: $i18next.t('functions:IMPORT_PROJECTS', {lng: lng})
             }
         ];
-        ctrl.externalIPAddress = '';
         ctrl.filtersCounter = 0;
         ctrl.functions = [];
         ctrl.isFiltersShowed = {
@@ -563,29 +561,19 @@
             }
 
             return $q.when(getProjectPromise).then(function () {
-                return ctrl.getExternalIpAddresses()
-                    .then(function (response) {
-                        ctrl.externalIPAddress = lodash.get(response, 'externalIPAddresses.addresses[0]', '');
-                    })
-                    .catch(function () {
-                        ctrl.externalIPAddress = '';
-                    })
-                    .finally(function () {
+                // it is important to render function list only after external IP addresses response is
+                // back, otherwise the "Invocation URL" column might be "N/A" to a function (even if it
+                // is deployed, i.e. `status.httpPort` is a number), because as long as the external IP
+                // address response is not returned, it is empty and is passed to each function row
+                ctrl.refreshFunctions()
+                    .then(startAutoUpdate)
+                    .catch(function (error) {
+                        ctrl.isSplashShowed.value = false;
+                        var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
 
-                        // it is important to render function list only after external IP addresses response is
-                        // back, otherwise the "Invocation URL" column might be "N/A" to a function (even if it
-                        // is deployed, i.e. `status.httpPort` is a number), because as long as the external IP
-                        // address response is not returned, it is empty and is passed to each function row
-                        ctrl.refreshFunctions()
-                            .then(startAutoUpdate)
-                            .catch(function (error) {
-                                ctrl.isSplashShowed.value = false;
-                                var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
-
-                                DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
-                                    $state.go('app.projects');
-                                });
-                            });
+                        DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
+                            $state.go('app.projects');
+                        });
                     });
             });
         }

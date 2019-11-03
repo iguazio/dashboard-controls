@@ -98,8 +98,7 @@ describe('nclProjectsFunctionsView component: ', function () {
                 projects: projects,
                 getProject: $q.when.bind($q),
                 getProjects: $q.when.bind($q),
-                getFunctions: $q.when.bind($q),
-                getExternalIpAddresses: $q.when.bind($q)
+                getFunctions: $q.when.bind($q)
             };
             var element = angular.element('<ncl-projects></ncl-projects>');
             var ImportService = {
@@ -161,7 +160,6 @@ describe('nclProjectsFunctionsView component: ', function () {
     describe('changeView(): ', function () {
         it('should change view to `projects`', function () {
             spyOn(ctrl, 'getProjects').and.returnValue($q.when());
-            spyOn(ctrl, 'getExternalIpAddresses').and.returnValue($q.when());
             spyOn(ctrl, 'getFunctions').and.returnValue($q.when(functions));
 
             ctrl.functions = [];
@@ -171,7 +169,6 @@ describe('nclProjectsFunctionsView component: ', function () {
             $timeout.flush();
 
             expect(ctrl.getProjects).toHaveBeenCalled();
-            expect(ctrl.getExternalIpAddresses).toHaveBeenCalled();
             expect(ctrl.getFunctions).toHaveBeenCalled();
             expect(ctrl.functions).toEqual(functions);
             expect(ProjectsService.viewMode).toEqual('projects');
@@ -179,7 +176,6 @@ describe('nclProjectsFunctionsView component: ', function () {
         });
 
         it('should change view to `functions`', function () {
-            spyOn(ctrl, 'getExternalIpAddresses').and.returnValue($q.when());
             spyOn(ctrl, 'getFunctions').and.returnValue($q.when(functions));
 
             ctrl.functions = [];
@@ -188,7 +184,6 @@ describe('nclProjectsFunctionsView component: ', function () {
             $rootScope.$digest();
             $timeout.flush();
 
-            expect(ctrl.getExternalIpAddresses).toHaveBeenCalled();
             expect(ctrl.getFunctions).toHaveBeenCalled();
             expect(ctrl.functions).toEqual(functions);
             expect(ProjectsService.viewMode).toEqual('functions');

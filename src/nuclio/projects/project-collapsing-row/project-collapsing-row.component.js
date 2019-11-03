@@ -6,7 +6,6 @@
             bindings: {
                 deleteFunction: '&',
                 deleteProject: '&',
-                externalIpAddress: '<',
                 functionActionHandlerCallback: '&',
                 isSplashShowed: '&',
                 getFunction: '&',
