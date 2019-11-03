@@ -64,7 +64,9 @@
                 confirmText.message : confirmText;
 
             var confirmButtonClass = lodash.includes(['critical_alert', 'nuclio_alert'], type) ?
-                'igz-button-remove' : 'igz-button-primary';
+                'igz-button-remove' : type === 'text-edit' ? 'igz-button-just-text' : 'igz-button-primary';
+
+            var cancelButtonClass = type === 'text-edit' ? 'igz-button-primary' : 'igz-button-just-text';
 
             var cancelButtonCaption = lodash.defaultTo(cancelButton, $i18next.t('common:CANCEL', {
                 lng: i18next.language
@@ -75,8 +77,8 @@
                 '<div class="nuclio-alert-icon"></div><div class="notification-text title">' + confirmMessage +
                 '</div>' + (noDescription ? '' : '<div class="notification-text description">' +
                 confirmText.description + '</div>') +
-                '<div class="buttons">' +
-                '<button class="igz-button-just-text" tabindex="0" data-ng-click="closeThisDialog(0)" ' +
+                '<div class="buttons" data-ng-class="{\'igz-grouped-buttons-reverse\': ' + (type === 'text-edit') + '}">' +
+                '<button class="' + cancelButtonClass + '" tabindex="0" data-ng-click="closeThisDialog(0)" ' +
                 'data-test-id="general.confirm_cancel.button" ' +
                 'data-ng-keydown="$event.keyCode === 13 && closeThisDialog(0)">' + cancelButtonCaption + '</button>' +
                 '<button class="' + confirmButtonClass + '" tabindex="0" data-ng-click="confirm(1)" ' +
