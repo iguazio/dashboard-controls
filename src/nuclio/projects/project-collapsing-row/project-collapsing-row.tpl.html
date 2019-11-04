@@ -2,8 +2,8 @@
     <div class="common-table-row">
         <div class="common-table-cell igz-col-3">
             <igz-action-checkbox data-ng-class="{'visible': $ctrl.projectsService.checkedItem === 'projects',
-                                                 'invisible': !$ctrl.isDemoMode() || ($ctrl.projectsService.checkedItem !== 'projects' &&
-                                                              $ctrl.projectsService.checkedItem !== '')}"
+                                                 'invisible': $ctrl.projectsService.checkedItem !== 'projects' &&
+                                                              $ctrl.projectsService.checkedItem !== ''}"
                                  data-item="$ctrl.project"
                                  data-item-type="projects">
             </igz-action-checkbox>
