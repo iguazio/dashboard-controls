@@ -57,7 +57,7 @@
                                 'disabled': item.disabled}"
                 data-ng-show="item.visible"
                 data-uib-tooltip="{{$ctrl.getTooltip(item)}}"
-                data-tooltip-placement="left"
+                data-tooltip-placement="{{item.tooltipPlacement || 'left'}}"
                 data-tooltip-append-to-body="true">
                 <div class="list-item-block">
                     <div data-ng-if="$ctrl.getIcon(item).name"
