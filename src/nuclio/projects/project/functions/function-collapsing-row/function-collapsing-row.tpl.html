@@ -4,8 +4,8 @@
         <div class="common-table-cell igz-col-3" data-ng-if="$ctrl.isProjectsView">
             <igz-action-checkbox
                     data-ng-class="{'visible': $ctrl.projectsService.checkedItem === 'functions',
-                                    'invisible': !$ctrl.isDemoMode() || ($ctrl.projectsService.checkedItem !== 'functions' &&
-                                                  $ctrl.projectsService.checkedItem !== '')}"
+                                    'invisible': $ctrl.projectsService.checkedItem !== 'functions' &&
+                                                 $ctrl.projectsService.checkedItem !== ''}"
                     data-item="$ctrl.function"
                     data-item-type="functions">
             </igz-action-checkbox>
@@ -31,7 +31,7 @@
             </div>
             <div class="common-table-cell function-name"
                  data-ng-class="[$ctrl.getFunctionsTableColSize('rowName', $ctrl.projectsService.viewMode)]"
-                 data-uib-tooltip="{{$ctrl.function.spec.description}}"
+                 data-uib-tooltip-html="$ctrl.functionNameTooltip"
                  data-tooltip-append-to-body="true"
                  data-tooltip-placement="top"
                  data-tooltip-popup-delay="200">

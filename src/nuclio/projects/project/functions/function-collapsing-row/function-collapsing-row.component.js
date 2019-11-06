@@ -31,6 +31,7 @@
         var lng = i18next.language;
 
         ctrl.functionActions = [];
+        ctrl.functionNameTooltip = '';
         ctrl.invocationURL = '';
         ctrl.isFunctionCollapsed = true;
         ctrl.runtimes = {
@@ -80,6 +81,8 @@
                 project: ctrl.project,
                 function: ctrl.function.metadata.name
             };
+            ctrl.functionNameTooltip = '<b>' + ctrl.function.metadata.name + '</b>' +
+                (ctrl.function.spec.description ? '<br><br>' + ctrl.function.spec.description : '');
 
             lodash.defaultsDeep(ctrl.function, {
                 ui: {
