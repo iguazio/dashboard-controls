@@ -31,7 +31,7 @@
             </div>
             <div class="common-table-cell function-name"
                  data-ng-class="[$ctrl.getFunctionsTableColSize('rowName', $ctrl.projectsService.viewMode)]"
-                 data-uib-tooltip-html="'{{$ctrl.function.metadata.name}} <br> {{$ctrl.function.spec.description}}'"
+                 data-uib-tooltip-html="$ctrl.functionNameTooltip"
                  data-tooltip-append-to-body="true"
                  data-tooltip-placement="top"
                  data-tooltip-popup-delay="200">
