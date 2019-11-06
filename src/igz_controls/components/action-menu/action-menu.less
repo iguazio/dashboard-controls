@@ -73,6 +73,13 @@
                 display: inline-block;
                 padding-right: 14px;
 
+                &.fake-icon {
+                    &:before {
+                        content: '';
+                        display: inline-block;
+                    }
+                }
+
                 &:before {
                     font-size: 16px;
                     position: relative;

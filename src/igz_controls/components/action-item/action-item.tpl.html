@@ -20,7 +20,7 @@
     </div>
 
     <div data-ng-if="$ctrl.action.id !== 'upload'">
-        <div class="action-icon {{$ctrl.action.icon}}"
+        <div class="action-icon {{$ctrl.getIconClass()}}"
              data-ng-style="$ctrl.action.iconColor && {'color': $ctrl.action.iconColor}"></div>
         <div class="action-label">{{$ctrl.action.label}}</div>
 
@@ -36,7 +36,7 @@
 <li data-ng-if="$ctrl.template === 'additional'"
     data-ng-click="$ctrl.onClickAction($event)">
 
-    <div class="action-icon {{$ctrl.action.icon}}"
+    <div class="action-icon {{$ctrl.getIconClass()}}"
          data-ng-style="$ctrl.action.iconColor && {'color': $ctrl.action.iconColor}"></div>
     <div class="action-label">{{$ctrl.action.label}}</div>
 
