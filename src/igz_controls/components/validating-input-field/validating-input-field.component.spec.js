@@ -15,8 +15,8 @@ describe('igzValidatingInputField component:', function () {
         defaultInputModelOptions = {
             updateOn: 'default blur',
             debounce: {
-                '*': 200,
-                'blur': 0
+                'default': 250,
+                '*': 0
             },
             allowInvalid: true
         };
