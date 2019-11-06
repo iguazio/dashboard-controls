@@ -72,10 +72,14 @@
          */
         function resizeScrollBarContainer(currentElement, targetElement) {
             var scrollbarContainer = currentElement.closest('.mCSB_container');
-            var newHeight = currentElement.find(targetElement).offset().top + currentElement.find(targetElement).height();
+            var target = currentElement.find(targetElement);
 
-            scrollbarContainer.css('height',
-                (newHeight > scrollbarContainer.css('height') ? newHeight :  scrollbarContainer.css('height')) + 'px');
+            if (scrollbarContainer.length === 1 && target.length === 1) {
+                var newHeight = target.offset().top + target.height();
+
+                scrollbarContainer.css('height',
+                    (newHeight > scrollbarContainer.height() ? newHeight :  scrollbarContainer.height()) + 'px');
+            }
         }
 
         /**
