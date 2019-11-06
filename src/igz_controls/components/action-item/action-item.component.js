@@ -18,6 +18,8 @@
 
         ctrl.$onInit = onInit();
         ctrl.$onDestroy = onDestroy();
+
+        ctrl.getIconClass = getIconClass;
         ctrl.isItemVisible = isItemVisible;
         ctrl.onClickAction = onClickAction;
 
@@ -50,6 +52,24 @@
         //
 
         /**
+         * Gets icon css class
+         * @returns {string}
+         */
+        function getIconClass() {
+            return ctrl.action.icon ? ctrl.action.icon                                                :
+                                      ctrl.actions && lodash.some(ctrl.actions, 'icon') ? 'fake-icon' : '';
+        }
+
+        /**
+         * Checks if the action item should be shown
+         * @param {Object} action
+         * @returns {boolean}
+         */
+        function isItemVisible(action) {
+            return lodash.get(action, 'visible', true);
+        }
+
+        /**
          * Handles mouse click on action item
          * @param {MouseEvent} event
          */
@@ -76,15 +96,6 @@
                     ctrl.action.callback(ctrl.action);
                 }
             }
-        }
-
-        /**
-         * Checks if the action item should be shown
-         * @param {Object} action
-         * @returns {boolean}
-         */
-        function isItemVisible(action) {
-            return lodash.get(action, 'visible', true);
         }
 
         //
