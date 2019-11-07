@@ -590,7 +590,7 @@
             if (viewMode === 'projects') {
                 updateProjects(true)
                     .then(function () {
-                        initFunctions()
+                        $timeout(initFunctions);
                     });
 
                 ctrl.searchKeys = [
