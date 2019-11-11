@@ -556,7 +556,7 @@
             if (lodash.isEmpty(ProjectsService.viewMode)) {
                 getProjectPromise = ctrl.getProject({id: $stateParams.projectId})
                     .then(function (project) {
-                        project.ui = {};
+                        project.ui = {functions: ctrl.functions};
                         ctrl.projects = [project];
                         title.project = project;
 
