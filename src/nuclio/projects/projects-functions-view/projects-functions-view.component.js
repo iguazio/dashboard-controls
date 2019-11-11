@@ -491,10 +491,16 @@
             // saves the name of sorted column
             ctrl.sortedColumnName = columnName;
 
-            if (lodash.isEmpty(ProjectsService.viewMode)) {
+            if (ProjectsService.viewMode !== 'projects') {
                 ctrl.functions = $filter('orderBy')(ctrl.functions, expression, ctrl.isReverseSorting);
             } else {
-                ctrl[ProjectsService.viewMode] = $filter('orderBy')(ctrl[ProjectsService.viewMode], expression, ctrl.isReverseSorting);
+                lodash.forEach(ctrl.projects, function (project) {
+                    var functions = lodash.get(project, 'ui.functions', []);
+
+                    functions = $filter('orderBy')(functions, expression, ctrl.isReverseSorting);
+
+                    lodash.set(project, 'ui.functions', functions);
+                });
             }
         }
 
