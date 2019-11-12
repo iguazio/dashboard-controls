@@ -289,11 +289,13 @@
                         var tooltipValue = isCount()    ? $filter('scale')(this.y)             :
                                            isCpuCores() ? $filter('scale')(this.y, 0, 'nanos') :
                                                           $filter('bytes')(this.y, 2);
+                        var label = isCount() ? $i18next.t('common:VALUE', {lng: lng}) :
+                                                $i18next.t('common:USED', {lng: lng});
 
                         return '<div class="igz-tooltip-wrapper used-capacity-tooltip-wrapper">' +
                             '<div class="tooltip-header">' + formattedDate + '</div>' +
                             '<div class="igz-row">' +
-                            '<div class="tooltip-label igz-col-30">' + $i18next.t('common:USED', {lng: lng}) + '</div>' +
+                            '<div class="tooltip-label igz-col-30">' + label + '</div>' +
                             '<div class="tooltip-value igz-col-70">' + tooltipValue + '</div>' +
                             '</div>' +
                             '</div>' +

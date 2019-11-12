@@ -36,9 +36,6 @@
              data-ng-class="[$ctrl.getFunctionsTableColSize('replicas', $ctrl.projectsService.viewMode)]">
             {{$ctrl.function.spec.replicas}}
         </div>
-        <div class="igz-col-10 common-table-cell">
-            {{$ctrl.function.ui.metrics.invocation || 0}}
-        </div>
         <div class="igz-col-7-5 common-table-cell">
             {{$ctrl.runtimes[$ctrl.function.spec.runtime]}}
         </div>
@@ -48,18 +45,9 @@
              data-tooltip-placement="top">
             <span class="common-table-cell-content">{{$ctrl.invocationUrl}}</span>
         </div>
-
-        <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-12-5"
-                                    data-name="nuclio_processor_handled_events_total-{{$ctrl.function.metadata.name}}"
-                                    data-loading-status-size="small">
-            <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_processor_handled_events_total && !$ctrl.isFunctionCollapsed"
-                      data-type="functions_events"
-                      data-entity="$ctrl.function">
-            </igz-size>
-            <div data-ng-if="$ctrl.function.ui.error.nuclio_processor_handled_events_total">
-                {{$ctrl.function.ui.error.nuclio_processor_handled_events_total}}
-            </div>
-        </igz-element-loading-status>
+        <div class="igz-col-10 common-table-cell">
+            {{$ctrl.function.ui.metrics.invocation || 0}}
+        </div>
 
         <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-12-5"
                                     data-name="nuclio_function_cpu-{{$ctrl.function.metadata.name}}"
@@ -82,6 +70,18 @@
             </igz-size>
             <div data-ng-if="$ctrl.function.ui.error.nuclio_function_mem">
                 {{$ctrl.function.ui.error.nuclio_function_mem}}
+            </div>
+        </igz-element-loading-status>
+
+        <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-12-5"
+                                    data-name="nuclio_processor_handled_events_total-{{$ctrl.function.metadata.name}}"
+                                    data-loading-status-size="small">
+            <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_processor_handled_events_total && !$ctrl.isFunctionCollapsed"
+                      data-type="functions_events"
+                      data-entity="$ctrl.function">
+            </igz-size>
+            <div data-ng-if="$ctrl.function.ui.error.nuclio_processor_handled_events_total">
+                {{$ctrl.function.ui.error.nuclio_processor_handled_events_total}}
             </div>
         </igz-element-loading-status>
     </div>
