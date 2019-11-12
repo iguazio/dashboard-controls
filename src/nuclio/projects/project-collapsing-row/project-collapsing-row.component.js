@@ -34,6 +34,7 @@
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
 
+        ctrl.isProjectEmpty = isProjectEmpty;
         ctrl.onFireAction = onFireAction;
         ctrl.onSelectRow = onSelectRow;
         ctrl.toggleProjectRow = toggleProjectRow;
@@ -96,6 +97,14 @@
         //
         // Public method
         //
+
+        /**
+         * Checks if project is empty
+         * @returns {boolean}
+         */
+        function isProjectEmpty() {
+            return lodash.isEmpty(ctrl.project.ui.functions);
+        }
 
         /**
          * According to given action name calls proper action handler

@@ -9,6 +9,7 @@ describe('nclProjectCollapsingRow component:', function () {
     var DialogsService;
     var ExportService;
     var ctrl;
+    var functions;
     var project;
     var projectsList;
 
@@ -66,6 +67,21 @@ describe('nclProjectCollapsingRow component:', function () {
                 }
             }
         ];
+        functions = [
+            {
+                metadata: {
+                    name: 'functionName',
+                    namespace: 'nuclio'
+                },
+                spec: {
+                    description: 'Some description',
+                    runtime: 'golang',
+                    replicas: 1,
+                    build: {},
+                    runRegistry: 'localhost:5000'
+                }
+            }
+        ];
         var bindings = {
             project: project,
             projectsList: angular.copy(projectsList),
@@ -86,6 +102,7 @@ describe('nclProjectCollapsingRow component:', function () {
         $timeout = null;
         ngDialog = null;
         ctrl = null;
+        functions = null;
         ActionCheckboxAllService = null;
         DialogsService = null;
         ExportService = null;
@@ -176,6 +193,20 @@ describe('nclProjectCollapsingRow component:', function () {
             ctrl.project.ui.export();
 
             expect(ExportService.exportProject).toHaveBeenCalledWith(ctrl.project, ctrl.getFunctions);
+        });
+    });
+
+    describe('isProjectEmpty(): ', function () {
+        it('should return true if the project contains empty functions list', function () {
+            ctrl.project.ui.functions = [];
+
+            expect(ctrl.isProjectEmpty()).toBeTruthy();
+        });
+
+        it('should return false if the project contains not empty functions list', function () {
+            ctrl.project.ui.functions = functions;
+
+            expect(ctrl.isProjectEmpty()).toBeFalsy();
         });
     });
 
