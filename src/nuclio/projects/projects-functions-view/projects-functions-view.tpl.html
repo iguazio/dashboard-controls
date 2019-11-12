@@ -37,14 +37,6 @@
                     accept=".yml, .yaml">
             </button>
             <div class="actions-bar-left actions-buttons-block">
-                <div class="view-by-dropdown" data-ng-if="$ctrl.projectsService.viewMode !== ''">
-                    View by:&nbsp;
-                    <igz-default-dropdown data-select-property-only="id"
-                                          data-selected-item="$ctrl.projectsService.viewMode"
-                                          data-values-array="$ctrl.viewByOptions"
-                                          data-item-select-callback="$ctrl.changeView(item)">
-                    </igz-default-dropdown>
-                </div>
                 <igz-default-dropdown data-ng-if="$ctrl.projectsService.viewMode === 'projects'"
                                       data-select-property-only="id"
                                       data-placeholder="{{ 'functions:PLACEHOLDER.ACTIONS' | i18next }}"
@@ -55,11 +47,11 @@
                 <button data-ng-if="$ctrl.projectsService.viewMode === 'projects'"
                         class="ncl-new-entity-button"
                         data-ng-click="$ctrl.openNewProjectDialog()">
-                    {{ 'functions:CREATE_PROJECT' | i18next }}
+                    {{ 'functions:NEW_PROJECT' | i18next }}
                 </button>
                 <button class="ncl-new-entity-button"
                         data-ng-click="$ctrl.openNewFunctionScreen()">
-                    {{ 'functions:CREATE_FUNCTION' | i18next }}
+                    {{ 'functions:NEW_FUNCTION' | i18next }}
                 </button>
             </div>
             <div class="actions-bar-left actions-content-block">
@@ -91,12 +83,34 @@
     <igz-info-page-content class="igz-component"
                            data-ng-class="{'functions-by-project': $ctrl.projectsService.viewMode === ''}">
         <div data-ng-if="$ctrl.projectsService.viewMode !== ''" class="table-actions">
-            <span class="ncl-icon-expand-all"
-                  data-ng-click="$ctrl.expandAllRows()">
-            </span>
-            <span class="ncl-icon-collapse-all"
-                  data-ng-click="$ctrl.collapseAllRows()">
-            </span>
+            <div class="view-by-dropdown" data-ng-if="$ctrl.projectsService.viewMode !== ''">
+                View by:&nbsp;
+                <igz-default-dropdown data-select-property-only="id"
+                                      data-selected-item="$ctrl.projectsService.viewMode"
+                                      data-values-array="$ctrl.viewByOptions"
+                                      data-item-select-callback="$ctrl.changeView(item)">
+                </igz-default-dropdown>
+            </div>
+            <div class="igz-action-panel">
+                <div class="actions-list">
+                    <div class="igz-action-item"
+                         data-ng-click="$ctrl.expandAllRows()"
+                         data-uib-tooltip="{{ 'functions:EXPAND_ALL' | i18next }}"
+                         data-tooltip-placement="left"
+                         data-tooltip-popup-delay="200"
+                         data-tooltip-append-to-body="true">
+                        <div class="action-icon ncl-icon-expand-all"></div>
+                    </div>
+                    <div class="igz-action-item"
+                         data-ng-click="$ctrl.collapseAllRows()"
+                         data-uib-tooltip="{{ 'functions:COLLAPSE_ALL' | i18next }}"
+                         data-tooltip-placement="left"
+                         data-tooltip-popup-delay="200"
+                         data-tooltip-append-to-body="true">
+                        <div class="action-icon ncl-icon-collapse-all"></div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="common-table">
             <div class="common-table-header">
@@ -169,49 +183,46 @@
                 {{ 'functions:PROJECTS_NOT_FOUND' | i18next }}
             </div>
 
-            <div class="common-table-body">
-                <div data-igz-extend-background>
-                    <div class="igz-scrollable-container"
-                         data-ng-scrollbars
-                         data-ng-scrollbars-config="$ctrl.configScrollbar()">
-                        <div class="sortable-wrapper"
-                             data-ng-hide="$ctrl.searchStates.searchNotFound && $ctrl.searchStates.searchInProgress"
-                             data-ng-model="$ctrl.data.working.ui.children">
-                            <div data-ng-if="$ctrl.projectsService.viewMode === 'projects'"
-                                 data-ng-repeat="project in $ctrl.projects track by project.metadata.name">
-                                <div data-igz-show-hide-search-item="project">
-                                    <ncl-project-collapsing-row
-                                            data-delete-function="$ctrl.deleteFunction({functionData: functionData})"
-                                            data-delete-project="$ctrl.deleteProject({project: project})"
-                                            data-function-action-handler-callback="$ctrl.handleFunctionVersionAction(actionType, checkedItems)"
-                                            data-get-function="$ctrl.getFunction({metadata: metadata, projectID: projectID})"
-                                            data-get-functions="$ctrl.getFunctions({id: id})"
-                                            data-is-splash-showed="$ctrl.isSplashShowed"
-                                            data-project="project"
-                                            data-project-action-handler-callback="$ctrl.handleProjectAction(actionType, checkedItems)"
-                                            data-projects-list="$ctrl.projects"
-                                            data-update-function="$ctrl.updateFunction({function: function, projectID: projectID})"
-                                            data-update-project="$ctrl.updateProject({project: project})">
-                                    </ncl-project-collapsing-row>
-                                </div>
+            <div class="common-table-body" data-igz-extend-background>
+                <div class="igz-scrollable-container"
+                     data-ng-scrollbars>
+                    <div class="sortable-wrapper"
+                         data-ng-hide="$ctrl.searchStates.searchNotFound && $ctrl.searchStates.searchInProgress"
+                         data-ng-model="$ctrl.data.working.ui.children">
+                        <div data-ng-if="$ctrl.projectsService.viewMode === 'projects'"
+                             data-ng-repeat="project in $ctrl.projects track by project.metadata.name">
+                            <div data-igz-show-hide-search-item="project">
+                                <ncl-project-collapsing-row
+                                        data-delete-function="$ctrl.deleteFunction({functionData: functionData})"
+                                        data-delete-project="$ctrl.deleteProject({project: project})"
+                                        data-function-action-handler-callback="$ctrl.handleFunctionVersionAction(actionType, checkedItems)"
+                                        data-get-function="$ctrl.getFunction({metadata: metadata, projectID: projectID})"
+                                        data-get-functions="$ctrl.getFunctions({id: id})"
+                                        data-is-splash-showed="$ctrl.isSplashShowed"
+                                        data-project="project"
+                                        data-project-action-handler-callback="$ctrl.handleProjectAction(actionType, checkedItems)"
+                                        data-projects-list="$ctrl.projects"
+                                        data-update-function="$ctrl.updateFunction({function: function, projectID: projectID})"
+                                        data-update-project="$ctrl.updateProject({project: project})">
+                                </ncl-project-collapsing-row>
                             </div>
+                        </div>
 
-                            <div data-ng-if="$ctrl.projectsService.viewMode !== 'projects'"
-                                 data-ng-repeat="aFunction in $ctrl.functions track by aFunction.metadata.name">
-                                <div data-igz-show-hide-search-item="aFunction">
-                                    <ncl-function-collapsing-row
-                                            data-action-handler-callback="$ctrl.handleFunctionVersionAction(actionType, checkedItems)"
-                                            data-function="aFunction"
-                                            data-functions-list="$ctrl.functions"
-                                            data-get-function="$ctrl.getFunction({metadata: metadata, projectID: projectID})"
-                                            data-get-functions="$ctrl.getFunctions({id: id})"
-                                            data-handle-delete-function="$ctrl.deleteFunction({functionData: functionData})"
-                                            data-is-splash-showed="$ctrl.isSplashShowed"
-                                            data-project="aFunction.ui.project"
-                                            data-refresh-functions-list="$ctrl.refreshFunctions()"
-                                            data-update-function="$ctrl.updateFunction({function: function, projectID: projectID})">
-                                    </ncl-function-collapsing-row>
-                                </div>
+                        <div data-ng-if="$ctrl.projectsService.viewMode !== 'projects'"
+                             data-ng-repeat="aFunction in $ctrl.functions track by aFunction.metadata.name">
+                            <div data-igz-show-hide-search-item="aFunction">
+                                <ncl-function-collapsing-row
+                                        data-action-handler-callback="$ctrl.handleFunctionVersionAction(actionType, checkedItems)"
+                                        data-function="aFunction"
+                                        data-functions-list="$ctrl.functions"
+                                        data-get-function="$ctrl.getFunction({metadata: metadata, projectID: projectID})"
+                                        data-get-functions="$ctrl.getFunctions({id: id})"
+                                        data-handle-delete-function="$ctrl.deleteFunction({functionData: functionData})"
+                                        data-is-splash-showed="$ctrl.isSplashShowed"
+                                        data-project="aFunction.ui.project"
+                                        data-refresh-functions-list="$ctrl.refreshFunctions()"
+                                        data-update-function="$ctrl.updateFunction({function: function, projectID: projectID})">
+                                </ncl-function-collapsing-row>
                             </div>
                         </div>
                     </div>
