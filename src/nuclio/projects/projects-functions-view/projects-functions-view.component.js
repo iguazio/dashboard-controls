@@ -495,11 +495,9 @@
                 ctrl.functions = $filter('orderBy')(ctrl.functions, expression, ctrl.isReverseSorting);
             } else {
                 lodash.forEach(ctrl.projects, function (project) {
-                    var functions = lodash.get(project, 'ui.functions', []);
-
-                    functions = $filter('orderBy')(functions, expression, ctrl.isReverseSorting);
-
-                    lodash.set(project, 'ui.functions', functions);
+                    lodash.update(project, 'ui.functions', function (functions) {
+                        return $filter('orderBy')(lodash.defaultTo(functions, []), expression, ctrl.isReverseSorting);
+                    });
                 });
             }
         }
