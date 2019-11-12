@@ -26,6 +26,8 @@
                     {
                         id: 'kafka-cluster',
                         name: 'Kafka',
+                        tooltip: 'Kafka',
+                        tooltipPlacement: 'right',
                         attributes: [
                             {
                                 name: 'kafka-topics',
@@ -97,6 +99,8 @@
                     {
                         id: 'rabbit-mq',
                         name: 'RabbitMQ',
+                        tooltip: 'RabbitMQ',
+                        tooltipPlacement: 'right',
                         url: 'string',
                         attributes: [
                             {
@@ -127,6 +131,8 @@
                     {
                         id: 'nats',
                         name: 'NATS',
+                        tooltip: 'NATS',
+                        tooltipPlacement: 'right',
                         url: 'string',
                         attributes: [
                             {
@@ -148,6 +154,8 @@
                     {
                         id: 'cron',
                         name: 'Cron',
+                        tooltip: 'Cron',
+                        tooltipPlacement: 'right',
                         attributes: [
                             {
                                 name: 'interval',
@@ -182,6 +190,8 @@
                     {
                         id: 'eventhub',
                         name: 'Azure Event Hubs',
+                        tooltip: 'Azure Event Hubs',
+                        tooltipPlacement: 'right',
                         attributes: [
                             {
                                 name: 'sharedAccessKeyName',
@@ -230,6 +240,8 @@
                     {
                         id: 'http',
                         name: 'HTTP',
+                        tooltip: 'HTTP',
+                        tooltipPlacement: 'right',
                         maxWorkers: 'number',
                         workerAvailabilityTimeoutMilliseconds: {
                             name: 'workerAvailabilityTimeoutMilliseconds',
@@ -261,6 +273,8 @@
                     {
                         id: 'v3ioStream',
                         name: 'V3IO stream',
+                        tooltip: 'V3IO stream',
+                        tooltipPlacement: 'right',
                         url: 'string',
                         username: 'string',
                         password: 'string',
@@ -309,6 +323,8 @@
                     {
                         id: 'kinesis',
                         name: 'Kinesis',
+                        tooltip: 'Kinesis',
+                        tooltipPlacement: 'right',
                         attributes: [
                             {
                                 name: 'accessKeyID',
@@ -350,6 +366,8 @@
                     {
                         id: 'mqtt',
                         name: 'MQTT',
+                        tooltip: 'MQTT',
+                        tooltipPlacement: 'right',
                         url: 'string',
                         username: 'string',
                         password: 'string',
