@@ -10,6 +10,7 @@
         </div>
         <div class="common-table-cell igz-col-3 project-row-collapse">
         <span class="collapse-icon"
+              data-ng-if="!$ctrl.isProjectEmpty()"
               data-ng-click="$ctrl.toggleProjectRow()"
               data-ng-class="{'collapsed igz-icon-right': $ctrl.isProjectCollapsed, 'igz-icon-down': !$ctrl.isProjectCollapsed}">
         </span>
