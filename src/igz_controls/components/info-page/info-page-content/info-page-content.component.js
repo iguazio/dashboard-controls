@@ -69,9 +69,10 @@
          */
         function manageHorizontalScroll() {
             var $scrollXContainer = $element.find('.igz-scrollable-container.horizontal').first();
-            var contentWrapper = $element.find('.igz-info-page-content-wrapper').first();
+            var contentWrapperWidth = $element.find('.igz-info-page-content-wrapper').first().width();
+            var contentMinWidth = parseInt($element.find('.igz-info-page-content').css('min-width'));
 
-            if ($scrollXContainer.length && contentWrapper.width() < 946) {
+            if ($scrollXContainer.length && contentWrapperWidth < (contentMinWidth || 946)) {
                 $scrollXContainer.mCustomScrollbar('update');
             } else if ($scrollXContainer.length) {
                 $scrollXContainer.mCustomScrollbar('disable', true);
