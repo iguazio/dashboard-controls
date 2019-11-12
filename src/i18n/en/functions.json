@@ -120,7 +120,7 @@
     "IMPORT_PROJECTS": "Import project(s)",
     "INGRESSES": "Ingresses",
     "INVOCATION": "Invocation",
-    "INVOCATION_PER_SEC": "Invocation per sec",
+    "INVOCATION_PER_SEC": "Invocation/s",
     "INVOCATION_URL": "Invocation URL",
     "ITEM_KEY": "Item key",
     "JVM_OPTIONS": "JVM options",
