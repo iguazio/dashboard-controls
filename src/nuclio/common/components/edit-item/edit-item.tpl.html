@@ -397,12 +397,12 @@
             <div class="igz-col-91 attribute-field ingresses-wrapper"
                  data-ng-if="$ctrl.isClassSelected() && $ctrl.isHttpTrigger()">
 
-                <div class="field-label">{{ 'functions:INGRESSES' | i18next }}</div>
+                <div class="field-label">{{ 'functions:INGRESSES_HOSTS' | i18next }}</div>
 
                 <div data-ng-if="$ctrl.ingresses.length > 0" class="table-headers ingresses-table-headers">
-                    <div class="host-header">{{ 'functions:HOST' | i18next }}</div>
-                    <div class="paths-header">{{ 'common:PATH' | i18next }}</div>
-                    <div class="secret-header">{{ 'functions:SECRET' | i18next }}</div>
+                    <div class="host-header asterisk">{{ 'functions:HOST' | i18next }}</div>
+                    <div class="paths-header asterisk">{{ 'common:PATH' | i18next }}</div>
+                    <div class="secret-header asterisk">{{ 'functions:SECRET' | i18next }}</div>
                 </div>
                 <div class="igz-scrollable-container scrollable-ingresses"
                      data-ng-scrollbars
@@ -427,7 +427,7 @@
                 <div class="ncl-create-button create-ingress-button"
                      data-ng-click="$ctrl.addNewIngress($event)">
                     <span class="igz-icon-add-round"></span>
-                    {{ 'functions:CREATE_NEW_INGRESS' | i18next }}
+                    {{ 'functions:CREATE_NEW_HOST' | i18next }}
                 </div>
             </div>
 
