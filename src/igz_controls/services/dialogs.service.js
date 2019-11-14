@@ -10,6 +10,7 @@
             alert: alert,
             confirm: confirm,
             customConfirm: customConfirm,
+            iframe: iframe,
             image: image,
             oopsAlert: oopsAlert,
             prompt: prompt,
@@ -120,6 +121,38 @@
                 plain: true,
                 trapFocus: false
             });
+        }
+
+        /**
+         * Shows iframe with content in a dialog
+         *
+         * @param {string} content that will be shown in pop-up
+         * @param {string} [title='']
+         * @returns {Promise}
+         */
+        function iframe(content, title) {
+            var data = {
+                buttonText: $i18next.t('common:CLOSE', {lng: i18next.language}),
+                content: content,
+                title: lodash.defaultTo(title, '')
+            };
+
+            return ngDialog.open({
+                template: '<div class="iframe-dialog-content">' +
+                              '<div class="close-button igz-icon-close" data-ng-click="closeThisDialog()"></div>' +
+                              '<div class="title">{{ngDialogData.title}}</div>' +
+                              '<div class="main-content">' +
+                                  '<iframe class="frame" srcdoc="{{ngDialogData.content}}"></iframe>' +
+                              '</div>' +
+                              '<div class="buttons">' +
+                                  '<button class="igz-button-primary" data-ng-click="closeThisDialog()">{{ngDialogData.buttonText}}</button>' +
+                              '</div>' +
+                          '</div>',
+                plain: true,
+                data: data,
+                className: 'ngdialog-theme-iguazio iframe-dialog'
+            })
+                .closePromise;
         }
 
         /**
