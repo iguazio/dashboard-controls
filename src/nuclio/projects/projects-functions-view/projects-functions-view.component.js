@@ -157,7 +157,7 @@
             // initializes version actions array
             ctrl.versionActions = angular.copy(FunctionsService.initVersionActions());
 
-            initProjectsFunctionsView(ProjectsService.viewMode);
+            changeView(ProjectsService.viewMode);
 
             $scope.$on('action-panel_fire-action', onFireAction);
             $scope.$on('action-checkbox_item-checked', onItemChecked);
@@ -195,10 +195,12 @@
          * @param {Object} viewMode - new view mode object
          */
         function changeView(viewMode) {
-            initProjectsFunctionsView(viewMode.id);
+            ctrl.sortedColumnName = 'metadata.name';
+
+            initProjectsFunctionsView(viewMode);
 
             $timeout(function () {
-                ProjectsService.viewMode = viewMode.id;
+                ProjectsService.viewMode = viewMode;
 
                 updatePanelActions();
             });
@@ -574,7 +576,10 @@
                 // is deployed, i.e. `status.httpPort` is a number), because as long as the external IP
                 // address response is not returned, it is empty and is passed to each function row
                 ctrl.refreshFunctions()
-                    .then(startAutoUpdate)
+                    .then(function () {
+                        sortTableByColumn(ctrl.sortedColumnName, true);
+                        startAutoUpdate();
+                    })
                     .catch(function (error) {
                         ctrl.isSplashShowed.value = false;
                         var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
@@ -606,7 +611,6 @@
                     'spec.displayName',
                     'spec.description'
                 ];
-                ctrl.sortedColumnName = 'spec.displayName';
             } else {
                 initFunctions();
 
@@ -614,10 +618,7 @@
                     'metadata.name',
                     'spec.description'
                 ];
-                ctrl.sortedColumnName = 'metadata.name';
             }
-
-            updatePanelActions();
         }
 
         /**
