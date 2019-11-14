@@ -77,6 +77,11 @@
                 active: true
             },
             {
+                label: $i18next.t('functions:PROJECT', {lng: lng}),
+                value: 'ui.project.metadata.name',
+                active: false,
+            },
+            {
                 label: $i18next.t('common:STATUS', {lng: lng}),
                 value: 'status.state',
                 active: false
@@ -202,6 +207,7 @@
             $timeout(function () {
                 ProjectsService.viewMode = viewMode;
 
+                setSortOptionsVisibility();
                 updatePanelActions();
             });
         }
@@ -482,7 +488,8 @@
          * @param {boolean} isJustSorting - if it is needed just to sort data without changing reverse
          */
         function sortTableByColumn(columnName, isJustSorting) {
-            var expression = (ProjectsService.viewMode === 'projects' && columnName === 'spec.displayName') ? getName : columnName;
+            var expression = (ProjectsService.viewMode !== 'projects' && columnName === 'ui.project.metadata.name') ?
+                getProjectName : columnName;
 
             if (!isJustSorting) {
 
@@ -548,6 +555,15 @@
          */
         function getName(project) {
             return lodash.defaultTo(project.spec.displayName, project.metadata.name);
+        }
+
+        /**
+         * Returns correct project name of the given function
+         * @param {Object} functionItem
+         * @returns {string}
+         */
+        function getProjectName(functionItem) {
+            return getName(lodash.get(functionItem, 'ui.project'));
         }
 
         /**
@@ -680,6 +696,14 @@
             }
 
             updatePanelActions();
+        }
+
+        /**
+         * Sets visibility for sort options
+         */
+        function setSortOptionsVisibility() {
+            lodash.find(ctrl.sortOptions, ['value', 'ui.project.metadata.name']).visible =
+                ProjectsService.viewMode !== 'projects'
         }
 
         /**

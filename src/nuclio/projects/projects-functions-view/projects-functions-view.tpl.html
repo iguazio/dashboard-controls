@@ -133,9 +133,12 @@
                         {{ 'common:NAME' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-10 common-table-cell"
-                         data-ng-if="$ctrl.projectsService.viewMode !== 'projects'">
+                    <div class="igz-col-10 sortable common-table-cell"
+                         data-ng-if="$ctrl.projectsService.viewMode !== 'projects'"
+                         data-ng-class="[$ctrl.getColumnSortingClasses('ui.project.metadata.name', $ctrl.sortedColumnName, $ctrl.isReverseSorting)]"
+                         data-ng-click="$ctrl.sortTableByColumn('ui.project.metadata.name')">
                         {{ 'functions:PROJECT' | i18next }}
+                        <span class="sort-arrow"></span>
                     </div>
                     <div class="common-table-cell sortable function-status"
                          data-ng-class="[$ctrl.getColumnSortingClasses('status.state', $ctrl.sortedColumnName, $ctrl.isReverseSorting),
