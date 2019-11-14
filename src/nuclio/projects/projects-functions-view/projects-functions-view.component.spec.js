@@ -78,6 +78,12 @@ describe('nclProjectsFunctionsView component: ', function () {
                     active: true
                 },
                 {
+                    label: 'Project',
+                    value: 'ui.project.metadata.name',
+                    visible: false,
+                    active: false
+                },
+                {
                     label: 'Status',
                     value: 'status.state',
                     active: false
@@ -130,6 +136,10 @@ describe('nclProjectsFunctionsView component: ', function () {
     describe('$onInit(): ', function () {
         it('should initialize projects array', function () {
             expect(ctrl.projects).toEqual(projects);
+        });
+
+        it('should initialize sort options', function () {
+            expect(ctrl.sortOptions).not.toBe([]);
         });
 
         it('should call onFireAction() method if `action-panel_fire-action` broadcast was sent', function () {
