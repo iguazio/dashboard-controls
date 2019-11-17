@@ -278,7 +278,7 @@
                 });
             }
 
-            if (angular.isDefined(ctrl.validationRules) && !lodash.isEmpty(ctrl.data)) {
+            if (angular.isDefined(ctrl.validationRules)) {
                 checkPatternsValidity(ctrl.data);
             }
         }
