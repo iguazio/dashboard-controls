@@ -58,7 +58,7 @@
                     value: value,
                     ui: {
                         editModeActive: false,
-                        isFormValid: true,
+                        isFormValid: false,
                         name: 'annotation'
                     }
                 };
@@ -207,17 +207,22 @@
          * Updates function`s annotations
          */
         function updateAnnotations() {
+            var isFormValid = true;
             var newAnnotations = {};
 
             lodash.forEach(ctrl.annotations, function (annotation) {
                 if (!annotation.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', {
-                        component: annotation.ui.name,
-                        isDisabled: true
-                    })
+                    isFormValid = false
                 }
+
                 newAnnotations[annotation.name] = annotation.value;
             });
+
+            $rootScope.$broadcast('change-state-deploy-button', {
+                component: 'annotation',
+                isDisabled: !isFormValid
+            });
+
             lodash.set(ctrl.version, 'metadata.annotations', newAnnotations);
             ctrl.onChangeCallback();
         }

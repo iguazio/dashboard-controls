@@ -61,8 +61,8 @@
                         value: value,
                         ui: {
                             editModeActive: false,
-                            isFormValid: true,
-                            name: 'attribute'
+                            isFormValid: false,
+                            name: 'runtime-attribute'
                         }
                     }
                 })
@@ -111,11 +111,14 @@
                         ui: {
                             editModeActive: true,
                             isFormValid: false,
-                            name: 'attribute'
+                            name: 'runtime-attribute'
                         }
                     });
 
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'attribute', isDisabled: true});
+                    $rootScope.$broadcast('change-state-deploy-button', {
+                        component: 'runtime-attribute',
+                        isDisabled: true
+                    });
                     event.stopPropagation();
                 }
             }, 50);
@@ -154,12 +157,19 @@
          */
         function updateAttributes() {
             var newAttributes = {};
+            var isFormValid = true;
 
             lodash.forEach(ctrl.attributes, function (attribute) {
                 if (!attribute.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: attribute.ui.name, isDisabled: true});
+                    isFormValid = false;
                 }
+
                 newAttributes[attribute.name] = attribute.value;
+            });
+
+            $rootScope.$broadcast('change-state-deploy-button', {
+                component: 'runtime-attribute',
+                isDisabled: !isFormValid
             });
 
             lodash.set(ctrl.version, 'spec.runtimeAttributes.responseHeaders', newAttributes);

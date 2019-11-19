@@ -10,6 +10,7 @@
             alert: alert,
             confirm: confirm,
             customConfirm: customConfirm,
+            iframe: iframe,
             image: image,
             oopsAlert: oopsAlert,
             prompt: prompt,
@@ -64,7 +65,9 @@
                 confirmText.message : confirmText;
 
             var confirmButtonClass = lodash.includes(['critical_alert', 'nuclio_alert'], type) ?
-                'igz-button-remove' : 'igz-button-primary';
+                'igz-button-remove' : type === 'text-edit' ? 'igz-button-just-text' : 'igz-button-primary';
+
+            var cancelButtonClass = type === 'text-edit' ? 'igz-button-primary' : 'igz-button-just-text';
 
             var cancelButtonCaption = lodash.defaultTo(cancelButton, $i18next.t('common:CANCEL', {
                 lng: i18next.language
@@ -75,8 +78,8 @@
                 '<div class="nuclio-alert-icon"></div><div class="notification-text title">' + confirmMessage +
                 '</div>' + (noDescription ? '' : '<div class="notification-text description">' +
                 confirmText.description + '</div>') +
-                '<div class="buttons">' +
-                '<button class="igz-button-just-text" tabindex="0" data-ng-click="closeThisDialog(0)" ' +
+                '<div class="buttons" data-ng-class="{\'igz-grouped-buttons-reverse\': ' + (type === 'text-edit') + '}">' +
+                '<button class="' + cancelButtonClass + '" tabindex="0" data-ng-click="closeThisDialog(0)" ' +
                 'data-test-id="general.confirm_cancel.button" ' +
                 'data-ng-keydown="$event.keyCode === 13 && closeThisDialog(0)">' + cancelButtonCaption + '</button>' +
                 '<button class="' + confirmButtonClass + '" tabindex="0" data-ng-click="confirm(1)" ' +
@@ -87,6 +90,7 @@
             return ngDialog.openConfirm({
                 template: template,
                 plain: true,
+                name: 'confirm',
                 className: type === 'nuclio_alert' ?
                     'ngdialog-theme-nuclio delete-entity-dialog-wrapper' : 'ngdialog-theme-iguazio'
             });
@@ -117,6 +121,38 @@
                 plain: true,
                 trapFocus: false
             });
+        }
+
+        /**
+         * Shows iframe with content in a dialog
+         *
+         * @param {string} content that will be shown in pop-up
+         * @param {string} [title='']
+         * @returns {Promise}
+         */
+        function iframe(content, title) {
+            var data = {
+                buttonText: $i18next.t('common:CLOSE', {lng: i18next.language}),
+                content: content,
+                title: lodash.defaultTo(title, '')
+            };
+
+            return ngDialog.open({
+                template: '<div class="iframe-dialog-content">' +
+                              '<div class="close-button igz-icon-close" data-ng-click="closeThisDialog()"></div>' +
+                              '<div class="title">{{ngDialogData.title}}</div>' +
+                              '<div class="main-content">' +
+                                  '<iframe class="frame" srcdoc="{{ngDialogData.content}}"></iframe>' +
+                              '</div>' +
+                              '<div class="buttons">' +
+                                  '<button class="igz-button-primary" data-ng-click="closeThisDialog()">{{ngDialogData.buttonText}}</button>' +
+                              '</div>' +
+                          '</div>',
+                plain: true,
+                data: data,
+                className: 'ngdialog-theme-iguazio iframe-dialog'
+            })
+                .closePromise;
         }
 
         /**
@@ -282,7 +318,7 @@
             };
 
             return ngDialog.open({
-                template: '<igz-text-edit data-label="{{ngDialogData.label}}" data-language="{{ngDialogData.language}}" data-content="{{ngDialogData.content}}"' +
+                template: '<igz-text-edit data-label="{{ngDialogData.label}}" data-ng-dialog-id="{{ngDialogData.ngDialogId}}" data-language="{{ngDialogData.language}}" data-content="{{ngDialogData.content}}"' +
                           'data-submit-button-text="{{ngDialogData.submitButtonText}}" data-submit-data="ngDialogData.submitData(newContent)"' +
                           'data-close-button-text="{{ngDialogData.closeButtonText}}" data-close-dialog="closeThisDialog(value)">' +
                           '</igz-text-edit>',

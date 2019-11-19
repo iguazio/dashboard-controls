@@ -1,25 +1,49 @@
-<div class="ncl-function-collapsing-row items-wrapper">
+<div class="ncl-function-collapsing-row items-wrapper" data-ng-class="{'in-projects-view': $ctrl.isProjectsView}">
     <div class="scrolling-row"></div>
     <div class="function-title-block common-table-row">
-        <div class="common-table-cell function-row-collapse">
+        <div class="common-table-cell igz-col-3" data-ng-if="$ctrl.isProjectsView">
+            <igz-action-checkbox
+                    data-ng-class="{'visible': $ctrl.projectsService.checkedItem === 'functions',
+                                    'invisible': $ctrl.projectsService.checkedItem !== 'functions' &&
+                                                 $ctrl.projectsService.checkedItem !== ''}"
+                    data-item="$ctrl.function"
+                    data-item-type="functions">
+            </igz-action-checkbox>
+        </div>
+        <div class="common-table-cell igz-col-3" data-ng-if="$ctrl.isProjectsView"></div>
+        <div class="common-table-cell igz-col-3 function-row-collapse" data-ng-if="!$ctrl.isProjectsView">
             <span data-ng-if="$ctrl.function.spec.version > -1"
                   class="collapse-icon"
-                  data-ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed"
-                  data-ng-class="{'collapsed igz-icon-right': $ctrl.isCollapsed, 'igz-icon-down': !$ctrl.isCollapsed}">
+                  data-ng-click="$ctrl.isFunctionCollapsed = !$ctrl.isFunctionCollapsed"
+                  data-ng-class="{'collapsed igz-icon-right': $ctrl.isFunctionCollapsed, 'igz-icon-down': !$ctrl.isFunctionCollapsed}">
             </span>
         </div>
 
         <div class="igz-row common-table-cells-container"
              data-ng-click="$ctrl.onSelectRow($event)">
-            <div class="igz-col-{{$ctrl.isDemoMode() ? '10' : '15'}} common-table-cell function-name"
-                 data-uib-tooltip="{{$ctrl.function.spec.description}}"
+            <div class="common-table-cell igz-col-2-5 function-row-collapse"
+                 data-ng-if="$ctrl.isProjectsView"
+                 data-ng-click="$ctrl.toggleFunctionRow($event)">
+                <span data-ng-if="$ctrl.function.spec.version > -1"
+                      class="collapse-icon"
+                      data-ng-class="{'collapsed igz-icon-right': $ctrl.isFunctionCollapsed, 'igz-icon-down': !$ctrl.isFunctionCollapsed}">
+                </span>
+            </div>
+            <div class="common-table-cell function-name"
+                 data-ng-class="[$ctrl.getFunctionsTableColSize('rowName', $ctrl.projectsService.viewMode)]"
+                 data-uib-tooltip-html="$ctrl.functionNameTooltip"
                  data-tooltip-append-to-body="true"
                  data-tooltip-placement="top"
                  data-tooltip-popup-delay="200">
-                {{$ctrl.function.metadata.name}}
+                {{$ctrl.function.metadata.name}} {{$ctrl.isFunctionCollapsed ? '($LATEST)' : ''}}
             </div>
-
-            <div class="igz-col-{{$ctrl.isDemoMode() ? '7-5' : '10'}} common-table-cell function-status">
+            <div class="igz-col-10 common-table-cell"
+                 data-ng-if="!$ctrl.isProjectsView">
+                {{$ctrl.function.ui.project.spec.displayName || $ctrl.function.ui.project.metadata.name}}
+            </div>
+            <div class="common-table-cell function-status"
+                 data-ng-class="[$ctrl.getFunctionsTableColSize('status', $ctrl.projectsService.viewMode)]"
+                 data-ng-show="$ctrl.isFunctionCollapsed">
                 {{$ctrl.convertedStatusState}}
                 <div class="status-icon"
                      data-uib-tooltip="{{$ctrl.getTooltip()}}"
@@ -30,73 +54,84 @@
                 </div>
             </div>
             <div data-ng-if="$ctrl.isDemoMode()"
-                 class="igz-col-7-5 common-table-cell">
+                 data-ng-show="$ctrl.isFunctionCollapsed"
+                 class="common-table-cell"
+                 data-ng-class="[$ctrl.getFunctionsTableColSize('replicas', $ctrl.projectsService.viewMode)]">
                 {{$ctrl.function.spec.replicas}}
             </div>
-            <div class="igz-col-10 common-table-cell">
-                {{$ctrl.function.ui.metrics.invocationPerSec || 0}}
-            </div>
-            <div class="igz-col-7-5 common-table-cell">
+            <div class="igz-col-7-5 common-table-cell"
+                 data-ng-show="$ctrl.isFunctionCollapsed">
                 {{$ctrl.runtimes[$ctrl.function.spec.runtime]}}
             </div>
-            <div class="igz-col-{{$ctrl.isDemoMode() ? '12-5' : '15'}} common-table-cell"
+            <div class="igz-col-10 common-table-cell"
+                 data-ng-show="$ctrl.isFunctionCollapsed"
                  data-uib-tooltip="{{$ctrl.invocationURL}}"
                  data-tooltip-append-to-body="true"
                  data-tooltip-placement="top">
                 <span class="common-table-cell-content">{{$ctrl.invocationURL}}</span>
             </div>
+            <div class="igz-col-10 common-table-cell"
+                 data-ng-show="$ctrl.isFunctionCollapsed">
+                {{$ctrl.function.ui.metrics.invocationPerSec || 0}}
+            </div>
 
-            <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-{{$ctrl.isDemoMode() ? '15' : '17-5'}}"
-                                        data-name="nuclio_processor_handled_events_total-{{$ctrl.function.metadata.name}}"
-                                        data-loading-status-size="small">
-                <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_processor_handled_events_total"
-                          data-type="functions_events"
-                          data-entity="$ctrl.function">
-                </igz-size>
-                <div data-ng-if="$ctrl.function.ui.error.nuclio_processor_handled_events_total">
-                    {{$ctrl.function.ui.error.nuclio_processor_handled_events_total}}
-                </div>
-            </igz-element-loading-status>
-
-            <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-{{$ctrl.isDemoMode() ? '15' : '17-5'}}"
+            <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-12-5"
                                         data-name="nuclio_function_cpu-{{$ctrl.function.metadata.name}}"
                                         data-loading-status-size="small">
-                <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_function_cpu"
+                <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_function_cpu && $ctrl.isFunctionCollapsed && !$ctrl.isProjectCollapsed"
                           data-type="functions_cpu"
                           data-entity="$ctrl.function">
                 </igz-size>
-                <div data-ng-if="$ctrl.function.ui.error.nuclio_function_cpu">
+                <div data-ng-if="$ctrl.function.ui.error.nuclio_function_cpu && $ctrl.isFunctionCollapsed">
                     {{$ctrl.function.ui.error.nuclio_function_cpu}}
                 </div>
             </igz-element-loading-status>
 
-            <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-{{$ctrl.isDemoMode() ? '15' : '17-5'}}"
+            <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-12-5"
                                         data-name="nuclio_function_mem-{{$ctrl.function.metadata.name}}"
                                         data-loading-status-size="small">
-                <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_function_mem"
+                <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_function_mem && $ctrl.isFunctionCollapsed && !$ctrl.isProjectCollapsed"
                           data-type="functions_memory"
                           data-entity="$ctrl.function">
                 </igz-size>
-                <div data-ng-if="$ctrl.function.ui.error.nuclio_function_mem">
+                <div data-ng-if="$ctrl.function.ui.error.nuclio_function_mem && $ctrl.isFunctionCollapsed">
                     {{$ctrl.function.ui.error.nuclio_function_mem}}
+                </div>
+            </igz-element-loading-status>
+
+            <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-12-5"
+                                        data-name="nuclio_processor_handled_events_total-{{$ctrl.function.metadata.name}}"
+                                        data-loading-status-size="small">
+                <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_processor_handled_events_total && $ctrl.isFunctionCollapsed && !$ctrl.isProjectCollapsed"
+                          data-type="functions_events"
+                          data-entity="$ctrl.function">
+                </igz-size>
+                <div data-ng-if="$ctrl.function.ui.error.nuclio_processor_handled_events_total && $ctrl.isFunctionCollapsed">
+                    {{$ctrl.function.ui.error.nuclio_processor_handled_events_total}}
                 </div>
             </igz-element-loading-status>
         </div>
 
         <div class="common-table-cell actions-menu">
-            <igz-action-menu data-actions="$ctrl.actions"
+            <igz-action-menu data-actions="$ctrl.functionActions"
                              data-on-fire-action="$ctrl.onFireAction">
             </igz-action-menu>
         </div>
     </div>
-    <div class="items-wrapper" data-uib-collapse="$ctrl.isCollapsed">
+    <div class="items-wrapper" data-uib-collapse="$ctrl.isFunctionCollapsed">
         <div data-ng-repeat="version in $ctrl.function.versions">
             <ncl-function-version-row class="function-version-wrapper"
-                                      data-version="version"
+                                      data-action-handler-callback="$ctrl.handleAction(actionType, checkedItems)"
+                                      data-converted-status-state="$ctrl.convertedStatusState"
                                       data-function="$ctrl.function"
+                                      data-invocation-url="$ctrl.invocationURL"
+                                      data-is-function-collapsed="$ctrl.isFunctionCollapsed"
+                                      data-is-projects-view="$ctrl.isProjectsView"
                                       data-project="$ctrl.project"
-                                      data-versions-list="$ctrl.function.attr.versions"
-                                      data-action-handler-callback="$ctrl.handleAction(actionType, checkedItems)">
+                                      data-status-icon="$ctrl.statusIcon"
+                                      data-toggle-function-state="$ctrl.toggleFunctionState(event)"
+                                      data-version="version"
+                                      data-versions-list="$ctrl.function.attr.versions">
             </ncl-function-version-row>
         </div>
     </div>

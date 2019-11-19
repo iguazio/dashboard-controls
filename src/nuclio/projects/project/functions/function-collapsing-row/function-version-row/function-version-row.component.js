@@ -6,8 +6,14 @@
         .component('nclFunctionVersionRow', {
             bindings: {
                 actionHandlerCallback: '&',
-                project: '<',
+                convertedStatusState: '<',
                 function: '<',
+                invocationUrl: '<',
+                isFunctionCollapsed: '<',
+                isProjectsView: '<',
+                project: '<',
+                statusIcon: '<',
+                toggleFunctionState: '&',
                 version: '<',
                 versionsList: '<'
             },
@@ -15,20 +21,35 @@
             controller: NclFunctionVersionRowController
         });
 
-    function NclFunctionVersionRowController($state, $i18next, i18next, lodash, ConfigService, NuclioHeaderService,
-                                             FunctionsService) {
+    function NclFunctionVersionRowController($state, $i18next, i18next, lodash, ActionCheckboxAllService,
+                                             ConfigService, FunctionsService, NuclioHeaderService,
+                                             ProjectsService, TableSizeService) {
         var ctrl = this;
         var lng = i18next.language;
 
-        ctrl.actions = [];
+        ctrl.versionActions = [];
+        ctrl.runtimes = {
+            'golang': 'Go',
+            'python:2.7': 'Python 2.7',
+            'python:3.6': 'Python 3.6',
+            'dotnetcore': '.NET Core',
+            'java': 'Java',
+            'nodejs': 'NodeJS',
+            'shell': 'Shell',
+            'ruby': 'Ruby'
+        };
         ctrl.title = null;
 
         ctrl.$onInit = onInit;
+        ctrl.$onDestroy = onDestroy;
 
-        ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.onFireAction = onFireAction;
-        ctrl.showDetails = showDetails;
         ctrl.onSelectRow = onSelectRow;
+        ctrl.onToggleFunctionState = onToggleFunctionState;
+
+        ctrl.getFunctionsTableColSize = TableSizeService.getFunctionsTableColSize;
+        ctrl.isDemoMode = ConfigService.isDemoMode;
+        ctrl.projectsService = ProjectsService;
 
         //
         // Hook methods
@@ -52,17 +73,17 @@
                 }
             });
 
-            ctrl.actions = FunctionsService.initVersionActions();
+            initVersionActions();
+        }
 
-            var deleteAction = lodash.find(ctrl.actions, {'id': 'delete'});
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            if (lodash.get(ctrl.version, 'ui.checked')) {
+                lodash.set(ctrl.version, 'ui.checked', false);
 
-            if (!lodash.isNil(deleteAction)) {
-                deleteAction.confirm = {
-                    message: $i18next.t('functions:DELETE_VERSION', {lng: lng}) + ' “' + ctrl.version.name + '”?',
-                    yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
-                    noLabel: $i18next.t('common:CANCEL', {lng: lng}),
-                    type: 'nuclio_alert'
-                };
+                ActionCheckboxAllService.changeCheckedItemsCount(-1);
             }
         }
 
@@ -76,27 +97,6 @@
          */
         function onFireAction(actionType) {
             ctrl.actionHandlerCallback({actionType: actionType, checkedItems: [ctrl.version]});
-        }
-
-        /**
-         * Handles mouse click on a version
-         * Navigates to Code page
-         * @param {MouseEvent} event
-         * @param {string} state - absolute state name or relative state path
-         */
-        function showDetails(event, state) {
-            if (!angular.isString(state)) {
-                state = 'app.project.function.edit.code';
-            }
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            $state.go(state, {
-                id: ctrl.project.metadata.name,
-                functionId: ctrl.function.metadata.name,
-                projectNamespace: ctrl.project.metadata.namespace
-            });
         }
 
         /**
@@ -114,11 +114,20 @@
 
             $state.go(state, {
                 id: ctrl.project.metadata.name,
+                projectId: ctrl.project.metadata.name,
                 functionId: ctrl.function.metadata.name,
                 projectNamespace: ctrl.project.metadata.namespace
             });
 
             NuclioHeaderService.updateMainHeader('common:PROJECTS', ctrl.title, $state.current.name);
+        }
+
+        /**
+         * Handles mouse click on toggle function state
+         * @param {MouseEvent} event
+         */
+        function onToggleFunctionState(event) {
+            ctrl.toggleFunctionState({event: event})
         }
 
         //
@@ -137,9 +146,23 @@
          */
         function editVersion() {
             $state.go('app.project.function.edit.code', {
+                projectId: ctrl.project.metadata.name,
                 functionId: ctrl.function.metadata.name,
                 projectNamespace: ctrl.project.metadata.namespace
             });
+        }
+
+        /**
+         * Initializes version actions
+         */
+        function initVersionActions() {
+            ctrl.versionActions = angular.copy(FunctionsService.initVersionActions());
+
+            var deleteAction = lodash.find(ctrl.versionActions, {'id': 'delete'});
+
+            if (!lodash.isNil(deleteAction)) {
+                deleteAction.confirm.message = $i18next.t('functions:DELETE_VERSION', {lng: lng}) + ' “' + ctrl.version.name + '”?'
+            }
         }
     }
 }());

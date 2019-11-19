@@ -7,12 +7,51 @@
         height: 49px;
 
         &:hover {
+            igz-action-checkbox:not(.invisible) {
+                visibility: visible;
+            }
+
             .actions-menu {
                 visibility: visible;
             }
 
             .check-row {
                 background-color: @pale-grey-three;
+            }
+        }
+
+        igz-action-checkbox {
+            visibility: hidden;
+
+            &.visible {
+                visibility: visible;
+            }
+        }
+
+        .common-table-cells-container {
+            cursor: pointer;
+
+            .common-table-cell {
+                .status-icon {
+                    display: flex;
+                    font-size: 20px;
+                    cursor: pointer;
+                    margin-left: 9px;
+                    .duskThree(0.64);
+                    color: @color;
+                }
+
+                .common-table-cell-content {
+                    width: 100%;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    min-width: 0;
+                }
+            }
+
+            .function-status {
+                min-width: 100px;
             }
         }
     }

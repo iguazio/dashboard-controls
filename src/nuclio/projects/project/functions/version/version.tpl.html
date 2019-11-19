@@ -15,8 +15,13 @@
             </div>
             <div class="actions-bar-left actions-buttons-block">
                 <button class="ncl-new-entity-button"
-                        data-ng-class="{'disabled': $ctrl.isInValidDeployState() || $ctrl.isDeployDisabled}"
-                        data-ng-click="$ctrl.isInValidDeployState() || $ctrl.deployButtonClick($event)">
+                        data-ng-class="{'disabled': $ctrl.isDeployButtonDisabled()}"
+                        data-ng-click="$ctrl.isInValidDeployState() || $ctrl.deployButtonClick($event)"
+                        data-uib-tooltip="{{ 'functions:TOOLTIP.DEPLOY_BTN' | i18next }}"
+                        data-tooltip-enable="$ctrl.isDeployButtonDisabled()"
+                        data-tooltip-placement="left"
+                        data-tooltip-append-to-body="true"
+                        data-tooltip-popup-delay="200">
                     {{ 'functions:DEPLOY' | i18next }}
                 </button>
             </div>

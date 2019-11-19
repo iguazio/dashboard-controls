@@ -43,7 +43,8 @@
                 id: 'sourceCode',
                 visible: true,
                 name: 'Source code (edit online)',
-                tooltip: 'Provide the function source code in the dashboard'
+                tooltip: 'Provide the function source code in the dashboard',
+                tooltipPlacement: 'right'
             },
             {
                 id: 'image',
@@ -54,7 +55,8 @@
                         image: ''
                     }
                 },
-                tooltip: 'Deploy the function from an existing image'
+                tooltip: 'Deploy the function from an existing image',
+                tooltipPlacement: 'right'
             },
             {
                 id: 'archive',
@@ -73,7 +75,8 @@
                         }
                     }
                 },
-                tooltip: 'Download a function-code archive file from an Iguazio Data Science Platform (with authentication) or from any other URL (without authentication)'
+                tooltip: 'Download a function-code archive file from an Iguazio Data Science Platform (with authentication) or from any other URL (without authentication)',
+                tooltipPlacement: 'right'
             },
             {
                 id: 'github',
@@ -93,7 +96,8 @@
                         }
                     }
                 },
-                tooltip: 'Download the function code from a GitHub repository'
+                tooltip: 'Download the function code from a GitHub repository',
+                tooltipPlacement: 'right'
             },
             {
                 id: 'jar',
@@ -126,7 +130,8 @@
                         }
                     }
                 },
-                tooltip: 'Download the function code from an AWS S3 bucket'
+                tooltip: 'Download the function code from an AWS S3 bucket',
+                tooltipPlacement: 'right'
             }
         ];
         ctrl.themesArray = [

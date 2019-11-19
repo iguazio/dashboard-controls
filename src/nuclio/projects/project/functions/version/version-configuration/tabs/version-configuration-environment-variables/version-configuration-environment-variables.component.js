@@ -52,7 +52,7 @@
                 .map(function (variable) {
                     variable.ui = {
                         editModeActive: false,
-                        isFormValid: true,
+                        isFormValid: false,
                         name: 'variable'
                     };
 
@@ -223,11 +223,18 @@
          * Updates function`s variables
          */
         function updateVariables() {
+            var isFormValid = true;
             var variables = lodash.map(ctrl.variables, function (variable) {
                 if (!variable.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: variable.ui.name, isDisabled: true});
+                    isFormValid = false;
                 }
+
                 return lodash.omit(variable, 'ui');
+            });
+
+            $rootScope.$broadcast('change-state-deploy-button', {
+                component: 'variable',
+                isDisabled: !isFormValid
             });
 
             lodash.set(ctrl.version, 'spec.env', variables);

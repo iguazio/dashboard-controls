@@ -12,11 +12,25 @@
             controller: IgzSortDropdownController
         });
 
-    function IgzSortDropdownController() {
+    function IgzSortDropdownController(lodash) {
         var ctrl = this;
 
+        ctrl.$onInit = onInit;
+
         ctrl.getItemClass = getItemClass;
+        ctrl.setValuesVisibility = setValuesVisibility;
         ctrl.toggleSortingOrder = toggleSortingOrder;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            ctrl.setValuesVisibility();
+        }
 
         //
         // Public methods
@@ -29,6 +43,16 @@
          */
         function getItemClass(isFieldActive) {
             return isFieldActive ? 'active-item' : '';
+        }
+
+        /**
+         * Sets `visible` property for all array items into true if it is not already defined.
+         * `visible` property determines whether item will be shown in the sort options list.
+         */
+        function setValuesVisibility() {
+            lodash.forEach(ctrl.sortOptions, function (value) {
+                lodash.defaults(value, {visible: true});
+            });
         }
 
         /**

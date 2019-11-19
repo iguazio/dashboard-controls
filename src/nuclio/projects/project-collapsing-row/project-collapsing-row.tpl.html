@@ -1,0 +1,55 @@
+<div class="ncl-project-collapsing-row">
+    <div class="common-table-row">
+        <div class="common-table-cell igz-col-3">
+            <igz-action-checkbox data-ng-class="{'visible': $ctrl.projectsService.checkedItem === 'projects',
+                                                 'invisible': $ctrl.projectsService.checkedItem !== 'projects' &&
+                                                              $ctrl.projectsService.checkedItem !== ''}"
+                                 data-item="$ctrl.project"
+                                 data-item-type="projects">
+            </igz-action-checkbox>
+        </div>
+        <div class="common-table-cell igz-col-3 project-row-collapse">
+        <span class="collapse-icon"
+              data-ng-if="!$ctrl.isProjectEmpty()"
+              data-ng-click="$ctrl.toggleProjectRow()"
+              data-ng-class="{'collapsed igz-icon-right': $ctrl.isProjectCollapsed, 'igz-icon-down': !$ctrl.isProjectCollapsed}">
+        </span>
+        </div>
+        <div class="igz-row common-table-cells-container inactive-state"
+             data-ng-click="$ctrl.onSelectRow($event)">
+            <div class="common-table-cell project-name"
+                 data-ng-class="[$ctrl.getFunctionsTableColSize('headerName', 'projects')]">
+                {{$ctrl.project.spec.displayName || $ctrl.project.metadata.name}}
+            </div>
+            <div class="igz-col-20 common-table-cell description">
+                {{$ctrl.project.spec.description}}
+            </div>
+        </div>
+        <div class="common-table-cell actions-menu">
+            <igz-action-menu data-actions="$ctrl.projectActions"
+                             data-on-fire-action="$ctrl.onFireAction">
+            </igz-action-menu>
+        </div>
+    </div>
+
+    <div class="items-wrapper" data-uib-collapse="$ctrl.isProjectCollapsed">
+        <div data-ng-repeat="aFunction in $ctrl.project.ui.functions track by aFunction.metadata.name">
+            <div data-igz-show-hide-search-item="aFunction">
+                <ncl-function-collapsing-row
+                        data-action-handler-callback="$ctrl.functionActionHandlerCallback({actionType: actionType, checkedItems: checkedItems})"
+                        data-function="aFunction"
+                        data-functions-list="$ctrl.project.ui.functions"
+                        data-get-function="$ctrl.getFunction({metadata: metadata, projectID: projectID})"
+                        data-get-functions="$ctrl.getFunctions({id: id})"
+                        data-handle-delete-function="$ctrl.deleteFunction({functionData: functionData})"
+                        data-is-splash-showed="$ctrl.isSplashShowed"
+                        data-is-projects-view="true"
+                        data-is-project-collapsed="$ctrl.isProjectCollapsed"
+                        data-project="$ctrl.project"
+                        data-refresh-functions-list="$ctrl.refreshFunctions()"
+                        data-update-function="$ctrl.updateFunction({function: function, projectID: projectID})">
+                </ncl-function-collapsing-row>
+            </div>
+        </div>
+    </div>
+</div>

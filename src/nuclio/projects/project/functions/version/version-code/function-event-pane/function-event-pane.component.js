@@ -8,7 +8,6 @@
             bindings: {
                 version: '<',
                 createFunctionEvent: '&',
-                getExternalIpAddresses: '&',
                 getFunctionEvents: '&',
                 deleteFunctionEvent: '&',
                 invokeFunction: '&'
@@ -18,8 +17,8 @@
         });
 
     function NclFunctionEventPaneController($element, $rootScope, $scope, $timeout, $q, $i18next, i18next, lodash,
-                                            moment, download, ConverterService, DialogsService, EventHelperService,
-                                            VersionHelperService) {
+                                            moment, download, ConfigService, ConverterService, DialogsService,
+                                            EventHelperService, VersionHelperService) {
         var ctrl = this;
 
         var canceler = null;
@@ -28,7 +27,6 @@
         var lng = i18next.language;
 
         ctrl.createEvent = true;
-        ctrl.externalIPAddress = '';
         ctrl.headers = [];
         ctrl.isSplashShowed = {
             value: false
@@ -95,7 +93,7 @@
             {
                 id: 'file',
                 name: 'File',
-                visible: true
+                visible: ConfigService.isDemoMode()
             }
         ];
         ctrl.requestBodyType = ctrl.requestBodyTypes[0];
@@ -217,14 +215,6 @@
                 })
                 .finally(function () {
                     ctrl.isSplashShowed.value = false;
-                });
-
-            ctrl.getExternalIpAddresses()
-                .then(function (result) {
-                    ctrl.externalIPAddress = lodash.get(result, 'externalIPAddresses.addresses[0]', '');
-                })
-                .catch(function () {
-                    ctrl.version.ui.invocationURL = '';
                 });
 
             updateRequestHeaders();
@@ -375,7 +365,7 @@
                 httpPort = null;
             }
 
-            setInvocationUrl(ctrl.externalIPAddress, httpPort);
+            setInvocationUrl(ConfigService.nuclio.externalIPAddress, httpPort);
 
             return lodash.isNull(httpPort) ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
                                              ctrl.version.ui.invocationURL + '/';

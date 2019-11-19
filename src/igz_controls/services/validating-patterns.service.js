@@ -24,6 +24,7 @@
                 configMapKey: /^(?=[\S\s]{1,253}$)(?!\.$)(?!\.\.[\S\s]*$)[-._a-zA-Z0-9]+$/,
                 dns1123Label: /^(?=[\S\s]{1,63}$)[a-z0-9]([-a-z0-9]*[a-z0-9])?$/,
                 envVarName: /^(?!\.$)(?!\.\.[\S\s]*$)[-._a-zA-Z][-._a-zA-Z0-9]*$/,
+                jupyterEnvVarName: /^(?!\.[\S\s]*$)[-._a-zA-Z][-._a-zA-Z0-9]*$/,
                 qualifiedName: /^(?=[\S\s]{1,63}$)([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$/,
                 prefixedQualifiedName: /^(?!kubernetes.io\/)(?!k8s.io\/)((?=[\S\s]{1,253}\/)([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\/))?(?=[\S\s]{1,63}$)([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$/
             },

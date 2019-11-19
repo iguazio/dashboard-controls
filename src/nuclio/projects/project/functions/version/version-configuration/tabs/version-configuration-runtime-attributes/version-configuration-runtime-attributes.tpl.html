@@ -54,11 +54,11 @@
                 <div class="table-body" data-ng-repeat="attribute in $ctrl.attributes">
                     <ncl-key-value-input class="new-label-input"
                                          data-row-data="attribute"
-                                         data-change-state-broadcast="change-state-deploy-button"
                                          data-use-type="false"
                                          data-item-index="$index"
                                          data-action-handler-callback="$ctrl.handleAction(actionType, index)"
-                                         data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                                         data-change-data-callback="$ctrl.onChangeData(newData, index)"
+                                         data-submit-on-fly="true">
                     </ncl-key-value-input>
                 </div>
             </div>
