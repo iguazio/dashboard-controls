@@ -22,6 +22,7 @@
         <div class="igz-row common-table-cells-container"
              data-ng-click="$ctrl.onSelectRow($event)">
             <div class="common-table-cell igz-col-2-5 function-row-collapse"
+                 data-test-id="functions.item-collapse"
                  data-ng-if="$ctrl.isProjectsView"
                  data-ng-click="$ctrl.toggleFunctionRow($event)">
                 <span data-ng-if="$ctrl.function.spec.version > -1"
@@ -30,6 +31,7 @@
                 </span>
             </div>
             <div class="common-table-cell function-name"
+                 data-test-id="functions.item-name"
                  data-ng-class="[$ctrl.getFunctionsTableColSize('rowName', $ctrl.projectsService.viewMode)]"
                  data-uib-tooltip-html="$ctrl.functionNameTooltip"
                  data-tooltip-append-to-body="true"
@@ -38,10 +40,12 @@
                 {{$ctrl.function.metadata.name}} {{$ctrl.isFunctionCollapsed ? '($LATEST)' : ''}}
             </div>
             <div class="igz-col-10 common-table-cell"
+                 data-test-id="functions.item-project"
                  data-ng-if="!$ctrl.isProjectsView">
                 {{$ctrl.function.ui.project.spec.displayName || $ctrl.function.ui.project.metadata.name}}
             </div>
             <div class="common-table-cell function-status"
+                 data-test-id="functions.item-status"
                  data-ng-class="[$ctrl.getFunctionsTableColSize('status', $ctrl.projectsService.viewMode)]"
                  data-ng-show="$ctrl.isFunctionCollapsed">
                 {{$ctrl.convertedStatusState}}
@@ -60,10 +64,12 @@
                 {{$ctrl.function.spec.replicas}}
             </div>
             <div class="igz-col-7-5 common-table-cell"
+                 data-test-id="functions.item-runtime"
                  data-ng-show="$ctrl.isFunctionCollapsed">
                 {{$ctrl.runtimes[$ctrl.function.spec.runtime]}}
             </div>
             <div class="igz-col-10 common-table-cell"
+                 data-test-id="functions.item-invocation-url"
                  data-ng-show="$ctrl.isFunctionCollapsed"
                  data-uib-tooltip="{{$ctrl.invocationURL}}"
                  data-tooltip-append-to-body="true"
@@ -71,6 +77,7 @@
                 <span class="common-table-cell-content">{{$ctrl.invocationURL}}</span>
             </div>
             <div class="igz-col-10 common-table-cell"
+                 data-test-id="functions.item-invocation-per-sec"
                  data-ng-show="$ctrl.isFunctionCollapsed">
                 {{$ctrl.function.ui.metrics.invocationPerSec || 0}}
             </div>
@@ -80,7 +87,8 @@
                                         data-loading-status-size="small">
                 <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_function_cpu && $ctrl.isFunctionCollapsed && !$ctrl.isProjectCollapsed"
                           data-type="functions_cpu"
-                          data-entity="$ctrl.function">
+                          data-entity="$ctrl.function"
+                          data-test-id="functions.item-cpu">
                 </igz-size>
                 <div data-ng-if="$ctrl.function.ui.error.nuclio_function_cpu && $ctrl.isFunctionCollapsed">
                     {{$ctrl.function.ui.error.nuclio_function_cpu}}
@@ -92,7 +100,8 @@
                                         data-loading-status-size="small">
                 <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_function_mem && $ctrl.isFunctionCollapsed && !$ctrl.isProjectCollapsed"
                           data-type="functions_memory"
-                          data-entity="$ctrl.function">
+                          data-entity="$ctrl.function"
+                          data-test-id="functions.item-memory">
                 </igz-size>
                 <div data-ng-if="$ctrl.function.ui.error.nuclio_function_mem && $ctrl.isFunctionCollapsed">
                     {{$ctrl.function.ui.error.nuclio_function_mem}}
@@ -104,7 +113,8 @@
                                         data-loading-status-size="small">
                 <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_processor_handled_events_total && $ctrl.isFunctionCollapsed && !$ctrl.isProjectCollapsed"
                           data-type="functions_events"
-                          data-entity="$ctrl.function">
+                          data-entity="$ctrl.function"
+                          data-test-id="functions.item-invocations">
                 </igz-size>
                 <div data-ng-if="$ctrl.function.ui.error.nuclio_processor_handled_events_total && $ctrl.isFunctionCollapsed">
                     {{$ctrl.function.ui.error.nuclio_processor_handled_events_total}}
@@ -112,7 +122,8 @@
             </igz-element-loading-status>
         </div>
 
-        <div class="common-table-cell actions-menu">
+        <div class="common-table-cell actions-menu"
+             data-test-id="functions.item-actions">
             <igz-action-menu data-actions="$ctrl.functionActions"
                              data-on-fire-action="$ctrl.onFireAction">
             </igz-action-menu>
