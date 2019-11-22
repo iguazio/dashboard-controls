@@ -11,9 +11,8 @@
             controller: NclVersionConfigurationEnvironmentVariablesController
         });
 
-    function NclVersionConfigurationEnvironmentVariablesController($element, $i18next, $rootScope, $scope, $timeout,
-                                                                   i18next, lodash, PreventDropdownCutOffService,
-                                                                   ValidatingPatternsService, VersionHelperService) {
+    function NclVersionConfigurationEnvironmentVariablesController($element, $i18next, $q, $rootScope, $scope, $timeout,
+                                                                   i18next, lodash, PreventDropdownCutOffService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -21,16 +20,40 @@
             maxElementsCount: 10,
             childrenSelector: '.table-body'
         };
-        ctrl.configMapKeyValidationPattern = ValidatingPatternsService.k8s.configMapKey;
-        ctrl.keyValidationPattern = ValidatingPatternsService.k8s.envVarName;
+        ctrl.configMapKeyValidationRules = [
+            {
+                label: $i18next.t('functions:VALIDATION.VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _',
+                pattern: /^[\w-]+$/
+            },
+            {
+                label: $i18next.t('functions:VALIDATION.MAX_LENGTH', {lng: lng, count: 253}),
+                pattern: /^(?=[\S\s]{1,253}$)/
+            },
+            {
+                label: $i18next.t('functions:VALIDATION.UNIQUENESS', {lng: lng}),
+                pattern: validateUniqueness.bind(null, 'valueFrom.configMapKeyRef.key')
+            }
+        ];
+        ctrl.keyValidationRules = [
+            {
+                label: $i18next.t('functions:VALIDATION.VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
+                pattern: /^[\w-.]+$/
+            },
+            {
+                label: $i18next.t('functions:VALIDATION.NOT_START_WITH_DIGIT_OR_TWO_PERIODS', {lng: lng}) + ' (..)',
+                pattern: /^(?!\.{2,}|\d)/
+            },
+            {
+                label: $i18next.t('functions:VALIDATION.UNIQUENESS', {lng: lng}),
+                pattern: validateUniqueness.bind(null, 'name')
+            }
+        ];
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
                 updateOnContentResize: true
             }
         };
-        ctrl.configMapKeyTooltip = getConfigMapKeyTooltip();
-        ctrl.keyTooltip = getKeyTooltip();
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
@@ -121,7 +144,6 @@
                 ctrl.variables.splice(index, 1);
 
                 $timeout(function () {
-                    validateUniqueness();
                     updateVariables();
                 });
             }
@@ -135,89 +157,12 @@
         function onChangeData(variable, index) {
             ctrl.variables[index] = variable;
 
-            validateUniqueness();
             updateVariables();
         }
 
         //
         // Private methods
         //
-
-        /**
-         * Generates tooltip for "ConfigMap key" label
-         */
-        function getConfigMapKeyTooltip() {
-            var config = [
-                {
-                    head: $i18next.t('functions:TOOLTIP.CONFIGURATION.RESTRICTIONS', {lng: lng}),
-                    values: [
-                        {
-                            head: $i18next.t('functions:TOOLTIP.CONFIGURATION.VALID_CHARACTERS', {lng: lng}) + ' —',
-                            values: [
-                                {head: $i18next.t('functions:TOOLTIP.CONFIGURATION.ALPHANUMERIC_CHARACTERS', {lng: lng}) + ' (a–z, A–Z, 0–9)'},
-                                {head: $i18next.t('functions:TOOLTIP.CONFIGURATION.HYPHENS', {lng: lng}) + ' (-)'},
-                                {head: $i18next.t('functions:TOOLTIP.CONFIGURATION.UNDERSCORES', {lng: lng}) + ' (_)'}
-                            ]
-                        },
-                        {
-                            head: $i18next.t('functions:TOOLTIP.CONFIGURATION.MAX_LENGTH', {lng: lng, count: 253})
-                        }
-                    ]
-                },
-                {
-                    head: $i18next.t('functions:TOOLTIP.CONFIGURATION.EXAMPLES', {lng: lng}),
-                    values: [
-                        {head: '"MY_KEY"'},
-                        {head: '"my-key"'},
-                        {head: '"MyKey.1"'}
-                    ]
-                }
-            ];
-
-            return VersionHelperService.generateTooltip(config);
-        }
-
-        /**
-         * Generates tooltip for "Key" label
-         */
-        function getKeyTooltip() {
-            var config = [
-                {
-                    head: $i18next.t('functions:TOOLTIP.CONFIGURATION.RESTRICTIONS', {lng: lng}),
-                    values: [
-                        {
-                            head: $i18next.t('functions:TOOLTIP.CONFIGURATION.VALID_CHARACTERS', {lng: lng}) + ' —',
-                            values: [
-                                {head: $i18next.t('functions:TOOLTIP.CONFIGURATION.ALPHANUMERIC_CHARACTERS', {lng: lng}) + ' (a–z, A–Z, 0–9)'},
-                                {head: $i18next.t('functions:TOOLTIP.CONFIGURATION.HYPHENS', {lng: lng}) + ' (-)'},
-                                {head: $i18next.t('functions:TOOLTIP.CONFIGURATION.UNDERSCORES', {lng: lng}) + ' (_)'},
-                                {head: $i18next.t('functions:TOOLTIP.CONFIGURATION.PERIODS', {lng: lng}) + ' (.)'}
-                            ]
-                        },
-                        {
-                            head: $i18next.t('functions:TOOLTIP.CONFIGURATION.NOT_START_WITH_DIGIT_OR_TWO_PERIODS', {lng: lng}) + ' (..)'
-                        },
-                        {
-                            head: $i18next.t('functions:TOOLTIP.CONFIGURATION.NOT_END_WITH_DIGIT', {lng: lng})
-                        },
-                        {
-                            head: $i18next.t('functions:TOOLTIP.CONFIGURATION.NOT_CONTAIN_ONLY_PERIOD', {lng: lng}) + ' (.)'
-                        }
-                    ]
-                },
-                {
-                    head: $i18next.t('functions:TOOLTIP.CONFIGURATION.EXAMPLES', {lng: lng}),
-                    values: [
-                        {head: '"MY_ENV_VAR"'},
-                        {head: '"MyEnvVar1"'},
-                        {head: '"My-Env-Var.1"'},
-                        {head: '"my.env-var"'}
-                    ]
-                }
-            ];
-
-            return VersionHelperService.generateTooltip(config);
-        }
 
         /**
          * Updates function`s variables
@@ -244,34 +189,20 @@
         /**
          * Determines and sets `uniqueness` validation for `Key` and `ConfigMap key` fields
          */
-        function validateUniqueness() {
-            var chunkedVars = lodash.chunk(ctrl.variables);
-            var uniqueKeys = lodash.xorBy.apply(null, chunkedVars.concat('name'));
-            var uniqueConfigMapKeys = lodash.xorBy.apply(null, chunkedVars.concat('valueFrom.configMapKeyRef.key'));
+        function validateUniqueness(field, value) {
+            $timeout(function () {
+                lodash.forEach(ctrl.variables, function (envVar, key) {
+                    envVar.ui.isFormValid = ctrl.environmentVariablesForm.$$controls[key].$valid;
+                });
 
-            lodash.forEach(ctrl.variables, function (envVar, key) {
-                ctrl.environmentVariablesForm.$$controls[key].key.$setValidity('uniqueness',
-                    lodash.includes(uniqueKeys, envVar)
-                );
 
-                if (lodash.has(envVar, 'valueFrom.configMapKeyRef')) {
-                    ctrl.environmentVariablesForm.$$controls[key]['value-key'].$setValidity('uniqueness',
-                        lodash.includes(uniqueConfigMapKeys, envVar)
-                    );
-                } else if (lodash.has(envVar, 'valueFrom.secretKeyRef') &&
-                    ctrl.environmentVariablesForm.$$controls[key]['value-key'].$invalid) {
-                    ctrl.environmentVariablesForm.$$controls[key]['value-key'].$setValidity('uniqueness', true);
-                }
-
-                envVar.ui.isFormValid = ctrl.environmentVariablesForm.$$controls[key].$valid;
-            });
-
-            if (lodash.every(ctrl.variables, 'ui.isFormValid')) {
                 $rootScope.$broadcast('change-state-deploy-button', {
                     component: 'variable',
-                    isDisabled: false
+                    isDisabled: lodash.some(ctrl.variables, ['ui.isFormValid', false])
                 });
-            }
+            });
+
+            return lodash.filter(ctrl.variables, [field, value]).length === 1;
         }
     }
 }());

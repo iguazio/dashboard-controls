@@ -251,16 +251,13 @@
             "HYPHENS": "Hyphens",
             "LABEL_KEY": "Label keys are composed of an optional prefix and a name, separated by a forward slash (/) — '&lt;key prefix&gt;/&lt;key name&gt;'.",
             "LOWERCASE_ALPHANUMERIC": "Lowercase alphanumeric characters",
-            "MAX_LENGTH": "Max length — {{count}} characters",
             "NAME_RESTRICTIONS": "Name restrictions",
             "NOT_CONTAIN_ONLY_PERIOD": "Must not contain only a period",
             "NOT_END_WITH_DIGIT": "Must not end with a digit (0–9)",
-            "NOT_START_WITH_DIGIT_OR_TWO_PERIODS": "Must not start with a digit (0–9) or with two periods",
             "PERIODS": "Periods",
             "PREFIX_RESTRICTIONS": "Prefix restrictions",
             "RESTRICTIONS": "Restrictions",
-            "UNDERSCORES": "Underscores",
-            "VALID_CHARACTERS": "Valid characters"
+            "UNDERSCORES": "Underscores"
         },
         "CONFIG_MAP": {
             "HEAD": "Kubernetes ConfigMap",
@@ -310,6 +307,12 @@
     "TOPICS": "Topics",
     "UNSPECIFIED_FIELD_NAME": "Unspecified field name",
     "V3IO": "V3IO",
+    "VALIDATION": {
+        "MAX_LENGTH": "Max length — {{count}} characters",
+        "NOT_START_WITH_DIGIT_OR_TWO_PERIODS": "Must not start with a digit (0–9) or with two periods",
+        "UNIQUENESS": "Uniqueness",
+        "VALID_CHARACTERS": "Valid characters"
+    },
     "VIEW_YAML": "View YAML",
     "VOLUMES": "Volumes",
     "WELCOME_DESCRIPTION": "Write from scratch or use an example repository to build an event driven application project.",

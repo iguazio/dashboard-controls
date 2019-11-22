@@ -14,11 +14,7 @@
                  data-ng-if="!$ctrl.onlyValueInput"
                  data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
                 <label data-ng-if="$ctrl.useLabels"
-                       class="key-label"
-                       data-uib-tooltip-html="$ctrl.keyTooltip"
-                       data-tooltip-placement="right"
-                       data-tooltip-popup-delay="300"
-                       data-tooltip-append-to-body="true">
+                       class="key-label">
                     {{ 'common:KEY' | i18next }}:
                 </label>
                 <igz-validating-input-field class="nuclio-validating-input input-key"
@@ -31,6 +27,7 @@
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.keyOptional"
                                             data-validation-pattern="$ctrl.keyValidationPattern"
+                                            data-validation-rules="$ctrl.keyValidationRules"
                                             data-placeholder-text="{{$ctrl.keyPlaceholder}}">
                 </igz-validating-input-field>
             </div>
@@ -62,11 +59,7 @@
                     <span data-ng-if="$ctrl.isVisibleByType('secret')">
                         {{ 'functions:SECRET_KEY' | i18next }}:
                     </span>
-                    <span data-ng-if="$ctrl.isVisibleByType('configmap')"
-                          data-uib-tooltip-html="$ctrl.configMapKeyTooltip"
-                          data-tooltip-placement="right"
-                          data-tooltip-popup-delay="300"
-                          data-tooltip-append-to-body="true">
+                    <span data-ng-if="$ctrl.isVisibleByType('configmap')">
                         {{ 'functions:CONFIGMAP_KEY' | i18next }}:
                     </span>
                 </label>
@@ -80,6 +73,7 @@
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.valueOptional"
                                             data-validation-pattern="$ctrl.configMapKeyValidationPattern"
+                                            data-validation-rules="$ctrl.configMapKeyValidationRules"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_KEY' | i18next }}">
                 </igz-validating-input-field>
             </div>
