@@ -142,7 +142,7 @@
                               '<div class="close-button igz-icon-close" data-ng-click="closeThisDialog()"></div>' +
                               '<div class="title">{{ngDialogData.title}}</div>' +
                               '<div class="main-content">' +
-                                  '<iframe class="frame" srcdoc="{{ngDialogData.content}}"></iframe>' +
+                                  '<iframe class="frame" srcdoc="{{ngDialogData.content}}" sandbox></iframe>' +
                               '</div>' +
                               '<div class="buttons">' +
                                   '<button class="igz-button-primary" data-ng-click="closeThisDialog()">{{ngDialogData.buttonText}}</button>' +
