@@ -300,6 +300,7 @@
         "BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC": "Must begin and end with lowercase alphanumeric characters",
         "MAX_LENGTH": "Max length — {{count}} characters",
         "NOT_START_WITH_DIGIT_OR_TWO_PERIODS": "Must not start with a digit (0–9) or with two periods",
+        "NOT_START_WITH_FORBIDDEN_WORDS": "Must not start with 'kubernetes.io' or 'k8s.io'",
         "UNIQUENESS": "Uniqueness",
         "VALID_CHARACTERS": "Valid characters"
     },

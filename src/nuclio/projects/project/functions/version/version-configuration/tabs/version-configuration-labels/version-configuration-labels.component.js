@@ -72,6 +72,11 @@
                     pattern: /(^[a-z0-9](.*[a-z0-9])*\/|^((?!\/).)*$)/
                 },
                 {
+                    name: 'prefixNotStart',
+                    label: '[' + $i18next.t('function:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:VALIDATION.NOT_START_WITH_FORBIDDEN_WORDS', {lng: lng}),
+                    pattern: /^(?!kubernetes[^\/]io\/)(?!k8s[^\/]io\/)/
+                },
+                {
                     name: 'prefixMaxLength',
                     label: '[' + $i18next.t('function:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:VALIDATION.MAX_LENGTH', {lng: lng, count: 253}),
                     pattern: /(?=^[\S\s]{1,253}\/|^((?!\/).)*$)/
