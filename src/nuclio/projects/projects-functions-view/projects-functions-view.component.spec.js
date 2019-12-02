@@ -169,12 +169,12 @@ describe('nclProjectsFunctionsView component: ', function () {
 
     describe('changeView(): ', function () {
         it('should change view to `projects`', function () {
-            spyOn(ctrl, 'getProjects').and.returnValue($q.when());
+            spyOn(ctrl, 'getProjects').and.callThrough();
             spyOn(ctrl, 'getFunctions').and.returnValue($q.when(functions));
 
             ctrl.functions = [];
 
-            ctrl.changeView({id: 'projects'});
+            ctrl.changeView('projects');
             $rootScope.$digest();
             $timeout.flush();
 
@@ -190,7 +190,7 @@ describe('nclProjectsFunctionsView component: ', function () {
 
             ctrl.functions = [];
 
-            ctrl.changeView({id: 'functions'});
+            ctrl.changeView('functions');
             $rootScope.$digest();
             $timeout.flush();
 

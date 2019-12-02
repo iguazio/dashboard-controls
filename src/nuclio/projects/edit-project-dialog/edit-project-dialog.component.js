@@ -5,7 +5,6 @@
         .component('nclEditProjectDialog', {
             bindings: {
                 project: '<',
-                confirm: '&',
                 closeDialog: '&',
                 updateProjectCallback: '&'
             },
@@ -62,7 +61,7 @@
                     var newProjectState = lodash.omit(ctrl.data, 'ui');
                     ctrl.updateProjectCallback({ project: newProjectState })
                         .then(function () {
-                            ctrl.confirm({ project: newProjectState });
+                            ctrl.closeDialog({ project: newProjectState });
                         })
                         .catch(function (error) {
                             var defaultMsg = $i18next.t('functions:ERROR_MSG.UPDATE_PROJECT', {lng: lng});
@@ -99,7 +98,7 @@
          */
         function onClose(event) {
             if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) && !ctrl.isLoadingState) {
-                ctrl.closeDialog({ value: 'closed'});
+                ctrl.closeDialog();
             }
         }
     }
