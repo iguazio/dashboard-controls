@@ -194,6 +194,7 @@
         "SELECT_CLASS": "Select class",
         "SELECT_TYPE": "Select type"
     },
+    "PREFIX": "Prefix",
     "PROJECT": "Project",
     "PROJECT_NAME": "Project Name",
     "PROJECTS_NOT_FOUND": "There are currently no projects, you can create a project by clicking the ‘Create Project’ button",
@@ -237,28 +238,12 @@
     "TIMEOUT": "Timeout",
     "TOKEN": "Token",
     "TOOLTIP": {
+        "ANNOTATION": "Annotation",
         "ANNOTATIONS": {
             "HEAD": "Kubernetes annotations",
             "REST": "for adding function metadata"
         },
         "CHANGE_TEXT_SIZE": "Change text size",
-        "CONFIGURATION": {
-            "ALPHANUMERIC_CHARACTERS": "Alphanumeric characters",
-            "ANNOTATIONS_KEY": "Annotation keys are composed of an optional prefix and a name, separated by a forward slash (/) — '&lt;key prefix&gt;/&lt;key name&gt;'.",
-            "BEGIN_END_WITH_ALPHANUMERIC": "Must begin and end with alphanumeric characters",
-            "BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC": "Must begin and end with lowercase alphanumeric characters",
-            "EXAMPLES": "Examples",
-            "HYPHENS": "Hyphens",
-            "LABEL_KEY": "Label keys are composed of an optional prefix and a name, separated by a forward slash (/) — '&lt;key prefix&gt;/&lt;key name&gt;'.",
-            "LOWERCASE_ALPHANUMERIC": "Lowercase alphanumeric characters",
-            "NAME_RESTRICTIONS": "Name restrictions",
-            "NOT_CONTAIN_ONLY_PERIOD": "Must not contain only a period",
-            "NOT_END_WITH_DIGIT": "Must not end with a digit (0–9)",
-            "PERIODS": "Periods",
-            "PREFIX_RESTRICTIONS": "Prefix restrictions",
-            "RESTRICTIONS": "Restrictions",
-            "UNDERSCORES": "Underscores"
-        },
         "CONFIG_MAP": {
             "HEAD": "Kubernetes ConfigMap",
             "REST": "for storing configuration artifacts separately from the container image content"
@@ -275,12 +260,14 @@
         "GPU_LIMIT": "Maximum number of GPUs per replica. Note that while the function is enabled it monopolizes the allocated GPUs even when they're not in use.",
         "IMAGE_NAME": "The name of the function’s container image",
         "PROJECT_FUNCTION_NAME": "Name must be 1-63 characters long, must consist of lower case alphanumeric characters or hyphen, start with an alphabetic character, and end with an alphanumeric character (e.g. 'my-name',  or 'abc-123').",
+        "LABEL": "Label",
         "LABELS": {
             "HEAD": "Kubernetes labels",
             "REST": "for specifying object attributes that are meaningful and relevant to users"
         },
         "NEW_TEST": "New test",
         "NO_INTERNET_ACCESS": "Use local Docker images rather than pulling from remote",
+        "PREFIXED_NAME": "{{name}} keys are composed of an optional prefix and a name, separated by a forward slash (/) — '&lt;key prefix&gt;/&lt;key name&gt;'.",
         "RUN_FUNCTION": "Run function",
         "SECRET": {
             "HEAD": "Kubernetes secret",
@@ -308,6 +295,9 @@
     "UNSPECIFIED_FIELD_NAME": "Unspecified field name",
     "V3IO": "V3IO",
     "VALIDATION": {
+        "ANNOTATIONS_KEY": "Annotation keys are composed of an optional prefix and a name, separated by a forward slash (/) — '&lt;key prefix&gt;/&lt;key name&gt;'.",
+        "BEGIN_END_WITH_ALPHANUMERIC": "Must begin and end with alphanumeric characters",
+        "BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC": "Must begin and end with lowercase alphanumeric characters",
         "MAX_LENGTH": "Max length — {{count}} characters",
         "NOT_START_WITH_DIGIT_OR_TWO_PERIODS": "Must not start with a digit (0–9) or with two periods",
         "UNIQUENESS": "Uniqueness",

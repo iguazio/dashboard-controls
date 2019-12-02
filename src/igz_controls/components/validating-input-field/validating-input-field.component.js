@@ -134,7 +134,7 @@
             lodash.defaultsDeep(ctrl.inputModelOptions, defaultInputModelOptions);
 
             if (angular.isDefined(ctrl.validationRules) && !lodash.isEmpty(ctrl.data)) {
-                $timeout(checkPatternsValidity.bind(null, ctrl.data));
+                $timeout(checkPatternsValidity.bind(null, ctrl.data, true));
             }
 
             $document.on('click', handleValidationIconClick);
@@ -223,6 +223,10 @@
                    ctrl.validationMaxLength;
         }
 
+        /**
+         * Check whether the input value is invalid
+         * @returns {boolean}
+         */
         function isValueInvalid() {
             return lodash.some(ctrl.validationRules, ['isValid', false]);
         }
@@ -279,7 +283,7 @@
             }
 
             if (angular.isDefined(ctrl.validationRules)) {
-                $scope.$evalAsync(checkPatternsValidity.bind(null, ctrl.data));
+                checkPatternsValidity(ctrl.inputValue);
             }
         }
 
@@ -295,11 +299,16 @@
         // Private methods
         //
 
-        function checkPatternsValidity(value) {
+        /**
+         * Checks and sets validity based on `ctrl.validation` rules
+         * @param {string} value - current input value
+         * @param {boolean} isInitCheck - is it an initial check
+         */
+        function checkPatternsValidity(value, isInitCheck) {
             lodash.forEach(ctrl.validationRules, function (rule) {
-                var isValid = lodash.isFunction(rule.pattern) ? rule.pattern(value) : rule.pattern.test(value);
+                var isValid = lodash.isFunction(rule.pattern) ? rule.pattern(value, isInitCheck) : rule.pattern.test(value);
 
-                ctrl.formObject[ctrl.inputName].$setValidity(rule.label, isValid);
+                ctrl.formObject[ctrl.inputName].$setValidity(lodash.defaultTo(rule.name, rule.label), isValid);
 
                 rule.isValid = isValid;
             });

@@ -28,6 +28,32 @@
                 updateOnContentResize: true
             }
         };
+        ctrl.validationRules = {
+            itemName: [
+                {
+                    label: $i18next.t('functions:VALIDATION.VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -',
+                    pattern: /^[a-z0-9-]+$/
+                },
+                {
+                    label: $i18next.t('functions:VALIDATION.BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}) + ' (a–z, 0–9)',
+                    pattern: /^([a-z0-9].*)?[a-z0-9]$/
+                },
+                {
+                    label: $i18next.t('functions:VALIDATION.MAX_LENGTH', {lng: lng, count: 63}),
+                    pattern: /^(?=[\S\s]{1,63}$)/
+                },
+                {
+                    label: $i18next.t('functions:VALIDATION.UNIQUENESS', {lng: lng}),
+                    pattern: validateUniqueness.bind(null, 'volume.name')
+                }
+            ],
+            itemPath: [
+                {
+                    label: $i18next.t('functions:VALIDATION.UNIQUENESS', {lng: lng}),
+                    pattern: validateUniqueness.bind(null, 'volumeMount.mountPath')
+                }
+            ]
+        };
         ctrl.nameTooltip = getNameTooltip();
 
         ctrl.$onInit = onInit;
@@ -36,7 +62,6 @@
         ctrl.createVolume = createVolume;
         ctrl.editVolumeCallback = editVolumeCallback;
         ctrl.handleAction = handleAction;
-        ctrl.onInputValueCallback = validateUniqueness;
 
         //
         // Hook methods
@@ -151,8 +176,6 @@
             });
 
             lodash.set(ctrl.version, 'spec.volumes', workingCopy);
-
-            $timeout(validateUniqueness);
         }
 
         /**
@@ -239,24 +262,12 @@
         }
 
         /**
-         * Determines and sets `uniqueness` validation for `Name` and `Mount Path` fields
+         * Determines `uniqueness` validation for `Name` and `Mount Path` fields
+         * @param {string} path
+         * @param {string} value
          */
-        function validateUniqueness() {
-            var chunkedVolumes = lodash.chunk(ctrl.volumes);
-
-            validate('volume.name', 'itemName');
-            validate('volumeMount.mountPath', 'itemPath');
-
-            function validate(path, controlName) {
-                var validItems = lodash.map(lodash.xorBy.apply(null, chunkedVolumes.concat(path)), path);
-                var controls = lodash.filter(ctrl.volumesForm.$getControls(), controlName);
-
-                lodash.forEach(controls, function (control) {
-                    control[controlName].$setValidity('uniqueness',
-                        lodash.includes(validItems, control[controlName].$viewValue)
-                    );
-                });
-            }
+        function validateUniqueness(path, value) {
+            return lodash.filter(ctrl.volumes, [path, value]).length === 1;
         }
     }
 }());

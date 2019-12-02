@@ -27,7 +27,7 @@
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.keyOptional"
                                             data-validation-pattern="$ctrl.keyValidationPattern"
-                                            data-validation-rules="$ctrl.keyValidationRules"
+                                            data-validation-rules="$ctrl.validationRules['key']"
                                             data-placeholder-text="{{$ctrl.keyPlaceholder}}">
                 </igz-validating-input-field>
             </div>
@@ -72,8 +72,7 @@
                                             data-is-disabled="$ctrl.isDisabled"
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.valueOptional"
-                                            data-validation-pattern="$ctrl.configMapKeyValidationPattern"
-                                            data-validation-rules="$ctrl.configMapKeyValidationRules"
+                                            data-validation-rules="$ctrl.validationRules[$ctrl.getType() + 'Key']"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_KEY' | i18next }}">
                 </igz-validating-input-field>
             </div>
@@ -104,6 +103,7 @@
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.valueOptional"
                                             data-validation-pattern="$ctrl.valueValidationPattern"
+                                            data-validation-rules="$ctrl.validationRules['value']"
                                             data-placeholder-text="{{$ctrl.valuePlaceholder}}">
                 </igz-validating-input-field>
                 <igz-validating-input-field class="nuclio-validating-input input-additional-value"

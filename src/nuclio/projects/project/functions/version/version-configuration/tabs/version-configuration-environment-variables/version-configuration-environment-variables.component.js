@@ -20,34 +20,42 @@
             maxElementsCount: 10,
             childrenSelector: '.table-body'
         };
-        ctrl.configMapKeyValidationRules = [
-            {
-                label: $i18next.t('functions:VALIDATION.VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _',
-                pattern: /^[\w-]+$/
-            },
-            {
-                label: $i18next.t('functions:VALIDATION.MAX_LENGTH', {lng: lng, count: 253}),
-                pattern: /^(?=[\S\s]{1,253}$)/
-            },
-            {
-                label: $i18next.t('functions:VALIDATION.UNIQUENESS', {lng: lng}),
-                pattern: validateUniqueness.bind(null, 'valueFrom.configMapKeyRef.key')
-            }
-        ];
-        ctrl.keyValidationRules = [
-            {
-                label: $i18next.t('functions:VALIDATION.VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
-                pattern: /^[\w-.]+$/
-            },
-            {
-                label: $i18next.t('functions:VALIDATION.NOT_START_WITH_DIGIT_OR_TWO_PERIODS', {lng: lng}) + ' (..)',
-                pattern: /^(?!\.{2,}|\d)/
-            },
-            {
-                label: $i18next.t('functions:VALIDATION.UNIQUENESS', {lng: lng}),
-                pattern: validateUniqueness.bind(null, 'name')
-            }
-        ];
+        ctrl.validationRules = {
+            key: [
+                {
+                    name: 'validCharacters',
+                    label: $i18next.t('functions:VALIDATION.VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
+                    pattern: /^[\w-.]+$/
+                },
+                {
+                    name: 'notStartWithDigitOrTwoPeriods',
+                    label: $i18next.t('functions:VALIDATION.NOT_START_WITH_DIGIT_OR_TWO_PERIODS', {lng: lng}) + ' (..)',
+                    pattern: /^(?!\.{2,}|\d)/
+                },
+                {
+                    name: 'uniqueness',
+                    label: $i18next.t('functions:VALIDATION.UNIQUENESS', {lng: lng}),
+                    pattern: validateUniqueness.bind(null, 'name')
+                }
+            ],
+            configmapKey: [
+                {
+                    name: 'validCharacters',
+                    label: $i18next.t('functions:VALIDATION.VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _',
+                    pattern: /^[\w-]+$/
+                },
+                {
+                    name: 'maxLength',
+                    label: $i18next.t('functions:VALIDATION.MAX_LENGTH', {lng: lng, count: 253}),
+                    pattern: /^(?=[\S\s]{1,253}$)/
+                },
+                {
+                    name: 'uniqueness',
+                    label: $i18next.t('functions:VALIDATION.UNIQUENESS', {lng: lng}),
+                    pattern: validateUniqueness.bind(null, 'valueFrom.configMapKeyRef.key')
+                }
+            ]
+        };
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -155,7 +163,7 @@
          * @param {number} index
          */
         function onChangeData(variable, index) {
-            ctrl.variables[index] = variable;
+            ctrl.variables[index] = lodash.cloneDeep(variable);
 
             updateVariables();
         }
@@ -187,22 +195,15 @@
         }
 
         /**
-         * Determines and sets `uniqueness` validation for `Key` and `ConfigMap key` fields
+         * Determines `uniqueness` validation for `Key` and `ConfigMap key` fields
+         * @param {string} path
+         * @param {string} value
+         * @param {boolean} isInitCheck
          */
-        function validateUniqueness(field, value) {
-            $timeout(function () {
-                lodash.forEach(ctrl.variables, function (envVar, key) {
-                    envVar.ui.isFormValid = ctrl.environmentVariablesForm.$$controls[key].$valid;
-                });
+        function validateUniqueness(path, value, isInitCheck) {
+            var expectedLength = lodash.defaultTo(isInitCheck, false) ? 1 : 0;
 
-
-                $rootScope.$broadcast('change-state-deploy-button', {
-                    component: 'variable',
-                    isDisabled: lodash.some(ctrl.variables, ['ui.isFormValid', false])
-                });
-            });
-
-            return lodash.filter(ctrl.variables, [field, value]).length === 1;
+            return lodash.filter(ctrl.variables, [path, value]).length === expectedLength;
         }
     }
 }());

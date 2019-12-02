@@ -10,20 +10,15 @@
     <form name="$ctrl.labelsForm" class="labels-wrapper" novalidate>
         <div data-ng-if="$ctrl.labels.length > 0" class="table-headers">
             <div class="key-header">
-                <span data-uib-tooltip-html="$ctrl.keyTooltip"
-                      data-tooltip-placement="right"
-                      data-tooltip-popup-delay="300"
-                      data-tooltip-append-to-body="true">
-                    {{ 'common:KEY' | i18next }}
-                </span>
+                {{ 'common:KEY' | i18next }}
+                <igz-more-info
+                        data-description="{{$ctrl.keyTooltip}}"
+                        data-trigger="click"
+                        data-is-html-enabled="true">
+                </igz-more-info>
             </div>
             <div class="value-header">
-                <span data-uib-tooltip-html="$ctrl.valueTooltip"
-                      data-tooltip-placement="right"
-                      data-tooltip-popup-delay="300"
-                      data-tooltip-append-to-body="true">
-                    {{ 'common:VALUE' | i18next }}
-                </span>
+                {{ 'common:VALUE' | i18next }}
             </div>
         </div>
         <div class="igz-scrollable-container scrollable-labels"
@@ -36,8 +31,7 @@
                                      data-row-data="label"
                                      data-item-index="$index"
                                      data-use-type="false"
-                                     data-key-validation-pattern="$ctrl.keyValidationPattern"
-                                     data-value-validation-pattern="$ctrl.valueValidationPattern"
+                                     data-validation-rules="$ctrl.validationRules"
                                      data-is-disabled="$ctrl.isVersionDeployed($ctrl.version)"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
                                      data-change-data-callback="$ctrl.onChangeData(newData, index)"

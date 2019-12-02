@@ -8,7 +8,7 @@
                 item: '<',
                 type: '@',
                 onSubmitCallback: '&',
-                onInputValueCallback: '&?',
+                validationRules: '<?',
                 defaultFields: '<?'
             },
             templateUrl: 'nuclio/common/components/edit-item/edit-item.tpl.html',
@@ -575,10 +575,6 @@
             }
 
             validateValues();
-
-            if (lodash.isFunction(ctrl.onInputValueCallback)) {
-                ctrl.onInputValueCallback({newItem: ctrl.item});
-            }
         }
 
         /**
