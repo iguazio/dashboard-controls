@@ -11,8 +11,7 @@
             controller: NclVersionConfigurationVolumesController
         });
 
-    function NclVersionConfigurationVolumesController($element, $rootScope, $timeout, $i18next, i18next, lodash,
-                                                      DialogsService, VersionHelperService) {
+    function NclVersionConfigurationVolumesController($rootScope, $timeout, $i18next, i18next, lodash, DialogsService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -54,7 +53,6 @@
                 }
             ]
         };
-        ctrl.nameTooltip = getNameTooltip();
 
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
@@ -185,41 +183,6 @@
         function editHandler(selectedItem) {
             var volume = lodash.find(ctrl.volumes, ['volume.name', selectedItem.volume.name]);
             volume.ui.editModeActive = true;
-        }
-
-        /**
-         * Generates tooltip for "Name" label
-         */
-        function getNameTooltip() {
-            var config = [
-                {
-                    head: $i18next.t('functions:TOOLTIP.CONFIGURATION.RESTRICTIONS', {lng: lng}),
-                    values: [
-                        {
-                            head: $i18next.t('functions:TOOLTIP.CONFIGURATION.VALID_CHARACTERS', {lng: lng}) + ' —',
-                            values: [
-                                {head: $i18next.t('functions:TOOLTIP.CONFIGURATION.LOWERCASE_ALPHANUMERIC', {lng: lng}) + ' (a–z, 0–9)'},
-                                {head: $i18next.t('functions:TOOLTIP.CONFIGURATION.HYPHENS', {lng: lng}) + ' (-)'}
-                            ]
-                        },
-                        {
-                            head: $i18next.t('functions:TOOLTIP.CONFIGURATION.BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}) + ' (a–z, 0–9)'
-                        },
-                        {
-                            head: $i18next.t('functions:TOOLTIP.CONFIGURATION.MAX_LENGTH', {lng: lng, count: 63})
-                        }
-                    ]
-                },
-                {
-                    head: $i18next.t('functions:TOOLTIP.CONFIGURATION.EXAMPLES', {lng: lng}),
-                    values: [
-                        {head: '"my_volume"'},
-                        {head: '"123-abc"'}
-                    ]
-                }
-            ];
-
-            return VersionHelperService.generateTooltip(config);
         }
 
         /**

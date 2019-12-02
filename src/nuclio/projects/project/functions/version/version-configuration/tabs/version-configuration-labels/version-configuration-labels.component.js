@@ -12,8 +12,7 @@
         });
 
     function NclVersionConfigurationLabelsController($element, $rootScope, $timeout, $i18next, i18next, lodash,
-                                                     PreventDropdownCutOffService, ValidatingPatternsService,
-                                                     VersionHelperService) {
+                                                     PreventDropdownCutOffService, VersionHelperService) {
         var ctrl = this;
         var lng = i18next.language;
 

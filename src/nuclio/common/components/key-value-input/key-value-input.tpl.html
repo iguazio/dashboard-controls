@@ -13,8 +13,7 @@
             <div class="input-container input-key-wrapper"
                  data-ng-if="!$ctrl.onlyValueInput"
                  data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
-                <label data-ng-if="$ctrl.useLabels"
-                       class="key-label">
+                <label class="key-label" data-ng-if="$ctrl.useLabels">
                     {{ 'common:KEY' | i18next }}:
                 </label>
                 <igz-validating-input-field class="nuclio-validating-input input-key"

@@ -135,8 +135,6 @@
                 if (!lodash.isNil(selectedTypeName)) {
                     ctrl.selectedClass = lodash.find(ctrl.classList, ['id', selectedTypeName]);
                 }
-
-                ctrl.nameValidationPattern = ValidatingPatternsService.k8s.dns1123Label;
             }
 
             if (ctrl.isTriggerType() && ctrl.isHttpTrigger()) {

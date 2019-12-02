@@ -21,7 +21,6 @@
             maxElementsCount: 10,
             childrenSelector: '.table-body'
         };
-        ctrl.keyValidationPattern = ValidatingPatternsService.k8s.prefixedQualifiedName;
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {

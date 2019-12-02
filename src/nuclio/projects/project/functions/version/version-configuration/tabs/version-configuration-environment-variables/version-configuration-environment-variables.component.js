@@ -11,7 +11,7 @@
             controller: NclVersionConfigurationEnvironmentVariablesController
         });
 
-    function NclVersionConfigurationEnvironmentVariablesController($element, $i18next, $q, $rootScope, $scope, $timeout,
+    function NclVersionConfigurationEnvironmentVariablesController($element, $i18next, $rootScope, $scope, $timeout,
                                                                    i18next, lodash, PreventDropdownCutOffService) {
         var ctrl = this;
         var lng = i18next.language;

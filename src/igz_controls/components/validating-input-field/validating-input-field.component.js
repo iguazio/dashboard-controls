@@ -69,7 +69,7 @@
             controller: IgzValidatingInputFieldController
         });
 
-    function IgzValidatingInputFieldController($document, $element, $scope, $timeout, $window, lodash, EventHelperService,
+    function IgzValidatingInputFieldController($document, $element, $timeout, $window, lodash, EventHelperService,
                                                FormValidationService, PreventDropdownCutOffService) {
         var ctrl = this;
 
