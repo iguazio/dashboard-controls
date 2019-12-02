@@ -20,11 +20,11 @@
                 onlyValueInput: '<?',
                 rowData: '<',
                 submitOnFly: '<?',
-                valueOptional: '<?',
                 useAdditionalValue: '<?',
                 useLabels: '<',
                 useType: '<',
                 validationRules: '<?',
+                valueOptional: '<?',
                 valuePlaceholder: '@?',
                 valueValidationPattern: '<?'
             },

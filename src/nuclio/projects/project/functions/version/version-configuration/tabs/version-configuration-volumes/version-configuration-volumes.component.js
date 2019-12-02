@@ -30,25 +30,25 @@
         ctrl.validationRules = {
             itemName: [
                 {
-                    label: $i18next.t('functions:VALIDATION.VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -',
+                    label: $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -',
                     pattern: /^[a-z0-9-]+$/
                 },
                 {
-                    label: $i18next.t('functions:VALIDATION.BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}) + ' (a–z, 0–9)',
+                    label: $i18next.t('functions:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}) + ' (a–z, 0–9)',
                     pattern: /^([a-z0-9].*)?[a-z0-9]$/
                 },
                 {
-                    label: $i18next.t('functions:VALIDATION.MAX_LENGTH', {lng: lng, count: 63}),
+                    label: $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
                     pattern: /^(?=[\S\s]{1,63}$)/
                 },
                 {
-                    label: $i18next.t('functions:VALIDATION.UNIQUENESS', {lng: lng}),
+                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
                     pattern: validateUniqueness.bind(null, 'volume.name')
                 }
             ],
             itemPath: [
                 {
-                    label: $i18next.t('functions:VALIDATION.UNIQUENESS', {lng: lng}),
+                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
                     pattern: validateUniqueness.bind(null, 'volumeMount.mountPath')
                 }
             ]
@@ -186,7 +186,7 @@
         }
 
         /**
-         * Check if trigger is in edit mode
+         * Checks if volume is in edit mode
          * @returns {boolean}
          */
         function isVolumeInEditMode() {

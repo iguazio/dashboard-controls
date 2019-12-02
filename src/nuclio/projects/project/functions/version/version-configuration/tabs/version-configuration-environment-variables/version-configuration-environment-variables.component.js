@@ -24,34 +24,34 @@
             key: [
                 {
                     name: 'validCharacters',
-                    label: $i18next.t('functions:VALIDATION.VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
+                    label: $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
                     pattern: /^[\w-.]+$/
                 },
                 {
                     name: 'notStartWithDigitOrTwoPeriods',
-                    label: $i18next.t('functions:VALIDATION.NOT_START_WITH_DIGIT_OR_TWO_PERIODS', {lng: lng}) + ' (..)',
+                    label: $i18next.t('functions:NOT_START_WITH_DIGIT_OR_TWO_PERIODS', {lng: lng}) + ' (..)',
                     pattern: /^(?!\.{2,}|\d)/
                 },
                 {
                     name: 'uniqueness',
-                    label: $i18next.t('functions:VALIDATION.UNIQUENESS', {lng: lng}),
+                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
                     pattern: validateUniqueness.bind(null, 'name')
                 }
             ],
             configmapKey: [
                 {
                     name: 'validCharacters',
-                    label: $i18next.t('functions:VALIDATION.VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _',
+                    label: $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _',
                     pattern: /^[\w-]+$/
                 },
                 {
                     name: 'maxLength',
-                    label: $i18next.t('functions:VALIDATION.MAX_LENGTH', {lng: lng, count: 253}),
+                    label: $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
                     pattern: /^(?=[\S\s]{1,253}$)/
                 },
                 {
                     name: 'uniqueness',
-                    label: $i18next.t('functions:VALIDATION.UNIQUENESS', {lng: lng}),
+                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
                     pattern: validateUniqueness.bind(null, 'valueFrom.configMapKeyRef.key')
                 }
             ]
@@ -201,9 +201,7 @@
          * @param {boolean} isInitCheck
          */
         function validateUniqueness(path, value, isInitCheck) {
-            var expectedLength = lodash.defaultTo(isInitCheck, false) ? 1 : 0;
-
-            return lodash.filter(ctrl.variables, [path, value]).length === expectedLength;
+            return lodash.filter(ctrl.variables, [path, value]).length === Number(isInitCheck);
         }
     }
 }());

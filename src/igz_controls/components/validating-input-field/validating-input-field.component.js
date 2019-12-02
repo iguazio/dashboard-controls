@@ -211,7 +211,7 @@
          * @returns {boolean}
          */
         function isFieldInvalid() {
-            return !ctrl.onlyValidCharacters ? FormValidationService.isShowFieldInvalidState(ctrl.formObject, ctrl.inputName) : false;
+            return ctrl.onlyValidCharacters ? false : FormValidationService.isShowFieldInvalidState(ctrl.formObject, ctrl.inputName);
         }
 
         /**
@@ -283,7 +283,7 @@
             }
 
             if (angular.isDefined(ctrl.validationRules)) {
-                checkPatternsValidity(ctrl.inputValue);
+                checkPatternsValidity(ctrl.inputValue, false);
             }
         }
 
@@ -300,7 +300,7 @@
         //
 
         /**
-         * Checks and sets validity based on `ctrl.validation` rules
+         * Checks and sets validity based on `ctrl.validationRules`
          * @param {string} value - current input value
          * @param {boolean} isInitCheck - is it an initial check
          */
