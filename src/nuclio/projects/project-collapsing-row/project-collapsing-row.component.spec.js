@@ -163,12 +163,12 @@ describe('nclProjectCollapsingRow component:', function () {
     });
 
     describe('editProject(): ', function () {
-        it('should call ngDialog.openConfirm() method', function () {
-            spyOn(ngDialog, 'openConfirm').and.returnValue($q.when());
+        it('should call ngDialog.open() method', function () {
+            spyOn(ngDialog, 'open').and.returnValue({ closePromise: $q.when() });
 
             ctrl.project.ui.edit();
 
-            expect(ngDialog.openConfirm).toHaveBeenCalled();
+            expect(ngDialog.open).toHaveBeenCalled();
         })
     });
 

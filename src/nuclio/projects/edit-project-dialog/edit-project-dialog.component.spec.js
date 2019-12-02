@@ -55,13 +55,13 @@ describe('nclEditProjectDialog component:', function () {
     describe('saveProject(): ', function () {
         it('should resolve `ctrl.updateProjectCallback()` method if form is valid', function () {
             spyOn(ctrl, 'updateProjectCallback').and.returnValue($q.when());
-            spyOn(ctrl, 'confirm').and.callThrough();
+            spyOn(ctrl, 'closeDialog').and.callThrough();
 
             ctrl.saveProject();
             $rootScope.$digest();
 
             expect(ctrl.updateProjectCallback).toHaveBeenCalledWith({ project: ctrl.data });
-            expect(ctrl.confirm).toHaveBeenCalled();
+            expect(ctrl.closeDialog).toHaveBeenCalled();
             expect(ctrl.serverError).toBe('');
         });
 

@@ -181,24 +181,26 @@
          * Opens `Edit project` dialog
          */
         function editProject() {
-            return ngDialog.openConfirm({
+            return ngDialog.open({
                 template: '<ncl-edit-project-dialog ' +
                     'data-project="$ctrl.project"' +
-                    'data-confirm="confirm(project)" ' +
-                    'data-close-dialog="closeThisDialog(value)" ' +
+                    'data-close-dialog="closeThisDialog(project)" ' +
                     'data-update-project-callback="ngDialogData.updateProject({project: project})">' +
-                '</ncl-edit-project-dialog>',
+                    '</ncl-edit-project-dialog>',
                 plain: true,
                 data: {
                     updateProject: ctrl.updateProject
                 },
                 scope: $scope,
                 className: 'ngdialog-theme-nuclio nuclio-project-edit-dialog'
-            })
-                .catch(function (error) {
-                    if (error !== 'closed') {
-                        return $q.reject($i18next.t('functions:ERROR_MSG.UPDATE_PROJECT', {lng: lng}));
+            }).closePromise
+                .then(function (data) {
+                    if (!lodash.isNil(data.value)) {
+                        return data.value;
                     }
+                })
+                .catch(function () {
+                    return $q.reject($i18next.t('functions:ERROR_MSG.UPDATE_PROJECT', {lng: lng}));
                 });
         }
 
