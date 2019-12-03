@@ -457,8 +457,8 @@
                 lodash.get(ctrl.version, 'status.httpPort')
             );
 
-            ctrl.version.ui.invocationURL =
-                lodash.isEmpty(ip) || !lodash.isNumber(port) ? '' : 'http://' + ip + ':' + port;
+            ctrl.version.ui.invocationUrl =
+                lodash.isEmpty(ip) || lodash.toFinite(port) === 0 ? '' : 'http://' + ip + ':' + port;
         }
 
         /**
