@@ -10,6 +10,7 @@
                 allValueTypes: '<',
                 changeDataCallback: '&',
                 changeStateBroadcast: '@?',
+                changeTypeCallback: '&?',
                 dropdownOverlap: '<?',
                 isDisabled: '<?',
                 itemIndex: '<',
@@ -229,11 +230,13 @@
 
                     ctrl.data = lodash.omit(ctrl.data, ['value', 'valueFrom']);
                     lodash.set(ctrl.data, 'valueFrom.' + specificType, value);
-
-                    $rootScope.$broadcast('key-value-type-changed', false);
                 } else {
                     ctrl.data = lodash.omit(ctrl.data, 'valueFrom');
                     lodash.set(ctrl.data, 'value', '');
+                }
+
+                if (angular.isFunction(ctrl.changeTypeCallback)) {
+                    ctrl.changeTypeCallback({newType: newType, index: ctrl.itemIndex});
                 }
 
                 if (ctrl.submitOnFly) {
