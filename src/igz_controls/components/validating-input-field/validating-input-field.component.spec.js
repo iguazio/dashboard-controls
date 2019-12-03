@@ -23,7 +23,8 @@ describe('igzValidatingInputField component:', function () {
 
         var formObject = {
             attributeName: {
-                $viewValue: 'some value'
+                $viewValue: 'some value',
+                $setValidity: angular.noop
             }
         };
         var bindings = {
@@ -133,6 +134,17 @@ describe('igzValidatingInputField component:', function () {
 
             expect(spy).toHaveBeenCalledWith({newData: ctrl.inputValue, field: ctrl.updateDataField})
         });
+
+        it('should validate ctrl.inputValue if ctrl.validationRules is defined', function () {
+            ctrl.validationRules = [{
+                name: 'test',
+                pattern: /[\d]/
+            }];
+
+            ctrl.updateInputValue();
+
+            expect(ctrl.validationRules[0].isValid).toBeFalsy();
+        });
     });
 
     describe('clearInputField()', function () {
@@ -161,39 +173,17 @@ describe('igzValidatingInputField component:', function () {
             ctrl.hideCounter = false;
             expect(ctrl.isCounterVisible()).toBeTruthy();
         });
-    })
+    });
 
     describe('isValueInvalid()', function () {
         it('checks if the value invalid regarding validation rules', function () {
-            ctrl.validationRules = [
-                {
-                    label: 'Alphanumeric characters (a–z, A–Z, 0–9)',
-                    pattern: /^[a-zA-Z0-9]*$/,
-                    isValid: false
-                },
-                {
-                    label: 'Max length — 253 characters',
-                    pattern: /^(?=.{0,253})$/,
-                    isValid: true
-                }
-            ];
+            ctrl.validationRules = [{isValid: true}, {isValid: false}];
 
             expect(ctrl.isValueInvalid()).toBeTruthy();
         });
 
         it('checks if the value invalid regarding validation rules', function () {
-            ctrl.validationRules = [
-                {
-                    label: 'Alphanumeric characters (a–z, A–Z, 0–9)',
-                    pattern: /^[a-zA-Z0-9]*$/,
-                    isValid: true
-                },
-                {
-                    label: 'Max length — 253 characters',
-                    pattern: /^(?=.{0,253})$/,
-                    isValid: true
-                }
-            ];
+            ctrl.validationRules = [{isValid: true}, {isValid: true}];
 
             expect(ctrl.isValueInvalid()).toBeFalsy();
         });
