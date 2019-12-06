@@ -55,22 +55,22 @@
                 },
                 {
                     name: 'prefixValidCharacters',
-                    label: '[' + $i18next.t('function:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -, .',
+                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -, .',
                     pattern: /(^[a-z0-9.-]+\/|^((?!\/).)*$)/
                 },
                 {
                     name: 'prefixBeginEnd',
-                    label: '[' + $i18next.t('function:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}),
+                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}),
                     pattern: /(^[a-z0-9](.*[a-z0-9])*\/|^((?!\/).)*$)/
                 },
                 {
                     name: 'prefixNotStart',
-                    label: '[' + $i18next.t('function:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:NOT_START_WITH_FORBIDDEN_WORDS', {lng: lng}),
+                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:NOT_START_WITH_FORBIDDEN_WORDS', {lng: lng}),
                     pattern: /^(?!kubernetes[^\/]io\/)(?!k8s[^\/]io\/)/
                 },
                 {
                     name: 'prefixMaxLength',
-                    label: '[' + $i18next.t('function:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
+                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
                     pattern: /(?=^[\S\s]{1,253}\/|^((?!\/).)*$)/
                 },
                 {
