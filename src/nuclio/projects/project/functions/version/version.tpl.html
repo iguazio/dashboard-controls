@@ -54,7 +54,10 @@
                 {{ 'common:LOGS' | i18next }}
             </div>
 
-            <ncl-deploy-log data-log-entires="$ctrl.deployResult.status.logs"></ncl-deploy-log>
+            <ncl-deploy-log data-log-entries="$ctrl.deployResult.status.state === 'error' ?
+                                                        $ctrl.deployResult.status.message :
+                                                        $ctrl.deployResult.status.logs">
+            </ncl-deploy-log>
         </div>
     </div>
 
