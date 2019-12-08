@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclDeployLog', {
             bindings: {
-                logEntires: '<'
+                logEntries: '<'
             },
             templateUrl: 'nuclio/common/components/deploy-log/deploy-log.tpl.html',
             controller: NclDeployLogController
@@ -19,6 +19,8 @@
             },
             theme: 'light-thin'
         };
+
+        ctrl.lodash = lodash;
 
         ctrl.getLogLevel = getLogLevel;
         ctrl.getLogParams = getLogParams;
