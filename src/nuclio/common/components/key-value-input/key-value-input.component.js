@@ -5,27 +5,29 @@
         .component('nclKeyValueInput', {
             bindings: {
                 actionHandlerCallback: '&',
-                changeDataCallback: '&',
-                dropdownOverlap: '<?',
-                itemIndex: '<',
-                rowData: '<',
-                useType: '<',
-                useLabels: '<',
-                allValueTypes: '<',
+                additionalValueOptional: '<?',
                 allowSelection: '<?',
+                allValueTypes: '<',
+                changeDataCallback: '&',
                 changeStateBroadcast: '@?',
+                changeTypeCallback: '&?',
+                dropdownOverlap: '<?',
                 isDisabled: '<?',
+                itemIndex: '<',
                 keyOptional: '<?',
-                keyValidationPattern: '<?',
                 keyPlaceholder: '@?',
-                valueOptional: '<?',
-                valueValidationPattern: '<?',
-                valuePlaceholder: '@?',
+                keyValidationPattern: '<?',
                 listClass: '@?',
-                submitOnFly: '<?',
                 onlyValueInput: '<?',
+                rowData: '<',
+                submitOnFly: '<?',
                 useAdditionalValue: '<?',
-                additionalValueOptional: '<?'
+                useLabels: '<',
+                useType: '<',
+                validationRules: '<?',
+                valueOptional: '<?',
+                valuePlaceholder: '@?',
+                valueValidationPattern: '<?'
             },
             templateUrl: 'nuclio/common/components/key-value-input/key-value-input.tpl.html',
             controller: NclKeyValueInputController
@@ -222,20 +224,23 @@
                 if (newType.id === 'secret' || newType.id === 'configmap') {
                     var specificType = newType.id === 'secret' ? 'secretKeyRef' : 'configMapKeyRef';
                     var value = {
+                        key: '',
                         name: ''
                     };
 
                     ctrl.data = lodash.omit(ctrl.data, ['value', 'valueFrom']);
                     lodash.set(ctrl.data, 'valueFrom.' + specificType, value);
-
-                    $rootScope.$broadcast('key-value-type-changed', false);
                 } else {
                     ctrl.data = lodash.omit(ctrl.data, 'valueFrom');
                     lodash.set(ctrl.data, 'value', '');
                 }
 
+                if (angular.isFunction(ctrl.changeTypeCallback)) {
+                    ctrl.changeTypeCallback({newType: newType, index: ctrl.itemIndex});
+                }
+
                 if (ctrl.submitOnFly) {
-                    saveChanges();
+                    $timeout(saveChanges);
                 }
             }
         }

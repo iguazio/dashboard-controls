@@ -147,7 +147,7 @@
 
     .validation-pop-up {
         position: absolute;
-        bottom: 37px;
+        top: 37px;
         border-radius: 3px;
         box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
         background-color: @white;
@@ -155,8 +155,27 @@
         z-index: 4;
 
         .validation-rule {
+            margin: 10px auto;
+            line-height: 1.2;
+            display: flex;
+            flex-flow: row nowrap;
+
             .validation-rule-icon {
                 margin-right: 8px;
+                padding-top: 3px;
+                flex: none;
+            }
+
+            .validation-rule-label {
+                flex: auto;
+
+                &.validation-rule-valid {
+                    color: @pale-grey;
+                }
+
+                &.validation-rule-invalid {
+                    color: @dusk-three;
+                }
             }
 
             .validation-rule-valid {

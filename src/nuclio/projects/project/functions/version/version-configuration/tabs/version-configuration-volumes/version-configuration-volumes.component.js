@@ -11,10 +11,9 @@
             controller: NclVersionConfigurationVolumesController
         });
 
-    function NclVersionConfigurationVolumesController($rootScope, $timeout, $i18next, i18next, lodash,
-                                                      DialogsService) {
+    function NclVersionConfigurationVolumesController($rootScope, $timeout, $i18next, i18next, lodash, DialogsService) {
         var ctrl = this;
-        var lng = i18next.languages;
+        var lng = i18next.language;
 
         ctrl.isCreateModeActive = false;
         ctrl.volumes = [];
@@ -27,6 +26,32 @@
             advanced: {
                 updateOnContentResize: true
             }
+        };
+        ctrl.validationRules = {
+            itemName: [
+                {
+                    label: $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -',
+                    pattern: /^[a-z0-9-]+$/
+                },
+                {
+                    label: $i18next.t('functions:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}) + ' (a–z, 0–9)',
+                    pattern: /^([a-z0-9].*)?[a-z0-9]$/
+                },
+                {
+                    label: $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
+                    pattern: /^(?=[\S\s]{1,63}$)/
+                },
+                {
+                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                    pattern: validateUniqueness.bind(null, 'volume.name')
+                }
+            ],
+            itemPath: [
+                {
+                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                    pattern: validateUniqueness.bind(null, 'volumeMount.mountPath')
+                }
+            ]
         };
 
         ctrl.$onInit = onInit;
@@ -161,6 +186,22 @@
         }
 
         /**
+         * Checks if volume is in edit mode
+         * @returns {boolean}
+         */
+        function isVolumeInEditMode() {
+            var isEditMode = false;
+
+            ctrl.volumes.forEach(function (volume) {
+                if (volume.ui.editModeActive) {
+                    isEditMode = true;
+                }
+            });
+
+            return isEditMode;
+        }
+
+        /**
          * Updates data in selected item
          * @param {Object} selectedItem - an object of selected data-binding
          */
@@ -184,19 +225,12 @@
         }
 
         /**
-         * Check if trigger is in edit mode
-         * @returns {boolean}
+         * Determines `uniqueness` validation for `Name` and `Mount Path` fields
+         * @param {string} path
+         * @param {string} value
          */
-        function isVolumeInEditMode() {
-            var isEditMode = false;
-
-            ctrl.volumes.forEach(function (volume) {
-                if (volume.ui.editModeActive) {
-                    isEditMode = true;
-                }
-            });
-
-            return isEditMode;
+        function validateUniqueness(path, value) {
+            return lodash.filter(ctrl.volumes, [path, value]).length === 1;
         }
     }
 }());

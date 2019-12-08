@@ -11,6 +11,11 @@
         <div data-ng-if="$ctrl.annotations.length > 0" class="table-headers">
             <div class="key-header">
                 {{ 'common:KEY' | i18next }}
+                <igz-more-info
+                        data-description="{{$ctrl.keyTooltip}}"
+                        data-trigger="click"
+                        data-is-html-enabled="true">
+                </igz-more-info>
             </div>
             <div class="value-header">
                 {{ 'common:VALUE' | i18next }}
@@ -26,6 +31,7 @@
                                      data-row-data="annotation"
                                      data-use-type="false"
                                      data-item-index="$index"
+                                     data-validation-rules="$ctrl.validationRules"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
                                      data-change-data-callback="$ctrl.onChangeData(newData, index)"
                                      data-submit-on-fly="true">

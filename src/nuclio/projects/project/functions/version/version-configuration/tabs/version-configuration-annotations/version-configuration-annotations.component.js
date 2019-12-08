@@ -12,7 +12,8 @@
         });
 
     function NclVersionConfigurationAnnotationsController($element, $rootScope, $timeout, $i18next, i18next, lodash,
-                                                          PreventDropdownCutOffService) {
+                                                          PreventDropdownCutOffService, ValidatingPatternsService,
+                                                          VersionHelperService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -30,6 +31,55 @@
             'href="https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/">' +
             $i18next.t('functions:TOOLTIP.ANNOTATIONS.HEAD', {lng: lng}) + '</a> ' +
             $i18next.t('functions:TOOLTIP.ANNOTATIONS.REST', {lng: lng});
+
+        ctrl.keyTooltip = $i18next.t('functions:TOOLTIP.PREFIXED_NAME', {
+            lng: lng,
+            name: $i18next.t('functions:TOOLTIP.ANNOTATION', {lng: lng})
+        });
+        ctrl.validationRules = {
+            key: [
+                {
+                    name: 'nameValidCharacters',
+                    label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
+                    pattern: /^([^\/]*\/)?[\w-.]+$/
+                },
+                {
+                    name: 'nameBeginEnd',
+                    label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('functions:BEGIN_END_WITH_ALPHANUMERIC', {lng: lng}),
+                    pattern: validateNameBeginEnd
+                },
+                {
+                    name: 'nameMaxLength',
+                    label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
+                    pattern: /^([^\/]*\/)?[\S\s]{1,63}$/
+                },
+                {
+                    name: 'prefixValidCharacters',
+                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -, .',
+                    pattern: /(^[a-z0-9.-]+\/|^((?!\/).)*$)/
+                },
+                {
+                    name: 'prefixBeginEnd',
+                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}),
+                    pattern: /(^[a-z0-9](.*[a-z0-9])*\/|^((?!\/).)*$)/
+                },
+                {
+                    name: 'prefixNotStart',
+                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:NOT_START_WITH_FORBIDDEN_WORDS', {lng: lng}),
+                    pattern: /^(?!kubernetes[^\/]io\/)(?!k8s[^\/]io\/)/
+                },
+                {
+                    name: 'prefixMaxLength',
+                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
+                    pattern: /(?=^[\S\s]{1,253}\/|^((?!\/).)*$)/
+                },
+                {
+                    name: 'uniqueness',
+                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                    pattern: validateUniqueness
+                }
+            ]
+        };
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
@@ -115,7 +165,9 @@
             if (actionType === 'delete') {
                 ctrl.annotations.splice(index, 1);
 
-                updateAnnotations();
+                $timeout(function () {
+                    updateAnnotations();
+                });
             }
         }
 
@@ -125,7 +177,7 @@
          * @param {number} index
          */
         function onChangeData(label, index) {
-            ctrl.annotations[index] = label;
+            ctrl.annotations[index] = lodash.cloneDeep(label);
 
             updateAnnotations();
         }
@@ -156,6 +208,30 @@
 
             lodash.set(ctrl.version, 'metadata.annotations', newAnnotations);
             ctrl.onChangeCallback();
+        }
+
+        /**
+         * Determines `nameBeginEnd` validation rule for `Key` field
+         * @param {string} value
+         */
+        function validateNameBeginEnd(value) {
+            var valueToCheck = value;
+            var slashIndex = value.search('/');
+
+            if (slashIndex > -1) {
+                valueToCheck = value.substr(slashIndex + 1);
+            }
+
+            return /^([a-zA-Z0-9].*)?[a-zA-Z0-9]$/.test(valueToCheck);
+        }
+
+        /**
+         * Determines `uniqueness` validation for `Key` field
+         * @param {string} value - value to validate
+         * @param {boolean} isInitCheck - is it an initial check
+         */
+        function validateUniqueness(value, isInitCheck) {
+            return lodash.filter(ctrl.annotations, ['name', value]).length === Number(isInitCheck);
         }
     }
 }());

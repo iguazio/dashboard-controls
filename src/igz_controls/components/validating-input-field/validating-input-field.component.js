@@ -70,7 +70,7 @@
         });
 
     function IgzValidatingInputFieldController($document, $element, $timeout, $window, lodash, EventHelperService,
-                                               FormValidationService) {
+                                               FormValidationService, PreventDropdownCutOffService) {
         var ctrl = this;
 
         var defaultInputModelOptions = {
@@ -129,11 +129,12 @@
             ctrl.data = angular.copy(ctrl.inputValue);
             ctrl.inputFocused = ctrl.isFocused;
             ctrl.startValue = angular.copy(ctrl.inputValue);
+            ctrl.validationRules = angular.copy(ctrl.validationRules);
 
             lodash.defaultsDeep(ctrl.inputModelOptions, defaultInputModelOptions);
 
             if (angular.isDefined(ctrl.validationRules) && !lodash.isEmpty(ctrl.data)) {
-                checkPatternsValidity(ctrl.data);
+                $timeout(checkPatternsValidity.bind(null, ctrl.data, true));
             }
 
             $document.on('click', handleValidationIconClick);
@@ -151,6 +152,10 @@
                 $timeout(function () {
                     $element.find('.field')[0].focus();
                 }, timer);
+            }
+
+            if (angular.isDefined(ctrl.validationRules)) {
+                PreventDropdownCutOffService.preventDropdownCutOff($element, '.validation-pop-up');
             }
         }
 
@@ -206,12 +211,7 @@
          * @returns {boolean}
          */
         function isFieldInvalid() {
-            if (!ctrl.inputFocused) {
-                return ctrl.isValueInvalid() && ctrl.data !== '';
-            } else {
-                return ctrl.onlyValidCharacters ? false :
-                    FormValidationService.isShowFieldInvalidState(ctrl.formObject, ctrl.inputName);
-            }
+            return ctrl.onlyValidCharacters ? false : FormValidationService.isShowFieldInvalidState(ctrl.formObject, ctrl.inputName);
         }
 
         /**
@@ -223,6 +223,10 @@
                    ctrl.validationMaxLength;
         }
 
+        /**
+         * Check whether the input value is invalid
+         * @returns {boolean}
+         */
         function isValueInvalid() {
             return lodash.some(ctrl.validationRules, ['isValid', false]);
         }
@@ -279,7 +283,7 @@
             }
 
             if (angular.isDefined(ctrl.validationRules)) {
-                checkPatternsValidity(ctrl.data);
+                checkPatternsValidity(ctrl.inputValue, false);
             }
         }
 
@@ -295,9 +299,18 @@
         // Private methods
         //
 
-        function checkPatternsValidity(value) {
+        /**
+         * Checks and sets validity based on `ctrl.validationRules`
+         * @param {string} value - current input value
+         * @param {boolean} isInitCheck - is it an initial check
+         */
+        function checkPatternsValidity(value, isInitCheck) {
             lodash.forEach(ctrl.validationRules, function (rule) {
-                rule.isValid = lodash.isFunction(rule.pattern) ? rule.pattern(value) : rule.pattern.test(value);
+                var isValid = lodash.isFunction(rule.pattern) ? rule.pattern(value, isInitCheck) : rule.pattern.test(value);
+
+                ctrl.formObject[ctrl.inputName].$setValidity(lodash.defaultTo(rule.name, rule.label), isValid);
+
+                rule.isValid = isValid;
             });
         }
 

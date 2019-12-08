@@ -13,7 +13,7 @@
             <div class="input-container input-key-wrapper"
                  data-ng-if="!$ctrl.onlyValueInput"
                  data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
-                <label for="key" data-ng-if="$ctrl.useLabels" class="key-label">
+                <label class="key-label" data-ng-if="$ctrl.useLabels">
                     {{ 'common:KEY' | i18next }}:
                 </label>
                 <igz-validating-input-field class="nuclio-validating-input input-key"
@@ -26,6 +26,7 @@
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.keyOptional"
                                             data-validation-pattern="$ctrl.keyValidationPattern"
+                                            data-validation-rules="$ctrl.validationRules['key']"
                                             data-placeholder-text="{{$ctrl.keyPlaceholder}}">
                 </igz-validating-input-field>
             </div>
@@ -33,7 +34,7 @@
             <div class="input-container input-type-wrapper"
                  data-ng-if="$ctrl.useType"
                  data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
-                <label for="type" data-ng-if="$ctrl.useLabels" class="type-label">
+                <label data-ng-if="$ctrl.useLabels" class="type-label">
                     {{ 'common:TYPE' | i18next }}:
                 </label>
                 <igz-default-dropdown class="input-type"
@@ -53,7 +54,7 @@
             <div class="input-container input-value-key-wrapper"
                  data-ng-if="!$ctrl.isVisibleByType('value')"
                  data-ng-class="{'use-type': $ctrl.useType}">
-                <label for="value-key" data-ng-if="$ctrl.useLabels">
+                <label data-ng-if="$ctrl.useLabels">
                     <span data-ng-if="$ctrl.isVisibleByType('secret')">
                         {{ 'functions:SECRET_KEY' | i18next }}:
                     </span>
@@ -70,6 +71,7 @@
                                             data-is-disabled="$ctrl.isDisabled"
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.valueOptional"
+                                            data-validation-rules="$ctrl.validationRules[$ctrl.getType() + 'Key']"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_KEY' | i18next }}">
                 </igz-validating-input-field>
             </div>
@@ -79,7 +81,7 @@
                                  'only-value-input': $ctrl.onlyValueInput,
                                  'only-key-value-input': $ctrl.isVisibleByType('value'),
                                  'all-value-types': $ctrl.allValueTypes}">
-                <label for="value" data-ng-if="$ctrl.useLabels">
+                <label data-ng-if="$ctrl.useLabels">
                     <span data-ng-if="$ctrl.isVisibleByType('value')">
                         {{ 'common:VALUE' | i18next }}:
                     </span>
@@ -100,6 +102,7 @@
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.valueOptional"
                                             data-validation-pattern="$ctrl.valueValidationPattern"
+                                            data-validation-rules="$ctrl.validationRules['value']"
                                             data-placeholder-text="{{$ctrl.valuePlaceholder}}">
                 </igz-validating-input-field>
                 <igz-validating-input-field class="nuclio-validating-input input-additional-value"

@@ -11,13 +11,50 @@
             controller: NclVersionConfigurationEnvironmentVariablesController
         });
 
-    function NclVersionConfigurationEnvironmentVariablesController($element, $rootScope, $scope, $timeout, lodash,
-                                                                   PreventDropdownCutOffService) {
+    function NclVersionConfigurationEnvironmentVariablesController($element, $rootScope, $timeout, $i18next, i18next,
+                                                                   lodash, PreventDropdownCutOffService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.igzScrollConfig = {
             maxElementsCount: 10,
             childrenSelector: '.table-body'
+        };
+        ctrl.validationRules = {
+            key: [
+                {
+                    name: 'validCharacters',
+                    label: $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
+                    pattern: /^[\w-.]+$/
+                },
+                {
+                    name: 'notStartWithDigitOrTwoPeriods',
+                    label: $i18next.t('functions:NOT_START_WITH_DIGIT_OR_TWO_PERIODS', {lng: lng}) + ' (..)',
+                    pattern: /^(?!\.{2,}|\d)/
+                },
+                {
+                    name: 'uniqueness',
+                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                    pattern: validateUniqueness.bind(null, 'name')
+                }
+            ],
+            configmapKey: [
+                {
+                    name: 'validCharacters',
+                    label: $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _',
+                    pattern: /^[\w-]+$/
+                },
+                {
+                    name: 'maxLength',
+                    label: $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
+                    pattern: /^(?=[\S\s]{1,253}$)/
+                },
+                {
+                    name: 'uniqueness',
+                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                    pattern: validateUniqueness.bind(null, 'valueFrom.configMapKeyRef.key')
+                }
+            ]
         };
         ctrl.scrollConfig = {
             axis: 'y',
@@ -32,6 +69,7 @@
         ctrl.addNewVariable = addNewVariable;
         ctrl.handleAction = handleAction;
         ctrl.onChangeData = onChangeData;
+        ctrl.onChangeType = onChangeType;
 
         //
         // Hook methods
@@ -55,12 +93,6 @@
                 .value();
 
             ctrl.isOnlyValueTypeInputs = !lodash.some(ctrl.variables, 'valueFrom');
-
-            $scope.$on('key-value-type-changed', function (event, isValueType) {
-                if (!isValueType) {
-                    ctrl.isOnlyValueTypeInputs = false;
-                }
-            });
 
             $timeout(function () {
                 if (ctrl.environmentVariablesForm.$invalid) {
@@ -114,7 +146,9 @@
             if (actionType === 'delete') {
                 ctrl.variables.splice(index, 1);
 
-                updateVariables();
+                $timeout(function () {
+                    updateVariables();
+                });
             }
         }
 
@@ -124,10 +158,36 @@
          * @param {number} index
          */
         function onChangeData(variable, index) {
-            ctrl.variables[index] = variable;
+            ctrl.variables[index] = lodash.cloneDeep(variable);
 
             updateVariables();
         }
+
+        /**
+         * Handles a change of variables type
+         * @param {Object} newType
+         * @param {number} index
+         */
+        function onChangeType(newType, index) {
+            var variablesCopy = angular.copy(ctrl.variables);
+
+            variablesCopy[index] = newType.id === 'value' ? {} : {valueFrom: {}};
+            ctrl.isOnlyValueTypeInputs = !lodash.some(variablesCopy, 'valueFrom');
+
+            if (newType.id === 'secret') {
+                var form = lodash.get(ctrl.environmentVariablesForm, '$$controls[' + index + '][value-key]');
+
+                if (angular.isDefined(form)) {
+                    lodash.forEach(ctrl.validationRules.configmapKey, function (rule) {
+                        form.$setValidity(rule.name, true);
+                    });
+                }
+            }
+        }
+
+        //
+        // Private methods
+        //
 
         /**
          * Updates function`s variables
@@ -149,6 +209,16 @@
 
             lodash.set(ctrl.version, 'spec.env', variables);
             ctrl.onChangeCallback();
+        }
+
+        /**
+         * Determines `uniqueness` validation for `Key` and `ConfigMap key` fields
+         * @param {string} path
+         * @param {string} value
+         * @param {boolean} isInitCheck
+         */
+        function validateUniqueness(path, value, isInitCheck) {
+            return lodash.filter(ctrl.variables, [path, value]).length === Number(isInitCheck);
         }
     }
 }());

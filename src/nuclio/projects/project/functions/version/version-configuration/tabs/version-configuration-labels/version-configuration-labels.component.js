@@ -31,6 +31,72 @@
             $i18next.t('functions:TOOLTIP.LABELS.HEAD', {lng: lng}) + '</a> ' +
             $i18next.t('functions:TOOLTIP.LABELS.REST', {lng: lng});
 
+        ctrl.keyTooltip = $i18next.t('functions:TOOLTIP.PREFIXED_NAME', {
+            lng: lng,
+            name: $i18next.t('common:LABEL', {lng: lng})
+        });
+        ctrl.validationRules = {
+            key: [
+                {
+                    name: 'nameValidCharacters',
+                    label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
+                    pattern: /^([^\/]*\/)?[\w-.]+$/
+                },
+                {
+                    name: 'nameBeginEnd',
+                    label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('functions:BEGIN_END_WITH_ALPHANUMERIC', {lng: lng}),
+                    pattern: validateNameBeginEnd
+                },
+                {
+                    name: 'nameMaxLength',
+                    label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
+                    pattern: /^([^\/]*\/)?[\S\s]{1,63}$/
+                },
+                {
+                    name: 'prefixValidCharacters',
+                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -, .',
+                    pattern: /(^[a-z0-9.-]+\/|^((?!\/).)*$)/
+                },
+                {
+                    name: 'prefixBeginEnd',
+                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}),
+                    pattern: /(^[a-z0-9](.*[a-z0-9])*\/|^((?!\/).)*$)/
+                },
+                {
+                    name: 'prefixNotStart',
+                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:NOT_START_WITH_FORBIDDEN_WORDS', {lng: lng}),
+                    pattern: /^(?!kubernetes[^\/]io\/)(?!k8s[^\/]io\/)/
+                },
+                {
+                    name: 'prefixMaxLength',
+                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
+                    pattern: /(?=^[\S\s]{1,253}\/|^((?!\/).)*$)/
+                },
+                {
+                    name: 'uniqueness',
+                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                    pattern: validateUniqueness
+                }
+            ],
+            value: [
+                {
+                    name: 'validCharacters',
+                    label: $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
+                    pattern: /^[\w-.]+$/
+                },
+                {
+                    name: 'beginEnd',
+                    label: $i18next.t('functions:BEGIN_END_WITH_ALPHANUMERIC', {lng: lng}),
+                    pattern: /^([a-zA-Z0-9].*)?[a-zA-Z0-9]$/
+                },
+                {
+                    name: 'maxLength',
+                    label: $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
+                    pattern: /^[\S\s]{1,63}$/
+                }
+            ]
+        };
+
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
 
@@ -125,7 +191,9 @@
             if (actionType === 'delete') {
                 ctrl.labels.splice(index, 1);
 
-                updateLabels();
+                $timeout(function () {
+                    updateLabels();
+                });
             }
         }
 
@@ -135,7 +203,7 @@
          * @param {number} index
          */
         function onChangeData(label, index) {
-            ctrl.labels[index] = label;
+            ctrl.labels[index] = lodash.cloneDeep(label);
 
             updateLabels();
         }
@@ -172,6 +240,30 @@
 
             lodash.set(ctrl.version, 'metadata.labels', newLabels);
             ctrl.onChangeCallback();
+        }
+
+        /**
+         * Determines `nameBeginEnd` validation rule for `Key` field
+         * @param {string} value
+         */
+        function validateNameBeginEnd(value) {
+            var valueToCheck = value;
+            var slashIndex = value.search('/');
+
+            if (slashIndex > -1) {
+                valueToCheck = value.substr(slashIndex + 1);
+            }
+
+            return /^([a-zA-Z0-9].*)?[a-zA-Z0-9]$/.test(valueToCheck);
+        }
+
+        /**
+         * Determines `uniqueness` validation for `Key` field
+         * @param {string} value - value to validate
+         * @param {boolean} isInitCheck - is it an initial check
+         */
+        function validateUniqueness(value, isInitCheck) {
+            return lodash.filter(ctrl.labels, ['name', value]).length === Number(isInitCheck);
         }
     }
 }());

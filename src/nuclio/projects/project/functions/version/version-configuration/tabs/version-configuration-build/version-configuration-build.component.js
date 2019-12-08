@@ -12,7 +12,7 @@
         });
 
     function NclVersionConfigurationBuildController($rootScope, $scope, $timeout, $i18next, i18next, lodash, ngDialog,
-                                                    Upload, ConfigService) {
+                                                    Upload, ConfigService, ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
         var uploadType = '';
@@ -36,6 +36,7 @@
             name: ''
         };
         ctrl.disabled = true;
+        ctrl.imageNameValidationPattern = ValidatingPatternsService.dockerReference;
 
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
