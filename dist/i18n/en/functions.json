@@ -7,6 +7,8 @@
     "ATTACH_FILE": "Attach file",
     "BASE_IMAGE": "Base image",
     "BASE_IMAGE_DESCRIPTION": "The name of a base container image from which to build the function's processor image",
+    "BEGIN_END_WITH_ALPHANUMERIC": "Must begin and end with alphanumeric characters",
+    "BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC": "Must begin and end with lowercase alphanumeric characters",
     "BODY": "Body",
     "BRANCH": "Branch",
     "BROKERS": "Brokers",
@@ -128,6 +130,7 @@
     "LOGGER_LEVEL": "Logger level",
     "LOGGING": "Logging",
     "MAX": "Max",
+    "MAX_LENGTH_CHARACTERS": "Max length — {{count}} characters",
     "MAX_WORKERS": "Max Workers",
     "METHOD": "Method",
     "MIN": "Min",
@@ -140,6 +143,8 @@
     "NO_INTERNET_ACCESS": "No internet access",
     "NO_LOGS_HAVE_BEEN_FOUND": "No logs have been found...",
     "NORMAL": "Normal",
+    "NOT_START_WITH_DIGIT_OR_TWO_PERIODS": "Must not start with a digit (0–9) or with two periods",
+    "NOT_START_WITH_FORBIDDEN_WORDS": "Must not start with 'kubernetes.io' or 'k8s.io'",
     "NOT_YET_DEPLOYED": "Not yet deployed",
     "ONBUILD_IMAGE": "Onbuild image",
     "ONBUILD_IMAGE_DESCRIPTION": "The name of an \"onbuild\" container image from which to build the function's processor image; the name can include {\\{ .Label }} and {\\{ .Arch }} for formatting",
@@ -194,6 +199,7 @@
         "SELECT_CLASS": "Select class",
         "SELECT_TYPE": "Select type"
     },
+    "PREFIX": "Prefix",
     "PROJECT": "Project",
     "PROJECT_NAME": "Project Name",
     "PROJECTS_NOT_FOUND": "There are currently no projects, you can create a project by clicking the ‘Create Project’ button",
@@ -237,6 +243,7 @@
     "TIMEOUT": "Timeout",
     "TOKEN": "Token",
     "TOOLTIP": {
+        "ANNOTATION": "Annotation",
         "ANNOTATIONS": {
             "HEAD": "Kubernetes annotations",
             "REST": "for adding function metadata"
@@ -264,6 +271,7 @@
         },
         "NEW_TEST": "New test",
         "NO_INTERNET_ACCESS": "Use local Docker images rather than pulling from remote",
+        "PREFIXED_NAME": "{{name}} keys are composed of an optional prefix and a name, separated by a forward slash (/) — '&lt;key prefix&gt;/&lt;key name&gt;'.",
         "RUN_FUNCTION": "Run function",
         "SECRET": {
             "HEAD": "Kubernetes secret",
@@ -288,8 +296,10 @@
     },
     "TOPIC": "Topic",
     "TOPICS": "Topics",
+    "UNIQUENESS": "Uniqueness",
     "UNSPECIFIED_FIELD_NAME": "Unspecified field name",
     "V3IO": "V3IO",
+    "VALID_CHARACTERS": "Valid characters",
     "VIEW_YAML": "View YAML",
     "VOLUMES": "Volumes",
     "WELCOME_DESCRIPTION": "Write from scratch or use an example repository to build an event driven application project.",
