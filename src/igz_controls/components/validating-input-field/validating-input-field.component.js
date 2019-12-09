@@ -176,6 +176,10 @@
                 if (!changes.inputValue.isFirstChange()) {
                     ctrl.data = angular.copy(changes.inputValue.currentValue);
                     ctrl.startValue = angular.copy(ctrl.inputValue);
+
+                    if (angular.isDefined(ctrl.validationRules)) {
+                        checkPatternsValidity(ctrl.data, false);
+                    }
                 }
             }
 
