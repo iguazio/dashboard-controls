@@ -46,7 +46,7 @@
                 },
                 {
                     name: 'maxLength',
-                    label: $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
+                    label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
                     pattern: /^(?=[\S\s]{1,253}$)/
                 },
                 {
