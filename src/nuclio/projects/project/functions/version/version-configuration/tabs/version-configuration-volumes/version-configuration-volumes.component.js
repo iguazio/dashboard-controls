@@ -38,7 +38,7 @@
                     pattern: /^([a-z0-9].*)?[a-z0-9]$/
                 },
                 {
-                    label: $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
+                    label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
                     pattern: /^(?=[\S\s]{1,63}$)/
                 },
                 {

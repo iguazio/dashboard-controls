@@ -50,7 +50,7 @@
                 },
                 {
                     name: 'nameMaxLength',
-                    label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
+                    label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
                     pattern: /^([^\/]*\/)?[\S\s]{1,63}$/
                 },
                 {
@@ -70,7 +70,7 @@
                 },
                 {
                     name: 'prefixMaxLength',
-                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
+                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
                     pattern: /(?=^[\S\s]{1,253}\/|^((?!\/).)*$)/
                 },
                 {
