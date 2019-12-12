@@ -15,7 +15,7 @@
         });
 
     function FunctionImportController($document, $rootScope, $scope, $state, $timeout, $i18next, i18next, YAML, lodash,
-                                      EventHelperService) {
+                                      DialogsService, EventHelperService) {
         var ctrl = this;
 
         var importedFunction = null;
@@ -127,11 +127,16 @@
             var reader = new FileReader();
 
             reader.onload = function () {
-                ctrl.sourceCode = reader.result;
-                $scope.$apply();
-                $rootScope.$broadcast('function-import-source-code', ctrl.sourceCode);
+                try {
+                    importedFunction = YAML.parse(reader.result);
+                    ctrl.sourceCode = reader.result;
 
-                importedFunction = YAML.parse(reader.result);
+                    $scope.$apply();
+                    $rootScope.$broadcast('function-import-source-code', ctrl.sourceCode);
+
+                } catch (error) {
+                    DialogsService.alert($i18next.t('common:ERROR_MSG.IMPORT_YAML_FILE', {lng: lng}));
+                }
             };
 
             reader.readAsText(file);
