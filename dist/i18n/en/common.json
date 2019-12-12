@@ -144,6 +144,7 @@
         "GET_CAPABILITIES": "Could not retrieve capabilities.",
         "GET_EVENTS_DATA": "Error while getting Events data",
         "IMPORT_PROJECT": "Error occurred while creating a new project.",
+        "IMPORT_YAML_FILE": "Corrupted or malformed YAML file selected",
         "INVALID_INPUT": "The input you provided is invalid or incorrect",
         "INVALID_INPUT_ERROR": "Error: this input is invalid or incorrect, please try again.",
         "INVALID_INPUT_PLEASE_TRY_AGAIN": "The input you provided is invalid or incorrect, please try again.",
