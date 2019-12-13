@@ -30,7 +30,7 @@
         ctrl.validationRules = {
             itemName: [
                 {
-                    label: $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -',
+                    label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -',
                     pattern: /^[a-z0-9-]+$/
                 },
                 {
