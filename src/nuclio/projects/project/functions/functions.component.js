@@ -4,31 +4,25 @@
     'use strict';
 
     angular.module('iguazio.dashboard-controls')
-        .component('nclProjectsFunctionsView', {
+        .component('nclFunctions', {
             bindings: {
                 createFunction: '&',
-                createProject: '&',
                 deleteFunction: '&',
-                deleteProject: '&',
                 getFunction: '&',
                 getFunctions: '&',
                 getProject: '&',
-                getProjects: '&',
                 getStatistics: '&',
-                projects: '<',
                 updateFunction: '&',
-                updateProject: '&'
             },
-            templateUrl: 'nuclio/projects/projects-functions-view/projects-functions-view.tpl.html',
-            controller: NclProjectsFunctionsViewController
+            templateUrl: 'nuclio/projects/project/functions/functions.tpl.html',
+            controller: FunctionsController
         });
 
-    function NclProjectsFunctionsViewController($element, $filter, $interval, $q, $rootScope, $scope, $state,
-                                                $stateParams, $timeout, $transitions, $i18next, i18next, lodash,
-                                                ngDialog, ActionCheckboxAllService, CommonTableService, ConfigService,
-                                                DialogsService, ElementLoadingStatusService, ExportService,
-                                                FunctionsService, ImportService, NuclioHeaderService, ProjectsService,
-                                                TableSizeService) {
+    function FunctionsController($filter, $interval, $q, $rootScope, $scope, $state,
+                                 $stateParams, $timeout, $transitions, $i18next, i18next, lodash,
+                                 ActionCheckboxAllService, CommonTableService, ConfigService,
+                                 DialogsService, ElementLoadingStatusService, FunctionsService,
+                                 NuclioHeaderService, TableSizeService) {
         var ctrl = this;
         var lng = i18next.language;
         var title = {}; // breadcrumbs config
@@ -44,16 +38,6 @@
 
 
         ctrl.checkedItemsCount = 0;
-        ctrl.dropdownActions = [
-            {
-                id: 'exportProjects',
-                name: $i18next.t('functions:EXPORT_ALL_PROJECTS', {lng: lng})
-            },
-            {
-                id: 'importProject',
-                name: $i18next.t('functions:IMPORT_PROJECTS', {lng: lng})
-            }
-        ];
         ctrl.filtersCounter = 0;
         ctrl.functions = [];
         ctrl.isFiltersShowed = {
@@ -66,20 +50,17 @@
         ctrl.isSplashShowed = {
             value: true
         };
-        ctrl.projectActions = [];
-        ctrl.searchKeys = [];
+        ctrl.project = {};
+        ctrl.searchKeys = [
+            'metadata.name',
+            'spec.description'
+        ];
         ctrl.searchStates = {};
-        ctrl.selectedProject = {};
         ctrl.sortOptions = [
             {
                 label: $i18next.t('common:NAME', {lng: lng}),
                 value: 'metadata.name',
                 active: true
-            },
-            {
-                label: $i18next.t('functions:PROJECT', {lng: lng}),
-                value: 'ui.project.metadata.name',
-                active: false,
             },
             {
                 label: $i18next.t('common:STATUS', {lng: lng}),
@@ -89,7 +70,8 @@
             {
                 label: $i18next.t('common:REPLICAS', {lng: lng}),
                 value: 'spec.replicas',
-                active: false
+                active: false,
+                visible: ConfigService.isDemoMode()
             },
             {
                 label: $i18next.t('functions:RUNTIME', {lng: lng}),
@@ -97,48 +79,28 @@
                 active: false
             }
         ];
-        ctrl.sortedColumnName = '';
+        ctrl.sortedColumnName = 'metadata.name';
         ctrl.versionActions = [];
-        ctrl.viewByOptions = [
-            {
-                id: 'projects',
-                name: $i18next.t('common:PROJECTS', {lng: lng})
-            },
-            {
-                id: 'functions',
-                name: $i18next.t('common:FUNCTIONS', {lng: lng})
-            }
-        ];
 
         ctrl.$onInit = onInit;
-        ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
 
-        ctrl.changeView = changeView;
-        ctrl.collapseAllRows = collapseAllRows;
-        ctrl.expandAllRows = expandAllRows;
         ctrl.getVersions = getVersions;
         ctrl.handleFunctionVersionAction = handleFunctionVersionAction;
-        ctrl.handleProjectAction = handleProjectAction;
-        ctrl.importProject = importProject;
         ctrl.isFunctionsListEmpty = isFunctionsListEmpty;
-        ctrl.isProjectsListEmpty = isProjectsListEmpty;
         ctrl.onApplyFilters = onApplyFilters;
         ctrl.onResetFilters = onResetFilters;
-        ctrl.onSelectDropdownAction = onSelectDropdownAction;
         ctrl.onSortOptionsChange = onSortOptionsChange;
         ctrl.onUpdateFiltersCounter = onUpdateFiltersCounter;
         ctrl.openNewFunctionScreen = openNewFunctionScreen;
-        ctrl.openNewProjectDialog = openNewProjectDialog;
         ctrl.refreshFunctions = refreshFunctions;
-        ctrl.refreshProjects = refreshProjects;
         ctrl.sortTableByColumn = sortTableByColumn;
         ctrl.toggleFilters = toggleFilters;
 
+        ctrl.functionsService = FunctionsService;
         ctrl.getColumnSortingClasses = CommonTableService.getColumnSortingClasses;
         ctrl.getFunctionsTableColSize = TableSizeService.getFunctionsTableColSize;
         ctrl.isDemoMode = ConfigService.isDemoMode;
-        ctrl.projectsService = ProjectsService;
 
         //
         // Hook methods
@@ -148,13 +110,9 @@
          * Initialization method
          */
         function onInit() {
-            if ($state.current.url === 'projects') {
-                ProjectsService.viewMode = 'projects'
-            }
             ctrl.isSplashShowed.value = true;
 
-            // initializes project actions array
-            ctrl.projectActions = angular.copy(ProjectsService.initProjectActions());
+            initFunctions();
 
             // initializes function actions array
             ctrl.functionActions = angular.copy(FunctionsService.initFunctionActions());
@@ -162,24 +120,14 @@
             // initializes version actions array
             ctrl.versionActions = angular.copy(FunctionsService.initVersionActions());
 
-            changeView(ProjectsService.viewMode);
-
             $scope.$on('action-panel_fire-action', onFireAction);
             $scope.$on('action-checkbox_item-checked', onItemChecked);
             $scope.$on('action-checkbox-all_checked-items-count-change', onItemsCountChange);
             $scope.$on('action-checkbox-all_check-all', onCheckAll);
 
             $transitions.onStart({}, stateChangeStart);
-        }
 
-        /**
-         * Changes method
-         * @param {Object} changes
-         */
-        function onChanges(changes) {
-            if (angular.isDefined(changes.projects) && !lodash.isEmpty(changes.projects.currentValue)) {
-                ctrl.projects = $filter('orderBy')(ctrl.projects, getName, ctrl.isReverseSorting);
-            }
+            updatePanelActions();
         }
 
         /**
@@ -187,44 +135,11 @@
          */
         function onDestroy() {
             stopAutoUpdate();
-
-            ProjectsService.viewMode = ''
         }
 
         //
         // Public methods
         //
-
-        /**
-         * Switches projects/functions view
-         * @param {Object} viewMode - new view mode object
-         */
-        function changeView(viewMode) {
-            ctrl.sortedColumnName = 'metadata.name';
-
-            initProjectsFunctionsView(viewMode);
-
-            $timeout(function () {
-                ProjectsService.viewMode = viewMode;
-
-                setSortOptionsVisibility();
-                updatePanelActions();
-            });
-        }
-
-        /**
-         * Collapses all rows (projects/functions rows, depends on current view mode)
-         */
-        function collapseAllRows() {
-            $rootScope.$broadcast('collapse-all-rows', {rowsType: ProjectsService.viewMode})
-        }
-
-        /**
-         * Expands all rows (projects/functions rows, depends on current view mode)
-         */
-        function expandAllRows() {
-            $rootScope.$broadcast('expand-all-rows', {rowsType: ProjectsService.viewMode})
-        }
 
         /**
          * Gets list of function versions
@@ -260,64 +175,13 @@
 
             return $q.all(promises).then(function () {
                 if (angular.isDefined(checkedItems[0].metadata) && actionType === 'delete') {
-                    return initFunctions().then(function () {
-                        ctrl.isSplashShowed.value = false;
-                    })
+                    return initFunctions()
+                        .then(function () {
+                            ctrl.isSplashShowed.value = false;
+                        })
                 }
 
             });
-        }
-
-        /**
-         * According to given action name calls proper action handler
-         * @param {string} actionType - e.g. `'delete'`, `'edit'`
-         * @param {Array} projects - an array of checked projects
-         * @returns {Promise}
-         */
-        function handleProjectAction(actionType, projects) {
-            var errorMessages = [];
-            var promises = lodash.map(projects, function (project) {
-                var projectName = getName(project);
-                return lodash.result(project, 'ui.' + actionType)
-                    .then(function (result) {
-                        if (actionType === 'edit') {
-
-                            // update the row in view
-                            lodash.merge(project, result);
-                        } else if (actionType === 'delete') {
-
-                            // un-check project
-                            if (project.ui.checked) {
-                                project.ui.checked = false;
-
-                                ActionCheckboxAllService.changeCheckedItemsCount(-1);
-                            }
-
-                            // remove from list
-                            lodash.pull(ctrl.projects, project);
-                        }
-                    })
-                    .catch(function (errorMessage) {
-                        errorMessages.push(projectName + ': ' + errorMessage);
-                    });
-            });
-
-            return $q.all(promises)
-                .then(function () {
-                    if (lodash.isNonEmpty(errorMessages)) {
-                        return DialogsService.alert(errorMessages);
-                    }
-                });
-        }
-
-        /**
-         * Imports project and updates the projects list
-         * @param {File} file
-         */
-        function importProject(file) {
-            ImportService.importFile(file)
-                .then(updateProjects)
-                .then(refreshFunctions);
         }
 
         /**
@@ -326,14 +190,6 @@
          */
         function isFunctionsListEmpty() {
             return lodash.isEmpty(ctrl.functions);
-        }
-
-        /**
-         * Checks if projects list is empty
-         * @returns {boolean}
-         */
-        function isProjectsListEmpty() {
-            return lodash.isEmpty(ctrl.projects);
         }
 
         /**
@@ -350,18 +206,6 @@
             $rootScope.$broadcast('search-input_reset');
 
             ctrl.filtersCounter = 0;
-        }
-
-        /**
-         * Called when dropdown action is selected
-         * @param {Object} item - selected action
-         */
-        function onSelectDropdownAction(item) {
-            if (item.id === 'exportProjects') {
-                ExportService.exportProjects(ctrl.projects, ctrl.getFunctions);
-            } else if (item.id === 'importProject') {
-                angular.element($element.find('.project-import-input'))[0].click();
-            }
         }
 
         /**
@@ -384,7 +228,7 @@
             ctrl.isReverseSorting = newElement.desc;
             ctrl.sortedColumnName = newElement.value;
 
-            ctrl.sortTableByColumn(ctrl.sortedColumnName);
+            ctrl.sortTableByColumn(ctrl.sortedColumnName, true);
         }
 
         /**
@@ -399,34 +243,7 @@
          * Navigates to New Function screen
          */
         function openNewFunctionScreen() {
-            var state = ProjectsService.viewMode === '' ? 'app.project.create-function' : 'app.create-function';
-
-            $state.go(state, {
-                navigatedFrom: ProjectsService.viewMode
-            });
-        }
-
-        /**
-         * Creates and opens new project dialog
-         */
-        function openNewProjectDialog() {
-            ngDialog.open({
-                template: '<ncl-new-project-dialog data-close-dialog="closeThisDialog(project)" ' +
-                    'data-create-project-callback="ngDialogData.createProject({project: project})">' +
-                    '</ncl-new-project-dialog>',
-                plain: true,
-                scope: $scope,
-                data: {
-                    createProject: ctrl.createProject
-                },
-                className: 'ngdialog-theme-nuclio nuclio-project-create-dialog'
-            })
-                .closePromise
-                .then(function (data) {
-                    if (!lodash.isNil(data.value)) {
-                        updateProjects();
-                    }
-                });
+            $state.go('app.project.create-function');
         }
 
         /**
@@ -436,21 +253,20 @@
         function refreshFunctions() {
             ctrl.isSplashShowed.value = true;
 
-            var promises = lodash.map(ctrl.projects, function (project) {
-                return getFunctionsByProject(project)
-            });
+            return ctrl.getFunctions({id: ctrl.project.metadata.name})
+                .then(function (functions) {
+                    ctrl.functions = lodash.map(functions, function (functionFromResponse) {
+                        var foundFunction = lodash.find(ctrl.functions, ['metadata.name', functionFromResponse.metadata.name]);
+                        var ui = lodash.get(foundFunction, 'ui');
+                        functionFromResponse.ui = lodash.defaultTo(ui, functionFromResponse.ui);
 
-            return $q.all(promises)
-                .then(function () {
-                    if (ProjectsService.viewMode !== 'projects' && lodash.isEmpty(ctrl.functions) && !$stateParams.createCancelled) {
+                        return functionFromResponse;
+                    });
+
+                    if (lodash.isEmpty(ctrl.functions) && !$stateParams.createCancelled) {
                         ctrl.isSplashShowed.value = false;
-                        var state = ProjectsService.viewMode === 'functions' ? 'app.create-function' : 'app.project.create-function';
-
-                        $state.go(state, {
-                            navigatedFrom: ProjectsService.viewMode
-                        });
+                        openNewFunctionScreen();
                     } else {
-
                         // TODO: unmock versions data
                         lodash.forEach(ctrl.functions, function (functionItem) {
                             lodash.set(functionItem, 'versions', [{
@@ -461,9 +277,8 @@
                         });
 
                     }
-
-                    updateStatistics();
                 })
+                .then(updateStatistics)
                 .catch(function (error) {
                     var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
 
@@ -475,22 +290,11 @@
         }
 
         /**
-         * Refreshes users list
-         */
-        function refreshProjects() {
-            updateProjects()
-                .then(refreshFunctions);
-        }
-
-        /**
          * Sorts the table by column name
          * @param {string} columnName - name of column
          * @param {boolean} isJustSorting - if it is needed just to sort data without changing reverse
          */
         function sortTableByColumn(columnName, isJustSorting) {
-            var expression = (ProjectsService.viewMode !== 'projects' && columnName === 'ui.project.metadata.name') ?
-                getProjectName : columnName;
-
             if (!isJustSorting) {
 
                 // changes the order of sorting the column
@@ -500,15 +304,7 @@
             // saves the name of sorted column
             ctrl.sortedColumnName = columnName;
 
-            if (ProjectsService.viewMode !== 'projects') {
-                ctrl.functions = $filter('orderBy')(ctrl.functions, expression, ctrl.isReverseSorting);
-            } else {
-                lodash.forEach(ctrl.projects, function (project) {
-                    lodash.update(project, 'ui.functions', function (functions) {
-                        return $filter('orderBy')(lodash.defaultTo(functions, []), expression, ctrl.isReverseSorting);
-                    });
-                });
-            }
+            ctrl.functions = $filter('orderBy')(ctrl.functions, columnName, ctrl.isReverseSorting);
         }
 
         /**
@@ -523,118 +319,30 @@
         //
 
         /**
-         * Gets functions list promise
-         * @param {Object} project
-         * @returns {Promise}
-         */
-        function getFunctionsByProject(project) {
-
-            // gets all functions by given project
-            return ctrl.getFunctions({id: project.metadata.name})
-                .then(function (functions) {
-                    var functionsList = lodash.map(functions, function (functionFromResponse) {
-                        var foundFunction = lodash.find(project.ui.functions, ['metadata.name', functionFromResponse.metadata.name]);
-                        var ui = lodash.get(foundFunction, 'ui');
-                        functionFromResponse.ui = lodash.defaultTo(ui, {project: project});
-
-                        return functionFromResponse;
-                    });
-
-                    lodash.set(project, 'ui.functions', functionsList);
-
-                    ctrl.functions = lodash.unionWith(functionsList, ctrl.functions, function (func1, func2) {
-                        return func1.metadata.name === func2.metadata.name;
-                    });
-                });
-        }
-
-        /**
-         * Returns correct project name
-         * @param {Object} project
-         * @returns {string}
-         */
-        function getName(project) {
-            return lodash.defaultTo(project.spec.displayName, project.metadata.name);
-        }
-
-        /**
-         * Returns correct project name of the given function
-         * @param {Object} functionItem
-         * @returns {string}
-         */
-        function getProjectName(functionItem) {
-            return getName(lodash.get(functionItem, 'ui.project'));
-        }
-
-        /**
          * Initializes functions list
-         * @returns {Promise}
          */
         function initFunctions() {
-            var getProjectPromise = '';
+            ctrl.getProject({id: $stateParams.projectId})
+                .then(function (project) {
+                    ctrl.project = project;
+                    title.project = project;
 
-            // if view mode is empty, current state is functions list by project
-            // gets project from state params
-            if (lodash.isEmpty(ProjectsService.viewMode)) {
-                getProjectPromise = ctrl.getProject({id: $stateParams.projectId})
-                    .then(function (project) {
-                        project.ui = {functions: ctrl.functions};
-                        ctrl.projects = [project];
-                        title.project = project;
+                    NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
 
-                        NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
-                    })
-            }
+                    return ctrl.refreshFunctions()
+                })
+                .then(function () {
+                    sortTableByColumn(ctrl.sortedColumnName, true);
+                    startAutoUpdate();
+                })
+                .catch(function (error) {
+                    ctrl.isSplashShowed.value = false;
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
 
-            return $q.when(getProjectPromise).then(function () {
-                // it is important to render function list only after external IP addresses response is
-                // back, otherwise the "Invocation URL" column might be "N/A" to a function (even if it
-                // is deployed, i.e. `status.httpPort` is a number), because as long as the external IP
-                // address response is not returned, it is empty and is passed to each function row
-                ctrl.refreshFunctions()
-                    .then(function () {
-                        sortTableByColumn(ctrl.sortedColumnName, true);
-                        startAutoUpdate();
-                    })
-                    .catch(function (error) {
-                        ctrl.isSplashShowed.value = false;
-                        var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
-
-                        DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
-                            $state.go('app.projects');
-                        });
+                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
+                        $state.go('app.projects');
                     });
-            });
-        }
-
-        /**
-         * Initializes data for new projects/function view
-         * @param {Object} viewMode - new view mode object
-         */
-        function initProjectsFunctionsView(viewMode) {
-            ctrl.isSplashShowed.value = true;
-
-            stopAutoUpdate();
-
-            if (viewMode === 'projects') {
-                updateProjects(true)
-                    .then(function () {
-                        $timeout(initFunctions);
-                    });
-
-                ctrl.searchKeys = [
-                    'metadata.name',
-                    'spec.displayName',
-                    'spec.description'
-                ];
-            } else {
-                initFunctions();
-
-                ctrl.searchKeys = [
-                    'metadata.name',
-                    'spec.description'
-                ];
-            }
+                });
         }
 
         /**
@@ -643,13 +351,11 @@
          * @param {Object} data - $broadcast-ed data
          */
         function onFireAction(event, data) {
-            if (ProjectsService.checkedItem === 'projects') {
-                ctrl.handleProjectAction(data.action, lodash.filter(ctrl.projects, 'ui.checked'));
-            } else if (ProjectsService.checkedItem === 'functions') {
+            if (FunctionsService.checkedItem === 'functions') {
                 var checkedFunctions = lodash.filter(ctrl.functions, 'ui.checked');
 
                 ctrl.handleFunctionVersionAction(data.action, checkedFunctions);
-            } else if (ProjectsService.checkedItem === 'versions') {
+            } else if (FunctionsService.checkedItem === 'versions') {
                 var checkedVersions = lodash.chain(ctrl.functions)
                     .map(function (functionItem) {
                         return lodash.filter(functionItem.versions, 'ui.checked');
@@ -668,7 +374,7 @@
          */
         function onCheckAll(event, data) {
             if (data.checkedCount === 0) {
-                ProjectsService.checkedItem = '';
+                FunctionsService.checkedItem = '';
             }
 
             $timeout(updatePanelActions);
@@ -681,7 +387,7 @@
          */
         function onItemChecked(event, data) {
             if (!lodash.isEmpty(data.itemType)) {
-                ProjectsService.checkedItem = data.itemType
+                FunctionsService.checkedItem = data.itemType
             }
         }
 
@@ -692,18 +398,10 @@
          */
         function onItemsCountChange(event, data) {
             if (data.checkedCount === 0) {
-                ProjectsService.checkedItem = '';
+                FunctionsService.checkedItem = '';
             }
 
             updatePanelActions();
-        }
-
-        /**
-         * Sets visibility for sort options
-         */
-        function setSortOptionsVisibility() {
-            lodash.find(ctrl.sortOptions, ['value', 'ui.project.metadata.name']).visible =
-                ProjectsService.viewMode !== 'projects'
         }
 
         /**
@@ -738,41 +436,10 @@
          * @param {Object} data - passed data
          */
         function updatePanelActions(event, data) {
-            if (ProjectsService.checkedItem === 'projects') {
-                updatePanelProjectActions(data);
-            } else if (ProjectsService.checkedItem === 'functions') {
+            if (FunctionsService.checkedItem === 'functions') {
                 updatePanelFunctionActions(data);
-            } else if (ProjectsService.checkedItem === 'versions') {
+            } else if (FunctionsService.checkedItem === 'versions') {
                 updatePanelVersionActions(data);
-            }
-
-            /**
-             * Updates project actions
-             * @param {Object} actionData - passed data
-             */
-            function updatePanelProjectActions(actionData) {
-                var checkedRows = lodash.filter(ctrl.projects, 'ui.checked');
-                var checkedRowsCount = lodash.get(actionData, 'checkedCount') || checkedRows.length;
-
-                if (checkedRowsCount > 0) {
-
-                    // sets visibility status of `edit action`
-                    // visible if only one project is checked
-                    var editAction = lodash.find(ctrl.projectActions, {'id': 'edit'});
-
-                    if (!lodash.isNil(editAction)) {
-                        editAction.visible = checkedRowsCount === 1;
-                    }
-
-                    // sets confirm message for `delete action` depending on count of checked rows
-                    var deleteAction = lodash.find(ctrl.projectActions, {'id': 'delete'});
-
-                    if (!lodash.isNil(deleteAction)) {
-                        deleteAction.confirm.message = checkedRowsCount === 1 ?
-                            $i18next.t('functions:DELETE_PROJECT', {lng: lng}) + ' “' + getName(checkedRows[0]) + '”?' :
-                            $i18next.t('functions:DELETE_PROJECTS_CONFIRM', {lng: lng});
-                    }
-                }
             }
 
             /**
@@ -847,24 +514,6 @@
                     }
                 }
             }
-        }
-
-        /**
-         * Updates current projects
-         * @param {boolean} hideSplashScreen
-         * @returns {Promise}
-         */
-        function updateProjects(hideSplashScreen) {
-            if (!hideSplashScreen) {
-                ctrl.isSplashShowed.value = true;
-            }
-
-            return ctrl.getProjects()
-                .finally(function () {
-                    if (!hideSplashScreen) {
-                        ctrl.isSplashShowed.value = false;
-                    }
-                });
         }
 
         /**

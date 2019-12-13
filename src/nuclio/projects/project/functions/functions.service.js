@@ -6,6 +6,7 @@
 
     function FunctionsService($i18next, i18next, lodash) {
         return {
+            checkedItem: '',
             getClassesList: getClassesList,
             getHandler: getHandler,
             initFunctionActions: initFunctionActions,

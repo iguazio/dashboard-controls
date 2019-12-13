@@ -123,44 +123,20 @@
         };
         var functionsTableColSizes = {
             headerName: {
-                projects: {
-                    default: '27-5',
-                    demo: '22-5'
-                },
-                functions: {
-                    default: '17-5',
-                    demo: '12-5'
-                }
+                default: '17-5',
+                demo: '12-5'
             },
             rowName: {
-                projects: {
-                    default: '25',
-                    demo: '20'
-                },
-                functions: {
-                    default: '17-5',
-                    demo: '12-5'
-                }
+                default: '17-5',
+                demo: '12-5'
             },
             status: {
-                projects: {
-                    default: '10',
-                    demo: '7-5'
-                },
-                functions: {
-                    default: '10',
-                    demo: '7-5'
-                }
+                default: '10',
+                demo: '7-5'
             },
             replicas: {
-                projects: {
-                    default: '7-5',
-                    demo: '7-5'
-                },
-                functions: {
-                    default: '5',
-                    demo: '5'
-                }
+                default: '5',
+                demo: '5'
             }
         };
 
@@ -217,12 +193,10 @@
         /**
          * Gets the size of functions table column
          * @param {string} column - name of the column
-         * @param {string} viewMode - name of the view
          * @returns {string} css class
          */
-        function getFunctionsTableColSize(column, viewMode) {
-            viewMode = viewMode === 'projects' ? viewMode : 'functions';
-            return 'igz-col-' + lodash.get(functionsTableColSizes, [column, viewMode, (ConfigService.isDemoMode() ? 'demo' : 'default')]);
+        function getFunctionsTableColSize(column) {
+            return 'igz-col-' + lodash.get(functionsTableColSizes, [column, (ConfigService.isDemoMode() ? 'demo' : 'default')]);
         }
 
     }

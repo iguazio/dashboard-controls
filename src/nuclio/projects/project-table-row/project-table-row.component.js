@@ -2,44 +2,33 @@
     'use strict';
 
     angular.module('iguazio.dashboard-controls')
-        .component('nclProjectCollapsingRow', {
+        .component('nclProjectTableRow', {
             bindings: {
-                deleteFunction: '&',
                 deleteProject: '&',
-                functionActionHandlerCallback: '&',
                 isSplashShowed: '&',
-                getFunction: '&',
-                getFunctions: '&',
                 project: '<',
                 projectActionHandlerCallback: '&',
                 projectsList: '<',
-                updateFunction: '&',
                 updateProject: '&'
             },
-            templateUrl: 'nuclio/projects/project-collapsing-row/project-collapsing-row.tpl.html',
+            templateUrl: 'nuclio/projects/project-table-row/project-table-row.tpl.html',
             transclude: true,
-            controller: NclProjectCollapsingRowController
+            controller: NclProjectTableRowController
         });
 
-    function NclProjectCollapsingRowController($q, $rootScope, $scope, $state, $timeout, $i18next, i18next, lodash,
-                                                moment, ngDialog, ActionCheckboxAllService, ConfigService, ExportService,
-                                                ProjectsService, TableSizeService) {
+    function NclProjectTableRowController($q, $scope, $state, $i18next, i18next, lodash, moment, ngDialog,
+                                          ActionCheckboxAllService, ConfigService, ExportService, ProjectsService) {
         var ctrl = this;
         var lng = i18next.language;
 
-        ctrl.isProjectFunctionsCollapsed = true;
-        ctrl.isProjectCollapsed = true;
         ctrl.projectActions = {};
 
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
 
-        ctrl.isProjectEmpty = isProjectEmpty;
         ctrl.onFireAction = onFireAction;
         ctrl.onSelectRow = onSelectRow;
-        ctrl.toggleProjectRow = toggleProjectRow;
 
-        ctrl.getFunctionsTableColSize = TableSizeService.getFunctionsTableColSize;
         ctrl.projectsService = ProjectsService;
         ctrl.isDemoMode = ConfigService.isDemoMode;
 
@@ -61,8 +50,6 @@
 
             // assign `deleteProject`, `editProject`, `exportProject` actions to `ui` property of current project
             lodash.assign(ctrl.project.ui, {
-                'expand-all': expandAllProjectFunctions,
-                'collapse-all': collapseAllProjectFunctions,
                 'delete': deleteProject,
                 'edit': editProject,
                 'export': exportProject
@@ -78,9 +65,6 @@
             }
 
             initProjectActions();
-
-            $scope.$on('expand-all-rows', onExpandAllRows);
-            $scope.$on('collapse-all-rows', onCollapseAllRows);
         }
 
         /**
@@ -97,14 +81,6 @@
         //
         // Public method
         //
-
-        /**
-         * Checks if project is empty
-         * @returns {boolean}
-         */
-        function isProjectEmpty() {
-            return lodash.isEmpty(ctrl.project.ui.functions);
-        }
 
         /**
          * According to given action name calls proper action handler
@@ -133,31 +109,9 @@
             });
         }
 
-        /**
-         * Toggles project row
-         */
-        function toggleProjectRow() {
-            $timeout(function () {
-                ctrl.isProjectCollapsed = !ctrl.isProjectCollapsed
-            })
-        }
-
         //
         // Private methods
         //
-
-        /**
-         * Sends broadcast to collapse all function rows in current project
-         * @return {Promise}
-         */
-        function collapseAllProjectFunctions() {
-            $rootScope.$broadcast('collapse-all-rows', {
-                rowsType: 'functions',
-                onlyForProject: ctrl.project
-            });
-
-            return $q.when();
-        }
 
         /**
          * Deletes project from projects list
@@ -205,19 +159,6 @@
         }
 
         /**
-         * Sends broadcast to expand all function rows in current project
-         * @return {Promise}
-         */
-        function expandAllProjectFunctions() {
-            $rootScope.$broadcast('expand-all-rows', {
-                rowsType: 'functions',
-                onlyForProject: ctrl.project
-            });
-
-            return $q.when();
-        }
-
-        /**
          * Exports the project
          * @returns {Promise}
          */
@@ -238,32 +179,6 @@
             if (!lodash.isNil(deleteAction)) {
                 deleteAction.confirm.message = $i18next.t('functions:DELETE_PROJECT', {lng: lng}) + ' “' +
                     lodash.defaultTo(ctrl.project.spec.displayName, ctrl.project.metadata.name) + '“?'
-            }
-        }
-
-        /**
-         * Expands current project row
-         * @param {Event} event - broadcast event
-         * @param {Object} data - broadcast data
-         */
-        function onExpandAllRows(event, data) {
-            if (data.rowsType === 'projects') {
-                $timeout(function () {
-                    ctrl.isProjectCollapsed = false;
-                });
-            }
-        }
-
-        /**
-         * Collapses current project row
-         * @param {Event} event - broadcast event
-         * @param {Object} data - broadcast data
-         */
-        function onCollapseAllRows(event, data) {
-            if (data.rowsType === 'projects') {
-                $timeout(function () {
-                    ctrl.isProjectCollapsed = true;
-                });
             }
         }
     }

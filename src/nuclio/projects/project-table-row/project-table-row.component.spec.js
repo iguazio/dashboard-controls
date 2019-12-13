@@ -1,31 +1,24 @@
-describe('nclProjectCollapsingRow component:', function () {
+describe('nclProjectTableRow component:', function () {
     var $componentController;
     var $q;
     var $rootScope;
     var $state;
-    var $timeout;
     var ngDialog;
-    var ActionCheckboxAllService;
-    var DialogsService;
     var ExportService;
     var ctrl;
-    var functions;
     var project;
     var projectsList;
 
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_, _$q_, _$rootScope_, _$state_, _$timeout_, _ngDialog_,
-                         _ActionCheckboxAllService_, _DialogsService_, _ExportService_) {
+        inject(function (_$componentController_, _$q_, _$rootScope_, _$state_, _ngDialog_,
+                         _ExportService_) {
             $componentController = _$componentController_;
             $q = _$q_;
             $rootScope = _$rootScope_;
             $state = _$state_;
-            $timeout = _$timeout_;
             ngDialog = _ngDialog_;
-            ActionCheckboxAllService = _ActionCheckboxAllService_;
-            DialogsService = _DialogsService_;
             ExportService = _ExportService_;
         });
 
@@ -67,21 +60,6 @@ describe('nclProjectCollapsingRow component:', function () {
                 }
             }
         ];
-        functions = [
-            {
-                metadata: {
-                    name: 'functionName',
-                    namespace: 'nuclio'
-                },
-                spec: {
-                    description: 'Some description',
-                    runtime: 'golang',
-                    replicas: 1,
-                    build: {},
-                    runRegistry: 'localhost:5000'
-                }
-            }
-        ];
         var bindings = {
             project: project,
             projectsList: angular.copy(projectsList),
@@ -90,7 +68,7 @@ describe('nclProjectCollapsingRow component:', function () {
             projectActionHandlerCallback: angular.noop
         };
 
-        ctrl = $componentController('nclProjectCollapsingRow', null, bindings);
+        ctrl = $componentController('nclProjectTableRow', null, bindings);
         ctrl.$onInit();
     });
 
@@ -99,12 +77,8 @@ describe('nclProjectCollapsingRow component:', function () {
         $q = null;
         $rootScope = null;
         $state = null;
-        $timeout = null;
         ngDialog = null;
         ctrl = null;
-        functions = null;
-        ActionCheckboxAllService = null;
-        DialogsService = null;
         ExportService = null;
     });
 
@@ -114,26 +88,10 @@ describe('nclProjectCollapsingRow component:', function () {
         });
 
         it('should initialize project actions and their handlers', function () {
-            expect(ctrl.project.ui['expand-all']).toBeDefined();
-            expect(ctrl.project.ui['collapse-all']).toBeDefined();
             expect(ctrl.project.ui['delete']).toBeDefined();
             expect(ctrl.project.ui['edit']).toBeDefined();
             expect(ctrl.project.ui['export']).toBeDefined();
             expect(ctrl.projectActions).not.toBe({});
-        });
-    });
-
-    describe('collapseAll(): ', function () {
-        it('should send `collapse-all-rows` broadcast', function () {
-            spyOn($rootScope, '$broadcast').and.callThrough();
-
-            ctrl.project.ui['collapse-all']();
-            $rootScope.$digest();
-
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('collapse-all-rows', {
-                rowsType: 'functions',
-                onlyForProject: ctrl.project
-            });
         });
     });
 
@@ -172,20 +130,6 @@ describe('nclProjectCollapsingRow component:', function () {
         })
     });
 
-    describe('expandAll(): ', function () {
-        it('should send `expand-all-rows` broadcast', function () {
-            spyOn($rootScope, '$broadcast').and.callThrough();
-
-            ctrl.project.ui['expand-all']();
-            $rootScope.$digest();
-
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('expand-all-rows', {
-                rowsType: 'functions',
-                onlyForProject: ctrl.project
-            });
-        });
-    });
-
     describe('exportProject(): ', function () {
         it('should call ExportService.exportProject() method', function () {
             spyOn(ExportService, 'exportProject');
@@ -193,20 +137,6 @@ describe('nclProjectCollapsingRow component:', function () {
             ctrl.project.ui.export();
 
             expect(ExportService.exportProject).toHaveBeenCalledWith(ctrl.project, ctrl.getFunctions);
-        });
-    });
-
-    describe('isProjectEmpty(): ', function () {
-        it('should return true if the project contains empty functions list', function () {
-            ctrl.project.ui.functions = [];
-
-            expect(ctrl.isProjectEmpty()).toBeTruthy();
-        });
-
-        it('should return false if the project contains not empty functions list', function () {
-            ctrl.project.ui.functions = functions;
-
-            expect(ctrl.isProjectEmpty()).toBeFalsy();
         });
     });
 
@@ -229,17 +159,6 @@ describe('nclProjectCollapsingRow component:', function () {
             ctrl.onSelectRow(new MouseEvent('click'));
 
             expect($state.go).toHaveBeenCalled();
-        });
-    });
-
-    describe('toggleProjectRow(): ', function () {
-        it('should toggle project row collapsing state', function () {
-            ctrl.isProjectCollapsed = false;
-
-            ctrl.toggleProjectRow();
-            $timeout.flush();
-
-            expect(ctrl.isProjectCollapsed).toBeTruthy();
         });
     });
 });

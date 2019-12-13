@@ -10,9 +10,7 @@
                 getFunction: '&',
                 getFunctions: '&',
                 handleDeleteFunction: '&',
-                isProjectsView: '<',
                 isSplashShowed: '<',
-                isProjectCollapsed: '<',
                 project: '<',
                 refreshFunctionsList: '&',
                 updateFunction: '&'
@@ -21,10 +19,9 @@
             controller: NclFunctionCollapsingRowController
         });
 
-    function NclFunctionCollapsingRowController($interval, $scope, $state, $timeout, $i18next, i18next, lodash,
-                                                ngDialog, ActionCheckboxAllService, ConfigService, DialogsService,
-                                                ExportService, FunctionsService, NuclioHeaderService, ProjectsService,
-                                                TableSizeService) {
+    function NclFunctionCollapsingRowController($interval, $state, $i18next, i18next, lodash, ngDialog,
+                                                ActionCheckboxAllService, ConfigService, DialogsService,
+                                                ExportService, FunctionsService, NuclioHeaderService, TableSizeService) {
         var ctrl = this;
         var tempFunctionCopy = null;
         var interval = null;
@@ -65,9 +62,9 @@
         ctrl.toggleFunctionRow = toggleFunctionRow;
         ctrl.toggleFunctionState = toggleFunctionState;
 
+        ctrl.functionsService = FunctionsService;
         ctrl.getFunctionsTableColSize = TableSizeService.getFunctionsTableColSize;
         ctrl.isDemoMode = ConfigService.isDemoMode;
-        ctrl.projectsService = ProjectsService;
 
         //
         // Hook methods
@@ -105,9 +102,6 @@
             });
 
             initFunctionActions();
-
-            $scope.$on('expand-all-rows', onExpandAllRows);
-            $scope.$on('collapse-all-rows', onCollapseAllRows);
         }
 
         /**
@@ -349,34 +343,6 @@
 
             if (!lodash.isNil(deleteAction)) {
                 deleteAction.confirm.message = $i18next.t('functions:DELETE_FUNCTION', {lng: lng}) + ' “' + ctrl.function.metadata.name + '”?';
-            }
-        }
-
-        /**
-         * Expands current function row
-         * @param {Event} event - broadcast event
-         * @param {Object} data - broadcast data
-         */
-        function onExpandAllRows(event, data) {
-            if (data.rowsType === 'functions' && (angular.isUndefined(data.onlyForProject) ||
-                data.onlyForProject.metadata.name === ctrl.project.metadata.name)) {
-                $timeout(function () {
-                    ctrl.isFunctionCollapsed = false;
-                });
-            }
-        }
-
-        /**
-         * Collapses current function row
-         * @param {Event} event - broadcast event
-         * @param {Object} data - broadcast data
-         */
-        function onCollapseAllRows(event, data) {
-            if (data.rowsType === 'functions' && (angular.isUndefined(data.onlyForProject) ||
-                data.onlyForProject.metadata.name === ctrl.project.metadata.name)) {
-                $timeout(function () {
-                    ctrl.isFunctionCollapsed = true;
-                });
             }
         }
 
