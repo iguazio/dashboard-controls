@@ -40,7 +40,7 @@
             key: [
                 {
                     name: 'nameValidCharacters',
-                    label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
+                    label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
                     pattern: /^([^\/]*\/)?[\w-.]+$/
                 },
                 {
@@ -55,7 +55,7 @@
                 },
                 {
                     name: 'prefixValidCharacters',
-                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -, .',
+                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -, .',
                     pattern: /(^[a-z0-9.-]+\/|^((?!\/).)*$)/
                 },
                 {

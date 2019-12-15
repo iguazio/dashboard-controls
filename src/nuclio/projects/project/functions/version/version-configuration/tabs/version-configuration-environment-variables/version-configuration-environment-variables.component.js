@@ -24,7 +24,7 @@
             key: [
                 {
                     name: 'validCharacters',
-                    label: $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
+                    label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
                     pattern: /^[\w-.]+$/
                 },
                 {
@@ -41,7 +41,7 @@
             configmapKey: [
                 {
                     name: 'validCharacters',
-                    label: $i18next.t('functions:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _',
+                    label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _',
                     pattern: /^[\w-]+$/
                 },
                 {
