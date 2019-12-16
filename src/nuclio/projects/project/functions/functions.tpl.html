@@ -1,0 +1,154 @@
+<section class="igz-general-content" data-igz-extend-background>
+
+    <!--splash screen-->
+    <igz-splash-screen data-is-splash-showed="$ctrl.isSplashShowed"></igz-splash-screen>
+
+    <!--filters-->
+    <igz-info-page-filters data-is-filters-showed="$ctrl.isFiltersShowed.value"
+                           data-apply-filters="$ctrl.onApplyFilters(false)"
+                           data-reset-filters="$ctrl.onResetFilters(false)"
+                           data-change-state-callback="$ctrl.isFiltersShowed.changeValue(newVal)"
+                           data-toggle-method="$ctrl.toggleFilters()">
+
+        <igz-search-input class="info-page-filters-item igz-component"
+                          data-data-set="$ctrl.functions"
+                          data-search-keys="$ctrl.searchKeys"
+                          data-search-callback="$ctrl.onUpdateFiltersCounter(searchQuery)"
+                          data-placeholder="{{ 'functions:PLACEHOLDER.SEARCH_FUNCTIONS' | i18next }}"
+                          data-live-search="false"
+                          data-search-states="$ctrl.searchStates">
+        </igz-search-input>
+    </igz-info-page-filters>
+
+    <!--actions bar-->
+    <igz-info-page-actions-bar class="igz-component">
+        <div class="actions-bar-left">
+            <igz-action-panel data-actions="$ctrl.functionsService.checkedItem === 'functions'? $ctrl.functionActions  :
+                                                                                               $ctrl.versionActions">
+            </igz-action-panel>
+        </div>
+        <div class="actions-bar-right">
+            <div class="actions-bar-left actions-buttons-block">
+                <button class="ncl-new-entity-button"
+                        data-ng-click="$ctrl.openNewFunctionScreen()">
+                    {{ 'functions:NEW_FUNCTION' | i18next }}
+                </button>
+            </div>
+            <div class="actions-bar-left actions-content-block">
+                <div class="igz-action-panel">
+                    <div class="actions-list">
+                        <igz-action-item-refresh
+                                data-refresh="$ctrl.refreshFunctions()">
+                        </igz-action-item-refresh>
+                        <igz-sort-dropdown class="igz-component pull-left"
+                                           data-sort-options="$ctrl.sortOptions"
+                                           data-reverse-sorting="$ctrl.isReverseSorting"
+                                           data-update-data-callback="$ctrl.onSortOptionsChange"
+                                           data-uib-tooltip="{{ 'common:TOOLTIP.SORT' | i18next }}"
+                                           data-tooltip-append-to-body="true"
+                                           data-tooltip-placement="top">
+                        </igz-sort-dropdown>
+                    </div>
+                </div>
+            </div>
+            <igz-actions-panes data-filters-toggle-method="$ctrl.toggleFilters()"
+                               data-filters-counter="$ctrl.filtersCounter"
+                               data-show-filter-icon="true"
+                               data-is-filters-opened="$ctrl.isFiltersShowed.value">
+            </igz-actions-panes>
+        </div>
+    </igz-info-page-actions-bar>
+
+    <!--page content-->
+    <igz-info-page-content class="igz-component">
+        <div class="common-table">
+            <div class="common-table-header">
+                <div class="common-table-cell igz-col-3">
+                    <igz-action-checkbox-all class="check-all-rows"
+                                             data-ng-show="$ctrl.functionsService.checkedItem !== ''"
+                                             data-items-count="$ctrl.functions.length"
+                                             data-items-type="{{$ctrl.functionsService.checkedItem}}">
+                    </igz-action-checkbox-all>
+                </div>
+                <div class="igz-col-3 common-table-cell"></div>
+                <div class="igz-row common-table-cells-container">
+                    <div class="common-table-cell sortable"
+                         data-ng-class="[$ctrl.getColumnSortingClasses('metadata.name', $ctrl.sortedColumnName, $ctrl.isReverseSorting),
+                                         $ctrl.getFunctionsTableColSize('headerName')]"
+                         data-ng-click="$ctrl.sortTableByColumn('metadata.name')">
+                        {{ 'common:NAME' | i18next }}
+                        <span class="sort-arrow"></span>
+                    </div>
+                    <div class="common-table-cell sortable function-status"
+                         data-ng-class="[$ctrl.getColumnSortingClasses('status.state', $ctrl.sortedColumnName, $ctrl.isReverseSorting),
+                                         $ctrl.getFunctionsTableColSize('status')]"
+                         data-ng-click="$ctrl.sortTableByColumn('status.state')">
+                        {{ 'common:STATUS' | i18next }}
+                        <span class="sort-arrow"></span>
+                    </div>
+                    <div class="common-table-cell sortable"
+                         data-ng-if="$ctrl.isDemoMode()"
+                         data-ng-class="[$ctrl.getColumnSortingClasses('spec.replicas', $ctrl.sortedColumnName, $ctrl.isReverseSorting),
+                                         $ctrl.getFunctionsTableColSize('replicas')]"
+                         data-ng-click="$ctrl.sortTableByColumn('spec.replicas')">
+                        {{ 'common:REPLICAS' | i18next }}
+                        <span class="sort-arrow"></span>
+                    </div>
+                    <div class="igz-col-7-5 common-table-cell sortable"
+                         data-ng-class="$ctrl.getColumnSortingClasses('spec.runtime', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('spec.runtime')">
+                        {{ 'functions:RUNTIME' | i18next }}
+                        <span class="sort-arrow"></span>
+                    </div>
+                    <div class="igz-col-12-5 common-table-cell">
+                        {{ 'functions:INVOCATION_URL' | i18next }}
+                    </div>
+                    <div class="igz-col-10 common-table-cell">
+                        {{ 'functions:INVOCATION_PER_SEC' | i18next }}
+                    </div>
+                    <div class="igz-col-15 common-table-cell">
+                        {{ 'common:CPU_CORES' | i18next }}
+                    </div>
+                    <div class="igz-col-15 common-table-cell">
+                        {{ 'common:MEMORY' | i18next }}
+                    </div>
+                    <div class="igz-col-15 common-table-cell">
+                        {{ 'functions:INVOCATION' | i18next }}&nbsp;#
+                    </div>
+                </div>
+                <div class="common-table-cell actions-menu">&nbsp;</div>
+            </div>
+
+            <div class="search-input-not-found"
+                 data-ng-if="$ctrl.isFunctionsListEmpty()">
+                {{ 'functions:FUNCTIONS_NOT_FOUND' | i18next }}
+            </div>
+
+            <div class="common-table-body" data-igz-extend-background>
+                <div class="igz-scrollable-container"
+                     data-ng-scrollbars>
+                    <div class="sortable-wrapper"
+                         data-ng-hide="$ctrl.searchStates.searchNotFound && $ctrl.searchStates.searchInProgress"
+                         data-ng-model="$ctrl.data.working.ui.children">
+                        <div data-ng-repeat="aFunction in $ctrl.functions track by aFunction.metadata.name">
+                            <div data-igz-show-hide-search-item="aFunction">
+                                <ncl-function-collapsing-row
+                                        data-action-handler-callback="$ctrl.handleFunctionVersionAction(actionType, checkedItems)"
+                                        data-function="aFunction"
+                                        data-functions-list="$ctrl.functions"
+                                        data-get-function="$ctrl.getFunction({metadata: metadata, projectID: projectID})"
+                                        data-get-functions="$ctrl.getFunctions({id: id})"
+                                        data-handle-delete-function="$ctrl.deleteFunction({functionData: functionData})"
+                                        data-is-splash-showed="$ctrl.isSplashShowed"
+                                        data-project="$ctrl.project"
+                                        data-refresh-functions-list="$ctrl.refreshFunctions()"
+                                        data-update-function="$ctrl.updateFunction({function: function, projectID: projectID})">
+                                </ncl-function-collapsing-row>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </igz-info-page-content>
+</section>

@@ -1,27 +1,24 @@
-describe('nclProjectsFunctionsView component: ', function () {
+describe('nclProjects component: ', function () {
     var $componentController;
     var $q;
     var $rootScope;
     var $state;
-    var $timeout;
     var ngDialog;
     var ExportService;
     var ProjectsService;
     var ctrl;
-    var functions;
     var projects;
     var sortOptions;
 
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_, _$q_, _$rootScope_, _$state_, _$timeout_, _ngDialog_, _ExportService_,
+        inject(function (_$componentController_, _$q_, _$rootScope_, _$state_, _ngDialog_, _ExportService_,
                          _ProjectsService_) {
             $componentController = _$componentController_;
             $q = _$q_;
             $rootScope = _$rootScope_;
             $state = _$state_;
-            $timeout = _$timeout_;
             ngDialog = _ngDialog_;
             ExportService = _ExportService_;
             ProjectsService = _ProjectsService_;
@@ -56,21 +53,6 @@ describe('nclProjectsFunctionsView component: ', function () {
                     }
                 }
             ];
-            functions = [
-                {
-                    metadata: {
-                        name: 'functionName',
-                        namespace: 'nuclio'
-                    },
-                    spec: {
-                        description: 'Some description',
-                        runtime: 'golang',
-                        replicas: 1,
-                        build: {},
-                        runRegistry: 'localhost:5000'
-                    }
-                }
-            ];
             sortOptions = [
                 {
                     label: 'Name',
@@ -78,25 +60,9 @@ describe('nclProjectsFunctionsView component: ', function () {
                     active: true
                 },
                 {
-                    label: 'Project',
-                    value: 'ui.project.metadata.name',
-                    visible: false,
-                    active: false
-                },
-                {
-                    label: 'Status',
-                    value: 'status.state',
-                    active: false
-                },
-                {
-                    label: 'Replicas',
-                    value: 'spec.replicas',
-                    active: false
-                },
-                {
-                    label: 'Runtime',
-                    value: 'spec.runtime',
-                    active: false
+                    label: 'Description',
+                    value: 'spec.description',
+                    active: false,
                 }
             ];
 
@@ -110,9 +76,8 @@ describe('nclProjectsFunctionsView component: ', function () {
             var ImportService = {
                 importFile: angular.noop
             };
-            ProjectsService.viewMode = 'projects';
 
-            ctrl = $componentController('nclProjectsFunctionsView', {$element: element, ImportService: ImportService}, bindings);
+            ctrl = $componentController('nclProjects', {$element: element, ImportService: ImportService}, bindings);
             ctrl.$onInit();
             $rootScope.$digest();
         });
@@ -123,12 +88,10 @@ describe('nclProjectsFunctionsView component: ', function () {
         $q = null;
         $rootScope = null;
         $state = null;
-        $timeout = null;
         ngDialog = null;
         ExportService = null;
         ProjectsService = null;
         ctrl = null;
-        functions = null;
         projects = null;
         sortOptions = null;
     });
@@ -157,99 +120,12 @@ describe('nclProjectsFunctionsView component: ', function () {
                 checked: true
             };
             projects[0].ui = ctrl.projects[0].ui;
-            ProjectsService.checkedItem = 'projects';
 
             $rootScope.$broadcast('action-panel_fire-action', data);
 
             $rootScope.$digest();
 
             expect(ctrl.handleProjectAction).toHaveBeenCalledWith(data.action, [projects[0]]);
-        });
-    });
-
-    describe('changeView(): ', function () {
-        it('should change view to `projects`', function () {
-            spyOn(ctrl, 'getProjects').and.callThrough();
-            spyOn(ctrl, 'getFunctions').and.returnValue($q.when(functions));
-
-            ctrl.functions = [];
-
-            ctrl.changeView('projects');
-            $rootScope.$digest();
-            $timeout.flush();
-
-            expect(ctrl.getProjects).toHaveBeenCalled();
-            expect(ctrl.getFunctions).toHaveBeenCalled();
-            expect(ctrl.functions).toEqual(functions);
-            expect(ProjectsService.viewMode).toEqual('projects');
-            expect(ctrl.projects[0].ui.functions).not.toBe([]);
-        });
-
-        it('should change view to `functions`', function () {
-            spyOn(ctrl, 'getFunctions').and.returnValue($q.when(functions));
-
-            ctrl.functions = [];
-
-            ctrl.changeView('functions');
-            $rootScope.$digest();
-            $timeout.flush();
-
-            expect(ctrl.getFunctions).toHaveBeenCalled();
-            expect(ctrl.functions).toEqual(functions);
-            expect(ProjectsService.viewMode).toEqual('functions');
-            expect(ctrl.projects[0].ui.functions).not.toBe([]);
-        });
-    });
-
-    describe('collapseAllRows(): ', function () {
-        it('should send `collapse-all-rows` broadcast', function () {
-            spyOn($rootScope, '$broadcast');
-
-            ctrl.collapseAllRows();
-
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('collapse-all-rows', {
-                rowsType: 'projects'
-            })
-        });
-    });
-
-    describe('expandAllRows(): ', function () {
-        it('should send `expand-all-rows` broadcast', function () {
-            spyOn($rootScope, '$broadcast');
-
-            ctrl.expandAllRows();
-
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('expand-all-rows', {
-                rowsType: 'projects'
-            })
-        });
-    });
-
-    describe('handleFunctionVersionAction(): ', function () {
-        it('should call action`s handlers for all checked functions', function () {
-            ctrl.functions.push({
-                metadata: {
-                    name: 'functionName1',
-                    namespace: 'nuclio'
-                },
-                spec: {
-                    description: 'Some description',
-                    runtime: 'golang',
-                    replicas: 1,
-                    build: {},
-                    runRegistry: 'localhost:5000'
-                }
-            });
-            ctrl.functions[0].ui = {
-                checked: true,
-                delete: angular.noop
-            };
-
-            spyOn(ctrl.functions[0].ui, 'delete');
-
-            ctrl.handleFunctionVersionAction('delete', [ctrl.functions[0]]);
-
-            expect(ctrl.functions[0].ui.delete).toHaveBeenCalled();
         });
     });
 
@@ -272,20 +148,6 @@ describe('nclProjectsFunctionsView component: ', function () {
 
             expect(ctrl.projects[0].ui.delete).toHaveBeenCalled();
             expect(ctrl.projects[1].ui.delete).toHaveBeenCalled();
-        });
-    });
-
-    describe('isFunctionsListEmpty(): ', function () {
-        it('should return true if functions list in empty', function () {
-            ctrl.functions = [];
-
-            expect(ctrl.isFunctionsListEmpty()).toBeTruthy();
-        });
-
-        it('should return false if functions list in not empty', function () {
-            ctrl.functions = functions;
-
-            expect(ctrl.isFunctionsListEmpty()).toBeFalsy();
         });
     });
 
@@ -356,7 +218,7 @@ describe('nclProjectsFunctionsView component: ', function () {
             ctrl.onSortOptionsChange(ctrl.sortOptions[0]);
 
             expect(ctrl.sortedColumnName).toEqual('metadata.name');
-            expect(ctrl.sortTableByColumn).toHaveBeenCalledWith('metadata.name');
+            expect(ctrl.sortTableByColumn).toHaveBeenCalledWith('metadata.name', true);
         });
     });
 
@@ -377,8 +239,6 @@ describe('nclProjectsFunctionsView component: ', function () {
     describe('openNewFunctionScreen(): ', function () {
         it('should call `$state.go` method', function () {
             spyOn($state, 'go').and.callThrough();
-
-            ProjectsService.viewMode = 'projects';
 
             ctrl.openNewFunctionScreen();
 
@@ -402,23 +262,6 @@ describe('nclProjectsFunctionsView component: ', function () {
 
             expect(ngDialog.open).toHaveBeenCalled();
             expect(ctrl.getProjects).toHaveBeenCalled();
-        });
-    });
-
-    describe('refreshFunctions(): ', function () {
-        it('should initialize functions list', function () {
-            spyOn(ctrl, 'getFunctions').and.returnValue($q.when(functions));
-            ctrl.projects = projects;
-            ctrl.functions = [];
-
-            ctrl.refreshFunctions();
-
-            $rootScope.$digest();
-            $timeout.flush();
-
-            expect(ctrl.getFunctions).toHaveBeenCalled();
-            expect(ctrl.functions).toEqual(functions);
-            expect(ctrl.projects[0].ui.functions).not.toBe([]);
         });
     });
 

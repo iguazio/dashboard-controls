@@ -10,7 +10,6 @@
                 function: '<',
                 invocationUrl: '<',
                 isFunctionCollapsed: '<',
-                isProjectsView: '<',
                 project: '<',
                 statusIcon: '<',
                 toggleFunctionState: '&',
@@ -22,8 +21,7 @@
         });
 
     function NclFunctionVersionRowController($state, $i18next, i18next, lodash, ActionCheckboxAllService,
-                                             ConfigService, FunctionsService, NuclioHeaderService,
-                                             ProjectsService, TableSizeService) {
+                                             ConfigService, FunctionsService, NuclioHeaderService, TableSizeService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -47,9 +45,9 @@
         ctrl.onSelectRow = onSelectRow;
         ctrl.onToggleFunctionState = onToggleFunctionState;
 
+        ctrl.functionsService = FunctionsService;
         ctrl.getFunctionsTableColSize = TableSizeService.getFunctionsTableColSize;
         ctrl.isDemoMode = ConfigService.isDemoMode;
-        ctrl.projectsService = ProjectsService;
 
         //
         // Hook methods

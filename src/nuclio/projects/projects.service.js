@@ -6,8 +6,6 @@
 
     function ProjectsService($i18next, i18next) {
         return {
-            viewMode: '',
-            checkedItem: '',
             initProjectActions: initProjectActions
         };
 
@@ -23,18 +21,6 @@
             var lng = i18next.language;
 
             return [
-                {
-                    label: 'Expand all',
-                    id: 'expand-all',
-                    icon: 'ncl-icon-expand-all',
-                    active: true
-                },
-                {
-                    label: 'Collapse all',
-                    id: 'collapse-all',
-                    icon: 'ncl-icon-collapse-all',
-                    active: true
-                },
                 {
                     label: $i18next.t('common:DELETE', {lng: lng}),
                     id: 'delete',

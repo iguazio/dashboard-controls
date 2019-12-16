@@ -1,9 +1,6 @@
 .ncl-function-collapsing-row {
     background-color: @white;
-
-    &:not(.in-projects-view) {
-        margin-bottom: 8px;
-    }
+    margin-bottom: 8px;
 
     .function-title-block {
         height: 50px;
@@ -79,6 +76,17 @@
                 .actions-menu {
                     visibility: visible;
                     background-color: @white;
+                }
+                igz-action-checkbox:not(.invisible) {
+                    visibility: visible;
+                }
+            }
+
+            igz-action-checkbox {
+                visibility: hidden;
+
+                &.visible {
+                    visibility: visible;
                 }
             }
         }
