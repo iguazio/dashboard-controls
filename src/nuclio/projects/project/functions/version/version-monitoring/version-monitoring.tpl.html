@@ -8,14 +8,14 @@
                     <span class="monitoring-block-title">
                         {{ 'functions:INVOCATION_URL' | i18next }}:
                     </span>
-                    <a data-ng-if="($ctrl.version.status.state === 'ready' || $ctrl.version.status.state === 'scaleToZero') && $ctrl.version.ui.invocationUrl !== ''"
+                    <a data-ng-if="($ctrl.version.status.state === 'ready' || $ctrl.version.status.state === 'scaledToZero') && $ctrl.version.ui.invocationUrl !== ''"
                        class="monitoring-invocation-url"
                        href="{{$ctrl.version.ui.invocationUrl}}">
                         {{$ctrl.version.ui.invocationUrl}}
                     </a>
-                    <span data-ng-if="($ctrl.version.status.state === 'ready' || $ctrl.version.status.state === 'scaleToZero') && $ctrl.version.ui.invocationUrl === ''"
+                    <span data-ng-if="($ctrl.version.status.state === 'ready' || $ctrl.version.status.state === 'scaledToZero') && $ctrl.version.ui.invocationUrl === ''"
                           class="monitoring-invocation-field-invalid">N/A</span>
-                    <span data-ng-if="$ctrl.version.status.state !== 'ready' && $ctrl.version.status.state !== 'scaleToZero'"
+                    <span data-ng-if="$ctrl.version.status.state !== 'ready' && $ctrl.version.status.state !== 'scaledToZero'"
                           class="monitoring-invocation-field-invalid">
                         {{ 'functions:NOT_YET_DEPLOYED' | i18next }}
                     </span>
