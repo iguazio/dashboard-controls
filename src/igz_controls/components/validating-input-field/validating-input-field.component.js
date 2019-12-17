@@ -86,6 +86,7 @@
         ctrl.inputFocused = false;
         ctrl.inputIsTouched = false;
         ctrl.isValidationPopUpShown = false;
+        ctrl.preventInputBlur = false;
         ctrl.startValue = '';
 
         ctrl.$onInit = onInit;
@@ -262,12 +263,19 @@
 
         /**
          * Loses focus from input field.
+         * @param {Event} event - native event object.
          */
-        function unfocusInput() {
-            ctrl.inputFocused = false;
+        function unfocusInput(event) {
+            if (!ctrl.preventInputBlur) {
+                ctrl.inputFocused = false;
 
-            // If 'data revert' option is enabled - set or revert outer model value
-            setOrRevertInputValue();
+                // If 'data revert' option is enabled - set or revert outer model value
+                setOrRevertInputValue();
+            } else {
+                event.target.focus();
+
+                ctrl.preventInputBlur = false;
+            }
         }
 
         /**
