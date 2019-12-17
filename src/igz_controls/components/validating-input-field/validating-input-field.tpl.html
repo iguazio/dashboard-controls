@@ -13,7 +13,8 @@
         </div>
         <input class="input-field field" tabindex="0"
                data-ng-class="{'invalid': $ctrl.isFieldInvalid(),
-                               'with-icon': $ctrl.inputIcon}"
+                               'with-icon': $ctrl.inputIcon,
+                               'with-validation-icon': $ctrl.validationRules.length > 0}"
                name="{{$ctrl.inputName}}"
                placeholder="{{$ctrl.placeholderText}}"
                data-ng-readonly="$ctrl.readOnly"
