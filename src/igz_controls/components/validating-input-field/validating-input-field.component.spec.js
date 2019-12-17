@@ -104,19 +104,31 @@ describe('igzValidatingInputField component:', function () {
     });
 
     describe('unfocusInput():', function () {
-        it('should call ctrl.itemBlurCallback with ctrl.inputValue', function () {
+        it('should call `ctrl.itemBlurCallback` with ctrl.inputValue', function () {
+            var spy = spyOn(ctrl, 'itemBlurCallback');
             ctrl.data = 'new value';
 
-            var spy = spyOn(ctrl, 'itemBlurCallback');
-
             ctrl.unfocusInput();
-
-            $timeout(function () {
-                expect(spy).toHaveBeenCalledWith({inputValue: ctrl.inputValue, inputName: ctrl.inputName});
-                expect(ctrl.isValidationPopUpShown).toBeFalsy();
-            });
-
             $timeout.flush();
+
+            expect(spy).toHaveBeenCalledWith({inputValue: ctrl.inputValue, inputName: ctrl.inputName});
+            expect(ctrl.isValidationPopUpShown).toBeFalsy();
+        });
+
+        it('should prevent input blur and not call `ctrl.itemBlurCallback`', function () {
+            var spy = spyOn(ctrl, 'itemBlurCallback');
+            var event = {
+                target: {
+                    focus: angular.noop
+                }
+            };
+            ctrl.preventInputBlur = true;
+
+            ctrl.unfocusInput(event);
+            $timeout.flush();
+
+            expect(spy).not.toHaveBeenCalled();
+            expect(ctrl.preventInputBlur).toBeFalsy();
         });
     });
 
