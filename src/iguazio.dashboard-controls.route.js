@@ -28,7 +28,7 @@
                 url: 'welcome',
                 views: {
                     main: {
-                        template: '<ncl-projects-welcome-page></ncl-projects-welcome-page>'
+                        template: '<igz-projects-welcome-page></igz-projects-welcome-page>'
                     }
                 },
                 data: {
@@ -40,7 +40,7 @@
                 url: 'projects',
                 views: {
                     main: {
-                        template: '<ncl-projects></ncl-projects>'
+                        template: '<igz-projects></igz-projects>'
                     }
                 },
                 data: {
@@ -53,7 +53,7 @@
                 url: 'projects/:projectId',
                 views: {
                     main: {
-                        template: '<ncl-project></ncl-project>'
+                        template: '<igz-project></igz-project>'
                     }
                 },
                 params: {
