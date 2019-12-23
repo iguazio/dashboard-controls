@@ -83,25 +83,26 @@
          */
         function exportProjects(projects, getFunctions) {
             var promises = lodash.map(projects, function (project) {
-                return getFunctions({id: project.metadata.name})
+                return getFunctions(project.metadata.name)
                     .then(function (functions) {
-                        var functionsList = lodash.map(functions, function (functionItem) {
+                        return lodash.map(functions, function (functionItem) {
                             return lodash.chain(functionItem)
                                 .set('spec.version', 1)
                                 .omit(['status', 'metadata.namespace'])
                                 .value();
                         });
-
+                    })
+                    .catch(angular.noop)
+                    .then(function (functionsList) {
                         return {
                             metadata: {
                                 name: lodash.defaultTo(project.spec.displayName, project.metadata.name)
                             },
                             spec: {
-                                functions: functionsList
+                                functions: lodash.defaultTo(functionsList, [])
                             }
                         };
                     })
-                    .catch(angular.noop);
             });
 
             $q.all(promises)
