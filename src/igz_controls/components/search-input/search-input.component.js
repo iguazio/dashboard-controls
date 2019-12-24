@@ -8,6 +8,7 @@
                 initSearchQuery: '@?',
                 isSearchHierarchically: '@?',
                 liveSearch: '<?',
+                multiSearchName: '@?',
                 onSearchSubmit: '&?',
                 placeholder: '@',
                 ruleType: '@?',
@@ -103,14 +104,22 @@
             if (angular.isFunction(ctrl.searchCallback)) {
 
                 // call custom search method
-                ctrl.searchCallback(lodash.pick(ctrl, ['searchQuery', 'dataSet', 'searchKeys', 'isSearchHierarchically', 'ruleType', 'searchStates']));
+                ctrl.searchCallback(lodash.pick(ctrl, [
+                    'searchQuery',
+                    'dataSet',
+                    'searchKeys',
+                    'isSearchHierarchically',
+                    'ruleType',
+                    'searchStates',
+                    'multiSearchName'
+                ]));
             }
 
             if (angular.isUndefined(ctrl.type)) {
 
                 // default search functionality
-                SearchHelperService.makeSearch(ctrl.searchQuery, ctrl.dataSet, ctrl.searchKeys, ctrl.isSearchHierarchically,
-                    ctrl.ruleType, ctrl.searchStates);
+                SearchHelperService.makeSearch(ctrl.searchQuery, ctrl.dataSet, ctrl.searchKeys,
+                    ctrl.isSearchHierarchically,ctrl.ruleType, ctrl.searchStates, ctrl.multiSearchName);
             }
         }
 

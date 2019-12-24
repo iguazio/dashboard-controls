@@ -27,19 +27,12 @@
             var mainHeaderTitle = {
                 title: title,
                 project: subtitles.project,
-                function: null,
-                version: null,
+                function: lodash.defaultTo(subtitles.function, null),
+                version: lodash.defaultTo(subtitles.version, null),
+                tab: lodash.defaultTo(subtitles.tab, null),
                 state: state,
                 mainHeaderState: mainHeaderState
             };
-
-            if (!lodash.isNil(subtitles.function)) {
-                mainHeaderTitle.function = subtitles.function;
-
-                if (!lodash.isNil(subtitles.version)) {
-                    mainHeaderTitle.version = subtitles.version;
-                }
-            }
 
             $rootScope.$broadcast('update-main-header-title', mainHeaderTitle);
         }

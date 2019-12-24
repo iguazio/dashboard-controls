@@ -105,7 +105,7 @@
     "EXPORT_FUNCTION": "Export function",
     "FAILED_TO_DEPLOY": "Failed to deploy",
     "FUNCTION_NAME": "Function Name",
-    "FUNCTIONS_NOT_FOUND": "There are currently no functions, you can create a function by clicking the ‘Create Function’ button",
+    "FUNCTIONS_NOT_FOUND": "There are currently no functions, you can create a function by clicking the ‘New Function’ button",
     "GET_STARTED_WITH_YOUR_PROJECT": "Get started with your project.",
     "HANDLER": "Handler",
     "HEADERS": "Headers",

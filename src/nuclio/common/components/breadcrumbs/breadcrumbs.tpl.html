@@ -35,6 +35,11 @@
         </ncl-breadcrumbs-dropdown>
 </span>
 
+<span data-ng-if="$ctrl.mainHeaderTitle.tab"
+      class="ncl-bold-subtitle">
+        {{$ctrl.mainHeaderTitle.tab}}
+</span>
+
 <span data-ng-if="$ctrl.mainHeaderTitle.function === 'Create function'"
       class="ncl-bold-subtitle">
         {{$ctrl.mainHeaderTitle.function}}
