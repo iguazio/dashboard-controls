@@ -466,7 +466,7 @@
          */
         function setIngressHost() {
             var matches = {
-                '{{ .FunctionName }}': lodash.get(ctrl.version, 'metadata.name'),
+                '{{ .ResourceName }}': lodash.get(ctrl.version, 'metadata.name'),
                 '{{ .ProjectName }}': lodash.get(ctrl.project, 'metadata.name'),
                 '{{ .Namespace }}': lodash.get(ctrl.project, 'metadata.namespace')
             };
