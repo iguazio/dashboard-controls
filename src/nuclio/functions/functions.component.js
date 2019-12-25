@@ -326,6 +326,7 @@
                 .then(function (project) {
                     ctrl.project = project;
                     title.project = project;
+                    title.tab = $i18next.t('common:FUNCTIONS', {lng: lng});
 
                     NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
 

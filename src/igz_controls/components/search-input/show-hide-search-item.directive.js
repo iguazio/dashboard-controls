@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .directive('igzShowHideSearchItem', igzShowHideSearchItem);
 
-    function igzShowHideSearchItem() {
+    function igzShowHideSearchItem(lodash) {
         return {
             restrict: 'A',
             scope: {
@@ -25,6 +25,7 @@
              */
             function activate() {
                 scope.$watch('dataItem.ui.isFitQuery', changeVisibility);
+                scope.$watch('dataItem.ui.filters', changeVisibility, true);
             }
 
             /**
@@ -32,7 +33,14 @@
              * @param {boolean} newValue - value displays if current element fit search query
              */
             function changeVisibility(newValue) {
-                var displayValue = (newValue === false) ? 'none' : '';
+                var displayValue = '';
+
+                if (lodash.isObject(newValue)) {
+                    displayValue = lodash.some(newValue, {isFitQuery: false}) ? 'none' : '';
+                } else {
+                    displayValue = (newValue === false) ? 'none' : '';
+                }
+
                 element.css('display', displayValue);
             }
         }

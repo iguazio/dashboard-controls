@@ -21,8 +21,10 @@
          * @param {boolean} isHierarchical - flag which indicates if passed data has hierarchical structure
          * @param {string} ruleType - string representing the type of rule resource
          * @param {Object} searchStates
+         * @param {string} [multiSearchName] - unique name of the search input
          */
-        function makeSearch(searchQuery, data, pathsForSearchArray, isHierarchical, ruleType, searchStates) {
+        function makeSearch(searchQuery, data, pathsForSearchArray, isHierarchical, ruleType, searchStates,
+                            multiSearchName) {
             searchStates.searchNotFound = false;
             searchStates.searchInProgress = false;
 
@@ -32,11 +34,12 @@
                 ruleType = '';
             }
             if (searchQuery === '') {
-                showAllChildren(data);
+                showAllChildren(data, multiSearchName);
             } else if (angular.isString(searchQuery)) {
                 searchStates.searchNotFound = true;
                 searchStates.searchInProgress = true;
-                findBySearchQuery(searchQuery, data, pathsForSearchArray, isHierarchical, ruleType, searchStates);
+                findBySearchQuery(searchQuery, data, pathsForSearchArray, isHierarchical, ruleType, searchStates,
+                                  multiSearchName);
             }
         }
 
@@ -52,43 +55,21 @@
          * @param {boolean} isHierarchical - flag which indicates if passed data has hierarchical structure
          * @param {string} ruleType - string representing the type of rule resource
          * @param {Object} searchStates
+         * @param {string} [multiSearchName] - unique name of the search input
          */
-        function findBySearchQuery(searchQuery, children, pathsForSearch, isHierarchical, ruleType, searchStates) {
+        function findBySearchQuery(searchQuery, children, pathsForSearch, isHierarchical, ruleType, searchStates,
+                                   multiSearchName) {
             angular.forEach(children, function (child) {
                 // Search by text in data without children data only
                 if (angular.isString(child.type) && (child.type !== ruleType) && isHierarchical) {
                     // Hide all parent data while search among children and proceed recursively
                     child.ui.isFitQuery = false;
-                    findBySearchQuery(searchQuery, child.ui.children, pathsForSearch, isHierarchical, ruleType, searchStates);
+                    findBySearchQuery(searchQuery, child.ui.children, pathsForSearch, isHierarchical, ruleType,
+                        searchStates, multiSearchName);
                 } else {
-                    showRelevantItem(searchQuery, child, pathsForSearch, searchStates);
+                    showRelevantItem(searchQuery, child, pathsForSearch, searchStates, multiSearchName);
                 }
             });
-        }
-
-        /**
-         * Loop through all given data's properties and show/hide current data depending on query match criteria
-         * @param {string} searchQuery - query entered to a search input
-         * @param {Object} dataItem - current item
-         * @param {Array} pathsForSearch - array of strings, representing paths to item's properties to search from
-         * @param {Object} searchStates
-         */
-        function showRelevantItem(searchQuery, dataItem, pathsForSearch, searchStates) {
-            var stringValuesArray = [];
-
-            angular.forEach(pathsForSearch, function (pathForSearch) {
-                getStringValuesFromItem(lodash.get(dataItem, pathForSearch), stringValuesArray);
-            });
-
-            // If at least one value in item's properties string values matched - show current item and all its direct ancestors chain
-            dataItem.ui.isFitQuery = stringValuesArray.some(function (value) {
-                return lodash.includes(value.toLowerCase(), searchQuery.toLowerCase());
-            });
-
-            if (dataItem.ui.isFitQuery) {
-                searchStates.searchNotFound = false;
-                showAllParents(dataItem);
-            }
         }
 
         /**
@@ -109,6 +90,37 @@
         }
 
         /**
+         * Sets isFitQuery value for data item
+         * @param {Object} dataItem - current item
+         * @param {string} [multiSearchName] - unique name of the search input
+         * @param {boolean} isFitQuery - `true` if item is matched with search query
+         */
+        function setFitQueryValue(dataItem, multiSearchName, isFitQuery) {
+            var filterPath = lodash.isEmpty(multiSearchName) ?
+                'isFitQuery' : ['filters', multiSearchName, 'isFitQuery'];
+
+            lodash.set(dataItem.ui, filterPath, isFitQuery);
+        }
+
+
+        /**
+         * Show all data item's children chain (recursively)
+         * @param {Array.<Object>} data - child items
+         * @param {string} [multiSearchName] - unique name of the search input
+         */
+        function showAllChildren(data, multiSearchName) {
+            angular.forEach(data, function (value) {
+                var children = value.ui.children;
+
+                setFitQueryValue(value, multiSearchName, true);
+
+                if (!lodash.isEmpty(children)) {
+                    showAllChildren(children);
+                }
+            });
+        }
+
+        /**
          * Show item's all direct ancestors chain (recursively)
          * @param {Object} dataItem - current item
          */
@@ -121,17 +133,32 @@
         }
 
         /**
-         * Show all data item's children chain (recursively)
-         * @param {Array.<Object>} data - child items
+         * Loop through all given data's properties and show/hide current data depending on query match criteria
+         * @param {string} searchQuery - query entered to a search input
+         * @param {Object} dataItem - current item
+         * @param {Array} pathsForSearch - array of strings, representing paths to item's properties to search from
+         * @param {Object} searchStates
+         * @param {string} [multiSearchName] - unique name of the search input
          */
-        function showAllChildren(data) {
-            angular.forEach(data, function (value) {
-                var children = value.ui.children;
-                value.ui.isFitQuery = true;
-                if (!lodash.isEmpty(children)) {
-                    showAllChildren(children);
-                }
+        function showRelevantItem(searchQuery, dataItem, pathsForSearch, searchStates, multiSearchName) {
+            var isFitQuery;
+            var stringValuesArray = [];
+
+            angular.forEach(pathsForSearch, function (pathForSearch) {
+                getStringValuesFromItem(lodash.get(dataItem, pathForSearch), stringValuesArray);
             });
+
+            // If at least one value in item's properties string values matched - show current item and all its direct ancestors chain
+            isFitQuery = stringValuesArray.some(function (value) {
+                return lodash.includes(value.toLowerCase(), searchQuery.toLowerCase());
+            });
+
+            setFitQueryValue(dataItem, multiSearchName, isFitQuery);
+
+            if (dataItem.ui.isFitQuery) {
+                searchStates.searchNotFound = false;
+                showAllParents(dataItem);
+            }
         }
     }
 }());

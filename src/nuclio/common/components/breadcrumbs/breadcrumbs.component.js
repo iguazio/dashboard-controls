@@ -78,8 +78,6 @@
          */
         function setMainHeaderTitle(event, data) {
             if (!lodash.isNil(data)) {
-                data = lodash.omitBy(data, lodash.isNil);
-
                 lodash.assign(ctrl.mainHeaderTitle, data);
             } else {
                 ctrl.mainHeaderTitle = { title: $state.current.data.mainHeaderTitle };
