@@ -60,6 +60,11 @@
                  data-tooltip-append-to-body="true"
                  data-tooltip-placement="top">
                 <span class="common-table-cell-content">{{$ctrl.invocationUrl}}</span>
+                <div class="igz-action-panel">
+                    <div class="actions-list">
+                        <igz-copy-to-clipboard data-value="$ctrl.invocationUrl"></igz-copy-to-clipboard>
+                    </div>
+                </div>
             </div>
             <div class="igz-col-10 common-table-cell"
                  data-test-id="functions.item-invocation-per-sec"

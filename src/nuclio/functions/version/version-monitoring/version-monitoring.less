@@ -52,10 +52,20 @@
                     color: @dusk-three;
                 }
 
-                .monitoring-invocation-url {
-                    .invocation-url-common();
-                    color: @dark-sky-blue;
-                    text-decoration: none;
+                .monitoring-invocation-url-wrapper {
+                    display: inline-flex;
+                    align-items: center;
+
+                    .monitoring-invocation-url {
+                        .invocation-url-common();
+                        color: @dark-sky-blue;
+                        text-decoration: none;
+                    }
+
+                    .igz-action-panel {
+                        top: -2px;
+                        left: 5px;
+                    }
                 }
 
                 .monitoring-invocation-field-invalid {
