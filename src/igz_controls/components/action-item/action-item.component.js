@@ -20,6 +20,7 @@
         ctrl.$onDestroy = onDestroy();
 
         ctrl.getIconClass = getIconClass;
+        ctrl.getTooltipText = getTooltipText;
         ctrl.isItemVisible = isItemVisible;
         ctrl.onClickAction = onClickAction;
 
@@ -58,6 +59,10 @@
         function getIconClass() {
             return ctrl.action.icon ? ctrl.action.icon                                                :
                                       ctrl.actions && lodash.some(ctrl.actions, 'icon') ? 'fake-icon' : '';
+        }
+
+        function getTooltipText() {
+            return ctrl.action.label + (lodash.isEmpty(ctrl.action.tooltip) ? '' : ' - ' + ctrl.action.tooltip);
         }
 
         /**
