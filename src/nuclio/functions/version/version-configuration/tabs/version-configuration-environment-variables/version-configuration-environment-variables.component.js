@@ -215,10 +215,9 @@
          * Determines `uniqueness` validation for `Key` and `ConfigMap key` fields
          * @param {string} path
          * @param {string} value
-         * @param {boolean} isInitCheck
          */
-        function validateUniqueness(path, value, isInitCheck) {
-            return lodash.filter(ctrl.variables, [path, value]).length === Number(isInitCheck);
+        function validateUniqueness(path, value) {
+            return lodash.filter(ctrl.variables, [path, value]).length === 1;
         }
     }
 }());
