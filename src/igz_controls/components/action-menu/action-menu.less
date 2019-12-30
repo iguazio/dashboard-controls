@@ -65,7 +65,11 @@
 
             &.inactive {
                 color: @action-item-inactive-color;
-                pointer-events: none;
+                cursor: default;
+
+                &:hover {
+                    background-color: @menu-dropdown-bg-color;
+                }
             }
 
             .action-icon {
