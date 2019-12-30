@@ -17,6 +17,7 @@
                     {{ 'common:KEY' | i18next }}:
                 </label>
                 <igz-validating-input-field class="nuclio-validating-input input-key"
+                                            data-ng-if="!$ctrl.keyList"
                                             data-field-type="input"
                                             data-input-name="key"
                                             data-is-disabled="$ctrl.isDisabled"
@@ -29,6 +30,17 @@
                                             data-validation-rules="$ctrl.validationRules['key']"
                                             data-placeholder-text="{{$ctrl.keyPlaceholder}}">
                 </igz-validating-input-field>
+                <igz-default-dropdown class="nuclio-validating-input input-key"
+                                      data-ng-if="$ctrl.keyList"
+                                      data-form-object="$ctrl.keyValueInputForm"
+                                      data-prevent-drop-up="true"
+                                      data-input-name="key"
+                                      data-is-disabled="$ctrl.isDisabled"
+                                      data-values-array="$ctrl.keyList"
+                                      data-selected-item="$ctrl.getSelectedItem()"
+                                      data-item-select-callback="$ctrl.onKeyChanged(item)"
+                                      data-enable-overlap="$ctrl.dropdownOverlap">
+                </igz-default-dropdown>
             </div>
 
             <div class="input-container input-type-wrapper"

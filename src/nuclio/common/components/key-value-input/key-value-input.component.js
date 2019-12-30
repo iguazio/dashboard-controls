@@ -14,6 +14,7 @@
                 dropdownOverlap: '<?',
                 isDisabled: '<?',
                 itemIndex: '<',
+                keyList: '<?',
                 keyOptional: '<?',
                 keyPlaceholder: '@?',
                 keyValidationPattern: '<?',
@@ -48,6 +49,7 @@
         ctrl.onEditInput = onEditInput;
         ctrl.getInputValue = getInputValue;
         ctrl.getInputKey = getInputKey;
+        ctrl.getSelectedItem = getSelectedItem;
         ctrl.getType = getType;
         ctrl.isVisibleByType = isVisibleByType;
         ctrl.inputValueCallback = inputValueCallback;
@@ -55,6 +57,7 @@
         ctrl.onClickAction = onClickAction;
         ctrl.onFireAction = onFireAction;
         ctrl.openDropdown = openDropdown;
+        ctrl.onKeyChanged = onKeyChanged;
         ctrl.onTypeChanged = onTypeChanged;
         ctrl.showDotMenu = showDotMenu;
 
@@ -141,6 +144,14 @@
         }
 
         /**
+         * Gets selected item in dropdown
+         * @returns {Object}
+         */
+        function getSelectedItem() {
+            return lodash.get(ctrl.data, 'name') === '' ? lodash.find(ctrl.keyList, ['disabled', false]) : ctrl.data;
+        }
+
+        /**
          * Gets selected type
          * @returns {string}
          */
@@ -172,6 +183,11 @@
 
             } else {
                 ctrl.data[field] = newData;
+
+                if (ctrl.keyList) {
+                    var keyData = getSelectedItem();
+                    lodash.set(ctrl.data, 'name', keyData.name);
+                }
             }
 
             if (ctrl.submitOnFly) {
@@ -212,6 +228,20 @@
         function onFireAction(actionType) {
             ctrl.actionHandlerCallback({actionType: actionType, index: ctrl.itemIndex});
             ctrl.editMode = false;
+        }
+
+        /**
+         * Callback method which handles field key changing
+         * @param {Object} newKey - type selected in dropdown
+         */
+        function onKeyChanged(newKey) {
+            ctrl.data = lodash.omit(ctrl.data, 'valueFrom');
+            lodash.set(ctrl.data, 'name', newKey.name);
+
+            if (ctrl.submitOnFly) {
+                $timeout(saveChanges);
+            }
+
         }
 
         /**
