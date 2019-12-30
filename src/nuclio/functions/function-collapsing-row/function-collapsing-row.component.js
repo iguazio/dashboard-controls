@@ -29,7 +29,10 @@
 
         ctrl.functionActions = [];
         ctrl.functionNameTooltip = '';
-        ctrl.invocationUrl = '';
+        ctrl.invocationUrl = {
+            text: '',
+            valid: false
+        };
         ctrl.isFunctionCollapsed = true;
         ctrl.runtimes = {
             'golang': 'Go',
@@ -129,10 +132,12 @@
                 convertStatusState();
                 setStatusIcon();
 
-                ctrl.invocationUrl =
-                    lodash.isEmpty(externalAddress) ? 'N/A'                                                :
-                    lodash.toFinite(httpPort) === 0 ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
-                                                      'http://' + externalAddress + ':' + httpPort;
+                ctrl.invocationUrl = {
+                    text: lodash.isEmpty(externalAddress) ? 'N/A'                                                :
+                          lodash.toFinite(httpPort) === 0 ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
+                                                            'http://' + externalAddress + ':' + httpPort,
+                    valid: !lodash.isEmpty(externalAddress) && lodash.toFinite(httpPort) !== 0
+                };
             }
         }
 

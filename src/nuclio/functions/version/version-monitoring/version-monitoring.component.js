@@ -27,7 +27,7 @@
         };
         ctrl.rowIsCollapsed = {
             buildLog: false,
-            errorLog: false,
+            errorLog: false
         };
 
         ctrl.$onInit = onInit;
