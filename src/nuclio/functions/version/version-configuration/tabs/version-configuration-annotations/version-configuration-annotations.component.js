@@ -228,10 +228,9 @@
         /**
          * Determines `uniqueness` validation for `Key` field
          * @param {string} value - value to validate
-         * @param {boolean} isInitCheck - is it an initial check
          */
-        function validateUniqueness(value, isInitCheck) {
-            return lodash.filter(ctrl.annotations, ['name', value]).length === Number(isInitCheck);
+        function validateUniqueness(value) {
+            return lodash.filter(ctrl.annotations, ['name', value]).length === 1;
         }
     }
 }());
