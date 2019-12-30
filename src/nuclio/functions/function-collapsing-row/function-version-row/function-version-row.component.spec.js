@@ -92,10 +92,13 @@ describe('nclFunctionVersionRow component:', function () {
 
     describe('onSelectRow(): ', function () {
         it('should call $state.go() method and update header title', function () {
+            var event = new MouseEvent('click');
+            Object.defineProperty(event, 'target', {writable: false, value: {closest: angular.noop}});
+
             spyOn($state, 'go');
             spyOn(NuclioHeaderService, 'updateMainHeader');
 
-            ctrl.onSelectRow(new MouseEvent('click'));
+            ctrl.onSelectRow(event);
 
             expect($state.go).toHaveBeenCalled();
             expect(NuclioHeaderService.updateMainHeader).toHaveBeenCalled();

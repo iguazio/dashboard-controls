@@ -35,10 +35,15 @@
             {{$ctrl.runtimes[$ctrl.function.spec.runtime]}}
         </div>
         <div class="igz-col-12-5 common-table-cell"
-             data-uib-tooltip="{{$ctrl.invocationUrl}}"
+             data-uib-tooltip="{{$ctrl.invocationUrl.text}}"
              data-tooltip-append-to-body="true"
              data-tooltip-placement="top">
-            <span class="common-table-cell-content">{{$ctrl.invocationUrl}}</span>
+            <span class="common-table-cell-content">{{$ctrl.invocationUrl.text}}</span>
+            <div class="igz-action-panel" data-ng-if="$ctrl.invocationUrl.valid">
+                <div class="actions-list">
+                    <igz-copy-to-clipboard data-value="$ctrl.invocationUrl.text"></igz-copy-to-clipboard>
+                </div>
+            </div>
         </div>
         <div class="igz-col-10 common-table-cell">
             {{$ctrl.function.ui.metrics.invocation || 0}}

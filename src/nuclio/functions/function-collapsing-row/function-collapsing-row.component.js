@@ -29,7 +29,10 @@
 
         ctrl.functionActions = [];
         ctrl.functionNameTooltip = '';
-        ctrl.invocationUrl = '';
+        ctrl.invocationUrl = {
+            text: '',
+            valid: false
+        };
         ctrl.isFunctionCollapsed = true;
         ctrl.runtimes = {
             'golang': 'Go',
@@ -129,10 +132,12 @@
                 convertStatusState();
                 setStatusIcon();
 
-                ctrl.invocationUrl =
-                    lodash.isEmpty(externalAddress) ? 'N/A'                                                :
-                    lodash.toFinite(httpPort) === 0 ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
-                                                      'http://' + externalAddress + ':' + httpPort;
+                ctrl.invocationUrl = {
+                    text: lodash.isEmpty(externalAddress) ? 'N/A'                                                :
+                          lodash.toFinite(httpPort) === 0 ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
+                                                            'http://' + externalAddress + ':' + httpPort,
+                    valid: !lodash.isEmpty(externalAddress) && lodash.toFinite(httpPort) !== 0
+                };
             }
         }
 
@@ -181,21 +186,23 @@
          * @param {string} state - absolute state name or relative state path
          */
         function onSelectRow(event, state) {
-            if (!angular.isString(state)) {
-                state = 'app.project.function.edit.code';
+            if (lodash.isNil(event.target.closest('.igz-action-item'))) {
+                if (!angular.isString(state)) {
+                    state = 'app.project.function.edit.code';
+                }
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                $state.go(state, {
+                    id: ctrl.project.metadata.name,
+                    projectId: ctrl.project.metadata.name,
+                    functionId: ctrl.function.metadata.name,
+                    projectNamespace: ctrl.project.metadata.namespace
+                });
+
+                NuclioHeaderService.updateMainHeader('common:PROJECTS', ctrl.title, $state.current.name);
             }
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            $state.go(state, {
-                id: ctrl.project.metadata.name,
-                projectId: ctrl.project.metadata.name,
-                functionId: ctrl.function.metadata.name,
-                projectNamespace: ctrl.project.metadata.namespace
-            });
-
-            NuclioHeaderService.updateMainHeader('common:PROJECTS', ctrl.title, $state.current.name);
         }
 
         /**
