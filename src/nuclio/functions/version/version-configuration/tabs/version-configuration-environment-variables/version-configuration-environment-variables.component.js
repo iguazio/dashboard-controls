@@ -11,7 +11,7 @@
             controller: NclVersionConfigurationEnvironmentVariablesController
         });
 
-    function NclVersionConfigurationEnvironmentVariablesController($element, $rootScope, $timeout, $i18next, i18next,
+    function NclVersionConfigurationEnvironmentVariablesController($element, $i18next, $rootScope, $timeout, i18next,
                                                                    lodash, PreventDropdownCutOffService) {
         var ctrl = this;
         var lng = i18next.language;
@@ -25,7 +25,7 @@
                 {
                     name: 'validCharacters',
                     label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
-                    pattern: /^[\w-.]+$/
+                    pattern: /^[\w.-]+$/
                 },
                 {
                     name: 'notStartWithDigitOrTwoPeriods',

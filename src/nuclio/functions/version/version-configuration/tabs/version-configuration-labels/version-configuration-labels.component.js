@@ -11,7 +11,7 @@
             controller: NclVersionConfigurationLabelsController
         });
 
-    function NclVersionConfigurationLabelsController($element, $rootScope, $timeout, $i18next, i18next, lodash,
+    function NclVersionConfigurationLabelsController($element, $i18next, $rootScope, $timeout, i18next, lodash,
                                                      PreventDropdownCutOffService, VersionHelperService) {
         var ctrl = this;
         var lng = i18next.language;
@@ -40,37 +40,37 @@
                 {
                     name: 'nameValidCharacters',
                     label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
-                    pattern: /^([^\/]*\/)?[\w-.]+$/
+                    pattern: /^([^\/]+\/)?[\w.-]+$/
                 },
                 {
                     name: 'nameBeginEnd',
                     label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('functions:BEGIN_END_WITH_ALPHANUMERIC', {lng: lng}),
-                    pattern: validateNameBeginEnd
+                    pattern: /^([^\/]+\/)?[a-z0-9]([^\/]*[a-z0-9])?$/
                 },
                 {
                     name: 'nameMaxLength',
                     label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
-                    pattern: /^([^\/]*\/)?[\S\s]{1,63}$/
+                    pattern: /^([^\/]+\/)?[^\/]{1,63}$/
                 },
                 {
                     name: 'prefixValidCharacters',
                     label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -, .',
-                    pattern: /(^[a-z0-9.-]+\/|^((?!\/).)*$)/
+                    pattern: /^([a-z0-9.-]+\/)?[^\/]+$/
                 },
                 {
                     name: 'prefixBeginEnd',
                     label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}),
-                    pattern: /(^[a-z0-9](.*[a-z0-9])*\/|^((?!\/).)*$)/
+                    pattern: /^([a-z0-9]([^\/]+[a-z0-9])?\/)?[^\/]+$/
                 },
                 {
                     name: 'prefixNotStart',
                     label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:NOT_START_WITH_FORBIDDEN_WORDS', {lng: lng}),
-                    pattern: /^(?!kubernetes[^\/]io\/)(?!k8s[^\/]io\/)/
+                    pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)/
                 },
                 {
                     name: 'prefixMaxLength',
                     label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
-                    pattern: /(?=^[\S\s]{1,253}\/|^((?!\/).)*$)/
+                    pattern: /^(?![^\/]{254,}\/)/
                 },
                 {
                     name: 'uniqueness',
@@ -240,21 +240,6 @@
 
             lodash.set(ctrl.version, 'metadata.labels', newLabels);
             ctrl.onChangeCallback();
-        }
-
-        /**
-         * Determines `nameBeginEnd` validation rule for `Key` field
-         * @param {string} value
-         */
-        function validateNameBeginEnd(value) {
-            var valueToCheck = value;
-            var slashIndex = value.search('/');
-
-            if (slashIndex > -1) {
-                valueToCheck = value.substr(slashIndex + 1);
-            }
-
-            return /^([a-zA-Z0-9].*)?[a-zA-Z0-9]$/.test(valueToCheck);
         }
 
         /**
