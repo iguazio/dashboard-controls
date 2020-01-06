@@ -59,13 +59,13 @@
          */
         function onInit() {
             ctrl.validationRules.key = ValidatingPatternsService.getValidationRules('k8s.prefixedQualifiedName')
-                .concat(
+                .concat([
                     {
                         name: 'uniqueness',
                         label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
                         pattern: validateUniqueness
                     }
-                );
+                ]);
             ctrl.validationRules.value = ValidatingPatternsService.getValidationRules('k8s.qualifiedName');
             var labels = lodash.get(ctrl.version, 'metadata.labels', []);
 
