@@ -11,7 +11,8 @@
             controller: NclVersionConfigurationVolumesController
         });
 
-    function NclVersionConfigurationVolumesController($rootScope, $timeout, $i18next, i18next, lodash, DialogsService) {
+    function NclVersionConfigurationVolumesController($rootScope, $timeout, $i18next, i18next, lodash, DialogsService,
+                                                      ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -28,24 +29,7 @@
             }
         };
         ctrl.validationRules = {
-            itemName: [
-                {
-                    label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -',
-                    pattern: /^[a-z0-9-]+$/
-                },
-                {
-                    label: $i18next.t('functions:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}) + ' (a–z, 0–9)',
-                    pattern: /^([a-z0-9].*)?[a-z0-9]$/
-                },
-                {
-                    label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
-                    pattern: /^(?=[\S\s]{1,63}$)/
-                },
-                {
-                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
-                    pattern: validateUniqueness.bind(null, 'volume.name')
-                }
-            ],
+            itemName: [],
             itemPath: [
                 {
                     label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
@@ -69,6 +53,12 @@
          * Initialization method
          */
         function onInit() {
+            ctrl.validationRules.itemName = ValidatingPatternsService.getValidationRules('k8s.dns1123Label').concat([
+                {
+                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                    pattern: validateUniqueness.bind(null, 'volume.name')
+                }
+            ]);
 
             // get volumes list
             ctrl.volumes = lodash.map(lodash.get(ctrl.version, 'spec.volumes', []), function (value) {

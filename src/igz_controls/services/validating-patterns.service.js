@@ -4,7 +4,134 @@
     angular.module('iguazio.dashboard-controls')
         .factory('ValidatingPatternsService', ValidatingPatternsService);
 
-    function ValidatingPatternsService(lodash) {
+    function ValidatingPatternsService($i18next, i18next, lodash) {
+        var lng = i18next.language;
+
+        var lengths = {
+            default: 128,
+            cluster: {
+                description: 150
+            },
+            escalation: {
+                name: 40
+            },
+            'function': {
+                name: 63
+            },
+            group: {
+                description: 128
+            },
+            interface: {
+                alias: 40
+            },
+            network: {
+                name: 30,
+                description: 150,
+                subnet: 30,
+                mask: 150,
+                tag: 10
+            },
+            node: {
+                description: 128
+            },
+            container: {
+                description: 150
+            },
+            storagePool: {
+                name: 30,
+                description: 150,
+                url: 100,
+                username: 30
+            },
+            user: {
+                firstName: 30,
+                lastName: 30,
+                username: 32
+            },
+            tenant: {
+                name: 31
+            }
+        };
+        var validationRules = {
+            k8s: {
+                dns1123Label: [
+                    {
+                        label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -',
+                        pattern: /^[a-z0-9-]+$/
+                    },
+                    {
+                        label: $i18next.t('functions:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}) + ' (a–z, 0–9)',
+                        pattern: /^([a-z0-9].*)?[a-z0-9]$/
+                    },
+                    {
+                        label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
+                        pattern: /^(?=[\S\s]{1,63}$)/
+                    }
+                ],
+                prefixedQualifiedName: [
+                    {
+                        name: 'nameValidCharacters',
+                        label: '[' + $i18next.t('common:NAME', { lng: lng }) + '] ' +
+                        $i18next.t('common:VALID_CHARACTERS', { lng: lng }) + ': a–z, A–Z, 0–9, -, _, .',
+                        pattern: /^([^\/]+\/)?[\w.-]+$/
+                    },
+                    {
+                        name: 'nameBeginEnd',
+                        label: '[' + $i18next.t('common:NAME', { lng: lng }) + '] ' +
+                        $i18next.t('functions:BEGIN_END_WITH_ALPHANUMERIC', { lng: lng }),
+                        pattern: /^([^\/]+\/)?([A-Za-z0-9][^\/]*)?[A-Za-z0-9]$/
+                    },
+                    {
+                        name: 'nameMaxLength',
+                        label: '[' + $i18next.t('common:NAME', { lng: lng }) + '] ' +
+                        $i18next.t('common:MAX_LENGTH_CHARACTERS', { lng: lng, count: 63 }),
+                        pattern: /^([^\/]+\/)?[^\/]{1,63}$/
+                    },
+                    {
+                        name: 'prefixValidCharacters',
+                        label: '[' + $i18next.t('functions:PREFIX', { lng: lng }) + '] ' +
+                        $i18next.t('common:VALID_CHARACTERS', { lng: lng }) + ': a–z, 0–9, -, .',
+                        pattern: /^([a-z0-9.-]+\/)?[^\/]+$/
+                    },
+                    {
+                        name: 'prefixBeginEnd',
+                        label: '[' + $i18next.t('functions:PREFIX', { lng: lng }) + '] ' +
+                        $i18next.t('functions:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', { lng: lng }),
+                        pattern: /^([a-z0-9]([^\/]*[a-z0-9])?\/)?[^\/]+$/
+                    },
+                    {
+                        name: 'prefixNotStart',
+                        label: '[' + $i18next.t('functions:PREFIX', { lng: lng }) + '] ' +
+                        $i18next.t('functions:NOT_START_WITH_FORBIDDEN_WORDS', { lng: lng }),
+                        pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)/
+                    },
+                    {
+                        name: 'prefixMaxLength',
+                        label: '[' + $i18next.t('functions:PREFIX', { lng: lng }) + '] ' +
+                        $i18next.t('common:MAX_LENGTH_CHARACTERS', { lng: lng, count: 253 }),
+                        pattern: /^(?![^\/]{254,}\/)/
+                    }
+                ],
+                qualifiedName: [
+                    {
+                        name: 'validCharacters',
+                        label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
+                        pattern: /^[\w.-]+$/
+                    },
+                    {
+                        name: 'beginEnd',
+                        label: $i18next.t('functions:BEGIN_END_WITH_ALPHANUMERIC', {lng: lng}),
+                        pattern: /^([A-Za-z0-9].*)?[A-Za-z0-9]$/
+                    },
+                    {
+                        name: 'maxLength',
+                        label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
+                        pattern: /^[\S\s]{1,63}$/
+                    }
+                ]
+            }
+        };
+
         return {
             boolean: /^(0|1)$/,
             browseAttributeName: /^[A-Za-z_][A-Za-z0-9_]*$/,
@@ -42,7 +169,8 @@
             username: /^(?=.{1,32}$)[a-zA-Z][-_a-zA-Z0-9]*$/,
             usernameAndTenantName: /^(?=.{1,32}(@|$))[a-zA-Z][-_a-zA-Z0-9]*(@(?=.{1,31}$)[a-zA-Z]([a-zA-Z0-9_]*[a-zA-Z0-9])?)?$/,
 
-            getMaxLength: getMaxLength
+            getMaxLength: getMaxLength,
+            getValidationRules: getValidationRules
         };
 
         //
@@ -55,53 +183,11 @@
          * @returns {number}
          */
         function getMaxLength(path) {
-            var lengths = {
-                default: 128,
-                cluster: {
-                    description: 150
-                },
-                escalation: {
-                    name: 40
-                },
-                'function': {
-                    name: 63
-                },
-                group: {
-                    description: 128
-                },
-                interface: {
-                    alias: 40
-                },
-                network: {
-                    name: 30,
-                    description: 150,
-                    subnet: 30,
-                    mask: 150,
-                    tag: 10
-                },
-                node: {
-                    description: 128
-                },
-                container: {
-                    description: 150
-                },
-                storagePool: {
-                    name: 30,
-                    description: 150,
-                    url: 100,
-                    username: 30
-                },
-                user: {
-                    firstName: 30,
-                    lastName: 30,
-                    username: 32
-                },
-                tenant: {
-                    name: 31
-                }
-            };
+            return lodash.cloneDeep(lodash.get(lengths, path, lengths.default));
+        }
 
-            return lodash.get(lengths, path, lengths.default);
+        function getValidationRules(type) {
+            return lodash.cloneDeep(lodash.get(validationRules, type, []));
         }
     }
 }());
