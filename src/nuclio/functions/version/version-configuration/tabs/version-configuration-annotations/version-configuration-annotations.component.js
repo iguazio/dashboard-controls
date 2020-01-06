@@ -12,7 +12,7 @@
         });
 
     function NclVersionConfigurationAnnotationsController($element, $i18next, $rootScope, $timeout, i18next, lodash,
-                                                          PreventDropdownCutOffService) {
+                                                          PreventDropdownCutOffService, ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -36,48 +36,7 @@
             name: $i18next.t('functions:TOOLTIP.ANNOTATION', {lng: lng})
         });
         ctrl.validationRules = {
-            key: [
-                {
-                    name: 'nameValidCharacters',
-                    label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
-                    pattern: /^([^\/]+\/)?[\w.-]+$/
-                },
-                {
-                    name: 'nameBeginEnd',
-                    label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('functions:BEGIN_END_WITH_ALPHANUMERIC', {lng: lng}),
-                    pattern: /^([^\/]+\/)?[a-z0-9]([^\/]*[a-z0-9])?$/
-                },
-                {
-                    name: 'nameMaxLength',
-                    label: '[' + $i18next.t('common:NAME', {lng: lng}) + '] ' + $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
-                    pattern: /^([^\/]+\/)?[^\/]{1,63}$/
-                },
-                {
-                    name: 'prefixValidCharacters',
-                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -, .',
-                    pattern: /^([a-z0-9.-]+\/)?[^\/]+$/
-                },
-                {
-                    name: 'prefixBeginEnd',
-                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}),
-                    pattern: /^([a-z0-9]([^\/]+[a-z0-9])?\/)?[^\/]+$/
-                },
-                {
-                    name: 'prefixNotStart',
-                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('functions:NOT_START_WITH_FORBIDDEN_WORDS', {lng: lng}),
-                    pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)/
-                },
-                {
-                    name: 'prefixMaxLength',
-                    label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' + $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
-                    pattern: /^(?![^\/]{254,}\/)/
-                },
-                {
-                    name: 'uniqueness',
-                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
-                    pattern: validateUniqueness
-                }
-            ]
+            key: []
         };
 
         ctrl.$onInit = onInit;
@@ -95,6 +54,14 @@
          * Initialization method
          */
         function onInit() {
+            ctrl.validationRules.key = ValidatingPatternsService.getValidationRules('k8s.prefixedQualifiedName')
+                .concat([
+                    {
+                        name: 'uniqueness',
+                        label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                        pattern: validateUniqueness
+                    }
+                ]);
             var annotations =  lodash.get(ctrl.version, 'metadata.annotations', []);
 
             ctrl.annotations = lodash.map(annotations, function (value, key) {
