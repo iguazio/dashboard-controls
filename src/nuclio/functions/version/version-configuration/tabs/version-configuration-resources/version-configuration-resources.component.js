@@ -439,7 +439,7 @@
                     id: 'targetCPU',
                     ceil: 100,
                     step: 1,
-                    showSelectionBar: false,
+                    showSelectionBar: true,
                     onChange: null,
                     onEnd: null
                 }

@@ -76,43 +76,38 @@
 
         & > div, .jump-to-page-input {
             display: inline-block;
-            vertical-align: middle;
+            vertical-align: baseline;
         }
 
         .to-page-prev, .to-page-next {
             width: 41px;
             line-height: 34px;
             height: 36px;
-            display: inline-block;
             vertical-align: top;
             position: relative;
-            text-align: center;
-            color: @page-prev-next-color;
-            font-size: 12px;
 
-            &.disabled, &.disabled:hover {
-                background-color: @page-prev-next-disabled-hover-bg-color;
-                border: @page-prev-next-disabled-hover-border;
-                box-shadow: none;
-                cursor: default;
+            &:not(:active) {
+                background-color: transparent;
+            }
 
-                &:before {
-                    color: @page-prev-next-disabled-hover-before-color;
-                }
+            &:not(:hover):not(:active):not(:disabled):not(.disabled) {
+                color: @page-prev-next-color;
             }
 
             &:before {
-                 line-height: 34px;
-             }
+                line-height: 34px;
+            }
         }
 
         .to-page-prev {
-            border-right: 0;
             border-radius: 2px 0 0 2px;
+
+            &::before {
+                margin-left: -2px;
+            }
         }
 
         .to-page-next {
-            border-left: 0;
             border-radius: 0 2px 2px 0;
         }
 
@@ -120,21 +115,33 @@
             margin: 0 0 0 14px;
         }
 
-        .validating-input-field .input-field {
-            width: 43px;
+        .page-number {
+            min-width: 30px;
             height: 36px;
-            border-radius: 0;
-            background-color: @input-field-bg-color;
-            box-shadow: @input-field-box-shadow;
-            border: @input-field-border;
-            font-family: @font-family-sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            color: @input-field-color;
+            line-height: 36px;
             text-align: center;
+        }
 
-            &:hover {
-                border: @input-field-hover-border;
+        .validating-input-field {
+            background-color: @input-field-bg-color;
+
+            .input-field {
+                width: 43px;
+                height: 36px;
+                border-radius: 0;
+                box-shadow: @input-field-box-shadow;
+                border: 1px solid @input-field-border-color;
+                border-left: 0 none transparent;
+                border-right: 0 none transparent;
+                font-family: @font-family-sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                color: @input-field-color;
+                text-align: center;
+
+                &:hover {
+                    border: @input-field-hover-border;
+                }
             }
         }
     }

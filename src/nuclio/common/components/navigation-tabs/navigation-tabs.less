@@ -1,7 +1,9 @@
 ncl-navigation-tabs {
+    .ncl-navigation-tabs-color-set();
+
     position: relative;
     z-index: 999;
-    background: #f2f2f6;
+    background: @navigation-tabs-bg-color;
 
     .ncl-navigation-tabs-wrapper {
         display: flex;
@@ -11,7 +13,7 @@ ncl-navigation-tabs {
         border-top: none;
 
         .ncl-navigation-tabs {
-            background: @pale-white;
+            background: @navigation-tabs-bg-color;
             height: 54px;
 
             .navigation-tab {
@@ -20,17 +22,17 @@ ncl-navigation-tabs {
                 height: 32px;
                 padding: 20px 40px 0;
                 font-family: @font-family-sans-serif;
-                color: @greyish-purple;
+                color: @navigation-tab-color;
                 font-size: 13px;
                 text-align: center;
                 cursor: pointer;
-                border-bottom: 2px solid transparent;
+                border-bottom: @navigation-tab-border-bottom;
                 box-sizing: content-box;
 
                 &.active, &.active:hover {
                     background: none;
-                    color: @orange;
-                    border-bottom: 2px solid @orange;
+                    color: @navigation-tab-active-hover-color;
+                    border-bottom: @navigation-tab-active-hover-border-bottom;
                     font-weight: bold;
                 }
 

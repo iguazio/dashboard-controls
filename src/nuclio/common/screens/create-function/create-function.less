@@ -1,4 +1,6 @@
 .new-function-wrapper {
+    .ncl-new-function-color-set();
+
     position: relative;
 
     .new-function-header {
@@ -48,12 +50,15 @@
                     align-items: center;
 
                     .function-type-icon {
-                        background: url('/assets/images/background-circle.svg') no-repeat center;
                         min-width: 145px;
                         height: 145px;
                         line-height: 1px;
                         position: relative;
                         margin-right: 30px;
+
+                        svg path {
+                            fill: @function-type-icon-bg-color;
+                        }
 
                         .icon {
                             position: absolute;
@@ -78,7 +83,7 @@
 
                     .function-type-info {
                         .type-title {
-                            color: @light-blue;
+                            color: @dark-sky-blue;
                             font-size: 18px;
                             font-weight: bold;
                         }
@@ -98,8 +103,7 @@
                             align-items: center;
                             justify-content: center;
                             border-radius: 50%;
-                            .lightBlue(0.8);
-                            background-color: @light-blue;
+                            background-color: @dark-sky-blue;
 
                             .icon {
                                 color: @white;

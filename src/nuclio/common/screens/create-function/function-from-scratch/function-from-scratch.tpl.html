@@ -58,11 +58,11 @@
                                           data-form-object="$ctrl.functionFromScratchForm"
                                           data-input-name="runtime"></igz-default-dropdown>
                     <div class="bottom-bar">
-                        <button class="ncl-primary-button"
+                        <button class="ncl-primary-button igz-button-primary"
                                 data-ng-click="$ctrl.createFunction()"
                                 data-ng-disabled="!$ctrl.isCreateFunctionAllowed()"
                                 data-ng-class="{'disabled': !$ctrl.isCreateFunctionAllowed()}">
-                            {{ 'functions:NEW_FUNCTION' | i18next }}
+                            {{ 'common:CREATE' | i18next }}
                         </button>
                     </div>
                 </div>

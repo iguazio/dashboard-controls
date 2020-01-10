@@ -268,3 +268,27 @@ html input[disabled], html textarea[disabled] {
     font-weight: 400;
     padding-left: 2px;
 }
+
+//
+// rz slider
+//
+
+.rzslider:not([disabled]) {
+    .rz-slider-color-set();
+
+    .rz-bar {
+        background-color: @rz-slider-bar-bg-color;
+
+        &.rz-selection {
+            background-color: @rz-slider-bar-selection-bg-color;
+        }
+    }
+
+    .rz-pointer {
+        background-color: @rz-slider-pointer-bg-color;
+    }
+
+    .rz-tick {
+        background-color: @rz-slider-tick-bg-color;
+    }
+}
