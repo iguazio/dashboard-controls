@@ -146,8 +146,8 @@
          */
         function createNewProject() {
             ngDialog.open({
-                template: '<ncl-new-project-dialog data-close-dialog="closeThisDialog(project)" ' +
-                          'data-create-project-callback="ngDialogData.createProject({project: project})"></ncl-new-project-dialog>',
+                template: '<igz-new-project-dialog data-close-dialog="closeThisDialog(project)" ' +
+                          'data-create-project-callback="ngDialogData.createProject({project: project})"></igz-new-project-dialog>',
                 plain: true,
                 scope: $scope,
                 data: {
