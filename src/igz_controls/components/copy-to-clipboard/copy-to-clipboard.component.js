@@ -27,7 +27,9 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.tooltipPlacement = lodash.defaultTo(ctrl.tooltipPlacement, 'top');
+            lodash.defaults(ctrl, {
+                tooltipPlacement: 'top'
+            });
         }
 
         //
