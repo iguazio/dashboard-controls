@@ -4,17 +4,33 @@
     angular.module('iguazio.dashboard-controls')
         .component('igzCopyToClipboard', {
             bindings: {
+                tooltipPlacement: '@?',
                 value: '<'
             },
             templateUrl: 'igz_controls/components/copy-to-clipboard/copy-to-clipboard.tpl.html',
             controller: IgzCopyToClipboard
         });
 
-    function IgzCopyToClipboard($i18next, i18next, DialogsService) {
+    function IgzCopyToClipboard($i18next, i18next, lodash, DialogsService) {
         var ctrl = this;
         var lng = i18next.language;
 
+        ctrl.$onInit = onInit;
+
         ctrl.copyToClipboard = copyToClipboard;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            lodash.defaults(ctrl, {
+                tooltipPlacement: 'top'
+            });
+        }
 
         //
         // Public method
