@@ -145,17 +145,7 @@
          * New project dialog
          */
         function createNewProject() {
-            ngDialog.open({
-                template: '<igz-new-project-dialog data-close-dialog="closeThisDialog(project)" ' +
-                          'data-create-project-callback="ngDialogData.createProject({project: project})"></igz-new-project-dialog>',
-                plain: true,
-                scope: $scope,
-                data: {
-                    createProject: ctrl.createProject
-                },
-                className: 'ngdialog-theme-nuclio'
-            })
-                .closePromise
+            ctrl.createProject()
                 .then(function (data) {
                     if (!lodash.isNil(data.value)) {
                         ctrl.isSplashShowed.value = true;
