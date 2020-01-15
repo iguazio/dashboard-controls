@@ -7,6 +7,7 @@
         .component('nclFunctions', {
             bindings: {
                 createFunction: '&',
+                createFunctionWhenEmpty: '<?',
                 deleteFunction: '&',
                 getFunction: '&',
                 getFunctions: '&',
@@ -111,6 +112,8 @@
          */
         function onInit() {
             ctrl.isSplashShowed.value = true;
+
+            lodash.defaults(ctrl, { createFunctionWhenEmpty: true });
 
             initFunctions();
 
@@ -263,7 +266,7 @@
                         return functionFromResponse;
                     });
 
-                    if (lodash.isEmpty(ctrl.functions) && !$stateParams.createCancelled) {
+                    if (ctrl.createFunctionWhenEmpty && lodash.isEmpty(ctrl.functions) && !$stateParams.createCancelled) {
                         ctrl.isSplashShowed.value = false;
                         openNewFunctionScreen();
                     } else {
