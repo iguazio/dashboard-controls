@@ -43,7 +43,8 @@
               data-ng-click="$ctrl.clearInputField()">
         </span>
         <div data-ng-if="$ctrl.isValidationPopUpShown"
-             class="validation-pop-up">
+             class="validation-pop-up"
+             data-ng-class="$ctrl.isOverflowed() ? 'validation-pop-up-top' : 'validation-pop-up-bottom'">
             <div class="validation-rule"
                  data-ng-repeat="rule in $ctrl.validationRules">
                 <span class="validation-rule-icon"

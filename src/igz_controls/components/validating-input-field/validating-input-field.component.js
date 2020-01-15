@@ -81,6 +81,7 @@
             },
             allowInvalid: true
         };
+        var showPopUpOnTop = false;
 
         ctrl.data = '';
         ctrl.inputFocused = false;
@@ -97,6 +98,7 @@
         ctrl.getRemainingSymbolsCounter = getRemainingSymbolsCounter;
         ctrl.isFieldInvalid = isFieldInvalid;
         ctrl.isCounterVisible = isCounterVisible;
+        ctrl.isOverflowed = isOverflowed;
         ctrl.isValueInvalid = isValueInvalid;
         ctrl.focusInput = focusInput;
         ctrl.keyDown = keyDown;
@@ -229,6 +231,21 @@
         }
 
         /**
+         * Check if pop-up has overflowed
+         * @returns {boolean}
+         */
+        function isOverflowed() {
+            var popUp = $element.find('.validation-pop-up')[0];
+            var popUpPosition = popUp.getBoundingClientRect();
+
+            if (!showPopUpOnTop && ctrl.isValidationPopUpShown) {
+                showPopUpOnTop = $window.innerHeight - popUpPosition.top - popUpPosition.height < 0;
+            }
+
+            return showPopUpOnTop;
+        }
+
+        /**
          * Check whether the input value is invalid
          * @returns {boolean}
          */
@@ -344,6 +361,10 @@
                 }
             } else if (!event.target.closest('.input-field')) {
                 ctrl.isValidationPopUpShown = false;
+            }
+
+            if (!ctrl.isValidationPopUpShown) {
+                showPopUpOnTop = false;
             }
         }
 

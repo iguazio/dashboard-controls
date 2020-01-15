@@ -151,12 +151,19 @@
 
     .validation-pop-up {
         position: absolute;
-        top: 37px;
         border-radius: 3px;
         box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
         background-color: @white;
         padding: 5px 18px 5px 14px;
         z-index: 4;
+
+        &.validation-pop-up-top {
+            bottom: 37px;
+        }
+
+        &.validation-pop-up-bottom {
+            top: 37px;
+        }
 
         .validation-rule {
             margin: 10px auto;
