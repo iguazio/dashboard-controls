@@ -45,8 +45,11 @@
 
             .validating-input-field {
                 .input-field {
-                    padding: 0 10px 0 17px;
                     border-radius: 0;
+
+                    &:not(.with-icon) {
+                        padding-left: 17px;
+                    }
                 }
 
                 .input-placeholder {
