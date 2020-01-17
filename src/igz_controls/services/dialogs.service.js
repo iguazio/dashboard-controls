@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('DialogsService', DialogsService);
 
-    function DialogsService($document, $q, $i18next, i18next, lodash, ngDialog, EventHelperService,
+    function DialogsService($document, $q, $timeout, $i18next, i18next, lodash, ngDialog, EventHelperService,
                             FormValidationService) {
         return {
             alert: alert,
@@ -137,12 +137,12 @@
                 title: lodash.defaultTo(title, '')
             };
 
-            return ngDialog.open({
+            var ifarmeDialog = ngDialog.open({
                 template: '<div class="iframe-dialog-content">' +
                               '<div class="close-button igz-icon-close" data-ng-click="closeThisDialog()"></div>' +
                               '<div class="title">{{ngDialogData.title}}</div>' +
                               '<div class="main-content">' +
-                                  '<iframe class="frame" srcdoc="{{ngDialogData.content}}" sandbox></iframe>' +
+                                  '<iframe id="iframeDialog" class="frame" srcdoc="{{ngDialogData.content}}"></iframe>' +
                               '</div>' +
                               '<div class="buttons">' +
                                   '<button class="igz-button-primary" data-ng-click="closeThisDialog()">{{ngDialogData.buttonText}}</button>' +
@@ -151,7 +151,19 @@
                 plain: true,
                 data: data,
                 className: 'ngdialog-theme-iguazio iframe-dialog'
-            })
+            });
+
+            $timeout(function () {
+                var iframeContent = document.getElementById('iframeDialog');
+
+                iframeContent.contentWindow.document.addEventListener('keyup', function (event) {
+                    if (event.keyCode === EventHelperService.ESCAPE) {
+                        ifarmeDialog.close();
+                    }
+                });
+            }, 300);
+
+            return ifarmeDialog
                 .closePromise;
         }
 
