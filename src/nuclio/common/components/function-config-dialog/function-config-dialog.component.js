@@ -5,13 +5,13 @@
         .component('nclFunctionConfigDialog', {
             bindings: {
                 closeDialog: '&',
-                function: '<',
+                function: '<'
             },
             templateUrl: 'nuclio/common/components/function-config-dialog/function-config-dialog.tpl.html',
             controller: NclFunctionConfigDialogController
         });
 
-    function NclFunctionConfigDialogController(DialogsService, ExportService) {
+    function NclFunctionConfigDialogController(ExportService) {
         var ctrl = this;
 
         ctrl.editorTheme = {
