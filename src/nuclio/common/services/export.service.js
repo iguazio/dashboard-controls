@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('ExportService', ExportService);
 
-    function ExportService($q, $timeout, $i18next, i18next, DialogsService, lodash, YAML) {
+    function ExportService($i18next, $q, $timeout, $window, i18next, lodash, YAML, DialogsService) {
         return {
             exportFunction: exportFunction,
             getFunctionConfig: getFunctionConfig,
@@ -44,7 +44,7 @@
          * @param {Function} getFunctions
          */
         function exportProject(project, getFunctions) {
-            getFunctions({id: project.metadata.name})
+            getFunctions(project.metadata.name)
                 .then(function (functions) {
                     var functionsList = lodash.map(functions, function (functionItem) {
                         return lodash.chain(functionItem)
@@ -131,7 +131,7 @@
          * @param {string} fileName - name of the file
          */
         function downloadExportedFunction(data, fileName) {
-            var url = URL.createObjectURL(data);
+            var url = $window.URL.createObjectURL(data);
             var link = document.createElement('a');
 
             link.href = url;
@@ -141,7 +141,7 @@
             $timeout(function () {
                 link.click();
                 document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
+                $window.URL.revokeObjectURL(url);
             });
         }
 
