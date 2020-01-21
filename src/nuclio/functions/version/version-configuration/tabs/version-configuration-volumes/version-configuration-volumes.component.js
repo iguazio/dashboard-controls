@@ -32,6 +32,10 @@
             itemName: [],
             itemPath: [
                 {
+                    label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 255}),
+                    pattern: /^(?=[\S\s]{1,255}$)/
+                },
+                {
                     label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
                     pattern: validateUniqueness.bind(null, 'volumeMount.mountPath')
                 }
