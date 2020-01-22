@@ -129,11 +129,15 @@
             reader.onload = function () {
                 try {
                     importedFunction = YAML.parse(reader.result);
-                    ctrl.sourceCode = reader.result;
 
-                    $scope.$apply();
-                    $rootScope.$broadcast('function-import-source-code', ctrl.sourceCode);
+                    if (lodash.has(importedFunction, 'metadata.name')) {
+                        ctrl.sourceCode = reader.result;
 
+                        $scope.$apply();
+                        $rootScope.$broadcast('function-import-source-code', ctrl.sourceCode);
+                    } else {
+                        throw new Error('invalid yaml')
+                    }
                 } catch (error) {
                     DialogsService.alert($i18next.t('common:ERROR_MSG.IMPORT_YAML_FILE', {lng: lng}));
                 }
