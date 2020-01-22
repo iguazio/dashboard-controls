@@ -69,7 +69,7 @@
             controller: IgzValidatingInputFieldController
         });
 
-    function IgzValidatingInputFieldController($document, $element, $timeout, $window, lodash, EventHelperService,
+    function IgzValidatingInputFieldController($document, $element, $scope, $timeout, $window, lodash, EventHelperService,
                                                FormValidationService, PreventDropdownCutOffService) {
         var ctrl = this;
 
@@ -141,6 +141,8 @@
             }
 
             $document.on('click', handleValidationIconClick);
+
+            $scope.$on('update-patterns-validity', updatePatternsValidity);
         }
 
         /**
@@ -402,6 +404,17 @@
                     }
                 }
             });
+        }
+
+        /**
+         * Update patterns validity
+         * @param {Event} event - native broadcast event object
+         * @param {Array} inputNameList - broadcast data
+         */
+        function updatePatternsValidity(event, inputNameList) {
+            if (angular.isDefined(ctrl.validationRules) && lodash.includes(inputNameList, ctrl.inputName)) {
+                checkPatternsValidity(ctrl.inputValue, false);
+            }
         }
     }
 }());
