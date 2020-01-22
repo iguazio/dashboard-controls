@@ -74,8 +74,9 @@
                                 data-tooltip-append-to-body="true">
                             <span class="ncl-icon-add"></span>
                         </button>
-                        <button class="igz-button-primary"
+                        <button class="igz-button-secondary small"
                                 data-ng-class="{'disabled': $ctrl.isDisabledTestButton()}"
+                                data-ng-disabled="$ctrl.isDisabledTestButton()"
                                 data-ng-click="$ctrl.testEvent()"
                                 data-uib-tooltip="{{$ctrl.version.status.state !== 'ready' || $ctrl.version.spec.disable ? ('functions:TOOLTIP.DISABLED_FUNCTION' | i18next) : ''}}"
                                 data-tooltip-popup-delay="300"
@@ -83,15 +84,16 @@
                                 data-tooltip-append-to-body="true">
                             {{ 'common:TEST' | i18next }}
                         </button>
-                        <button class="ncl-secondary-button"
+                        <button class="ncl-secondary-button igz-button-basic small"
                                 data-ng-class="{'disabled': $ctrl.uploadingData.name !== ''}"
+                                data-ng-disabled="$ctrl.uploadingData.name !== ''"
                                 data-ng-click="$ctrl.uploadingData.name !== '' || $ctrl.saveEvent()">
                             {{ 'common:SAVE' | i18next }}
                         </button>
                     </div>
                 </div>
                 <div data-ui-layout="{ flow : 'row', dividerSize: 3 }">
-                    <div ui-layout-container size="45%" min-size="100px" class="request-section"
+                    <div ui-layout-container data-size="45%" data-min-size="100px" class="request-section"
                          data-ng-class="{'left-bar-pinned': $ctrl.fixedLeftBar}">
                         <div class="igz-scrollable-container scrollable-request-section"
                              data-ng-scrollbars
@@ -216,7 +218,7 @@
                                             </ncl-key-value-input>
                                         </div>
                                     </div>
-                                    <div class="ncl-create-button create-header-button"
+                                    <div class="igz-create-button create-header-button"
                                          data-ng-click="$ctrl.addNewHeader($event)">
                                         <span class="igz-icon-add-round"></span>
                                         {{ 'functions:CREATE_NEW_HEADER' | i18next }}
@@ -289,9 +291,9 @@
                                                 <div class="loader-circle12 loader-circle"></div>
                                             </div>
                                         </div>
-                                        <div class="ncl-secondary-button"
+                                        <button class="ncl-secondary-button igz-button-secondary"
                                              data-ng-click="$ctrl.cancelInvocation()">{{ 'common:CANCEL' | i18next }}
-                                        </div>
+                                        </button>
                                     </div>
                                     <div class="code-section" data-ng-if="$ctrl.showResponse && !$ctrl.testing">
                                         <div class="igz-action-panel">

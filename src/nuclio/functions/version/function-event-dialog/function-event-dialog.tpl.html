@@ -97,19 +97,20 @@
     </div>
 
     <div class="bottom-bar">
-        <div class="ncl-secondary-button"
+        <button class="ncl-secondary-button igz-button-secondary"
              data-ng-click="$ctrl.closeEventDialog()">
             {{ 'common:CANCEL' | i18next }}
-        </div>
-        <div class="ncl-primary-button"
+        </button>
+        <button class="ncl-primary-button igz-button-primary"
              tabindex="0"
              data-ng-class="{'disabled' : !$ctrl.isFormChanged}"
+             data-ng-disabled="!$ctrl.isFormChanged"
              data-ng-click="$ctrl.applyChanges()"
              data-ng-keydown="$ctrl.applyChanges($event)"
              data-ng-hide="$ctrl.isLoadingState">
             {{$ctrl.buttonText}}
-        </div>
-        <div class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">
+        </button>
+        <div class="ncl-primary-button igz-button-primary" data-ng-show="$ctrl.isLoadingState">
             {{ 'common:LOADING_CAPITALIZE_ELLIPSIS' | i18next }}
         </div>
     </div>

@@ -11,17 +11,6 @@
         background-color: @white;
         transition: @igz-basic-transition;
 
-        .ncl-secondary-button {
-            background-color: @pale-grey;
-            color: @dusk-three;
-
-            &.disabled {
-                .duskThree(0.24);
-                background-color: @pale-grey-three;
-                color: @color;
-            }
-        }
-
         &:not(.fixed-left-bar) {
             .left-bar {
                 transition: transform 0.3s ease-in-out;
@@ -113,14 +102,13 @@
         }
 
         .left-bar {
-            .black(0.1);
             position: absolute;
             z-index: 5;
             height: 100%;
             width: 187px;
             background-color: @white;
             color: @dusk-three;
-            box-shadow: 2.5px 1.6px 6px 0 @color;
+            box-shadow: 2.5px 1.6px 6px 0 .black(0.1)[@color];
             border: solid 1px @pale-grey;
             border-top: none;
             border-bottom: none;
@@ -145,11 +133,10 @@
                     }
 
                     .igz-icon-close {
-                        .duskThree(0.64);
                         position: absolute;
                         top: 1px;
                         right: 9px;
-                        color: @color;
+                        color: .duskThree(0.64)[@color];
                         font-size: 12px;
                         visibility: hidden;
                     }
@@ -178,8 +165,7 @@
                 height: 39px;
 
                 .igz-icon-close {
-                    .duskThree(0.64);
-                    color: @color;
+                    color: .duskThree(0.64)[@color];
                     font-size: 12px;
                     margin: 0 9px 0 12px;
                 }
@@ -291,13 +277,11 @@
                     }
                 }
 
-                .igz-button-primary, .ncl-secondary-button {
-                    text-align: center;
+                .igz-button-secondary, .ncl-secondary-button {
                     width: 97px;
-                    cursor: pointer;
                 }
 
-                .igz-button-primary {
+                .igz-button-secondary {
                     margin-right: 8px;
                 }
             }
@@ -683,8 +667,7 @@
                             position: absolute;
                             top: 47px;
                             left: 42px;
-                            .greyishPurple(0.64);
-                            color: @color;
+                            color: .greyishPurple(0.64)[@color];
                             font-size: 58px;
                         }
                     }

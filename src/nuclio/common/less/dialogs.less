@@ -13,8 +13,7 @@
     justify-content: center;
 
     .ngdialog-content {
-        .black(0.25);
-        box-shadow: 0 10px 20px 0 @color;
+        box-shadow: 0 10px 20px 0 .black(0.25)[@color];
         animation-duration: @animation-duration;
         animation-timing-function: @animation-function;
         font-family: @font-family-sans-serif;
@@ -50,19 +49,22 @@
         .buttons {
             text-align: right;
             height: 33px;
+
+            button:not(:first-child) {
+                margin-left: 8px;
+            }
         }
 
         /*
          * Create/edit dialogs
          */
         .close-button {
-            .duskThree(0.64);
             position: absolute;
             right: 24px;
             top: 26px;
             line-height: 10px;
             font-size: 14px;
-            color: @color;
+            color: .duskThree(0.64)[@color];
             cursor: pointer;
         }
 
@@ -147,15 +149,6 @@
 
             .buttons {
                 margin-top: 30px;
-
-                .igz-button-remove {
-                    padding: 8px 16px;
-                    margin-left: 6px;
-
-                    &:hover {
-                        padding: 9px 17px;
-                    }
-                }
             }
         }
     }
@@ -166,8 +159,7 @@
     }
 
     .ngdialog-overlay {
-        .black(0.6);
-        background: @color;
+        background: .black(0.6)[@color];
         border: 2px solid @black;
         animation-duration: @animation-duration;
         animation-timing-function: @animation-function;

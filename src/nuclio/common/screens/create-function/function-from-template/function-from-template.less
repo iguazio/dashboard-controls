@@ -1,4 +1,6 @@
 .function-from-template-content {
+    .ncl-function-from-template-color-set();
+
     padding: 0 72px 0 63px;
 
     .configuration-form {
@@ -176,7 +178,7 @@
 
                 &.selected {
                     .function-template {
-                        border: 2px solid @orange;
+                        border: 2px solid @template-tile-border-color;
                         z-index: 2;
 
                             .function-template-content {
@@ -212,6 +214,10 @@
                                     display: flex;
                                     justify-content: flex-end;
                                     margin-top: 24px;
+
+                                    button:not(:first-child) {
+                                        margin-left: 8px;
+                                    }
                                 }
                             }
                         }

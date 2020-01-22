@@ -38,10 +38,6 @@
                 .rz-bar {
                     background-color: @rz-bar-bg-color;
                     height: 3px;
-
-                    &.rz-selection {
-                        background-color: @rz-selection-bg-color;
-                    }
                 }
             }
 
@@ -61,8 +57,14 @@
                 }
             }
 
-            &:not([disabled]) .rz-pointer {
-                background-color: @rz-pointer-bg-color;
+            &:not([disabled]) {
+                .rz-bar.rz-selection {
+                    background-color: @rz-selection-bg-color;
+                }
+
+                .rz-pointer {
+                    background-color: @rz-pointer-bg-color;
+                }
             }
         }
     }

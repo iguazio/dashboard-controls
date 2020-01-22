@@ -39,14 +39,14 @@
 </div>
 
 <div class="buttons">
-    <button class="ncl-secondary-button"
+    <button class="ncl-secondary-button igz-button-just-text"
             data-test-id="functions.duplicate_function_cancel.button"
             tabindex="0"
             data-ng-click="$ctrl.onClose()"
             data-ng-keydown="$ctrl.onClose($event)">
         {{ 'common:CANCEL' | i18next }}
     </button>
-    <button class="ncl-primary-button"
+    <button class="ncl-primary-button igz-button-primary"
             data-test-id="functions.duplicate_function_duplicate.button"
             tabindex="0"
             data-ng-click="$ctrl.duplicateFunction()"
@@ -54,7 +54,7 @@
             data-ng-hide="$ctrl.isLoadingState">
         {{ 'common:DUPLICATE' | i18next }}
     </button>
-    <button class="ncl-primary-button" data-ng-show="$ctrl.isLoadingState">
+    <button class="ncl-primary-button igz-button-primary" data-ng-show="$ctrl.isLoadingState">
         {{ 'common:LOADING_CAPITALIZE_ELLIPSIS' | i18next }}
     </button>
 </div>

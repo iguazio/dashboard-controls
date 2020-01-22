@@ -11,25 +11,32 @@
     cursor: pointer;
     white-space: nowrap;
     text-decoration: none;
-    height: 38px;
-    line-height: 38px;
+    height: 36px;
     border-radius: 2px;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 500;
     font-family: @font-family-sans-serif;
+    text-transform: uppercase;
     outline: 0;
-    border: 0;
-    padding: 0 15px;
+    border: 1px solid transparent;
+    padding: 0 16px;
     margin: 0;
 
-    &:hover, &:active, &:focus {
+    &:hover, &:active, &:focus, &:disabled {
         outline: 0;
     }
 
     &.small {
-        font-size: 12px;
-        line-height: 22px;
-        height: 22px;
+        height: 32px;
+    }
+
+    &:disabled, &:disabled:hover, &:disabled:focus, &:disabled:active,
+    &.disabled, &.disabled:hover, &.disabled:focus, &.disabled:active {
+        box-shadow: none;
+        cursor: not-allowed;
+        background-color: @btn-disabled-bg-color;
+        border: @btn-disabled-border;
+        color: @btn-disabled-color;
     }
 
     &.inverted {
@@ -48,45 +55,19 @@
     .primary-button-color-set();
 
     color: @primary-btn-color;
-    font-size: 12px;
-    display: inline-block;
-    vertical-align: top;
-    position: relative;
-    font-weight: 500;
-    text-transform: uppercase;
-    padding: 8px 20px;
-    margin-left: 6px;
-    height: 32px;
-    line-height: initial;
-    border-radius: 2px;
     background-color: @primary-btn-bg-color;
     border: @primary-btn-border;
 
-    &:hover {
+    &:hover, &:focus {
         background-color: @primary-btn-hover-bg-color;
         box-shadow: @primary-btn-hover-box-shadow;
-        border: none;
-        padding: 9px 21px;
+        border: @primary-btn-hover-border;
     }
 
     &:active {
         background-color: @primary-btn-active-bg-color;
         box-shadow: @primary-btn-active-box-shadow;
-        border: none;
-        outline: none;
-        padding: 9px 21px;
-    }
-
-    &.disabled {
-        background-color: @primary-btn-disabled-bg-color;
-        border: @primary-btn-disabled-border;
-        color: @primary-btn-disabled-color;
-        box-shadow: none;
-        cursor: default;
-
-        &:hover, &:active {
-            padding: 8px 20px;
-        }
+        border: @primary-btn-active-border;
     }
 }
 
@@ -94,66 +75,48 @@
     .secondary-button-color-set();
 
     color: @secondary-btn-color;
-    font-size: 12px;
-    display: inline-block;
-    vertical-align: top;
-    position: relative;
-    font-weight: 500;
-    text-transform: uppercase;
-    padding: 8px 13px;
-    margin-left: 6px;
-    height: 32px;
-    line-height: initial;
-    border-radius: 2px;
     background-color: @secondary-btn-bg-color;
     border: @secondary-btn-border;
+
+    &:hover, &:focus {
+        background-color: @secondary-btn-hover-bg-color;
+        box-shadow: @secondary-btn-hover-box-shadow;
+        border: @secondary-btn-hover-border;
+    }
+
+    &:active {
+        background-color: @secondary-btn-active-bg-color;
+        box-shadow: @secondary-btn-active-box-shadow;
+        border: @secondary-btn-active-border;
+    }
 }
 
 .igz-button-remove {
     .remove-button-color-set();
 
     color: @remove-btn-color;
-    font-size: 12px;
-    display: inline-block;
-    vertical-align: top;
-    position: relative;
-    font-weight: 500;
-    text-transform: uppercase;
-    padding: 8px 20px;
-    margin-left: 6px;
-    height: 32px;
-    line-height: initial;
-    border-radius: 2px;
     background-color: @remove-btn-bg-color;
     border: @remove-btn-border;
 
-    &:hover {
+    &:hover, &:focus {
         background-color: @remove-btn-hover-bg-color;
         box-shadow: @remove-btn-hover-box-shadow;
-        border: none;
-        padding: 9px 21px;
+        border: @remove-btn-hover-border;
     }
 
     &:active {
         background-color: @remove-btn-active-bg-color;
         box-shadow: @remove-btn-active-box-shadow;
-        border: none;
-        outline: none;
-        padding: 9px 21px;
-    }
-
-    &.disabled {
-        display: none;
+        border: @remove-btn-active-border;
     }
 }
 
 .igz-button-basic {
     .basic-button-color-set();
 
+    color: @btn-basic-color;
     background-color: @btn-basic-bg-color;
     border: @btn-basic-border;
-    color: @btn-basic-color;
-    font-size: 12px;
 
     &:hover, &:focus {
         background-color: @btn-basic-hover-focus-bg-color;
@@ -165,26 +128,6 @@
         background-color: @btn-basic-active-bg-color;
         box-shadow: @btn-basic-active-box-shadow;
         border: @btn-basic-active-border;
-    }
-
-    &.disabled {
-        color: @btn-basic-disabled-color;
-        border-color: @btn-basic-disabled-border-color;
-    }
-}
-
-.igz-button-outline {
-    .outline-button-color-set();
-
-    background-color: @btn-outline-bg-color;
-    border: @btn-outline-border;
-    color: @btn-outline-color;
-    font-weight: 400;
-    padding: 0 35px;
-
-    &:hover {
-        color: @btn-outline-hover-color;
-        border-color: @btn-outline-hover-border-color;
     }
 }
 
@@ -210,49 +153,25 @@
 .igz-button-just-text {
     .just-text-button-color-set();
 
-    font-size: 12px;
-    font-weight: 500;
-    display: inline-block;
-    vertical-align: top;
-    position: relative;
     color: @btn-just-text-color;
-    text-transform: uppercase;
-    line-height: initial;
-    height: 32px;
     background-color: @btn-just-text-bg-color;
-    border: none;
-    padding: 9px 20px;
 
-    &:hover {
+    &:hover, &:focus {
         box-shadow: @btn-just-text-hover-box-shadow;
         border: @btn-just-text-hover-border;
-        border-radius: 2px;
         background-color: @btn-just-text-hover-bg-color;
-        padding: 8px 19px;
     }
 
     &:active {
         box-shadow: @btn-just-text-active-box-shadow;
         border: @btn-just-text-active-border;
-        outline: none;
-        border-radius: 2px;
         background-color: @btn-just-text-active-bg-color;
-        padding: 8px 19px;
     }
 
-    &.disabled {
-        border-radius: 2px;
+    &:disabled, &:disabled:hover, &:disabled:focus, &:disabled:active,
+    &.disabled, &.disabled:hover, &.disabled:focus, &.disabled:active {
         background-color: @btn-just-text-disabled-bg-color;
         border: @btn-just-text-disabled-border;
-        font-size: 12px;
-        font-weight: 500;
-        color: @btn-just-text-disabled-color;
-    }
-
-    &.small {
-        font-size: 13px;
-        line-height: 22px;
-        height: 22px;
     }
 }
 
@@ -271,27 +190,18 @@
 
     [class^="igz-button"]:first-child:not(:last-child):not(.dropdown-toggle),
     [class*="igz-button"]:first-child:not(:last-child):not(.dropdown-toggle) {
-        border-top-left-radius: 3px;
-        border-bottom-left-radius: 3px;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
+        border-radius: 3px 0 0 3px;
     }
 
     [class^="igz-button"]:last-child:not(:first-child),
     [class*="igz-button"]:last-child:not(:first-child) {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        border-top-right-radius: 3px;
-        border-bottom-right-radius: 3px;
+        border-radius: 0 3px 3px 0;
     }
 
     .dropdown-toggle:not(:first-child) {
         border-left: 1px solid #00b1e1;
 
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        border-top-right-radius: 3px;
-        border-bottom-right-radius: 3px;
+        border-radius: 0 3px 3px 0;
     }
 
     .caret {
@@ -305,8 +215,7 @@
     flex-direction: row-reverse;
 }
 
-.igz-create-button,
-.ncl-create-button {
+.igz-create-button {
     .create-button-color-set();
 
     display: inline-flex;
@@ -333,23 +242,6 @@
     .igz-icon-add-round {
         margin: 3px 8px 0 15px;
         font-size: 24px;
-    }
-}
-
-.igz-create-button {
-    .create-button-color-set();
-
-    .igz-icon-add-round {
-        color: @igz-create-button-icon-color;
-    }
-}
-
-.ncl-create-button {
-    .create-button-color-set();
-
-    background-color: @ncl-create-button-bg-color;
-
-    .igz-icon-add-round {
-        color: @ncl-create-button-icon-color;
+        color: @create-button-icon-color;
     }
 }

@@ -69,9 +69,9 @@
                                     </igz-default-dropdown>
                                 </div>
                                 <div class="function-name">
-                                <span class="input-label">
-                                    {{ 'common:NAME' | i18next }}
-                                 </span>
+                                    <span class="input-label">
+                                        {{ 'common:NAME' | i18next }}
+                                    </span>
                                     <igz-validating-input-field class="nuclio-validating-input"
                                                                 data-field-type="input"
                                                                 data-input-name="name"
@@ -90,11 +90,11 @@
                                     </igz-validating-input-field>
                                 </div>
                                 <div class="buttons-wrapper">
-                                    <button class="ncl-secondary-button"
+                                    <button class="ncl-secondary-button igz-button-just-text"
                                             data-ng-click="$ctrl.unselectTemplate($event)">
                                         {{ 'common:CANCEL' | i18next }}
                                     </button>
-                                    <button class="ncl-primary-button"
+                                    <button class="ncl-primary-button igz-button-primary"
                                             data-ng-click="$ctrl.createFunction()"
                                             data-ng-class="{'disabled': !$ctrl.isCreateFunctionAllowed()}">
                                         {{ 'common:CREATE' | i18next }}

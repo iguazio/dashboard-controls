@@ -18,7 +18,7 @@
         </div>
         <div class="function-import-actions-bar">
             <div class="function-import-file-picker">
-                <label class="file-picker-wrapper ncl-primary-button" for="function-import">
+                <label class="file-picker-wrapper ncl-primary-button igz-button-secondary" for="function-import">
                     <span class="igz-icon-upload"></span>
                     {{ 'functions:IMPORT' | i18next }}
                 </label>
@@ -27,11 +27,11 @@
                        id="function-import"
                        accept=".yml, .yaml">
             </div>
-            <button class="ncl-primary-button"
+            <button class="ncl-primary-button igz-button-primary"
                     data-ng-click="$ctrl.createFunction()"
                     data-ng-disabled="!$ctrl.isCreateFunctionAllowed()"
                     data-ng-class="{'disabled': !$ctrl.isCreateFunctionAllowed()}">
-                {{ 'functions:NEW_FUNCTION' | i18next }}
+                {{ 'common:CREATE' | i18next }}
             </button>
         </div>
     </form>

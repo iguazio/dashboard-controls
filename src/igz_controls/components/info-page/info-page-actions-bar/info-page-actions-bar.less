@@ -64,37 +64,8 @@
         margin-left: 16px;
         margin-top: 1px;
 
-        .create-entity-button {
-            color: @create-entity-btn-color;
-            font-size: 13px;
-            font-weight: 500;
-            text-transform: uppercase;
-            border: none;
-            padding: 0;
-            line-height: inherit;
-            width: 148px;
-            height: 36px;
-            border-radius: 2px;
-            background-color: @create-entity-btn-bg-color;
-
-            &:hover {
-                background-color: @create-entity-btn-hover-bg-color;
-                box-shadow: @create-entity-btn-hover-box-shadow;
-            }
-
-            &:active {
-                background-color: @create-entity-btn-active-bg-color;
-                box-shadow: @create-entity-btn-active-box-shadow;
-            }
-
-            &.disabled {
-                background-color: @create-entity-btn-disabled-bg-color;
-                border: @create-entity-btn-disabled-border;
-                color: @create-entity-btn-disabled-color;
-                box-shadow: none;
-                cursor: default;
-                outline: none;
-            }
+        [class^="igz-button"]:not(:first-child), [class*="igz-button"]:not(:first-child) {
+            margin-left: 8px;
         }
     }
 }

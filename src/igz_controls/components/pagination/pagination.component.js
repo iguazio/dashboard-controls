@@ -4,6 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .component('igzPagination', {
             bindings: {
+                allowJumpToPage: '<?',
                 entityName: '@?',
                 pageData: '<',
                 paginationCallback: '&',
@@ -15,7 +16,8 @@
             controller: IgzPaginationController
         });
 
-    function IgzPaginationController($scope, $timeout, lodash, EventHelperService, LocalStorageService, PaginationService) {
+    function IgzPaginationController($scope, $timeout, lodash, EventHelperService, LocalStorageService,
+                                     PaginationService) {
         var ctrl = this;
 
         ctrl.jumpPage = 1;
@@ -42,6 +44,10 @@
          * Constructor
          */
         function onInit() {
+            lodash.defaults(ctrl, {
+                allowJumpToPage: true
+            });
+
             if (angular.isUndefined(ctrl.perPageValues)) {
                 ctrl.perPageValues = PaginationService.perPageDefaults();
             }
