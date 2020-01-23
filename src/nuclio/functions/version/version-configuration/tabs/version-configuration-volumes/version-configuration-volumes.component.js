@@ -210,6 +210,10 @@
                     volume: selectedItem.volume
                 };
 
+                if (lodash.some(ctrl.volumes, ['ui.isFormValid', false])) {
+                    $rootScope.$broadcast('update-patterns-validity', ['itemName', 'itemPath']);
+                }
+
                 lodash.forEach(workingCopy, function (volume) {
                     delete volume.ui;
                 });
