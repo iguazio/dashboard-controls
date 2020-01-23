@@ -29,6 +29,15 @@
                         name: 'Kafka',
                         tooltip: 'Kafka',
                         tooltipPlacement: 'right',
+                        maxWorkers: {
+                            name: 'maxWorkers',
+                            pattern: 'number',
+                            type: 'number-input',
+                            allowEmpty: false,
+                            min: 1,
+                            max: 100000,
+                            defaultValue: 1
+                        },
                         attributes: [
                             {
                                 name: 'kafka-topics',
@@ -157,6 +166,23 @@
                         name: 'Cron',
                         tooltip: 'Cron',
                         tooltipPlacement: 'right',
+                        maxWorkers: {
+                            name: 'maxWorkers',
+                            pattern: 'number',
+                            type: 'number-input',
+                            allowEmpty: false,
+                            min: 1,
+                            max: 100000,
+                            defaultValue: 1
+                        },
+                        workerAvailabilityTimeoutMilliseconds: {
+                            name: 'workerAvailabilityTimeoutMilliseconds',
+                            pattern: 'number',
+                            type: 'number-input',
+                            allowEmpty: false,
+                            min: 0,
+                            defaultValue: 0
+                        },
                         attributes: [
                             {
                                 name: 'interval',
@@ -243,12 +269,21 @@
                         name: 'HTTP',
                         tooltip: 'HTTP',
                         tooltipPlacement: 'right',
-                        maxWorkers: 'number',
+                        maxWorkers: {
+                            name: 'maxWorkers',
+                            pattern: 'number',
+                            type: 'number-input',
+                            allowEmpty: false,
+                            min: 1,
+                            max: 100000,
+                            defaultValue: 1
+                        },
                         workerAvailabilityTimeoutMilliseconds: {
                             name: 'workerAvailabilityTimeoutMilliseconds',
                             pattern: 'number',
                             type: 'number-input',
                             allowEmpty: false,
+                            min: 0,
                             defaultValue: 0
                         },
                         attributes: [

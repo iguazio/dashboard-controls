@@ -760,7 +760,7 @@
             }
 
             if (!lodash.isNil(item.maxWorkers)) {
-                ctrl.item.maxWorkers = '';
+                ctrl.item.maxWorkers = item.maxWorkers.defaultValue;
             }
 
             if (!lodash.isNil(item.secret)) {
@@ -781,10 +781,6 @@
 
             if (!lodash.isNil(item.password)) {
                 ctrl.item.password = '';
-            }
-
-            if (!lodash.isNil(item.workerAvailabilityTimeoutMilliseconds)) {
-                ctrl.item.workerAvailabilityTimeoutMilliseconds = item.workerAvailabilityTimeoutMilliseconds.defaultValue;
             }
 
             lodash.each(item.attributes, function (attribute) {
