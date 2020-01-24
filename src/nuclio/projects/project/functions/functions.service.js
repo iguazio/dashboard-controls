@@ -62,7 +62,7 @@
                                 pattern: 'string',
                                 type: 'input',
                                 fieldType: 'input',
-                                allowEmpty: true
+                                allowEmpty: false
                             },
                             {
                                 name: 'initialOffset',
