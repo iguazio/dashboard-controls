@@ -328,11 +328,13 @@
                 ngDialog.open({
                     template: '<ncl-duplicate-function-dialog data-close-dialog="closeThisDialog()" ' +
                                   'data-get-functions="ngDialogData.getFunctions({id: id})" ' +
+                                  'data-get-function="ngDialogData.getFunction({metadata: metadata})" ' +
                                   'data-project="ngDialogData.project" data-version="ngDialogData.version">' +
                               '</ncl-duplicate-function-dialog>',
                     plain: true,
                     data: {
                         getFunctions: ctrl.getFunctions,
+                        getFunction: ctrl.getFunction,
                         project: ctrl.project,
                         version: ctrl.version
                     },
