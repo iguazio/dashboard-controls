@@ -6,6 +6,7 @@
             bindings: {
                 actionHandlerCallback: '&',
                 item: '<',
+                itemIndex: '<?',
                 type: '@',
                 listClass: '@?'
             },
@@ -114,7 +115,7 @@
          * @param {string} actionType - a type of action
          */
         function onFireAction(actionType) {
-            ctrl.actionHandlerCallback({actionType: actionType, selectedItem: ctrl.item});
+            ctrl.actionHandlerCallback({actionType: actionType, selectedItem: ctrl.item, index: ctrl.itemIndex});
         }
 
         /**

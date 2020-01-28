@@ -130,10 +130,11 @@
          * According to given action name calls proper action handler
          * @param {string} actionType - e.g. `'delete'`, `'edit'`, `'update'`
          * @param {Object} selectedItem - an object of selected volume
+         * @param {number} [index] - index of variable in array
          */
-        function handleAction(actionType, selectedItem) {
+        function handleAction(actionType, selectedItem, index) {
             if (actionType === 'delete') {
-                deleteHandler(selectedItem);
+                deleteHandler(selectedItem, index);
             } else if (actionType === 'edit') {
                 editHandler(selectedItem);
             } else if (actionType === 'update') {
@@ -159,9 +160,10 @@
         /**
          * Deletes selected item
          * @param {Object} selectedItem - an object of selected data-binding
+         * @param {number} index - index of variable in array
          */
-        function deleteHandler(selectedItem) {
-            lodash.remove(ctrl.volumes, ['volume.name', selectedItem.volume.name]);
+        function deleteHandler(selectedItem, index) {
+            ctrl.volumes.splice(index, 1);
 
             var workingCopy = lodash.map(ctrl.volumes, function (volume) {
                 return lodash.omit(volume, 'ui');
