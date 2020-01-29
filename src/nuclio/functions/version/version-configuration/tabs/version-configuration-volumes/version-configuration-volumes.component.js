@@ -158,12 +158,23 @@
         //
 
         /**
+         * Checks validation of volumes
+         */
+        function checkValidation() {
+            if (lodash.some(ctrl.volumes, ['ui.isFormValid', false])) {
+                $rootScope.$broadcast('update-patterns-validity', ['itemName', 'itemPath']);
+            }
+        }
+
+        /**
          * Deletes selected item
          * @param {Object} selectedItem - an object of selected data-binding
          * @param {number} index - index of variable in array
          */
         function deleteHandler(selectedItem, index) {
             ctrl.volumes.splice(index, 1);
+
+            checkValidation();
 
             var workingCopy = lodash.map(ctrl.volumes, function (volume) {
                 return lodash.omit(volume, 'ui');
@@ -212,9 +223,7 @@
                     volume: selectedItem.volume
                 };
 
-                if (lodash.some(ctrl.volumes, ['ui.isFormValid', false])) {
-                    $rootScope.$broadcast('update-patterns-validity', ['itemName', 'itemPath']);
-                }
+                checkValidation();
 
                 lodash.forEach(workingCopy, function (volume) {
                     delete volume.ui;
