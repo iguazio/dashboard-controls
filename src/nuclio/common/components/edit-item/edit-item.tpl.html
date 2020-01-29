@@ -408,7 +408,7 @@
                 <div data-ng-if="$ctrl.ingresses.length > 0" class="table-headers ingresses-table-headers">
                     <div class="host-header asterisk">{{ 'functions:HOST' | i18next }}</div>
                     <div class="paths-header asterisk">{{ 'common:PATH' | i18next }}</div>
-                    <div class="secret-header asterisk">{{ 'functions:SECRET' | i18next }}</div>
+                    <div class="secret-header">{{ 'functions:SECRET' | i18next }}</div>
                 </div>
                 <div class="igz-scrollable-container scrollable-ingresses"
                      data-ng-scrollbars
@@ -418,7 +418,6 @@
                         <ncl-key-value-input class="new-label-input"
                                              data-list-class="scrollable-ingresses"
                                              data-change-state-broadcast="change-state-deploy-button"
-                                             data-key-optional="true"
                                              data-row-data="ingress"
                                              data-use-type="false"
                                              data-use-additional-value="true"
