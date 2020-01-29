@@ -7,8 +7,6 @@
     "ATTACH_FILE": "Attach file",
     "BASE_IMAGE": "Base image",
     "BASE_IMAGE_DESCRIPTION": "The name of a base container image from which to build the function's processor image",
-    "BEGIN_END_WITH_ALPHANUMERIC": "Must begin and end with alphanumeric characters",
-    "BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC": "Must begin and end with lowercase alphanumeric characters",
     "BODY": "Body",
     "BRANCH": "Branch",
     "BROKERS": "Brokers",

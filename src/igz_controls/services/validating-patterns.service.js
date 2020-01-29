@@ -53,19 +53,100 @@
             }
         };
         var validationRules = {
+            containerName: [
+                {
+                    name: 'maxLength',
+                    label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 128}),
+                    pattern: /^[\S\s]{1,128}$/
+                },
+                {
+                    name: 'validCharacters',
+                    label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -, _',
+                    pattern: /^[-_a-z0-9]+$/
+                },
+                {
+                    name: 'beginEnd',
+                    label: $i18next.t('common:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}) + ' (a–z, 0–9)',
+                    pattern: /^([a-z0-9].*)?[a-z0-9]$/
+                },
+                {
+                    name: 'noConsecutiveHyphens',
+                    label: $i18next.t('common:NO_CONSECUTIVE_CHARACTER', {lng: lng, characters: 'hyphens'}) + ' (--)',
+                    pattern: /^(?!.*--)/
+                },
+                {
+                    name: 'noConsecutiveUnderscores',
+                    label: $i18next.t('common:NO_CONSECUTIVE_CHARACTER', {lng: lng, characters: 'underscores'}) + ' (__)',
+                    pattern: /^(?!.*__)/
+                },
+                {
+                    name: 'atLeastOneLowercaseLetter',
+                    label: $i18next.t('common:CONTAIN_LOWERCASE_LETTER', {lng: lng}) + ' (a-z)',
+                    pattern: /^(?=.*[a-z])/
+                }
+            ],
             k8s: {
+                configMapKey: [
+                    {
+                        name: 'validCharacters',
+                        label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
+                        pattern: /^[-._a-zA-Z0-9]+$/
+                    },
+                    {
+                        name: 'maxLength',
+                        label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
+                        pattern: /^(?=[\S\s]{1,253}$)/
+                    }
+                ],
                 dns1123Label: [
                     {
+                        name: 'validCharacters',
                         label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -',
                         pattern: /^[a-z0-9-]+$/
                     },
                     {
-                        label: $i18next.t('functions:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}) + ' (a–z, 0–9)',
+                        name: 'beginEnd',
+                        label: $i18next.t('common:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}) + ' (a–z, 0–9)',
                         pattern: /^([a-z0-9].*)?[a-z0-9]$/
                     },
                     {
+                        name: 'maxLength',
                         label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
                         pattern: /^(?=[\S\s]{1,63}$)/
+                    }
+                ],
+                dns1123Subdomain: [
+                    {
+                        name: 'validCharacters',
+                        label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -, .',
+                        pattern: /^[a-z0-9.-]+$/
+                    },
+                    {
+                        name: 'beginEnd',
+                        label: $i18next.t('common:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', {lng: lng}) + ' (a–z, 0–9)',
+                        pattern: /^([a-z0-9].*)?[a-z0-9]$/
+                    },
+                    {
+                        name: 'noConsecutivePeriods',
+                        label: $i18next.t('common:NO_CONSECUTIVE_CHARACTER', {lng: lng, characters: 'periods'}) + ' (..)',
+                        pattern: /^(?!.*\.\.)/
+                    },
+                    {
+                        name: 'maxLength',
+                        label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
+                        pattern: /^(?=[\S\s]{1,253}$)/
+                    }
+                ],
+                envVarName: [
+                    {
+                        name: 'validCharacters',
+                        label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
+                        pattern: /^[\w.-]+$/
+                    },
+                    {
+                        name: 'beginNot',
+                        label: $i18next.t('common:BEGIN_NOT_WITH', {lng: lng, characters: 'digits or periods'}) + ' (0-9, .)',
+                        pattern: /^(?!\.|\d)/
                     }
                 ],
                 prefixedQualifiedName: [
@@ -78,7 +159,7 @@
                     {
                         name: 'nameBeginEnd',
                         label: '[' + $i18next.t('common:NAME', { lng: lng }) + '] ' +
-                        $i18next.t('functions:BEGIN_END_WITH_ALPHANUMERIC', { lng: lng }),
+                        $i18next.t('common:BEGIN_END_WITH_ALPHANUMERIC', { lng: lng }),
                         pattern: /^([^\/]+\/)?([A-Za-z0-9][^\/]*)?[A-Za-z0-9]$/
                     },
                     {
@@ -96,7 +177,7 @@
                     {
                         name: 'prefixBeginEnd',
                         label: '[' + $i18next.t('functions:PREFIX', { lng: lng }) + '] ' +
-                        $i18next.t('functions:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', { lng: lng }),
+                        $i18next.t('common:BEGIN_END_WITH_LOWERCASE_ALPHANUMERIC', { lng: lng }),
                         pattern: /^([a-z0-9]([^\/]*[a-z0-9])?\/)?[^\/]+$/
                     },
                     {
@@ -120,13 +201,45 @@
                     },
                     {
                         name: 'beginEnd',
-                        label: $i18next.t('functions:BEGIN_END_WITH_ALPHANUMERIC', {lng: lng}),
+                        label: $i18next.t('common:BEGIN_END_WITH_ALPHANUMERIC', {lng: lng}),
                         pattern: /^([A-Za-z0-9].*)?[A-Za-z0-9]$/
                     },
                     {
                         name: 'maxLength',
                         label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
                         pattern: /^[\S\s]{1,63}$/
+                    }
+                ],
+                wildcardDns1123Subdomain: [
+                    {
+                        name: 'validCharacters',
+                        label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -, ., *',
+                        pattern: /^[a-z0-9.*-]+$/
+                    },
+                    {
+                        name: 'begin',
+                        label: $i18next.t('common:BEGIN_WITH', {lng: lng, characters: '"*."'}),
+                        pattern: /^\*\..*$/
+                    },
+                    {
+                        name: 'asteriskOnlyAtStart',
+                        label: $i18next.t('common:ASTERISK_ONLY_AT_START', {lng: lng}),
+                        pattern: /^.(?!.*\*)/
+                    },
+                    {
+                        name: 'end',
+                        label: $i18next.t('common:END_WITH', {lng: lng, characters: 'lowercase alphanumeric characters'}) + ' (a–z, 0–9)',
+                        pattern: /^.*[a-z0-9]$/
+                    },
+                    {
+                        name: 'noConsecutivePeriods',
+                        label: $i18next.t('common:NO_CONSECUTIVE_CHARACTER', {lng: lng, characters: 'periods'}) + ' (..)',
+                        pattern: /^(?!.*\.\.)/
+                    },
+                    {
+                        name: 'maxLength',
+                        label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
+                        pattern: /^(?=[\S\s]{1,253}$)/
                     }
                 ]
             }
@@ -186,8 +299,19 @@
             return lodash.cloneDeep(lodash.get(lengths, path, lengths.default));
         }
 
-        function getValidationRules(type) {
-            return lodash.cloneDeep(lodash.get(validationRules, type, []));
+        /**
+         * Returns the list of validation rules for `type`, optionally appending provided additional rules.
+         * @param {string} type - The property path to the list of validation rules.
+         * @param {Array.<Object>} [additionalRules] - Additional rules to append.
+         * @returns {Array.<Object>} the rule list of type `type` with `additionalRules` appended to it if provided.
+         */
+        function getValidationRules(type, additionalRules) {
+            return lodash.chain(validationRules)
+                .get(type)
+                .defaultTo([])
+                .cloneDeep()
+                .concat(lodash.defaultTo(additionalRules, []))
+                .value();
         }
     }
 }());
