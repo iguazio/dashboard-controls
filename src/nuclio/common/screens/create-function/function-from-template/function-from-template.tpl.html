@@ -60,7 +60,7 @@
                                                           data-values-array="$ctrl.projectsList"
                                                           data-selected-item="$ctrl.selectedProject"
                                                           data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)"
-                                                          data-form-object="$ctrl.functionFromTemplateForm"
+                                                          data-form-object="$ctrl.functionFromTemplateForm.templateForm"
                                                           data-input-name="project">
                                         <div class="transcluded-item"
                                              data-ng-click="$ctrl.createNewProject()">
@@ -76,17 +76,12 @@
                                                                 data-field-type="input"
                                                                 data-input-name="name"
                                                                 data-input-value="$ctrl.functionName"
-                                                                data-validation-is-required="true"
-                                                                data-form-object="$ctrl.functionFromTemplateForm"
+                                                                data-form-object="$ctrl.functionFromTemplateForm.templateForm"
                                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                                data-validation-pattern="$ctrl.validationPatterns.functionName"
-                                                                data-validation-max-length="{{$ctrl.validationPatterns.getMaxLength('function.name')}}"
-                                                                data-hide-counter="false"
+                                                                data-validation-is-required="true"
+                                                                data-validation-rules="$ctrl.validationRules"
                                                                 data-input-model-options="$ctrl.inputModelOptions"
-                                                                data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_FUNCTION_NAME' | i18next }}..."
-                                                                data-uib-tooltip="{{ 'functions:TOOLTIP.PROJECT_FUNCTION_NAME' | i18next }}"
-                                                                data-tooltip-popup-delay="500"
-                                                                data-tooltip-append-to-body="true">
+                                                                data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_FUNCTION_NAME' | i18next }}...">
                                     </igz-validating-input-field>
                                 </div>
                                 <div class="buttons-wrapper">

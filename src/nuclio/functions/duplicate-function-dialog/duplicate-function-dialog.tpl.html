@@ -19,20 +19,9 @@
                                             data-form-object="$ctrl.duplicateFunctionForm"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData)"
                                             data-validation-is-required="true"
-                                            data-validation-pattern="$ctrl.validationPatterns.functionName"
-                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_FUNCTION_NAME' | i18next }}"
-                                            data-validation-max-length="{{$ctrl.validationPatterns.getMaxLength('function.name')}}"
-                                            data-uib-tooltip="{{ 'functions:TOOLTIP.PROJECT_FUNCTION_NAME' | i18next }}"
-                                            data-tooltip-popup-delay="500"
-                                            data-tooltip-append-to-body="true">
+                                            data-validation-rules="$ctrl.validationRules"
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_FUNCTION_NAME' | i18next }}">
                 </igz-validating-input-field>
-                <div class="error"
-                     data-ng-show="$ctrl.isShowFieldInvalidState($ctrl.duplicateFunctionForm, 'spec.displayName')">
-                    {{ 'common:ERROR_MSG.INVALID_INPUTS' | i18next }}
-                </div>
-                <div class="error" data-ng-show="$ctrl.nameTakenError">
-                    {{ 'common:ERROR_MSG.NAME_EXISTS' | i18next }}
-                </div>
             </div>
         </div>
     </form>
@@ -57,9 +46,4 @@
     <button class="ncl-primary-button igz-button-primary" data-ng-show="$ctrl.isLoadingState">
         {{ 'common:LOADING_CAPITALIZE_ELLIPSIS' | i18next }}
     </button>
-</div>
-
-<div class="error-text text-centered error-relative"
-     data-ng-show="$ctrl.isServerError()">
-    {{ 'common:ERROR' | i18next }}:&nbsp;{{$ctrl.serverError}}
 </div>

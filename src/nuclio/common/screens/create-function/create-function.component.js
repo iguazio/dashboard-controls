@@ -5,6 +5,7 @@
         .component('nclCreateFunction', {
             bindings: {
                 createProject: '&',
+                getFunction: '&',
                 getProject: '&',
                 getProjects: '&',
                 getTemplates: '&',

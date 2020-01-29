@@ -79,6 +79,7 @@
         "DELETE_PROJECT": "Unknown error occurred while deleting the project (try deleting its functions first).",
         "EXPORT_PROJECT": "Oops: Unknown error occurred while exporting the project",
         "EXPORT_PROJECTS": "Oops: Unknown error occurred while exporting projects",
+        "FUNCTION_NAME_ALREADY_IN_USE": "Function name already in use. Rename and try again.",
         "FUNCTIONALITY_IS_NOT_IMPLEMENTED": "This functionality is not implemented yet.",
         "GET_EVENTS": "Oops: Unknown error occurred while retrieving events",
         "GET_FUNCTION": "Unknown error occurred while retrieving the function.",

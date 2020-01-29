@@ -6,6 +6,7 @@
             bindings: {
                 project: '<',
                 projects: '<',
+                getFunction: '&',
                 toggleSplashScreen: '&',
                 createNewProject: '<',
                 selectedProject: '<'
@@ -14,25 +15,26 @@
             controller: FunctionFromScratchController
         });
 
-    function FunctionFromScratchController($document, $state, $timeout, lodash, ConfigService, EventHelperService,
-                                           FunctionsService, ValidatingPatternsService) {
+    function FunctionFromScratchController($document, $state, $timeout, $i18next, i18next, lodash, ConfigService,
+                                           DialogsService, EventHelperService, FunctionsService,
+                                           ValidatingPatternsService) {
         var ctrl = this;
+        var lng = i18next.language;
 
+        ctrl.functionData = {};
         ctrl.functionFromScratchForm = {};
         ctrl.inputModelOptions = {
             debounce: {
                 'default': 0
             }
         };
-        ctrl.functionData = {};
         ctrl.runtimes = [];
         ctrl.selectedRuntime = null;
+        ctrl.validationRules = [];
 
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
-
-        ctrl.validationPatterns = ValidatingPatternsService;
 
         ctrl.createFunction = createFunction;
         ctrl.inputValueCallback = inputValueCallback;
@@ -47,6 +49,7 @@
         function onInit() {
             ctrl.runtimes = getRuntimes();
             ctrl.selectedRuntime = getDefaultRuntime();
+            ctrl.validationRules = ValidatingPatternsService.getValidationRules('k8s.dns1123Label');
 
             $document.on('keypress', createFunction);
 
@@ -86,24 +89,36 @@
                     if (ctrl.functionFromScratchForm.$valid) {
                         ctrl.toggleSplashScreen({value: true});
 
-                        lodash.defaultsDeep(ctrl, {
-                            functionData: {
-                                metadata: {}
-                            }
-                        });
+                        ctrl.getFunction({metadata: {name: ctrl.functionData.metadata.name}})
+                            .then(function () {
+                                ctrl.toggleSplashScreen({value: false});
+                                DialogsService.alert($i18next.t('functions:ERROR_MSG.FUNCTION_NAME_ALREADY_IN_USE', {lng: lng}))
+                            })
+                            .catch(function (error) {
+                                if (error.status === 404) {
+                                    ctrl.toggleSplashScreen({value: true});
 
-                        if (lodash.isEmpty(ctrl.project) && ctrl.selectedProject.id !== 'new_project') {
-                            ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
-                        }
+                                    lodash.defaultsDeep(ctrl, {
+                                        functionData: {
+                                            metadata: {}
+                                        }
+                                    });
 
-                        $state.go('app.project.function.edit.code', {
-                            isNewFunction: true,
-                            id: ctrl.project.metadata.name,
-                            functionId: ctrl.functionData.metadata.name,
-                            projectId: ctrl.project.metadata.name,
-                            projectNamespace: ctrl.project.metadata.namespace,
-                            functionData: ctrl.functionData
-                        });
+                                    if (lodash.isEmpty(ctrl.project) && ctrl.selectedProject.id !== 'new_project') {
+                                        ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
+                                    }
+
+                                    $state.go('app.project.function.edit.code', {
+                                        isNewFunction: true,
+                                        id: ctrl.project.metadata.name,
+                                        functionId: ctrl.functionData.metadata.name,
+                                        projectId: ctrl.project.metadata.name,
+                                        projectNamespace: ctrl.project.metadata.namespace,
+                                        functionData: ctrl.functionData
+                                    });
+                                }
+                            })
+
                     }
                 }
             }, 100);

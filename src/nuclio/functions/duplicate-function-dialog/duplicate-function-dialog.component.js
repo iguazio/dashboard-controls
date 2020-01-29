@@ -6,6 +6,7 @@
             bindings: {
                 closeDialog: '&',
                 getFunctions: '&',
+                getFunction: '&',
                 project: '<',
                 version: '<'
             },
@@ -13,9 +14,10 @@
             controller: DuplicateFunctionDialogController
         });
 
-    function DuplicateFunctionDialogController($state, lodash, EventHelperService, FormValidationService,
-                                               ValidatingPatternsService) {
+    function DuplicateFunctionDialogController($state, $i18next, i18next, lodash, DialogsService, EventHelperService,
+                                               FormValidationService, ValidatingPatternsService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.duplicateFunctionForm = {};
         ctrl.inputModelOptions = {
@@ -25,13 +27,24 @@
         };
         ctrl.nameTakenError = false;
         ctrl.newFunctionName = '';
+        ctrl.validationRules = [];
 
-        ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
-        ctrl.validationPatterns = ValidatingPatternsService;
+        ctrl.$onInit = onInit;
 
         ctrl.duplicateFunction = duplicateFunction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.onClose = onClose;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            ctrl.validationRules = ValidatingPatternsService.getValidationRules('k8s.dns1123Label');
+        }
 
         //
         // Public methods
@@ -52,9 +65,12 @@
 
                     lodash.set(newFunction, 'metadata.name', ctrl.newFunctionName);
 
-                    ctrl.getFunctions({id: projectID})
-                        .then(function (response) {
-                            if (lodash.isEmpty(lodash.filter(response, ['metadata.name', ctrl.newFunctionName]))) {
+                    ctrl.getFunction({metadata: {name: ctrl.newFunctionName}})
+                        .then(function () {
+                            DialogsService.alert($i18next.t('functions:ERROR_MSG.FUNCTION_NAME_ALREADY_IN_USE', {lng: lng}))
+                        })
+                        .catch(function (error) {
+                            if (error.status === 404) {
                                 ctrl.closeDialog();
 
                                 $state.go('app.project.function.edit.code', {
@@ -65,8 +81,6 @@
                                     projectNamespace: ctrl.project.metadata.namespace,
                                     functionData: newFunction
                                 });
-                            } else {
-                                ctrl.nameTakenError = true;
                             }
                         });
                 }
