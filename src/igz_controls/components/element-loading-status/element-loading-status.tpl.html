@@ -1,6 +1,10 @@
 <div class="element-loading-status" data-ng-class="'loading-status-' + $ctrl.loadingStatusSize">
     <div class="loader-wrapper" data-ng-if="$ctrl.isShowSpinner">
-        <div class="loader-fading-circle">
+        <div class="loader-fading-circle"
+             data-uib-tooltip="{{$ctrl.tooltipLabel}}"
+             data-tooltip-placement="top"
+             data-tooltip-popup-delay="100"
+             data-tooltip-append-to-body="true">
             <div class="loader-circle1 loader-circle"></div>
             <div class="loader-circle2 loader-circle"></div>
             <div class="loader-circle3 loader-circle"></div>
