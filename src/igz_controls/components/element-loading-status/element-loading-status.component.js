@@ -5,14 +5,15 @@
         .component('igzElementLoadingStatus', {
             bindings: {
                 loadingStatusSize: '@?',
-                name: '@'
+                name: '@',
+                tooltipLabel: '@?'
             },
             templateUrl: 'igz_controls/components/element-loading-status/element-loading-status.tpl.html',
             controller: IgzElementLoadingStatusController,
             transclude: true
         });
 
-    function IgzElementLoadingStatusController($scope, $element, $timeout, $state) {
+    function IgzElementLoadingStatusController($scope, $element, $timeout, $state, lodash) {
         var ctrl = this;
         var defaultHeight = 0;
 
@@ -35,9 +36,10 @@
          * Initialization method
          */
         function onInit() {
-            if (!ctrl.loadingStatusSize) {
-                ctrl.loadingStatusSize = 'default';
-            }
+            lodash.defaults(ctrl, {
+                loadingStatusSize: 'default',
+                tooltipLabel: ''
+            });
             defaultHeight = ctrl.loadingStatusSize === 'small' ? 20 : 40;
 
             $scope.$on('element-loading-status_show-spinner', showSpinner);
