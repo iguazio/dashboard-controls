@@ -6,7 +6,9 @@
         .component('nclEditItem', {
             bindings: {
                 item: '<',
+                classList: '<',
                 type: '@',
+                onSelectClassCallback: '&?',
                 onSubmitCallback: '&',
                 validationRules: '<?',
                 defaultFields: '<?'
@@ -21,7 +23,6 @@
         var ctrl = this;
         var lng = i18next.language;
 
-        ctrl.classList = [];
         ctrl.editItemForm = {};
         ctrl.selectedClass = {};
 
@@ -110,10 +111,9 @@
         function onInit() {
             ctrl.placeholder = getPlaceholder();
 
-            ctrl.classList = FunctionsService.getClassesList(ctrl.type);
             if (!lodash.isEmpty(ctrl.item.kind)) {
                 ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
-                ctrl.item.ui.className = ctrl.selectedClass.name;
+                ctrl.item.ui.selectedClass = ctrl.selectedClass;
 
                 $timeout(validateValues);
             }
@@ -753,7 +753,7 @@
 
             ctrl.item.kind = item.id;
             ctrl.item.attributes = {};
-            ctrl.item.ui.className = ctrl.selectedClass.name;
+            ctrl.item.ui.selectedClass = ctrl.selectedClass;
 
             if (!lodash.isNil(item.url)) {
                 ctrl.item.url = '';
@@ -816,6 +816,10 @@
             // if itemName is invalid - set it dirty to show validation message
             if (nameDirty && nameInvalid) {
                 ctrl.editItemForm.itemName.$setDirty();
+            }
+
+            if (ctrl.onSelectClassCallback) {
+                ctrl.onSelectClassCallback()
             }
         }
 

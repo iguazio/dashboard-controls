@@ -53,7 +53,7 @@
 
             if (!lodash.isEmpty(ctrl.item.kind)) {
                 ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
-                ctrl.item.ui.className = ctrl.selectedClass.name;
+                ctrl.item.ui.selectedClass = ctrl.selectedClass;
             }
 
             ctrl.actions = initActions();

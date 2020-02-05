@@ -28,6 +28,7 @@
                         id: 'kafka-cluster',
                         name: 'Kafka',
                         tooltip: 'Kafka',
+                        tooltipOriginal: 'Kafka',
                         tooltipPlacement: 'right',
                         maxWorkers: {
                             name: 'maxWorkers',
@@ -110,6 +111,7 @@
                         id: 'rabbit-mq',
                         name: 'RabbitMQ',
                         tooltip: 'RabbitMQ',
+                        tooltipOriginal: 'RabbitMQ',
                         tooltipPlacement: 'right',
                         url: 'string',
                         attributes: [
@@ -142,6 +144,7 @@
                         id: 'nats',
                         name: 'NATS',
                         tooltip: 'NATS',
+                        tooltipOriginal: 'NATS',
                         tooltipPlacement: 'right',
                         url: 'string',
                         attributes: [
@@ -165,6 +168,7 @@
                         id: 'cron',
                         name: 'Cron',
                         tooltip: 'Cron',
+                        tooltipOriginal: 'Cron',
                         tooltipPlacement: 'right',
                         maxWorkers: {
                             name: 'maxWorkers',
@@ -218,6 +222,7 @@
                         id: 'eventhub',
                         name: 'Azure Event Hubs',
                         tooltip: 'Azure Event Hubs',
+                        tooltipOriginal: 'Azure Event Hubs',
                         tooltipPlacement: 'right',
                         attributes: [
                             {
@@ -268,6 +273,7 @@
                         id: 'http',
                         name: 'HTTP',
                         tooltip: 'HTTP',
+                        tooltipOriginal: 'HTTP',
                         tooltipPlacement: 'right',
                         maxWorkers: {
                             name: 'maxWorkers',
@@ -310,6 +316,7 @@
                         id: 'v3ioStream',
                         name: 'V3IO stream',
                         tooltip: 'V3IO stream',
+                        tooltipOriginal: 'V3IO stream',
                         tooltipPlacement: 'right',
                         url: 'string',
                         username: 'string',
@@ -360,6 +367,7 @@
                         id: 'kinesis',
                         name: 'Kinesis',
                         tooltip: 'Kinesis',
+                        tooltipOriginal: 'Kinesis',
                         tooltipPlacement: 'right',
                         attributes: [
                             {
@@ -403,6 +411,7 @@
                         id: 'mqtt',
                         name: 'MQTT',
                         tooltip: 'MQTT',
+                        tooltipOriginal: 'MQTT',
                         tooltipPlacement: 'right',
                         url: 'string',
                         username: 'string',

@@ -18,6 +18,7 @@
     "BUILD_COMMANDS": "Build commands",
     "BUILD_COMMANDS_DESCRIPTION": "Custom build commands to execute as part of the container-image build",
     "BUILD_LOG": "Build log",
+    "CANNOT_CREATE_TRIGGER": "cannot create more than one trigger of this kind",
     "CHOOSE_TEMPLATE": "Choose a template",
     "CLICK_TO_DISABLE": "Click to disable",
     "CLICK_TO_ENABLE": "Click to enable",
