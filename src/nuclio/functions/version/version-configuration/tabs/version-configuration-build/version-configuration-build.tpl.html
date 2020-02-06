@@ -13,27 +13,31 @@
     </div>
     <form name="$ctrl.buildForm" class="build-wrapper" novalidate>
         <div class="igz-row">
-            <div class="igz-col-100 build-field">
+            <div class="igz-col-100 build-field build-image-field">
                 <div class="field-label">
                     <span>{{ 'functions:IMAGE_NAME' | i18next }}</span>
                     <igz-more-info
-                            data-description="{{ 'functions:IMAGE_NAME_DESCRIPTION' | i18next }}"
+                            data-description="{{ 'functions:IMAGE_NAME_DESCRIPTION' | i18next:{defaultImageName: $ctrl.version.ui.defaultImageName} }}"
+                            data-is-html-enabled="true"
                             data-trigger="click">
                     </igz-more-info>
                 </div>
-                <igz-validating-input-field data-field-type="input"
-                                            data-input-name="imageName"
-                                            data-input-value="$ctrl.version.spec.build.image"
-                                            data-is-focused="false"
-                                            data-form-object="$ctrl.buildForm"
-                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_IMAGE_NAME' | i18next }}"
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-update-data-field="spec.build.image"
-                                            data-validation-max-length="255"
-                                            data-validation-pattern="$ctrl.imageNameValidationPattern"
-                                            data-is-disabled="$ctrl.disabled"
-                                            class="nuclio-validating-input">
-                </igz-validating-input-field>
+                <div class="align-items-baseline">
+                    <span class="flex-none">{{ $ctrl.version.ui.imageNamePrefix }}</span>
+                    <igz-validating-input-field data-field-type="input"
+                                                data-input-name="imageName"
+                                                data-input-value="$ctrl.version.spec.build.image"
+                                                data-is-focused="false"
+                                                data-form-object="$ctrl.buildForm"
+                                                data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_IMAGE_NAME' | i18next }}"
+                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                data-update-data-field="spec.build.image"
+                                                data-validation-max-length="255"
+                                                data-validation-pattern="$ctrl.imageNameValidationPattern"
+                                                data-is-disabled="$ctrl.disabled"
+                                                class="nuclio-validating-input flex-auto">
+                    </igz-validating-input-field>
+                </div>
             </div>
             <div class="igz-col-50 build-field build-base-image-field">
                 <div class="field-label label-with-tooltip align-items-center">

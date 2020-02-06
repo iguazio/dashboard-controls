@@ -150,6 +150,7 @@
                     NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
                 })
                 .then(setIngressHost)
+                .then(setImageNamePrefixTemplate)
                 .catch(function (error) {
                     var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_PROJECT', {lng: lng});
 
@@ -378,6 +379,23 @@
         }
 
         /**
+         * Fills template parameters with actual values.
+         * @param {string} template - The template with parameters to fill.
+         * @param {Object.<string, string>} parameters - An object with parameter name as keys and their corresponding
+         *     replacements as values.
+         * @returns {string} the resulting string of replacing each template parameter with its corresponding value (if
+         *     any).
+         * @example
+         * fillTemplate({ '{{what}}': 'JS', '{{how}}': 'awesome' }, '{{what}} is {{how}}!');
+         * // => 'JS is awesome!'
+         */
+        function fillTemplate(template, parameters) {
+            return lodash.reduce(parameters, function (result, value, key) {
+                return lodash.isEmpty(value) ? result : result.replace(key, value);
+            }, template);
+        }
+
+        /**
          * Gets copy of ctrl.version without `ui` property
          */
         function getVersionCopy() {
@@ -450,6 +468,27 @@
         }
 
         /**
+         * Sets image name prefix and default image name based on template
+         */
+        function setImageNamePrefixTemplate() {
+            var functionName = lodash.get(ctrl.version, 'metadata.name');
+            var imageNamePrefixTemplate = lodash.get(ConfigService, 'nuclio.imageNamePrefixTemplate', '');
+            var parameters = {
+                '{{ .FunctionName }}': functionName,
+                '{{ .ProjectName }}': lodash.get(ctrl.project, 'metadata.name')
+            };
+            var imageNamePrefix = fillTemplate(imageNamePrefixTemplate, parameters);
+            var defaultImageName = lodash.isEmpty(imageNamePrefixTemplate) ?
+                'processor-' + functionName :
+                imageNamePrefix + 'processor';
+
+            lodash.assign(ctrl.version.ui, {
+                defaultImageName: defaultImageName,
+                imageNamePrefix: imageNamePrefix
+            });
+        }
+
+        /**
          * Sets the invocation URL of the function
          */
         function setInvocationUrl() {
@@ -467,15 +506,14 @@
          * Sets ingress host based on template
          */
         function setIngressHost() {
-            var matches = {
+            var ingressHostTemplate = lodash.get(ConfigService, 'nuclio.ingressHostTemplate', '');
+            var parameters = {
                 '{{ .ResourceName }}': lodash.get(ctrl.version, 'metadata.name'),
                 '{{ .ProjectName }}': lodash.get(ctrl.project, 'metadata.name'),
                 '{{ .Namespace }}': lodash.get(ctrl.project, 'metadata.namespace')
             };
 
-            ctrl.version.ui.ingressHost = lodash.reduce(matches, function (accum, value, key) {
-                return !lodash.isNil(value) ? lodash.replace(accum, key, value) : accum;
-            }, ConfigService.nuclio.ingressHostTemplate);
+            ctrl.version.ui.ingressHost = fillTemplate(ingressHostTemplate, parameters);
         }
 
         /**
