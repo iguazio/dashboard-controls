@@ -115,7 +115,7 @@
     "HOST_PATH": "Host path",
     "HUGE": "Huge",
     "IMAGE_NAME": "Image name",
-    "IMAGE_NAME_DESCRIPTION": "The name of the built container image (default: the function name)",
+    "IMAGE_NAME_DESCRIPTION": "The name of the built container image (default for this function: <b>{{defaultImageName}}</b>)",
     "IMPORT": "Import",
     "IMPORT_FUNCTION_DESCRIPTION": "Upload a YAML file as a starting point for your nuclio function",
     "IMPORT_PROJECTS": "Import project(s)",
