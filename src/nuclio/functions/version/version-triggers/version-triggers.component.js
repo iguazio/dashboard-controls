@@ -93,15 +93,13 @@
         function checkClassUniqueness() {
             lodash.forEach(uniqueClasses, function (classId) {
                 var classData = lodash.find(ctrl.classList, ['id', classId]);
-                var isClassUsed = lodash.some(ctrl.triggers, function (trigger) {
-                    return trigger.ui.selectedClass.id === classId
-                });
+                var classIsUsed = lodash.some(ctrl.triggers, ['ui.selectedClass.id', classId]);
 
                 lodash.merge(classData, {
-                    tooltip: isClassUsed ?
+                    tooltip: classIsUsed ?
                         classData.tooltipOriginal + ' - ' + $i18next.t('functions:CANNOT_CREATE_TRIGGER', {lng: lng}) :
                         classData.tooltipOriginal,
-                    disabled: isClassUsed
+                    disabled: classIsUsed
                 });
             })
         }
