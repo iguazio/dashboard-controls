@@ -11,15 +11,17 @@
         });
 
     function NclVersionTriggersController($rootScope, $timeout, $i18next, i18next, lodash, DialogsService,
-                                          VersionHelperService) {
+                                          FunctionsService, VersionHelperService) {
         var ctrl = this;
         var lng = i18next.language;
+        var uniqueClasses = ['http'];
 
         ctrl.isCreateModeActive = false;
         ctrl.triggers = [];
 
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
+        ctrl.checkClassUniqueness = checkClassUniqueness;
         ctrl.createTrigger = createTrigger;
         ctrl.editTriggerCallback = editTriggerCallback;
         ctrl.handleAction = handleAction;
@@ -63,11 +65,14 @@
 
                 return triggersItem;
             });
+            ctrl.classList = FunctionsService.getClassesList('trigger');
 
             $timeout(function () {
                 ctrl.defaultFields = {
                     ingressHost: ctrl.version.ui.ingressHost
-                }
+                };
+
+                checkClassUniqueness();
             }, 1000);
         }
 
@@ -81,6 +86,23 @@
         //
         // Public methods
         //
+
+        /**
+         * Checks if classes should be disabled
+         */
+        function checkClassUniqueness() {
+            lodash.forEach(uniqueClasses, function (classId) {
+                var classData = lodash.find(ctrl.classList, ['id', classId]);
+                var classIsUsed = lodash.some(ctrl.triggers, ['ui.selectedClass.id', classId]);
+
+                lodash.merge(classData, {
+                    tooltip: classIsUsed ?
+                        classData.tooltipOriginal + ' - ' + $i18next.t('functions:CANNOT_CREATE_TRIGGER', {lng: lng}) :
+                        classData.tooltipOriginal,
+                    disabled: classIsUsed
+                });
+            })
+        }
 
         /**
          * Toggle create trigger mode
@@ -152,6 +174,8 @@
         function deleteHandler(selectedItem) {
             lodash.remove(ctrl.triggers, ['id', selectedItem.id]);
             lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
+
+            checkClassUniqueness();
         }
 
         /**
@@ -247,6 +271,8 @@
             if (!lodash.isEqual(currentTrigger, selectedItem)) {
                 angular.copy(selectedItem, currentTrigger);
             }
+
+            checkClassUniqueness();
         }
 
         /**

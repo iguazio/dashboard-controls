@@ -12,7 +12,7 @@
         });
 
     function NclVersionConfigurationVolumesController($rootScope, $timeout, $i18next, i18next, lodash, DialogsService,
-                                                      ValidatingPatternsService) {
+                                                      FunctionsService, ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -76,6 +76,8 @@
 
                 return volumeItem;
             });
+
+            ctrl.classList = FunctionsService.getClassesList('volume');
         }
 
         /**
