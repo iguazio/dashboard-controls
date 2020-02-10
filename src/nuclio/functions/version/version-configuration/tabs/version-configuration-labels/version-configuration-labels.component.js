@@ -86,6 +86,8 @@
                 })
                 .value();
             ctrl.labels = lodash.compact(ctrl.labels);
+            ctrl.addNewLabelTooltip = ctrl.isVersionDeployed(ctrl.version) ?
+                $i18next.t('functions:TOOLTIP.ADD_LABELS', {lng: lng}) : '';
 
             $timeout(function () {
                 if (ctrl.labelsForm.$invalid) {

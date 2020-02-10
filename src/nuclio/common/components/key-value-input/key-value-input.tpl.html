@@ -28,7 +28,11 @@
                                             data-validation-is-required="!$ctrl.keyOptional"
                                             data-validation-pattern="$ctrl.keyValidationPattern"
                                             data-validation-rules="$ctrl.validationRules['key']"
-                                            data-placeholder-text="{{$ctrl.keyPlaceholder}}">
+                                            data-placeholder-text="{{$ctrl.keyPlaceholder}}"
+                                            data-uib-tooltip="{{$ctrl.keyTooltip}}"
+                                            data-tooltip-append-to-body="true"
+                                            data-tooltip-placement="bottom"
+                                            data-tooltip-popup-delay="100">
                 </igz-validating-input-field>
                 <igz-default-dropdown class="nuclio-validating-input input-key"
                                       data-ng-if="$ctrl.keyList"
@@ -115,7 +119,11 @@
                                             data-validation-is-required="!$ctrl.valueOptional"
                                             data-validation-pattern="$ctrl.valueValidationPattern"
                                             data-validation-rules="$ctrl.validationRules['value']"
-                                            data-placeholder-text="{{$ctrl.valuePlaceholder}}">
+                                            data-placeholder-text="{{$ctrl.valuePlaceholder}}"
+                                            data-uib-tooltip="{{$ctrl.valueTooltip}}"
+                                            data-tooltip-append-to-body="true"
+                                            data-tooltip-placement="bottom"
+                                            data-tooltip-popup-delay="100">
                 </igz-validating-input-field>
                 <igz-validating-input-field class="nuclio-validating-input input-additional-value"
                                             data-ng-if="$ctrl.useAdditionalValue && $ctrl.isVisibleByType('value')"

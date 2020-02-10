@@ -35,13 +35,19 @@
                                      data-is-disabled="$ctrl.isVersionDeployed($ctrl.version)"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
                                      data-change-data-callback="$ctrl.onChangeData(newData, index)"
-                                     data-submit-on-fly="true">
+                                     data-submit-on-fly="true"
+                                     data-key-tooltip="$ctrl.addNewLabelTooltip"
+                                     data-value-tooltip="$ctrl.addNewLabelTooltip">
                 </ncl-key-value-input>
             </div>
         </div>
         <div class="igz-create-button create-label-button"
              data-ng-class="{'disabled': $ctrl.isVersionDeployed($ctrl.version)}"
-             data-ng-click="$ctrl.addNewLabel($event)">
+             data-ng-click="$ctrl.addNewLabel($event)"
+             data-uib-tooltip="{{$ctrl.addNewLabelTooltip}}"
+             data-tooltip-append-to-body="true"
+             data-tooltip-placement="right"
+             data-tooltip-popup-delay="100">
             <span class="igz-icon-add-round"></span>
             {{ 'functions:CREATE_NEW_LABEL' | i18next }}
         </div>
