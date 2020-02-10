@@ -18,6 +18,7 @@
     "BUILD_COMMANDS": "Build commands",
     "BUILD_COMMANDS_DESCRIPTION": "Custom build commands to execute as part of the container-image build",
     "BUILD_LOG": "Build log",
+    "CANNOT_CREATE_TRIGGER": "cannot create more than one trigger of this kind",
     "CHOOSE_TEMPLATE": "Choose a template",
     "CLICK_TO_DISABLE": "Click to disable",
     "CLICK_TO_ENABLE": "Click to enable",
@@ -115,7 +116,7 @@
     "HOST_PATH": "Host path",
     "HUGE": "Huge",
     "IMAGE_NAME": "Image name",
-    "IMAGE_NAME_DESCRIPTION": "The name of the built container image (default: the function name)",
+    "IMAGE_NAME_DESCRIPTION": "The name of the built container image (default for this function: <b>{{defaultImageName}}</b>)",
     "IMPORT": "Import",
     "IMPORT_FUNCTION_DESCRIPTION": "Upload a YAML file as a starting point for your nuclio function",
     "IMPORT_PROJECTS": "Import project(s)",
@@ -242,6 +243,7 @@
     "TIMEOUT": "Timeout",
     "TOKEN": "Token",
     "TOOLTIP": {
+        "ADD_LABELS": "Labels could be set on function creation only.",
         "ANNOTATION": "Annotation",
         "ANNOTATIONS": {
             "HEAD": "Kubernetes annotations",
