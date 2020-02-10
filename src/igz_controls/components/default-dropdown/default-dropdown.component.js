@@ -483,7 +483,10 @@
 
                 if (angular.isDefined(event)) {
                     ctrl.isDropdownContainerShown = false;
-                    ctrl.valuesArray = valuesArrayCopy;
+
+                    if (ctrl.autocomplete) {
+                        ctrl.valuesArray = valuesArrayCopy;
+                    }
                 }
             }
 

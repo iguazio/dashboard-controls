@@ -19,8 +19,8 @@
             </div>
 
             <!-- Class/type -->
-            <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.ui.className)">
-                {{$ctrl.item.ui.className}}
+            <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.ui.selectedClass)">
+                {{$ctrl.item.ui.selectedClass.name}}
             </div>
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)">
                 {{ 'functions:HOST_PATH' | i18next }}
