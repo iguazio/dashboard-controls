@@ -600,9 +600,10 @@
             ctrl.requestSourceCodeLanguage = contentType === 'application/json' ? 'json' : 'textplain';
             updateRequestHeaders();
 
-            var requestType = contentType === 'application/json' ? 'json' :
-                              contentType === 'text/plain'       ? 'text' :
-                                                                   'file';
+            // 2020-02-10 Eran Nussbam:
+            // File is not in production until further notice, and there is no way to figure out if a function event is
+            // of type 'file' anymore. If back-end supports this in the future, we will figure out what to do here.
+            var requestType = contentType === 'application/json' ? 'json' : 'text';
             ctrl.requestBodyType = lodash.find(ctrl.requestBodyTypes, ['id', requestType]);
         }
 
