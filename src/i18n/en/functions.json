@@ -243,6 +243,7 @@
     "TIMEOUT": "Timeout",
     "TOKEN": "Token",
     "TOOLTIP": {
+        "ADD_LABELS": "Labels could be set on function creation only.",
         "ANNOTATION": "Annotation",
         "ANNOTATIONS": {
             "HEAD": "Kubernetes annotations",
