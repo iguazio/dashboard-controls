@@ -249,6 +249,8 @@
                                         status === 'Ready' && ctrl.function.spec.disable  ? 'Standby'        :
                                         status === 'Ready' && !ctrl.function.spec.disable ? 'Running'        :
                                         /* else */                                          'Building';
+
+            lodash.set(ctrl.function, 'ui.convertedStatus', ctrl.convertedStatusState);
         }
 
         /**
