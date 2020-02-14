@@ -336,6 +336,8 @@
          * @param {boolean} isInitCheck - is it an initial check
          */
         function checkPatternsValidity(value, isInitCheck) {
+            ctrl.formObject[ctrl.inputName].$setTouched();
+
             lodash.forEach(ctrl.validationRules, function (rule) {
                 var isValid = lodash.isFunction(rule.pattern) ? rule.pattern(value, isInitCheck) : rule.pattern.test(value);
 
@@ -343,8 +345,6 @@
 
                 rule.isValid = isValid;
             });
-
-            ctrl.formObject.$setSubmitted();
         }
 
         /**
