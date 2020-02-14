@@ -343,6 +343,8 @@
 
                 rule.isValid = isValid;
             });
+
+            ctrl.formObject.$setSubmitted();
         }
 
         /**
