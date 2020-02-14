@@ -136,7 +136,7 @@
 
             lodash.defaultsDeep(ctrl.inputModelOptions, defaultInputModelOptions);
 
-            if (angular.isDefined(ctrl.validationRules) && !lodash.isEmpty(ctrl.data)) {
+            if (!lodash.isEmpty(ctrl.validationRules) && !lodash.isEmpty(ctrl.data)) {
                 $timeout(checkPatternsValidity.bind(null, ctrl.data, true));
             }
 
@@ -159,7 +159,7 @@
                 }, timer);
             }
 
-            if (angular.isDefined(ctrl.validationRules)) {
+            if (!lodash.isEmpty(ctrl.validationRules)) {
                 PreventDropdownCutOffService.preventDropdownCutOff($element, '.validation-pop-up');
             }
         }
@@ -182,7 +182,7 @@
                     ctrl.data = angular.copy(changes.inputValue.currentValue);
                     ctrl.startValue = angular.copy(ctrl.inputValue);
 
-                    if (angular.isDefined(ctrl.validationRules)) {
+                    if (!lodash.isEmpty(ctrl.validationRules)) {
                         checkPatternsValidity(ctrl.data, false);
                     }
                 }
@@ -261,7 +261,7 @@
         function focusInput() {
             ctrl.inputFocused = true;
 
-            if (angular.isDefined(ctrl.validationRules)) {
+            if (!lodash.isEmpty(ctrl.validationRules)) {
                 ctrl.inputIsTouched = true;
             }
 
@@ -313,7 +313,7 @@
                 });
             }
 
-            if (angular.isDefined(ctrl.validationRules)) {
+            if (!lodash.isEmpty(ctrl.validationRules)) {
                 checkPatternsValidity(ctrl.inputValue, false);
             }
         }
@@ -355,7 +355,7 @@
             var validationIcon = $element.find('.validation-icon')[0];
 
             if (event.target === validationIcon) {
-                if (angular.isDefined(ctrl.validationRules)) {
+                if (!lodash.isEmpty(ctrl.validationRules)) {
                     $timeout(function () {
                         $element.find('.field')[0].focus();
 
@@ -414,7 +414,7 @@
          * @param {Array} inputNameList - broadcast data
          */
         function updatePatternsValidity(event, inputNameList) {
-            if (angular.isDefined(ctrl.validationRules) && lodash.includes(inputNameList, ctrl.inputName)) {
+            if (!lodash.isEmpty(ctrl.validationRules) && lodash.includes(inputNameList, ctrl.inputName)) {
                 checkPatternsValidity(ctrl.inputValue, false);
             }
         }
