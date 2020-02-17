@@ -254,7 +254,8 @@
             "HEAD": "Kubernetes ConfigMap",
             "REST": "for storing configuration artifacts separately from the container image content"
         },
-        "DEPLOY_BTN": "Invalid config, cannot deploy (review the tabs and fix invalid fields)",
+        "DEPLOY_INVALID_CONFIG": "Invalid config, cannot deploy (review the tabs and fix invalid fields)",
+        "DEPLOY_IN_PROGRESS": "Deploy is already in-progress",
         "DISABLE_CACHE": "Build the function's Docker image from scratch without reusing any previously built Docker image layers",
         "DISABLED_FUNCTION": "Only running functions can be tested",
         "GITHUB": {
