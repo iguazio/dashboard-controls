@@ -321,6 +321,23 @@
                         url: 'string',
                         username: 'string',
                         password: 'string',
+                        maxWorkers: {
+                            name: 'maxWorkers',
+                            pattern: 'number',
+                            type: 'number-input',
+                            allowEmpty: false,
+                            min: 1,
+                            max: 100000,
+                            defaultValue: 1
+                        },
+                        workerAvailabilityTimeoutMilliseconds: {
+                            name: 'workerAvailabilityTimeoutMilliseconds',
+                            pattern: 'number',
+                            type: 'number-input',
+                            allowEmpty: false,
+                            min: 0,
+                            defaultValue: 0
+                        },
                         attributes: [
                             {
                                 name: 'partitions',

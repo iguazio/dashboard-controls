@@ -18,8 +18,8 @@
         });
 
     function NclEditItemController($document, $element, $rootScope, $scope, $timeout, $i18next, i18next, lodash,
-                                   ConverterService, FunctionsService, FormValidationService,
-                                   PreventDropdownCutOffService, ValidatingPatternsService) {
+                                   ConverterService, FormValidationService, PreventDropdownCutOffService,
+                                   ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -139,7 +139,8 @@
 
             if (ctrl.isTriggerType() && ctrl.isHttpTrigger()) {
                 if (lodash.isNil(ctrl.item.workerAvailabilityTimeoutMilliseconds)) {
-                    ctrl.item.workerAvailabilityTimeoutMilliseconds = 0;
+                    ctrl.item.workerAvailabilityTimeoutMilliseconds =
+                        lodash.get(ctrl.selectedClass, 'workerAvailabilityTimeoutMilliseconds.defaultValue', 0);
                 }
 
                 ctrl.ingresses = lodash.chain(ctrl.item.attributes.ingresses)
@@ -783,7 +784,7 @@
                 ctrl.item.password = '';
             }
 
-            lodash.each(item.attributes, function (attribute) {
+            lodash.forEach(item.attributes, function (attribute) {
                 if (attribute.name === 'ingresses') {
                     ctrl.ingresses = [];
                 } else if (attribute.name === 'sasl') {
