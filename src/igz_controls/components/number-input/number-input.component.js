@@ -7,6 +7,7 @@
                 currentValue: '<',
                 valueStep: '@',
                 allowEmptyField: '<?',
+                asString: '<?',
                 currentValueUnit: '<?',
                 defaultValue: '<?',
                 formObject: '<?',
@@ -41,6 +42,7 @@
      * valueStep - increment/decrement step
      * allowEmptyField - checks if true, then input field can be empty on initialization and
      *                   there is an ability to call updateNumberInputCallback with empty value
+     * asString - if true returns the value as a string
      * currentValueUnit - unit of current value
      * defaultValue - default value which will be set if field is empty
      * formObject - form object
@@ -93,6 +95,7 @@
          */
         function onInit() {
             lodash.defaults(ctrl, {
+                asString: false,
                 validationIsRequired: false,
                 allowEmptyField: false,
                 defaultValue: null,
@@ -316,9 +319,16 @@
          */
         function validateCurrentValue() {
             if (angular.isFunction(ctrl.updateNumberInputCallback)) {
-                if (ctrl.allowEmptyField || (!lodash.isNil(ctrl.currentValue) && ctrl.currentValue !== '')) {
+                var currentValueIsDefined = !lodash.isNil(ctrl.currentValue) && ctrl.currentValue !== '';
+
+                if (ctrl.allowEmptyField || currentValueIsDefined) {
+                    var newData = currentValueIsDefined     ?
+                                  ctrl.asString             ?
+                                  String(ctrl.currentValue) :
+                                  Number(ctrl.currentValue) : '';
+
                     ctrl.updateNumberInputCallback({
-                        newData: !lodash.isNil(ctrl.currentValue) && ctrl.currentValue !== '' ? Number(ctrl.currentValue) : '',
+                        newData: newData,
                         field: angular.isDefined(ctrl.updateNumberInputField) ? ctrl.updateNumberInputField : ctrl.inputName
                     });
                 }
