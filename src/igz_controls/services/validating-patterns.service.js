@@ -127,9 +127,9 @@
                         pattern: /^([a-z0-9].*)?[a-z0-9]$/
                     },
                     {
-                        name: 'noConsecutivePeriods',
-                        label: $i18next.t('common:NO_CONSECUTIVE_CHARACTER', {lng: lng, characters: 'periods'}) + ' (..)',
-                        pattern: /^(?!.*\.\.)/
+                        name: 'noConsecutivePeriodsOrPeriodHyphenMixes',
+                        label: $i18next.t('common:NO_CONSECUTIVE_CHARACTER', {lng: lng, characters: 'periods or period/hyphen mixes'}) + ' (.., .-, -.)',
+                        pattern: /^(?!.*\.\.)(?!.*\.-)(?!.*-\.)/
                     },
                     {
                         name: 'maxLength',
@@ -232,9 +232,9 @@
                         pattern: /^.*[a-z0-9]$/
                     },
                     {
-                        name: 'noConsecutivePeriods',
-                        label: $i18next.t('common:NO_CONSECUTIVE_CHARACTER', {lng: lng, characters: 'periods'}) + ' (..)',
-                        pattern: /^(?!.*\.\.)/
+                        name: 'noConsecutivePeriodsOrPeriodHyphenMixes',
+                        label: $i18next.t('common:NO_CONSECUTIVE_CHARACTER', {lng: lng, characters: 'periods or period/hyphen mixes'}) + ' (.., .-, -.)',
+                        pattern: /^(?!.*\.\.)(?!.*\.-)(?!.*-\.)/
                     },
                     {
                         name: 'maxLength',
