@@ -73,17 +73,11 @@
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)">
                         <span class="field-label">{{ 'functions:HOST_PATH' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.hostPath.path }};&nbsp;
                     </span>
-                    <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.accessKey)">
-                        <span class="field-label">{{ 'functions:ACCESS_KEY' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.accessKey }};&nbsp;
-                    </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.container)">
                         <span class="field-label">{{ 'functions:CONTAINER_NAME' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.container }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.subPath)">
                         <span class="field-label">{{ 'functions:SUB_PATH' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.subPath }};&nbsp;
-                    </span>
-                    <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.secret.secretName)">
-                        <span class="field-label">{{ 'functions:SECRET_NAME' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.secret.secretName }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.configMap.name)">
                         <span class="field-label">{{ 'functions:CONFIG_MAP_NAME' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.configMap.name }};&nbsp;
