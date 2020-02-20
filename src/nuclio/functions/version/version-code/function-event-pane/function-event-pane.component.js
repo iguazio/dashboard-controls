@@ -613,7 +613,7 @@
          */
         function testEvent(event) {
             ctrl.testEventsForm.$setPristine();
-            var httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
+            var httpPort = lodash.get(ctrl.version, 'ui.deployResult.status.httpPort', null);
 
             if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) && !ctrl.testing &&
                 !lodash.isNull(httpPort) && !ctrl.uploadingData.uploading && !ctrl.isDisabledTestButton()) {
