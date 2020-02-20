@@ -17,7 +17,7 @@
                 <button class="ncl-new-entity-button igz-button-primary"
                         data-ng-class="{'disabled': $ctrl.isDeployButtonDisabled()}"
                         data-ng-click="$ctrl.isInValidDeployState() || $ctrl.deployButtonClick($event)"
-                        data-uib-tooltip="{{ 'functions:TOOLTIP.DEPLOY_BTN' | i18next }}"
+                        data-uib-tooltip="{{ ($ctrl.deployResult.status.state === 'building' ? 'functions:TOOLTIP.DEPLOY_IN_PROGRESS' : 'functions:TOOLTIP.DEPLOY_INVALID_CONFIG') | i18next }}"
                         data-tooltip-enable="$ctrl.isDeployButtonDisabled()"
                         data-tooltip-placement="left"
                         data-tooltip-append-to-body="true"
