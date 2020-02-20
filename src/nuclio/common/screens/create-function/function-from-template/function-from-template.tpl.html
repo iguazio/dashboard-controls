@@ -50,17 +50,17 @@
 
                         <div data-ng-show="$ctrl.isTemplateSelected(key)"
                              class="function-template-content">
-                            <ng-form name="templateForm">
+                            <ng-form name="templateForm{{$index}}">
                                 <div data-ng-if="$ctrl.isProjectsDropDownVisible()"
                                      class="projects-drop-down">
-                                <span class="input-label">
-                                    {{ 'common:PROJECTS' | i18next }}
-                                </span>
+                                    <span class="input-label">
+                                        {{ 'common:PROJECTS' | i18next }}
+                                    </span>
                                     <igz-default-dropdown data-is-required="true"
                                                           data-values-array="$ctrl.projectsList"
                                                           data-selected-item="$ctrl.selectedProject"
                                                           data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)"
-                                                          data-form-object="$ctrl.functionFromTemplateForm.templateForm"
+                                                          data-form-object="$ctrl.functionFromTemplateForm['templateForm' + $index]"
                                                           data-input-name="project">
                                         <div class="transcluded-item"
                                              data-ng-click="$ctrl.createNewProject()">
@@ -74,9 +74,9 @@
                                     </span>
                                     <igz-validating-input-field class="nuclio-validating-input"
                                                                 data-field-type="input"
-                                                                data-input-name="name"
+                                                                data-input-name="function-name-{{$index}}"
                                                                 data-input-value="$ctrl.functionName"
-                                                                data-form-object="$ctrl.functionFromTemplateForm.templateForm"
+                                                                data-form-object="$ctrl.functionFromTemplateForm['templateForm' + $index]"
                                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                                 data-validation-is-required="true"
                                                                 data-validation-rules="$ctrl.validationRules"

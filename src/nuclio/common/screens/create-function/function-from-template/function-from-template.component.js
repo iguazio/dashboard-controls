@@ -26,6 +26,7 @@
 
         ctrl.duplicateFunctionForm = {};
         ctrl.functionData = {};
+        ctrl.functionFromTemplateForm = {};
         ctrl.functionName = '';
         ctrl.inputModelOptions = {
             debounce: {

@@ -118,7 +118,7 @@
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.valueOptional"
                                             data-validation-pattern="$ctrl.valueValidationPattern"
-                                            data-validation-rules="$ctrl.validationRules['value']"
+                                            data-validation-rules="$ctrl.validationRules[$ctrl.getType()]"
                                             data-placeholder-text="{{$ctrl.valuePlaceholder}}"
                                             data-uib-tooltip="{{$ctrl.valueTooltip}}"
                                             data-tooltip-append-to-body="true"
