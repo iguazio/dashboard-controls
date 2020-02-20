@@ -22,23 +22,11 @@
             childrenSelector: '.table-body'
         };
         ctrl.validationRules = {
-            key: [
-                {
-                    name: 'validCharacters',
-                    label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
-                    pattern: /^[\w.-]+$/
-                },
-                {
-                    name: 'notStartWithDigitOrTwoPeriods',
-                    label: $i18next.t('functions:NOT_START_WITH_DIGIT_OR_TWO_PERIODS', {lng: lng}) + ' (..)',
-                    pattern: /^(?!\.{2,}|\d)/
-                },
-                {
-                    name: 'uniqueness',
-                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
-                    pattern: validateUniqueness.bind(null, 'name')
-                }
-            ],
+            key: ValidatingPatternsService.getValidationRules('k8s.envVarName', [{
+                name: 'uniqueness',
+                label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                pattern: validateUniqueness.bind(null, 'name')
+            }]),
             secretKey: ValidatingPatternsService.getValidationRules('k8s.configMapKey'),
             secret: ValidatingPatternsService.getValidationRules('k8s.dns1123Subdomain'),
             configmapKey: [

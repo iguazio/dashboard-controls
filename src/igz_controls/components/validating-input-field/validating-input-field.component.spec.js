@@ -24,7 +24,8 @@ describe('igzValidatingInputField component:', function () {
         var formObject = {
             attributeName: {
                 $viewValue: 'some value',
-                $setValidity: angular.noop
+                $setValidity: angular.noop,
+                $setTouched: angular.noop
             }
         };
         var bindings = {
@@ -125,7 +126,6 @@ describe('igzValidatingInputField component:', function () {
             ctrl.preventInputBlur = true;
 
             ctrl.unfocusInput(event);
-            $timeout.flush();
 
             expect(spy).not.toHaveBeenCalled();
             expect(ctrl.preventInputBlur).toBeFalsy();

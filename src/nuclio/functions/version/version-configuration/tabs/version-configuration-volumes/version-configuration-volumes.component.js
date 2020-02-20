@@ -39,7 +39,8 @@
                     label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
                     pattern: validateUniqueness.bind(null, 'volumeMount.mountPath')
                 }
-            ]
+            ],
+            containerName: ValidatingPatternsService.getValidationRules('containerName')
         };
 
         ctrl.$onInit = onInit;

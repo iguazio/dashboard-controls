@@ -142,7 +142,6 @@
     "NO_INTERNET_ACCESS": "No internet access",
     "NO_LOGS_HAVE_BEEN_FOUND": "No logs have been found...",
     "NORMAL": "Normal",
-    "NOT_START_WITH_DIGIT_OR_TWO_PERIODS": "Must not start with a digit (0–9) or with two periods",
     "NOT_START_WITH_FORBIDDEN_WORDS": "Must not start with 'kubernetes.io' or 'k8s.io'",
     "NOT_YET_DEPLOYED": "Not yet deployed",
     "ONBUILD_IMAGE": "Onbuild image",
