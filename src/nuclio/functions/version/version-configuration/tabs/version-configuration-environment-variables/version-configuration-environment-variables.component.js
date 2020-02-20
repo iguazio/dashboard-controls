@@ -12,7 +12,8 @@
         });
 
     function NclVersionConfigurationEnvironmentVariablesController($element, $i18next, $rootScope, $timeout, i18next,
-                                                                   lodash, PreventDropdownCutOffService) {
+                                                                   lodash, PreventDropdownCutOffService,
+                                                                   ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -38,6 +39,8 @@
                     pattern: validateUniqueness.bind(null, 'name')
                 }
             ],
+            secretKey: ValidatingPatternsService.getValidationRules('k8s.configMapKey'),
+            secret: ValidatingPatternsService.getValidationRules('k8s.dns1123Subdomain'),
             configmapKey: [
                 {
                     name: 'validCharacters',

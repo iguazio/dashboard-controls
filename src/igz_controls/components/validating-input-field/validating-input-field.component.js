@@ -159,9 +159,7 @@
                 }, timer);
             }
 
-            if (!lodash.isEmpty(ctrl.validationRules)) {
-                PreventDropdownCutOffService.preventDropdownCutOff($element, '.validation-pop-up');
-            }
+            PreventDropdownCutOffService.preventDropdownCutOff($element, '.validation-pop-up');
         }
 
         /**
