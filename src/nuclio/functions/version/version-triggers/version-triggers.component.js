@@ -69,7 +69,7 @@
             ctrl.classList = FunctionsService.getClassesList('trigger');
             ctrl.validationRules = {
                 host: {
-                    key: ValidatingPatternsService.getValidationRules('k8s.wildcardDns1123Subdomain'),
+                    key: ValidatingPatternsService.getValidationRules('k8s.dns1123Subdomain')
                 }
             };
 
