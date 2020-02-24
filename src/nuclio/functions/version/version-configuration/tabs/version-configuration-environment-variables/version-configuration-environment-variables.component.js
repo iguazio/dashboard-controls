@@ -193,6 +193,7 @@
                 return lodash.omit(variable, 'ui');
             });
 
+            $rootScope.$broadcast('update-patterns-validity', ['key', 'value']);
             $rootScope.$broadcast('change-state-deploy-button', {
                 component: 'variable',
                 isDisabled: !isFormValid
