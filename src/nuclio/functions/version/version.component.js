@@ -418,9 +418,7 @@
 
                             ctrl.versionDeployed = true;
 
-                            if (!VersionHelperService.isVersionDeployed(ctrl.version)) {
-                                ctrl.version.status = response.status;
-                            }
+                            ctrl.version.status = response.status;
                             ctrl.version.ui = {
                                 deployedVersion: getVersionCopy(),
                                 versionChanged: false
