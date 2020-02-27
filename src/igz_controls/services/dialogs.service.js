@@ -44,7 +44,8 @@
                 '<button class="igz-button-primary" data-ng-click="closeThisDialog() || $event.stopPropagation()" ' +
                 'data-test-id="general.alert_ok.button">' +
                 buttonText + '</button></div>',
-                plain: true
+                plain: true,
+                className: 'ngdialog-theme-iguazio alert-dialog'
             })
                 .closePromise;
         }
@@ -91,8 +92,8 @@
                 template: template,
                 plain: true,
                 name: 'confirm',
-                className: type === 'nuclio_alert' ?
-                    'ngdialog-theme-nuclio delete-entity-dialog-wrapper' : 'ngdialog-theme-iguazio'
+                className: (type === 'nuclio_alert' ?
+                    'ngdialog-theme-nuclio delete-entity-dialog-wrapper' : 'ngdialog-theme-iguazio') + ' confirm-dialog'
             });
         }
 
@@ -287,7 +288,8 @@
                     'data-test-id="general.prompt_ok.button">' + okButtonCaption + '</button>' +
                 '</div>',
                 plain: true,
-                data: data
+                data: data,
+                className: 'ngdialog-theme-iguazio prompt-dialog'
             });
 
             function confirmCallback(event) {
