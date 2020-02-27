@@ -539,6 +539,14 @@
          * @param {Object} event
          */
         function saveEvent(event) {
+            if (lodash.isEmpty(lodash.get(ctrl.selectedEvent, 'spec.displayName', ''))) {
+                ctrl.testEventsForm.nameInput.$setValidity('text', false);
+
+                return false;
+            } else {
+                ctrl.testEventsForm.nameInput.$setValidity('text', true);
+            }
+
             ctrl.testEventsForm.$submitted = true;
 
             if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) &&

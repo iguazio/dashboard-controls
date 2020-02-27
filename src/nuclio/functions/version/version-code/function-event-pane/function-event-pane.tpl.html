@@ -60,9 +60,10 @@
                                                  data-on-change="$ctrl.inputValueCallback(item, 'spec.displayName')"
                                                  data-input-name="nameInput"
                                                  data-form-object="$ctrl.testEventsForm"
-                                                 data-required="true"
+                                                 data-required="false"
                                                  data-placeholder="{{ 'functions:PLACEHOLDER.EVENT_NAME' | i18next }}"
-                                                 data-max-length="128">
+                                                 data-max-length="128"
+                                                 data-min-length="0">
                         </igz-elastic-input-field>
                     </div>
 
@@ -77,9 +78,9 @@
                         </button>
                         <button class="igz-button-secondary small"
                                 data-ng-class="{'disabled': $ctrl.isDisabledTestButton()}"
-                                data-ng-disabled="$ctrl.isDisabledTestButton()"
-                                data-ng-click="$ctrl.testEvent()"
-                                data-uib-tooltip="{{$ctrl.version.status.state !== 'ready' || $ctrl.version.spec.disable ? ('functions:TOOLTIP.DISABLED_FUNCTION' | i18next) : ''}}"
+                                data-ng-click="$ctrl.isDisabledTestButton() ? angular.noop : $ctrl.testEvent()"
+                                data-tooltip-enable="$ctrl.version.status.state !== 'ready' || $ctrl.version.spec.disable"
+                                data-uib-tooltip="{{ 'functions:TOOLTIP.DISABLED_FUNCTION' | i18next }}"
                                 data-tooltip-popup-delay="300"
                                 data-tooltip-placement="top"
                                 data-tooltip-append-to-body="true">
