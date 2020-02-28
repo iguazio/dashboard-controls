@@ -297,11 +297,11 @@
 
         function duplicateFunction() {
             ngDialog.open({
-                template: '<ncl-duplicate-function-dialog data-close-dialog="closeThisDialog()" ' +
+                template: '<igz-duplicate-dialog data-close-dialog="closeThisDialog()" ' +
                     'data-get-functions="ngDialogData.getFunctions({id: id})" ' +
                     'data-get-function="ngDialogData.getFunction({metadata: metadata})" ' +
                     'data-project="ngDialogData.project" data-version="ngDialogData.version">' +
-                    '</ncl-duplicate-function-dialog>',
+                    '</igz-duplicate-dialog>',
                 plain: true,
                 data: {
                     getFunctions: ctrl.getFunctions,
@@ -309,7 +309,7 @@
                     project: ctrl.project,
                     version: ctrl.function
                 },
-                className: 'ngdialog-theme-iguazio duplicate-function-dialog-wrapper'
+                className: 'ngdialog-theme-iguazio duplicate-dialog-wrapper'
             });
         }
 

@@ -1,26 +1,26 @@
 <div class="close-button igz-icon-close" data-ng-click="$ctrl.onClose()"></div>
 
 <div class="title">
-    {{ 'functions:DUPLICATE_FUNCTION' | i18next }}
+    {{ $ctrl.dialogTitle }}
 </div>
 
 <div class="main-content">
-    <form name="$ctrl.duplicateFunctionForm" novalidate data-ng-keydown="$ctrl.duplicateFunction($event)">
-        <div class="field-group function-name-group">
-            <div class="field-label function-name-label">
-                {{ 'common:FUNCTION_NAME' | i18next }}
+    <form name="$ctrl.duplicateForm" novalidate data-ng-keydown="$ctrl.duplicate($event)">
+        <div class="field-group name-group">
+            <div class="field-label name-label">
+                {{ $ctrl.inputLabel }}
             </div>
-            <div class="field-input function-name-input">
+            <div class="field-input name-input">
                 <igz-validating-input-field class="nuclio-validating-input"
                                             data-field-type="input"
                                             data-input-name="spec.displayName"
-                                            data-input-value="$ctrl.newFunctionName"
+                                            data-input-value="$ctrl.newItemName"
                                             data-is-focused="true"
-                                            data-form-object="$ctrl.duplicateFunctionForm"
+                                            data-form-object="$ctrl.duplicateForm"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData)"
                                             data-validation-is-required="true"
                                             data-validation-rules="$ctrl.validationRules"
-                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_FUNCTION_NAME' | i18next }}">
+                                            data-placeholder-text="{{ $ctrl.inputPlaceholder }}">
                 </igz-validating-input-field>
             </div>
         </div>
@@ -29,17 +29,17 @@
 
 <div class="buttons">
     <button class="ncl-secondary-button igz-button-just-text"
-            data-test-id="functions.duplicate_function_cancel.button"
+            data-test-id="functions.duplicate_cancel.button"
             tabindex="0"
             data-ng-click="$ctrl.onClose()"
             data-ng-keydown="$ctrl.onClose($event)">
         {{ 'common:CANCEL' | i18next }}
     </button>
     <button class="ncl-primary-button igz-button-primary"
-            data-test-id="functions.duplicate_function_duplicate.button"
+            data-test-id="functions.duplicate_duplicate.button"
             tabindex="0"
-            data-ng-click="$ctrl.duplicateFunction()"
-            data-ng-keydown="$ctrl.duplicateFunction($event)"
+            data-ng-click="$ctrl.duplicate()"
+            data-ng-keydown="$ctrl.duplicate($event)"
             data-ng-hide="$ctrl.isLoadingState">
         {{ 'common:DUPLICATE' | i18next }}
     </button>
