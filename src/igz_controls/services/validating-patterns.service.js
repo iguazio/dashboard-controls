@@ -24,6 +24,14 @@
             interface: {
                 alias: 40
             },
+            k8s: {
+                configMapKey: 253,
+                dns1123Label: 63,
+                dns1123Subdomain: 253,
+                prefixedQualifiedName: 253,
+                qualifiedName: 63,
+                wildcardDns1123Subdomain: 253
+            },
             network: {
                 name: 30,
                 description: 150,
