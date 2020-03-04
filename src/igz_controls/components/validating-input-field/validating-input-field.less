@@ -25,12 +25,12 @@
 
         &.igz-icon-verify-error {
             font-size: 13px;
-            color: @darkish-pink;
+            color: @validation-icon-error-color;
         }
 
         &.igz-icon-verify-info {
             font-size: 16px;
-            color: @dusk-three;
+            color: @validation-icon-info-color;
         }
     }
 
@@ -38,12 +38,12 @@
     .validation-rule-icon {
         &.igz-icon-verify-ok {
             font-size: 11px;
-            color: @tealish;
+            color: @validation-icon-ok-color;
         }
 
         &.ncl-icon-close {
             font-size: 10px;
-            color: @darkish-pink;
+            color: @validation-icon-close-color;
         }
     }
 
@@ -149,52 +149,57 @@
     // validation pop-up
     //
 
-    .validation-pop-up {
-        position: absolute;
-        border-radius: 3px;
-        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
-        background-color: @white;
-        padding: 5px 18px 5px 14px;
+    .validation-pop-up-wrapper {
+        position: fixed;
         z-index: 4;
 
-        &.validation-pop-up-top {
-            bottom: 37px;
-        }
+        .validation-pop-up {
+            position: relative;
+            border-radius: 3px;
+            opacity: 1;
+            box-shadow: @validation-pop-up-box-shadow;
+            background-color: @validation-pop-up-bg-color;
+            padding: 5px 18px 5px 14px;
 
-        &.validation-pop-up-bottom {
-            top: 37px;
-        }
-
-        .validation-rule {
-            margin: 10px auto;
-            line-height: 1.2;
-            display: flex;
-            flex-flow: row nowrap;
-            align-items: baseline;
-
-            .validation-rule-icon {
-                margin-right: 8px;
-                flex: none;
+            &.ng-hide {
+                opacity: 0;
             }
 
-            .validation-rule-label {
-                flex: auto;
+            &.ng-hide-remove {
+                transition: opacity 0.1s ease-in;
+            }
 
-                &.validation-rule-valid {
-                    color: @pale-grey;
+            &.validation-pop-up-top {
+                top: calc(-100% - 38px);
+            }
+
+            &.validation-pop-up-bottom {
+                top: 2px;
+            }
+
+            .validation-rule {
+                margin: 10px auto;
+                line-height: 1.2;
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: baseline;
+
+                .validation-rule-icon {
+                    margin-right: 8px;
+                    flex: none;
                 }
 
-                &.validation-rule-invalid {
-                    color: @dusk-three;
+                .validation-rule-label {
+                    flex: auto;
                 }
-            }
 
-            .validation-rule-valid {
-                color: @pale-grey;
-            }
+                .validation-rule-valid {
+                    color: @validation-rule-valid-color;
+                }
 
-            .validation-rule-invalid {
-                color: @dusk-three;
+                .validation-rule-invalid {
+                    color: @validation-rule-invalid-color;
+                }
             }
         }
     }
@@ -244,12 +249,12 @@
         }
 
         &::-webkit-scrollbar-thumb {
-            background-color: .black(0.2)[@color];
+            background-color: @textarea-field-scrollbar-thumb-bg-color;
             border-radius: 16px;
         }
 
         &:focus::-webkit-scrollbar-thumb {
-            background-color: .black(0.9)[@color];
+            background-color: @textarea-field-focus-scrollbar-thumb-bg-color;
         }
     }
 

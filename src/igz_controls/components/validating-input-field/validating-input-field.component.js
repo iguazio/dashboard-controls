@@ -158,8 +158,6 @@
                     $element.find('.field')[0].focus();
                 }, timer);
             }
-
-            PreventDropdownCutOffService.preventDropdownCutOff($element, '.validation-pop-up');
         }
 
         /**
@@ -354,12 +352,17 @@
 
             if (event.target === validationIcon) {
                 if (!lodash.isEmpty(ctrl.validationRules)) {
+                    ctrl.isValidationPopUpShown = !ctrl.isValidationPopUpShown;
+
                     $timeout(function () {
                         $element.find('.field')[0].focus();
-
                         ctrl.inputFocused = true;
-                        ctrl.isValidationPopUpShown = !ctrl.isValidationPopUpShown;
-                    });
+                        var popUpRect = $element.find('.validation-pop-up-wrapper')[0].getBoundingClientRect();
+
+                        angular.element('.validation-pop-up-wrapper').css({
+                            'height': lodash.get(popUpRect, 'height', 0) > 0 ? popUpRect.height : 'auto'
+                        });
+                    })
                 }
             } else if (!event.target.closest('.input-field')) {
                 ctrl.isValidationPopUpShown = false;
