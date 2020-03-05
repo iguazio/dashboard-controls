@@ -355,7 +355,7 @@
          * @param {Object} data - $broadcast-ed data
          */
         function onFireAction(event, data) {
-            if (FunctionsService.checkedItem === 'functions') {
+            if (FunctionsService.checkedItem === 'functions' || !ctrl.isDemoMode()) {
                 var checkedFunctions = lodash.filter(ctrl.functions, 'ui.checked');
 
                 ctrl.handleFunctionVersionAction(data.action, checkedFunctions);
@@ -440,7 +440,8 @@
          * @param {Object} data - passed data
          */
         function updatePanelActions(event, data) {
-            if (FunctionsService.checkedItem === 'functions') {
+            debugger;
+            if (FunctionsService.checkedItem === 'functions' || !ctrl.isDemoMode()) {
                 updatePanelFunctionActions(data);
             } else if (FunctionsService.checkedItem === 'versions') {
                 updatePanelVersionActions(data);
