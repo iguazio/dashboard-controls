@@ -28,6 +28,7 @@
                 'default': 0
             }
         };
+        ctrl.nameMaxLength = Infinity;
         ctrl.runtimes = [];
         ctrl.selectedRuntime = null;
         ctrl.validationRules = [];
@@ -47,9 +48,10 @@
          * Initialization method
          */
         function onInit() {
+            ctrl.nameMaxLength = ValidatingPatternsService.getMaxLength('k8s.dns1035Label');
             ctrl.runtimes = getRuntimes();
             ctrl.selectedRuntime = getDefaultRuntime();
-            ctrl.validationRules = ValidatingPatternsService.getValidationRules('k8s.dns1123Label');
+            ctrl.validationRules = ValidatingPatternsService.getValidationRules('k8s.dns1035Label');
 
             $document.on('keypress', createFunction);
 

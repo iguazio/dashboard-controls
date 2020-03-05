@@ -9,8 +9,8 @@
         <form name="$ctrl.functionFromScratchForm" class="configuration-form" novalidate>
             <div class="function-name-wrapper">
                 <div class="projects-drop-down" data-ng-if="$ctrl.isProjectsDropDownVisible()">
-                    <span class="input-label">
-                        {{ 'common:PROJECTS' | i18next }}*
+                    <span class="input-label asterisk">
+                        {{ 'common:PROJECT' | i18next }}
                     </span>
                     <igz-default-dropdown data-is-required="true"
                                           data-values-array="$ctrl.projectsList"
@@ -25,8 +25,8 @@
                     </igz-default-dropdown>
                 </div>
                 <div class="function-name">
-                    <span class="input-label">
-                        {{ 'common:NAME' | i18next }}*
+                    <span class="input-label asterisk">
+                        {{ 'common:NAME' | i18next }}
                     </span>
                     <igz-validating-input-field class="nuclio-validating-input"
                                                 data-field-type="input"
@@ -34,6 +34,7 @@
                                                 data-input-value="$ctrl.functionData.metadata.name"
                                                 data-validation-is-required="true"
                                                 data-validation-rules="$ctrl.validationRules"
+                                                data-validation-max-length="{{$ctrl.nameMaxLength}}"
                                                 data-input-model-options="$ctrl.inputModelOptions"
                                                 data-form-object="$ctrl.functionFromScratchForm"
                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -43,8 +44,8 @@
             </div>
             <div class="function-runtime-wrapper">
                 <div class="function-runtime">
-                    <span class="input-label">
-                        {{ 'functions:RUNTIME' | i18next }}*
+                    <span class="input-label asterisk">
+                        {{ 'functions:RUNTIME' | i18next }}
                     </span>
                     <igz-default-dropdown data-is-required="true"
                                           data-values-array="$ctrl.runtimes"

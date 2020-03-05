@@ -43,7 +43,7 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.validationRules = ValidatingPatternsService.getValidationRules('k8s.dns1123Label');
+            ctrl.validationRules = ValidatingPatternsService.getValidationRules('k8s.dns1035Label');
         }
 
         //
