@@ -5,6 +5,7 @@
         .component('igzCopyToClipboard', {
             bindings: {
                 tooltipPlacement: '@?',
+                tooltipText: '@?',
                 value: '<'
             },
             templateUrl: 'igz_controls/components/copy-to-clipboard/copy-to-clipboard.tpl.html',
