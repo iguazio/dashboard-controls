@@ -2,7 +2,12 @@
 
     <div class="menu-button {{$ctrl.iconClass}}"
          data-ng-class="{active: $ctrl.isMenuShown}"
-         data-ng-click="$ctrl.toggleMenu($event)">
+         data-ng-click="$ctrl.toggleMenu($event)"
+         data-uib-tooltip="{{ $ctrl.tooltipText }}"
+         data-tooltip-enable="$ctrl.tooltipEnabled"
+         data-tooltip-placement="top"
+         data-tooltip-popup-delay="300"
+         data-tooltip-append-to-body="true">
     </div>
 
     <div class="menu-dropdown"

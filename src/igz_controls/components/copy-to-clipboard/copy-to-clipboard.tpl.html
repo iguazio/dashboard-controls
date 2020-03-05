@@ -1,6 +1,6 @@
 <div class="igz-action-item"
      data-ng-click="$ctrl.copyToClipboard()"
-     data-uib-tooltip="{{ 'common:TOOLTIP.COPY_TO_CLIPBOARD' | i18next }}"
+     data-uib-tooltip="{{ $ctrl.tooltipText  ? $ctrl.tooltipText : 'common:TOOLTIP.COPY_TO_CLIPBOARD' | i18next }}"
      data-tooltip-placement="{{ $ctrl.tooltipPlacement }}"
      data-tooltip-popup-delay="300"
      data-tooltip-append-to-body="true">

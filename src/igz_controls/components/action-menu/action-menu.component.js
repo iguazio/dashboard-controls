@@ -10,7 +10,9 @@
                 onClickShortcut: '<?',
                 isMenuShown: '<?',
                 iconClass: '@?',
-                listClass: '<?'
+                listClass: '<?',
+                tooltipEnabled: '<?',
+                tooltipText: '@?'
             },
             templateUrl: 'igz_controls/components/action-menu/action-menu.tpl.html',
             controller: IgzActionMenuController
