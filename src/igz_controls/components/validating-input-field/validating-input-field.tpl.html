@@ -42,17 +42,20 @@
               data-ng-show="$ctrl.data && $ctrl.isClearIcon"
               data-ng-click="$ctrl.clearInputField()">
         </span>
-        <div data-ng-if="$ctrl.isValidationPopUpShown"
-             class="validation-pop-up"
-             data-ng-class="$ctrl.isOverflowed() ? 'validation-pop-up-top' : 'validation-pop-up-bottom'">
-            <div class="validation-rule"
-                 data-ng-repeat="rule in $ctrl.validationRules">
-                <span class="validation-rule-icon"
-                      data-ng-class="rule.isValid ? 'igz-icon-verify-ok' : 'ncl-icon-close'"></span>
-                <span class="validation-rule-label"
-                      data-ng-class="rule.isValid ? 'validation-rule-valid' : 'validation-rule-invalid'">
-                    {{rule.label}}
-                </span>
+        <div class="validation-pop-up-wrapper">
+            <div class="validation-pop-up"
+                 data-ng-show="$ctrl.isValidationPopUpShown"
+                 data-ng-class="$ctrl.isOverflowed() ? 'validation-pop-up-top' : 'validation-pop-up-bottom'">
+                <div class="validation-rule"
+                     data-ng-repeat="rule in $ctrl.validationRules">
+                    <span class="validation-rule-icon"
+                          data-ng-class="rule.isValid ? 'igz-icon-verify-ok' : 'ncl-icon-close'">
+                    </span>
+                    <span class="validation-rule-label"
+                          data-ng-class="rule.isValid ? 'validation-rule-valid' : 'validation-rule-invalid'">
+                        {{rule.label}}
+                    </span>
+                </div>
             </div>
         </div>
     </div>
