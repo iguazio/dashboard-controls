@@ -440,7 +440,6 @@
          * @param {Object} data - passed data
          */
         function updatePanelActions(event, data) {
-            debugger;
             if (FunctionsService.checkedItem === 'functions' || !ctrl.isDemoMode()) {
                 updatePanelFunctionActions(data);
             } else if (FunctionsService.checkedItem === 'versions') {
