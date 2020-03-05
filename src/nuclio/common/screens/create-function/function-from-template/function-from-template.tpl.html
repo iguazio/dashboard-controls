@@ -53,8 +53,8 @@
                             <ng-form name="templateForm{{$index}}">
                                 <div data-ng-if="$ctrl.isProjectsDropDownVisible()"
                                      class="projects-drop-down">
-                                    <span class="input-label">
-                                        {{ 'common:PROJECTS' | i18next }}
+                                    <span class="input-label asterisk">
+                                        {{ 'common:PROJECT' | i18next }}
                                     </span>
                                     <igz-default-dropdown data-is-required="true"
                                                           data-values-array="$ctrl.projectsList"
@@ -69,7 +69,7 @@
                                     </igz-default-dropdown>
                                 </div>
                                 <div class="function-name">
-                                    <span class="input-label">
+                                    <span class="input-label asterisk">
                                         {{ 'common:NAME' | i18next }}
                                     </span>
                                     <igz-validating-input-field class="nuclio-validating-input"
@@ -80,6 +80,7 @@
                                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                                 data-validation-is-required="true"
                                                                 data-validation-rules="$ctrl.validationRules"
+                                                                data-validation-max-length="{{$ctrl.nameMaxLength}}"
                                                                 data-input-model-options="$ctrl.inputModelOptions"
                                                                 data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_FUNCTION_NAME' | i18next }}...">
                                     </igz-validating-input-field>

@@ -26,6 +26,7 @@
             },
             k8s: {
                 configMapKey: 253,
+                dns1035Label: 63,
                 dns1123Label: 63,
                 dns1123Subdomain: 253,
                 prefixedQualifiedName: 253,
@@ -104,6 +105,28 @@
                         name: 'maxLength',
                         label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
                         pattern: /^(?=[\S\s]{1,253}$)/
+                    }
+                ],
+                dns1035Label: [
+                    {
+                        name: 'validCharacters',
+                        label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -',
+                        pattern: /^[a-z0-9-]+$/
+                    },
+                    {
+                        name: 'begin',
+                        label: $i18next.t('common:BEGIN_WITH', {lng: lng, characters: 'lowercase alphabetic characters' }) + ' (a-z)',
+                        pattern: /^[a-z]/
+                    },
+                    {
+                        name: 'end',
+                        label: $i18next.t('common:END_WITH', {lng: lng, characters: 'lowercase alphanumeric characters'}) + ' (a–z, 0–9)',
+                        pattern: /[a-z0-9]$/
+                    },
+                    {
+                        name: 'maxLength',
+                        label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 63}),
+                        pattern: /^(?=[\S\s]{1,63}$)/
                     }
                 ],
                 dns1123Label: [
