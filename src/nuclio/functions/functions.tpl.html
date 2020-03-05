@@ -23,8 +23,8 @@
     <!--actions bar-->
     <igz-info-page-actions-bar class="igz-component">
         <div class="actions-bar-left">
-            <igz-action-panel data-actions="$ctrl.functionsService.checkedItem === 'functions'? $ctrl.functionActions  :
-                                                                                               $ctrl.versionActions">
+            <igz-action-panel data-actions="$ctrl.functionsService.checkedItem === 'functions' || !$ctrl.isDemoMode() ?
+                                            $ctrl.functionActions : $ctrl.versionActions">
             </igz-action-panel>
         </div>
         <div class="actions-bar-right">
@@ -65,7 +65,7 @@
             <div class="common-table-header">
                 <div class="common-table-cell igz-col-3">
                     <igz-action-checkbox-all class="check-all-rows"
-                                             data-ng-show="$ctrl.functionsService.checkedItem !== ''"
+                                             data-ng-show="!$ctrl.isDemoMode() || $ctrl.functionsService.checkedItem !== ''"
                                              data-items-count="$ctrl.functions.length"
                                              data-items-type="{{$ctrl.functionsService.checkedItem}}">
                     </igz-action-checkbox-all>

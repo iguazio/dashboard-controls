@@ -3,7 +3,7 @@
     <div class="function-title-block common-table-row">
         <div class="common-table-cell igz-col-3">
             <igz-action-checkbox
-                    data-ng-class="{'visible': $ctrl.functionsService.checkedItem === 'functions',
+                    data-ng-class="{'visible': !$ctrl.isDemoMode() || $ctrl.functionsService.checkedItem === 'functions',
                                     'invisible': $ctrl.functionsService.checkedItem !== 'functions' &&
                                                  $ctrl.functionsService.checkedItem !== ''}"
                     data-item="$ctrl.function"
