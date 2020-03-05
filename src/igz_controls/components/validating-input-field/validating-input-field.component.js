@@ -355,12 +355,11 @@
                     ctrl.isValidationPopUpShown = !ctrl.isValidationPopUpShown;
 
                     $timeout(function () {
-                        $element.find('.field')[0].focus();
+                        $element.find('.field').focus();
                         ctrl.inputFocused = true;
-                        var popUpRect = $element.find('.validation-pop-up-wrapper')[0].getBoundingClientRect();
-
-                        angular.element('.validation-pop-up-wrapper').css({
-                            'height': lodash.get(popUpRect, 'height', 0) > 0 ? popUpRect.height : 'auto'
+                        var popUp = $element.find('.validation-pop-up-wrapper');
+                        popUp.css({
+                            'height': popUp.outerHeight() > 0 ? popUp.outerHeight() : 'auto'
                         });
                     })
                 }
