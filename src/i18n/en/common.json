@@ -243,6 +243,7 @@
     "ID": "ID",
     "IDENTITY": "Identity",
     "IDP": "IdP",
+    "INACTIVITY_WINDOW": "Inactivity window",
     "INFO": "Info",
     "INFO_PANE": "Info pane",
     "INITIALIZATION": "Initialization",

@@ -175,6 +175,19 @@
                 </div>
             </div>
 
+            <div class="igz-row form-row align-items-center slider-block"
+                 data-ng-if="$ctrl.isInactivityWindowShown()">
+                <div class="igz-col-20 row-title no-margin">
+                    {{ 'common:INACTIVITY_WINDOW' | i18next }}
+                </div>
+                <div class="igz-col-80 row-input slider">
+                    <rzslider class="rzslider"
+                              data-rz-slider-model="$ctrl.windowSizeSlider.value"
+                              data-rz-slider-options="$ctrl.windowSizeSlider.options">
+                    </rzslider>
+                </div>
+            </div>
+
             <div class="igz-row form-row range-inputs-row slider-block">
                 <div class="igz-col-10 row-title target-cpu-title">{{ 'common:TARGET_CPU' | i18next }}</div>
                 <input type="checkbox"
