@@ -262,7 +262,6 @@
         },
         "GPU_LIMIT": "Maximum number of GPUs per replica. Note that while the function is enabled it monopolizes the allocated GPUs even when they're not in use.",
         "IMAGE_NAME": "The name of the function’s container image",
-        "PROJECT_FUNCTION_NAME": "Name must be 1-63 characters long, must consist of lower case alphanumeric characters or hyphen, start with an alphabetic character, and end with an alphanumeric character (e.g. 'my-name',  or 'abc-123').",
         "LABELS": {
             "HEAD": "Kubernetes labels",
             "REST": "for specifying object attributes that are meaningful and relevant to users"
