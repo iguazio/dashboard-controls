@@ -11,8 +11,8 @@
             controller: NclVersionConfigurationResourcesController
         });
 
-    function NclVersionConfigurationResourcesController($timeout, $rootScope, $scope, $i18next, i18next, lodash,
-                                                        ConfigService, ProjectsDataService) {
+    function NclVersionConfigurationResourcesController($i18next, $timeout, $rootScope, $scope, i18next, lodash,
+                                                        ConfigService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -470,16 +470,13 @@
          * Inits data for "Scale to zero" section
          */
         function initScaleToZeroData() {
-            ProjectsDataService.getFrontendSpec()
-                .then(function (response) {
-                    scaleToZero = lodash.get(response, 'scaleToZero', {});
+            scaleToZero = lodash.get(ConfigService, 'nuclio.scaleToZero', {});
 
-                    if (!lodash.isEmpty(scaleToZero)) {
-                        scaleResourcesCopy = lodash.get(ctrl.version, 'spec.scaleToZero.scaleResources', scaleToZero.scaleResources);
+            if (!lodash.isEmpty(scaleToZero)) {
+                scaleResourcesCopy = lodash.get(ctrl.version, 'spec.scaleToZero.scaleResources', scaleToZero.scaleResources);
 
-                        updateScaleToZeroParameters();
-                    }
-                });
+                updateScaleToZeroParameters();
+            }
         }
 
         /**
