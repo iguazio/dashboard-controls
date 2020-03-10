@@ -83,7 +83,6 @@
 
         ctrl.numberInputCallback = numberInputCallback;
         ctrl.sliderInputCallback = sliderInputCallback;
-        ctrl.toggleTargetCpu = toggleTargetCpu;
 
         ctrl.cpuDropdownCallback = cpuDropdownCallback;
         ctrl.memoryInputCallback = memoryInputCallback;
@@ -206,7 +205,7 @@
          * @returns {boolean}
          */
         function isInactivityWindowShown() {
-            return lodash.get(scaleToZero, 'mode') === 'enabled';
+            return ConfigService.isDemoMode() && lodash.get(scaleToZero, 'mode') === 'enabled';
         }
 
         /**
@@ -282,6 +281,10 @@
                 updateScaleToZeroParameters();
             }
 
+            if (lodash.includes(['minReplicas', 'maxReplicas'], field)) {
+                initSlider();
+            }
+
             ctrl.onChangeCallback();
         }
 
@@ -298,21 +301,6 @@
             }
 
             ctrl.onChangeCallback();
-        }
-
-        /**
-         * Sets slider value & unit and updates the corresponding model according to its enabled/disabled state.
-         */
-        function toggleTargetCpu() {
-            if (ctrl.targetCpuSliderConfig.options.disabled) {
-                lodash.unset(ctrl.version, 'spec.targetCPU');
-                ctrl.targetCpuValueUnit = '';
-                ctrl.targetCpuSliderConfig.valueLabel = 'disabled';
-            } else {
-                lodash.set(ctrl.version, 'spec.targetCPU', ctrl.targetCpuSliderConfig.value);
-                ctrl.targetCpuSliderConfig.valueLabel = String(ctrl.targetCpuSliderConfig.value);
-                ctrl.targetCpuValueUnit = '%';
-            }
         }
 
         //
@@ -439,20 +427,24 @@
         }
 
         /**
-         * Inits data for sliders
+         * Initializes Target CPU slider
          */
         function initSlider() {
-            var targetCpuValue = lodash.get(ctrl.version, 'spec.targetCPU');
+            var minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
+            var maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
+            var disabled = !lodash.isNumber(minReplicas) || !lodash.isNumber(maxReplicas) || maxReplicas <= 1 ||
+                minReplicas === maxReplicas;
+            var targetCpuValue = lodash.get(ctrl.version, 'spec.targetCPU', 75);
 
-            ctrl.targetCpuValueUnit = '%';
+            ctrl.targetCpuValueUnit = disabled ? '' : '%';
             ctrl.targetCpuSliderConfig = {
-                value: lodash.defaultTo(targetCpuValue, 75),
-                valueLabel: lodash.defaultTo(targetCpuValue, '75'),
+                value: targetCpuValue,
+                valueLabel: disabled ? 'disabled' : targetCpuValue,
                 pow: 0,
                 unitLabel: '%',
                 labelHelpIcon: false,
                 options: {
-                    disabled: lodash.isNil(targetCpuValue),
+                    disabled: disabled,
                     floor: 1,
                     id: 'targetCPU',
                     ceil: 100,
@@ -462,12 +454,10 @@
                     onEnd: null
                 }
             };
-
-            toggleTargetCpu();
         }
 
         /**
-         * Inits data for "Scale to zero" section
+         * Initializes data for "Scale to zero" section
          */
         function initScaleToZeroData() {
             scaleToZero = lodash.get(ConfigService, 'nuclio.scaleToZero', {});
@@ -513,6 +503,10 @@
          * Updates parameters for "Scale to zero" section
          */
         function updateScaleToZeroParameters() {
+            if (!ConfigService.isDemoMode()) {
+                return;
+            }
+
             lodash.defaultsDeep(ctrl.version, {
                 ui: {
                     scaleToZero: {

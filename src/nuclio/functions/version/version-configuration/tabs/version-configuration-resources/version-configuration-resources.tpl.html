@@ -157,7 +157,7 @@
                 </div>
 
                 <div class="igz-col-40 input-wrapper">
-                    <div class="input-title">{{ 'functions:MAX' | i18next }}</div>
+                    <div class="input-title" data-ng-class="{ asterisk: $ctrl.minReplicas === 0 }">{{ 'functions:MAX' | i18next }}</div>
                     <div class="row-input replicas-number-input">
                         <igz-number-input data-form-object="$ctrl.resourcesForm"
                                           data-input-name="maxReplicas"
@@ -165,10 +165,10 @@
                                           data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
                                           data-update-number-input-field="maxReplicas"
                                           data-allow-empty-field="true"
-                                          data-placeholder=""
+                                          data-placeholder="{{ $ctrl.minReplicas === 0 ? ('functions:PLACEHOLDER.MAX_REQUIRED' | i18next) : '' }}"
                                           data-decimal-number="0"
                                           data-value-step="1"
-                                          data-validation-is-required="false"
+                                          data-validation-is-required="$ctrl.minReplicas === 0"
                                           data-min-value="$ctrl.minReplicas || 1">
                         </igz-number-input>
                     </div>
@@ -177,10 +177,16 @@
 
             <div class="igz-row form-row align-items-center slider-block"
                  data-ng-if="$ctrl.isInactivityWindowShown()">
-                <div class="igz-col-20 row-title no-margin">
-                    {{ 'common:INACTIVITY_WINDOW' | i18next }}
+                <div class="igz-col-25 row-title no-margin">
+                    <span>{{ 'common:INACTIVITY_WINDOW' | i18next }}</span>
+                    <igz-more-info data-description="{{ 'common:INACTIVITY_WINDOW_DESCRIPTION' | i18next }}"></igz-more-info>
                 </div>
-                <div class="igz-col-80 row-input slider">
+                <div class="igz-col-65 row-input slider"
+                     data-uib-tooltip="{{ 'functions:TOOLTIP.INACTIVITY_WINDOW' | i18next }}"
+                     data-tooltip-enable="$ctrl.windowSizeSlider.options.disabled"
+                     data-tooltip-append-to-body="true"
+                     data-tooltip-placement="bottom"
+                     data-tooltip-popup-delay="500">
                     <rzslider class="rzslider"
                               data-rz-slider-model="$ctrl.windowSizeSlider.value"
                               data-rz-slider-options="$ctrl.windowSizeSlider.options">
@@ -189,31 +195,23 @@
             </div>
 
             <div class="igz-row form-row range-inputs-row slider-block">
-                <div class="igz-col-10 row-title target-cpu-title">{{ 'common:TARGET_CPU' | i18next }}</div>
-                <input type="checkbox"
-                       class="small"
-                       id="target-cpu-toggle"
-                       data-ng-true-value="false"
-                       data-ng-false-value="true"
-                       data-ng-model="$ctrl.targetCpuSliderConfig.options.disabled"
-                       data-ng-change="$ctrl.toggleTargetCpu()">
-                <label for="target-cpu-toggle" class="checkbox-inline"
-                       data-uib-tooltip="{{ ($ctrl.targetCpuSliderConfig.options.disabled ? 'functions:CLICK_TO_ENABLE' : 'functions:CLICK_TO_DISABLE') | i18next }}"
-                       data-tooltip-append-to-body="true"
-                       data-tooltip-placement="top"
-                       data-tooltip-popup-delay="500">&nbsp;</label>
-                <div class="slider-row">
+                <div class="igz-col-25 row-title no-margin target-cpu-title">
+                    <span>{{ 'common:TARGET_CPU' | i18next }}</span>
+                    <igz-more-info data-description="{{ 'common:TARGET_CPU_DESCRIPTION' | i18next }}"></igz-more-info>
+                </div>
+                <div class="igz-col-65 row-input slider">
                     <igz-slider-input-block data-slider-config="$ctrl.targetCpuSliderConfig"
                                             data-measure-units="null"
                                             data-value-unit="$ctrl.targetCpuValueUnit"
                                             data-slider-block-updating-broadcast=""
                                             data-on-change-callback="$ctrl.sliderInputCallback"
                                             data-update-slider-input="spec.targetCPU"
+                                            data-allow-full-range="true"
                                             data-uib-tooltip="{{ 'functions:TOOLTIP.TARGET_CPU' | i18next }}"
+                                            data-tooltip-enable="$ctrl.targetCpuSliderConfig.options.disabled"
                                             data-tooltip-append-to-body="true"
                                             data-tooltip-placement="bottom"
-                                            data-tooltip-popup-delay="500"
-                                            data-allow-full-range="true">
+                                            data-tooltip-popup-delay="500">
                     </igz-slider-input-block>
                 </div>
             </div>
