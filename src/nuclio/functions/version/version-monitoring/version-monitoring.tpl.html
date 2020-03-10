@@ -21,7 +21,9 @@
                         </div>
                     </div>
                     <span data-ng-if="($ctrl.version.status.state === 'ready' || $ctrl.version.status.state === 'scaledToZero') && $ctrl.version.ui.invocationUrl === ''"
-                          class="monitoring-invocation-field-invalid">N/A</span>
+                          class="monitoring-invocation-field-invalid">
+                        {{ 'common:N_A' | i18next }}
+                    </span>
                     <span data-ng-if="$ctrl.version.status.state !== 'ready' && $ctrl.version.status.state !== 'scaledToZero'"
                           class="monitoring-invocation-field-invalid">
                         {{ 'functions:NOT_YET_DEPLOYED' | i18next }}
