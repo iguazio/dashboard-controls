@@ -187,6 +187,7 @@
         "ENTER_WORKER_ALLOCATOR_NAME": "Enter worker allocator name...",
         "EVENT_NAME": "Event name...",
         "MIN": "Min...",
+        "MAX_REQUIRED": "Required when min=0",
         "MY_SERVICE_ACCOUNT": "myserviceaccount",
         "PROJECT_NAME": "Project name...",
         "SEARCH_FUNCTIONS": "Search functions...",
@@ -262,6 +263,7 @@
         },
         "GPU_LIMIT": "Maximum number of GPUs per replica. Note that while the function is enabled it monopolizes the allocated GPUs even when they're not in use.",
         "IMAGE_NAME": "The name of the function’s container image",
+        "INACTIVITY_WINDOW": "Applicable only when setting the minimum number of replicas to 0 to enable scale-to-zero",
         "LABELS": {
             "HEAD": "Kubernetes labels",
             "REST": "for specifying object attributes that are meaningful and relevant to users"
@@ -284,7 +286,7 @@
             "ACCESS_KEY_ID": "An S3 access key ID for download authentication"
         },
         "STOP_FUNCTION": "Stop function",
-        "TARGET_CPU": "Exceeding this threshold will increase the number of replicas",
+        "TARGET_CPU": "Applicable only when minimum and maximum number of replicas are not empty, are not equal to each other, and the maximum is greater than 1",
         "URL": "A URL for downloading the archive file",
         "V3IO": "A directory in an Iguazio Data Science Platform data container",
         "V3IO_ACCESS_KEY": "An Iguazio Data Science Platform access key",
