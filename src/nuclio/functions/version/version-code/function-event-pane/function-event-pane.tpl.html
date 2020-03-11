@@ -330,7 +330,7 @@
                                                  data-ng-src="{{$ctrl.responseImage}}"
                                                  alt="{{ 'functions:RESPONSE_IMAGE' | i18next }}"/>
                                         </div>
-                                        <div class="no-content-section" data-ng-if="$ctrl.responseBodyType === 'N/A'">
+                                        <div class="no-content-section" data-ng-if="$ctrl.responseBodyType !== 'code' && $ctrl.responseBodyType !== 'image'">
                                             {{ 'functions:YOU_CAN_DOWNLOAD_RESPONSE_BODY' | i18next }}
                                         </div>
                                     </div>

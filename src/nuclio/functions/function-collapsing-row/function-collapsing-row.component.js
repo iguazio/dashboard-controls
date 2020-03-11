@@ -133,7 +133,7 @@
                 setStatusIcon();
 
                 ctrl.invocationUrl = {
-                    text: lodash.isEmpty(externalAddress) ? 'N/A'                                                :
+                    text: lodash.isEmpty(externalAddress) ? $i18next.t('common:N_A', {lng: lng})                 :
                           lodash.toFinite(httpPort) === 0 ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
                                                             'http://' + externalAddress + ':' + httpPort,
                     valid: !lodash.isEmpty(externalAddress) && lodash.toFinite(httpPort) !== 0

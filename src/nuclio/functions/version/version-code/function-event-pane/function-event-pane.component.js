@@ -699,7 +699,7 @@
 
                             ctrl.responseBodyType = textualFile ? 'code'  :
                                                     imageFile   ? 'image' :
-                                                                  'N/A';
+                                                                   $i18next.t('common:N_A', {lng: lng});
 
                             ctrl.showResponse = true;
                         } else {
