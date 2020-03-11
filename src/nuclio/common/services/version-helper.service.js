@@ -16,10 +16,12 @@
 
         /**
          * Tests whether the version is deployed.
+         * @param {Object} version
          * @returns {boolean} `true` in case version is deployed, or `false` otherwise.
          */
         function isVersionDeployed(version) {
-            return lodash.isObject(version.status) && !lodash.isEmpty(version.status);
+            var state = lodash.get(version, 'status.state', '');
+            return !lodash.isEmpty(state);
         }
 
         /**

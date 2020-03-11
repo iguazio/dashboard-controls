@@ -61,6 +61,11 @@
             ctrl.validationRules.key = ValidatingPatternsService.getValidationRules('k8s.prefixedQualifiedName')
                 .concat([
                     {
+                        name: 'maxLength',
+                        label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 256}),
+                        pattern: /^[\S\s]{1,256}$/
+                    },
+                    {
                         name: 'uniqueness',
                         label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
                         pattern: validateUniqueness
