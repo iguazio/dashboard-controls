@@ -7,7 +7,7 @@
     <span class="igz-icon-right ncl-header-subtitle"></span>
 </span>
 
-<span class="main-header-title" data-ng-if="$ctrl.mainHeaderTitle.project">
+<span class="main-header-title" data-ng-if="$ctrl.mainHeaderTitle.project.spec.displayName || $ctrl.mainHeaderTitle.project.metadata.name">
     <span class="main-header-title-text" data-ng-click="$ctrl.goToFunctionsList()">
         {{$ctrl.mainHeaderTitle.project.spec.displayName || $ctrl.mainHeaderTitle.project.metadata.name}}
     </span>

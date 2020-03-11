@@ -63,7 +63,7 @@
 
             // get all projects, only if project wasn't selected before. In other words:
             // whether New Function screen was opened from Projects or Functions screen.
-            if (lodash.includes(['home-page', 'projects', '/'], $stateParams.navigatedFrom)) {
+            if (lodash.includes(['home-page', 'projects', '/', ''], $stateParams.navigatedFrom)) {
                 ctrl.getProjects()
                     .then(function (response) {
                         ctrl.projects = response;
