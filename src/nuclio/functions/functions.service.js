@@ -580,13 +580,7 @@
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
-                    confirm: {
-                        message: $i18next.t('functions:DELETE_FUNCTIONS_CONFIRM', {lng: lng}),
-                        description: $i18next.t('functions:DELETE_FUNCTION_DESCRIPTION', {lng: lng}),
-                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
-                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
-                        type: 'nuclio_alert'
-                    }
+                    confirm: {}
                 },
                 {
                     label: $i18next.t('common:DUPLICATE', {lng: lng}),

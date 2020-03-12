@@ -73,6 +73,7 @@
         "COULD_NOT_READ_FILE": "Could not read file...",
         "CREATE_FUNCTION_EVENT": "Error occurred while creating the new function event.",
         "CREATE_UPDATE_FUNCTION_EVENT": "Error occurred while creating/updating the new function event.",
+        "DELETE_API_GW_FUNCTION": "The function is used by the API gateway {{apiGatewayName}}.",
         "DELETE_EVENTS": "Oops: Unknown error occurred while deleting events",
         "DELETE_FUNCTION": "Unknown error occurred while deleting the function.",
         "DELETE_PROJECT": "Unknown error occurred while deleting the project (try deleting its functions first).",
