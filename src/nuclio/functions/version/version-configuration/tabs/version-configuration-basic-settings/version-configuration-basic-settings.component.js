@@ -122,7 +122,7 @@
             var apiGateways = lodash.get(ctrl.version, 'status.apiGateways', []);
 
             if (!lodash.isEmpty(apiGateways) && !ctrl.enableFunction) {
-                DialogsService.alert($i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION', {lng: lng, apiGatewayName: apiGateways[0]}));
+                DialogsService.alert($i18next.t('functions:ERROR_MSG.DISABLE_API_GW_FUNCTION', {lng: lng, apiGatewayName: apiGateways[0]}));
 
                 // return checkbox to enabled state
                 ctrl.enableFunction = true;

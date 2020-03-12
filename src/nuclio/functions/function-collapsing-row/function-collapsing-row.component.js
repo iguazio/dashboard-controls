@@ -232,7 +232,7 @@
             event.stopPropagation();
 
             if (!ctrl.function.spec.disable && !lodash.isEmpty(apiGateways)) {
-                DialogsService.alert($i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION', {lng: lng, apiGatewayName: apiGateways[0]}));
+                DialogsService.alert($i18next.t('functions:ERROR_MSG.DISABLE_API_GW_FUNCTION', {lng: lng, apiGatewayName: apiGateways[0]}));
             } else if (!ctrl.function.spec.disable) {
                 disableFunction();
             } else {
