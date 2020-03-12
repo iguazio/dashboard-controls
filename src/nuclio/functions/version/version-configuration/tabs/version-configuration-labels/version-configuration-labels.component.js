@@ -62,7 +62,7 @@
                 .concat([
                     {
                         name: 'maxLength',
-                        label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 256}),
+                        label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 250}),
                         pattern: /^[\S\s]{1,256}$/
                     },
                     {
