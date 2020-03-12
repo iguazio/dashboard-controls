@@ -298,21 +298,27 @@
          */
         function onSelectAction(item) {
             if (item.id === 'deleteFunction') {
-                DialogsService.confirm(item.dialog.message, item.dialog.yesLabel, item.dialog.noLabel, item.dialog.type)
-                    .then(function () {
-                        ctrl.isSplashShowed.value = true;
+                var apiGateways = lodash.get(ctrl.version, 'status.apiGateways', []);
 
-                        ctrl.deleteFunction({ functionData: ctrl.version.metadata })
-                            .then(function () {
-                                $state.go('app.project.functions');
-                            })
-                            .catch(function (error) {
-                                ctrl.isSplashShowed.value = false;
-                                var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', {lng: lng});
+                if (lodash.isEmpty(apiGateways)) {
+                    DialogsService.confirm(item.dialog.message, item.dialog.yesLabel, item.dialog.noLabel, item.dialog.type)
+                        .then(function () {
+                            ctrl.isSplashShowed.value = true;
 
-                                DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
-                            });
-                    });
+                            ctrl.deleteFunction({ functionData: ctrl.version.metadata })
+                                .then(function () {
+                                    $state.go('app.project.functions');
+                                })
+                                .catch(function (error) {
+                                    ctrl.isSplashShowed.value = false;
+                                    var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', {lng: lng});
+
+                                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                                });
+                        });
+                } else {
+                    DialogsService.alert($i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION', {lng: lng, apiGatewayName: apiGateways[0]}));
+                }
             } else if (item.id === 'exportFunction') {
                 ExportService.exportFunction(ctrl.version);
             } else if (item.id === 'viewConfig') {

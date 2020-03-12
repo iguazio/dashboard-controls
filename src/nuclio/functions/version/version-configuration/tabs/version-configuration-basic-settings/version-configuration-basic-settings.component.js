@@ -12,7 +12,7 @@
         });
 
     function NclVersionConfigurationBasicSettingsController($rootScope, $timeout, $i18next, i18next, lodash,
-                                                            ConfigService, ValidatingPatternsService) {
+                                                            ConfigService, DialogsService, ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -119,9 +119,18 @@
          * Switches enable/disable function status
          */
         function updateEnableStatus() {
-            lodash.set(ctrl.version, 'spec.disable', !ctrl.enableFunction);
+            var apiGateways = lodash.get(ctrl.version, 'status.apiGateways', []);
 
-            ctrl.onChangeCallback();
+            if (!lodash.isEmpty(apiGateways) && !ctrl.enableFunction) {
+                DialogsService.alert($i18next.t('functions:ERROR_MSG.DISABLE_API_GW_FUNCTION', {lng: lng, apiGatewayName: apiGateways[0]}));
+
+                // return checkbox to enabled state
+                ctrl.enableFunction = true;
+            } else {
+                lodash.set(ctrl.version, 'spec.disable', !ctrl.enableFunction);
+
+                ctrl.onChangeCallback();
+            }
         }
     }
 }());
