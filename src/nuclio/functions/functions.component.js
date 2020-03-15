@@ -491,11 +491,11 @@
              */
             function updatePanelVersionActions(actionData) {
                 var checkedRows = lodash.chain(ctrl.functions)
-                                        .map(function (functionItem) {
-                                            return lodash.filter(functionItem.versions, 'ui.checked');
-                                        })
-                                        .flatten()
-                                        .value();
+                    .map(function (functionItem) {
+                        return lodash.filter(functionItem.versions, 'ui.checked');
+                    })
+                    .flatten()
+                    .value();
                 var checkedRowsCount = lodash.get(actionData, 'checkedCount') || checkedRows.length;
 
                 if (checkedRowsCount > 0) {

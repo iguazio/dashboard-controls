@@ -77,12 +77,12 @@
 
             if (ConfigService.isDemoMode()) {
                 config.splice(1, 0,
-                    {
-                        tabName: $i18next.t('common:ANALYTICS', {lng: lng}),
-                        id: 'analytics',
-                        uiRoute: 'app.container.analytics',
-                        capability: 'containers.analytics'
-                    }
+                              {
+                                  tabName: $i18next.t('common:ANALYTICS', {lng: lng}),
+                                  id: 'analytics',
+                                  uiRoute: 'app.container.analytics',
+                                  capability: 'containers.analytics'
+                              }
                 );
             }
 
@@ -130,12 +130,12 @@
 
             if (ConfigService.isStagingMode()) {
                 config.splice(1, 0,
-                    {
-                        tabName: $i18next.t('common:CONTAINERS', {lng: lng}),
-                        id: 'containers',
-                        uiRoute: 'app.storage-pool.containers',
-                        capability: 'storagePools.listContainers'
-                    }
+                              {
+                                  tabName: $i18next.t('common:CONTAINERS', {lng: lng}),
+                                  id: 'containers',
+                                  uiRoute: 'app.storage-pool.containers',
+                                  capability: 'storagePools.listContainers'
+                              }
                 );
             }
 

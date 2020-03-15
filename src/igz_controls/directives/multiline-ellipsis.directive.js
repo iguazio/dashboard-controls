@@ -11,7 +11,7 @@
  * @example <p data-igz-multiline-ellipsis data-ng-bind="boundData" data-ellipsis-append="read more"></p>
  * @example <p data-igz-multiline-ellipsis data-ng-bind="boundData" data-ellipsis-append="read more" data-ellipsis-append-click="displayFull()"></p>
  */
-/* eslint complexity: ["error", 25] */
+/* eslint complexity: ["error", 27] */
 (function () {
     'use strict';
 

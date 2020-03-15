@@ -96,7 +96,7 @@
             ctrl.navigationTabsConfig = NavigationTabsService.getNavigationTabsConfig(toState.name);
 
             // Check to exclude prototypical inheritance of the `mainHeaderTitle` property from parent router state
-            if (toState.data.hasOwnProperty('mainHeaderTitle')) {
+            if (Object.prototype.hasOwnProperty.call(toState.data, 'mainHeaderTitle')) {
 
                 ctrl.mainHeaderTitle = {
                     title: toState.data.mainHeaderTitle

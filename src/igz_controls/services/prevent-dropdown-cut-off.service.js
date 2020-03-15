@@ -78,7 +78,8 @@
                 var newHeight = target.offset().top + target.height();
 
                 scrollbarContainer.css('height',
-                    (newHeight > scrollbarContainer.height() ? newHeight :  scrollbarContainer.height()) + 'px');
+                                       (newHeight > scrollbarContainer.height() ? newHeight :
+                                                                                  scrollbarContainer.height()) + 'px');
             }
         }
 

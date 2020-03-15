@@ -119,7 +119,8 @@
 
                 // default search functionality
                 SearchHelperService.makeSearch(ctrl.searchQuery, ctrl.dataSet, ctrl.searchKeys,
-                    ctrl.isSearchHierarchically,ctrl.ruleType, ctrl.searchStates, ctrl.multiSearchName);
+                                               ctrl.isSearchHierarchically,ctrl.ruleType, ctrl.searchStates,
+                                               ctrl.multiSearchName);
             }
         }
 
