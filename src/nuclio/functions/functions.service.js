@@ -330,14 +330,6 @@
                             max: 100000,
                             defaultValue: 1
                         },
-                        workerAvailabilityTimeoutMilliseconds: {
-                            name: 'workerAvailabilityTimeoutMilliseconds',
-                            pattern: 'number',
-                            type: 'number-input',
-                            allowEmpty: false,
-                            min: 0,
-                            defaultValue: 0
-                        },
                         attributes: [
                             {
                                 name: 'partitions',
