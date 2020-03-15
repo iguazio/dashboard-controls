@@ -1,4 +1,4 @@
-/* eslint complexity: ["error", 12] */
+/* eslint complexity: ["error", 14] */
 (function () {
     'use strict';
 

@@ -22,8 +22,8 @@
         function isShowFormInvalidState(form) {
             return !form ? false : lodash.some(form, function (property) {
                 return property.charAt(0) !== '$' && // skip AngularJS native properties
-                    form[property].hasOwnProperty('$dirty') &&
-                    form[property].hasOwnProperty('$invalid') &&
+                    Object.prototype.hasOwnProperty.call(form[property], '$dirty') &&
+                    Object.prototype.hasOwnProperty.call(form[property], '$invalid') &&
                     isShowFieldInvalidState(form, property);
             });
         }
@@ -58,7 +58,7 @@
         function isFormValid(form) {
             return !form ? true : lodash.every(form, function (property) {
                 return property.charAt(0) === '$' || // skip AngularJS native properties
-                    !form[property].hasOwnProperty('$valid') ||
+                    !Object.prototype.hasOwnProperty.call(form[property], '$valid') ||
                     isFieldValid(form, property);
             });
         }

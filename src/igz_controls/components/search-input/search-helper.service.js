@@ -65,7 +65,7 @@
                     // Hide all parent data while search among children and proceed recursively
                     child.ui.isFitQuery = false;
                     findBySearchQuery(searchQuery, child.ui.children, pathsForSearch, isHierarchical, ruleType,
-                        searchStates, multiSearchName);
+                                      searchStates, multiSearchName);
                 } else {
                     showRelevantItem(searchQuery, child, pathsForSearch, searchStates, multiSearchName);
                 }
