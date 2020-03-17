@@ -290,10 +290,12 @@
         "STOP_FUNCTION": "Stop function",
         "TARGET_CPU": "Applicable only when minimum and maximum number of replicas are not empty, are not equal to each other, and the maximum is greater than 1",
         "URL": "A URL for downloading the archive file",
+        "USED_BY_API_GATEWAY": "Used by API gateway: \"{{apiGatewayName}}\"",
         "V3IO": "A directory in an Iguazio Data Science Platform data container",
         "V3IO_ACCESS_KEY": "An Iguazio Data Science Platform access key",
         "VOLUMES": "Volumes that define data paths and the required information for accessing the data from the function",
-        "WORK_DIR": "The relative path to the function-code directory within the extracted archive-file directory (default: \"/\" — the root directory)"
+        "WORK_DIR": "The relative path to the function-code directory within the extracted archive-file directory (default: \"/\" — the root directory)",
+        "WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION": "The number of milliseconds to wait for a worker if one is not available.\nEmpty = system default"
     },
     "TOPIC": "Topic",
     "TOPICS": "Topics",
