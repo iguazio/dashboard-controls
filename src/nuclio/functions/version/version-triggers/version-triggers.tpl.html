@@ -1,37 +1,41 @@
-<div class="ncl-version-trigger ncl-version">
-    <div class="common-table">
-        <div data-ng-if="$ctrl.triggers.length > 0" class="common-table-header header-row">
-            <div class="common-table-cell header-name">
-                {{ 'common:NAME' | i18next }}
+<div class="ncl-version-trigger ncl-version" data-igz-extend-background>
+    <div class="igz-scrollable-container"
+         data-ng-scrollbars
+         data-ng-scrollbars-config="$ctrl.scrollConfig">
+        <div class="common-table">
+            <div data-ng-if="$ctrl.triggers.length > 0" class="common-table-header header-row">
+                <div class="common-table-cell header-name">
+                    {{ 'common:NAME' | i18next }}
+                </div>
+                <div class="common-table-cell header-class">
+                    {{ 'common:CLASS' | i18next }}
+                </div>
+                <div class="igz-col-70 common-table-cell">
+                    {{ 'common:INFO' | i18next }}
+                </div>
             </div>
-            <div class="common-table-cell header-class">
-                {{ 'common:CLASS' | i18next }}
-            </div>
-            <div class="igz-col-70 common-table-cell">
-                {{ 'common:INFO' | i18next }}
-            </div>
-        </div>
 
-        <div class="common-table-body">
-            <div class="igz-scrollable-container" data-ng-scrollbars>
-                <ncl-collapsing-row data-ng-repeat="trigger in $ctrl.triggers"
-                                    data-item="trigger"
-                                    data-type="trigger"
-                                    data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)">
-                    <ncl-edit-item class="common-table-cells-container edit-trigger-row"
-                                   data-item="trigger"
-                                   data-class-list="$ctrl.classList"
-                                   data-type="trigger"
-                                   data-validation-rules="$ctrl.validationRules"
-                                   data-default-fields="$ctrl.defaultFields"
-                                   data-on-select-class-callback="$ctrl.checkClassUniqueness()"
-                                   data-on-submit-callback="$ctrl.editTriggerCallback(item)">
-                    </ncl-edit-item>
-                </ncl-collapsing-row>
-                <div class="common-table-row create-trigger-button igz-create-button"
-                     data-ng-click="$ctrl.createTrigger($event)">
-                    <span class="igz-icon-add-round"></span>
-                    {{ 'functions:CREATE_NEW_TRIGGER' | i18next }}
+            <div class="common-table-body">
+                <div class="igz-scrollable-container" data-ng-scrollbars>
+                    <ncl-collapsing-row data-ng-repeat="trigger in $ctrl.triggers"
+                                        data-item="trigger"
+                                        data-type="trigger"
+                                        data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)">
+                        <ncl-edit-item class="common-table-cells-container edit-trigger-row"
+                                       data-item="trigger"
+                                       data-class-list="$ctrl.classList"
+                                       data-type="trigger"
+                                       data-validation-rules="$ctrl.validationRules"
+                                       data-default-fields="$ctrl.defaultFields"
+                                       data-on-select-class-callback="$ctrl.checkClassUniqueness()"
+                                       data-on-submit-callback="$ctrl.editTriggerCallback(item)">
+                        </ncl-edit-item>
+                    </ncl-collapsing-row>
+                    <div class="common-table-row create-trigger-button igz-create-button"
+                         data-ng-click="$ctrl.createTrigger($event)">
+                        <span class="igz-icon-add-round"></span>
+                        {{ 'functions:CREATE_NEW_TRIGGER' | i18next }}
+                    </div>
                 </div>
             </div>
         </div>

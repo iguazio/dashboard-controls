@@ -16,6 +16,14 @@
         var lng = i18next.language;
         var uniqueClasses = ['http'];
 
+        ctrl.scrollConfig = {
+            axis: 'y',
+            advanced: {
+                autoScrollOnFocus: false,
+                updateOnContentResize: true
+            }
+        };
+
         ctrl.isCreateModeActive = false;
         ctrl.validationRules = [];
         ctrl.triggers = [];
