@@ -290,6 +290,7 @@
         "STOP_FUNCTION": "Stop function",
         "TARGET_CPU": "Applicable only when minimum and maximum number of replicas are not empty, are not equal to each other, and the maximum is greater than 1",
         "URL": "A URL for downloading the archive file",
+        "USED_BY_API_GATEWAY": "Used by API gateway: \"{{apiGatewayName}}\"",
         "V3IO": "A directory in an Iguazio Data Science Platform data container",
         "V3IO_ACCESS_KEY": "An Iguazio Data Science Platform access key",
         "VOLUMES": "Volumes that define data paths and the required information for accessing the data from the function",
