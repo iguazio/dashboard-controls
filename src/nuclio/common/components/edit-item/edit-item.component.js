@@ -138,9 +138,10 @@
             }
 
             if (ctrl.isTriggerType() && ctrl.isHttpTrigger()) {
-                if (lodash.isNil(ctrl.item.workerAvailabilityTimeoutMilliseconds)) {
+                if (lodash.isNil(ctrl.item.workerAvailabilityTimeoutMilliseconds) ||
+                    ctrl.item.workerAvailabilityTimeoutMilliseconds === -1) {
                     ctrl.item.workerAvailabilityTimeoutMilliseconds =
-                        lodash.get(ctrl.selectedClass, 'workerAvailabilityTimeoutMilliseconds.defaultValue', 0);
+                        lodash.get(ctrl.selectedClass, 'workerAvailabilityTimeoutMilliseconds.defaultValue', '');
                 }
 
                 ctrl.ingresses = lodash.chain(ctrl.item.attributes.ingresses)

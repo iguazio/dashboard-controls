@@ -25,6 +25,7 @@
         ctrl.$onInit = onInit;
 
         ctrl.isNil = lodash.isNil;
+        ctrl.isNumber = lodash.isNumber;
 
         ctrl.getAttributeValue = getAttributeValue;
         ctrl.isVolumeType = isVolumeType;

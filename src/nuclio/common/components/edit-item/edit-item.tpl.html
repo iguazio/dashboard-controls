@@ -239,17 +239,21 @@
             </div>
             <div class="igz-col-45 attribute-field"
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.workerAvailabilityTimeoutMilliseconds)">
-                <div class="field-label">{{ 'functions:WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS' | i18next }}</div>
+                <div class="field-label">
+                    <span>{{ 'functions:WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS' | i18next }}</span>
+                    <igz-more-info data-description="{{ 'functions:TOOLTIP.WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION' | i18next }}"></igz-more-info>
+                </div>
                 <igz-number-input data-form-object="$ctrl.editItemForm"
                                   data-input-name="{{$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.name}}"
                                   data-current-value="$ctrl.item.workerAvailabilityTimeoutMilliseconds"
                                   data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
                                   data-update-number-input-field="workerAvailabilityTimeoutMilliseconds"
-                                  data-placeholder=""
+                                  data-placeholder="{{$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.placeholder}}"
                                   data-decimal-number="0"
                                   data-value-step="1"
                                   data-validation-is-required="!$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.allowEmpty"
                                   data-allow-empty-field="$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.allowEmpty"
+                                  data-default-value="$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.defaultValue"
                                   data-min-value="$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.min">
                 </igz-number-input>
 

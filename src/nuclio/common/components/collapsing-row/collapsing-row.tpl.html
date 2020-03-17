@@ -47,7 +47,7 @@
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.maxWorkers)">
                         <span class="field-label">{{ 'functions:MAX_WORKERS' | i18next }}</span>:&nbsp;{{ $ctrl.item.maxWorkers }};&nbsp;
                     </span>
-                    <span data-ng-if="!$ctrl.isNil($ctrl.item.workerAvailabilityTimeoutMilliseconds)">
+                    <span data-ng-if="$ctrl.isNumber($ctrl.item.workerAvailabilityTimeoutMilliseconds)">
                         <span class="field-label">{{ 'functions:WORKER_AVAILABILITY_TIMEOUT' | i18next }}</span>:&nbsp;{{ $ctrl.item.workerAvailabilityTimeoutMilliseconds }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.secret)">
@@ -57,13 +57,13 @@
                         <span class="field-label">{{ key }}</span>:&nbsp;{{ $ctrl.getAttributeValue(key, value) }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.annotations)">
-                        <span class="field-label">{{ 'functions:ANNOTATIONS' | i18next }}</span>: {{ $ctrl.item.annotations }};
+                        <span class="field-label">{{ 'functions:ANNOTATIONS' | i18next }}</span>:&nbsp;{{ $ctrl.item.annotations }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.username)">
-                        <span class="field-label">{{ 'common:USERNAME' | i18next }}</span>: {{ $ctrl.item.username }};
+                        <span class="field-label">{{ 'common:USERNAME' | i18next }}</span>:&nbsp;{{ $ctrl.item.username }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.password)">
-                        <span class="field-label">{{ 'common:PASSWORD' | i18next }}</span>: {{ $ctrl.item.password }};
+                        <span class="field-label">{{ 'common:PASSWORD' | i18next }}</span>:&nbsp;{{ $ctrl.item.password }};&nbsp;
                     </span>
 
                     <!-- type Volume block -->
