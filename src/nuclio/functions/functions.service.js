@@ -183,9 +183,10 @@
                             name: 'workerAvailabilityTimeoutMilliseconds',
                             pattern: 'number',
                             type: 'number-input',
-                            allowEmpty: false,
-                            min: 0,
-                            defaultValue: 0
+                            allowEmpty: true,
+                            min: 1,
+                            defaultValue: '',
+                            placeholder: $i18next.t('common:DEFAULT', {lng: i18next.language})
                         },
                         attributes: [
                             {
@@ -288,9 +289,10 @@
                             name: 'workerAvailabilityTimeoutMilliseconds',
                             pattern: 'number',
                             type: 'number-input',
-                            allowEmpty: false,
-                            min: 0,
-                            defaultValue: 0
+                            allowEmpty: true,
+                            min: 1,
+                            defaultValue: '',
+                            placeholder: $i18next.t('common:DEFAULT', {lng: i18next.language})
                         },
                         attributes: [
                             {
