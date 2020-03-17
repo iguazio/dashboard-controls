@@ -30,13 +30,13 @@
                           data-tooltip-popup-delay="200">
                     {{$ctrl.function.metadata.name}}
                     </span>
-                    <span class="version-text">
+                    <span class="version-text item-cell-sub-text">
                     {{$ctrl.isFunctionCollapsed ? '$LATEST' : ''}}
                     </span>
                 </div>
                 <span class="ncl-icon-api-gateway"
                       data-ng-if="$ctrl.function.status.apiGateways.length > 0"
-                      data-uib-tooltip="{{$ctrl.function.status.apiGateways[0]}}"
+                      data-uib-tooltip="{{ 'functions:TOOLTIP.USED_BY_API_GATEWAY' | i18next:{apiGatewayName: $ctrl.function.status.apiGateways[0]} }}"
                       data-tooltip-placement="top"
                       data-tooltip-append-to-body="true"
                       data-tooltip-popup-delay="200">
