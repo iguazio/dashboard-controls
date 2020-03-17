@@ -20,14 +20,27 @@
 
         <div class="igz-row common-table-cells-container"
              data-ng-click="$ctrl.onSelectRow($event)">
-            <div class="common-table-cell function-name"
+            <div class="common-table-cell"
                  data-test-id="functions.item-name"
-                 data-ng-class="[$ctrl.getFunctionsTableColSize('rowName')]"
-                 data-uib-tooltip-html="$ctrl.functionNameTooltip"
-                 data-tooltip-append-to-body="true"
-                 data-tooltip-placement="top"
-                 data-tooltip-popup-delay="200">
-                {{$ctrl.function.metadata.name}} {{$ctrl.isFunctionCollapsed ? '($LATEST)' : ''}}
+                 data-ng-class="[$ctrl.getFunctionsTableColSize('rowName')]">
+                <div class="function-name text-ellipsis">
+                    <span data-uib-tooltip-html="$ctrl.functionNameTooltip"
+                          data-tooltip-append-to-body="true"
+                          data-tooltip-placement="top"
+                          data-tooltip-popup-delay="200">
+                    {{$ctrl.function.metadata.name}}
+                    </span>
+                    <span class="version-text">
+                    {{$ctrl.isFunctionCollapsed ? '$LATEST' : ''}}
+                    </span>
+                </div>
+                <span class="ncl-icon-api-gateway"
+                      data-ng-if="$ctrl.function.status.apiGateways.length > 0"
+                      data-uib-tooltip="{{$ctrl.function.status.apiGateways[0]}}"
+                      data-tooltip-placement="top"
+                      data-tooltip-append-to-body="true"
+                      data-tooltip-popup-delay="200">
+                </span>
             </div>
             <div class="common-table-cell function-status"
                  data-test-id="functions.item-status"
