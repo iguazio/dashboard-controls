@@ -574,6 +574,21 @@
             }
 
             validateValues();
+
+            $timeout(function () {
+                var isSomeFieldInvalid = lodash.some(ctrl.editItemForm.$$controls, '$invalid');
+
+                ctrl.editItemForm.$setValidity('text', !isSomeFieldInvalid);
+
+                $rootScope.$broadcast('change-state-deploy-button', {
+                    component: ctrl.item.ui.name,
+                    isDisabled: isSomeFieldInvalid
+                });
+
+                if (!isSomeFieldInvalid) {
+                    submitForm();
+                }
+            }, 150);
         }
 
         /**
@@ -886,73 +901,7 @@
                                 ctrl.item.ui.editModeActive = false;
                             }
 
-                            lodash.forEach(ctrl.selectedClass.attributes, function (attribute) {
-                                if (attribute.pattern === 'number') {
-                                    var emptyValue = lodash.isNil(ctrl.item.attributes[attribute.name]) || ctrl.item.attributes[attribute.name] === '';
-                                    var numberAttribute = attribute.allowEmpty && emptyValue ? '' :
-                                        Number(ctrl.item.attributes[attribute.name]);
-
-                                    lodash.set(ctrl.item, 'attributes[' + attribute.name + ']', numberAttribute);
-                                }
-
-                                if (attribute.pattern === 'arrayStr') {
-                                    lodash.update(ctrl.item.attributes, attribute.name, ConverterService.toStringArray);
-                                }
-
-                                if (attribute.pattern === 'arrayInt' && !lodash.isArray(ctrl.item.attributes[attribute.name])) {
-                                    ctrl.item.attributes[attribute.name] = ConverterService.toNumberArray(ctrl.item.attributes[attribute.name]);
-                                }
-
-                                if (attribute.name === 'ingresses') {
-                                    var newIngresses = {};
-
-                                    lodash.forEach(ctrl.ingresses, function (ingress, key) {
-                                        newIngresses[key.toString()] = {
-                                            paths: ingress.value.split(',')
-                                        };
-
-                                        if (!lodash.isEmpty(ingress.name)) {
-                                            newIngresses[key.toString()].host = ingress.name;
-                                        }
-
-                                        if (!lodash.isEmpty(ingress.additionalValue)) {
-                                            newIngresses[key.toString()].secretName = ingress.additionalValue;
-                                        }
-                                    });
-
-                                    ctrl.item.attributes[attribute.name] = newIngresses;
-                                }
-
-                                if (attribute.name === 'event') {
-                                    var newEventHeader = {};
-
-                                    lodash.forEach(ctrl.eventHeaders, function (headers) {
-                                        newEventHeader[headers.name] = headers.value;
-                                    });
-
-                                    lodash.set(ctrl.item, 'attributes.event.headers', newEventHeader);
-                                }
-                            });
-
-                            if (ctrl.isHttpTrigger()) {
-                                updateAnnotaions();
-                            }
-
-                            if (ctrl.isMQTTTrigger()) {
-                                updateSubscriptions();
-                            }
-
-                            if (ctrl.isKafkaTrigger()) {
-                                updateTopics();
-                                updateBrokers();
-                            }
-
-                            $rootScope.$broadcast('change-state-deploy-button', {
-                                component: ctrl.item.ui.name,
-                                isDisabled: false
-                            });
-
-                            ctrl.onSubmitCallback({ item: ctrl.item });
+                            submitForm();
                         });
                     }
                 }
@@ -1071,6 +1020,79 @@
          */
         function onFunctionDeploy(event, data) {
             ctrl.onSubmitForm(data.event)
+        }
+
+        /**
+         * Submits form
+         */
+        function submitForm() {
+            lodash.forEach(ctrl.selectedClass.attributes, function (attribute) {
+                if (attribute.pattern === 'number') {
+                    var emptyValue = lodash.isNil(ctrl.item.attributes[attribute.name]) || ctrl.item.attributes[attribute.name] === '';
+                    var numberAttribute = attribute.allowEmpty && emptyValue ? '' :
+                        Number(ctrl.item.attributes[attribute.name]);
+
+                    lodash.set(ctrl.item, 'attributes[' + attribute.name + ']', numberAttribute);
+                }
+
+                if (attribute.pattern === 'arrayStr') {
+                    lodash.update(ctrl.item.attributes, attribute.name, ConverterService.toStringArray);
+                }
+
+                if (attribute.pattern === 'arrayInt' && !lodash.isArray(ctrl.item.attributes[attribute.name])) {
+                    ctrl.item.attributes[attribute.name] = ConverterService.toNumberArray(ctrl.item.attributes[attribute.name]);
+                }
+
+                if (attribute.name === 'ingresses') {
+                    var newIngresses = {};
+
+                    lodash.forEach(ctrl.ingresses, function (ingress, key) {
+                        newIngresses[key.toString()] = {
+                            paths: ingress.value.split(',')
+                        };
+
+                        if (!lodash.isEmpty(ingress.name)) {
+                            newIngresses[key.toString()].host = ingress.name;
+                        }
+
+                        if (!lodash.isEmpty(ingress.additionalValue)) {
+                            newIngresses[key.toString()].secretName = ingress.additionalValue;
+                        }
+                    });
+
+                    ctrl.item.attributes[attribute.name] = newIngresses;
+                }
+
+                if (attribute.name === 'event') {
+                    var newEventHeader = {};
+
+                    lodash.forEach(ctrl.eventHeaders, function (headers) {
+                        newEventHeader[headers.name] = headers.value;
+                    });
+
+                    lodash.set(ctrl.item, 'attributes.event.headers', newEventHeader);
+                }
+            });
+
+            if (ctrl.isHttpTrigger()) {
+                updateAnnotaions();
+            }
+
+            if (ctrl.isMQTTTrigger()) {
+                updateSubscriptions();
+            }
+
+            if (ctrl.isKafkaTrigger()) {
+                updateTopics();
+                updateBrokers();
+            }
+
+            $rootScope.$broadcast('change-state-deploy-button', {
+                component: ctrl.item.ui.name,
+                isDisabled: false
+            });
+
+            ctrl.onSubmitCallback({ item: ctrl.item });
         }
 
         /**
