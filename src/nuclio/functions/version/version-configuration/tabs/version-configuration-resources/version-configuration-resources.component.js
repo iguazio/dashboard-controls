@@ -100,7 +100,7 @@
          */
         function onInit() {
             initParametersData();
-            initSlider();
+            initTargetCpuSlider();
 
             ctrl.minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
             ctrl.maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
@@ -282,7 +282,7 @@
             }
 
             if (lodash.includes(['minReplicas', 'maxReplicas'], field)) {
-                initSlider();
+                updateTargetCpuSlider();
             }
 
             ctrl.onChangeCallback();
@@ -427,9 +427,33 @@
         }
 
         /**
-         * Initializes Target CPU slider
+         * Initializes Target CPU slider.
          */
-        function initSlider() {
+        function initTargetCpuSlider() {
+            ctrl.targetCpuValueUnit = '';
+            ctrl.targetCpuSliderConfig = {
+                value: 75,
+                valueLabel: 'disabled',
+                pow: 0,
+                unitLabel: '%',
+                labelHelpIcon: false,
+                options: {
+                    disabled: true,
+                    floor: 1,
+                    id: 'targetCPU',
+                    ceil: 100,
+                    step: 1,
+                    showSelectionBar: true
+                }
+            };
+
+            updateTargetCpuSlider();
+        }
+
+        /**
+         * Updates Target CPU slider state (enabled/disabled) and display value.
+         */
+        function updateTargetCpuSlider() {
             var minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
             var maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
             var disabled = !lodash.isNumber(minReplicas) || !lodash.isNumber(maxReplicas) || maxReplicas <= 1 ||
@@ -437,23 +461,13 @@
             var targetCpuValue = lodash.get(ctrl.version, 'spec.targetCPU', 75);
 
             ctrl.targetCpuValueUnit = disabled ? '' : '%';
-            ctrl.targetCpuSliderConfig = {
+            lodash.merge(ctrl.targetCpuSliderConfig, {
                 value: targetCpuValue,
                 valueLabel: disabled ? 'disabled' : targetCpuValue,
-                pow: 0,
-                unitLabel: '%',
-                labelHelpIcon: false,
                 options: {
-                    disabled: disabled,
-                    floor: 1,
-                    id: 'targetCPU',
-                    ceil: 100,
-                    step: 1,
-                    showSelectionBar: true,
-                    onChange: null,
-                    onEnd: null
+                    disabled: disabled
                 }
-            };
+            });
         }
 
         /**
