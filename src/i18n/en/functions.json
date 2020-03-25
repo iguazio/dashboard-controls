@@ -248,6 +248,7 @@
             "HEAD": "Kubernetes annotations",
             "REST": "for adding function metadata"
         },
+        "APPLY_CHANGES_TO_DEPLOY": "Apply pending changes to enable deploy",
         "CHANGE_TEXT_SIZE": "Change text size",
         "CONFIG_MAP": {
             "HEAD": "Kubernetes ConfigMap",

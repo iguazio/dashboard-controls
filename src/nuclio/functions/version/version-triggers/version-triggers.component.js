@@ -10,7 +10,7 @@
             controller: NclVersionTriggersController
         });
 
-    function NclVersionTriggersController($rootScope, $timeout, $i18next, i18next, lodash, DialogsService,
+    function NclVersionTriggersController($rootScope, $scope, $timeout, $i18next, i18next, lodash, DialogsService,
                                           FunctionsService, ValidatingPatternsService, VersionHelperService) {
         var ctrl = this;
         var lng = i18next.language;
@@ -22,6 +22,7 @@
 
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
+
         ctrl.checkClassUniqueness = checkClassUniqueness;
         ctrl.createTrigger = createTrigger;
         ctrl.editTriggerCallback = editTriggerCallback;
@@ -43,6 +44,7 @@
                 triggersItem.name = key;
 
                 triggersItem.ui = {
+                    changed: false,
                     editModeActive: false,
                     isFormValid: true,
                     name: 'trigger'
@@ -72,6 +74,8 @@
                     key: ValidatingPatternsService.getValidationRules('k8s.dns1123Subdomain')
                 }
             };
+
+            $scope.$on('trigger-has-been-changed', updateTriggersChangesState);
 
             $timeout(function () {
                 ctrl.defaultFields = {
@@ -123,6 +127,7 @@
                         kind: '',
                         attributes: {},
                         ui: {
+                            changed: true,
                             editModeActive: true,
                             isFormValid: false,
                             name: 'trigger'
@@ -286,13 +291,17 @@
          * @returns {boolean}
          */
         function isTriggerInEditMode() {
-            var triggerInEditMode = false;
-            ctrl.triggers.forEach(function (trigger) {
-                if (trigger.ui.editModeActive) {
-                    triggerInEditMode = true;
-                }
-            });
-            return triggerInEditMode;
+            return lodash.some(ctrl.triggers, ['ui.editModeActive', true]);
+        }
+
+        /**
+         * Checks triggers and updates `ctrl.version.ui.isTriggersChanged` if there is some changed and unsaved trigger.
+         */
+        function updateTriggersChangesState() {
+            var isSomeTriggerChanged = lodash.some(ctrl.triggers, ['ui.changed', true]);
+            var isSomeTriggerInEditMode = lodash.some(ctrl.triggers, ['ui.editModeActive', true]);
+
+            lodash.set(ctrl.version, 'ui.isTriggersChanged', isSomeTriggerChanged && isSomeTriggerInEditMode);
         }
     }
 }());

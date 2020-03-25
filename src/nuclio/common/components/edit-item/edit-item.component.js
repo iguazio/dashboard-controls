@@ -23,6 +23,8 @@
         var ctrl = this;
         var lng = i18next.language;
 
+        var itemCopy = {};
+
         ctrl.editItemForm = {};
         ctrl.selectedClass = {};
 
@@ -264,6 +266,8 @@
                     .value();
             }
 
+            itemCopy = angular.copy(lodash.omit(ctrl.item, 'ui'));
+
             $scope.$on('deploy-function-version', onFunctionDeploy);
         }
 
@@ -285,6 +289,10 @@
          * Destructor
          */
         function onDestroy() {
+            lodash.set(ctrl.item, 'ui.changed', false);
+
+            $rootScope.$broadcast('trigger-has-been-changed', {});
+
             $document.off('click', onSubmitForm);
         }
 
@@ -574,21 +582,7 @@
             }
 
             validateValues();
-
-            $timeout(function () {
-                var isSomeFieldInvalid = lodash.some(ctrl.editItemForm.$$controls, '$invalid');
-
-                ctrl.editItemForm.$setValidity('text', !isSomeFieldInvalid);
-
-                $rootScope.$broadcast('change-state-deploy-button', {
-                    component: ctrl.item.ui.name,
-                    isDisabled: isSomeFieldInvalid
-                });
-
-                if (!isSomeFieldInvalid) {
-                    submitForm();
-                }
-            }, 150);
+            updateChangesState();
         }
 
         /**
@@ -678,6 +672,8 @@
 
                 checkValidation('brokers');
             }
+
+            updateChangesState();
         }
 
         /**
@@ -687,6 +683,7 @@
             lodash.set(ctrl.item, 'attributes.schedule', '');
 
             $timeout(function () {
+                updateChangesState();
                 validateValues();
             });
         }
@@ -837,6 +834,8 @@
             if (ctrl.onSelectClassCallback) {
                 ctrl.onSelectClassCallback()
             }
+
+            updateChangesState();
         }
 
         /**
@@ -859,6 +858,8 @@
          */
         function onSelectDropdownValue(item, field) {
             lodash.set(ctrl.item, field, item.id);
+
+            updateChangesState();
         }
 
         /**
@@ -868,6 +869,8 @@
          */
         function numberInputCallback(item, field) {
             lodash.set(ctrl.item, field, item);
+
+            updateChangesState();
         }
 
         /**
@@ -1093,6 +1096,22 @@
             });
 
             ctrl.onSubmitCallback({ item: ctrl.item });
+        }
+
+        /**
+         * Updates `ctrl.item.ui.changed` property when user updates trigger
+         */
+        function updateChangesState() {
+            var currentChangesState = lodash.get(ctrl.item, 'ui.changed', false);
+
+            ctrl.item.ui.changed = !lodash.chain(ctrl.item)
+                .omit(['$$hashKey', 'ui'])
+                .isEqual(itemCopy)
+                .value();
+
+            if (currentChangesState !== ctrl.item.ui.changed) {
+                $rootScope.$broadcast('trigger-has-been-changed', {});
+            }
         }
 
         /**
