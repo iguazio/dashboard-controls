@@ -115,6 +115,7 @@
          */
         function onInit() {
             lodash.defaults(ctrl, {
+                autoComplete: 'off',
                 hideCounter: false,
                 inputModelOptions: {},
                 inputValue: '',
