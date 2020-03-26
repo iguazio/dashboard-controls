@@ -11,7 +11,7 @@
             controller: NclVersionConfigurationVolumesController
         });
 
-    function NclVersionConfigurationVolumesController($rootScope, $timeout, $i18next, i18next, lodash, DialogsService,
+    function NclVersionConfigurationVolumesController($rootScope, $scope, $timeout, $i18next, i18next, lodash, DialogsService,
                                                       FunctionsService, ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
@@ -70,6 +70,7 @@
                 var volumeItem = angular.copy(value);
 
                 volumeItem.ui = {
+                    changed: false,
                     editModeActive: false,
                     isFormValid: true,
                     name: 'volume'
@@ -79,6 +80,8 @@
             });
 
             ctrl.classList = FunctionsService.getClassesList('volume');
+
+            $scope.$on('edit-item-has-been-changed', updateVolumesChangesState);
         }
 
         /**
@@ -108,6 +111,7 @@
                                 name: ''
                             },
                             ui: {
+                                changed: true,
                                 editModeActive: true,
                                 isFormValid: false,
                                 name: 'volume'
@@ -200,15 +204,7 @@
          * @returns {boolean}
          */
         function isVolumeInEditMode() {
-            var isEditMode = false;
-
-            ctrl.volumes.forEach(function (volume) {
-                if (volume.ui.editModeActive) {
-                    isEditMode = true;
-                }
-            });
-
-            return isEditMode;
+            return lodash.some(ctrl.volumes, ['ui.editModeActive', true]);
         }
 
         /**
@@ -234,6 +230,16 @@
 
                 lodash.set(ctrl.version, 'spec.volumes', workingCopy);
             }
+        }
+
+        /**
+         * Checks volumes and updates `ctrl.version.ui.isVolumesChanged` if there is some changed and unsaved trigger.
+         */
+        function updateVolumesChangesState() {
+            var isSomeVolumeChanged = lodash.some(ctrl.volumes, ['ui.changed', true]);
+            var isSomeVolumeInEditMode = lodash.some(ctrl.volumes, ['ui.editModeActive', true]);
+
+            lodash.set(ctrl.version, 'ui.isVolumesChanged', isSomeVolumeChanged && isSomeVolumeInEditMode);
         }
 
         /**

@@ -75,7 +75,7 @@
                 }
             };
 
-            $scope.$on('trigger-has-been-changed', updateTriggersChangesState);
+            $scope.$on('edit-item-has-been-changed', updateTriggersChangesState);
 
             $timeout(function () {
                 ctrl.defaultFields = {

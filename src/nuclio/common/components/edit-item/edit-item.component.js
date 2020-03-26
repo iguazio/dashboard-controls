@@ -266,6 +266,10 @@
                     .value();
             }
 
+            if (!lodash.isEmpty(ctrl.item.id)) {
+                lodash.set(ctrl.item, 'ui.changed', false);
+            }
+
             itemCopy = angular.copy(lodash.omit(ctrl.item, 'ui'));
 
             $scope.$on('deploy-function-version', onFunctionDeploy);
@@ -291,7 +295,7 @@
         function onDestroy() {
             lodash.set(ctrl.item, 'ui.changed', false);
 
-            $rootScope.$broadcast('trigger-has-been-changed', {});
+            $rootScope.$broadcast('edit-item-has-been-changed', {});
 
             $document.off('click', onSubmitForm);
         }
@@ -1110,7 +1114,7 @@
                 .value();
 
             if (currentChangesState !== ctrl.item.ui.changed) {
-                $rootScope.$broadcast('trigger-has-been-changed', {});
+                $rootScope.$broadcast('edit-item-has-been-changed', {});
             }
         }
 
