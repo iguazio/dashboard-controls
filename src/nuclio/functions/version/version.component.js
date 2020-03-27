@@ -184,7 +184,9 @@
                     }
                 },
                 ui: {
-                    versionCode: ''
+                    versionCode: '',
+                    isTriggersChanged: false,
+                    isVolumesChanged: false
                 }
             });
 
@@ -262,7 +264,8 @@
          * @returns {boolean}
          */
         function isDeployButtonDisabled() {
-            return ctrl.isInValidDeployState() || ctrl.isDeployDisabled;
+            return ctrl.isInValidDeployState() || lodash.get(ctrl.version, 'ui.isTriggersChanged', false) ||
+                lodash.get(ctrl.version, 'ui.isVolumesChanged', false) || ctrl.isDeployDisabled;
         }
 
         /**
