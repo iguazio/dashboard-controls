@@ -74,6 +74,7 @@
         "CREATE_FUNCTION_EVENT": "Error occurred while creating the new function event.",
         "CREATE_UPDATE_FUNCTION_EVENT": "Error occurred while creating/updating the new function event.",
         "DELETE_API_GW_FUNCTION": "Cannot delete the function while it is being used by an API gateway (\"{{apiGatewayName}}\").",
+        "DELETE_API_GW_FUNCTIONS": "Cannot delete the functions because some of them are being used by an API gateway.",
         "DELETE_EVENTS": "Oops: Unknown error occurred while deleting events",
         "DELETE_FUNCTION": "Unknown error occurred while deleting the function.",
         "DELETE_PROJECT": "Unknown error occurred while deleting the project (try deleting its functions first).",
