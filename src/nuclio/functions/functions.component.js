@@ -1,5 +1,6 @@
 /* eslint max-statements: ["error", 100] */
 /* eslint max-params: ["error", 25] */
+/* eslint complexity: ["error", 15] */
 (function () {
     'use strict';
 
@@ -476,11 +477,41 @@
 
                     // sets confirm message for `delete action` depending on count of checked rows
                     var deleteAction = lodash.find(ctrl.functionActions, {'id': 'delete'});
+                    var isApiGatewayFunction = lodash.some(checkedRows, function (row) {
+                        var apiGateways = lodash.get(row, 'status.apiGateways', []);
 
-                    if (!lodash.isNil(deleteAction)) {
-                        deleteAction.confirm.message = checkedRowsCount === 1 ?
-                            $i18next.t('functions:DELETE_FUNCTION', {lng: lng}) + ' “' + checkedRows[0].metadata.name + '”?' :
-                            $i18next.t('functions:DELETE_FUNCTIONS_CONFIRM', {lng: lng});
+                        return !lodash.isEmpty(apiGateways);
+                    });
+
+                    if (!lodash.isNil(deleteAction) && !isApiGatewayFunction) {
+                        deleteAction.confirm = {
+                            message: checkedRowsCount === 1 ?
+                                $i18next.t('functions:DELETE_FUNCTION', {lng: lng}) + ' “' + checkedRows[0].metadata.name + '”?' :
+                                $i18next.t('functions:DELETE_FUNCTIONS_CONFIRM', {lng: lng}),
+                            description: checkedRowsCount === 1 ?
+                                $i18next.t('functions:DELETE_FUNCTION_DESCRIPTION', {lng: lng}) : null,
+                            yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                            noLabel: $i18next.t('common:CANCEL', {lng: lng}),
+                            type: 'nuclio_alert'
+                        };
+                        deleteAction.handler = function (action) {
+                            $rootScope.$broadcast('action-panel_fire-action', {
+                                action: action.id
+                            });
+                        }
+                    } else if (isApiGatewayFunction) {
+                        var message = $i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTIONS', {lng: lng});
+
+                        if (checkedRowsCount === 1) {
+                            var apiGatewayName = lodash.get(checkedRows[0], 'status.apiGateways[0]', '');
+
+                            message = $i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION', {lng: lng, apiGatewayName: apiGatewayName});
+                        }
+
+                        deleteAction.confirm = {};
+                        deleteAction.handler = function () {
+                            DialogsService.alert(message);
+                        };
                     }
                 }
             }
