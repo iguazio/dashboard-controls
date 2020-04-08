@@ -103,7 +103,7 @@
                 <div class="field-label label-with-tooltip align-items-center">
                     <span>{{ 'functions:READINESS_TIMEOUT_SECONDS' | i18next }}</span>
                     <igz-more-info
-                            data-description="{{ 'functions:READINESS_TIMEOUT_SECONDS_DESCRIPTION' | i18next }}"
+                            data-description="{{ 'functions:READINESS_TIMEOUT_SECONDS_DESCRIPTION' | i18next:{default: $ctrl.defaultFunctionConfig.spec.readinessTimeoutSeconds} }}"
                             data-trigger="click">
                     </igz-more-info>
                 </div>

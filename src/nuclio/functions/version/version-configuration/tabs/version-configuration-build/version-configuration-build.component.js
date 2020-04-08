@@ -36,6 +36,8 @@
             name: ''
         };
         ctrl.disabled = true;
+
+        ctrl.defaultFunctionConfig = ConfigService.nuclio.defaultFunctionConfig.attributes;
         ctrl.imageNameValidationPattern = ValidatingPatternsService.dockerReference;
 
         ctrl.$onInit = onInit;

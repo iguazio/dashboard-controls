@@ -138,7 +138,12 @@
                     {{ 'common:REPLICAS' | i18next }}
                 </div>
                 <div class="igz-col-40 input-wrapper">
-                    <div class="input-title">{{ 'functions:MIN' | i18next }}</div>
+                    <div class="input-title">
+                        {{ 'functions:MIN' | i18next }}
+                        <igz-more-info data-description="{{ 'functions:MIN_REPLICAS' | i18next:{default: $ctrl.defaultFunctionConfig.spec.minReplicas} }}"
+                                       data-trigger="click">
+                        </igz-more-info>
+                    </div>
                     <div class="row-input replicas-number-input">
                         <igz-number-input data-form-object="$ctrl.resourcesForm"
                                           data-input-name="minReplicas"
@@ -157,7 +162,12 @@
                 </div>
 
                 <div class="igz-col-40 input-wrapper">
-                    <div class="input-title" data-ng-class="{ asterisk: $ctrl.minReplicas === 0 }">{{ 'functions:MAX' | i18next }}</div>
+                    <div class="input-title" data-ng-class="{ asterisk: $ctrl.minReplicas === 0 }">
+                        {{ 'functions:MAX' | i18next }}
+                        <igz-more-info data-description="{{ 'functions:MAX_REPLICAS' | i18next:{default: $ctrl.defaultFunctionConfig.spec.maxReplicas} }}"
+                                       data-trigger="click">
+                        </igz-more-info>
+                    </div>
                     <div class="row-input replicas-number-input">
                         <igz-number-input data-form-object="$ctrl.resourcesForm"
                                           data-input-name="maxReplicas"
@@ -197,7 +207,7 @@
             <div class="igz-row form-row range-inputs-row slider-block">
                 <div class="igz-col-25 row-title no-margin target-cpu-title">
                     <span>{{ 'common:TARGET_CPU' | i18next }}</span>
-                    <igz-more-info data-description="{{ 'common:TARGET_CPU_DESCRIPTION' | i18next }}"></igz-more-info>
+                    <igz-more-info data-description="{{ 'functions:TARGET_CPU_DESCRIPTION' | i18next:{default: $ctrl.defaultFunctionConfig.spec.targetCPU} }}"></igz-more-info>
                 </div>
                 <div class="igz-col-65 row-input slider">
                     <igz-slider-input-block data-slider-config="$ctrl.targetCpuSliderConfig"
