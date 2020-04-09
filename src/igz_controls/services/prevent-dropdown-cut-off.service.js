@@ -58,7 +58,7 @@
             });
 
             $animate.on('leave', currentElement, function (element, phase) {
-                if (angular.isElement(dropdownElement) && dropdownElement[0] === element[0] && phase === 'close') {
+                if (angular.isElement(scrollableElement) && phase === 'close') {
                     scrollableElement.height('auto');
                 }
             });
