@@ -51,7 +51,7 @@
         ctrl.subscriptionQoSValidationPattern = /^[0-2]$/;
 
         ctrl.containerNameValidationPattern = ValidatingPatternsService.container;
-        ctrl.defaultFunctionConfig = ConfigService.nuclio.defaultFunctionConfig.attributes;
+        ctrl.defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
 
         ctrl.placeholder = '';
         ctrl.tooltips = {

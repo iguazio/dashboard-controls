@@ -59,7 +59,7 @@
             }
         ];
 
-        ctrl.defaultFunctionConfig = ConfigService.nuclio.defaultFunctionConfig.attributes;
+        ctrl.defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
 
         ctrl.dropdownOptions = [
             { id: 'bytes', name: 'Bytes', unit: '',   root: 0,    power: 0 },
