@@ -491,12 +491,12 @@
             if (ctrl.isHttpTrigger()) {
                 return $i18next.t('functions:WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION', {
                     lng: lng,
-                    default: ctrl.defaultFunctionConfig.spec.triggers.http.workerAvailabilityTimeoutMilliseconds
+                    default: lodash.get(ctrl.defaultFunctionConfig, 'spec.triggers.http.workerAvailabilityTimeoutMilliseconds', '')
                 });
             } else if (ctrl.isCronTrigger()) {
                 return $i18next.t('functions:WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION', {
                     lng: lng,
-                    default: ctrl.defaultFunctionConfig.spec.triggers.cron.workerAvailabilityTimeoutMilliseconds
+                    default: lodash.get(ctrl.defaultFunctionConfig, 'spec.triggers.cron.workerAvailabilityTimeoutMilliseconds', '')
                 });
             }
         }
