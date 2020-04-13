@@ -16,7 +16,7 @@
         var ctrl = this;
         var lng = i18next.language;
 
-        var checkedItemCopy = '';
+        var checkedItem = 'singleFunction';
 
         ctrl.option = [];
         ctrl.optionList = [
@@ -24,12 +24,14 @@
                 label: $i18next.t('common:APPLY_TO_ALL_FUNCTIONS_IN_THIS_PROJECT', {lng: lng}),
                 id: 'singleProject',
                 value: 'singleProject',
+                disabled: false,
                 visibility: true,
             },
             {
                 label: $i18next.t('common:APPLY_TO_ALL_FUNCTIONS_IN_ALL_PROJECT', {lng: lng}),
                 id: 'allProjects',
                 value: 'allProjects',
+                disabled: false,
                 visibility: true,
             }
         ];
@@ -59,11 +61,20 @@
          */
         function onCheckboxChange() {
             if (!lodash.isNil(ctrl.option)) {
-                if (ctrl.option.length > 1) {
-                    ctrl.option = lodash.without(ctrl.option, checkedItemCopy);
-                }
+                if (lodash.includes(ctrl.option, 'allProjects')) {
+                    lodash.set(ctrl.optionList, '[0].disabled', true);
 
-                checkedItemCopy = lodash.get(ctrl.option, [0]);
+                    if (ctrl.option.length === 1) {
+                        ctrl.option.unshift('singleProject');
+                    }
+                } else {
+                    lodash.set(ctrl.optionList, '[0].disabled', false);
+                }
+                ctrl.optionList = angular.copy(ctrl.optionList);
+                ctrl.option = angular.copy(ctrl.option);
+                checkedItem = lodash.get(ctrl.option, [ctrl.option.length - 1]);
+            } else {
+                checkedItem = 'singleFunction';
             }
         }
 
@@ -72,7 +83,7 @@
          * @param {string} action
          */
         function onClose(action) {
-            ctrl.closeDialog({action: action, option: lodash.get(ctrl.option, '[0]', 'singleFunction')});
+            ctrl.closeDialog({action: action, option: checkedItem});
             ctrl.option = [];
         }
     }
