@@ -95,28 +95,7 @@
                 }
             ],
             'function': {
-                name: [
-                    {
-                        name: 'validCharacters',
-                        label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, 0–9, -',
-                        pattern: /^[a-z0-9-]+$/
-                    },
-                    {
-                        name: 'begin',
-                        label: $i18next.t('common:BEGIN_WITH', {lng: lng, characters: 'lowercase alphabetic characters' }) + ' (a-z)',
-                        pattern: /^[a-z]/
-                    },
-                    {
-                        name: 'end',
-                        label: $i18next.t('common:END_WITH', {lng: lng, characters: 'lowercase alphanumeric characters'}) + ' (a–z, 0–9)',
-                        pattern: /[a-z0-9]$/
-                    },
-                    {
-                        name: 'maxLength',
-                        label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 56}),
-                        pattern: /^(?=[\S\s]{1,56}$)/
-                    }
-                ]
+                name: []
             },
             k8s: {
                 configMapKey: [
@@ -299,6 +278,18 @@
                 ]
             }
         };
+
+        var functionNameRules = lodash.filter(validationRules.k8s.dns1035Label, function (rule) {
+            return rule.name !== 'maxLength';
+        });
+
+        functionNameRules.push({
+            name: 'maxLength',
+            label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 56}),
+            pattern: /^(?=[\S\s]{1,56}$)/
+        });
+
+        lodash.set(validationRules, 'function.name', functionNameRules);
 
         return {
             boolean: /^(0|1)$/,
