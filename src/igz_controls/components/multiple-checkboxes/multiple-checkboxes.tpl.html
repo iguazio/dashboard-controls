@@ -1,0 +1,207 @@
+<div class="igz-multiple-checkboxes">
+
+    <!-- CHECKBOXES WITH DROPDOWN -->
+    <div class="checkboxes-dropdown-field" tabindex="0"
+         data-ng-if="$ctrl.dropdown"
+         data-ng-click="$ctrl.toggleDropdown($event)"
+         data-ng-class="{'opened': $ctrl.isDropdownOpened}">
+        <div class="checkboxes-dropdown-title">
+            {{$ctrl.title}}
+        </div>
+        <div class="checkboxes-dropdown-arrow">
+            <span class="igz-icon-dropdown" data-ng-class="{'rotate-arrow': $ctrl.isDropUp}"></span>
+        </div>
+    </div>
+    <div class="checkboxes-dropdown-container"
+         data-ng-if="$ctrl.dropdown && $ctrl.isDropdownOpened">
+        <div class="checkboxes-dropdown-scrollbar-container"
+             data-ng-scrollbars>
+            <div class="search-input-wrapper">
+                <igz-validating-input-field class="checkboxes-search-input"
+                                            data-field-type="input"
+                                            data-input-icon="igz-icon-search"
+                                            data-is-focused="false"
+                                            data-ng-class="{'active': $ctrl.isSearchInputFocused}"
+                                            data-item-blur-callback="$ctrl.toggleSearchInputFocus()"
+                                            data-item-focus-callback="$ctrl.toggleSearchInputFocus()"
+                                            data-update-data-callback="$ctrl.onSearchInputChange(newData)"
+                                            data-placeholder-text="{{ 'common:PLACEHOLDER.SEARCH' | i18next }}">
+                </igz-validating-input-field>
+            </div>
+
+            <!-- GROUPS OF OPTIONS IN DROPDOWN -->
+            <div data-ng-if="$ctrl.groups"
+                 class="checkboxes-groups-wrapper">
+                <div data-ng-repeat="(name, group) in $ctrl.optionList"
+                     class="checkboxes-groups">
+                    <div data-ng-if="$ctrl.selectAllNone && group.visible"
+                         class="group-title">
+                        <div class="master-checkbox"
+                             data-ng-class="{'igz-icon-checkbox-checked': group.allItemsChecked,
+                                         'igz-icon-checkbox-checked-few': group.itemsChecked > 0 && !group.allItemsChecked,
+                                         'igz-icon-checkbox-unchecked': group.itemsChecked === 0}"
+                             data-ng-click="$ctrl.onCheckAllItems($event, name)">
+                        </div>
+                        <div class="checkboxes-group-name">{{group.name}}</div>
+                        <div data-ng-if="group.addingEnabled"
+                             class="checkboxes-add-item">
+                            <button class="checkboxes-add-item-button igz-icon-add"
+                                    data-ng-click="$ctrl.toggleAddItemField(group, name)"
+                                    data-uib-tooltip="{{ 'common:TOOLTIP.ADD_NEW' | i18next }}"
+                                    data-tooltip-enable="true"
+                                    data-tooltip-placement="top"
+                                    data-tooltip-popup-delay="200"
+                                    data-tooltip-append-to-body="true"></button>
+                        </div>
+                    </div>
+
+                    <ul data-ng-if="group.visible"
+                        class="checkboxes-list">
+                        <li data-ng-if="group.addingEnabled && group.addItemInputVisible"
+                            class="checkboxes-add-item">
+                            <igz-validating-input-field class="add-item-input"
+                                                        data-field-type="input"
+                                                        data-is-focused="true"
+                                                        data-ng-class="{'active': $ctrl.isSearchInputFocused}"
+                                                        data-item-blur-callback="$ctrl.addItem(inputValue, group, name)">
+                            </igz-validating-input-field>
+                        </li>
+                        <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in group.options track by $index">
+                            <input class="multiple-checkboxes-option-input"
+                                   id="{{item.id}}" type="checkbox"
+                                   data-ng-model="item.checked"
+                                   data-ng-change="$ctrl.updateViewValue()"
+                                   data-ng-disabled="$ctrl.isDisabled(item)"
+                                   data-ng-show="!item.filtered">
+                            <label class="multiple-checkboxes-option-label"
+                                   for="{{item.id}}"
+                                   data-ng-class="{'disabled': $ctrl.isDisabled(item)}"
+                                   data-ng-show="!item.filtered"
+                                   data-tooltip-enable="{{item.enableTooltip}}"
+                                   data-uib-tooltip="{{item.tooltipText}}"
+                                   data-tooltip-placement="left"
+                                   data-tooltip-popup-delay="200"
+                                   data-tooltip-append-to-body="true">
+                                {{item.label}}
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LIST OF OPTIONS IN DROPDOWN -->
+            <div data-ng-if="!$ctrl.groups && $ctrl.selectAllNone"
+                 class="checkboxes-header">
+                <div class="master-checkbox"
+                     data-ng-class="{'igz-icon-checkbox-checked': $ctrl.isAllItemsChecked,
+                                 'igz-icon-checkbox-checked-few': $ctrl.checkedItemsCount > 0 && !$ctrl.isAllItemsChecked,
+                                 'igz-icon-checkbox-unchecked': $ctrl.checkedItemsCount === 0}"
+                     data-ng-click="$ctrl.onCheckAllItems($event)">
+                </div>
+            </div>
+            <ul data-ng-if="!$ctrl.groups && !$ctrl.gropdown"
+                class="checkboxes-list checkboxes-regular-list">
+                <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in $ctrl.optionList track by $index">
+                    <input class="multiple-checkboxes-option-input"
+                           id="{{item.id}}" type="checkbox"
+                           data-ng-model="item.checked"
+                           data-ng-show="!item.filtered"
+                           data-ng-change="$ctrl.updateViewValue()"
+                           data-ng-disabled="$ctrl.isDisabled(item)">
+                    <label class="multiple-checkboxes-option-label"
+                           for="{{item.id}}"
+                           data-ng-class="{'disabled': $ctrl.isDisabled(item)}"
+                           data-tooltip-enable="{{item.enableTooltip}}"
+                           data-uib-tooltip="{{item.tooltipText}}"
+                           data-ng-show="!item.filtered"
+                           data-tooltip-placement="left"
+                           data-tooltip-popup-delay="200"
+                           data-tooltip-append-to-body="true">
+                        {{item.label}}
+                    </label>
+                </li>
+            </ul>
+        </div>
+        <div data-ng-if="$ctrl.dropdownApply"
+             class="checkboxes-bottom-bar">
+            <button class="igz-button-just-text small"
+                    data-ng-click="$ctrl.onCancel($event)">
+                {{ 'common:CANCEL' | i18next }}
+            </button>
+            <button class="igz-button-primary small"
+                    data-ng-click="$ctrl.onApply($event)">
+                {{ 'common:APPLY' | i18next }}
+            </button>
+        </div>
+    </div>
+
+    <!-- LIST OF OPTIONS WITHOUT DROPDOWN -->
+    <div data-ng-if="!$ctrl.dropdown && !$ctrl.groups && $ctrl.selectAllNone"
+         class="checkboxes-header">
+        <div class="master-checkbox"
+             data-ng-class="{'igz-icon-checkbox-checked': $ctrl.isAllItemsChecked,
+                             'igz-icon-checkbox-checked-few': $ctrl.checkedItemsCount > 0 && !$ctrl.isAllItemsChecked,
+                             'igz-icon-checkbox-unchecked': $ctrl.checkedItemsCount === 0}"
+             data-ng-click="$ctrl.onCheckAllItems($event)">
+        </div>
+    </div>
+    <ul class="igz-multiple-checkboxes-list"
+        data-ng-if="!$ctrl.dropdown && !$ctrl.groups">
+        <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in $ctrl.optionList track by $index">
+            <input class="multiple-checkboxes-option-input"
+                   id="{{item.id}}" type="checkbox"
+                   data-ng-model="item.checked"
+                   data-ng-change="$ctrl.updateViewValue()"
+                   data-ng-disabled="$ctrl.isDisabled(item)">
+            <label class="multiple-checkboxes-option-label"
+                   for="{{item.id}}"
+                   data-ng-class="{'disabled': $ctrl.isDisabled(item)}"
+                   data-tooltip-enable="{{item.enableTooltip}}"
+                   data-uib-tooltip="{{item.tooltipText}}"
+                   data-tooltip-placement="left"
+                   data-tooltip-popup-delay="200"
+                   data-tooltip-append-to-body="true">
+                {{item.label}}
+            </label>
+        </li>
+    </ul>
+
+    <!-- GROUPS OF OPTIONS WITHOUT DROPDOWN -->
+    <div data-ng-if="$ctrl.groups && !$ctrl.dropdown"
+         class="checkboxes-groups-wrapper">
+        <div data-ng-repeat="(name, group) in $ctrl.optionList"
+             class="checkboxes-groups">
+            <div data-ng-if="$ctrl.selectAllNone && group.visible"
+                 class="group-title">
+                <div class="master-checkbox"
+                     data-ng-class="{'igz-icon-checkbox-checked': group.allItemsChecked,
+                                     'igz-icon-checkbox-checked-few': group.itemsChecked > 0 && !group.allItemsChecked,
+                                     'igz-icon-checkbox-unchecked': group.itemsChecked === 0}"
+                     data-ng-click="$ctrl.onCheckAllItems($event, name)">
+                </div>
+                <div class="checkboxes-group-name">{{group.name}}</div>
+            </div>
+
+            <ul data-ng-if="group.visible"
+                class="checkboxes-list">
+                <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in group.options track by $index">
+                    <input class="multiple-checkboxes-option-input"
+                           id="{{item.id}}" type="checkbox"
+                           data-ng-model="item.checked"
+                           data-ng-change="$ctrl.updateViewValue()"
+                           data-ng-disabled="$ctrl.isDisabled(item)">
+                    <label class="multiple-checkboxes-option-label"
+                           for="{{item.id}}"
+                           data-ng-class="{'disabled': $ctrl.isDisabled(item)}"
+                           data-tooltip-enable="{{item.enableTooltip}}"
+                           data-uib-tooltip="{{item.tooltipText}}"
+                           data-tooltip-placement="left"
+                           data-tooltip-popup-delay="200"
+                           data-tooltip-append-to-body="true">
+                        {{item.label}}
+                    </label>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

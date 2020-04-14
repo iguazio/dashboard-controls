@@ -1,0 +1,19 @@
+<div class="import-project-dialog">{{$ctrl.dialogTitle}}</div>
+
+<igz-multiple-checkboxes data-ng-model="$ctrl.option"
+                         data-options="$ctrl.optionList"
+                         data-ng-change="$ctrl.onCheckboxChange($event)"
+                         data-ng-required="true"
+                         data-base-id="import-project-option_">
+</igz-multiple-checkboxes>
+
+<div class="buttons">
+    <button class="igz-button-just-text"
+            data-ng-click="$ctrl.onClose('skip')">
+        {{ 'functions:SKIP' | i18next }}
+    </button>
+    <button class="igz-button-primary"
+            data-ng-click="$ctrl.onClose('replace')">
+        {{ 'functions:REPLACE' | i18next }}
+    </button>
+</div>
