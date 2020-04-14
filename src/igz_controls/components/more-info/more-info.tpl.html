@@ -6,9 +6,12 @@
         </div>
         <div class="row-description"
              data-ng-if="$ctrl.isDescriptionVisible && $ctrl.isHtmlEnabled"
+             data-ng-class="$ctrl.defaultTooltipPlacement"
              data-ng-bind-html="$ctrl.description">
         </div>
-        <div class="row-description" data-ng-if="$ctrl.isDescriptionVisible && !$ctrl.isHtmlEnabled">
+        <div class="row-description"
+             data-ng-if="$ctrl.isDescriptionVisible && !$ctrl.isHtmlEnabled"
+             data-ng-class="$ctrl.defaultTooltipPlacement">
             {{$ctrl.description}}
         </div>
     </div>

@@ -44,10 +44,8 @@
 
     .row-description {
         width: 280px;
-        margin-left: 35px;
         padding: 16px 19px;
         position: absolute;
-        top: calc(50% - 19px);
         border-radius: 2px;
         box-shadow: @row-description-box-shadow;
         background-color: @row-description-bg-color;
@@ -59,12 +57,66 @@
         z-index: 9999;
 
         &:before {
-            .triangle-arrow(right; @row-description-triangle-color; 8px; 10px);
-
             position: absolute;
-            top: 7px;
-            left: -8px;
             content: '';
+        }
+
+        &.top,
+        &.bottom {
+            left: -118px;
+
+            &:before {
+                right: calc(50% - 9px);
+            }
+        }
+
+        &.top {
+            bottom: calc(100% + 8px);
+
+            &:before {
+                .triangle-arrow(down; @row-description-triangle-color; 8px; 10px);
+
+                bottom: -10px;
+            }
+        }
+
+        &.bottom {
+            top: calc(100% + 8px);
+
+            &:before {
+                .triangle-arrow(up; @row-description-triangle-color; 8px; 10px);
+
+                top: -10px;
+            }
+        }
+
+        &.right,
+        &.left {
+            top: calc(50% - 20px);
+
+            &:before {
+                top: 7px;
+            }
+        }
+
+        &.right {
+            left: 51px;
+
+            &:before {
+                .triangle-arrow(right; @row-description-triangle-color; 8px; 10px);
+
+                left: -8px;
+            }
+        }
+
+        &.left {
+            left: -280px;
+
+            &:before {
+                .triangle-arrow(left; @row-description-triangle-color; 8px; 10px);
+
+                right: -8px;
+            }
         }
     }
 }

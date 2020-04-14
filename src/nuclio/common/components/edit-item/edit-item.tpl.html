@@ -241,7 +241,9 @@
                  data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.workerAvailabilityTimeoutMilliseconds)">
                 <div class="field-label">
                     <span>{{ 'functions:WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS' | i18next }}</span>
-                    <igz-more-info data-description="{{ 'functions:TOOLTIP.WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION' | i18next }}"></igz-more-info>
+                    <igz-more-info data-description="{{ $ctrl.getWorkerAvailabilityTimeoutMillisecondsDescription() }}"
+                                   data-trigger="click">
+                    </igz-more-info>
                 </div>
                 <igz-number-input data-form-object="$ctrl.editItemForm"
                                   data-input-name="{{$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.name}}"

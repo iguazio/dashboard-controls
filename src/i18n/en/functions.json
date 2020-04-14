@@ -132,9 +132,11 @@
     "LOGGER_LEVEL": "Logger level",
     "LOGGING": "Logging",
     "MAX": "Max",
+    "MAX_REPLICAS": "Maximum number of replicas (default: {{default}})",
     "MAX_WORKERS": "Max Workers",
     "METHOD": "Method",
     "MIN": "Min",
+    "MIN_REPLICAS": "Minimum number of replicas (default: {{default}})",
     "MOUNT_PATH": "Mount Path",
     "MOUNT_PATH_DESCRIPTION": "A mount path for referencing the data from the function",
     "MOUNT_PATH_PARAMS": "Mount Path & Params",
@@ -208,7 +210,7 @@
     "QOS": "QoS",
     "READ_MORE": "Read more",
     "READINESS_TIMEOUT_SECONDS": "Readiness timeout (seconds)",
-    "READINESS_TIMEOUT_SECONDS_DESCRIPTION": "The time, in seconds, that the controller will wait for the function to become ready before declaring failure (default: 60)",
+    "READINESS_TIMEOUT_SECONDS_DESCRIPTION": "The time, in seconds, that the controller will wait for the function to become ready before declaring failure (default: {{default}})",
     "REGION": "Region",
     "REMOTE_PATH": "Remote path",
     "REPOSITORIES": "Repositories",
@@ -237,6 +239,7 @@
     "SUB_PATH": "Sub path",
     "SUBSCRIPTIONS": "Subscriptions",
     "SUCCESSFULLY_DEPLOYED": "Successfully deployed",
+    "TARGET_CPU_DESCRIPTION": "Exceeding this threshold will increase the number of replicas (default: {{default}})",
     "TEMPLATE_PARAMETERS": "Template parameters",
     "TEMPLATES": "Templates",
     "THEME": "Theme",
@@ -296,8 +299,7 @@
         "V3IO": "A directory in an Iguazio Data Science Platform data container",
         "V3IO_ACCESS_KEY": "An Iguazio Data Science Platform access key",
         "VOLUMES": "Volumes that define data paths and the required information for accessing the data from the function",
-        "WORK_DIR": "The relative path to the function-code directory within the extracted archive-file directory (default: \"/\" — the root directory)",
-        "WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION": "The number of milliseconds to wait for a worker if one is not available.\nEmpty = system default"
+        "WORK_DIR": "The relative path to the function-code directory within the extracted archive-file directory (default: \"/\" — the root directory)"
     },
     "TOPIC": "Topic",
     "TOPICS": "Topics",
@@ -311,5 +313,6 @@
     "WORKER_ALLOCATOR_NAME": "Worker allocator name",
     "WORKER_AVAILABILITY_TIMEOUT": "Worker availability timeout",
     "WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS": "Worker availability timeout (Milliseconds)",
+    "WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION": "The number of milliseconds to wait for a worker if one is not available.\n(default: {{default}})",
     "YOU_CAN_DOWNLOAD_RESPONSE_BODY": "You can download response body"
 }

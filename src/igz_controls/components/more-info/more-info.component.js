@@ -35,7 +35,7 @@
                 isDisabled: false,
                 isHtmlEnabled: false,
                 isDefaultTooltipEnabled: false,
-                defaultTooltipPlacement: 'auto',
+                defaultTooltipPlacement: ctrl.isDefaultTooltipEnabled ? 'auto' : 'right',
                 defaultTooltipPopupDelay: '0'
             });
 

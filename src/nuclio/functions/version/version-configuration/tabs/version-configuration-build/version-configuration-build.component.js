@@ -36,6 +36,8 @@
             name: ''
         };
         ctrl.disabled = true;
+
+        ctrl.defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
         ctrl.imageNameValidationPattern = ValidatingPatternsService.dockerReference;
 
         ctrl.$onInit = onInit;

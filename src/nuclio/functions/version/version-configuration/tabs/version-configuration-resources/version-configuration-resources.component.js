@@ -59,6 +59,8 @@
             }
         ];
 
+        ctrl.defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
+
         ctrl.dropdownOptions = [
             { id: 'bytes', name: 'Bytes', unit: '',   root: 0,    power: 0 },
             { id: 'kb',    name: 'KB',    unit: 'k',  root: 1000, power: 1 },
@@ -432,7 +434,7 @@
         function initTargetCpuSlider() {
             ctrl.targetCpuValueUnit = '';
             ctrl.targetCpuSliderConfig = {
-                value: 75,
+                value: lodash.get(ctrl.defaultFunctionConfig, 'spec.resources.targetCPU', 75),
                 valueLabel: 'disabled',
                 pow: 0,
                 unitLabel: '%',

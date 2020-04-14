@@ -18,7 +18,7 @@
         });
 
     function NclEditItemController($document, $element, $rootScope, $scope, $timeout, $i18next, i18next, lodash,
-                                   ConverterService, FormValidationService, PreventDropdownCutOffService,
+                                   ConfigService, ConverterService, FormValidationService, PreventDropdownCutOffService,
                                    ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
@@ -49,7 +49,9 @@
         ctrl.intervalValidationPattern = /^\d+(ms|[smh])$/;
         ctrl.stringValidationPattern = /^.{1,128}$/;
         ctrl.subscriptionQoSValidationPattern = /^[0-2]$/;
+
         ctrl.containerNameValidationPattern = ValidatingPatternsService.container;
+        ctrl.defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
 
         ctrl.placeholder = '';
         ctrl.tooltips = {
@@ -79,6 +81,7 @@
         ctrl.getInputValue = getInputValue;
         ctrl.getTooltip = getTooltip;
         ctrl.getValidationPattern = getValidationPattern;
+        ctrl.getWorkerAvailabilityTimeoutMillisecondsDescription = getWorkerAvailabilityTimeoutMillisecondsDescription;
         ctrl.handleIngressAction = handleIngressAction;
         ctrl.handleAnnotationAction = handleAnnotationAction;
         ctrl.handleSubscriptionAction = handleSubscriptionAction;
@@ -479,6 +482,23 @@
          */
         function getValidationPattern(pattern) {
             return lodash.get(ctrl, pattern + 'ValidationPattern', ctrl.stringValidationPattern);
+        }
+
+        /**
+         * Gets description for Worker Availability Timeout Milliseconds field
+         */
+        function getWorkerAvailabilityTimeoutMillisecondsDescription() {
+            if (ctrl.isHttpTrigger()) {
+                return $i18next.t('functions:WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION', {
+                    lng: lng,
+                    default: lodash.get(ctrl.defaultFunctionConfig, 'spec.triggers.http.workerAvailabilityTimeoutMilliseconds', '')
+                });
+            } else if (ctrl.isCronTrigger()) {
+                return $i18next.t('functions:WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION', {
+                    lng: lng,
+                    default: lodash.get(ctrl.defaultFunctionConfig, 'spec.triggers.cron.workerAvailabilityTimeoutMilliseconds', '')
+                });
+            }
         }
 
         /**
