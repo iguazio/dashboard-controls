@@ -71,8 +71,8 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.nameMaxLength = ValidatingPatternsService.getMaxLength('k8s.dns1035Label');
-            ctrl.validationRules = ValidatingPatternsService.getValidationRules('k8s.dns1035Label');
+            ctrl.nameMaxLength = ValidatingPatternsService.getMaxLength('function.name');
+            ctrl.validationRules = ValidatingPatternsService.getValidationRules('function.name');
             ctrl.toggleSplashScreen({ value: true });
 
             initFunctionData();

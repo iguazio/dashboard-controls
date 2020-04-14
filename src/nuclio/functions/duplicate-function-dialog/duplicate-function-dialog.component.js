@@ -25,6 +25,7 @@
                 'default': 0
             }
         };
+        ctrl.nameMaxLength = Infinity;
         ctrl.nameTakenError = false;
         ctrl.newFunctionName = '';
         ctrl.validationRules = [];
@@ -43,7 +44,8 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.validationRules = ValidatingPatternsService.getValidationRules('k8s.dns1035Label');
+            ctrl.nameMaxLength = ValidatingPatternsService.getMaxLength('function.name');
+            ctrl.validationRules = ValidatingPatternsService.getValidationRules('function.name');
         }
 
         //
