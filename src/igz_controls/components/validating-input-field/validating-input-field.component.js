@@ -126,15 +126,9 @@
                 validationRules: []
             });
 
-            ctrl.data = angular.copy(ctrl.inputValue);
             ctrl.inputFocused = ctrl.isFocused;
-            ctrl.startValue = angular.copy(ctrl.inputValue);
 
             lodash.defaultsDeep(ctrl.inputModelOptions, defaultInputModelOptions);
-
-            if (angular.isDefined(ctrl.validationRules) && !lodash.isEmpty(ctrl.data)) {
-                checkPatternsValidity(ctrl.data);
-            }
 
             $document.on('click', handleValidationIconClick);
         }
@@ -168,9 +162,11 @@
          */
         function onChanges(changes) {
             if (angular.isDefined(changes.inputValue)) {
-                if (!changes.inputValue.isFirstChange()) {
-                    ctrl.data = angular.copy(changes.inputValue.currentValue);
-                    ctrl.startValue = angular.copy(ctrl.inputValue);
+                ctrl.data = lodash.defaultTo(changes.inputValue.currentValue, '');
+                ctrl.startValue = lodash.defaultTo(ctrl.inputValue, '');
+
+                if (angular.isDefined(ctrl.validationRules) && !lodash.isEmpty(ctrl.data)) {
+                    checkPatternsValidity(ctrl.data);
                 }
             }
 
