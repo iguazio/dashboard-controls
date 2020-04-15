@@ -83,8 +83,18 @@
     </div>
 
     <div data-ng-if="$ctrl.fieldType === 'password'">
+        <div class="validation-icon"
+             data-ng-if="$ctrl.validationRules.length > 0"
+             data-ng-mousedown="$ctrl.preventInputBlur = true"
+             data-ng-class="{'igz-icon-verify-info': $ctrl.inputIsTouched && $ctrl.data === '',
+                             'igz-icon-verify-error': $ctrl.isValueInvalid() && $ctrl.data !== '',
+                             'igz-icon-verify-ok': !$ctrl.isValueInvalid() && $ctrl.data !== ''}">
+        </div>
+
         <input class="input-field field" tabindex="0"
-               data-ng-class="{'invalid': $ctrl.isFieldInvalid()}"
+               data-ng-class="{'invalid': $ctrl.isFieldInvalid(),
+                               'with-icon': $ctrl.inputIcon,
+                               'with-validation-icon': $ctrl.validationRules.length > 0}"
                data-igz-validate-password-confirmation="$ctrl.compareInputValue"
                type="password"
                name="{{$ctrl.inputName}}"
@@ -94,12 +104,30 @@
                data-ng-required="$ctrl.validationIsRequired"
                data-ng-maxlength="$ctrl.validationMaxLength"
                data-ng-pattern="$ctrl.validationPattern"
-               data-ng-focus="$ctrl.focusInput()"
-               data-ng-blur="$ctrl.unfocusInput()"
+               data-ng-focus="$ctrl.focusInput($event)"
+               data-ng-blur="$ctrl.unfocusInput($event)"
                data-ng-change="$ctrl.updateInputValue()"
                data-ng-disabled="$ctrl.isDisabled"
                data-ng-readonly="$ctrl.readOnly"
                data-igz-input-blur-on-enter>
+
+        <span data-ng-if="$ctrl.inputIcon" class="input-icon {{$ctrl.inputIcon}}"></span>
+
+        <div class="validation-pop-up-wrapper">
+            <div class="validation-pop-up validation-pop-up-top"
+                 data-ng-show="$ctrl.isValidationPopUpShown">
+                <div class="validation-rule"
+                     data-ng-repeat="rule in $ctrl.validationRules">
+                    <span class="validation-rule-icon"
+                          data-ng-class="rule.isValid ? 'igz-icon-verify-ok' : 'ncl-icon-close'">
+                    </span>
+                    <span class="validation-rule-label"
+                          data-ng-class="rule.isValid ? 'validation-rule-valid' : 'validation-rule-invalid'">
+                        {{rule.label}}
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div data-ng-if="$ctrl.fieldType === 'schedule'">
