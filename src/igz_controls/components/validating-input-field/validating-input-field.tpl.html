@@ -34,7 +34,6 @@
                data-only-valid-characters="$ctrl.onlyValidCharacters"
                spellcheck="{{$ctrl.spellcheck}}"
                autocomplete="{{$ctrl.autoComplete}}"
-               maxlength="{{$ctrl.onlyValidCharacters ? $ctrl.validationMaxLength : null}}"
                data-igz-input-blur-on-enter>
 
         <span data-ng-if="$ctrl.inputIcon" class="input-icon {{$ctrl.inputIcon}}"></span>
@@ -131,7 +130,8 @@
     </div>
 
     <div data-ng-if="$ctrl.fieldType === 'schedule'">
-        <cron-selection data-ng-class="{'invalid': $ctrl.isFieldValid()}"
+        <cron-selection class="field"
+                        data-ng-class="{'invalid': $ctrl.isFieldValid()}"
                         data-ng-model="$ctrl.data"
                         data-ng-change="$ctrl.updateInputValue()"
                         name="{{$ctrl.inputName}}">

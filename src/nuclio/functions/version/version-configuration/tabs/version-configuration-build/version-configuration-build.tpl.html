@@ -35,7 +35,7 @@
                                                 data-validation-max-length="255"
                                                 data-validation-pattern="$ctrl.imageNameValidationPattern"
                                                 data-is-disabled="$ctrl.disabled"
-                                                class="nuclio-validating-input flex-auto">
+                                                class="flex-auto">
                     </igz-validating-input-field>
                 </div>
             </div>
@@ -55,8 +55,7 @@
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_BASE_IMAGE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="spec.build.baseImage"
-                                            data-is-disabled="$ctrl.disabled"
-                                            class="nuclio-validating-input">
+                                            data-is-disabled="$ctrl.disabled">
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-50 build-field build-onbuild-image-field">
@@ -75,8 +74,7 @@
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_ONBUILD_IMAGE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="spec.build.onbuildImage"
-                                            data-is-disabled="$ctrl.disabled"
-                                            class="nuclio-validating-input">
+                                            data-is-disabled="$ctrl.disabled">
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-100 build-field">
@@ -96,7 +94,7 @@
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="commands"
                                             data-is-disabled="$ctrl.disabled"
-                                            class="nuclio-validating-input build-textarea-input build-commands-input">
+                                            class="build-textarea-input build-commands-input">
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-100 build-field">
@@ -130,7 +128,7 @@
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_REPOSITORY_ON_EACH_LINE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="runtimeAttributes.repositories"
-                                            class="nuclio-validating-input build-textarea-input"
+                                            class="build-textarea-input"
                                             data-is-disabled="$ctrl.disabled">
                 </igz-validating-input-field>
             </div>
@@ -145,7 +143,7 @@
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_DEPENDENCY_ON_EACH_LINE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="dependencies"
-                                            class="nuclio-validating-input build-textarea-input"
+                                            class="build-textarea-input"
                                             data-is-disabled="$ctrl.disabled">
                 </igz-validating-input-field>
             </div>

@@ -12,10 +12,12 @@
         });
 
     function NclVersionConfigurationAnnotationsController($element, $i18next, $rootScope, $timeout, i18next, lodash,
-                                                          PreventDropdownCutOffService, ValidatingPatternsService) {
+                                                          FormValidationService, PreventDropdownCutOffService,
+                                                          ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
 
+        ctrl.annotationsForm = null;
         ctrl.igzScrollConfig = {
             maxElementsCount: 10,
             childrenSelector: '.table-body'
@@ -85,7 +87,7 @@
         }
 
         /**
-         * Linking method
+         * Post linking method
          */
         function postLink() {
 
@@ -166,6 +168,10 @@
 
                 newAnnotations[annotation.name] = annotation.value;
             });
+
+            // since uniqueness validation rule of some fields is dependent on the entire annotation list, then whenever
+            // the list is modified - the rest of the annotations need to be re-validated
+            FormValidationService.validateAllFields(ctrl.annotationsForm);
 
             $rootScope.$broadcast('change-state-deploy-button', {
                 component: 'annotation',

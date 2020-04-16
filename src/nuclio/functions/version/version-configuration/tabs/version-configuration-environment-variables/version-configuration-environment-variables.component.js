@@ -12,11 +12,13 @@
         });
 
     function NclVersionConfigurationEnvironmentVariablesController($element, $i18next, $rootScope, $timeout, i18next,
-                                                                   lodash, PreventDropdownCutOffService,
+                                                                   lodash, FormValidationService,
+                                                                   PreventDropdownCutOffService,
                                                                    ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
 
+        ctrl.environmentVariablesForm = null;
         ctrl.igzScrollConfig = {
             maxElementsCount: 10,
             childrenSelector: '.table-body'
@@ -47,6 +49,7 @@
                 }
             ]
         };
+        ctrl.variables = [];
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -122,7 +125,12 @@
                         }
                     });
 
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'variable', isDisabled: true});
+                    ctrl.environmentVariablesForm.$setPristine();
+
+                    $rootScope.$broadcast('change-state-deploy-button', {
+                        component: 'variable',
+                        isDisabled: true
+                    });
                     event.stopPropagation();
                 }
             }, 50);
@@ -181,7 +189,7 @@
         //
 
         /**
-         * Updates function`s variables
+         * Updates function's variables
          */
         function updateVariables() {
             var isFormValid = true;
@@ -193,7 +201,10 @@
                 return lodash.omit(variable, 'ui');
             });
 
-            $rootScope.$broadcast('update-patterns-validity', ['key', 'value']);
+            // since uniqueness validation rule of some fields is dependent on the entire environment variable list,
+            // then whenever the list is modified - the rest of the environment variables need to be re-validated
+            FormValidationService.validateAllFields(ctrl.environmentVariablesForm);
+
             $rootScope.$broadcast('change-state-deploy-button', {
                 component: 'variable',
                 isDisabled: !isFormValid

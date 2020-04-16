@@ -147,7 +147,7 @@
          * @param {Event} event - JS event object
          */
         function applyChanges(event) {
-            ctrl.functionEventForm.$submitted = true;
+            ctrl.functionEventForm.$setSubmitted();
 
             if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) &&
                 (ctrl.functionEventForm.$valid && ctrl.isFormChanged)) {
