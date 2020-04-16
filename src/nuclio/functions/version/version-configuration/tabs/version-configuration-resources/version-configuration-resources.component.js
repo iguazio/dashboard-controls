@@ -546,7 +546,7 @@
                     stepsArray: scaleToZero.inactivityWindowPresets,
                     showTicks: true,
                     showTicksValues: true,
-                    disabled: ctrl.minReplicas > 0,
+                    disabled: !Number.isSafeInteger(ctrl.minReplicas) || ctrl.minReplicas > 0,
                     onChange: function (_, newValue) {
                         lodash.forEach(scaleResources, function (value) {
                             value.windowSize = newValue;
