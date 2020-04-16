@@ -191,7 +191,9 @@
                  data-ng-if="$ctrl.isInactivityWindowShown()">
                 <div class="igz-col-25 row-title no-margin">
                     <span>{{ 'common:INACTIVITY_WINDOW' | i18next }}</span>
-                    <igz-more-info data-description="{{ 'common:INACTIVITY_WINDOW_DESCRIPTION' | i18next }}"></igz-more-info>
+                    <igz-more-info data-description="{{ 'common:INACTIVITY_WINDOW_DESCRIPTION' | i18next }}"
+                                   data-trigger="click">
+                    </igz-more-info>
                 </div>
                 <div class="igz-col-65 row-input slider"
                      data-uib-tooltip="{{ 'functions:TOOLTIP.INACTIVITY_WINDOW' | i18next }}"

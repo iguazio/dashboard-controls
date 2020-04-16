@@ -78,8 +78,6 @@
         ];
         ctrl.windowSizeSlider = {};
 
-        ctrl.isDemoMode = ConfigService.isDemoMode;
-
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
 
@@ -207,7 +205,7 @@
          * @returns {boolean}
          */
         function isInactivityWindowShown() {
-            return ConfigService.isDemoMode() && lodash.get(scaleToZero, 'mode') === 'enabled';
+            return lodash.get(scaleToZero, 'mode') === 'enabled';
         }
 
         /**
@@ -519,10 +517,6 @@
          * Updates parameters for "Scale to zero" section
          */
         function updateScaleToZeroParameters() {
-            if (!ConfigService.isDemoMode()) {
-                return;
-            }
-
             lodash.defaultsDeep(ctrl.version, {
                 ui: {
                     scaleToZero: {
@@ -552,7 +546,7 @@
                     stepsArray: scaleToZero.inactivityWindowPresets,
                     showTicks: true,
                     showTicksValues: true,
-                    disabled: ctrl.minReplicas > 0,
+                    disabled: !Number.isSafeInteger(ctrl.minReplicas) || ctrl.minReplicas > 0,
                     onChange: function (_, newValue) {
                         lodash.forEach(scaleResources, function (value) {
                             value.windowSize = newValue;
