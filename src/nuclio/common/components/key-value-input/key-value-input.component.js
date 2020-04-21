@@ -36,18 +36,19 @@
             controller: NclKeyValueInputController
         });
 
-    function NclKeyValueInputController($document, $element, $rootScope, $scope, $timeout, $i18next, i18next, lodash,
+    function NclKeyValueInputController($document, $element, $i18next, $rootScope, $scope, $timeout, i18next, lodash,
                                         DialogsService, EventHelperService) {
         var ctrl = this;
         var lng = i18next.language;
 
         ctrl.data = {};
+        ctrl.keyValueInputForm = null;
         ctrl.typesList = [];
 
         ctrl.$onInit = onInit;
+        ctrl.$postLink = postLink;
         ctrl.$onDestroy = onDestroy;
 
-        ctrl.closeDropdown = closeDropdown;
         ctrl.onEditInput = onEditInput;
         ctrl.getInputValue = getInputValue;
         ctrl.getInputKey = getInputKey;
@@ -58,7 +59,6 @@
         ctrl.inputKeyCallback = inputKeyCallback;
         ctrl.onClickAction = onClickAction;
         ctrl.onFireAction = onFireAction;
-        ctrl.openDropdown = openDropdown;
         ctrl.onKeyChanged = onKeyChanged;
         ctrl.onTypeChanged = onTypeChanged;
         ctrl.showDotMenu = showDotMenu;
@@ -88,14 +88,23 @@
                 valuePlaceholder: $i18next.t('functions:PLACEHOLDER.ENTER_VALUE', {lng: lng}),
             });
 
-            $document.on('click', saveChanges);
-            $document.on('keypress', saveChanges);
-
             $scope.$on('action-checkbox_item-checked', function () {
                 if (angular.isFunction(ctrl.changeDataCallback)) {
-                    ctrl.changeDataCallback({newData: ctrl.data, index: ctrl.itemIndex});
+                    ctrl.changeDataCallback({
+                        newData: ctrl.data,
+                        index: ctrl.itemIndex
+                    });
                 }
             });
+        }
+
+        /**
+         * Post linking method
+         */
+        function postLink() {
+            $document.on('click', saveChanges);
+            $document.on('keypress', saveChanges);
+            ctrl.keyValueInputForm.$setPristine();
         }
 
         /**
@@ -106,7 +115,10 @@
             $document.off('keypress', saveChanges);
 
             if (angular.isDefined(ctrl.changeStateBroadcast)) {
-                $rootScope.$broadcast(ctrl.changeStateBroadcast, {component: ctrl.data.ui.name, isDisabled: ctrl.keyValueInputForm.$invalid});
+                $rootScope.$broadcast(ctrl.changeStateBroadcast, {
+                    component: ctrl.data.ui.name,
+                    isDisabled: ctrl.keyValueInputForm.$invalid
+                });
             }
         }
 
@@ -120,8 +132,9 @@
          */
         function getInputValue() {
             if (ctrl.useType) {
-                var specificType = ctrl.getType() === 'value'     ? 'value' :
-                                   ctrl.getType() === 'configmap' ? 'valueFrom.configMapKeyRef' : 'valueFrom.secretKeyRef';
+                var specificType = ctrl.getType() === 'value'     ? 'value'                     :
+                                   ctrl.getType() === 'configmap' ? 'valueFrom.configMapKeyRef' :
+                                   /* else */                       'valueFrom.secretKeyRef';
                 var value = lodash.get(ctrl.data, specificType);
 
                 return specificType === 'value' ? value : value.name;
@@ -132,11 +145,12 @@
 
         /**
          * Gets model for value-key input
-         * @returns {string}
+         * @returns {?string}
          */
         function getInputKey() {
             if (ctrl.useType && ctrl.getType() !== 'value') {
-                var specificType = ctrl.getType() === 'configmap' ? 'valueFrom.configMapKeyRef' : 'valueFrom.secretKeyRef';
+                var specificType = ctrl.getType() === 'configmap' ? 'valueFrom.configMapKeyRef' :
+                                   /* else */                       'valueFrom.secretKeyRef';
                 var value = lodash.get(ctrl.data, specificType);
 
                 return value.key;
@@ -159,7 +173,8 @@
          */
         function getType() {
             return !ctrl.useType || lodash.isNil(ctrl.data.valueFrom) ? 'value'     :
-                   lodash.isNil(ctrl.data.valueFrom.secretKeyRef)     ? 'configmap' : 'secret';
+                   lodash.isNil(ctrl.data.valueFrom.secretKeyRef)     ? 'configmap' :
+                   /* else */                                           'secret';
         }
 
         /**
@@ -228,12 +243,15 @@
          * @param {string} actionType - a type of action
          */
         function onFireAction(actionType) {
-            ctrl.actionHandlerCallback({actionType: actionType, index: ctrl.itemIndex});
+            ctrl.actionHandlerCallback({
+                actionType: actionType,
+                index: ctrl.itemIndex
+            });
             ctrl.editMode = false;
         }
 
         /**
-         * Callback method which handles field key changing
+         * Handles changing value of field Key in case it is a drop-down menu (on selecting an option).
          * @param {Object} newKey - type selected in dropdown
          */
         function onKeyChanged(newKey) {
@@ -268,39 +286,16 @@
                 }
 
                 if (angular.isFunction(ctrl.changeTypeCallback)) {
-                    ctrl.changeTypeCallback({newType: newType, index: ctrl.itemIndex});
+                    ctrl.changeTypeCallback({
+                        newType: newType,
+                        index: ctrl.itemIndex
+                    });
                 }
 
                 if (ctrl.submitOnFly) {
                     $timeout(saveChanges);
                 }
             }
-        }
-
-        /**
-         * On open default dropdown
-         */
-        function openDropdown() {
-            $timeout(function () {
-                var parent = angular.element(document).find('.' + ctrl.listClass)[0];
-                var dropdown = angular.element(document).find('.' + ctrl.listClass + ' .default-dropdown-container')[0];
-                var parentRect = parent.getBoundingClientRect();
-                var dropdownRect = dropdown.getBoundingClientRect();
-
-                parent = angular.element(parent);
-
-                if (dropdownRect.bottom > parentRect.bottom) {
-                    parent.css({'padding-bottom': dropdownRect.bottom - parentRect.bottom + 'px'});
-                }
-            });
-        }
-
-        /**
-         * On close default dropdown
-         */
-        function closeDropdown() {
-            var parent = angular.element(angular.element(document).find('.' + ctrl.listClass)[0]);
-            parent.css({'padding-bottom': '0px'});
         }
 
         /**
@@ -366,8 +361,9 @@
          * @returns {string}
          */
         function getValueField() {
-            return !ctrl.useType || ctrl.getType() === 'value' ? 'value' :
-                   ctrl.getType() === 'configmap'              ? 'valueFrom.configMapKeyRef' : 'valueFrom.secretKeyRef';
+            return !ctrl.useType || ctrl.getType() === 'value' ? 'value'                     :
+                   ctrl.getType() === 'configmap'              ? 'valueFrom.configMapKeyRef' :
+                   /* else */                                    'valueFrom.secretKeyRef';
         }
 
         /**
@@ -396,17 +392,26 @@
          * @param {Event} [event]
          */
         function saveChanges(event) {
-            if (angular.isUndefined(event) || $element.find(event.target).length === 0 || event.keyCode === EventHelperService.ENTER) {
+            if (angular.isUndefined(event) || $element.find(event.target).length === 0 ||
+                event.keyCode === EventHelperService.ENTER) {
+
                 $scope.$evalAsync(function () {
-                    ctrl.keyValueInputForm.$submitted = true;
+
+                    // when the user attempts to apply the key-value item by clicking outside of it or pressing the
+                    // Enter key - the rest of the fields on the form should be re-validated, so invalid ones should
+                    // be displayed as invalid
+                    if (angular.isDefined(event)) {
+                        lodash.forEach(ctrl.keyValueInputForm.$getControls(), function (control) {
+                            control.$setDirty();
+                            control.$validate();
+                        });
+                    }
 
                     if (ctrl.keyValueInputForm.$valid) {
-                        ctrl.data.ui = {
+                        lodash.assign(ctrl.data.ui, {
                             editModeActive: false,
-                            isFormValid: true,
-                            name: ctrl.data.ui.name,
-                            checked: ctrl.data.ui.checked
-                        };
+                            isFormValid: true
+                        });
 
                         if (angular.isDefined(ctrl.changeStateBroadcast)) {
                             $rootScope.$broadcast(ctrl.changeStateBroadcast, {
@@ -420,12 +425,10 @@
                         $document.off('click', saveChanges);
                         $document.off('keypress', saveChanges);
                     } else {
-                        ctrl.data.ui = {
+                        lodash.assign(ctrl.data.ui, {
                             editModeActive: true,
-                            isFormValid: false,
-                            name: ctrl.data.ui.name,
-                            checked: ctrl.data.ui.checked
-                        };
+                            isFormValid: false
+                        });
 
                         if (angular.isDefined(ctrl.changeStateBroadcast)) {
                             $rootScope.$broadcast(ctrl.changeStateBroadcast, {
@@ -435,7 +438,10 @@
                         }
                     }
 
-                    ctrl.changeDataCallback({newData: ctrl.data, index: ctrl.itemIndex});
+                    ctrl.changeDataCallback({
+                        newData: ctrl.data,
+                        index: ctrl.itemIndex
+                    });
                 })
             }
         }

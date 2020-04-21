@@ -59,7 +59,7 @@
         function duplicateFunction(event) {
             if (angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) {
                 ctrl.nameTakenError = false;
-                ctrl.duplicateFunctionForm.$submitted = true;
+                ctrl.duplicateFunctionForm.$setSubmitted();
 
                 if (ctrl.duplicateFunctionForm.$valid) {
                     var newFunction = lodash.pick(ctrl.version, 'spec');

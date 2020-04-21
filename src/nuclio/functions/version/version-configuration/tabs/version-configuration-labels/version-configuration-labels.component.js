@@ -12,8 +12,8 @@
         });
 
     function NclVersionConfigurationLabelsController($element, $i18next, $rootScope, $timeout, i18next, lodash,
-                                                     PreventDropdownCutOffService, ValidatingPatternsService,
-                                                     VersionHelperService) {
+                                                     FormValidationService, PreventDropdownCutOffService,
+                                                     ValidatingPatternsService, VersionHelperService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -21,6 +21,7 @@
             maxElementsCount: 10,
             childrenSelector: '.table-body'
         };
+        ctrl.labelsForm = null;
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -190,6 +191,10 @@
 
                 newLabels[label.name] = label.value;
             });
+
+            // since uniqueness validation rule of some fields is dependent on the entire label list, then whenever
+            // the list is modified - the rest of the labels need to be re-validated
+            FormValidationService.validateAllFields(ctrl.labelsForm);
 
             $rootScope.$broadcast('change-state-deploy-button', {
                 component: 'label',

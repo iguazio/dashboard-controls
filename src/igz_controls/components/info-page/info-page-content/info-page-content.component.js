@@ -44,7 +44,7 @@
         }
 
         /**
-         * Linking method
+         * Post linking method
          */
         function postLink() {
             $timeout(function () {

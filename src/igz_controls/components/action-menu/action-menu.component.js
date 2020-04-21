@@ -96,6 +96,9 @@
             detachDocumentEvent();
         }
 
+        /**
+         * Post linking method
+         */
         function postLink() {
 
             // Bind DOM-related preventDropdownCutOff method to component's controller

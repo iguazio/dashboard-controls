@@ -15,8 +15,7 @@
             </div>
 
             <div class="igz-col-55">
-                <igz-validating-input-field class="nuclio-validating-input"
-                                            data-ng-if="field.kind === 'string'"
+                <igz-validating-input-field data-ng-if="field.kind === 'string'"
                                             data-field-type="{{field.attributes.password ? 'password' : 'input'}}"
                                             data-validation-is-required="field.required"
                                             data-input-value="field.attributes.defaultValue"

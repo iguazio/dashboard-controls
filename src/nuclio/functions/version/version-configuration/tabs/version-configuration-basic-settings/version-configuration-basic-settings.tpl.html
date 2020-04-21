@@ -19,8 +19,7 @@
                 </div>
                 <div class="timeout-values">
                     <div class="inputs">
-                        <igz-validating-input-field class="nuclio-validating-input"
-                                                    data-field-type="input"
+                        <igz-validating-input-field data-field-type="input"
                                                     data-input-name="min"
                                                     data-input-value="$ctrl.timeout.min"
                                                     data-is-focused="false"
@@ -33,8 +32,7 @@
                                                     data-placeholder-text="{{ 'functions:MIN' | i18next }}...">
                         </igz-validating-input-field>
                         <div class="values-label">{{ 'functions:MIN' | i18next }}</div>
-                        <igz-validating-input-field class="nuclio-validating-input"
-                                                    data-field-type="input"
+                        <igz-validating-input-field data-field-type="input"
                                                     data-input-name="sec"
                                                     data-input-value="$ctrl.timeout.sec"
                                                     data-is-focused="false"
@@ -54,8 +52,7 @@
         <div class="row">
             <div class="description-block">
                 <div class="label">{{ 'common:DESCRIPTION' | i18next }}</div>
-                <igz-validating-input-field class="nuclio-validating-input"
-                                            data-field-type="input"
+                <igz-validating-input-field data-field-type="input"
                                             data-input-name="description"
                                             data-input-value="$ctrl.version.spec.description"
                                             data-is-focused="false"
@@ -69,8 +66,7 @@
         <div class="row">
             <div class="account-block">
                 <div class="label">{{ 'functions:SERVICE_ACCOUNT' | i18next }}</div>
-                <igz-validating-input-field class="nuclio-validating-input"
-                                            data-field-type="input"
+                <igz-validating-input-field data-field-type="input"
                                             data-input-name="serviceAccount"
                                             data-input-value="$ctrl.version.spec.serviceAccount"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -95,8 +91,7 @@
                 <div class="logger-input"
                      data-ng-if="$ctrl.isDemoMode()">
                     <span class="label">{{ 'functions:LOGGER_DESTINATION' | i18next }}</span>
-                    <igz-validating-input-field class="nuclio-validating-input"
-                                                data-field-type="input"
+                    <igz-validating-input-field data-field-type="input"
                                                 data-input-name="arguments"
                                                 data-input-value="$ctrl.version.spec.loggerSinks[0].sink"
                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, field)"

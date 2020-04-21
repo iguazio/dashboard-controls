@@ -7,7 +7,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('WindowDimensionsService', WindowDimensionsService);
 
-    function WindowDimensionsService($window, $document) {
+    function WindowDimensionsService($document, $window) {
         return {
             height: height,
             width: width,
@@ -34,16 +34,14 @@
          * Method removes class which sets overflow to hidden
          */
         function addOverflow() {
-            var elem = angular.element(document).find('body');
-            elem.removeClass('no-overflow');
+            $document.find('body').removeClass('no-overflow');
         }
 
         /**
          * Method adds class which sets overflow to hidden
          */
         function removeOverflow() {
-            var elem = angular.element(document).find('body');
-            elem.addClass('no-overflow');
+            $document.find('body').addClass('no-overflow');
         }
 
         /**

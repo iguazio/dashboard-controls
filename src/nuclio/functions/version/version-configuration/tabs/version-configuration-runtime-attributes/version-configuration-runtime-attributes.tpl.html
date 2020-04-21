@@ -13,8 +13,7 @@
             <div class="arguments-input"
                  data-ng-if="$ctrl.version.spec.runtime === 'shell'">
                 <span class="label">{{ 'common:ARGUMENTS' | i18next }}</span>
-                <igz-validating-input-field class="nuclio-validating-input"
-                                            data-field-type="input"
+                <igz-validating-input-field data-field-type="input"
                                             data-input-name="arguments"
                                             data-input-value="$ctrl.runtimeAttributes.arguments"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -36,7 +35,7 @@
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_OPTION_ON_EACH_LINE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="jvmOptions"
-                                            class="nuclio-validating-input build-command-field java-attribute">
+                                            class="build-command-field java-attribute">
                 </igz-validating-input-field>
             </div>
         </div>

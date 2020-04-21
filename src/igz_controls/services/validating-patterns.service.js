@@ -175,7 +175,7 @@
                     {
                         name: 'validCharacters',
                         label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _, .',
-                        pattern: /^[\w.-]+$/
+                        pattern: /^[\w.-]*$/
                     },
                     {
                         name: 'beginNot',

@@ -75,30 +75,24 @@
         position: relative;
         width: 100%;
         z-index: 2;
+        outline: transparent none 0;
+        box-shadow: none;
 
         &:not([disabled]):not([readonly]) {
-            &:focus.ng-invalid:not(.ng-pristine), &.ng-invalid.ng-touched {
-                background-color: @input-textarea-field-not-disabled-focus-invalid-bg-color;
-                border: @input-textarea-field-not-disabled-focus-invalid-border;
-                box-shadow: none;
-                outline: none;
-            }
-
             &:focus {
-                outline: 0;
                 border: @input-textarea-field-not-disabled-hover-focus-border;
             }
 
-            &.invalid {
-                background-color: @input-textarea-field-not-disabled-invalid-bg-color;
-                border: @input-textarea-field-not-disabled-invalid-border;
-                box-shadow: none;
-            }
+            &.ng-invalid.ng-dirty, &.invalid.ng-dirty {
+                &:focus {
+                    background-color: @input-textarea-field-not-disabled-focus-invalid-bg-color;
+                    border: @input-textarea-field-not-disabled-focus-invalid-border;
+                }
 
-            &:focus.ng-valid, &:focus.ng-pristine {
-                border: @input-textarea-field-not-disabled-valid-border;
-                box-shadow: none;
-                outline: none;
+                &:not(:focus) {
+                    background-color: @input-textarea-field-not-disabled-invalid-bg-color;
+                    border: @input-textarea-field-not-disabled-invalid-border;
+                }
             }
         }
     }
@@ -263,6 +257,27 @@
 
         .textarea-field {
             padding: 7px 30px 6px 10px;
+        }
+    }
+}
+
+// an invalid input field should be displayed as invalid in case it is in a submitted form even if the field is pristine
+form.ng-submitted .validating-input-field {
+    .validating-input-field-color-set();
+
+    .input-field, .textarea-field {
+        &:not([disabled]):not([readonly]) {
+            &.ng-invalid, &.invalid {
+                &:focus {
+                    background-color: @input-textarea-field-not-disabled-focus-invalid-bg-color;
+                    border: @input-textarea-field-not-disabled-focus-invalid-border;
+                }
+
+                &:not(:focus) {
+                    background-color: @input-textarea-field-not-disabled-invalid-bg-color;
+                    border: @input-textarea-field-not-disabled-invalid-border;
+                }
+            }
         }
     }
 }

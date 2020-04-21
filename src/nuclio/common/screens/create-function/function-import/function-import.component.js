@@ -50,7 +50,7 @@
          */
         function onInit() {
             $document.on('keypress', createFunction);
-            angular.element(document).find('.function-import-input').on('change', importFunction);
+            $document.find('.function-import-input').on('change', importFunction);
         }
 
         /**

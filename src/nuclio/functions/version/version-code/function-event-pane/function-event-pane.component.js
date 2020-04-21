@@ -547,7 +547,7 @@
                 ctrl.testEventsForm.nameInput.$setValidity('text', true);
             }
 
-            ctrl.testEventsForm.$submitted = true;
+            ctrl.testEventsForm.$setSubmitted();
 
             if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) &&
                 (ctrl.testEventsForm.$valid)) {

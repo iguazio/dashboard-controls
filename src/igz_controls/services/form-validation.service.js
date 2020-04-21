@@ -11,8 +11,13 @@
             isShowFieldInvalidState: isShowFieldInvalidState,
             isShowFieldError: isShowFieldError,
             isFormValid: isFormValid,
-            isFieldValid: isFieldValid
+            isFieldValid: isFieldValid,
+            validateAllFields: validateAllFields
         };
+
+        //
+        // Public methods
+        //
 
         /**
          * Check if the form is in an invalid state
@@ -76,6 +81,31 @@
             var elementValid = lodash.get(form, elementName + '.$valid', true);
 
             return (lodash.defaultTo(validateOnSubmit, false) && !formSubmitted) || elementValid;
+        }
+
+        /**
+         * Validates all the fields of a form. Recursively validates fields in nested forms (both immediate and deep).
+         * @param {Object} form - The form controller (`ngForm`).
+         */
+        function validateAllFields(form) {
+            lodash.invokeMap(getFields(form), '$validate');
+        }
+
+        //
+        // Private functions
+        //
+
+        /**
+         * Returns a list of all controls (immediate and nested) of the provided control in case it is a form
+         * (`ngForm`), or the control itself in case it is a field (`ngModel`).
+         * @param {Object} control - The form controller (`ngForm`) or the model controller (`ngForm`).
+         * @returns {Array.<Object>} An array of model controllers (`ngModel`) of all the fields of `control` in case it
+         *     is a form, or an array with `control` only in case it is a field.
+         */
+        function getFields(control) {
+            var controls =
+                lodash.hasIn(control, '$getControls') ? lodash.map(control.$getControls(), getFields) : [control];
+            return lodash.flattenDeep(controls);
         }
     }
 }());

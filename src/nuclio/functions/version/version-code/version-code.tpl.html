@@ -25,8 +25,7 @@
                             </div>
                             <div class="code-entry-col code-entry-handler-col">
                                 <div class="col-label handler">{{ 'functions:HANDLER' | i18next }}</div>
-                                <igz-validating-input-field class="nuclio-validating-input"
-                                                            data-field-type="input"
+                                <igz-validating-input-field data-field-type="input"
                                                             data-input-name="handler"
                                                             data-input-value="$ctrl.version.spec.handler"
                                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -86,8 +85,7 @@
                             </div>
                             <div class="code-entry-col code-entry-handler-col">
                                 <div class="col-label handler">{{ 'functions:HANDLER' | i18next }}</div>
-                                <igz-validating-input-field class="nuclio-validating-input"
-                                                            data-field-type="input"
+                                <igz-validating-input-field data-field-type="input"
                                                             data-input-name="handler"
                                                             data-input-value="$ctrl.version.spec.handler"
                                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -113,8 +111,7 @@
                                                     data-validation-is-required="true"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: mydockeruser/my-func:latest"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.image"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-field="spec.image">
                         </igz-validating-input-field>
                     </div>
 
@@ -132,8 +129,7 @@
                                                     data-validation-is-required="true"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: https://v3io-webapi/users/iguazio/myfunction.zip"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.path"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-field="spec.build.path">
                         </igz-validating-input-field>
                     </div>
 
@@ -151,8 +147,7 @@
                                                     data-validation-is-required="false"
                                                     data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_ACCESS_KEY' | i18next }}"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.headers['X-V3io-Session-Key']"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-field="spec.build.codeEntryAttributes.headers['X-V3io-Session-Key']">
                         </igz-validating-input-field>
 
                         <div class="field-label">
@@ -167,8 +162,7 @@
                                                     data-validation-is-required="false"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: /nuclio-functions/myfunc"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.workDir"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-field="spec.build.codeEntryAttributes.workDir">
                         </igz-validating-input-field>
                     </div>
 
@@ -186,8 +180,7 @@
                                                     data-validation-is-required="true"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: https://github.com/my-organization/my-repository"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.path"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-field="spec.build.path">
                         </igz-validating-input-field>
                     </div>
 
@@ -205,8 +198,7 @@
                                                     data-validation-is-required="true"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: master"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.branch"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-field="spec.build.codeEntryAttributes.branch">
                         </igz-validating-input-field>
                     </div>
 
@@ -223,8 +215,7 @@
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
                                                     data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_TOKEN' | i18next }}"
-                                                    data-update-data-callback="$ctrl.onChangeGithubToken(newData)"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-callback="$ctrl.onChangeGithubToken(newData)">
                         </igz-validating-input-field>
                     </div>
 
@@ -242,8 +233,7 @@
                                                     data-validation-is-required="false"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: /nuclio-functions/myfunc"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.workDir"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-field="spec.build.codeEntryAttributes.workDir">
                         </igz-validating-input-field>
                     </div>
 
@@ -261,8 +251,7 @@
                                                     data-validation-is-required="true"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: my-s3-bucket"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.s3Bucket"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-field="spec.build.codeEntryAttributes.s3Bucket">
                         </igz-validating-input-field>
 
                         <div class="field-label">
@@ -277,8 +266,7 @@
                                                     data-validation-is-required="true"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: my-dir/nuclio_funcs.zip"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.s3ItemKey"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-field="spec.build.codeEntryAttributes.s3ItemKey">
                         </igz-validating-input-field>
 
                         <div class="field-label">
@@ -293,8 +281,7 @@
                                                     data-validation-is-required="false"
                                                     data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_ACCESS_KEY_ID' | i18next }}"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.s3AccessKeyId"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-field="spec.build.codeEntryAttributes.s3AccessKeyId">
                         </igz-validating-input-field>
 
                         <div class="field-label">
@@ -309,8 +296,7 @@
                                                     data-validation-is-required="false"
                                                     data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_SECRET_ACCESS_KEY' | i18next }}"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.s3SecretAccessKey"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-field="spec.build.codeEntryAttributes.s3SecretAccessKey">
                         </igz-validating-input-field>
 
                         <div class="field-label">
@@ -325,8 +311,7 @@
                                                     data-validation-is-required="false"
                                                     data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_SESSION_TOKEN' | i18next }}"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.s3SessionToken"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-field="spec.build.codeEntryAttributes.s3SessionToken">
                         </igz-validating-input-field>
 
                         <div class="field-label">
@@ -341,8 +326,7 @@
                                                     data-validation-is-required="false"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: us-east-1"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.s3Region"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-field="spec.build.codeEntryAttributes.s3Region">
                         </igz-validating-input-field>
 
                         <div class="field-label">
@@ -357,8 +341,7 @@
                                                     data-validation-is-required="false"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: /nuclio-functions/myfunc"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.workDir"
-                                                    class="nuclio-validating-input">
+                                                    data-update-data-field="spec.build.codeEntryAttributes.workDir">
                         </igz-validating-input-field>
                     </div>
                 </div>

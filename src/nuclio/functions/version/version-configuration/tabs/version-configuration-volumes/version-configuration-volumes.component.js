@@ -11,13 +11,15 @@
             controller: NclVersionConfigurationVolumesController
         });
 
-    function NclVersionConfigurationVolumesController($rootScope, $scope, $timeout, $i18next, i18next, lodash, DialogsService,
+    function NclVersionConfigurationVolumesController($rootScope, $scope, $timeout, $i18next, i18next, lodash,
+                                                      DialogsService, FormValidationService,
                                                       FunctionsService, ValidatingPatternsService) {
         var ctrl = this;
         var lng = i18next.language;
 
         ctrl.isCreateModeActive = false;
         ctrl.volumes = [];
+        ctrl.volumesForm = null;
         ctrl.igzScrollConfig = {
             maxElementsCount: 5,
             childrenSelector: '.ncl-collapsing-row'
@@ -119,6 +121,8 @@
                         }
                     );
 
+                    ctrl.volumesForm.$setPristine();
+
                     event.stopPropagation();
                     $rootScope.$broadcast('change-state-deploy-button', { component: 'volume', isDisabled: true });
                 }
@@ -169,7 +173,7 @@
          */
         function checkValidation() {
             if (lodash.some(ctrl.volumes, ['ui.isFormValid', false])) {
-                $rootScope.$broadcast('update-patterns-validity', ['itemName', 'itemPath']);
+                FormValidationService.validateAllFields(ctrl.volumesForm);
             }
         }
 
@@ -181,6 +185,8 @@
         function deleteHandler(selectedItem, index) {
             ctrl.volumes.splice(index, 1);
 
+            // since uniqueness validation rule of some fields is dependent on the entire volume list, whenever a volume
+            // is removed, the rest of the volumes needs to be re-validated
             checkValidation();
 
             var workingCopy = lodash.map(ctrl.volumes, function (volume) {
@@ -222,6 +228,8 @@
                     volume: selectedItem.volume
                 };
 
+                // since uniqueness validation rule of some fields is dependent on the entire volume list, whenever a
+                // volume is updated, the rest of the volumes needs to be re-validated
                 checkValidation();
 
                 lodash.forEach(workingCopy, function (volume) {

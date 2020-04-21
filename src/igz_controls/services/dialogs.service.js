@@ -237,7 +237,7 @@
                 igzDialogPromptForm: {},
                 checkInput: function () {
                     if (angular.isDefined(validation) || required) {
-                        data.igzDialogPromptForm.$submitted = true;
+                        data.igzDialogPromptForm.$setSubmitted();
                     }
                     return data.igzDialogPromptForm.$valid;
                 },
