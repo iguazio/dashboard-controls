@@ -272,7 +272,7 @@
         },
         "GPU_LIMIT": "Maximum number of GPUs per replica. Note that while the function is enabled it monopolizes the allocated GPUs even when they're not in use.",
         "IMAGE_NAME": "The name of the function’s container image",
-        "INACTIVITY_WINDOW": "Applicable only when setting the minimum number of replicas to 0 to enable scale-to-zero",
+        "INACTIVITY_WINDOW": "Applicable only when setting the minimum number of replicas to 0",
         "LABELS": {
             "HEAD": "Kubernetes labels",
             "REST": "for specifying object attributes that are meaningful and relevant to users"
