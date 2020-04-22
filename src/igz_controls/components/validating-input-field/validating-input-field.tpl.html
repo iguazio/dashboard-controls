@@ -2,20 +2,25 @@
      data-ng-class="{'focused': $ctrl.inputFocused, 'with-counter': $ctrl.isCounterVisible()}">
     <div data-ng-if="$ctrl.fieldType === 'input'">
         <div class="validation-icon"
-             data-ng-if="$ctrl.validationRules.length > 0"
+             data-ng-if="$ctrl.validationRules.length > 0 && (!$ctrl.readOnly || $ctrl.inputFocused || $ctrl.isFieldInvalid())"
              data-ng-mousedown="$ctrl.preventInputBlur = true"
-             data-ng-class="{'igz-icon-verify-info': $ctrl.inputIsTouched && $ctrl.data === '',
-                             'igz-icon-verify-error': $ctrl.isValueInvalid() && $ctrl.data !== '',
-                             'igz-icon-verify-ok': !$ctrl.isValueInvalid() && $ctrl.data !== ''}">
+             data-ng-class="[$ctrl.inputFocused ? '' : $ctrl.bordersModeClass, {
+                 'igz-icon-verify-info': $ctrl.inputIsTouched && $ctrl.data === '',
+                 'igz-icon-verify-error': $ctrl.hasInvalidRule() && $ctrl.data !== '',
+                 'igz-icon-verify-ok': !$ctrl.hasInvalidRule() && $ctrl.data !== ''
+             }]">
         </div>
         <div class="input-counter"
-             data-ng-class="{'invalid': $ctrl.getRemainingSymbolsCounter() < 0}"
-             data-ng-if="$ctrl.isCounterVisible()">{{$ctrl.getRemainingSymbolsCounter()}}
+             data-ng-class="[$ctrl.inputFocused ? '' : $ctrl.bordersModeClass, {'invalid': $ctrl.getRemainingCharactersCount() < 0}]"
+             data-ng-if="$ctrl.isCounterVisible()">{{$ctrl.getRemainingCharactersCount()}}
         </div>
         <input class="input-field field" tabindex="0"
-               data-ng-class="{'invalid': $ctrl.isFieldInvalid(),
-                               'with-icon': $ctrl.inputIcon,
-                               'with-validation-icon': $ctrl.validationRules.length > 0}"
+               data-ng-class="[$ctrl.bordersModeClass, {
+                   'invalid': $ctrl.isFieldInvalid(),
+                   'with-icon': $ctrl.inputIcon,
+                   'with-validation-icon': $ctrl.validationRules.length > 0,
+                   'view-mode': $ctrl.viewMode
+               }]"
                name="{{$ctrl.inputName}}"
                placeholder="{{$ctrl.placeholderText}}"
                data-ng-readonly="$ctrl.readOnly"
@@ -25,11 +30,11 @@
                data-ng-required="$ctrl.validationIsRequired"
                data-ng-maxlength="$ctrl.validationMaxLength"
                data-ng-pattern="$ctrl.validationPattern"
-               data-ng-focus="$ctrl.focusInput()"
-               data-ng-blur="$ctrl.unfocusInput($event)"
-               data-ng-change="$ctrl.updateInputValue()"
+               data-ng-focus="$ctrl.onFocus()"
+               data-ng-blur="$ctrl.onBlur()"
+               data-ng-change="$ctrl.onChange()"
                data-ng-disabled="$ctrl.isDisabled"
-               data-ng-keydown="$ctrl.keyDown($event)"
+               data-ng-keydown="$ctrl.onKeyDown($event)"
                data-igz-input-only-valid-characters="$ctrl.validationPattern"
                data-only-valid-characters="$ctrl.onlyValidCharacters"
                spellcheck="{{$ctrl.spellcheck}}"
@@ -61,20 +66,20 @@
 
     <div data-ng-if="$ctrl.fieldType === 'textarea'">
         <div class="textarea-counter"
-             data-ng-class="{'invalid': $ctrl.getRemainingSymbolsCounter() < 0}"
-             data-ng-if="$ctrl.isCounterVisible()">{{$ctrl.getRemainingSymbolsCounter()}}
+             data-ng-class="[$ctrl.inputFocused ? '' : $ctrl.bordersModeClass, {'invalid': $ctrl.getRemainingCharactersCount() < 0}]"
+             data-ng-if="$ctrl.isCounterVisible()">{{$ctrl.getRemainingCharactersCount()}}
         </div>
         <textarea class="textarea-field field" tabindex="0"
-                  data-ng-class="{'invalid': $ctrl.isFieldInvalid()}"
+                  data-ng-class="[$ctrl.bordersModeClass, {'invalid': $ctrl.isFieldInvalid()}]"
                   name="{{$ctrl.inputName}}"
                   placeholder="{{$ctrl.placeholderText}}"
                   data-ng-model="$ctrl.data"
                   data-ng-required="$ctrl.validationIsRequired"
                   data-ng-maxlength="$ctrl.validationMaxLength"
                   data-ng-pattern="$ctrl.validationPattern"
-                  data-ng-focus="$ctrl.focusInput()"
-                  data-ng-blur="$ctrl.unfocusInput()"
-                  data-ng-change="$ctrl.updateInputValue()"
+                  data-ng-focus="$ctrl.onFocus()"
+                  data-ng-blur="$ctrl.onBlur()"
+                  data-ng-change="$ctrl.onChange()"
                   data-ng-disabled="$ctrl.isDisabled"
                   data-ng-readonly="$ctrl.readOnly"
                   spellcheck="{{$ctrl.spellcheck}}">
@@ -83,17 +88,22 @@
 
     <div data-ng-if="$ctrl.fieldType === 'password'">
         <div class="validation-icon"
-             data-ng-if="$ctrl.validationRules.length > 0"
+             data-ng-if="$ctrl.validationRules.length > 0 && (!$ctrl.readOnly || $ctrl.inputFocused || $ctrl.isFieldInvalid())"
              data-ng-mousedown="$ctrl.preventInputBlur = true"
-             data-ng-class="{'igz-icon-verify-info': $ctrl.inputIsTouched && $ctrl.data === '',
-                             'igz-icon-verify-error': $ctrl.isValueInvalid() && $ctrl.data !== '',
-                             'igz-icon-verify-ok': !$ctrl.isValueInvalid() && $ctrl.data !== ''}">
+             data-ng-class="[$ctrl.inputFocused ? '' : $ctrl.bordersModeClass, {
+                 'igz-icon-verify-info': $ctrl.inputIsTouched && $ctrl.data === '',
+                 'igz-icon-verify-error': $ctrl.isValueInvalid() && $ctrl.data !== '',
+                 'igz-icon-verify-ok': !$ctrl.isValueInvalid() && $ctrl.data !== ''
+             }]">
         </div>
 
         <input class="input-field field" tabindex="0"
-               data-ng-class="{'invalid': $ctrl.isFieldInvalid(),
-                               'with-icon': $ctrl.inputIcon,
-                               'with-validation-icon': $ctrl.validationRules.length > 0}"
+               data-ng-class="[$ctrl.bordersModeClass, {
+                   'invalid': $ctrl.isFieldInvalid(),
+                   'with-icon': $ctrl.inputIcon,
+                   'with-validation-icon': $ctrl.validationRules.length > 0,
+                   'view-mode': $ctrl.viewMode
+               }]"
                data-igz-validate-password-confirmation="$ctrl.compareInputValue"
                type="password"
                name="{{$ctrl.inputName}}"
@@ -103,9 +113,9 @@
                data-ng-required="$ctrl.validationIsRequired"
                data-ng-maxlength="$ctrl.validationMaxLength"
                data-ng-pattern="$ctrl.validationPattern"
-               data-ng-focus="$ctrl.focusInput($event)"
-               data-ng-blur="$ctrl.unfocusInput($event)"
-               data-ng-change="$ctrl.updateInputValue()"
+               data-ng-focus="$ctrl.onFocus()"
+               data-ng-blur="$ctrl.onBlur()"
+               data-ng-change="$ctrl.onChange()"
                data-ng-disabled="$ctrl.isDisabled"
                data-ng-readonly="$ctrl.readOnly"
                data-igz-input-blur-on-enter>
@@ -133,7 +143,7 @@
         <cron-selection class="field"
                         data-ng-class="{'invalid': $ctrl.isFieldValid()}"
                         data-ng-model="$ctrl.data"
-                        data-ng-change="$ctrl.updateInputValue()"
+                        data-ng-change="$ctrl.onChange()"
                         name="{{$ctrl.inputName}}">
         </cron-selection>
     </div>
