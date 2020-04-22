@@ -2,41 +2,80 @@
     'use strict';
 
     /**
+     * @name igzValidatingInputField
+     * @component
+     *
+     * @description
+     * An input field that wraps around regular `<input>` or `<textarea>` elements and enriches them with validation
+     * capabilities. Validation rules could be provided to display a menu of validation rules to the user on demand, and
+     * mark which of them passes and which fails. The field is styled according to its validity.
+     *
+     * @param {string} [bordersMode='always'] - Determines when to show borders. Could be one of:
+     *     - `'always'` (default): always show borders (like a regular input field)
+     *     - `'hover'`: hide borders when idle, show them on hover (and on focus)
+     *     - `'focus'`: hide borders when idle and on hover, show them only on focus
+     *     Note: this attribute is ignored when `readOnly` attribute is set to `true`.
      * compareInputValue: used if there are two field that should be equal (password and confirm password)
-     * fieldType: input, textarea or password
-     * formObject: object of HTML form
-     * hideCounter: set to `true` to hide the remaining characters counter when `validationMaxLength` is used.
-     * inputModelOptions: custom options for ng-model-options
-     * inputName: name attribute of an input
-     * inputValue: initial value
-     * itemBlurCallback: callback for `blur` event
-     * itemFocusCallback: callback for `focus` event
-     * isDataRevert: set to `true` to revert to last valid value on losing focus (this will call `updateDataCallback` on
-     *     `blur` event in case the value was successfully changed, and will not call it in case the value was reverted)
-     * isDisabled: is input should be disabled
-     * isFocused: should input be focused when screen is displayed
-     * trim: whether the input value will automatically trim
-     * onlyValidCharacters: allow only that characters which passed regex pattern
-     * placeholderText: text that is displayed when input is empty
-     * readOnly: is input should be readonly
-     * spellcheck: disable spell check for some field, for example input for base64 string
-     * updateDataCallback: triggered when input was changed by a user
-     * updateDataField: field name to be passed as `field` to `updateDataCallback` (defaults to `inputName`'s value)
-     * validationIsRequired: input can't be empty
-     * validationMaxLength: value should be shorter or equal this value (will add a counter of remaining characters,
-     *     unless `hideCounter` is set to `true`)
-     * validationPattern: validation with regex
-     * autoComplete: the string to use as a value to the "autocomplete" HTML attribute of the INPUT tag
-     * enterCallback: will be called when the Enter key is pressed
-     * inputIcon: a CSS class name to use for displaying an icon before the user input
-     * isClearIcon: determines whether to display a "Clear" action icon for clearing input
-     * validationRules: a list of validation rules to check against as input changes, each object consists of `label`
-     *     (`string`) and `pattern` (`RegExp` or `function`)
+     * @param {string} [fieldType='input'] - Determines the type of field:
+     *     - `'input'` (default): a text box
+     *     - `'password'`: a text box with concealed characters
+     *     - `'textarea'`: a multi-line text-area
+     *     - `'schedule'`: a mix of multiple drop-down menu fields to conveniently create a recurring schedule
+     *                     (generating a CRON string @see {@link https://crontab.guru/})
+     * @param {Object} [formObject] - The `<form>` or `<ng-form>` element/directive containing this input field.
+     * @param {boolean} [hideCounter=false] - Set to `true` to hide the remaining characters counter when
+     *     `validationMaxLength` is used.
+     * @param {Object} [inputModelOptions] - A `ngModelOptions` object to forward to `ng-model-options` attribute of
+     *     the HTML `<input>` or `<textarea>` element. Some options may be ignored/overridden by this component to make
+     *     some of its features work properly.
+     * @param {string} inputName - The name of the filed, will be forwarded to the `name` attribute of the HTML element.
+     * @param {*} inputValue - The initial value of the field. This is a one-way binding that is watched for changes.
+     * @param {function} [itemBlurCallback] - A callback function for `blur` event. Invoked with `inputValue` and
+     *     `inputName` when the field loses focus.
+     * @param {function} [itemFocusCallback] - A callback function for `focus` event. Invoked with `inputName` when the
+     *     field becomes focused.
+     * @param {boolean} [isDataRevert=false] - Set to `true` to revert to last valid value on losing focus. This will
+     *     invoke `updateDataCallback` on `blur` event in case the value was successfully changed, and will not invoke
+     *     it in case the value was reverted. `itemBlurCallback` will be invoked on `blur` event regardless.
+     * @param {boolean} [isDisabled=false] - Set to `true` to make this field disabled.
+     * @param {boolean} [isFocused=false] - Set to `true` to give focus to this field once it finished initializing.
+     *     This is a one-way binding that is watched for changes.
+     * @param {boolean} [trim=true] - Set to `false` to prevent automatic removal of leading and trailing spaces from
+     *     entered value.
+     * @param {RegExp} [onlyValidCharacters] - Allows entering only the characters which match the regex pattern.
+     * @param {string} [placeholderText] - Placeholder text to display when input is empty.
+     * @param {boolean} [readOnly=false] - Set to `true` to make this field read-only. If `true`, ignores `borderMode`.
+     * @param {boolean} [spellcheck=true] - Set to `false` to disable spell-check to this field (for example when the
+     *     value of s Base64 string which clearly does not need spell checking).
+     * @param {function} [updateDataCallback] - A callback function for value changes. Invoked with `newData` and
+     *     `field`. When `isDataRevert` is set to `true` this function will be invoked on `blur` event.
+     * @param {string} [updateDataField=inputName] - The field name to be passed as `field` parameter when invoking
+     *     `updateDataCallback` (defaults to `inputName`'s value).
+     * @param {boolean} [validationIsRequired=false] - Set to `true` to make this field mandatory. The field will be
+     *     invalid if it is empty.
+     * @param {string} [validationMaxLength] - Maximum length for this field's input (will add a counter of remaining
+     *     characters, unless `hideCounter` is set to `true`). The field will be invalid if its value is longer.
+     * @param {string} [validationPattern] - Regex pattern to test the field's input. The field will be invalid if the
+     *     value does not match the pattern.
+     * @param {boolean} [autoComplete='off'] - A hint to the web browser's auto-fill feature. Forwarded to the
+     *     `autocomplete` attribute of HTML `<input>` element.
+     * @param {function} [enterCallback] - A callback function for the `keydown` event when the Enter key is down.
+     *     Invoked without parameters.
+     * @param {string} [inputIcon] - A CSS class name to use for displaying an icon inside the box before the input.
+     * @param {boolean} [isClearIcon=false] - Set to `true` to display a "Clear" action icon for emptying the input.
+     * @param {Array} [validationRules] - A list of validation rules to check against as input changes. The field will
+     *     be invalid if the input does not match any of the rules.
+     * @param {string} validationRules[].label - The text to display as the description of the rule. For example:
+     *     "Must begin with: A-Z, a-z, 0-9, -".
+     * @param {RegExp|function} validationRules[].pattern - The regex pattern to test input against, or a function that
+     *     will be invoked with the current input value.
+     * @param {string} [validationRules[].name] - A unique name for the rule among the list.
      */
     angular.module('iguazio.dashboard-controls')
         .component('igzValidatingInputField', {
             bindings: {
                 autoComplete: '@?',
+                bordersMode: '@?',
                 compareInputValue: '<?',
                 enterCallback: '<?',
                 fieldType: '@',
@@ -72,6 +111,9 @@
                                                EventHelperService) {
         var ctrl = this;
 
+        var BORDER_MODES = ['always', 'hover', 'focus'];
+        var BORDERS_CLASS_BASE = 'borders-';
+        var defaultBorderMode = BORDER_MODES[0];
         var defaultInputModelOptions = {
             updateOn: 'default blur',
             debounce: {
@@ -80,11 +122,14 @@
             },
             allowInvalid: true
         };
-        var fieldElement = null;
+        var fieldElement = {};
         var lastValidValue = '';
-        var ngModel = null;
+        var ngModel = {
+            $validate: angular.noop
+        };
         var showPopUpOnTop = false;
 
+        ctrl.bordersModeClass = '';
         ctrl.data = '';
         ctrl.inputFocused = false;
         ctrl.inputIsTouched = false;
@@ -92,20 +137,20 @@
         ctrl.preventInputBlur = false;
 
         ctrl.$onInit = onInit;
+        ctrl.$postLink = postLink;
         ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
-        ctrl.$postLink = postLink;
 
-        ctrl.getRemainingSymbolsCounter = getRemainingSymbolsCounter;
-        ctrl.isFieldInvalid = isFieldInvalid;
-        ctrl.isCounterVisible = isCounterVisible;
-        ctrl.isOverflowed = isOverflowed;
-        ctrl.isValueInvalid = hasInvalidRule;
-        ctrl.focusInput = focusInput;
-        ctrl.keyDown = keyDown;
-        ctrl.unfocusInput = unfocusInput;
-        ctrl.updateInputValue = updateInputValue;
         ctrl.clearInputField = clearInputField;
+        ctrl.getRemainingCharactersCount = getRemainingCharactersCount;
+        ctrl.hasInvalidRule = hasInvalidRule;
+        ctrl.isCounterVisible = isCounterVisible;
+        ctrl.isFieldInvalid = isFieldInvalid;
+        ctrl.isOverflowed = isOverflowed;
+        ctrl.onBlur = onBlur;
+        ctrl.onChange = onChange;
+        ctrl.onFocus = onFocus;
+        ctrl.onKeyDown = onKeyDown;
 
         //
         // Hook methods
@@ -117,6 +162,7 @@
         function onInit() {
             lodash.defaults(ctrl, {
                 autoComplete: 'off',
+                bordersMode: defaultBorderMode,
                 hideCounter: false,
                 inputModelOptions: {},
                 inputValue: '',
@@ -125,13 +171,19 @@
                 isDisabled: false,
                 isFocused: false,
                 onlyValidCharacters: false,
-                updateDataField: ctrl.inputName,
                 readOnly: false,
                 spellcheck: true,
                 trim: true,
+                updateDataField: ctrl.inputName,
                 validationIsRequired: false,
                 validationRules: []
             });
+
+            // if provided `bordersMode` attribute is not one of the available values, set it to a default
+            if (!lodash.includes(BORDER_MODES, ctrl.bordersMode)) {
+                ctrl.bordersMode = defaultBorderMode;
+            }
+            ctrl.bordersModeClass = BORDERS_CLASS_BASE + ctrl.bordersMode;
 
             ctrl.validationRules = angular.copy(ctrl.validationRules);
 
@@ -151,7 +203,7 @@
                 // if `validation-rules` attribute is used - add the appropriate validator
                 if (!lodash.isEmpty(ctrl.validationRules)) {
                     ngModel.$validators.validationRules = function (modelValue) {
-                        return checkPatternsValidity(modelValue, false);
+                        return checkPatternsValidity(modelValue);
                     };
                 }
 
@@ -168,14 +220,6 @@
                     }, timer);
                 }
             });
-        }
-
-        /**
-         * Destructor
-         */
-        function onDestroy() {
-            angular.element($window).off('animationend');
-            $document.off('click', handleValidationIconClick);
         }
 
         /**
@@ -201,19 +245,52 @@
             }
         }
 
+        /**
+         * Destructor
+         */
+        function onDestroy() {
+            angular.element($window).off('animationend');
+            $document.off('click', handleValidationIconClick);
+        }
+
         //
         // Public methods
         //
 
         /**
+         * Clears search input field.
+         */
+        function clearInputField() {
+            ctrl.data = '';
+            onChange();
+        }
+
+        /**
          * Gets count of the remaining characters for the field.
          * @returns {number} count of the remaining characters for the field.
          */
-        function getRemainingSymbolsCounter() {
+        function getRemainingCharactersCount() {
             var maxLength = Number.parseInt(ctrl.validationMaxLength);
-            var currentLength = lodash.get(ngModel, '$viewValue.length', -1);
+            var currentLength = ctrl.data.length;
 
-            return currentLength < 0 || maxLength <= 0 ? null : (maxLength - currentLength).toString();
+            return maxLength <= 0 ? null : (maxLength - currentLength).toString();
+        }
+
+        /**
+         * Checks whether there is at least one failed validation rule.
+         * @returns {boolean} `true` in case there is at least one failed validation rule, or `false` otherwise.
+         */
+        function hasInvalidRule() {
+            return lodash.some(ctrl.validationRules, ['isValid', false]);
+        }
+
+        /**
+         * Checks whether the counter should be visible.
+         * @returns {boolean} `true` in case the counter should be visible, or `false` otherwise.
+         */
+        function isCounterVisible() {
+            return !ctrl.isDisabled && !ctrl.onlyValidCharacters && !ctrl.hideCounter && !ctrl.readOnly &&
+                !lodash.isNil(ctrl.validationMaxLength);
         }
 
         /**
@@ -225,15 +302,6 @@
             return ctrl.onlyValidCharacters ? false :
                 (lodash.get(ctrl.formObject, '$submitted') || lodash.get(ngModel, '$dirty')) &&
                     lodash.get(ngModel, '$invalid');
-        }
-
-        /**
-         * Checks whether the counter should be visible.
-         * @returns {boolean} `true` in case the counter should be visible, or `false` otherwise.
-         */
-        function isCounterVisible() {
-            return !ctrl.isDisabled && !ctrl.onlyValidCharacters && !ctrl.hideCounter && !ctrl.readOnly &&
-                   !lodash.isNil(ctrl.validationMaxLength);
         }
 
         /**
@@ -251,43 +319,10 @@
         }
 
         /**
-         * Checks whether there is at least one failed validation rule.
-         * @returns {boolean} `true` in case there is at least one failed validation rule, or `false` otherwise.
-         */
-        function hasInvalidRule() {
-            return lodash.some(ctrl.validationRules, ['isValid', false]);
-        }
-
-        /**
-         * Puts focus on input field.
-         */
-        function focusInput() {
-            ctrl.inputFocused = true;
-
-            if (!lodash.isEmpty(ctrl.validationRules)) {
-                ctrl.inputIsTouched = true;
-            }
-
-            if (angular.isFunction(ctrl.itemFocusCallback)) {
-                ctrl.itemFocusCallback({ inputName: ctrl.inputName });
-            }
-        }
-
-        /**
-         * Handles the 'keyDown' event.
-         * @param {Event} event - native event object.
-         */
-        function keyDown(event) {
-            if (angular.isDefined(ctrl.enterCallback) && event.keyCode === EventHelperService.ENTER) {
-                $timeout(ctrl.enterCallback);
-            }
-        }
-
-        /**
          * Loses focus from input field.
          * @param {Event} event - native event object.
          */
-        function unfocusInput(event) {
+        function onBlur(event) {
             if (ctrl.preventInputBlur) {
                 ctrl.preventInputBlur = false;
                 ctrl.inputFocused = true;
@@ -312,10 +347,9 @@
         /**
          * Updates outer model value on inner model value change.
          */
-        function updateInputValue() {
+        function onChange() {
             ngModel.$validate();
             if (ngModel.$valid) {
-
                 // update `lastValidValue` to later use it on `blur` event in case `is-data-revert` attribute is `true`
                 // and the input field is invalid (so the input field could be reverted to the last valid value)
                 lastValidValue = ctrl.data;
@@ -330,11 +364,28 @@
         }
 
         /**
-         * Clears search input field.
+         * Puts focus on input field.
          */
-        function clearInputField() {
-            ctrl.data = '';
-            updateInputValue();
+        function onFocus() {
+            ctrl.inputFocused = true;
+
+            if (!lodash.isEmpty(ctrl.validationRules)) {
+                ctrl.inputIsTouched = true;
+            }
+
+            if (angular.isFunction(ctrl.itemFocusCallback)) {
+                ctrl.itemFocusCallback({ inputName: ctrl.inputName });
+            }
+        }
+
+        /**
+         * Handles the 'keyDown' event.
+         * @param {Event} event - native event object.
+         */
+        function onKeyDown(event) {
+            if (angular.isDefined(ctrl.enterCallback) && event.keyCode === EventHelperService.ENTER) {
+                $timeout(ctrl.enterCallback);
+            }
         }
 
         //

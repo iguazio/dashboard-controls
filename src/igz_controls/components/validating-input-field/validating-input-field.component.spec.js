@@ -33,18 +33,30 @@ describe('igzValidatingInputField component:', function () {
             inputModelOptions: {},
             inputName: 'attributeName',
             inputValue: 'some input value',
+            isDataRevert: false,
+            isFocused: true,
             itemBlurCallback: angular.noop,
             itemFocusCallback: angular.noop,
-            isDataRevert: 'true',
-            isFocused: 'true',
             updateDataCallback: angular.noop,
-            updateDataField: angular.noop,
-            validationMaxLength: '15'
+            updateDataField: '',
+            validationMaxLength: '15',
+            validationRules: [{ label: 'everything', pattern: /.*/ }]
+        };
+        var changes = {
+            inputValue: {
+                currentValue: 'some input value'
+            },
+            isFocused: {
+                currentValue: true,
+                isFirstChange: angular.noop
+            }
         };
         var element = '<igz-validating-input-field></igz-validating-input-field>';
 
         ctrl = $componentController('igzValidatingInputField', {$element: element}, bindings);
         ctrl.$onInit();
+        ctrl.$postLink();
+        ctrl.$onChanges(changes);
     });
 
     afterEach(function () {
@@ -54,12 +66,11 @@ describe('igzValidatingInputField component:', function () {
         defaultInputModelOptions = null;
     });
 
-    describe('initial state:', function () {
+    describe('$onInit():', function () {
         it('should be rendered with correct data', function () {
             expect(ctrl.inputModelOptions).toEqual(defaultInputModelOptions);
-            expect(ctrl.inputFocused).toBeTruthy();
             expect(ctrl.spellcheck).toBeTruthy();
-            expect(ctrl.data).toBe(ctrl.inputValue)
+            expect(ctrl.validationRules).toEqual([{ label: 'everything', pattern: /.*/ }]);
         });
     });
 
@@ -67,56 +78,79 @@ describe('igzValidatingInputField component:', function () {
         it('should set new value to ctrl.data', function () {
             var changes = {
                 inputValue: {
-                    currentValue: 'some new value',
-                    isFirstChange: function () {
-                        return false;
-                    }
+                    currentValue: 'some new value'
                 }
             };
+            expect(ctrl.data).toEqual('some input value');
             ctrl.$onChanges(changes);
+            expect(ctrl.data).toEqual('some new value');
+        });
 
-            expect(ctrl.data).toEqual(changes.inputValue.currentValue);
-        })
+        it('should set isFocused value', function () {
+            var changes = {
+                isFocused: {
+                    currentValue: false,
+                    isFirstChange: angular.noop
+                }
+            };
+            expect(ctrl.inputFocused).toEqual(true);
+            ctrl.$onChanges(changes);
+            expect(ctrl.inputFocused).toEqual(false);
+        });
     });
 
-    describe('getRemainingSymbolsCounter():', function () {
-        it('should return difference between $viewValue length and validationMaxLength', function () {
-            expect(ctrl.getRemainingSymbolsCounter()).toBe('5')
-        })
+    describe('getRemainingCharactersCount():', function () {
+        it('should return difference between input length and `validationMaxLength`', function () {
+            ctrl.validationMaxLength = '5';
+
+            ctrl.data = '123';
+            expect(ctrl.getRemainingCharactersCount()).toBe('2');
+
+            ctrl.data = '12345';
+            expect(ctrl.getRemainingCharactersCount()).toBe('0');
+
+            ctrl.data = '12345678';
+            expect(ctrl.getRemainingCharactersCount()).toBe('-3');
+        });
+
+        it('should return `null` in case `validationMaxLength` is non-positive or input length is negative', function () {
+            ctrl.validationMaxLength = '0';
+            expect(ctrl.getRemainingCharactersCount()).toBeNull();
+
+            ctrl.validationMaxLength = '-2';
+            expect(ctrl.getRemainingCharactersCount()).toBeNull();
+        });
     });
 
-    describe('focusInput():', function () {
-        it('should call ctrl.itemFocusCallback', function () {
+    describe('onFocus():', function () {
+        it('should call `ctrl.itemFocusCallback`', function () {
             var spy = spyOn(ctrl, 'itemFocusCallback');
 
-            ctrl.validationRules = [
-                {
-                    label: 'Alphanumeric characters (a–z, A–Z, 0–9)',
-                    pattern: /^[a-zA-Z0-9]*$/,
-                    isValid: true
-                }
-            ];
+            ctrl.onFocus();
 
-            ctrl.focusInput();
+            expect(spy).toHaveBeenCalledWith({ inputName: ctrl.inputName });
+        });
 
-            expect(spy).toHaveBeenCalled();
-            expect(ctrl.inputIsTouched).toBeTruthy();
+        it('should set as touched in case there are some validation rules', function () {
+            ctrl.inputToucehd = false;
+            ctrl.validationRules = [{}];
+            ctrl.onFocus();
+            ctrl.inputToucehd = true;
         });
     });
 
-    describe('unfocusInput():', function () {
-        it('should call `ctrl.itemBlurCallback` with ctrl.inputValue', function () {
+    describe('onBlur():', function () {
+        it('should call `ctrl.itemBlurCallback`', function () {
             var spy = spyOn(ctrl, 'itemBlurCallback');
             ctrl.data = 'new value';
+            ctrl.isDataRevert = false;
 
-            ctrl.unfocusInput();
-            $timeout.flush();
+            ctrl.onBlur();
 
-            expect(spy).toHaveBeenCalledWith({inputValue: ctrl.inputValue, inputName: ctrl.inputName});
-            expect(ctrl.isValidationPopUpShown).toBeFalsy();
+            expect(spy).toHaveBeenCalledWith({inputValue: ctrl.data, inputName: ctrl.inputName});
         });
 
-        it('should prevent input blur and not call `ctrl.itemBlurCallback`', function () {
+        it('should prevent input blur and not call `ctrl.onBlur`', function () {
             var spy = spyOn(ctrl, 'itemBlurCallback');
             var event = {
                 target: {
@@ -125,45 +159,41 @@ describe('igzValidatingInputField component:', function () {
             };
             ctrl.preventInputBlur = true;
 
-            ctrl.unfocusInput(event);
+            ctrl.onBlur(event);
 
             expect(spy).not.toHaveBeenCalled();
+            expect(ctrl.inputFocused).toBeTruthy();
             expect(ctrl.preventInputBlur).toBeFalsy();
         });
     });
 
-    describe('updateInputValue():', function () {
-        it('should set ctrl.inputValue if ctrl.data is defined', function () {
-            ctrl.updateInputValue();
-
-            expect(ctrl.inputValue).toBe(ctrl.data)
-        });
-
-        it('should call ctrl.updateDataCallback with ctrl.inputValue, and ctrl.updateDataField if ctrl.updateDataField' +
-            'is defined', function () {
+    describe('onChange():', function () {
+        it('should call `ctrl.updateDataCallback` with `ctrl.inputValue`, and `ctrl.updateDataField` if `ctrl.updateDataField` is defined', function () {
             var spy = spyOn(ctrl, 'updateDataCallback');
-            ctrl.updateInputValue();
+            ctrl.isDataRevert = false;
 
-            expect(spy).toHaveBeenCalledWith({newData: ctrl.inputValue, field: ctrl.updateDataField})
+            ctrl.onChange();
+
+            expect(spy).toHaveBeenCalledWith({newData: ctrl.inputValue, field: ctrl.updateDataField});
         });
 
-        it('should validate ctrl.inputValue if ctrl.validationRules is defined', function () {
-            ctrl.validationRules = [{
-                name: 'test',
-                pattern: /[\d]/
-            }];
+        it('should not call `ctrl.updateDataCallback` if `ctrl.isDataRevert` is `true`', function () {
+            var spy = spyOn(ctrl, 'updateDataCallback');
+            ctrl.isDataRevert = true;
 
-            ctrl.updateInputValue();
+            ctrl.onChange();
 
-            expect(ctrl.validationRules[0].isValid).toBeFalsy();
+            expect(spy).not.toHaveBeenCalled();
         });
     });
 
     describe('clearInputField()', function () {
-        it('should empty search field after call clearInputField()', function () {
+        it('should empty model and call `updateDataCallback`', function () {
+            var spy = spyOn(ctrl, 'updateDataCallback');
             ctrl.data = 'new';
             ctrl.clearInputField();
             expect(ctrl.data).toEqual('');
+            expect(spy).toHaveBeenCalled();
         });
     });
 
@@ -187,17 +217,17 @@ describe('igzValidatingInputField component:', function () {
         });
     });
 
-    describe('isValueInvalid()', function () {
+    describe('hasInvalidRule()', function () {
         it('checks if the value invalid regarding validation rules', function () {
             ctrl.validationRules = [{isValid: true}, {isValid: false}];
 
-            expect(ctrl.isValueInvalid()).toBeTruthy();
+            expect(ctrl.hasInvalidRule()).toBeTruthy();
         });
 
         it('checks if the value invalid regarding validation rules', function () {
             ctrl.validationRules = [{isValid: true}, {isValid: true}];
 
-            expect(ctrl.isValueInvalid()).toBeFalsy();
+            expect(ctrl.hasInvalidRule()).toBeFalsy();
         });
     });
 });

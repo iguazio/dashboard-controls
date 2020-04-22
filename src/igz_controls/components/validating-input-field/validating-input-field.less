@@ -17,6 +17,10 @@
         color: @validating-input-icon-color;
     }
 
+    //
+    // validation icon
+    //
+
     .validation-icon {
         position: absolute;
         right: 9px;
@@ -31,6 +35,10 @@
         &.igz-icon-verify-info {
             font-size: 16px;
             color: @validation-icon-info-color;
+        }
+
+        &.borders-focus, &.borders-hover {
+            visibility: hidden;
         }
     }
 
@@ -64,6 +72,10 @@
         &.invalid {
             color: @input-textarea-counter-invalid-color;
         }
+
+        &.borders-hover, &.borders-focus {
+            visibility: hidden;
+        }
     }
 
     .input-field, .textarea-field {
@@ -78,7 +90,15 @@
         outline: transparent none 0;
         box-shadow: none;
 
-        &:not([disabled]):not([readonly]) {
+        &:read-only, &.borders-hover, &.borders-focus {
+            border-color: transparent;
+        }
+
+        &.borders-hover:hover {
+            border: @input-textarea-field-border;
+        }
+
+        &:not(:disabled):not(:read-only) {
             &:focus {
                 border: @input-textarea-field-not-disabled-hover-focus-border;
             }
