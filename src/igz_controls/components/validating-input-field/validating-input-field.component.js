@@ -40,6 +40,8 @@
      * @param {boolean} [isDisabled=false] - Set to `true` to make this field disabled.
      * @param {boolean} [isFocused=false] - Set to `true` to give focus to this field once it finished initializing.
      *     This is a one-way binding that is watched for changes.
+     * @param {string} [tabindex=0] - Indicates where the field participates in sequential keyboard navigation.
+     *     Forwarded to the `tabindex` attribute of the HTML element.
      * @param {boolean} [trim=true] - Set to `false` to prevent automatic removal of leading and trailing spaces from
      *     entered value.
      * @param {RegExp} [onlyValidCharacters] - Allows entering only the characters which match the regex pattern.
@@ -79,7 +81,7 @@
                 compareInputValue: '<?',
                 enterCallback: '<?',
                 fieldType: '@',
-                formObject: '<',
+                formObject: '<?',
                 hideCounter: '<?',
                 inputIcon: '@',
                 inputModelOptions: '<?',
@@ -95,6 +97,7 @@
                 placeholderText: '@',
                 readOnly: '<?',
                 spellcheck: '<?',
+                tabindex: '@?',
                 trim: '<?',
                 updateDataCallback: '&?',
                 updateDataField: '@?',
@@ -124,9 +127,7 @@
         };
         var fieldElement = {};
         var lastValidValue = '';
-        var ngModel = {
-            $validate: angular.noop
-        };
+        var ngModel = null;
         var showPopUpOnTop = false;
 
         ctrl.bordersModeClass = '';
@@ -160,23 +161,27 @@
          * Initialization method
          */
         function onInit() {
+            // set default values for optional component attributes (`<?`, `@?`, `&?`) that are not updated when the
+            // scope expression changes (those that change get default values in `$onChanges` lifecycle hook)
             lodash.defaults(ctrl, {
                 autoComplete: 'off',
                 bordersMode: defaultBorderMode,
+                enterCallback: angular.noop,
                 hideCounter: false,
                 inputModelOptions: {},
-                inputValue: '',
                 isClearIcon: false,
                 isDataRevert: false,
                 isDisabled: false,
-                isFocused: false,
+                itemBlurCallback: angular.noop,
+                itemFocusCallback: angular.noop,
                 onlyValidCharacters: false,
                 readOnly: false,
                 spellcheck: true,
+                tabindex: '0',
                 trim: true,
+                updateDataCallback: angular.noop,
                 updateDataField: ctrl.inputName,
-                validationIsRequired: false,
-                validationRules: []
+                validationIsRequired: false
             });
 
             // if provided `bordersMode` attribute is not one of the available values, set it to a default
@@ -184,8 +189,6 @@
                 ctrl.bordersMode = defaultBorderMode;
             }
             ctrl.bordersModeClass = BORDERS_CLASS_BASE + ctrl.bordersMode;
-
-            ctrl.validationRules = angular.copy(ctrl.validationRules);
 
             lodash.defaultsDeep(ctrl.inputModelOptions, defaultInputModelOptions);
         }
@@ -200,14 +203,19 @@
                 fieldElement = $element.find('.field');
                 ngModel = fieldElement.controller('ngModel');
 
-                // if `validation-rules` attribute is used - add the appropriate validator
-                if (!lodash.isEmpty(ctrl.validationRules)) {
-                    ngModel.$validators.validationRules = function (modelValue) {
+                ngModel.$validators.validationRules = function (modelValue) {
+                    if (!ctrl.validationIsRequired && ctrl.data === '') {
+                        resetPatternsValidity();
+                        return true;
+                    } else {
                         return checkPatternsValidity(modelValue);
-                    };
-                }
+                    }
+                };
 
                 // validate on init in case the input field starts with an invalid value
+                // important for cases when for example you have an invalid field due to failed rule and then switch to
+                // another tab and back to the failed field, it might be re-initialized, but we want it to be displayed
+                // with the "failed validation rule" icon
                 ngModel.$validate();
 
                 // set focus to the input field in case `is-focused` attribute is `true`
@@ -228,20 +236,24 @@
          */
         function onChanges(changes) {
             if (angular.isDefined(changes.inputValue)) {
-                ctrl.data = angular.copy(changes.inputValue.currentValue);
+                ctrl.data = lodash.defaultTo(changes.inputValue.currentValue, '');
 
                 // update `lastValidValue` to later use it on `blur` event in case `is-data-revert` attribute is `true`
                 // and the input field is invalid (so the input field could be reverted to the last valid value)
-                lastValidValue = angular.copy(ctrl.inputValue);
+                lastValidValue = angular.copy(ctrl.data);
             }
 
             if (angular.isDefined(changes.isFocused)) {
-                ctrl.inputFocused = changes.isFocused.currentValue;
+                ctrl.inputFocused = lodash.defaultTo(changes.isFocused.currentValue, false);
                 if (!changes.isFocused.isFirstChange()) {
                     $timeout(function () {
                         fieldElement.focus();
                     });
                 }
+            }
+
+            if (angular.isDefined(changes.validationRules)) {
+                ctrl.validationRules = lodash.defaultTo(changes.validationRules.currentValue, []);
             }
         }
 
@@ -320,7 +332,7 @@
 
         /**
          * Loses focus from input field.
-         * @param {Event} event - native event object.
+         * @param {Event} event - the `blur` event object.
          */
         function onBlur(event) {
             if (ctrl.preventInputBlur) {
@@ -335,12 +347,11 @@
                     setOrRevertInputValue();
                 }
 
-                if (angular.isFunction(ctrl.itemBlurCallback)) {
-                    ctrl.itemBlurCallback({
-                        inputValue: ctrl.data,
-                        inputName: ctrl.inputName
-                    });
-                }
+                ctrl.itemBlurCallback({
+                    event: event,
+                    inputValue: ctrl.data,
+                    inputName: ctrl.inputName
+                });
             }
         }
 
@@ -355,7 +366,7 @@
                 lastValidValue = ctrl.data;
             }
 
-            if (!ctrl.isDataRevert && angular.isFunction(ctrl.updateDataCallback)) {
+            if (!ctrl.isDataRevert) {
                 ctrl.updateDataCallback({
                     newData: ctrl.data,
                     field: ctrl.updateDataField
@@ -365,25 +376,28 @@
 
         /**
          * Puts focus on input field.
+         * @param {Event} event - The `focus` event object.
          */
-        function onFocus() {
+        function onFocus(event) {
             ctrl.inputFocused = true;
 
             if (!lodash.isEmpty(ctrl.validationRules)) {
                 ctrl.inputIsTouched = true;
             }
 
-            if (angular.isFunction(ctrl.itemFocusCallback)) {
-                ctrl.itemFocusCallback({ inputName: ctrl.inputName });
-            }
+            ctrl.itemFocusCallback({
+                event: event,
+                inputValue: ctrl.data,
+                inputName: ctrl.inputName
+            });
         }
 
         /**
          * Handles the 'keyDown' event.
-         * @param {Event} event - native event object.
+         * @param {Event} event - The `keydown` event object.
          */
         function onKeyDown(event) {
-            if (angular.isDefined(ctrl.enterCallback) && event.keyCode === EventHelperService.ENTER) {
+            if (event.keyCode === EventHelperService.ENTER) {
                 $timeout(ctrl.enterCallback);
             }
         }
@@ -452,6 +466,15 @@
         }
 
         /**
+         * Sets all validation rules to be valid
+         */
+        function resetPatternsValidity() {
+            lodash.forEach(ctrl.validationRules, function (rule) {
+                rule.isValid = true;
+            });
+        }
+
+        /**
          * Sets or reverts outer model value
          */
         function setOrRevertInputValue() {
@@ -464,7 +487,7 @@
                 // otherwise, notify the user about the value change
                 if (ngModel.$invalid) {
                     ctrl.data = lastValidValue;
-                } else if (angular.isFunction(ctrl.updateDataCallback)) {
+                } else {
                     ctrl.updateDataCallback({
                         newData: ctrl.data,
                         field: ctrl.updateDataField
