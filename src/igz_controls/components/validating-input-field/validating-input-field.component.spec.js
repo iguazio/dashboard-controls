@@ -1,5 +1,6 @@
 describe('igzValidatingInputField component:', function () {
     var $componentController;
+    var $rootScope;
     var $timeout;
     var ctrl;
     var defaultInputModelOptions;
@@ -7,8 +8,9 @@ describe('igzValidatingInputField component:', function () {
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_, _$timeout_) {
+        inject(function (_$componentController_, _$rootScope_, _$timeout_) {
             $componentController = _$componentController_;
+            $rootScope = _$rootScope_;
             $timeout = _$timeout_;
         });
 
@@ -21,26 +23,12 @@ describe('igzValidatingInputField component:', function () {
             allowInvalid: true
         };
 
-        var formObject = {
-            attributeName: {
-                $viewValue: 'some value',
-                $setValidity: angular.noop,
-                $setTouched: angular.noop
-            }
-        };
         var bindings = {
-            formObject: formObject,
-            inputModelOptions: {},
             inputName: 'attributeName',
-            inputValue: 'some input value',
-            isDataRevert: false,
-            isFocused: true,
             itemBlurCallback: angular.noop,
             itemFocusCallback: angular.noop,
             updateDataCallback: angular.noop,
-            updateDataField: '',
-            validationMaxLength: '15',
-            validationRules: [{ label: 'everything', pattern: /.*/ }]
+            validationMaxLength: '15'
         };
         var changes = {
             inputValue: {
@@ -49,33 +37,54 @@ describe('igzValidatingInputField component:', function () {
             isFocused: {
                 currentValue: true,
                 isFirstChange: angular.noop
+            },
+            validationRules: {
+                currentValue: []
             }
         };
-        var element = '<igz-validating-input-field></igz-validating-input-field>';
+        var element = angular.element('<igz-validating-input-field></igz-validating-input-field>');
 
-        ctrl = $componentController('igzValidatingInputField', {$element: element}, bindings);
+        // mocking `ngModel` of the HTML <input> element with `field` CSS class inside the component's template
+        element.find = function () {
+            return {
+                focus: angular.noop,
+                controller: function () {
+                    return {
+                        $commitViewValue: angular.noop,
+                        $invalid: false,
+                        $validate: angular.noop,
+                        $validators: []
+                    };
+                }
+            };
+        };
+
+        ctrl = $componentController('igzValidatingInputField', { $element: element }, bindings);
         ctrl.$onInit();
-        ctrl.$postLink();
         ctrl.$onChanges(changes);
+        ctrl.$postLink();
+        $rootScope.$apply();
     });
 
     afterEach(function () {
         $componentController = null;
+        $rootScope = null;
         $timeout = null;
         ctrl = null;
         defaultInputModelOptions = null;
     });
 
-    describe('$onInit():', function () {
+    describe('$onInit(): ', function () {
         it('should be rendered with correct data', function () {
             expect(ctrl.inputModelOptions).toEqual(defaultInputModelOptions);
             expect(ctrl.spellcheck).toBeTruthy();
-            expect(ctrl.validationRules).toEqual([{ label: 'everything', pattern: /.*/ }]);
+            expect(ctrl.updateDataField).toEqual('attributeName');
+            expect(ctrl.bordersModeClass).toEqual('borders-always');
         });
     });
 
-    describe('$onChanges():', function () {
-        it('should set new value to ctrl.data', function () {
+    describe('$onChanges(): ', function () {
+        it('should set `ctrl.data` to new `inputValue` and default to `\'\'`', function () {
             var changes = {
                 inputValue: {
                     currentValue: 'some new value'
@@ -84,9 +93,13 @@ describe('igzValidatingInputField component:', function () {
             expect(ctrl.data).toEqual('some input value');
             ctrl.$onChanges(changes);
             expect(ctrl.data).toEqual('some new value');
+
+            delete changes.inputValue.currentValue;
+            ctrl.$onChanges(changes);
+            expect(ctrl.data).toEqual('');
         });
 
-        it('should set isFocused value', function () {
+        it('should set `ctrl.inputFocused` to new `isFocused` and default to `false`', function () {
             var changes = {
                 isFocused: {
                     currentValue: false,
@@ -96,10 +109,33 @@ describe('igzValidatingInputField component:', function () {
             expect(ctrl.inputFocused).toEqual(true);
             ctrl.$onChanges(changes);
             expect(ctrl.inputFocused).toEqual(false);
+
+            delete changes.isFocused.currentValue;
+            ctrl.$onChanges(changes);
+            expect(ctrl.inputFocused).toBeFalsy();
+        });
+
+        it('should set `ctrl.validationRules` to new `validationRules` and default to `[]`', function () {
+            var newRules = [
+                { name: 'name1', label: 'label1', pattern: /pattern1/ },
+                { name: 'name2', label: 'label2', pattern: /pattern2/ }
+            ];
+            var changes = {
+                validationRules: {
+                    currentValue: newRules
+                }
+            };
+            expect(ctrl.validationRules).toEqual([]);
+            ctrl.$onChanges(changes);
+            expect(ctrl.validationRules).toEqual(angular.copy(newRules));
+
+            delete changes.validationRules.currentValue;
+            ctrl.$onChanges(changes);
+            expect(ctrl.validationRules).toEqual([]);
         });
     });
 
-    describe('getRemainingCharactersCount():', function () {
+    describe('getRemainingCharactersCount(): ', function () {
         it('should return difference between input length and `validationMaxLength`', function () {
             ctrl.validationMaxLength = '5';
 
@@ -122,13 +158,21 @@ describe('igzValidatingInputField component:', function () {
         });
     });
 
-    describe('onFocus():', function () {
+    describe('onFocus(): ', function () {
+        it('should set `ctrl.inputFocused` to true', function () {
+            ctrl.inputFocused = false;
+            ctrl.onFocus();
+            ctrl.inputFocused = true;
+        });
+
         it('should call `ctrl.itemFocusCallback`', function () {
             var spy = spyOn(ctrl, 'itemFocusCallback');
+            var event = {};
+            ctrl.data = 'abc';
 
-            ctrl.onFocus();
+            ctrl.onFocus(event);
 
-            expect(spy).toHaveBeenCalledWith({ inputName: ctrl.inputName });
+            expect(spy).toHaveBeenCalledWith({ event: event, inputValue: 'abc', inputName: ctrl.inputName });
         });
 
         it('should set as touched in case there are some validation rules', function () {
@@ -139,15 +183,16 @@ describe('igzValidatingInputField component:', function () {
         });
     });
 
-    describe('onBlur():', function () {
+    describe('onBlur(): ', function () {
         it('should call `ctrl.itemBlurCallback`', function () {
             var spy = spyOn(ctrl, 'itemBlurCallback');
+            var event = {};
             ctrl.data = 'new value';
             ctrl.isDataRevert = false;
 
-            ctrl.onBlur();
+            ctrl.onBlur(event);
 
-            expect(spy).toHaveBeenCalledWith({inputValue: ctrl.data, inputName: ctrl.inputName});
+            expect(spy).toHaveBeenCalledWith({ event: event, inputValue: ctrl.data, inputName: ctrl.inputName});
         });
 
         it('should prevent input blur and not call `ctrl.onBlur`', function () {
@@ -165,16 +210,30 @@ describe('igzValidatingInputField component:', function () {
             expect(ctrl.inputFocused).toBeTruthy();
             expect(ctrl.preventInputBlur).toBeFalsy();
         });
+
+        it('should call `ctrl.updateDataCallback` with `ctrl.data`, and `ctrl.updateDataField` in case `ctrl.isDataRevert` is true and model is valid', function () {
+            var spy = spyOn(ctrl, 'updateDataCallback');
+            ctrl.preventInputBlur = false;
+            ctrl.isDataRevert = true;
+            ctrl.data = 'abc';
+            ctrl.updateDataField = '123';
+
+            ctrl.onBlur();
+
+            expect(spy).toHaveBeenCalledWith({ newData: 'abc', field: '123' });
+        });
     });
 
-    describe('onChange():', function () {
-        it('should call `ctrl.updateDataCallback` with `ctrl.inputValue`, and `ctrl.updateDataField` if `ctrl.updateDataField` is defined', function () {
+    describe('onChange(): ', function () {
+        it('should call `ctrl.updateDataCallback` with `ctrl.data`, and `ctrl.updateDataField`', function () {
             var spy = spyOn(ctrl, 'updateDataCallback');
             ctrl.isDataRevert = false;
+            ctrl.data = 'abc';
+            ctrl.updateDataField = '123';
 
             ctrl.onChange();
 
-            expect(spy).toHaveBeenCalledWith({newData: ctrl.inputValue, field: ctrl.updateDataField});
+            expect(spy).toHaveBeenCalledWith({ newData: 'abc', field: '123' });
         });
 
         it('should not call `ctrl.updateDataCallback` if `ctrl.isDataRevert` is `true`', function () {
@@ -187,7 +246,7 @@ describe('igzValidatingInputField component:', function () {
         });
     });
 
-    describe('clearInputField()', function () {
+    describe('clearInputField(): ', function () {
         it('should empty model and call `updateDataCallback`', function () {
             var spy = spyOn(ctrl, 'updateDataCallback');
             ctrl.data = 'new';
@@ -197,7 +256,7 @@ describe('igzValidatingInputField component:', function () {
         });
     });
 
-    describe('isCounterVisible()', function () {
+    describe('isCounterVisible(): ', function () {
         it('should check visibility for symbols counter', function () {
             expect(ctrl.isCounterVisible()).toBeTruthy();
 
@@ -217,7 +276,7 @@ describe('igzValidatingInputField component:', function () {
         });
     });
 
-    describe('hasInvalidRule()', function () {
+    describe('hasInvalidRule(): ', function () {
         it('checks if the value invalid regarding validation rules', function () {
             ctrl.validationRules = [{isValid: true}, {isValid: false}];
 

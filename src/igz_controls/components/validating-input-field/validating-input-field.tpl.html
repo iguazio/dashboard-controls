@@ -14,15 +14,15 @@
              data-ng-class="[$ctrl.inputFocused ? '' : $ctrl.bordersModeClass, {'invalid': $ctrl.getRemainingCharactersCount() < 0}]"
              data-ng-if="$ctrl.isCounterVisible()">{{$ctrl.getRemainingCharactersCount()}}
         </div>
-        <input class="input-field field" tabindex="0"
+        <input class="input-field field"
                data-ng-class="[$ctrl.bordersModeClass, {
                    'invalid': $ctrl.isFieldInvalid(),
                    'with-icon': $ctrl.inputIcon,
-                   'with-validation-icon': $ctrl.validationRules.length > 0,
-                   'view-mode': $ctrl.viewMode
+                   'with-validation-icon': $ctrl.validationRules.length > 0
                }]"
                name="{{$ctrl.inputName}}"
                placeholder="{{$ctrl.placeholderText}}"
+               tabindex="{{$ctrl.tabindex}}"
                data-ng-readonly="$ctrl.readOnly"
                data-ng-model="$ctrl.data"
                data-ng-trim="{{$ctrl.trim}}"
@@ -30,8 +30,8 @@
                data-ng-required="$ctrl.validationIsRequired"
                data-ng-maxlength="$ctrl.validationMaxLength"
                data-ng-pattern="$ctrl.validationPattern"
-               data-ng-focus="$ctrl.onFocus()"
-               data-ng-blur="$ctrl.onBlur()"
+               data-ng-focus="$ctrl.onFocus($event)"
+               data-ng-blur="$ctrl.onBlur($event)"
                data-ng-change="$ctrl.onChange()"
                data-ng-disabled="$ctrl.isDisabled"
                data-ng-keydown="$ctrl.onKeyDown($event)"
@@ -69,16 +69,17 @@
              data-ng-class="[$ctrl.inputFocused ? '' : $ctrl.bordersModeClass, {'invalid': $ctrl.getRemainingCharactersCount() < 0}]"
              data-ng-if="$ctrl.isCounterVisible()">{{$ctrl.getRemainingCharactersCount()}}
         </div>
-        <textarea class="textarea-field field" tabindex="0"
+        <textarea class="textarea-field field"
                   data-ng-class="[$ctrl.bordersModeClass, {'invalid': $ctrl.isFieldInvalid()}]"
                   name="{{$ctrl.inputName}}"
                   placeholder="{{$ctrl.placeholderText}}"
+                  tabindex="{{$ctrl.tabindex}}"
                   data-ng-model="$ctrl.data"
                   data-ng-required="$ctrl.validationIsRequired"
                   data-ng-maxlength="$ctrl.validationMaxLength"
                   data-ng-pattern="$ctrl.validationPattern"
-                  data-ng-focus="$ctrl.onFocus()"
-                  data-ng-blur="$ctrl.onBlur()"
+                  data-ng-focus="$ctrl.onFocus($event)"
+                  data-ng-blur="$ctrl.onBlur($event)"
                   data-ng-change="$ctrl.onChange()"
                   data-ng-disabled="$ctrl.isDisabled"
                   data-ng-readonly="$ctrl.readOnly"
@@ -97,24 +98,24 @@
              }]">
         </div>
 
-        <input class="input-field field" tabindex="0"
+        <input class="input-field field"
                data-ng-class="[$ctrl.bordersModeClass, {
                    'invalid': $ctrl.isFieldInvalid(),
                    'with-icon': $ctrl.inputIcon,
-                   'with-validation-icon': $ctrl.validationRules.length > 0,
-                   'view-mode': $ctrl.viewMode
+                   'with-validation-icon': $ctrl.validationRules.length > 0
                }]"
                data-igz-validate-password-confirmation="$ctrl.compareInputValue"
                type="password"
                name="{{$ctrl.inputName}}"
                placeholder="{{$ctrl.placeholderText}}"
+               tabindex="{{$ctrl.tabindex}}"
                data-ng-model="$ctrl.data"
                data-ng-model-options="$ctrl.inputModelOptions"
                data-ng-required="$ctrl.validationIsRequired"
                data-ng-maxlength="$ctrl.validationMaxLength"
                data-ng-pattern="$ctrl.validationPattern"
-               data-ng-focus="$ctrl.onFocus()"
-               data-ng-blur="$ctrl.onBlur()"
+               data-ng-focus="$ctrl.onFocus($event)"
+               data-ng-blur="$ctrl.onBlur($event)"
                data-ng-change="$ctrl.onChange()"
                data-ng-disabled="$ctrl.isDisabled"
                data-ng-readonly="$ctrl.readOnly"
