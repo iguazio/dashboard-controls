@@ -12,10 +12,11 @@
      *
      * @param {string} [bordersMode='always'] - Determines when to show borders. Could be one of:
      *     - `'always'` (default): always show borders (like a regular input field)
-     *     - `'hover'`: hide borders when idle, show them on hover (and on focus)
-     *     - `'focus'`: hide borders when idle and on hover, show them only on focus
+     *     - `'hover'`: hide borders when idle (unless placeholder is shown), show them on hover (and on focus)
+     *     - `'focus'`: hide borders when idle (unless placeholder is shown) and on hover, show them only on focus
      *     Note: this attribute is ignored when `readOnly` attribute is set to `true`.
-     * compareInputValue: used if there are two field that should be equal (password and confirm password)
+     * @param {string} [compareInputValue] - If provided, the input will be valid if it matches this, or otherwise it
+     *     will be invalid.
      * @param {string} [fieldType='input'] - Determines the type of field:
      *     - `'input'` (default): a text box
      *     - `'password'`: a text box with concealed characters
@@ -31,7 +32,10 @@
      * @param {string} inputName - The name of the filed, will be forwarded to the `name` attribute of the HTML element.
      * @param {*} inputValue - The initial value of the field. This is a one-way binding that is watched for changes.
      * @param {function} [itemBlurCallback] - A callback function for `blur` event. Invoked with `inputValue` and
-     *     `inputName` when the field loses focus.
+     *     `inputName` when the field loses focus. Note that when `is-data-revert` attribute is `false` and blur event
+     *     happened prior to `ngChange` invocation (could happen with debounced or future events via `ngModelOptions`)
+     *     then the value of `inputValue` might not reflect the up-to-date _view_ value, but the _model_ value (which
+     *     might be different in this case).
      * @param {function} [itemFocusCallback] - A callback function for `focus` event. Invoked with `inputName` when the
      *     field becomes focused.
      * @param {boolean} [isDataRevert=false] - Set to `true` to revert to last valid value on losing focus. This will
@@ -44,7 +48,8 @@
      *     Forwarded to the `tabindex` attribute of the HTML element.
      * @param {boolean} [trim=true] - Set to `false` to prevent automatic removal of leading and trailing spaces from
      *     entered value.
-     * @param {RegExp} [onlyValidCharacters] - Allows entering only the characters which match the regex pattern.
+     * @param {boolean} [onlyValidCharacters=false] - Set to `true` to allow only characters that match the RegExp
+     *     pattern passed in `validation-pattern` attribute.
      * @param {string} [placeholderText] - Placeholder text to display when input is empty.
      * @param {boolean} [readOnly=false] - Set to `true` to make this field read-only. If `true`, ignores `borderMode`.
      * @param {boolean} [spellcheck=true] - Set to `false` to disable spell-check to this field (for example when the
@@ -79,7 +84,7 @@
                 autoComplete: '@?',
                 bordersMode: '@?',
                 compareInputValue: '<?',
-                enterCallback: '<?',
+                enterCallback: '&?',
                 fieldType: '@',
                 formObject: '<?',
                 hideCounter: '<?',
@@ -98,6 +103,7 @@
                 readOnly: '<?',
                 spellcheck: '<?',
                 tabindex: '@?',
+                tooltip: '<?',
                 trim: '<?',
                 updateDataCallback: '&?',
                 updateDataField: '@?',
@@ -114,9 +120,13 @@
                                                EventHelperService) {
         var ctrl = this;
 
-        var BORDER_MODES = ['always', 'hover', 'focus'];
+        var BORDER_MODES = {
+            ALWAYS: 'always',
+            HOVER: 'hover',
+            FOCUS: 'focus'
+        };
         var BORDERS_CLASS_BASE = 'borders-';
-        var defaultBorderMode = BORDER_MODES[0];
+        var defaultBorderMode = BORDER_MODES.ALWAYS;
         var defaultInputModelOptions = {
             updateOn: 'default blur',
             debounce: {
@@ -178,6 +188,11 @@
                 readOnly: false,
                 spellcheck: true,
                 tabindex: '0',
+                tooltip: {
+                    text: '',
+                    placement: 'auto',
+                    duration: '200'
+                },
                 trim: true,
                 updateDataCallback: angular.noop,
                 updateDataField: ctrl.inputName,
@@ -185,7 +200,7 @@
             });
 
             // if provided `bordersMode` attribute is not one of the available values, set it to a default
-            if (!lodash.includes(BORDER_MODES, ctrl.bordersMode)) {
+            if (!lodash.has(BORDER_MODES, ctrl.bordersMode)) {
                 ctrl.bordersMode = defaultBorderMode;
             }
             ctrl.bordersModeClass = BORDERS_CLASS_BASE + ctrl.bordersMode;
@@ -231,7 +246,7 @@
         }
 
         /**
-         * onChange hook
+         * On changes hook method.
          * @param {Object} changes
          */
         function onChanges(changes) {
@@ -342,6 +357,14 @@
             } else {
                 ctrl.inputFocused = false;
 
+                // in case model update is debounced using `ngModelOptions`, this means `$viewValue` and `$modelValue`
+                // might be different at this point (for example, when blur event happened prior to `ngChange`
+                // invocation). before proceeding with the logic hereafter we must make sure to commit the current
+                // view-value, so the model-value gets updated accordingly, and the field also gets validated (meaning
+                // `$valid` and `$invalid` are up-to-date). If the above case is true, this will also trigger `ngChange`
+                // for the input.
+                ngModel.$commitViewValue();
+
                 // in case `is-data-revert` attribute is `true` - set or revert outer model value
                 if (ctrl.isDataRevert) {
                     setOrRevertInputValue();
@@ -359,14 +382,15 @@
          * Updates outer model value on inner model value change.
          */
         function onChange() {
-            ngModel.$validate();
-            if (ngModel.$valid) {
-                // update `lastValidValue` to later use it on `blur` event in case `is-data-revert` attribute is `true`
-                // and the input field is invalid (so the input field could be reverted to the last valid value)
-                lastValidValue = ctrl.data;
-            }
-
-            if (!ctrl.isDataRevert) {
+            if (ctrl.isDataRevert) {
+                ngModel.$validate();
+                if (ngModel.$valid) {
+                    // update `lastValidValue` to later use it on `blur` event in case `is-data-revert` attribute is
+                    // `true` and the input field is invalid (so the input field could be reverted to the last valid
+                    // value)
+                    lastValidValue = ctrl.data;
+                }
+            } else {
                 ctrl.updateDataCallback({
                     newData: ctrl.data,
                     field: ctrl.updateDataField
@@ -478,21 +502,15 @@
          * Sets or reverts outer model value
          */
         function setOrRevertInputValue() {
-            if (ctrl.isDataRevert) {
-                // in case model update is debounced using `ngModelOptions`, make sure to commit it (which also
-                // validates it) before proceeding
-                ngModel.$commitViewValue();
-
-                // if the input value is invalid - revert it to the last valid value
-                // otherwise, notify the user about the value change
-                if (ngModel.$invalid) {
-                    ctrl.data = lastValidValue;
-                } else {
-                    ctrl.updateDataCallback({
-                        newData: ctrl.data,
-                        field: ctrl.updateDataField
-                    });
-                }
+            // if the input value is invalid - revert it to the last valid value
+            // otherwise, notify the parent about the value change
+            if (ngModel.$invalid) {
+                ctrl.data = lastValidValue;
+            } else {
+                ctrl.updateDataCallback({
+                    newData: ctrl.data,
+                    field: ctrl.updateDataField
+                });
             }
         }
     }
