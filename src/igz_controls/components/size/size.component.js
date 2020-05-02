@@ -16,6 +16,7 @@
                                PaletteService) {
         var ctrl = this;
         var lng = i18next.language;
+        var timeout = null;
 
         var TOOLTIP_ARROW_SIZE = 7;
         var tooltipByType = {
@@ -36,6 +37,7 @@
         ctrl.outOf = '';
 
         ctrl.$onInit = onInit;
+        ctrl.$onDestroy = onDestroy;
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.getDisplayValue = getDisplayValue;
@@ -327,7 +329,16 @@
             $scope.$on('info-page-pane_toggled', updateChart);
             $scope.$on('resize-size-cells', updateChart);
 
-            $timeout(updateChart);
+            timeout = $timeout(updateChart);
+        }
+
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            if (!lodash.isNil(timeout)) {
+                $timeout.cancel(timeout);
+            }
         }
 
         //
