@@ -90,7 +90,7 @@
         outline: transparent none 0;
         box-shadow: none;
 
-        &:read-only, &.borders-hover, &.borders-focus {
+        &:read-only, &.borders-hover:not(:placeholder-shown), &.borders-focus:not(:placeholder-shown) {
             border-color: transparent;
         }
 
@@ -120,6 +120,8 @@
     .input-field {
         padding: 0 10px;
         height: 36px;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         &.with-icon {
             padding: 0 10px 0 32px;

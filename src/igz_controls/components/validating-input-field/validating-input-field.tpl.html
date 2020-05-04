@@ -2,7 +2,7 @@
      data-ng-class="{'focused': $ctrl.inputFocused, 'with-counter': $ctrl.isCounterVisible()}">
     <div data-ng-if="$ctrl.fieldType === 'input'">
         <div class="validation-icon"
-             data-ng-if="$ctrl.validationRules.length > 0 && (!$ctrl.readOnly || $ctrl.inputFocused || $ctrl.isFieldInvalid())"
+             data-ng-if="$ctrl.validationRules.length > 0 && !$ctrl.readOnly && ($ctrl.inputFocused || $ctrl.isFieldInvalid())"
              data-ng-mousedown="$ctrl.preventInputBlur = true"
              data-ng-class="[$ctrl.inputFocused ? '' : $ctrl.bordersModeClass, {
                  'igz-icon-verify-info': $ctrl.inputIsTouched && $ctrl.data === '',
@@ -37,6 +37,10 @@
                data-ng-keydown="$ctrl.onKeyDown($event)"
                data-igz-input-only-valid-characters="$ctrl.validationPattern"
                data-only-valid-characters="$ctrl.onlyValidCharacters"
+               data-uib-tooltip="{{ $ctrl.tooltip.text }}"
+               data-tooltip-placement="{{ $ctrl.tooltip.placement }}"
+               data-tooltip-popup-delay="{{ $ctrl.tooltip.delay }}"
+               data-tooltip-append-to-body="true"
                spellcheck="{{$ctrl.spellcheck}}"
                autocomplete="{{$ctrl.autoComplete}}"
                data-igz-input-blur-on-enter>
@@ -89,12 +93,12 @@
 
     <div data-ng-if="$ctrl.fieldType === 'password'">
         <div class="validation-icon"
-             data-ng-if="$ctrl.validationRules.length > 0 && (!$ctrl.readOnly || $ctrl.inputFocused || $ctrl.isFieldInvalid())"
+             data-ng-if="$ctrl.validationRules.length > 0 && !$ctrl.readOnly && ($ctrl.inputFocused || $ctrl.isFieldInvalid())"
              data-ng-mousedown="$ctrl.preventInputBlur = true"
              data-ng-class="[$ctrl.inputFocused ? '' : $ctrl.bordersModeClass, {
                  'igz-icon-verify-info': $ctrl.inputIsTouched && $ctrl.data === '',
-                 'igz-icon-verify-error': $ctrl.isValueInvalid() && $ctrl.data !== '',
-                 'igz-icon-verify-ok': !$ctrl.isValueInvalid() && $ctrl.data !== ''
+                 'igz-icon-verify-error': $ctrl.hasInvalidRule() && $ctrl.data !== '',
+                 'igz-icon-verify-ok': !$ctrl.hasInvalidRule() && $ctrl.data !== ''
              }]">
         </div>
 
@@ -119,6 +123,13 @@
                data-ng-change="$ctrl.onChange()"
                data-ng-disabled="$ctrl.isDisabled"
                data-ng-readonly="$ctrl.readOnly"
+               data-ng-keydown="$ctrl.onKeyDown($event)"
+               data-uib-tooltip="{{ $ctrl.tooltip.text }}"
+               data-tooltip-placement="{{ $ctrl.tooltip.placement }}"
+               data-tooltip-popup-delay="{{ $ctrl.tooltip.delay }}"
+               data-tooltip-append-to-body="true"
+               spellcheck="{{$ctrl.spellcheck}}"
+               autocomplete="{{$ctrl.autoComplete}}"
                data-igz-input-blur-on-enter>
 
         <span data-ng-if="$ctrl.inputIcon" class="input-icon {{$ctrl.inputIcon}}"></span>
