@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('iguazio.app')
+    angular.module('iguazio.dashboard-controls')
         .directive('igzValidatePasswordConfirmation', igzValidatePasswordConfirmation);
 
     function igzValidatePasswordConfirmation(lodash) {
