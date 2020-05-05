@@ -46,6 +46,10 @@
      *     This is a one-way binding that is watched for changes.
      * @param {string} [tabindex=0] - Indicates where the field participates in sequential keyboard navigation.
      *     Forwarded to the `tabindex` attribute of the HTML element.
+     * @param {{text: string, placement: string, delay: number}} [tooltip] - Allows a tooltip hint to open when hovering
+     *     the input field. This is useful for not setting a tooltip on the entire `<igz-validating-input-field>`
+     *     component, which includes the validation rule pop-over too, and it is not desired to show the tooltip when
+     *     hovering on that pop-over, but only when hovering the input field itself.
      * @param {boolean} [trim=true] - Set to `false` to prevent automatic removal of leading and trailing spaces from
      *     entered value.
      * @param {boolean} [onlyValidCharacters=false] - Set to `true` to allow only characters that match the RegExp
