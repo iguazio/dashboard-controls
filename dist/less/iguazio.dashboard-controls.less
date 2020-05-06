@@ -7235,24 +7235,6 @@ ncl-breadcrumbs {
     }
 }
 
-.view-yaml-dialog-wrapper {
-    .ngdialog-content {
-        .view-yaml-dialog-header {
-            .title {
-                margin-bottom: 10px;
-            }
-
-            .copy-to-clipboard {
-                width: 20px;
-            }
-        }
-
-        .monaco-editor {
-            min-width: 700px;
-            min-height: 450px;
-        }
-    }
-}
 .ncl-key-value-input {
     .input-wrapper {
         width: 100%;
@@ -7456,6 +7438,24 @@ ncl-breadcrumbs {
     }
 }
 
+.view-yaml-dialog-wrapper {
+    .ngdialog-content {
+        .view-yaml-dialog-header {
+            .title {
+                margin-bottom: 10px;
+            }
+
+            .copy-to-clipboard {
+                width: 20px;
+            }
+        }
+
+        .monaco-editor {
+            min-width: 700px;
+            min-height: 450px;
+        }
+    }
+}
 .ncl-monaco {
     .ncl-monaco-wrapper {
         padding-top: 20px;
@@ -8226,6 +8226,67 @@ ncl-navigation-tabs {
     }
 }
 
+.ncl-version-configuration {
+    > .igz-scrollable-container {
+        padding: 24px 25px 22px 41px;
+    }
+
+    .ncl-version-configuration-wrapper {
+        > .row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+
+            .configuration-block {
+                padding: 16px 23px 16px;
+                background-color: @white;
+                border: solid 1px @pale-grey;
+                flex-grow: 1;
+                flex-basis: 500px;
+                overflow: hidden;
+                margin-right: 16px;
+                margin-bottom: 16px;
+
+                &.invisible {
+                    visibility: hidden;
+                }
+
+                .title {
+                    font-size: 16px;
+                    font-weight: bold;
+                    font-style: normal;
+                    font-stretch: normal;
+                    letter-spacing: normal;
+                    text-align: left;
+                    color: @dusk-three;
+                    margin-bottom: 12px;
+                }
+
+                .row {
+                    .label {
+                        display: block;
+                        font-family: Roboto, sans-serif;
+                        font-size: 14px;
+                        font-weight: 500;
+                        font-style: normal;
+                        font-stretch: normal;
+                        letter-spacing: normal;
+                        text-align: left;
+                        color: @dusk-three;
+                        padding: 0;
+                    }
+                }
+
+                .ncl-version-configuration-labels, .ncl-version-configuration-annotations {
+                    .more-info-wrapper {
+                        height: 20px;
+                    }
+                }
+            }
+        }
+    }
+}
+
 .ncl-version-monitoring {
     > .igz-scrollable-container {
         padding: 24px 25px 22px 41px;
@@ -8339,67 +8400,6 @@ ncl-navigation-tabs {
                         padding: 5px;
                         margin-left: 24px;
                         max-height: 232px;
-                    }
-                }
-            }
-        }
-    }
-}
-
-.ncl-version-configuration {
-    > .igz-scrollable-container {
-        padding: 24px 25px 22px 41px;
-    }
-
-    .ncl-version-configuration-wrapper {
-        > .row {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-
-            .configuration-block {
-                padding: 16px 23px 16px;
-                background-color: @white;
-                border: solid 1px @pale-grey;
-                flex-grow: 1;
-                flex-basis: 500px;
-                overflow: hidden;
-                margin-right: 16px;
-                margin-bottom: 16px;
-
-                &.invisible {
-                    visibility: hidden;
-                }
-
-                .title {
-                    font-size: 16px;
-                    font-weight: bold;
-                    font-style: normal;
-                    font-stretch: normal;
-                    letter-spacing: normal;
-                    text-align: left;
-                    color: @dusk-three;
-                    margin-bottom: 12px;
-                }
-
-                .row {
-                    .label {
-                        display: block;
-                        font-family: Roboto, sans-serif;
-                        font-size: 14px;
-                        font-weight: 500;
-                        font-style: normal;
-                        font-stretch: normal;
-                        letter-spacing: normal;
-                        text-align: left;
-                        color: @dusk-three;
-                        padding: 0;
-                    }
-                }
-
-                .ncl-version-configuration-labels, .ncl-version-configuration-annotations {
-                    .more-info-wrapper {
-                        height: 20px;
                     }
                 }
             }
