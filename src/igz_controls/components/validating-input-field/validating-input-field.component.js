@@ -114,7 +114,7 @@
                 validationIsRequired: '<?',
                 validationMaxLength: '@?',
                 validationPattern: '<?',
-                validationRules: '<?'
+                validationRules: '<*?'
             },
             templateUrl: 'igz_controls/components/validating-input-field/validating-input-field.tpl.html',
             controller: IgzValidatingInputFieldController
@@ -272,7 +272,7 @@
             }
 
             if (angular.isDefined(changes.validationRules)) {
-                ctrl.validationRules = lodash.defaultTo(changes.validationRules.currentValue, []);
+                ctrl.validationRules = angular.copy(lodash.defaultTo(changes.validationRules.currentValue, []));
             }
         }
 
@@ -351,7 +351,7 @@
 
         /**
          * Loses focus from input field.
-         * @param {Event} event - the `blur` event object.
+         * @param {FocusEvent} event - the `blur` event object.
          */
         function onBlur(event) {
             if (ctrl.preventInputBlur) {
