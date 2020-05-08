@@ -12,7 +12,7 @@
         });
 
     function NclVersionConfigurationBasicSettingsController($rootScope, $timeout, $i18next, i18next, lodash,
-                                                            ConfigService, DialogsService, ValidatingPatternsService) {
+                                                            ConfigService, DialogsService, ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -44,7 +44,9 @@
         ctrl.$onInit = onInit;
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
-        ctrl.validationPatterns = ValidatingPatternsService;
+        ctrl.validationRules = {
+            integer: ValidationService.getValidationRules('integer')
+        };
 
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.setPriority = setPriority;

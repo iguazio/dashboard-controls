@@ -18,7 +18,7 @@
 
     function NclFunctionEventPaneController($element, $i18next, $timeout, $q, download, i18next, lodash, moment,
                                             ConfigService, ConverterService, DialogsService, EventHelperService,
-                                            VersionHelperService) {
+                                            ValidationService, VersionHelperService) {
         var ctrl = this;
 
         var canceler = null;
@@ -121,6 +121,9 @@
         ctrl.selectedResponseTab = ctrl.responseNavigationTabs[0];
         ctrl.selectedLeftBarTab = ctrl.leftBarNavigationTabs[0];
         ctrl.showLeftBar = false;
+        ctrl.maxLengths = {
+            eventName: ValidationService.getMaxLength('function.eventName')
+        };
         ctrl.igzScrollConfig = {
             maxElementsCount: 4,
             childrenSelector: '.table-body'

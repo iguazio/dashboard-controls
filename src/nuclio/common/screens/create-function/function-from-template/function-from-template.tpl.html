@@ -78,8 +78,8 @@
                                                                 data-form-object="$ctrl.functionFromTemplateForm['templateForm' + $index]"
                                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                                 data-validation-is-required="true"
-                                                                data-validation-rules="$ctrl.validationRules"
-                                                                data-validation-max-length="{{$ctrl.nameMaxLength}}"
+                                                                data-validation-rules="$ctrl.validationRules.functionName"
+                                                                data-validation-max-length="{{$ctrl.maxLengths.functionName}}"
                                                                 data-input-model-options="$ctrl.inputModelOptions"
                                                                 data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_FUNCTION_NAME' | i18next }}...">
                                     </igz-validating-input-field>

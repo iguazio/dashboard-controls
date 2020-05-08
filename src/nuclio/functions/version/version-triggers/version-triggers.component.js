@@ -11,7 +11,7 @@
         });
 
     function NclVersionTriggersController($rootScope, $scope, $timeout, $i18next, i18next, lodash, DialogsService,
-                                          FunctionsService, ValidatingPatternsService, VersionHelperService) {
+                                          FunctionsService, ValidationService, VersionHelperService) {
         var ctrl = this;
         var lng = i18next.language;
         var uniqueClasses = ['http'];
@@ -25,7 +25,11 @@
         };
 
         ctrl.isCreateModeActive = false;
-        ctrl.validationRules = [];
+        ctrl.validationRules = {
+            host: {
+                key: ValidationService.getValidationRules('k8s.dns1123Subdomain')
+            }
+        };
         ctrl.triggers = [];
 
         ctrl.$onInit = onInit;
@@ -77,11 +81,6 @@
                 return triggersItem;
             });
             ctrl.classList = FunctionsService.getClassesList('trigger');
-            ctrl.validationRules = {
-                host: {
-                    key: ValidatingPatternsService.getValidationRules('k8s.dns1123Subdomain')
-                }
-            };
 
             $scope.$on('edit-item-has-been-changed', updateTriggersChangesState);
 

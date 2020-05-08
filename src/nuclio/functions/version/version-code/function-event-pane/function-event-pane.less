@@ -44,12 +44,6 @@
 
                 .main-header {
                     padding-left: 7px;
-
-                    .igz-elastic-input-field {
-                        input {
-                            max-width: 160px !important;
-                        }
-                    }
                 }
             }
 
@@ -227,6 +221,7 @@
             .left-side-elements {
                 display: flex;
                 align-items: center;
+                width: 100%;
 
                 .igz-icon-hamburger-menu {
                     color: @dusk-three;
@@ -234,25 +229,16 @@
                     font-size: 12px;
                 }
 
-                .igz-elastic-input-field {
-                    .editable {
-                        input {
-                            font-weight: bold;
-                            font-size: 16px;
+                igz-validating-input-field {
+                    font-weight: bold;
+                    font-size: 16px;
+                    width: 100%;
+                    min-width: 100px;
+                    margin-right: 10px;
 
-                            &:not(:focus) {
-                                border-color: transparent;
-                                max-width: 300px;
-
-                                &:hover {
-                                    border: solid 1px @pale-grey;
-                                }
-                            }
-                        }
-
-                        &.elastic-input-invalid input {
-                            border: solid 1px @darkish-pink;
-                        }
+                    input {
+                        font-weight: bold;
+                        font-size: 16px;
                     }
                 }
             }

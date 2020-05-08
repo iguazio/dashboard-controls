@@ -17,7 +17,7 @@
 
     function FunctionFromScratchController($document, $state, $timeout, $i18next, i18next, lodash, ConfigService,
                                            DialogsService, EventHelperService, FunctionsService,
-                                           ValidatingPatternsService) {
+                                           ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -28,10 +28,14 @@
                 'default': 0
             }
         };
-        ctrl.nameMaxLength = Infinity;
+        ctrl.maxLengths = {
+            functionName: ValidationService.getMaxLength('function.name')
+        };
         ctrl.runtimes = [];
         ctrl.selectedRuntime = null;
-        ctrl.validationRules = [];
+        ctrl.validationRules = {
+            functionName: ValidationService.getValidationRules('function.name')
+        };
 
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
@@ -48,10 +52,8 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.nameMaxLength = ValidatingPatternsService.getMaxLength('function.name');
             ctrl.runtimes = getRuntimes();
             ctrl.selectedRuntime = getDefaultRuntime();
-            ctrl.validationRules = ValidatingPatternsService.getValidationRules('function.name');
 
             $document.on('keypress', createFunction);
 

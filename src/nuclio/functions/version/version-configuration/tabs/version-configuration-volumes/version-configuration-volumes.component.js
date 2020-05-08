@@ -13,7 +13,7 @@
 
     function NclVersionConfigurationVolumesController($rootScope, $scope, $timeout, $i18next, i18next, lodash,
                                                       DialogsService, FormValidationService,
-                                                      FunctionsService, ValidatingPatternsService) {
+                                                      FunctionsService, ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -32,17 +32,11 @@
         };
         ctrl.validationRules = {
             itemName: [],
-            itemPath: [
-                {
-                    label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 255}),
-                    pattern: /^(?=[\S\s]{1,255}$)/
-                },
-                {
-                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
-                    pattern: validateUniqueness.bind(null, 'volumeMount.mountPath')
-                }
-            ],
-            containerName: ValidatingPatternsService.getValidationRules('containerName')
+            itemPath: ValidationService.getValidationRules('function.itemPath', [{
+                label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                pattern: validateUniqueness.bind(null, 'volumeMount.mountPath')
+            }]),
+            containerName: ValidationService.getValidationRules('container.name')
         };
 
         ctrl.$onInit = onInit;
@@ -60,7 +54,7 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.validationRules.itemName = ValidatingPatternsService.getValidationRules('k8s.dns1123Label').concat([
+            ctrl.validationRules.itemName = ValidationService.getValidationRules('k8s.dns1123Label').concat([
                 {
                     label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
                     pattern: validateUniqueness.bind(null, 'volume.name')

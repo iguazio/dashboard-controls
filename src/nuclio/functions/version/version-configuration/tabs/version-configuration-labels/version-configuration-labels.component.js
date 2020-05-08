@@ -13,7 +13,7 @@
 
     function NclVersionConfigurationLabelsController($element, $i18next, $rootScope, $timeout, i18next, lodash,
                                                      FormValidationService, PreventDropdownCutOffService,
-                                                     ValidatingPatternsService, VersionHelperService) {
+                                                     ValidationService, VersionHelperService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -38,8 +38,14 @@
             name: $i18next.t('common:LABEL', {lng: lng})
         });
         ctrl.validationRules = {
-            key: [],
-            value: []
+            key: ValidationService.getValidationRules('function.label.key').concat([
+                {
+                    name: 'uniqueness',
+                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                    pattern: validateUniqueness
+                }
+            ]),
+            value: ValidationService.getValidationRules('k8s.qualifiedName')
         };
 
         ctrl.$onInit = onInit;
@@ -59,20 +65,6 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.validationRules.key = ValidatingPatternsService.getValidationRules('k8s.prefixedQualifiedName')
-                .concat([
-                    {
-                        name: 'maxLength',
-                        label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 250}),
-                        pattern: /^[\S\s]{1,256}$/
-                    },
-                    {
-                        name: 'uniqueness',
-                        label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
-                        pattern: validateUniqueness
-                    }
-                ]);
-            ctrl.validationRules.value = ValidatingPatternsService.getValidationRules('k8s.qualifiedName');
             var labels = lodash.get(ctrl.version, 'metadata.labels', []);
 
             ctrl.labels = lodash.chain(labels)

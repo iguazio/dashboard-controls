@@ -54,19 +54,17 @@
                               data-ng-if="!$ctrl.fixedLeftBar"
                               data-ng-click="$ctrl.toggleLeftBar()">
                         </span>
-
-                        <igz-elastic-input-field data-model="$ctrl.selectedEvent.spec.displayName"
-                                                 data-model-options="{allowInvalid:true}"
-                                                 data-on-change="$ctrl.inputValueCallback(item, 'spec.displayName')"
-                                                 data-input-name="nameInput"
-                                                 data-form-object="$ctrl.testEventsForm"
-                                                 data-required="false"
-                                                 data-placeholder="{{ 'functions:PLACEHOLDER.EVENT_NAME' | i18next }}"
-                                                 data-max-length="128"
-                                                 data-min-length="0">
-                        </igz-elastic-input-field>
+                        <igz-validating-input-field data-input-name="spec.displayName"
+                                                    data-field-type="input"
+                                                    data-input-value="$ctrl.selectedEvent.spec.displayName"
+                                                    data-form-object="$ctrl.testEventsForm"
+                                                    data-placeholder-text="{{ 'functions:PLACEHOLDER.EVENT_NAME' | i18next }}"
+                                                    data-borders-mode="hover"
+                                                    data-validation-max-length="{{$ctrl.maxLengths.eventName}}"
+                                                    data-hide-counter="true"
+                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)">
+                        </igz-validating-input-field>
                     </div>
-
                     <div class="right-side-elements">
                         <button class="new-test-event"
                                 data-ng-click="$ctrl.resetData()"

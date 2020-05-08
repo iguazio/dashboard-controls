@@ -15,7 +15,7 @@
         });
 
     function DuplicateFunctionDialogController($state, $i18next, i18next, lodash, DialogsService, EventHelperService,
-                                               FormValidationService, ValidatingPatternsService) {
+                                               FormValidationService, ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -25,28 +25,18 @@
                 'default': 0
             }
         };
-        ctrl.nameMaxLength = Infinity;
+        ctrl.maxLengths = {
+            functionName: ValidationService.getMaxLength('function.name')
+        };
         ctrl.nameTakenError = false;
         ctrl.newFunctionName = '';
-        ctrl.validationRules = [];
-
-        ctrl.$onInit = onInit;
+        ctrl.validationRules = {
+            functionName: ValidationService.getValidationRules('function.name')
+        };
 
         ctrl.duplicateFunction = duplicateFunction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.onClose = onClose;
-
-        //
-        // Hook methods
-        //
-
-        /**
-         * Initialization method
-         */
-        function onInit() {
-            ctrl.nameMaxLength = ValidatingPatternsService.getMaxLength('function.name');
-            ctrl.validationRules = ValidatingPatternsService.getValidationRules('function.name');
-        }
 
         //
         // Public methods

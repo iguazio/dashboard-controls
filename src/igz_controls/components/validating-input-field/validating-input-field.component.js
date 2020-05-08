@@ -18,7 +18,7 @@
      * @param {string} [compareInputValue] - If provided, the input will be valid if it matches this, or otherwise it
      *     will be invalid.
      * @param {string} [fieldType='input'] - Determines the type of field:
-     *     - `'input'` (default): a text box
+     *     - `'input'`   : a text box
      *     - `'password'`: a text box with concealed characters
      *     - `'textarea'`: a multi-line text-area
      *     - `'schedule'`: a mix of multiple drop-down menu fields to conveniently create a recurring schedule

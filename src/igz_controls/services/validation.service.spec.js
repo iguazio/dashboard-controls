@@ -1,26 +1,26 @@
-describe('ValidatingPatternsService: ', function () {
-    var ValidatingPatternsService;
+describe('ValidationService: ', function () {
+    var ValidationService;
 
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_ValidatingPatternsService_) {
-            ValidatingPatternsService = _ValidatingPatternsService_;
+        inject(function (_ValidationService_) {
+            ValidationService = _ValidationService_;
         });
     });
 
     afterEach(function () {
-        ValidatingPatternsService = null;
+        ValidationService = null;
     });
 
     describe('getMaxLength(): ', function () {
         it('should return default maximum length of 128 px for unknown field names', function () {
-            var result = ValidatingPatternsService.getMaxLength('test.name');
+            var result = ValidationService.getMaxLength('test.name');
             expect(result).toEqual(128);
         });
 
         it('should return maximum length for known field name', function () {
-            var result = ValidatingPatternsService.getMaxLength('default');
+            var result = ValidationService.getMaxLength('default');
             expect(result).toEqual(128);
         });
     });

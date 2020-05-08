@@ -12,7 +12,7 @@
         });
 
     function NclVersionConfigurationBuildController($rootScope, $scope, $timeout, $i18next, i18next, lodash, ngDialog,
-                                                    Upload, ConfigService, ValidatingPatternsService) {
+                                                    Upload, ConfigService, ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
         var uploadType = '';
@@ -38,7 +38,10 @@
         ctrl.disabled = true;
 
         ctrl.defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
-        ctrl.imageNameValidationPattern = ValidatingPatternsService.dockerReference;
+        ctrl.imageNameValidationPattern = ValidationService.dockerReference;
+        ctrl.maxLengths = {
+            imageName: ValidationService.getMaxLength('function.imageName')
+        };
 
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;

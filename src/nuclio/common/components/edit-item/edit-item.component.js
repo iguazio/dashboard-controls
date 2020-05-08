@@ -19,7 +19,7 @@
 
     function NclEditItemController($document, $element, $rootScope, $scope, $timeout, $i18next, i18next, lodash,
                                    ConfigService, ConverterService, FormValidationService, PreventDropdownCutOffService,
-                                   ValidatingPatternsService) {
+                                   ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -39,19 +39,19 @@
             }
         };
 
-        ctrl.$onInit = onInit;
-        ctrl.$postLink = postLink;
-        ctrl.$onDestroy = onDestroy;
+        ctrl.attributesValidationRules = {
+            number: ValidationService.getValidationRules('number'),
+            string: ValidationService.getValidationRules('function.string'),
+            arrayStr: ValidationService.getValidationRules('function.string'),
+            subscriptionQoS: ValidationService.getValidationRules('function.subscriptionQoS'),
+            arrayInt: ValidationService.getValidationRules('function.arrayInt'),
+            interval: ValidationService.getValidationRules('function.interval')
+        };
 
-        ctrl.numberValidationPattern = /^\d+$/;
-        ctrl.arrayIntValidationPattern = /^(\d+[-,]?)*\d$/;
-        ctrl.arrayStrValidationPattern = /^.{1,128}$/;
-        ctrl.intervalValidationPattern = /^\d+(ms|[smh])$/;
-        ctrl.stringValidationPattern = /^.{1,128}$/;
-        ctrl.subscriptionQoSValidationPattern = /^[0-2]$/;
-
-        ctrl.containerNameValidationPattern = ValidatingPatternsService.container;
         ctrl.defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
+        ctrl.maxLengths = {
+            containerSubPath: ValidationService.getMaxLength('function.containerSubPath')
+        };
 
         ctrl.placeholder = '';
         ctrl.tooltips = {
@@ -70,6 +70,10 @@
         ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
         ctrl.isNil = lodash.isNil;
 
+        ctrl.$onInit = onInit;
+        ctrl.$postLink = postLink;
+        ctrl.$onDestroy = onDestroy;
+
         ctrl.addNewIngress = addNewIngress;
         ctrl.addNewAnnotation = addNewAnnotation;
         ctrl.addNewSubscription = addNewSubscription;
@@ -80,7 +84,6 @@
         ctrl.getAttrValue = getAttrValue;
         ctrl.getInputValue = getInputValue;
         ctrl.getTooltip = getTooltip;
-        ctrl.getValidationPattern = getValidationPattern;
         ctrl.getWorkerAvailabilityTimeoutMillisecondsDescription = getWorkerAvailabilityTimeoutMillisecondsDescription;
         ctrl.handleIngressAction = handleIngressAction;
         ctrl.handleAnnotationAction = handleAnnotationAction;
@@ -473,15 +476,6 @@
          */
         function getTooltip() {
             return lodash.get(ctrl.tooltips, ctrl.selectedClass.id, '');
-        }
-
-        /**
-         * Gets validation patterns depends on type of attribute
-         * @param {string} pattern
-         * @returns {RegExp}
-         */
-        function getValidationPattern(pattern) {
-            return lodash.get(ctrl, pattern + 'ValidationPattern', ctrl.stringValidationPattern);
         }
 
         /**
