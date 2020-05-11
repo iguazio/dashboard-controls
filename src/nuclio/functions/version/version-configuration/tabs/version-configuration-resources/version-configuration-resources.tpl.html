@@ -4,7 +4,13 @@
         <div class="row">
 
             <div class="igz-row form-row range-inputs-row">
-                <div class="igz-col-10 row-title">{{ 'common:MEMORY' | i18next }}</div>
+                <div class="igz-col-20 row-title">{{ 'common:MEMORY' | i18next }}
+                    <igz-more-info data-trigger="click"
+                                   data-is-html-enabled="true"
+                                   data-is-open="$ctrl.memoryWarningOpen"
+                                   data-icon-type="{{$ctrl.memoryWarningOpen ? 'warn' : 'info'}}"
+                                   data-description="{{ 'common:RESOURCES_WARNING_LIMIT_FILLED_REQUEST_EMPTY' | i18next:{ when: 'the function is deployed' } }}"></igz-more-info>
+                </div>
 
                 <div class="igz-col-40 input-wrapper">
                     <div class="input-title">{{ 'common:REQUEST' | i18next }}</div>
@@ -54,7 +60,13 @@
             </div>
 
             <div class="igz-row form-row range-inputs-row">
-                <div class="igz-col-10 row-title">{{ 'common:CPU' | i18next }}</div>
+                <div class="igz-col-20 row-title">{{ 'common:CPU' | i18next }}
+                    <igz-more-info data-trigger="click"
+                                   data-is-html-enabled="true"
+                                   data-is-open="$ctrl.cpuWarningOpen"
+                                   data-icon-type="{{$ctrl.cpuWarningOpen ? 'warn' : 'info'}}"
+                                   data-description="{{ 'common:RESOURCES_WARNING_LIMIT_FILLED_REQUEST_EMPTY' | i18next:{ when: 'the function is deployed' } }}"></igz-more-info>
+                </div>
 
                 <div class="igz-col-40 input-wrapper">
                     <div class="input-title">{{ 'common:REQUEST' | i18next }}</div>
@@ -108,7 +120,7 @@
             </div>
 
             <div class="igz-row form-row range-inputs-row">
-                <div class="igz-col-10 row-title">{{ 'common:GPU' | i18next }}</div>
+                <div class="igz-col-20 row-title">{{ 'common:GPU' | i18next }}</div>
                 <div class="igz-col-40 input-wrapper"></div>
                 <div class="igz-col-40 input-wrapper"
                      data-uib-tooltip="{{ 'functions:TOOLTIP.GPU_LIMIT' | i18next }}"
@@ -121,7 +133,6 @@
                                           data-validation-is-required="false"
                                           data-form-object="$ctrl.resourcesForm"
                                           data-input-name="limitsGpu"
-                                          data-placeholder="1 - 4"
                                           data-update-number-input-callback="$ctrl.inputGpuValueCallback(newData, field)"
                                           data-update-number-input-field="limits"
                                           data-min-value="1"
@@ -134,7 +145,7 @@
             </div>
 
             <div class="igz-row form-row range-inputs-row">
-                <div class="igz-col-10 row-title">
+                <div class="igz-col-20 row-title">
                     {{ 'common:REPLICAS' | i18next }}
                 </div>
                 <div class="igz-col-40 input-wrapper">
@@ -195,7 +206,7 @@
                                    data-trigger="click">
                     </igz-more-info>
                 </div>
-                <div class="igz-col-65 row-input slider"
+                <div class="igz-col-75 row-input slider"
                      data-uib-tooltip="{{ 'functions:TOOLTIP.INACTIVITY_WINDOW' | i18next }}"
                      data-tooltip-enable="$ctrl.windowSizeSlider.options.disabled"
                      data-tooltip-append-to-body="true"
@@ -215,7 +226,7 @@
                                    data-trigger="click">
                     </igz-more-info>
                 </div>
-                <div class="igz-col-65 row-input slider">
+                <div class="igz-col-75 row-input slider">
                     <igz-slider-input-block data-slider-config="$ctrl.targetCpuSliderConfig"
                                             data-measure-units="null"
                                             data-value-unit="$ctrl.targetCpuValueUnit"

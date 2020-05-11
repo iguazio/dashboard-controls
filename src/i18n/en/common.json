@@ -387,6 +387,7 @@
     "RESET_PASSWORD": "Reset password",
     "RESET_ZOOM": "Reset Zoom",
     "RESOURCES": "Resources",
+    "RESOURCES_WARNING_LIMIT_FILLED_REQUEST_EMPTY": "The requested resources are allocated when {{when}}. When setting <b>\"Limit\"</b> without setting <b>\"Request\"</b>, the limit is also used as the resource request and therefore allocated upfront, which isn't recommended.",
     "RESTART": "Restart",
     "REVOKE": "Revoke",
     "ROWS_PER_PAGE": "Rows per page",
