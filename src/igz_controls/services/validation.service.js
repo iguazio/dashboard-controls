@@ -171,7 +171,7 @@
 
                 return {
                     name: 'noConsecutiveCharacters',
-                    label: $i18next.t('common:NO_CONSECUTIVE_CHARACTER', {lng: lng}) + ': (' + convertToLabel(chars) + ')',
+                    label: $i18next.t('common:NO_CONSECUTIVE_CHARACTER', {lng: lng}) + ': ' + convertToLabel(chars),
                     pattern: new RegExp('^' + convertedPattern)
                 }
             },
@@ -207,7 +207,7 @@
                 generateRule.beginEndNotWith('@ .'),
                 {
                     name: 'exactlyOne',
-                    label: $i18next.t('common:EXACTLY_ONE', {lng: lng}) + ': @',
+                    label: $i18next.t('common:MUST_CONTAIN_EXACTLY_ONE', {lng: lng}) + ': @',
                     pattern: /^[^@]+@[^@]+$/
                 },
                 {
@@ -322,7 +322,8 @@
                 ],
                 arrayInt: [
                     generateRule.beginEndWith('0-9'),
-                    generateRule.validCharacters('0-9 - ,')
+                    generateRule.validCharacters('0-9 - ,'),
+                    generateRule.noConsecutiveCharacters(',-')
                 ],
                 interval: [
                     generateRule.beginWith('0-9'),
@@ -333,7 +334,7 @@
                     },
                     {
                         name: 'end',
-                        label: $i18next.t('common:END_WITH', {lng: lng}) + ': ms m s h',
+                        label: $i18next.t('common:END_WITH', {lng: lng}) + ': ms, m, s, h',
                         pattern: /\d+(ms|[smh])$/
                     }
                 ]
@@ -433,7 +434,7 @@
                     {
                         name: 'begin',
                         label: $i18next.t('common:BEGIN_WITH', {lng: lng}) + ': ldaps://' ,
-                        pattern: new RegExp('^ldaps://')
+                        pattern: /^ldaps:\/\//
                     }
                 ]
             },
@@ -554,9 +555,11 @@
          * Converts characters string to readable format
          * Note: converts Hyphens to En Dashes, replaces one space with comma and space,
          *       replaces letter `s` with `spaces` word
-         * Example: 'a-z A-Z - _ *' -> 'a–z, A–Z, –, _, *'
          * @param {string} chars - characters to convert
          * @returns {string} - converted string
+         * @example
+         * convertToLabel('a-z A-Z - _ *');
+         * // => 'a–z, A–Z, –, _, *'
          */
         function convertToLabel(chars) {
             return chars.replace(/-/g, '–')
@@ -566,9 +569,11 @@
 
         /**
          * Converts characters string to valid RegExp string that will be placed into RegExp pattern
-         * For example: 'a-z A-Z - _ *' -> 'a-zA-Z\-\_\*'
          * @param {string} chars - characters to convert
          * @returns {string} - converted string
+         * @example
+         * convertToPattern('a-z A-Z - _ *');
+         * // => 'a-zA-Z\-\_\*'
          */
         function convertToPattern(chars) {
             return chars.split(' ').map(function (patternItem) {

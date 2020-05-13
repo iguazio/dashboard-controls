@@ -18,7 +18,7 @@
      * @param {string} [compareInputValue] - If provided, the input will be valid if it matches this, or otherwise it
      *     will be invalid.
      * @param {string} [fieldType='input'] - Determines the type of field:
-     *     - `'input'`   : a text box
+     *     - `'input'` (default): a text box
      *     - `'password'`: a text box with concealed characters
      *     - `'textarea'`: a multi-line text-area
      *     - `'schedule'`: a mix of multiple drop-down menu fields to conveniently create a recurring schedule
@@ -89,7 +89,7 @@
                 bordersMode: '@?',
                 compareInputValue: '<?',
                 enterCallback: '&?',
-                fieldType: '@',
+                fieldType: '@?',
                 formObject: '<?',
                 hideCounter: '<?',
                 inputIcon: '@',
@@ -129,8 +129,15 @@
             HOVER: 'hover',
             FOCUS: 'focus'
         };
+        var FIELD_TYPES = {
+            INPUT: 'input',
+            PASSWORD: 'password',
+            TEXTAREA: 'textarea',
+            SCHEDULE: 'schedule'
+        };
         var BORDERS_CLASS_BASE = 'borders-';
         var defaultBorderMode = BORDER_MODES.ALWAYS;
+        var defaultFieldType = FIELD_TYPES.INPUT;
         var defaultInputModelOptions = {
             updateOn: 'default blur',
             debounce: {
@@ -181,6 +188,7 @@
                 autoComplete: 'off',
                 bordersMode: defaultBorderMode,
                 enterCallback: angular.noop,
+                fieldType: defaultFieldType,
                 hideCounter: false,
                 inputModelOptions: {},
                 isClearIcon: false,
@@ -204,7 +212,7 @@
             });
 
             // if provided `bordersMode` attribute is not one of the available values, set it to a default
-            if (!lodash.has(BORDER_MODES, ctrl.bordersMode)) {
+            if (!lodash.values(BORDER_MODES).includes(ctrl.bordersMode)) {
                 ctrl.bordersMode = defaultBorderMode;
             }
             ctrl.bordersModeClass = BORDERS_CLASS_BASE + ctrl.bordersMode;

@@ -80,6 +80,7 @@ describe('igzValidatingInputField component:', function () {
             expect(ctrl.spellcheck).toBeTruthy();
             expect(ctrl.updateDataField).toEqual('attributeName');
             expect(ctrl.bordersModeClass).toEqual('borders-always');
+            expect(ctrl.fieldType).toEqual('input');
         });
     });
 

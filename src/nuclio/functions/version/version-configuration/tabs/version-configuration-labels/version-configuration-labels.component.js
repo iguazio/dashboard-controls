@@ -38,7 +38,7 @@
             name: $i18next.t('common:LABEL', {lng: lng})
         });
         ctrl.validationRules = {
-            key: ValidationService.getValidationRules('function.label.key').concat([
+            key: ValidationService.getValidationRules('function.label.key', [
                 {
                     name: 'uniqueness',
                     label: $i18next.t('functions:UNIQUENESS', {lng: lng}),

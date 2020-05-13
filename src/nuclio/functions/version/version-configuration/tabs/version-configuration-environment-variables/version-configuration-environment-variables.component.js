@@ -31,7 +31,7 @@
             }]),
             secretKey: ValidationService.getValidationRules('k8s.configMapKey'),
             secret: ValidationService.getValidationRules('k8s.dns1123Subdomain'),
-            configmapKey: ValidationService.getValidationRules('k8s.configMapKey').concat([
+            configmapKey: ValidationService.getValidationRules('k8s.configMapKey', [
                 {
                     name: 'uniqueness',
                     label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
