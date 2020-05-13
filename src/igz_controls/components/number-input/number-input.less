@@ -25,7 +25,7 @@
             outline: none;
         }
 
-        &:focus, &.focused {
+        &:focus-within, &.focused {
             outline: 0;
             border: @number-input-not-disabled-hover-focus-border;
         }
@@ -119,6 +119,7 @@
             cursor: pointer;
             display: block;
             line-height: 11px;
+            outline: 0;
 
             &:hover {
                 color: @number-input-arrow-block-icon-hover-color;

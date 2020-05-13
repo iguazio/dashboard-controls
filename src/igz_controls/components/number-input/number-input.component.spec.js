@@ -191,7 +191,7 @@ describe('igzNumberInput component:', function () {
         });
     });
 
-    describe('checkInvalidation(): ', function () {
+    describe('isValid(): ', function () {
         beforeEach(function () {
             ctrl.formObject = {
                 'input_name': {
@@ -205,7 +205,7 @@ describe('igzNumberInput component:', function () {
             spyOn(ctrl, 'isShowFieldInvalidState').and.returnValue(true);
 
             ctrl.currentValue = '1';
-            ctrl.checkInvalidation();
+            ctrl.isValid();
 
             expect(ctrl.isShowFieldInvalidState).toHaveBeenCalled();
         });

@@ -29,7 +29,8 @@
      * @param {Object} [inputModelOptions] - A `ngModelOptions` object to forward to `ng-model-options` attribute of
      *     the HTML `<input>` or `<textarea>` element. Some options may be ignored/overridden by this component to make
      *     some of its features work properly.
-     * @param {string} inputName - The name of the filed, will be forwarded to the `name` attribute of the HTML element.
+     * @param {string} inputName - The name of the filed, will be forwarded to the `name` attribute of the HTML
+     *     `<input>` element.
      * @param {*} inputValue - The initial value of the field. This is a one-way binding that is watched for changes.
      * @param {function} [itemBlurCallback] - A callback function for `blur` event. Invoked with `inputValue` and
      *     `inputName` when the field loses focus. Note that when `is-data-revert` attribute is `false` and blur event
