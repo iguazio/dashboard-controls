@@ -19,7 +19,7 @@
         });
 
     function FunctionFromTemplateController($element, $window, $scope, $state, $timeout, $i18next, i18next, lodash,
-                                            ngDialog, DialogsService, ValidatingPatternsService) {
+                                            ngDialog, DialogsService, ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
         var templatesOriginalObject = {}; // will always save original templates
@@ -33,7 +33,9 @@
                 'default': 300
             }
         };
-        ctrl.nameMaxLength = Infinity;
+        ctrl.maxLengths = {
+            functionName: ValidationService.getMaxLength('function.name')
+        };
         ctrl.page = {};
         ctrl.runtimeFilters = [];
         ctrl.searchQuery = '';
@@ -44,7 +46,9 @@
         };
         ctrl.selectedTemplate = '';
         ctrl.templatesWorkingCopy = {};
-        ctrl.validationRules = [];
+        ctrl.validationRules = {
+            functionName: ValidationService.getValidationRules('function.name')
+        };
 
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
@@ -71,8 +75,6 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.nameMaxLength = ValidatingPatternsService.getMaxLength('function.name');
-            ctrl.validationRules = ValidatingPatternsService.getValidationRules('function.name');
             ctrl.toggleSplashScreen({ value: true });
 
             initFunctionData();

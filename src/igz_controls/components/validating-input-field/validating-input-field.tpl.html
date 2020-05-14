@@ -1,6 +1,6 @@
 <div class="validating-input-field"
      data-ng-class="{'focused': $ctrl.inputFocused, 'with-counter': $ctrl.isCounterVisible()}">
-    <div data-ng-if="$ctrl.fieldType === 'input'">
+    <div data-ng-if="$ctrl.selectedFieldType === 'input'">
         <div class="validation-icon"
              data-ng-if="$ctrl.validationRules.length > 0 && !$ctrl.readOnly && ($ctrl.inputFocused || $ctrl.isFieldInvalid())"
              data-ng-mousedown="$ctrl.preventInputBlur = true"
@@ -68,7 +68,7 @@
         </div>
     </div>
 
-    <div data-ng-if="$ctrl.fieldType === 'textarea'">
+    <div data-ng-if="$ctrl.selectedFieldType === 'textarea'">
         <div class="textarea-counter"
              data-ng-class="[$ctrl.inputFocused ? '' : $ctrl.bordersModeClass, {'invalid': $ctrl.getRemainingCharactersCount() < 0}]"
              data-ng-if="$ctrl.isCounterVisible()">{{$ctrl.getRemainingCharactersCount()}}
@@ -91,7 +91,7 @@
         </textarea>
     </div>
 
-    <div data-ng-if="$ctrl.fieldType === 'password'">
+    <div data-ng-if="$ctrl.selectedFieldType === 'password'">
         <div class="validation-icon"
              data-ng-if="$ctrl.validationRules.length > 0 && !$ctrl.readOnly && ($ctrl.inputFocused || $ctrl.isFieldInvalid())"
              data-ng-mousedown="$ctrl.preventInputBlur = true"
@@ -151,7 +151,7 @@
         </div>
     </div>
 
-    <div data-ng-if="$ctrl.fieldType === 'schedule'">
+    <div data-ng-if="$ctrl.selectedFieldType === 'schedule'">
         <cron-selection class="field"
                         data-ng-class="{'invalid': $ctrl.isFieldValid()}"
                         data-ng-model="$ctrl.data"

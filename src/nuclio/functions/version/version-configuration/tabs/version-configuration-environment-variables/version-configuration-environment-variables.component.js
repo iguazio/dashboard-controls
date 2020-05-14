@@ -14,7 +14,7 @@
     function NclVersionConfigurationEnvironmentVariablesController($element, $i18next, $rootScope, $timeout, i18next,
                                                                    lodash, FormValidationService,
                                                                    PreventDropdownCutOffService,
-                                                                   ValidatingPatternsService) {
+                                                                   ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -24,30 +24,20 @@
             childrenSelector: '.table-body'
         };
         ctrl.validationRules = {
-            key: ValidatingPatternsService.getValidationRules('k8s.envVarName', [{
+            key: ValidationService.getValidationRules('k8s.envVarName', [{
                 name: 'uniqueness',
                 label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
                 pattern: validateUniqueness.bind(null, 'name')
             }]),
-            secretKey: ValidatingPatternsService.getValidationRules('k8s.configMapKey'),
-            secret: ValidatingPatternsService.getValidationRules('k8s.dns1123Subdomain'),
-            configmapKey: [
-                {
-                    name: 'validCharacters',
-                    label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': a–z, A–Z, 0–9, -, _',
-                    pattern: /^[\w-]+$/
-                },
-                {
-                    name: 'maxLength',
-                    label: $i18next.t('common:MAX_LENGTH_CHARACTERS', {lng: lng, count: 253}),
-                    pattern: /^(?=[\S\s]{1,253}$)/
-                },
+            secretKey: ValidationService.getValidationRules('k8s.configMapKey'),
+            secret: ValidationService.getValidationRules('k8s.dns1123Subdomain'),
+            configmapKey: ValidationService.getValidationRules('k8s.configMapKey', [
                 {
                     name: 'uniqueness',
                     label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
                     pattern: validateUniqueness.bind(null, 'valueFrom.configMapKeyRef.key')
                 }
-            ]
+            ])
         };
         ctrl.variables = [];
         ctrl.scrollConfig = {

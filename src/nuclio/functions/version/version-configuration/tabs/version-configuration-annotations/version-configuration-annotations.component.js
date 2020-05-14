@@ -13,7 +13,7 @@
 
     function NclVersionConfigurationAnnotationsController($element, $i18next, $rootScope, $timeout, i18next, lodash,
                                                           FormValidationService, PreventDropdownCutOffService,
-                                                          ValidatingPatternsService) {
+                                                          ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -38,7 +38,13 @@
             name: $i18next.t('functions:TOOLTIP.ANNOTATION', {lng: lng})
         });
         ctrl.validationRules = {
-            key: []
+            key: ValidationService.getValidationRules('k8s.prefixedQualifiedName', [
+                {
+                    name: 'uniqueness',
+                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                    pattern: validateUniqueness
+                }
+            ])
         };
 
         ctrl.$onInit = onInit;
@@ -56,14 +62,6 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.validationRules.key = ValidatingPatternsService.getValidationRules('k8s.prefixedQualifiedName')
-                .concat([
-                    {
-                        name: 'uniqueness',
-                        label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
-                        pattern: validateUniqueness
-                    }
-                ]);
             var annotations =  lodash.get(ctrl.version, 'metadata.annotations', []);
 
             ctrl.annotations = lodash.map(annotations, function (value, key) {
