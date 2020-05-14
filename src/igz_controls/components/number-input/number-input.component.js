@@ -1,13 +1,60 @@
 (function () {
     'use strict';
 
+    /**
+     * @name igzNumberInput
+     * @component
+     *
+     * @description
+     * An input field for numbers. It has up/down arrows to increase/decrease the value. The model is of type `number`
+     * by default, by can be changed to `string` by setting `asString` to `true`. You can optionally add prefix and/or
+     * suffix text to the input field.
+     * The `angular-money-directive` directive is used {@link https://github.com/fiestah/angular-money-directive}.
+     * The `igzValidateElevation` directive is used to allow easily comparing numeric inputs with some unit to another
+     * value with some unit (@see igzValidateElevation).
+     * @param {number|string} currentValue - The initial value of the field.
+     * @param {string} [valueStep='1'] - The size of step for increment/decrement when clicking on the up/down arrows
+     *     of this component.
+     * @param {boolean} [allowEmptyField=false] - Set to `true` to consider field valid when empty (and
+     *     `updateNumberInputCallback` will be invoked when changing input to empty)
+     * @param {boolean} [asString=false] - Set to `true` to receive value as type `string` instead of type `number`.
+     * @param {{power: number|string}} [currentValueUnit] - The unit scale of `currentValue`. Will be forwarded to
+     *     `currentValUnit` attribute of `igzValidateElevation`.
+     * @param {number|string} [defaultValue] - Default value which will be set on initialization and change in case
+     *     input is empty.
+     * @param {Object} [formObject] - The `<form>` or `<ng-form>` element/directive containing this input field.
+     * @param {string} [inputName] - The name of the filed, will be forwarded to the `name` attribute of the HTML
+     *     `<input>` element.
+     * @param {boolean} [isDisabled=false] - Set to `true` to make this field disabled.
+     * @param {boolean} [isFocused=false] - Set to `true` to give focus to this field once it finished initializing.
+     * @param {number} [maxValue=Infinity] - The maximum valid value.
+     * @param {number} [minValue=-Infinity] - The minimum valid value.
+     * @param {function} [itemBlurCallback] - A callback function for `blur` event. Invoked with `event`, `inputValue`
+     *     and `inputName` when the field loses focus.
+     * @param {function} [itemFocusCallback] - A callback function for `focus` event. Invoked with `event` and
+     *     `inputName` when the field becomes focused.
+     * @param {function} [onChange] - A callback function for `change` method on item changed
+     * @param {string} [placeholder] - Placeholder text to display when input is empty.
+     * @param {string} [precision=0] - The number of decimal places of value.
+     * @param {string} [prefixUnit] - Prefix text to show to the left of value (for example: "$").
+     * @param {string} [suffixUnit] - Suffix text to show to the right of the value (for example: "GB").
+     * @param {function} [updateNumberInputCallback] - A callback function for value changes. Invoked with `newData`
+     *     and `field`. When `isDataRevert` is set to `true` this function will be invoked on `blur` event.
+     * @param {string} [updateNumberInputField=inputName] - The field name to be passed as `field` parameter when
+     *     invoking `updateDataCallback` (defaults to `inputName`'s value).
+     * @param {boolean} [validationIsRequired=false] - Set to `true` to make this field mandatory. The field will be
+     *     invalid if it is empty.
+     * @param {number|string} [validationValue] - The value to compare `currentValue` to. Will be forwarded to
+     *     `compareVal` attribute of `igzValidateElevation`.
+     * @param {{power: number|string}} [validationValueUnit] - The unit scale of `validationValue`. Will be forwarded to
+     *     `compareValUnit` attribute of `igzValidateElevation`.
+     */
     angular.module('iguazio.dashboard-controls')
         .component('igzNumberInput', {
             bindings: {
-                currentValue: '<',
-                valueStep: '@',
                 allowEmptyField: '<?',
                 asString: '<?',
+                currentValue: '<',
                 currentValueUnit: '<?',
                 defaultValue: '<?',
                 formObject: '<?',
@@ -27,48 +74,19 @@
                 updateNumberInputField: '@?',
                 validationIsRequired: '<?',
                 validationValue: '<?',
-                validationValueUnit: '<?'
+                validationValueUnit: '<?',
+                valueStep: '@?'
             },
             templateUrl: 'igz_controls/components/number-input/number-input.tpl.html',
             controller: IgzNumberInputController
         });
 
-    /**
-     * IGZ number input
-     * Based on `angular-money-directive` directive:
-     * https://github.com/fiestah/angular-money-directive
-     * Bindings properties:
-     * currentValue - current value
-     * valueStep - increment/decrement step
-     * allowEmptyField - checks if true, then input field can be empty on initialization and
-     *                   there is an ability to call updateNumberInputCallback with empty value
-     * asString - if true returns the value as a string
-     * currentValueUnit - unit of current value
-     * defaultValue - default value which will be set if field is empty
-     * formObject - form object
-     * inputName - name of input
-     * isDisabled - checks if true, then input is disabled
-     * isFocused - checks if true, then input is focused
-     * maxValue - maximum legal value
-     * minValue - minimum legal value
-     * itemBlurCallback: callback for onBlur event
-     * itemFocusCallback: callback for onFocus event
-     * onChange - method on item changed
-     * placeholder - placeholder text
-     * precision - precision of value, ex. if precision is equal to 2 means that value will be in the form `X.XX`(ex. 2.11)
-     * prefixUnit - prefix unit
-     * suffixUnit - suffix unit
-     * updateNumberInputCallback - callback on item added
-     * updateNumberInputField - name of field that will be changed
-     * validationIsRequired - checks if true, then input field is required(marked it as invalid)
-     * validationValue - validation value
-     * validationValueUnit - validation value unit
-     */
-    function IgzNumberInputController($timeout, $element, lodash, FormValidationService) {
+    function IgzNumberInputController($element, $timeout, lodash, FormValidationService) {
         var ctrl = this;
 
         var firstValidValue;
 
+        ctrl.inputFocused = false;
         ctrl.numberInputChanged = false;
         ctrl.numberInputValid = true;
 
@@ -77,14 +95,14 @@
 
         ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
 
-        ctrl.checkInvalidation = checkInvalidation;
         ctrl.decreaseValue = decreaseValue;
+        ctrl.handleInputBlur = handleInputBlur;
+        ctrl.handleInputChange = handleInputChange;
+        ctrl.handleInputFocus = handleInputFocus;
+        ctrl.handleSuffixClick = handleSuffixClick;
         ctrl.increaseValue = increaseValue;
         ctrl.isShownUnit = isShownUnit;
-        ctrl.onBlurInput = onBlurInput;
-        ctrl.onChangeInput = onChangeInput;
-        ctrl.onUnitClick = onUnitClick;
-        ctrl.setFocus = setFocus;
+        ctrl.isValid = isValid;
 
         //
         // Hook methods
@@ -95,14 +113,21 @@
          */
         function onInit() {
             lodash.defaults(ctrl, {
-                asString: false,
-                validationIsRequired: false,
                 allowEmptyField: false,
+                asString: false,
                 defaultValue: null,
-                minValue: -Infinity,
+                isDisabled: false,
+                isFocused: false,
+                itemBlurCallback: angular.noop,
+                itemFocusCallback: angular.noop,
                 maxValue: Infinity,
+                minValue: -Infinity,
+                placeholder: '',
                 precision: lodash.defaultTo(Number(ctrl.precision), 0),
-                placeholder: ''
+                updateNumberInputCallback: angular.noop,
+                updateNumberInputField: ctrl.inputName,
+                validationIsRequired: false,
+                valueStep: '1'
             });
 
             if (lodash.isNil(ctrl.currentValue) && !lodash.isNil(ctrl.defaultValue)) {
@@ -116,10 +141,10 @@
          * Post linking method
          */
         function postLink() {
-            ctrl.inputFocused = ctrl.isFocused === 'true';
-
-            if (ctrl.isFocused === 'true') {
-                $element.find('.field')[0].focus();
+            var focused = String(ctrl.isFocused).toLowerCase() === 'true';
+            ctrl.inputFocused = focused;
+            if (focused) {
+                $element.find('.field').focus();
             }
         }
 
@@ -131,13 +156,10 @@
          * Checks if the input value is invalid
          * @returns {boolean}
          */
-        function checkInvalidation() {
+        function isValid() {
             if (angular.isDefined(ctrl.formObject) && angular.isDefined(ctrl.formObject[ctrl.inputName])) {
-                if ((lodash.isNil(ctrl.currentValue) || ctrl.currentValue === '') && ctrl.validationIsRequired) {
-                    ctrl.formObject[ctrl.inputName].$setValidity('text', false);
-                } else {
-                    ctrl.formObject[ctrl.inputName].$setValidity('text', true);
-                }
+                var valid = !ctrl.validationIsRequired || !lodash.isNil(ctrl.currentValue) && ctrl.currentValue !== '';
+                ctrl.formObject[ctrl.inputName].$setValidity('text', valid);
             }
 
             return ctrl.isShowFieldInvalidState(ctrl.formObject, ctrl.inputName);
@@ -153,7 +175,7 @@
             // when input is empty set firstValidValue
             ctrl.currentValue = lodash.defaultTo(getDecreasedValue(nextValue), firstValidValue);
 
-            renderInput(ctrl.currentValue !== nextValue);
+            onCurrentValueChange();
         }
 
         /**
@@ -166,7 +188,7 @@
             // when input is empty set firstValidValue
             ctrl.currentValue = lodash.defaultTo(getIncreasedValue(nextValue), firstValidValue);
 
-            renderInput(ctrl.currentValue !== nextValue);
+            onCurrentValueChange();
         }
 
         /**
@@ -181,7 +203,7 @@
         /**
          * Handles on change event
          */
-        function onChangeInput() {
+        function handleInputChange() {
             ctrl.numberInputChanged = true;
             onCurrentValueChange();
 
@@ -191,34 +213,40 @@
         }
 
         /**
-         * On unit click callback
-         * Sets focus on input.
+         * Handles the `click` event of the suffix.
+         * @param {Event} event - The `click` event.
          */
-        function onUnitClick() {
-            $element.find('input')[0].focus();
-
-            ctrl.setFocus();
+        function handleSuffixClick(event) {
+            $element.find('.field').focus();
+            ctrl.handleInputFocus(event);
         }
 
         /**
-         * Sets ctrl.inputFocused to true if input is focused
+         * Handles the `focus` event of the input field.
+         * @param {Event} event - The `focus` event on the input field or the `click` event on the suffix.
          */
-        function setFocus() {
+        function handleInputFocus(event) {
             ctrl.inputFocused = true;
 
-            if (angular.isFunction(ctrl.itemFocusCallback)) {
-                ctrl.itemFocusCallback({inputName: ctrl.inputName});
-            }
+            ctrl.itemFocusCallback({
+                event: event,
+                inputName: ctrl.inputName
+            });
         }
 
         /**
-         * Handles on blur event
+         * Handles the `blur` event of the input field.
+         * @param {FocusEvent} event - The `blur` event.
          */
-        function onBlurInput() {
+        function handleInputBlur(event) {
             ctrl.inputFocused = false;
 
             if (angular.isFunction(ctrl.itemFocusCallback)) {
-                ctrl.itemBlurCallback({inputName: ctrl.inputName});
+                ctrl.itemBlurCallback({
+                    event: event,
+                    inputValue: ctrl.currentValue,
+                    inputName: ctrl.inputName
+                });
             }
 
             onCurrentValueChange();
@@ -296,40 +324,25 @@
         function onCurrentValueChange() {
             validateCurrentValue();
             $timeout(function () {
-                lodash.get(ctrl, 'onChange', angular.noop)(ctrl.checkInvalidation());
+                lodash.get(ctrl, 'onChange', angular.noop)(ctrl.isValid());
             });
-        }
-
-        /**
-         * Set new value after increase/decrease to input and render it
-         * @param {boolean} focus. Whether focus input.
-         */
-        function renderInput(focus) {
-            if (angular.isDefined(ctrl.formObject)) {
-                ctrl.formObject[ctrl.inputName].$setViewValue(Number(ctrl.currentValue).toFixed(ctrl.precision));
-                ctrl.formObject[ctrl.inputName].$render();
-                if (focus) {
-                    $element.find('input').focus();
-                }
-            }
         }
 
         /**
          * Resets the input to default value if it is invalid
          */
         function validateCurrentValue() {
-            if (angular.isFunction(ctrl.updateNumberInputCallback)) {
+            if (angular.isDefined(ctrl.updateNumberInputCallback)) {
                 var currentValueIsDefined = !lodash.isNil(ctrl.currentValue) && ctrl.currentValue !== '';
 
                 if (ctrl.allowEmptyField || currentValueIsDefined) {
-                    var newData = currentValueIsDefined     ?
-                                  ctrl.asString             ?
-                                  String(ctrl.currentValue) :
-                                  Number(ctrl.currentValue) : '';
+                    var newData = !currentValueIsDefined ? ''                        :
+                                  ctrl.asString          ? String(ctrl.currentValue) :
+                                  /* else */               Number(ctrl.currentValue);
 
                     ctrl.updateNumberInputCallback({
                         newData: newData,
-                        field: angular.isDefined(ctrl.updateNumberInputField) ? ctrl.updateNumberInputField : ctrl.inputName
+                        field: ctrl.updateNumberInputField
                     });
                 }
             }

@@ -1,9 +1,11 @@
-<div class="igz-number-input" tabindex="0"
-     data-ng-class="[{'invalid': $ctrl.checkInvalidation()},
-                    {'pristine': !$ctrl.numberInputChanged},
-                    {'disabled': $ctrl.isDisabled},
-                    {'focused': $ctrl.inputFocused},
-                    {'submitted': $ctrl.formObject.$submitted}]">
+<div class="igz-number-input"
+     data-ng-class="{
+         disabled: $ctrl.isDisabled,
+         focused: $ctrl.inputFocused,
+         invalid: $ctrl.isValid(),
+         pristine: !$ctrl.numberInputChanged,
+         submitted: $ctrl.formObject.$submitted
+     }">
     <div class="additional-left-block flex-none">
         <span class="prefix-unit" data-ng-show="$ctrl.isShownUnit($ctrl.prefixUnit)">{{$ctrl.prefixUnit}}</span>
     </div>
@@ -20,11 +22,11 @@
            size="1"
            placeholder="{{$ctrl.placeholder}}"
            data-precision="{{$ctrl.precision}}"
-           data-ng-focus="$ctrl.setFocus()"
-           data-ng-blur="$ctrl.onBlurInput()"
-           data-ng-change="$ctrl.onChangeInput()"
+           data-ng-focus="$ctrl.handleInputFocus($event)"
+           data-ng-blur="$ctrl.handleInputBlur($event)"
+           data-ng-change="$ctrl.handleInputChange()"
            data-ng-disabled="$ctrl.isDisabled"
-           data-ng-required="$ctrl.validationIsRequired === 'true'"
+           data-ng-required="$ctrl.validationIsRequired"
            data-igz-validate-elevation
            data-compare-val="$ctrl.validationValue"
            data-compare-val-unit="$ctrl.validationValueUnit.power"
@@ -32,13 +34,13 @@
 
     <span class="suffix-unit flex-none"
           data-ng-show="$ctrl.isShownUnit($ctrl.suffixUnit)"
-          data-ng-click="$ctrl.onUnitClick()">
+          data-ng-click="$ctrl.handleSuffixClick($event)">
         {{$ctrl.suffixUnit}}
     </span>
 
     <div class="arrow-block flex-none">
-        <span class="igz-icon-dropup" data-ng-click="$ctrl.isDisabled || $ctrl.increaseValue()"></span>
-        <span class="igz-icon-dropdown" data-ng-click="$ctrl.isDisabled || $ctrl.decreaseValue()"></span>
+        <span tabindex="-1" class="igz-icon-dropup" data-ng-click="$ctrl.isDisabled || $ctrl.increaseValue()"></span>
+        <span tabindex="-1" class="igz-icon-dropdown" data-ng-click="$ctrl.isDisabled || $ctrl.decreaseValue()"></span>
     </div>
 </div>
 
