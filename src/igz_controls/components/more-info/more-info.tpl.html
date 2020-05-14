@@ -1,8 +1,13 @@
 <div class="more-info-wrapper">
     <div data-ng-if="!$ctrl.isDefaultTooltipEnabled">
-        <div data-ng-class="{'disabled': $ctrl.isDisabled, 'click-trigger': $ctrl.isClickMode()}"
+        <div data-ng-class="{
+                 'disabled': $ctrl.isDisabled,
+                 'click-trigger': $ctrl.isClickMode(),
+                 'igz-icon-help-round': $ctrl.selectedIconType === $ctrl.iconTypes.INFO,
+                 'igz-icon-alert-message': $ctrl.selectedIconType === $ctrl.iconTypes.WARN
+             }"
              data-ng-click="$ctrl.onQuestionMarkClick()"
-             class="question-mark igz-icon-help-round">
+             class="question-mark">
         </div>
         <div class="row-description"
              data-ng-if="$ctrl.isDescriptionVisible && $ctrl.isHtmlEnabled"
@@ -22,6 +27,7 @@
              data-ng-class="{'disabled': $ctrl.isDisabled}"
              data-tooltip-class="more-info-tooltip"
              data-uib-tooltip="{{$ctrl.description}}"
+             data-tooltip-is-open="{{$ctrl.isOpen}}"
              data-tooltip-placement="{{$ctrl.defaultTooltipPlacement}}"
              data-tooltip-popup-delay="{{$ctrl.defaultTooltipPopupDelay}}"
              data-tooltip-trigger="$ctrl.trigger"
@@ -33,6 +39,7 @@
              data-ng-class="{'disabled': $ctrl.isDisabled}"
              data-tooltip-class="more-info-tooltip"
              data-uib-tooltip-html="$ctrl.description"
+             data-tooltip-is-open="{{$ctrl.isOpen}}"
              data-tooltip-placement="{{$ctrl.defaultTooltipPlacement}}"
              data-tooltip-popup-delay="{{$ctrl.defaultTooltipPopupDelay}}"
              data-tooltip-trigger="$ctrl.trigger"

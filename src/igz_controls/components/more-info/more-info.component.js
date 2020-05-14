@@ -7,8 +7,10 @@
                 description: '@',
                 isDisabled: '<?',
                 trigger: '@?',
+                iconType: '@?',
                 isHtmlEnabled: '<?',
                 isDefaultTooltipEnabled: '<?',
+                isOpen: '<?',
                 defaultTooltipPlacement: '@?',
                 defaultTooltipPopupDelay: '@?'
             },
@@ -19,7 +21,15 @@
     function IgzMoreInfoController($document, $element, $timeout, lodash) {
         var ctrl = this;
 
+        ctrl.iconTypes = {
+            INFO: 'info',
+            WARN: 'warn'
+        };
+
+        ctrl.selectedIconType = ctrl.iconTypes.INFO;
+
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
         ctrl.isClickMode = isClickMode;
         ctrl.onQuestionMarkClick = onQuestionMarkClick;
 
@@ -32,11 +42,12 @@
          */
         function onInit() {
             lodash.defaults(ctrl, {
-                isDisabled: false,
-                isHtmlEnabled: false,
-                isDefaultTooltipEnabled: false,
                 defaultTooltipPlacement: ctrl.isDefaultTooltipEnabled ? 'auto' : 'right',
-                defaultTooltipPopupDelay: '0'
+                defaultTooltipPopupDelay: '0',
+                iconType: ctrl.selectedIconType,
+                isDefaultTooltipEnabled: false,
+                isDisabled: false,
+                isHtmlEnabled: false
             });
 
             // Defaults trigger method to 'mouseenter'. Available 2 modes: `hover (mouseenter)` and `click`.
@@ -48,6 +59,23 @@
             // If it is `true` tooltip is shown and hidden otherwise. Toggles by `onQuestionMarkClick` only in this mode.
             // In `hover` mode is always `true`.
             ctrl.isDescriptionVisible = !isClickMode();
+        }
+
+        /**
+         * On changes hook method.
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (lodash.has(changes, 'isOpen') && changes.isOpen.currentValue !== ctrl.isDescriptionVisible) {
+                ctrl.isDescriptionVisible = !isClickMode() || changes.isOpen.currentValue;
+                toggleClickListener();
+            }
+
+            if (lodash.has(changes, 'iconType')) {
+                if (lodash.includes(ctrl.iconTypes, changes.iconType.currentValue)) {
+                    ctrl.selectedIconType = changes.iconType.currentValue;
+                }
+            }
         }
 
         //
@@ -68,10 +96,7 @@
         function onQuestionMarkClick() {
             if (ctrl.isClickMode()) {
                 ctrl.isDescriptionVisible = !ctrl.isDescriptionVisible;
-
-                $timeout(function () {
-                    ctrl.isDescriptionVisible ? $document.on('click', hideTooltip) : $document.off('click', hideTooltip);
-                })
+                toggleClickListener();
             }
         }
 
@@ -89,6 +114,15 @@
 
                 $document.off('click', hideTooltip);
             }
+        }
+
+        /**
+         * Adds or removes event listener for `click` event on the document for closing pop-over.
+         */
+        function toggleClickListener() {
+            $timeout(function () {
+                ctrl.isDescriptionVisible ? $document.on('click', hideTooltip) : $document.off('click', hideTooltip);
+            })
         }
     }
 }());
