@@ -5,7 +5,7 @@
     display: inline-flex;
     align-items: center;
     height: 36px;
-    padding-left: 15px;
+    margin-left: 8px;
 
     .question-mark {
         cursor: default;
@@ -22,6 +22,19 @@
 
             + .row-description {
                 color: @icon-help-description-hover-color;
+            }
+        }
+
+        &.igz-icon-alert-message {
+            &:before {
+                color: @icon-warn-hover-before-color;
+                background-color: @icon-warn-before-bg-color;
+            }
+
+            &:hover {
+                &:before {
+                    color: @icon-warn-before-color;
+                }
             }
         }
 
@@ -63,7 +76,7 @@
 
         &.top,
         &.bottom {
-            left: -118px;
+            left: -132px;
 
             &:before {
                 right: calc(50% - 9px);
@@ -100,7 +113,7 @@
         }
 
         &.right {
-            left: 51px;
+            left: 32px;
 
             &:before {
                 .triangle-arrow(right; @row-description-triangle-color; 8px; 10px);
@@ -110,7 +123,7 @@
         }
 
         &.left {
-            left: -280px;
+            left: -290px;
 
             &:before {
                 .triangle-arrow(left; @row-description-triangle-color; 8px; 10px);
