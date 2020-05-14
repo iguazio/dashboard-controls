@@ -44,21 +44,15 @@
             lodash.defaults(ctrl, {
                 defaultTooltipPlacement: ctrl.isDefaultTooltipEnabled ? 'auto' : 'right',
                 defaultTooltipPopupDelay: '0',
-                iconType: ctrl.selectedIconType,
                 isDefaultTooltipEnabled: false,
                 isDisabled: false,
                 isHtmlEnabled: false
             });
 
-            // Defaults trigger method to 'mouseenter'. Available 2 modes: `hover (mouseenter)` and `click`.
+            // Defaults trigger method to 'mouseenter'. Available 2 modes: `mouseenter` (hover) and `click`.
             if (ctrl.trigger !== 'click') {
                 ctrl.trigger = 'mouseenter';
             }
-
-            // In `click` mode this variable is responsible for displaying tooltip.
-            // If it is `true` tooltip is shown and hidden otherwise. Toggles by `onQuestionMarkClick` only in this mode.
-            // In `hover` mode is always `true`.
-            ctrl.isDescriptionVisible = !isClickMode();
         }
 
         /**
@@ -66,15 +60,16 @@
          * @param {Object} changes
          */
         function onChanges(changes) {
-            if (lodash.has(changes, 'isOpen') && changes.isOpen.currentValue !== ctrl.isDescriptionVisible) {
-                ctrl.isDescriptionVisible = !isClickMode() || changes.isOpen.currentValue;
-                toggleClickListener();
+            if (lodash.has(changes, 'isOpen')) {
+                ctrl.isDescriptionVisible = changes.isOpen.currentValue;
+                if (isClickMode()) {
+                    toggleClickListener();
+                }
             }
 
             if (lodash.has(changes, 'iconType')) {
-                if (lodash.includes(ctrl.iconTypes, changes.iconType.currentValue)) {
-                    ctrl.selectedIconType = changes.iconType.currentValue;
-                }
+                var valueIsValid = lodash.includes(ctrl.iconTypes, changes.iconType.currentValue);
+                ctrl.selectedIconType = valueIsValid ? changes.iconType.currentValue : ctrl.iconTypes.INFO;
             }
         }
 

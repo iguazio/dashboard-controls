@@ -1,21 +1,22 @@
 <div class="more-info-wrapper">
     <div data-ng-if="!$ctrl.isDefaultTooltipEnabled">
         <div data-ng-class="{
-                 'disabled': $ctrl.isDisabled,
                  'click-trigger': $ctrl.isClickMode(),
+                 'disabled': $ctrl.isDisabled,
+                 'igz-icon-alert-message': $ctrl.selectedIconType === $ctrl.iconTypes.WARN,
                  'igz-icon-help-round': $ctrl.selectedIconType === $ctrl.iconTypes.INFO,
-                 'igz-icon-alert-message': $ctrl.selectedIconType === $ctrl.iconTypes.WARN
+                 'open': $ctrl.isDescriptionVisible
              }"
              data-ng-click="$ctrl.onQuestionMarkClick()"
              class="question-mark">
         </div>
         <div class="row-description"
-             data-ng-if="$ctrl.isDescriptionVisible && $ctrl.isHtmlEnabled"
+             data-ng-if="$ctrl.isHtmlEnabled"
              data-ng-class="$ctrl.defaultTooltipPlacement"
              data-ng-bind-html="$ctrl.description">
         </div>
         <div class="row-description"
-             data-ng-if="$ctrl.isDescriptionVisible && !$ctrl.isHtmlEnabled"
+             data-ng-if="!$ctrl.isHtmlEnabled"
              data-ng-class="$ctrl.defaultTooltipPlacement">
             {{$ctrl.description}}
         </div>
