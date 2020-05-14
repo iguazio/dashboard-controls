@@ -42,16 +42,12 @@
             cursor: pointer;
         }
 
-        &:not(.click-trigger) {
-            + .row-description {
-                display: none;
-            }
+        &+ .row-description {
+            display: none;
+        }
 
-            &:hover {
-                + .row-description {
-                    display: block;
-                }
-            }
+        &:not(.click-trigger):hover + .row-description, &.open + .row-description {
+            display: block;
         }
     }
 
