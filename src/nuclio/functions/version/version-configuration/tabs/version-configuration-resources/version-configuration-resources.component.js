@@ -34,7 +34,7 @@
                 precision: '0',
                 step: '100',
                 minValue: 1,
-                placeholder: $i18next.t('common:FOR_EXAMPLE', {lng: lng}) + ': 1500',
+                placeholder: '1500',
                 onChange: function (value) {
                     return parseFloat(value) * 1000;
                 },
@@ -49,7 +49,7 @@
                 precision: '3',
                 step: '0.1',
                 minValue: 0.1,
-                placeholder: $i18next.t('common:FOR_EXAMPLE', {lng: lng}) + ': 1.5',
+                placeholder: '1.5',
                 onChange: function (value) {
                     return parseInt(value) / 1000;
                 },
@@ -191,6 +191,10 @@
                 }
 
                 lodash.set(ctrl.version, 'spec.' + field, newData);
+
+                ctrl.cpuWarningOpen = !lodash.isNil(lodash.get(ctrl.version, 'spec.resources.limits.cpu')) &&
+                    lodash.isNil(lodash.get(ctrl.version, 'spec.resources.requests.cpu'));
+
                 ctrl.onChangeCallback();
             } else {
                 lodash.unset(ctrl.version, 'spec.' + field);
@@ -231,6 +235,9 @@
 
                 checkIfMemoryInputsValid(newValue, field);
             }
+
+            ctrl.memoryWarningOpen = !lodash.isNil(lodash.get(ctrl.version, 'spec.resources.limits.memory')) &&
+                lodash.isNil(lodash.get(ctrl.version, 'spec.resources.requests.memory'));
 
             ctrl.onChangeCallback();
         }
