@@ -137,7 +137,6 @@
         };
         var BORDERS_CLASS_BASE = 'borders-';
         var defaultBorderMode = BORDER_MODES.ALWAYS;
-        var defaultFieldType = FIELD_TYPES.INPUT;
         var defaultInputModelOptions = {
             updateOn: 'default blur',
             debounce: {
@@ -157,6 +156,7 @@
         ctrl.inputIsTouched = false;
         ctrl.isValidationPopUpShown = false;
         ctrl.preventInputBlur = false;
+        ctrl.selectedFieldType = FIELD_TYPES.INPUT;
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
@@ -188,7 +188,7 @@
                 autoComplete: 'off',
                 bordersMode: defaultBorderMode,
                 enterCallback: angular.noop,
-                fieldType: defaultFieldType,
+                fieldType: ctrl.selectedFieldType,
                 hideCounter: false,
                 inputModelOptions: {},
                 isClearIcon: false,
@@ -211,8 +211,14 @@
                 validationIsRequired: false
             });
 
+            // if provided `fieldType` attribute is one of the available values, assign it
+            // otherwise `ctrl.selectedFieldType` will remain set to the default value
+            if (lodash.includes(FIELD_TYPES, ctrl.fieldType)) {
+                ctrl.selectedFieldType = ctrl.fieldType;
+            }
+
             // if provided `bordersMode` attribute is not one of the available values, set it to a default
-            if (!lodash.values(BORDER_MODES).includes(ctrl.bordersMode)) {
+            if (!lodash.includes(BORDER_MODES, ctrl.bordersMode)) {
                 ctrl.bordersMode = defaultBorderMode;
             }
             ctrl.bordersModeClass = BORDERS_CLASS_BASE + ctrl.bordersMode;
