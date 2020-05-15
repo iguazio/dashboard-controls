@@ -224,15 +224,17 @@
                 ctrl.isDeployResultShown = false;
                 ctrl.rowIsCollapsed.deployBlock = true;
                 ctrl.isLayoutCollapsed = false;
-
-                $timeout(function () {
-                    $rootScope.$broadcast('igzWatchWindowResize::resize');
-                });
-
                 ctrl.isSplashShowed.value = true;
+
                 var method = VersionHelperService.isVersionDeployed(ctrl.version) ? ctrl.updateVersion : ctrl.createVersion;
                 method({ version: versionCopy, projectID: ctrl.project.metadata.name })
-                    .then(pullFunctionState)
+                    .then(function () {
+                        pullFunctionState();
+
+                        $timeout(function () {
+                            $rootScope.$broadcast('igzWatchWindowResize::resize');
+                        });
+                    })
                     .catch(function (error) {
                         var defaultMsg = $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', {lng: lng});
 
