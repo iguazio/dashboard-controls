@@ -305,6 +305,7 @@
     },
     "TOPIC": "Topic",
     "TOPICS": "Topics",
+    "TRIGGERS_NOT_FOUND": "There are currently no triggers, you can create a trigger by clicking the ‘Create a new trigger’ button",
     "UNIQUENESS": "Uniqueness",
     "UNSPECIFIED_FIELD_NAME": "Unspecified field name",
     "V3IO": "V3IO",

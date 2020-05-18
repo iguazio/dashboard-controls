@@ -1,6 +1,6 @@
 <div class="ncl-version-trigger ncl-version">
     <div class="common-table">
-        <div data-ng-if="$ctrl.triggers.length > 0" class="common-table-header header-row">
+        <div class="common-table-header header-row">
             <div class="common-table-cell header-name">
                 {{ 'common:NAME' | i18next }}
             </div>
@@ -9,6 +9,12 @@
             </div>
             <div class="igz-col-70 common-table-cell">
                 {{ 'common:INFO' | i18next }}
+            </div>
+        </div>
+        <div class="search-input-not-found"
+             data-ng-if="$ctrl.triggers.length === 0">
+            <div class="search-message">
+                {{ 'functions:TRIGGERS_NOT_FOUND' | i18next }}
             </div>
         </div>
 

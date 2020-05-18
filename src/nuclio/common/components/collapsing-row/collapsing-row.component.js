@@ -139,7 +139,7 @@
 
         /**
          * Shows confirm dialog
-         * @param {Object} action - e.g. `delele`
+         * @param {Object} action - e.g. `delete`
          */
         function showConfirmDialog(action) {
             var message = lodash.isNil(action.confirm.description) ? action.confirm.message : {
