@@ -340,6 +340,11 @@
                     sortTableByColumn(ctrl.sortedColumnName, true);
                     startAutoUpdate();
                 })
+                .finally(function () {
+                    $timeout(function () {
+                        $rootScope.$broadcast('igzWatchWindowResize::resize');
+                    });
+                })
                 .catch(function (error) {
                     ctrl.isSplashShowed.value = false;
                     var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});

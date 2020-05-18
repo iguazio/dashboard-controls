@@ -1,6 +1,6 @@
-<div data-ui-layout="{ flow : 'column', dividerSize: 3 }" class="ncl-edit-version-code ncl-version">
+<div data-igz-extend-background data-ui-layout="{ flow : 'column', dividerSize: 3 }" class="ncl-edit-version-code ncl-version">
     <div ui-layout-container min-size="200px" class="code-section">
-        <form name="$ctrl.versionCodeForm" class="code-wrapper-block" igz-extend-background novalidate>
+        <form name="$ctrl.versionCodeForm" class="code-wrapper-block" novalidate>
             <div data-ng-if="$ctrl.selectedEntryType.id === 'sourceCode'"
                  class="igz-scrollable-container code-scrollable-container"
                  data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfigHorizontal">
@@ -13,7 +13,7 @@
                                 <igz-default-dropdown data-values-array="$ctrl.codeEntryTypeArray"
                                                       data-item-select-callback="$ctrl.selectEntryTypeValue(item, isItemChanged, field)"
                                                       data-selected-item="$ctrl.selectedEntryType">
-                                    </igz-default-dropdown>
+                                </igz-default-dropdown>
                             </div>
                             <div class="code-entry-col code-entry-runtime-col">
                                 <div class="col-label runtime">{{ 'functions:RUNTIME' | i18next }}</div>
@@ -21,7 +21,7 @@
                                                       data-item-select-callback="$ctrl.selectRuntimeValue(item, isItemChanged, field)"
                                                       data-selected-item="$ctrl.selectedRuntime"
                                                       data-is-disabled="true">
-                                    </igz-default-dropdown>
+                                </igz-default-dropdown>
                             </div>
                             <div class="code-entry-col code-entry-handler-col">
                                 <div class="col-label handler">{{ 'functions:HANDLER' | i18next }}</div>
@@ -41,7 +41,7 @@
                                                       data-item-select-callback="$ctrl.selectThemeValue(item, isItemChanged, field)"
                                                       data-selected-item="$ctrl.selectedTheme"
                                                       data-on-close-dropdown="$ctrl.onCloseDropdown()">
-                                    </igz-default-dropdown>
+                                </igz-default-dropdown>
                             </div>
                         </div>
                     </div>

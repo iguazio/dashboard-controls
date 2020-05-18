@@ -90,6 +90,8 @@
                 };
 
                 checkClassUniqueness();
+
+                $rootScope.$broadcast('igzWatchWindowResize::resize');
             }, 1000);
         }
 
@@ -194,6 +196,8 @@
             lodash.unset(ctrl.version, 'spec.triggers.' + selectedItem.id);
 
             checkClassUniqueness();
+
+            $rootScope.$broadcast('igzWatchWindowResize::resize');
         }
 
         /**
