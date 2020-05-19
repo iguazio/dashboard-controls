@@ -221,7 +221,9 @@
             </div>
 
             <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.maxWorkers)">
+                 data-ng-if="$ctrl.isClassSelected() &&
+                             !$ctrl.isNil($ctrl.item.maxWorkers) &&
+                             (!$ctrl.isCronTrigger() || !$ctrl.platformKindIsKube)">
                 <div class="field-label">
                     <span data-ng-class="{asterisk: !$ctrl.selectedClass.maxWorkers.allowEmpty}">{{ 'functions:MAX_WORKERS' | i18next }}</span>
                 </div>
@@ -240,7 +242,9 @@
                 </igz-number-input>
             </div>
             <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.workerAvailabilityTimeoutMilliseconds)">
+                 data-ng-if="$ctrl.isClassSelected() &&
+                             !$ctrl.isNil($ctrl.item.workerAvailabilityTimeoutMilliseconds) &&
+                             (!$ctrl.isCronTrigger() || !$ctrl.platformKindIsKube)">
                 <div class="field-label">
                     <span data-ng-class="{
                         asterisk: !$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.allowEmpty
@@ -629,7 +633,9 @@
             </div>
 
             <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && $ctrl.isTriggerType()">
+                 data-ng-if="$ctrl.isClassSelected() &&
+                             $ctrl.isTriggerType() &&
+                             (!$ctrl.isCronTrigger() || !$ctrl.platformKindIsKube)">
                 <div class="field-label">{{ 'functions:WORKER_ALLOCATOR_NAME' | i18next }}</div>
                 <igz-validating-input-field data-field-type="input"
                                             data-input-name="itemWorkerAllocatorName"
