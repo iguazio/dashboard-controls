@@ -26,6 +26,7 @@
         var itemCopy = {};
 
         ctrl.editItemForm = {};
+        ctrl.platformKindIsKube = false;
         ctrl.selectedClass = {};
 
         ctrl.igzScrollConfig = {
@@ -117,6 +118,7 @@
          */
         // eslint-disable-next-line
         function onInit() {
+            ctrl.platformKindIsKube = lodash.get(ConfigService, 'nuclio.platformKind') === 'kube';
             ctrl.placeholder = getPlaceholder();
 
             if (!lodash.isEmpty(ctrl.item.kind)) {
@@ -126,7 +128,7 @@
                 $timeout(validateValues);
             }
 
-            if (ctrl.isTriggerType()) {
+            if (ctrl.isTriggerType() && (!ctrl.isCronTrigger() || !ctrl.platformKindIsKube)) {
                 lodash.defaults(ctrl.item, {
                     workerAllocatorName: ''
                 });
@@ -791,7 +793,7 @@
                 ctrl.item.url = '';
             }
 
-            if (!lodash.isNil(item.maxWorkers)) {
+            if (!lodash.isNil(item.maxWorkers) && (!ctrl.isCronTrigger() || !ctrl.platformKindIsKube)) {
                 ctrl.item.maxWorkers = item.maxWorkers.defaultValue;
             }
 
@@ -803,7 +805,7 @@
                 ctrl.annotations = [];
             }
 
-            if (!lodash.isNil(item.workerAvailabilityTimeoutMilliseconds)) {
+            if (!lodash.isNil(item.workerAvailabilityTimeoutMilliseconds) && (!ctrl.isCronTrigger() || !ctrl.platformKindIsKube)) {
                 ctrl.item.workerAvailabilityTimeoutMilliseconds = item.workerAvailabilityTimeoutMilliseconds.defaultValue;
             }
 
