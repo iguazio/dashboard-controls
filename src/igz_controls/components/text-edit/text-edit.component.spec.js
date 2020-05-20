@@ -8,7 +8,7 @@ describe('igzTextEdit component:', function () {
     var ctrl;
 
     beforeEach(function () {
-        module('iguazio.app');
+        module('iguazio.dashboard-controls');
 
         inject(function (_$componentController_, _$q_, _$rootScope_, _$timeout_, _DialogsService_, _ngDialog_) {
             $componentController = _$componentController_;
