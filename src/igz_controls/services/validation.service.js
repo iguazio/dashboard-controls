@@ -65,7 +65,7 @@
                 node: {
                     name: 128,
                     description: 128
-                },
+                }
             },
             storagePool: {
                 name: 30,
@@ -87,7 +87,7 @@
                 group: {
                     name: 128,
                     description: 128
-                },
+                }
             },
             tenant: {
                 name: 31,
@@ -96,7 +96,7 @@
             events: {
                 escalation: {
                     name: 40
-                },
+                }
             },
             phone: 17
         };
@@ -183,7 +183,7 @@
                     label: $i18next.t('common:ONLY_AT_THE_BEGINNING', {lng: lng}) + ': ' + convertToLabel(chars),
                     pattern: new RegExp('^([' + convertedPattern + '])?[^' + convertedPattern + ']+$')
                 };
-            },
+            }
         };
         var commonRules = {
             integer: [
@@ -270,29 +270,29 @@
             k8s: {
                 configMapKey: [
                     generateRule.validCharacters('a-z A-Z 0-9 - _ .'),
-                    generateRule.length({max: lengths.k8s.configMapKey}),
+                    generateRule.length({max: lengths.k8s.configMapKey})
                 ],
                 dns1035Label: commonRules.dns1035Label.concat(generateRule.length({max: lengths.k8s.dns1035Label})),
                 dns1123Label: [
                     generateRule.validCharacters('a-z 0-9 -'),
                     generateRule.beginEndWith('a-z 0-9'),
-                    generateRule.length({max: lengths.k8s.dns1123Label}),
+                    generateRule.length({max: lengths.k8s.dns1123Label})
                 ],
                 dns1123Subdomain: [
                     generateRule.validCharacters('a-z 0-9 - .'),
                     generateRule.beginEndWith('a-z 0-9'),
                     generateRule.noConsecutiveCharacters('.. .- -.'),
-                    generateRule.length({max: lengths.k8s.dns1123Subdomain}),
+                    generateRule.length({max: lengths.k8s.dns1123Subdomain})
                 ],
                 envVarName: [
                     generateRule.validCharacters('a-z A-Z 0-9 - _ .'),
-                    generateRule.beginNotWith('0-9 .'),
+                    generateRule.beginNotWith('0-9 .')
                 ],
                 prefixedQualifiedName: commonRules.prefixedQualifiedName,
                 qualifiedName: [
                     generateRule.validCharacters('a-z A-Z 0-9 - _ .'),
                     generateRule.beginEndWith('a-z A-Z 0-9'),
-                    generateRule.length({max: lengths.k8s.qualifiedName}),
+                    generateRule.length({max: lengths.k8s.qualifiedName})
                 ],
                 wildcardDns1123Subdomain: [
                     generateRule.validCharacters('a-z A-Z 0-9 - . *'),
@@ -304,7 +304,7 @@
                     generateRule.onlyAtTheBeginning('*'),
                     generateRule.endWith('a-z 0-9'),
                     generateRule.noConsecutiveCharacters('.. .- -.'),
-                    generateRule.length({max: lengths.k8s.wildcardDns1123Subdomain}),
+                    generateRule.length({max: lengths.k8s.wildcardDns1123Subdomain})
                 ]
             },
             function: {
@@ -433,8 +433,8 @@
                 address: [
                     {
                         name: 'begin',
-                        label: $i18next.t('common:BEGIN_WITH', {lng: lng}) + ': ldaps://' ,
-                        pattern: /^ldaps:\/\//
+                        label: $i18next.t('common:BEGIN_WITH', {lng: lng}) + ': ldaps://, ldap://' ,
+                        pattern: /^ldaps?:\/\//
                     }
                 ]
             },
@@ -485,7 +485,7 @@
                     name: 'invalidExponent',
                     label: $i18next.t('common:EXPONENT_IS_INVALID', {lng: lng}),
                     pattern: /^[-+]?[^eE]+([eE][-+]?[0-9]+)?$/
-                },
+                }
 
             ],
             number: [
@@ -495,7 +495,7 @@
             path: [
                 generateRule.beginWith('/'),
                 generateRule.validCharacters('a-z A-Z - _ /'),
-                generateRule.endWith('a-z A-Z'),
+                generateRule.endWith('a-z A-Z')
             ],
             phone: [
                 generateRule.onlyAtTheBeginning('+'),
