@@ -27,7 +27,7 @@
         ctrl.errorText = $i18next.t('functions:ERROR_MSG.CREATE_FUNCTION_EVENT', {lng: lng});
         ctrl.titleText = $i18next.t('functions:CREATE_FUNCTION_EVENT', {lng: lng});
         ctrl.contentType = 'application/json';
-        ctrl.bodyTheme = 'vs';
+        ctrl.bodyTheme = 'vs-light';
         ctrl.isLoadingState = false;
         ctrl.isDeployFailed = false;
         ctrl.isFormChanged = false;

@@ -24,11 +24,6 @@
 
         ctrl.functionImportForm = {};
         ctrl.sourceCode = null;
-        ctrl.editorTheme = {
-            id: 'vs',
-            name: 'Light',
-            visible: true
-        };
 
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
