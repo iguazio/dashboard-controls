@@ -14,12 +14,6 @@
     function NclFunctionConfigDialogController(ExportService) {
         var ctrl = this;
 
-        ctrl.editorTheme = {
-            id: 'vs',
-            name: 'Light',
-            visible: true
-        };
-
         ctrl.$onInit = onInit;
 
         //

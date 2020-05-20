@@ -4,30 +4,21 @@
     require.config({ paths: { 'vs': '/assets/monaco-editor/min/vs' } });
 
     angular.module('iguazio.dashboard-controls')
-        .directive('igzMonacoEditor', function ($interval, lodash) {
+        .directive('igzMonacoEditor', function (lodash) {
             function link(scope, element, attrs) {
                 var editorElement = element[0];
-                var interval = null;
                 require(['vs/editor/editor.main'], function () {
                     var editorContext = {
                         scope: scope,
                         element: element,
                         attrs: attrs,
-                        getValueOrDefault: function getValueOrDefault(value, defaultValue) {
-                            if (angular.isUndefined(value) || value === null) {
-                                return defaultValue;
-                            } else {
-                                return value;
-                            }
-                        },
                         onThemeChanged: function onThemeChanged(newValue, oldValue) {
-                            window.monaco.editor.setTheme(this.getValueOrDefault(newValue, 'vs-dark'));
+                            window.monaco.editor.setTheme(lodash.defaultTo(newValue, 'vs-dark'));
                         },
                         onFileLanguageChanged: function (newValue) {
-
                             // update the language model (and set `insertSpaces`)
                             var newModel = window.monaco.editor.createModel('', newValue.language);
-                            newModel.updateOptions({ insertSpaces: this.getValueOrDefault(newValue.useSpaces, true) });
+                            newModel.updateOptions({ insertSpaces: lodash.defaultTo(newValue.useSpaces, true) });
                             this.editor.setModel(newModel);
 
                             // update the code
@@ -102,13 +93,6 @@
                     scope.$watch('fontSize', editorContext.onFontSizeChanged.bind(editorContext));
 
                     scope.$on('function-import-source-code', editorContext.onReadOnlyCodeFileChanged.bind(editorContext));
-
-                    scope.$on('$destroy', function () {
-                        if (interval !== null) {
-                            $interval.cancel(interval);
-                            interval = null;
-                        }
-                    });
                 });
             }
 
