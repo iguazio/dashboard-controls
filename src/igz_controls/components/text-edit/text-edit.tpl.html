@@ -1,0 +1,54 @@
+<div class="text-preview-directive-wrapper">
+    <div class="title text-ellipsis"
+         tooltip="{{::$ctrl.label}}"
+         data-tooltip-append-to-body="true"
+         data-tooltip-popup-delay="400"
+         data-tooltip-placement="bottom-left">
+        {{::$ctrl.label}}
+    </div>
+    <div class="text-preview-wrapper">
+        <div class="word-wrap-checkbox-wrapper">
+            <div class="word-wrap-checkbox col-50 col-checkbox">
+                <input id="wrap-checkbox"
+                       type="checkbox"
+                       data-ng-model="$ctrl.enableWordWrap"/>
+                <label for="wrap-checkbox">{{ 'common:WRAP' | i18next }}</label>
+            </div>
+        </div>
+        <ncl-monaco class="monaco-code-editor"
+                    data-function-source-code="$ctrl.content"
+                    data-selected-theme="'vs-light'"
+                    data-language="$ctrl.language"
+                    data-on-change-source-code-callback="$ctrl.onChangeText(sourceCode)"
+                    data-word-wrap="$ctrl.enableWordWrap">
+        </ncl-monaco>
+    </div>
+    <div class="close-button igz-icon-close" data-ng-click="$ctrl.onClose()"></div>
+
+    <div class="buttons">
+        <button class="igz-button-just-text"
+                tabindex="0" data-ng-hide="$ctrl.isLoadingState"
+                data-ng-click="$ctrl.onClose()"
+                data-ng-keydown="$ctrl.onClose($event)"
+                data-test-id="general.text-edit_close.button">
+            {{::$ctrl.closeButtonText}}
+        </button>
+        <button class="igz-button-primary"
+                tabindex="0"
+                data-ng-hide="$ctrl.isLoadingState"
+                data-ng-class="{'disabled': !$ctrl.fileChanged}"
+                data-ng-click="$ctrl.onSubmit()"
+                data-test-id="general.text-edit_save.button">
+            {{::$ctrl.submitButtonText}}
+        </button>
+
+        <button class="igz-button-primary"
+                data-ng-show="$ctrl.isLoadingState">
+            {{ 'common:LOADING_CAPITALIZE_ELLIPSIS' | i18next }}
+        </button>
+        <button class="error-text text-centered error-relative"
+                data-ng-hide="$ctrl.serverError === ''">
+            {{ 'common:ERROR_COLON' | i18next }} {{$ctrl.serverError}}
+        </button>
+    </div>
+</div>
