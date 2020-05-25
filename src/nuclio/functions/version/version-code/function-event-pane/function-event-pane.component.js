@@ -543,11 +543,11 @@
          */
         function saveEvent(event) {
             if (lodash.isEmpty(lodash.get(ctrl.selectedEvent, 'spec.displayName', ''))) {
-                ctrl.testEventsForm.nameInput.$setValidity('text', false);
+                ctrl.testEventsForm['spec.displayName'].$setValidity('text', false);
 
                 return false;
             } else {
-                ctrl.testEventsForm.nameInput.$setValidity('text', true);
+                ctrl.testEventsForm['spec.displayName'].$setValidity('text', true);
             }
 
             ctrl.testEventsForm.$setSubmitted();
