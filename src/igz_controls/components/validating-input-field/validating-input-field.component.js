@@ -401,8 +401,8 @@
          * Updates outer model value on inner model value change.
          */
         function onChange() {
+            ngModel.$validate();
             if (ctrl.isDataRevert) {
-                ngModel.$validate();
                 if (ngModel.$valid) {
                     // update `lastValidValue` to later use it on `blur` event in case `is-data-revert` attribute is
                     // `true` and the input field is invalid (so the input field could be reverted to the last valid
