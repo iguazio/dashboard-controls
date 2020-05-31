@@ -425,7 +425,8 @@
                 httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
             }
 
-            if (httpPort && lodash.includes(['building', 'error'], lodash.get(ctrl.version, 'ui.deployResult.status.state'))) {
+            var state = lodash.get(ctrl.version, 'ui.deployResult.status.state');
+            if (httpPort && lodash.includes(['imported', 'building', 'error'], state)) {
                 httpPort = null;
             }
 
