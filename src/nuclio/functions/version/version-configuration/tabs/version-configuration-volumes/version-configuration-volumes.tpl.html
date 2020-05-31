@@ -36,8 +36,10 @@
                             <ncl-edit-item class="common-table-cells-container edit-volume-row"
                                            data-item="volume"
                                            data-class-list="$ctrl.classList"
+                                           data-class-placeholder="{{ 'functions:PLACEHOLDER.SELECT_TYPE' | i18next }}"
                                            data-type="volume"
                                            data-validation-rules="$ctrl.validationRules"
+                                           data-max-lengths="$ctrl.maxLengths"
                                            data-on-submit-callback="$ctrl.editVolumeCallback(item)">
                             </ncl-edit-item>
                         </ncl-collapsing-row>

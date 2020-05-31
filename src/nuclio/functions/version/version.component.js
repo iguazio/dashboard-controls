@@ -19,8 +19,8 @@
             controller: NclVersionController
         });
 
-    function NclVersionController($interval, $scope, $rootScope, $state, $stateParams, $transitions, $timeout,
-                                  $i18next, i18next, lodash, ngDialog, ConfigService, DialogsService, ExportService,
+    function NclVersionController($i18next, $interval, $rootScope, $scope, $state, $stateParams, $transitions, $timeout,
+                                  i18next, lodash, ngDialog, ConfigService, DialogsService, ExportService,
                                   NuclioHeaderService, VersionHelperService) {
         var ctrl = this;
         var deregisterFunction = null;

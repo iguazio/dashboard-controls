@@ -1,4 +1,4 @@
-/* eslint max-statements: ["error", 110] */
+/* eslint max-statements: ["error", 93] */
 (function () {
     'use strict';
 
@@ -7,26 +7,27 @@
             bindings: {
                 item: '<',
                 classList: '<',
+                classPlaceholder: '@?',
                 type: '@',
                 onSelectClassCallback: '&?',
                 onSubmitCallback: '&',
                 validationRules: '<?',
+                maxLengths: '<?',
                 defaultFields: '<?'
             },
             templateUrl: 'nuclio/common/components/edit-item/edit-item.tpl.html',
             controller: NclEditItemController
         });
 
-    function NclEditItemController($document, $element, $rootScope, $scope, $timeout, $i18next, i18next, lodash,
-                                   ConfigService, ConverterService, FormValidationService, PreventDropdownCutOffService,
-                                   ValidationService) {
+    function NclEditItemController($document, $element, $i18next, $rootScope, $scope, $timeout, i18next, lodash,
+                                   ConverterService, EventHelperService, FormValidationService,
+                                   PreventDropdownCutOffService, ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
         var itemCopy = {};
 
         ctrl.editItemForm = {};
-        ctrl.platformKindIsKube = false;
         ctrl.selectedClass = {};
 
         ctrl.igzScrollConfig = {
@@ -40,31 +41,8 @@
             }
         };
 
-        ctrl.attributesValidationRules = {
-            number: ValidationService.getValidationRules('number'),
-            string: ValidationService.getValidationRules('function.string'),
-            arrayStr: ValidationService.getValidationRules('function.string'),
-            subscriptionQoS: ValidationService.getValidationRules('function.subscriptionQoS'),
-            arrayInt: ValidationService.getValidationRules('function.arrayInt'),
-            interval: ValidationService.getValidationRules('function.interval')
-        };
-
-        ctrl.defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
-        ctrl.maxLengths = {
-            containerSubPath: ValidationService.getMaxLength('function.containerSubPath')
-        };
-
-        ctrl.placeholder = '';
-        ctrl.tooltips = {
-            secret: 'A <a class="link" target="_blank" ' +
-                'href="https://kubernetes.io/docs/concepts/configuration/secret/">' +
-                $i18next.t('functions:TOOLTIP.SECRET.HEAD', {lng: lng}) + '</a> ' +
-                $i18next.t('functions:TOOLTIP.SECRET.REST', {lng: lng}),
-            configMap: 'A <a class="link" target="_blank" ' +
-                'href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/">' +
-                $i18next.t('functions:TOOLTIP.CONFIG_MAP.HEAD', {lng: lng}) + '</a> ' +
-                $i18next.t('functions:TOOLTIP.CONFIG_MAP.REST', {lng: lng}),
-            v3io: $i18next.t('functions:TOOLTIP.V3IO', {lng: lng})
+        ctrl.fieldTypeValidationRules = {
+            arrayInt: ValidationService.getValidationRules('function.arrayInt')
         };
 
         ctrl.isShowFieldError = FormValidationService.isShowFieldError;
@@ -75,39 +53,38 @@
         ctrl.$postLink = postLink;
         ctrl.$onDestroy = onDestroy;
 
-        ctrl.addNewIngress = addNewIngress;
         ctrl.addNewAnnotation = addNewAnnotation;
-        ctrl.addNewSubscription = addNewSubscription;
-        ctrl.addNewTopic = addNewTopic;
         ctrl.addNewBroker = addNewBroker;
         ctrl.addNewEventHeader = addNewEventHeader;
+        ctrl.addNewIngress = addNewIngress;
+        ctrl.addNewSubscription = addNewSubscription;
+        ctrl.addNewTopic = addNewTopic;
         ctrl.convertFromCamelCase = convertFromCamelCase;
-        ctrl.getAttrValue = getAttrValue;
-        ctrl.getInputValue = getInputValue;
-        ctrl.getTooltip = getTooltip;
-        ctrl.getWorkerAvailabilityTimeoutMillisecondsDescription = getWorkerAvailabilityTimeoutMillisecondsDescription;
-        ctrl.handleIngressAction = handleIngressAction;
+        ctrl.getFieldPlaceholderText = getFieldPlaceholderText;
+        ctrl.getFieldValue = getFieldValue;
+        ctrl.getItemName = getItemName;
+        ctrl.getSelectedClassMoreInfo = getSelectedClassMoreInfo;
         ctrl.handleAnnotationAction = handleAnnotationAction;
-        ctrl.handleSubscriptionAction = handleSubscriptionAction;
-        ctrl.handleTopicAction = handleTopicAction;
         ctrl.handleBrokerAction = handleBrokerAction;
         ctrl.handleEventHeaderAction = handleEventHeaderAction;
+        ctrl.handleIngressAction = handleIngressAction;
+        ctrl.handleSubscriptionAction = handleSubscriptionAction;
+        ctrl.handleTopicAction = handleTopicAction;
         ctrl.inputValueCallback = inputValueCallback;
-        ctrl.isClassSelected = isClassSelected;
+        ctrl.isCronTrigger = isCronTrigger;
+        ctrl.isFieldVisible = isFieldVisible;
         ctrl.isHttpTrigger = isHttpTrigger;
         ctrl.isKafkaTrigger = isKafkaTrigger;
-        ctrl.isMQTTTrigger = isMQTTTrigger;
-        ctrl.isCronTrigger = isCronTrigger;
-        ctrl.isTooltipVisible = isTooltipVisible;
+        ctrl.isMqttTrigger = isMqttTrigger;
+        ctrl.isSelectedClassMoreInfoVisible = isSelectedClassMoreInfoVisible;
         ctrl.isTriggerType = isTriggerType;
         ctrl.isVolumeType = isVolumeType;
-        ctrl.onChangeData = onChangeData;
+        ctrl.numberInputCallback = numberInputCallback;
+        ctrl.onChangeKeyValueData = onChangeKeyValueData;
         ctrl.onClearButtonClick = onClearButtonClick;
-        ctrl.onSubmitForm = onSubmitForm;
         ctrl.onSelectClass = onSelectClass;
         ctrl.onSelectDropdownValue = onSelectDropdownValue;
-        ctrl.numberInputCallback = numberInputCallback;
-        ctrl.getPlaceholderText = getPlaceholderText;
+        ctrl.onSubmitForm = onSubmitForm;
 
         //
         // Hook methods
@@ -118,8 +95,9 @@
          */
         // eslint-disable-next-line
         function onInit() {
-            ctrl.platformKindIsKube = lodash.get(ConfigService, 'nuclio.platformKind') === 'kube';
-            ctrl.placeholder = getPlaceholder();
+            lodash.defaults(ctrl, {
+                classPlaceholder: $i18next.t('functions:PLACEHOLDER.SELECT_CLASS', { lng: lng })
+            });
 
             if (!lodash.isEmpty(ctrl.item.kind)) {
                 ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
@@ -128,15 +106,8 @@
                 $timeout(validateValues);
             }
 
-            if (ctrl.isTriggerType() && (!ctrl.isCronTrigger() || !ctrl.platformKindIsKube)) {
-                lodash.defaults(ctrl.item, {
-                    workerAllocatorName: ''
-                });
-            }
-
             if (ctrl.isVolumeType()) {
-                var selectedTypeName = !lodash.isNil(ctrl.item.volume.hostPath)              ? 'hostPath'              :
-                                       !lodash.isNil(ctrl.item.volume.flexVolume)            ? 'v3io'                  :
+                var selectedTypeName = !lodash.isNil(ctrl.item.volume.flexVolume)            ? 'v3io'                  :
                                        !lodash.isNil(ctrl.item.volume.secret)                ? 'secret'                :
                                        !lodash.isNil(ctrl.item.volume.configMap)             ? 'configMap'             :
                                        !lodash.isNil(ctrl.item.volume.persistentVolumeClaim) ? 'persistentVolumeClaim' :
@@ -148,14 +119,8 @@
             }
 
             if (ctrl.isTriggerType() && ctrl.isHttpTrigger()) {
-                if (lodash.isNil(ctrl.item.workerAvailabilityTimeoutMilliseconds) ||
-                    ctrl.item.workerAvailabilityTimeoutMilliseconds === -1) {
-                    ctrl.item.workerAvailabilityTimeoutMilliseconds =
-                        lodash.get(ctrl.selectedClass, 'workerAvailabilityTimeoutMilliseconds.defaultValue', '');
-                }
-
                 ctrl.ingresses = lodash.chain(ctrl.item.attributes.ingresses)
-                    .defaultTo([])
+                    .defaultTo({})
                     .map(function (ingress) {
                         return {
                             name: ingress.host,
@@ -188,13 +153,13 @@
 
             if (ctrl.isTriggerType() && ctrl.isKafkaTrigger()) {
                 lodash.defaultsDeep(ctrl.item.attributes, {
-                    initialOffset: 'latest',
                     sasl: {
-                        enable: false,
                         user: '',
                         password: ''
                     }
                 });
+                ctrl.item.attributes.sasl.enable = !lodash.isEmpty(ctrl.item.attributes.sasl.user) &&
+                    !lodash.isEmpty(ctrl.item.attributes.sasl.password);
 
                 ctrl.topics = lodash.chain(ctrl.item.attributes.topics)
                     .defaultTo([])
@@ -227,14 +192,7 @@
                     .value();
             }
 
-            if (ctrl.isTriggerType() && isV3ioTrigger()) {
-                lodash.defaults(ctrl.item, {
-                    username: '',
-                    password: ''
-                });
-            }
-
-            if (ctrl.isTriggerType() && ctrl.isMQTTTrigger()) {
+            if (ctrl.isTriggerType() && ctrl.isMqttTrigger()) {
                 ctrl.subscriptions = lodash.chain(ctrl.item.attributes.subscriptions)
                     .defaultTo([])
                     .map(function (value) {
@@ -259,8 +217,9 @@
                     }
                 });
 
-                ctrl.eventHeaders = lodash.chain(lodash.get(ctrl.item, 'attributes.event.headers'))
-                    .defaultTo([])
+                ctrl.eventHeaders = lodash.chain(ctrl.item)
+                    .get('attributes.event.headers')
+                    .defaultTo({})
                     .map(function (value, key) {
                         return {
                             name: key,
@@ -275,11 +234,19 @@
                     .value();
             }
 
+            var fields = lodash.get(ctrl.selectedClass, 'fields');
+            lodash.forEach(fields, function (field) {
+                var path = lodash.defaultTo(field.path, field.name);
+                if (field.type === 'arrayInt') {
+                    lodash.update(ctrl.item, path, ConverterService.fromNumberArray);
+                }
+            });
+
             if (!lodash.isEmpty(ctrl.item.id)) {
                 lodash.set(ctrl.item, 'ui.changed', false);
             }
 
-            itemCopy = angular.copy(lodash.omit(ctrl.item, 'ui'));
+            itemCopy = lodash.cloneDeep(lodash.omit(ctrl.item, 'ui'));
 
             $scope.$on('deploy-function-version', onFunctionDeploy);
         }
@@ -288,11 +255,7 @@
          * Post linking method
          */
         function postLink() {
-            $document.on('click', function (event) {
-                if (!lodash.isNil(ctrl.editItemForm)) {
-                    onSubmitForm(event);
-                }
-            });
+            $document.on('click', submitOnClick);
 
             // Bind DOM-related preventDropdownCutOff method to component's controller
             PreventDropdownCutOffService.preventDropdownCutOff($element, '.three-dot-menu');
@@ -306,7 +269,7 @@
 
             $rootScope.$broadcast('edit-item-has-been-changed', {});
 
-            $document.off('click', onSubmitForm);
+            $document.off('click', submitOnClick);
         }
 
         //
@@ -314,15 +277,16 @@
         //
 
         /**
-         * Converts attribute names in class list from camel case
-         * @param {string} str - string which must be converted
+         * Converts field names in class list from camel case.
+         * @param {string} str - The string to convert.
          */
         function convertFromCamelCase(str) {
-            return str.replace(/([a-z])([A-Z])/g, '$1 $2');
+            return lodash.upperFirst(lodash.lowerCase(str));
         }
 
         /**
          * Adds new ingress
+         * @param {Event} event
          */
         function addNewIngress(event) {
             $timeout(function () {
@@ -344,6 +308,7 @@
 
         /**
          * Adds new annotation
+         * @param {Event} event
          */
         function addNewAnnotation(event) {
             $timeout(function () {
@@ -364,6 +329,7 @@
 
         /**
          * Adds new subscription
+         * @param {Event} event
          */
         function addNewSubscription(event) {
             $timeout(function () {
@@ -384,6 +350,7 @@
 
         /**
          * Adds new topic
+         * @param {Event} event
          */
         function addNewTopic(event) {
             $timeout(function () {
@@ -404,6 +371,7 @@
 
         /**
          * Adds new broker
+         * @param {Event} event
          */
         function addNewBroker(event) {
             $timeout(function () {
@@ -424,7 +392,7 @@
 
         /**
          * Adds new event header
-         * @param {Object} event - native event object
+         * @param {Event} event - native event object
          */
         function addNewEventHeader(event) {
             $timeout(function () {
@@ -444,23 +412,14 @@
         }
 
         /**
-         * Checks validation of function`s variables
+         * Returns the value of a field.
+         * @param {Object} field - The field.
+         * @param {string} field.name - The name of the field.
+         * @param {string} field.path - The path in item this field is bound to.
+         * @returns {*} the value of the field.
          */
-        function checkValidation(variableName) {
-            lodash.forEach(ctrl[variableName], function (variable) {
-                if (!variable.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', { component: variable.ui.name, isDisabled: true });
-                }
-            });
-        }
-
-        /**
-         * Returns the value of an attribute
-         * @param {string} attrName
-         * @returns {string}
-         */
-        function getAttrValue(attrName) {
-            return lodash.get(ctrl.item, 'attributes.' + attrName);
+        function getFieldValue(field) {
+            return lodash.get(ctrl.item, lodash.defaultTo(field.path, field.name));
         }
 
         /**
@@ -468,7 +427,7 @@
          * Value could has different path depends on item type.
          * @returns {string}
          */
-        function getInputValue() {
+        function getItemName() {
             return ctrl.type === 'volume' ? ctrl.item.volume.name : ctrl.item.name;
         }
 
@@ -476,25 +435,8 @@
          * Gets corresponding tooltip description
          * @returns {string}
          */
-        function getTooltip() {
-            return lodash.get(ctrl.tooltips, ctrl.selectedClass.id, '');
-        }
-
-        /**
-         * Gets description for Worker Availability Timeout Milliseconds field
-         */
-        function getWorkerAvailabilityTimeoutMillisecondsDescription() {
-            if (ctrl.isHttpTrigger()) {
-                return $i18next.t('functions:WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION', {
-                    lng: lng,
-                    default: lodash.get(ctrl.defaultFunctionConfig, 'spec.triggers.http.workerAvailabilityTimeoutMilliseconds', '')
-                });
-            } else if (ctrl.isCronTrigger()) {
-                return $i18next.t('functions:WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION', {
-                    lng: lng,
-                    default: lodash.get(ctrl.defaultFunctionConfig, 'spec.triggers.cron.workerAvailabilityTimeoutMilliseconds', '')
-                });
-            }
+        function getSelectedClassMoreInfo() {
+            return lodash.get(ctrl.selectedClass, 'moreInfoDescription');
         }
 
         /**
@@ -582,14 +524,6 @@
         }
 
         /**
-         * Determine whether the item class was selected
-         * @returns {boolean}
-         */
-        function isClassSelected() {
-            return !lodash.isEmpty(ctrl.selectedClass);
-        }
-
-        /**
          * Update data callback
          * @param {string} newData
          * @param {string} field
@@ -604,6 +538,18 @@
 
             validateValues();
             updateChangesState();
+        }
+
+        /**
+         * Determines whether or not a field should be displayed.
+         * @param {Object} field - The field to test.
+         * @param {string} field.type - The type of the field.
+         * @param {boolean} field.visible - The visibility of the field.
+         * @returns {boolean} `true` in case the field should be displayed, or `false` otherwise.
+         */
+        function isFieldVisible(field) {
+            return lodash.defaultTo(field.visible, true) &&
+                lodash.includes(['input', 'dropdown', 'number-input', 'arrayInt'], field.type);
         }
 
         /**
@@ -634,8 +580,8 @@
          * Checks if tooltip is visible.
          * @returns {boolean}
          */
-        function isTooltipVisible() {
-            return lodash.includes(lodash.keys(ctrl.tooltips), ctrl.selectedClass.id);
+        function isSelectedClassMoreInfoVisible() {
+            return lodash.has(ctrl.selectedClass, 'moreInfoDescription');
         }
 
         /**
@@ -658,7 +604,7 @@
          * Checks for `mqtt` triggers
          * @returns {boolean}
          */
-        function isMQTTTrigger() {
+        function isMqttTrigger() {
             return ctrl.selectedClass.id === 'mqtt';
         }
 
@@ -667,7 +613,7 @@
          * @param {Object} variable
          * @param {number} index
          */
-        function onChangeData(variable, index) {
+        function onChangeKeyValueData(variable, index) {
             if (variable.ui.name === 'trigger.annotation') {
                 ctrl.annotations[index] = variable;
 
@@ -728,15 +674,7 @@
                     }
                 });
 
-                if (item.id === 'hostPath') {
-                    lodash.defaultsDeep(ctrl.item.volume, {
-                        hostPath: {
-                            path: ''
-                        }
-                    });
-
-                    cleanOtherVolumeClasses('hostPath');
-                } else if (item.id === 'v3io') { // see https://github.com/v3io/flex-fuse
+                if (item.id === 'v3io') { // see https://github.com/v3io/flex-fuse
                     lodash.defaultsDeep(ctrl.item, {
                         volume: {
                             flexVolume: {
@@ -780,96 +718,55 @@
                 return;
             }
 
-            ctrl.item = lodash.omit(ctrl.item, ['maxWorkers', 'url', 'secret', 'annotations', 'workerAvailabilityTimeoutMilliseconds', 'username', 'password', 'workerAllocatorName']);
-
-            var nameDirty = ctrl.editItemForm.itemName.$dirty;
-            var nameInvalid = ctrl.editItemForm.itemName.$invalid;
+            ctrl.item = lodash.omit(ctrl.item, [
+                'maxWorkers',
+                'url',
+                'secret',
+                'annotations',
+                'workerAvailabilityTimeoutMilliseconds',
+                'username',
+                'password',
+                'workerAllocatorName'
+            ]);
 
             ctrl.item.kind = item.id;
             ctrl.item.attributes = {};
             ctrl.item.ui.selectedClass = ctrl.selectedClass;
 
-            if (!lodash.isNil(item.url)) {
-                ctrl.item.url = '';
-            }
+            lodash.forEach(item.fields, function (field) {
+                lodash.set(ctrl.item, lodash.defaultTo(field.path, field.name), field.defaultValue);
 
-            if (!lodash.isNil(item.maxWorkers) && (!ctrl.isCronTrigger() || !ctrl.platformKindIsKube)) {
-                ctrl.item.maxWorkers = item.maxWorkers.defaultValue;
-            }
-
-            if (!lodash.isNil(item.secret)) {
-                ctrl.item.secret = '';
-            }
-
-            if (!lodash.isNil(item.annotations)) {
-                ctrl.annotations = [];
-            }
-
-            if (!lodash.isNil(item.workerAvailabilityTimeoutMilliseconds) && (!ctrl.isCronTrigger() || !ctrl.platformKindIsKube)) {
-                ctrl.item.workerAvailabilityTimeoutMilliseconds = item.workerAvailabilityTimeoutMilliseconds.defaultValue;
-            }
-
-            if (!lodash.isNil(item.username)) {
-                ctrl.item.username = '';
-            }
-
-            if (!lodash.isNil(item.password)) {
-                ctrl.item.password = '';
-            }
-
-            lodash.forEach(item.attributes, function (attribute) {
-                if (attribute.name === 'ingresses') {
+                if (field.name === 'ingresses') {
                     ctrl.ingresses = [];
-                } else if (attribute.name === 'sasl') {
-                    ctrl.item.attributes.sasl = {};
-
-                    lodash.forEach(attribute.values, function (value, key) {
-                        lodash.set(ctrl.item.attributes, ['sasl', key], value.defaultValue);
-                    });
-                } else if (attribute.name === 'event') {
+                } else if (field.name === 'eventHeaders') {
                     ctrl.eventHeaders = [];
-                    ctrl.item.attributes.event = {};
-
-                    lodash.forEach(attribute.values, function (value, key) {
-                        lodash.set(ctrl.item.attributes, ['event', key], value.defaultValue);
-                    });
-                } else if (attribute.name === 'subscriptions') {
+                } else if (field.name === 'subscriptions') {
                     ctrl.subscriptions = [];
-                } else if (attribute.name === 'kafka-topics') {
+                } else if (field.name === 'kafka-topics') {
                     ctrl.topics = [];
-                } else if (attribute.name === 'kafka-brokers') {
+                } else if (field.name === 'kafka-brokers') {
                     ctrl.brokers = [];
-                } else {
-                    lodash.set(ctrl.item.attributes, attribute.name, lodash.get(attribute, 'defaultValue', ''));
+                } else if (field.name === 'annotations') {
+                    ctrl.annotations = [];
                 }
             });
 
-            // set form pristine to not validate new form fields
+            var nameDirty = ctrl.editItemForm.itemName.$dirty;
+            var nameInvalid = ctrl.editItemForm.itemName.$invalid;
+
+            // set form pristine to not validate new form fields after class changed
             ctrl.editItemForm.$setPristine();
 
-            // if itemName is invalid - set it dirty to show validation message
+            // if itemName was invalid before - set it dirty to show invalid message after class changed
             if (nameDirty && nameInvalid) {
                 ctrl.editItemForm.itemName.$setDirty();
             }
 
-            if (ctrl.onSelectClassCallback) {
+            if (lodash.isFunction(ctrl.onSelectClassCallback)) {
                 ctrl.onSelectClassCallback()
             }
 
             updateChangesState();
-        }
-
-        /**
-         * Removes volume classes except `selectedClass`
-         * @param {string} selectedClass
-         */
-        function cleanOtherVolumeClasses(selectedClass) {
-            var removeVolume = lodash.unset.bind(null, ctrl.item.volume);
-
-            lodash.chain(['hostPath', 'flexVolume', 'secret', 'configMap', 'persistentVolumeClaim'])
-                .without(selectedClass)
-                .forEach(removeVolume)
-                .value();
         }
 
         /**
@@ -880,6 +777,7 @@
         function onSelectDropdownValue(item, field) {
             lodash.set(ctrl.item, field, item.id);
 
+            validateValues();
             updateChangesState();
         }
 
@@ -891,18 +789,19 @@
         function numberInputCallback(item, field) {
             lodash.set(ctrl.item, field, item);
 
+            validateValues();
             updateChangesState();
         }
 
         /**
          * On submit form handler
          * Hides the item create/edit mode
-         * @param {MouseEvent} event
+         * @param {MouseEvent|KeyboardEvent} event
          */
         function onSubmitForm(event) {
             ctrl.item.ui.expandable = !ctrl.editItemForm.$invalid;
 
-            if (angular.isUndefined(event.keyCode) || event.keyCode === 13) {
+            if (lodash.isUndefined(event.keyCode) || event.keyCode === EventHelperService.ENTER) {
                 if (event.target !== $element[0] && $element.find(event.target).length === 0 &&
                     (ctrl.isVolumeType() || areElementsValidOnSubmit(event))) {
                     if (ctrl.editItemForm.$invalid) {
@@ -933,9 +832,167 @@
         }
 
         /**
+         * Return placeholder text for a field.
+         * @param {Object} field - The field.
+         * @returns {string} the placeholder text for the field.
+         */
+        function getFieldPlaceholderText(field) {
+            var fieldName = lodash.defaultTo(field.label, ctrl.convertFromCamelCase(field.name).toLowerCase());
+            var defaultPlaceholder = field.type === 'dropdown' ?
+                $i18next.t('common:PLACEHOLDER.SELECT', { lng: lng }) :
+                $i18next.t('common:PLACEHOLDER.ENTER_GENERIC', { lng: lng, fieldName: fieldName });
+            return lodash.defaultTo(field.placeholder, defaultPlaceholder);
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Checks if click wasn't on one of the elements from the list
+         * @param {MouseEvent|KeyboardEvent} event - DOM event
+         * @returns {boolean} Returns `true` if click wasn't on one of elements from the list
+         */
+        function areElementsValidOnSubmit(event) {
+            var elementsForValidation = [
+                'ncl-edit-item',
+                '.actions-menu',
+                '.single-action',
+                '.ngdialog',
+                '.mCustomScrollBox'
+            ];
+
+            return lodash.every(elementsForValidation, function (element) {
+                return element === '.mCustomScrollBox' && event.target.closest('.row-collapse') ||
+                    !event.target.closest(element)
+            })
+        }
+
+        /**
+         * Checks validation of function's variables
+         * @param {string} variableName
+         */
+        function checkValidation(variableName) {
+            lodash.forEach(ctrl[variableName], function (variable) {
+                if (!variable.ui.isFormValid) {
+                    $rootScope.$broadcast('change-state-deploy-button', {
+                        component: variable.ui.name,
+                        isDisabled: true
+                    });
+                }
+            });
+        }
+
+        /**
+         * Removes volume classes except `selectedClass`
+         * @param {string} selectedClass
+         */
+        function cleanOtherVolumeClasses(selectedClass) {
+            var removeVolume = lodash.unset.bind(null, ctrl.item.volume);
+
+            lodash.chain(['flexVolume', 'secret', 'configMap', 'persistentVolumeClaim'])
+                .without(selectedClass)
+                .forEach(removeVolume)
+                .value();
+        }
+
+        /**
+         * Broadcast's callback to deploy function
+         * @param {Object} event - native `$rootScope.$broadcast` event object
+         * @param {{event: MouseEvent|KeyboardEvent}} data - broadcast data with DOM event
+         */
+        function onFunctionDeploy(event, data) {
+            ctrl.onSubmitForm(data.event)
+        }
+
+        /**
+         * Submits form
+         */
+        function submitForm() {
+            lodash.forEach(ctrl.selectedClass.fields, function (field) {
+                var path = lodash.defaultTo(field.path, field.name);
+                var fieldValue = lodash.get(ctrl.item, path);
+                if (field.pattern === 'number') {
+                    var emptyValue = lodash.isNil(fieldValue) || fieldValue === '';
+                    var numberValue = field.allowEmpty && emptyValue ? '' : Number(fieldValue);
+
+                    lodash.set(ctrl.item, path, numberValue);
+                }
+
+                if (field.pattern === 'arrayStr') {
+                    lodash.update(ctrl.item, path, ConverterService.toStringArray);
+                }
+
+                if (field.type === 'arrayInt' && !lodash.isArray(fieldValue)) {
+                    lodash.update(ctrl.item, path, ConverterService.toNumberArray);
+                }
+
+                if (field.name === 'ingresses') {
+                    var newIngresses = {};
+
+                    lodash.forEach(ctrl.ingresses, function (ingress, index) {
+                        newIngresses[index.toString()] = {
+                            paths: ingress.value.split(',')
+                        };
+
+                        if (!lodash.isEmpty(ingress.name)) {
+                            newIngresses[index.toString()].host = ingress.name;
+                        }
+
+                        if (!lodash.isEmpty(ingress.additionalValue)) {
+                            newIngresses[index.toString()].secretName = ingress.additionalValue;
+                        }
+                    });
+
+                    lodash.set(ctrl.item, path, newIngresses);
+                }
+
+                if (field.name === 'eventHeaders') {
+                    var newEventHeader = {};
+
+                    lodash.forEach(ctrl.eventHeaders, function (headers) {
+                        newEventHeader[headers.name] = headers.value;
+                    });
+
+                    lodash.set(ctrl.item, 'attributes.event.headers', newEventHeader);
+                }
+            });
+
+            if (ctrl.isHttpTrigger()) {
+                updateAnnotations();
+            }
+
+            if (ctrl.isMqttTrigger()) {
+                updateSubscriptions();
+            }
+
+            if (ctrl.isKafkaTrigger()) {
+                updateTopics();
+                updateBrokers();
+            }
+
+            $rootScope.$broadcast('change-state-deploy-button', {
+                component: ctrl.item.ui.name,
+                isDisabled: false
+            });
+
+            ctrl.onSubmitCallback({ item: ctrl.item });
+        }
+
+        /**
+         * Submits the form on clicking on the document outside of this element.
+         * @param {MouseEvent} event - The `click` event.
+         */
+        function submitOnClick(event) {
+            if (!lodash.isNil(ctrl.editItemForm)) {
+                onSubmitForm(event);
+            }
+        }
+
+        /**
          * Updates annotations fields
          */
-        function updateAnnotaions() {
+        function updateAnnotations() {
             var newAnnotations = {};
 
             lodash.forEach(ctrl.annotations, function (label) {
@@ -943,6 +1000,22 @@
             });
 
             lodash.set(ctrl.item, 'annotations', newAnnotations);
+        }
+
+        /**
+         * Updates `ctrl.item.ui.changed` property when user updates trigger
+         */
+        function updateChangesState() {
+            var currentChangesState = lodash.get(ctrl.item, 'ui.changed', false);
+
+            ctrl.item.ui.changed = !lodash.chain(ctrl.item)
+                .omit(['$$hashKey', 'ui'])
+                .isEqual(itemCopy)
+                .value();
+
+            if (currentChangesState !== ctrl.item.ui.changed) {
+                $rootScope.$broadcast('edit-item-has-been-changed', {});
+            }
         }
 
         /**
@@ -982,185 +1055,28 @@
         }
 
         /**
-         * Return placeholder text for input
-         * @param {Object} attribute
-         */
-        function getPlaceholderText(attribute) {
-            var defaultPlaceholder = 'Enter ' + ctrl.convertFromCamelCase(attribute.name).toLowerCase() + '...';
-            return lodash.defaultTo(attribute.placeholder, defaultPlaceholder);
-        }
-
-        //
-        // Private methods
-        //
-
-        /**
-         * Checks if click wasn't on one of the elements from the list
-         * @param {Event} event - JS event object
-         * @returns {boolean} Returns `true` if click wasn't on one of elements from the list
-         */
-        function areElementsValidOnSubmit(event) {
-            var elementsForValidation = [
-                'ncl-edit-item',
-                '.actions-menu',
-                '.single-action',
-                '.ngdialog',
-                '.mCustomScrollBox'
-            ];
-
-            return lodash.every(elementsForValidation, function (element) {
-                if (element === '.mCustomScrollBox' && event.target.closest('.row-collapse')) {
-                    return true;
-                }
-                return !event.target.closest(element)
-            })
-        }
-
-        /**
-         * Returns placeholder value depends on incoming component type
-         * @returns {string}
-         */
-        function getPlaceholder() {
-            var placeholders = {
-                volume: $i18next.t('functions:PLACEHOLDER.SELECT_TYPE', {lng: lng}),
-                default: $i18next.t('functions:PLACEHOLDER.SELECT_CLASS', {lng: lng})
-            };
-
-            return lodash.get(placeholders, ctrl.type, placeholders.default);
-        }
-
-        /**
-         * Checks for V3IO triggers
-         * @returns {boolean}
-         */
-        function isV3ioTrigger() {
-            return ctrl.selectedClass.id === 'v3ioStream';
-        }
-
-        /**
-         * Broadcast's callback to deploy function
-         * @param {Event} event - native broadcast event object
-         * @param {Object} data - broadcast data with event object
-         */
-        function onFunctionDeploy(event, data) {
-            ctrl.onSubmitForm(data.event)
-        }
-
-        /**
-         * Submits form
-         */
-        function submitForm() {
-            lodash.forEach(ctrl.selectedClass.attributes, function (attribute) {
-                if (attribute.pattern === 'number') {
-                    var emptyValue = lodash.isNil(ctrl.item.attributes[attribute.name]) || ctrl.item.attributes[attribute.name] === '';
-                    var numberAttribute = attribute.allowEmpty && emptyValue ? '' :
-                        Number(ctrl.item.attributes[attribute.name]);
-
-                    lodash.set(ctrl.item, 'attributes[' + attribute.name + ']', numberAttribute);
-                }
-
-                if (attribute.pattern === 'arrayStr') {
-                    lodash.update(ctrl.item.attributes, attribute.name, ConverterService.toStringArray);
-                }
-
-                if (attribute.pattern === 'arrayInt' && !lodash.isArray(ctrl.item.attributes[attribute.name])) {
-                    ctrl.item.attributes[attribute.name] = ConverterService.toNumberArray(ctrl.item.attributes[attribute.name]);
-                }
-
-                if (attribute.name === 'ingresses') {
-                    var newIngresses = {};
-
-                    lodash.forEach(ctrl.ingresses, function (ingress, key) {
-                        newIngresses[key.toString()] = {
-                            paths: ingress.value.split(',')
-                        };
-
-                        if (!lodash.isEmpty(ingress.name)) {
-                            newIngresses[key.toString()].host = ingress.name;
-                        }
-
-                        if (!lodash.isEmpty(ingress.additionalValue)) {
-                            newIngresses[key.toString()].secretName = ingress.additionalValue;
-                        }
-                    });
-
-                    ctrl.item.attributes[attribute.name] = newIngresses;
-                }
-
-                if (attribute.name === 'event') {
-                    var newEventHeader = {};
-
-                    lodash.forEach(ctrl.eventHeaders, function (headers) {
-                        newEventHeader[headers.name] = headers.value;
-                    });
-
-                    lodash.set(ctrl.item, 'attributes.event.headers', newEventHeader);
-                }
-            });
-
-            if (ctrl.isHttpTrigger()) {
-                updateAnnotaions();
-            }
-
-            if (ctrl.isMQTTTrigger()) {
-                updateSubscriptions();
-            }
-
-            if (ctrl.isKafkaTrigger()) {
-                updateTopics();
-                updateBrokers();
-            }
-
-            $rootScope.$broadcast('change-state-deploy-button', {
-                component: ctrl.item.ui.name,
-                isDisabled: false
-            });
-
-            ctrl.onSubmitCallback({ item: ctrl.item });
-        }
-
-        /**
-         * Updates `ctrl.item.ui.changed` property when user updates trigger
-         */
-        function updateChangesState() {
-            var currentChangesState = lodash.get(ctrl.item, 'ui.changed', false);
-
-            ctrl.item.ui.changed = !lodash.chain(ctrl.item)
-                .omit(['$$hashKey', 'ui'])
-                .isEqual(itemCopy)
-                .value();
-
-            if (currentChangesState !== ctrl.item.ui.changed) {
-                $rootScope.$broadcast('edit-item-has-been-changed', {});
-            }
-        }
-
-        /**
          * Validate interval and schedule fields
          */
+        /* eslint complexity: ["error", 11] */
         function validateValues() {
             if (ctrl.item.kind === 'cron') {
-                var scheduleAttribute = lodash.find(ctrl.selectedClass.attributes, { name: 'schedule' });
-                var intervalAttribute = lodash.find(ctrl.selectedClass.attributes, { name: 'interval' });
+                var scheduleField = lodash.find(ctrl.selectedClass.fields, { name: 'schedule' });
                 var intervalInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_interval.$viewValue);
                 var scheduleInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_schedule.$viewValue);
+                var bothFilled = intervalInputIsFilled && scheduleInputIsFilled;
 
-                if (intervalInputIsFilled === scheduleInputIsFilled) {
-
-                    // if interval and schedule fields are filled or they are empty - makes these fields invalid
-                    ctrl.editItemForm.item_interval.$setValidity('text', false);
-                    ctrl.editItemForm.item_schedule.$setValidity('text', false);
-                } else {
-
-                    // if interval or schedule filed is filled - makes these fields valid
-                    ctrl.editItemForm.item_interval.$setValidity('text', true);
-                    ctrl.editItemForm.item_schedule.$setValidity('text', true);
-                    scheduleAttribute.allowEmpty = intervalInputIsFilled;
-                    intervalAttribute.allowEmpty = scheduleInputIsFilled;
+                scheduleField.allowEmpty = intervalInputIsFilled;
+                lodash.assign(scheduleField, {
+                    moreInfoIconType: bothFilled ? 'warn' : 'info',
+                    moreInfoOpen: bothFilled
+                });
+                ctrl.editItemForm.item_interval.$validate();
+                if (intervalInputIsFilled) {
+                    ctrl.editItemForm.item_interval.$setDirty();
                 }
             } else if (ctrl.item.kind === 'rabbit-mq') {
-                var queueName = lodash.find(ctrl.selectedClass.attributes, { name: 'queueName' });
-                var topics = lodash.find(ctrl.selectedClass.attributes, { name: 'topics' });
+                var queueName = lodash.find(ctrl.selectedClass.fields, { name: 'queueName' });
+                var topics = lodash.find(ctrl.selectedClass.fields, { name: 'topics' });
                 var queueNameIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_queueName.$viewValue);
                 var topicsIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_topics.$viewValue);
 
@@ -1173,6 +1089,14 @@
                 // update validity: if empty is not allowed and value is currently empty - mark invalid, otherwise valid
                 ctrl.editItemForm.item_queueName.$setValidity('text', queueName.allowEmpty || queueNameIsFilled);
                 ctrl.editItemForm.item_topics.$setValidity('text', topics.allowEmpty || topicsIsFilled);
+            } else if (ctrl.item.kind === 'kafka-cluster') {
+                ctrl.item.attributes.sasl.enable = !lodash.isEmpty(ctrl.item.attributes.sasl.user) &&
+                    !lodash.isEmpty(ctrl.item.attributes.sasl.password);
+            } else if (ctrl.item.kind === 'v3ioStream') {
+                var urlField = lodash.find(ctrl.selectedClass.fields, { name: 'url' });
+                var containerNameField = lodash.find(ctrl.selectedClass.fields, { name: 'containerName' });
+                var containerNameValue = getFieldValue(containerNameField);
+                urlField.allowEmpty = !lodash.isEmpty(containerNameValue);
             }
         }
     }

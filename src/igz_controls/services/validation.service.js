@@ -27,7 +27,8 @@
                 imageName: 255,
                 itemPath: 255,
                 containerSubPath: 255,
-                string: 128
+                triggerName: 128,
+                v3ioConsumerGroupName: 255
             },
             service: {
                 name: 53,
@@ -187,21 +188,21 @@
         };
         var commonRules = {
             integer: [
+                generateRule.validCharacters('0-9'),
                 {
                     name: 'beginNot',
                     label: $i18next.t('common:BEGIN_NOT_WITH', {lng: lng}) + ': 0',
                     pattern: /^(?!0.+)/
-                },
-                generateRule.validCharacters('0-9')
+                }
             ],
             negativeInteger: [
+                generateRule.validCharacters('0-9 -'),
                 generateRule.onlyAtTheBeginning('-'),
                 {
                     name: 'beginNot',
                     label: $i18next.t('common:BEGIN_NOT_WITH', {lng: lng}) + ': 0',
                     pattern: /^(?![-]0)(?!0.+)/
-                },
-                generateRule.validCharacters('0-9 -')
+                }
             ],
             email: [
                 generateRule.beginEndNotWith('@ .'),
@@ -315,40 +316,49 @@
                     }))
                 },
                 itemPath: [generateRule.length({max: lengths.function.itemPath})],
-                string: [generateRule.length({max: lengths.function.string})],
                 subscriptionQoS: [
                     generateRule.validCharacters('0-2'),
                     generateRule.length({max: 1})
                 ],
                 arrayInt: [
-                    generateRule.beginEndWith('0-9'),
                     generateRule.validCharacters('0-9 - ,'),
+                    generateRule.beginEndWith('0-9'),
                     generateRule.noConsecutiveCharacters(',-')
                 ],
                 interval: [
-                    generateRule.beginWith('0-9'),
                     {
                         name: 'validCharacters',
                         label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': 0–9, m, s, h',
                         pattern: /^[0-9msh]+$/
                     },
+                    generateRule.beginWith('0-9'),
                     {
                         name: 'end',
-                        label: $i18next.t('common:END_WITH', {lng: lng}) + ': ms, m, s, h',
+                        label: $i18next.t('common:END_WITH', {lng: lng}) + ': ms, s, m, h',
                         pattern: /\d+(ms|[smh])$/
                     }
+                ],
+                triggerName: [
+                    generateRule.validCharacters('a-z A-Z 0-9 - _'),
+                    generateRule.beginWith('a-z A-Z'),
+                    generateRule.length({ max: lengths.function.triggerName })
+                ],
+                v3ioConsumerGroupName: [
+                    generateRule.validCharacters('a-z A-Z 0-9 _'),
+                    generateRule.beginWith('a-z A-Z _'),
+                    generateRule.length({ max: lengths.function.v3ioConsumerGroupName })
                 ]
             },
             service: {
                 name: [
+                    generateRule.validCharacters('a-z 0-9 -'),
                     generateRule.beginWith('a-z'),
                     generateRule.endWith('a-z 0-9'),
-                    generateRule.validCharacters('a-z 0-9 -'),
                     generateRule.length({max: lengths.service.name})
                 ],
                 resources: [
-                    generateRule.beginNotWith('.'),
                     generateRule.validCharacters('a-z A-Z 0-9 - _ .'),
+                    generateRule.beginNotWith('.'),
                     generateRule.length({max: lengths.service.resources})
                 ],
                 persistentVolumeClaims: {
@@ -370,8 +380,8 @@
                 ],
                 attribute: {
                     name: [
-                        generateRule.beginWith('a-z A-Z _'),
                         generateRule.validCharacters('a-z A-Z 0-9 _'),
+                        generateRule.beginWith('a-z A-Z _'),
                         generateRule.length({max: lengths.container.attribute.name})
                     ]
                 },
@@ -417,13 +427,13 @@
             identity: {
                 user: {
                     name: [
-                        generateRule.beginWith('a-z A-Z'),
                         generateRule.validCharacters('a-z A-Z - s'),
+                        generateRule.beginWith('a-z A-Z'),
                         generateRule.length({max: lengths.identity.user.name})
                     ],
                     username: [
-                        generateRule.beginWith('a-z A-Z'),
                         generateRule.validCharacters('a-z A-Z 0-9 - _'),
+                        generateRule.beginWith('a-z A-Z'),
                         generateRule.length({max: lengths.identity.user.username})
                     ],
                     email: commonRules.email.concat(generateRule.length({max: lengths.identity.user.email})),
@@ -440,8 +450,8 @@
             },
             tenant: {
                 name: [
-                    generateRule.beginWith('a-z A-Z'),
                     generateRule.validCharacters('a-z A-Z 0-9 _'),
+                    generateRule.beginWith('a-z A-Z'),
                     generateRule.endWith('a-z A-Z 0-9'),
                     generateRule.length({max: lengths.tenant.name})
                 ],
@@ -458,9 +468,9 @@
             integer: commonRules.integer,
             negativeInteger: commonRules.negativeInteger,
             negativeFloat: [
+                generateRule.validCharacters('0-9 . -'),
                 generateRule.onlyAtTheBeginning('-'),
                 generateRule.endWith('0-9'),
-                generateRule.validCharacters('0-9 . -'),
                 {
                     name: 'maxLengthWholePart',
                     label: $i18next.t('common:MAX_LENGTH_WHOLE_PART', {lng: lng, length: 9}),
@@ -473,13 +483,13 @@
                 }
             ],
             floatingPoint: [
+                generateRule.validCharacters('0-9 . + - e E'),
                 {
                     name: 'onlyAtTheBeginning',
                     label: $i18next.t('common:ONLY_AT_THE_BEGINNING_AND_EXPONENT', {lng: lng}),
                     pattern: /^[-+]?[^-+]+([eE].+)?$/
                 },
                 generateRule.beginWith('0-9 + -'),
-                generateRule.validCharacters('0-9 . + - e E'),
                 generateRule.endWith('0-9'),
                 {
                     name: 'invalidExponent',
@@ -493,15 +503,15 @@
             ],
             email: commonRules.email,
             path: [
-                generateRule.beginWith('/'),
                 generateRule.validCharacters('a-z A-Z - _ /'),
+                generateRule.beginWith('/'),
                 generateRule.endWith('a-z A-Z')
             ],
             phone: [
+                generateRule.validCharacters('0-9 + -'),
                 generateRule.onlyAtTheBeginning('+'),
                 generateRule.beginWith('0-9 +'),
                 generateRule.endWith('0-9'),
-                generateRule.validCharacters('0-9 + -'),
                 generateRule.length({min: 4, max: lengths.phone})
             ]
         };

@@ -151,12 +151,16 @@
         </div>
     </div>
 
-    <div data-ng-if="$ctrl.selectedFieldType === 'schedule'">
+    <div data-ng-if="$ctrl.selectedFieldType === 'schedule'" class="schedule-input-wrapper">
         <cron-selection class="field"
-                        data-ng-class="{'invalid': $ctrl.isFieldValid()}"
+                        data-ng-class="{invalid: $ctrl.isFieldInvalid()}"
                         data-ng-model="$ctrl.data"
                         data-ng-change="$ctrl.onChange()"
+                        data-ng-required="$ctrl.validationIsRequired"
                         name="{{$ctrl.inputName}}">
         </cron-selection>
+        <div class="clear-button" data-ng-show="$ctrl.data !== ''">
+            <a class="link" data-ng-click="$ctrl.clearInputField()">{{ 'common:CLEAR' | i18next }}</a>
+        </div>
     </div>
 </div>

@@ -18,7 +18,7 @@
             controller: IgzActionMenuController
         });
 
-    function IgzActionMenuController($scope, $element, $document, $rootScope, $timeout, $i18next, i18next, lodash,
+    function IgzActionMenuController($element, $document, $i18next, $rootScope, $scope, $timeout, i18next, lodash,
                                      ConfigService, PreventDropdownCutOffService) {
         var ctrl = this;
         var lng = i18next.language;
@@ -208,7 +208,7 @@
          * @param {string} elementClass - class of parental block of key-value list
          */
         function checkOpeningSide(elementClass) {
-            var parentalBlock = $(document).find('.' + elementClass)[0];
+            var parentalBlock = $document.find('.' + elementClass)[0];
             var parentalRect = parentalBlock.getBoundingClientRect();
             var dropdown;
             var dropdownBottom;

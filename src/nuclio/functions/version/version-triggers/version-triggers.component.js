@@ -4,13 +4,14 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclVersionTriggers', {
             bindings: {
+                containers: '<?',
                 version: '<'
             },
             templateUrl: 'nuclio/functions/version/version-triggers/version-triggers.tpl.html',
             controller: NclVersionTriggersController
         });
 
-    function NclVersionTriggersController($rootScope, $scope, $timeout, $i18next, i18next, lodash, DialogsService,
+    function NclVersionTriggersController($i18next, $rootScope, $scope, $timeout, i18next, lodash, DialogsService,
                                           FunctionsService, ValidationService, VersionHelperService) {
         var ctrl = this;
         var lng = i18next.language;
@@ -26,9 +27,24 @@
 
         ctrl.isCreateModeActive = false;
         ctrl.validationRules = {
+            arrayInt: ValidationService.getValidationRules('function.arrayInt'),
             host: {
                 key: ValidationService.getValidationRules('k8s.dns1123Subdomain')
-            }
+            },
+            itemName: ValidationService.getValidationRules('function.triggerName'),
+            cronInterval: ValidationService.getValidationRules('function.interval', [{
+                name: 'scheduleIsEmpty',
+                label: $i18next.t('functions:TRIGGER_CRON_INTERVAL_NO_SCHEDULE', { lng: lng }),
+                pattern: function (value, inputName, formObject) {
+                    return lodash.isEmpty(lodash.get(formObject, 'item_schedule.$modelValue'));
+                }
+            }]),
+            interval: ValidationService.getValidationRules('function.interval'),
+            number: ValidationService.getValidationRules('number'),
+            subscriptionQoS: {
+                value: ValidationService.getValidationRules('function.subscriptionQoS')
+            },
+            v3ioConsumerGroupName: ValidationService.getValidationRules('function.v3ioConsumerGroupName')
         };
         ctrl.triggers = [];
 
@@ -48,8 +64,14 @@
          * Initialization method
          */
         function onInit() {
+            var additionalData = {};
+            if (lodash.isArray(ctrl.containers) && !lodash.isEmpty(ctrl.containers)) {
+                additionalData.containers = lodash.chain(ctrl.containers)
+                    .cloneDeep()
+                    .sortBy('name')
+                    .value();
+            }
 
-            // get trigger list
             ctrl.triggers = lodash.map(ctrl.version.spec.triggers, function (value, key) {
                 var triggersItem = angular.copy(value);
                 triggersItem.id = key;
@@ -80,7 +102,7 @@
 
                 return triggersItem;
             });
-            ctrl.classList = FunctionsService.getClassesList('trigger');
+            ctrl.classList = FunctionsService.getClassesList('trigger', additionalData);
 
             $scope.$on('edit-item-has-been-changed', updateTriggersChangesState);
 
@@ -223,6 +245,7 @@
 
             var triggerItem = {
                 kind: selectedItem.kind,
+                name: selectedItem.name,
                 attributes: selectedItem.attributes
             };
 
@@ -286,7 +309,7 @@
                 triggerItem.annotations = selectedItem.annotations;
             }
 
-            lodash.set(ctrl.version, 'spec.triggers.' + selectedItem.name, triggerItem);
+            lodash.set(ctrl.version, ['spec', 'triggers', selectedItem.name], triggerItem);
 
             selectedItem.id = selectedItem.name;
 
