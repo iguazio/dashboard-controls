@@ -254,6 +254,7 @@
                                         status === 'Scaled to zero'                       ? 'Scaled to zero' :
                                         status === 'Ready' && ctrl.function.spec.disable  ? 'Standby'        :
                                         status === 'Ready' && !ctrl.function.spec.disable ? 'Running'        :
+                                        status === 'Imported'                             ? 'Imported'       :
                                         /* else */                                          'Building';
 
             lodash.set(ctrl.function, 'ui.convertedStatus', ctrl.convertedStatusState);
