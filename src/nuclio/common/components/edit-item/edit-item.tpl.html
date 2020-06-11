@@ -1,23 +1,23 @@
 <div class="ncl-edit-item" data-ng-keydown="$ctrl.onSubmitForm($event)">
-    <form name="$ctrl.editItemForm"
-          novalidate
-          autocomplete="off">
+    <form name="$ctrl.editItemForm" novalidate autocomplete="off">
         <div class="igz-row title-field-row">
             <div class="igz-col-20 name-field">
                 <igz-validating-input-field data-field-type="input"
                                             data-input-name="itemName"
-                                            data-input-value="$ctrl.getInputValue()"
+                                            data-input-value="$ctrl.getItemName()"
                                             data-is-focused="true"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
-                                            data-validation-rules="$ctrl.validationRules['itemName']"
+                                            data-validation-rules="$ctrl.validationRules.itemName"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_NAME' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="name"
                                             autocomplete="off">
                 </igz-validating-input-field>
-                <div class="error" data-ng-show="$ctrl.isShowFieldInvalidState($ctrl.editItemForm, 'itemName')">
-                    {{ 'common:ERROR_MSG.INVALID_INPUTS' | i18next }}
+                <div class="error"
+                     data-ng-show="$ctrl.isShowFieldInvalidState($ctrl.editItemForm, 'itemName') &&
+                                   $ctrl.isShowFieldError($ctrl.editItemForm, 'itemName', 'required')">
+                    {{ 'common:NAME_IS_REQUIRED' | i18next }}
                 </div>
             </div>
 
@@ -25,7 +25,7 @@
                 <igz-default-dropdown data-select-property-only="id"
                                       data-input-name="itemClass"
                                       data-is-required="true"
-                                      data-placeholder="{{ $ctrl.placeholder }}"
+                                      data-placeholder="{{ $ctrl.classPlaceholder }}"
                                       data-prevent-drop-up="true"
                                       data-values-array="$ctrl.classList"
                                       data-selected-item="$ctrl.selectedClass.id"
@@ -34,40 +34,21 @@
                                       data-enable-overlap="true">
                 </igz-default-dropdown>
             </div>
-            <div class="igz-col-65 tooltip-wrapper">
+            <div class="igz-col-65 tooltip-wrapper" data-ng-if="$ctrl.isSelectedClassMoreInfoVisible()">
                 <igz-more-info
-                        data-ng-if="$ctrl.isTooltipVisible()"
-                        data-description="{{$ctrl.getTooltip()}}"
+                        data-description="{{$ctrl.getSelectedClassMoreInfo()}}"
                         data-trigger="click"
                         data-is-html-enabled="true">
                 </igz-more-info>
             </div>
         </div>
 
-        <div class="igz-row">
-            <div class="igz-col-100 no-class-selected"
-                 data-ng-if="!$ctrl.isClassSelected()">{{ $ctrl.placeholder }}
-            </div>
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.url)">
-                <div class="field-label">
-                    <span class="asterisk">{{ 'common:URL' | i18next }}</span>
-                </div>
-                <igz-validating-input-field data-field-type="input"
-                                            data-input-name="itemURL"
-                                            data-input-value="$ctrl.item.url"
-                                            data-is-focused="false"
-                                            data-form-object="$ctrl.editItemForm"
-                                            data-validation-is-required="true"
-                                            data-placeholder-text="{{ 'common:PLACEHOLDER.ENTER_URL' | i18next }}"
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-update-data-field="url"
-                                            data-auto-complete="off">
-                </igz-validating-input-field>
-            </div>
+        <div class="igz-row" data-ng-if="$ctrl.isNil($ctrl.selectedClass.id)">
+            <div class="igz-col-100 no-class-selected">{{ $ctrl.classPlaceholder }}</div>
+        </div>
 
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volumeMount.mountPath)">
+        <div class="igz-row" data-ng-if="!$ctrl.isNil($ctrl.selectedClass.id)">
+            <div class="igz-col-45 attribute-field" data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.mountPath)">
                 <div class="field-label">
                     <span class="asterisk">{{ 'functions:MOUNT_PATH' | i18next }}</span>
                     <igz-more-info data-description="{{ 'functions:MOUNT_PATH_DESCRIPTION' | i18next }}"
@@ -80,7 +61,7 @@
                                             data-is-focused="false"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
-                                            data-validation-rules="$ctrl.validationRules['itemPath']"
+                                            data-validation-rules="$ctrl.validationRules.itemPath"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_MOUNT_PATH' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="volumeMount.mountPath"
@@ -89,7 +70,7 @@
             </div>
 
             <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.flexVolume.options.accessKey)">
+                 data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.accessKey)">
                 <div class="field-label">
                     <span class="asterisk">{{ 'functions:ACCESS_KEY' | i18next }}</span>
                     <igz-more-info data-description="{{ 'functions:ACCESS_KEY_DESCRIPTION' | i18next }}"
@@ -97,7 +78,6 @@
                     </igz-more-info>
                 </div>
                 <igz-validating-input-field data-field-type="password"
-                                            data-auto-complete="current-password"
                                             data-input-name="secretRef"
                                             data-input-value="$ctrl.item.volume.flexVolume.options.accessKey"
                                             data-is-focused="false"
@@ -106,12 +86,12 @@
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_ACCESS_KEY' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="volume.flexVolume.options.accessKey"
-                                            data-auto-complete="off">
+                                            data-auto-complete="current-password">
                 </igz-validating-input-field>
             </div>
 
             <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.flexVolume.options.container)">
+                 data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.container)">
                 <div class="field-label">
                     <span class="asterisk">{{ 'functions:CONTAINER_NAME' | i18next }}</span>
                     <igz-more-info data-description="{{ 'functions:CONTAINER_NAME_DESCRIPTION' | i18next }}"
@@ -132,7 +112,7 @@
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.flexVolume.options.subPath)">
+                 data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.subPath)">
                 <div class="field-label">
                     <span>{{ 'common:PATH' | i18next }}</span>
                     <igz-more-info data-description="{{ 'functions:PATH_DESCRIPTION' | i18next }}"
@@ -153,25 +133,7 @@
                 </igz-validating-input-field>
             </div>
 
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.hostPath.path)">
-                <div class="field-label">
-                    <span class="asterisk">{{ 'functions:HOST_PATH' | i18next }}</span>
-                </div>
-                <igz-validating-input-field data-field-type="input"
-                                            data-input-name="hostPath"
-                                            data-input-value="$ctrl.item.volume.hostPath.path"
-                                            data-is-focused="false"
-                                            data-form-object="$ctrl.editItemForm"
-                                            data-validation-is-required="true"
-                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_HOST_PATH' | i18next }}"
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-update-data-field="volume.hostPath.path">
-                </igz-validating-input-field>
-            </div>
-
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.secret.secretName)">
+            <div class="igz-col-45 attribute-field" data-ng-if="!$ctrl.isNil($ctrl.item.volume.secret.secretName)">
                 <div class="field-label">
                     <span class="asterisk">{{ 'functions:SECRET_NAME' | i18next }}</span>
                 </div>
@@ -187,8 +149,7 @@
                 </igz-validating-input-field>
             </div>
 
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.configMap.name)">
+            <div class="igz-col-45 attribute-field" data-ng-if="!$ctrl.isNil($ctrl.item.volume.configMap.name)">
                 <div class="field-label">
                     <span class="asterisk">{{ 'functions:CONFIG_MAP_NAME' | i18next }}</span>
                 </div>
@@ -205,7 +166,7 @@
             </div>
 
             <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.volume.persistentVolumeClaim.claimName)">
+                 data-ng-if="!$ctrl.isNil($ctrl.item.volume.persistentVolumeClaim.claimName)">
                 <div class="field-label text-ellipsis">
                     <span class="asterisk">{{ 'functions:PERSISTENT_VOLUME_CLAIM_NAME' | i18next }}</span>
                 </div>
@@ -220,202 +181,130 @@
                 </igz-validating-input-field>
             </div>
 
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() &&
-                             !$ctrl.isNil($ctrl.item.maxWorkers) &&
-                             (!$ctrl.isCronTrigger() || !$ctrl.platformKindIsKube)">
-                <div class="field-label">
-                    <span data-ng-class="{asterisk: !$ctrl.selectedClass.maxWorkers.allowEmpty}">{{ 'functions:MAX_WORKERS' | i18next }}</span>
+            <div class="igz-col-45 attribute-field brokers-wrapper" data-ng-if="$ctrl.isKafkaTrigger()">
+                <div class="field-label">{{ 'functions:BROKERS' | i18next }}</div>
+                <div>
+                    <div class="table-body" data-ng-repeat="broker in $ctrl.brokers">
+                        <ncl-key-value-input class="new-label-input"
+                                             data-list-class="brokers-wrapper"
+                                             data-change-state-broadcast="change-state-deploy-button"
+                                             data-row-data="broker"
+                                             data-use-type="false"
+                                             data-submit-on-fly="true"
+                                             data-item-index="$index"
+                                             data-only-value-input="true"
+                                             data-action-handler-callback="$ctrl.handleBrokerAction(actionType, index)"
+                                             data-change-data-callback="$ctrl.onChangeKeyValueData(newData, index)">
+                        </ncl-key-value-input>
+                    </div>
                 </div>
-                <igz-number-input data-form-object="$ctrl.editItemForm"
-                                  data-input-name="{{$ctrl.selectedClass.maxWorkers.name}}"
-                                  data-current-value="$ctrl.item.maxWorkers"
-                                  data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
-                                  data-update-number-input-field="maxWorkers"
-                                  data-placeholder="{{ 'functions:PLACEHOLDER.ENTER_MAX_WORKERS' | i18next }}"
-                                  data-decimal-number="0"
-                                  data-value-step="1"
-                                  data-validation-is-required="!$ctrl.selectedClass.maxWorkers.allowEmpty"
-                                  data-allow-empty-field="$ctrl.selectedClass.maxWorkers.allowEmpty"
-                                  data-min-value="$ctrl.selectedClass.maxWorkers.min"
-                                  data-max-value="$ctrl.selectedClass.maxWorkers.max">
-                </igz-number-input>
+                <div class="igz-create-button create-broker-button"
+                     data-ng-click="$ctrl.addNewBroker($event)">
+                    <span class="igz-icon-add-round"></span>
+                    {{ 'functions:ADD_BROKER' | i18next }}
+                </div>
             </div>
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() &&
-                             !$ctrl.isNil($ctrl.item.workerAvailabilityTimeoutMilliseconds) &&
-                             (!$ctrl.isCronTrigger() || !$ctrl.platformKindIsKube)">
+
+            <div class="igz-col-45 attribute-field topics-wrapper" data-ng-if="$ctrl.isKafkaTrigger()">
+                <div class="field-label">{{ 'functions:TOPICS' | i18next }}</div>
+                <div>
+                    <div class="table-body" data-ng-repeat="topic in $ctrl.topics">
+                        <ncl-key-value-input class="new-label-input"
+                                             data-list-class="topics-wrapper"
+                                             data-change-state-broadcast="change-state-deploy-button"
+                                             data-row-data="topic"
+                                             data-use-type="false"
+                                             data-submit-on-fly="true"
+                                             data-item-index="$index"
+                                             data-only-value-input="true"
+                                             data-action-handler-callback="$ctrl.handleTopicAction(actionType, index)"
+                                             data-change-data-callback="$ctrl.onChangeKeyValueData(newData, index)">
+                        </ncl-key-value-input>
+                    </div>
+                </div>
+                <div class="igz-create-button create-topic-button"
+                     data-ng-click="$ctrl.addNewTopic($event)">
+                    <span class="igz-icon-add-round"></span>
+                    {{ 'functions:ADD_TOPIC' | i18next }}
+                </div>
+            </div>
+
+            <div class="igz-col-{{field.fieldType === 'schedule' ? '91' : '45'}} attribute-field"
+                 data-ng-repeat="field in $ctrl.selectedClass.fields | filter:$ctrl.isFieldVisible track by field.name">
                 <div class="field-label">
-                    <span data-ng-class="{
-                        asterisk: !$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.allowEmpty
-                    }">{{ 'functions:WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS' | i18next }}</span>
-                    <igz-more-info data-description="{{ $ctrl.getWorkerAvailabilityTimeoutMillisecondsDescription() }}"
-                                   data-trigger="click">
+                    <span data-ng-class="{ asterisk: field.allowEmpty === false }">
+                        {{field.label || $ctrl.convertFromCamelCase(field.name)}}
+                    </span>
+                    <igz-more-info
+                        data-ng-if="field.moreInfoDescription"
+                        data-description="{{field.moreInfoDescription}}"
+                        data-icon-type="{{field.moreInfoIconType}}"
+                        data-is-open="field.moreInfoOpen"
+                        data-trigger="click">
                     </igz-more-info>
                 </div>
-                <igz-number-input data-form-object="$ctrl.editItemForm"
-                                  data-input-name="{{$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.name}}"
-                                  data-current-value="$ctrl.item.workerAvailabilityTimeoutMilliseconds"
-                                  data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
-                                  data-update-number-input-field="workerAvailabilityTimeoutMilliseconds"
-                                  data-placeholder="{{$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.placeholder}}"
-                                  data-decimal-number="0"
-                                  data-value-step="1"
-                                  data-validation-is-required="!$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.allowEmpty"
-                                  data-allow-empty-field="$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.allowEmpty"
-                                  data-default-value="$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.defaultValue"
-                                  data-min-value="$ctrl.selectedClass.workerAvailabilityTimeoutMilliseconds.min">
-                </igz-number-input>
-
-            </div>
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && attribute.type === 'input' && attribute.name !== 'schedule'"
-                 data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
-                <div class="field-label">
-                    <span data-ng-class="{asterisk: !attribute.allowEmpty}">{{$ctrl.convertFromCamelCase(attribute.name)}}</span>
-                </div>
-                <igz-validating-input-field data-field-type="{{attribute.fieldType}}"
-                                            data-input-name="item_{{attribute.name}}"
-                                            data-input-value="$ctrl.getAttrValue(attribute.name)"
-                                            data-is-focused="false"
-                                            data-form-object="$ctrl.editItemForm"
-                                            data-validation-rules="$ctrl.attributesValidationRules[attribute.pattern]"
-                                            data-validation-is-required="!attribute.allowEmpty"
-                                            data-placeholder-text="{{$ctrl.getPlaceholderText(attribute)}}"
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-update-data-field="attributes.{{attribute.name}}">
+                <igz-validating-input-field
+                    data-ng-if="field.type === 'input'"
+                    data-field-type="{{field.fieldType}}"
+                    data-input-name="item_{{field.name}}"
+                    data-input-value="$ctrl.getFieldValue(field)"
+                    data-is-focused="false"
+                    data-form-object="$ctrl.editItemForm"
+                    data-validation-rules="$ctrl.validationRules[field.pattern]"
+                    data-validation-is-required="!field.allowEmpty"
+                    data-placeholder-text="{{$ctrl.getFieldPlaceholderText(field)}}"
+                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                    data-update-data-field="{{field.path || field.name}}"
+                    data-auto-complete="{{field.autocomplete || 'off'}}">
                 </igz-validating-input-field>
-            </div>
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && attribute.type === 'dropdown'"
-                 data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
-                <div class="field-label">{{$ctrl.convertFromCamelCase(attribute.name)}}</div>
-                <igz-default-dropdown data-select-property-only="id"
-                                      data-placeholder="{{$ctrl.convertFromCamelCase(attribute.name) | lowercase}}..."
-                                      data-values-array="attribute.values"
-                                      data-form-object="$ctrl.editItemForm"
-                                      data-is-required="true"
-                                      data-prevent-drop-up="true"
-                                      data-input-name="{{attribute.name}}"
-                                      data-selected-item="$ctrl.getAttrValue(attribute.name)"
-                                      data-item-select-callback="$ctrl.onSelectDropdownValue(item, field)"
-                                      data-item-select-field="attributes.{{attribute.name}}"
-                                      data-enable-overlap="true">
+                <igz-validating-input-field
+                    data-ng-if="field.type === 'arrayInt'"
+                    data-field-type="input"
+                    data-input-name="item_{{field.name}}"
+                    data-input-value="$ctrl.getFieldValue(field)"
+                    data-is-focused="false"
+                    data-form-object="$ctrl.editItemForm"
+                    data-validation-rules="$ctrl.fieldTypeValidationRules.arrayInt"
+                    data-validation-is-required="!field.allowEmpty"
+                    data-placeholder-text="{{$ctrl.getFieldPlaceholderText(field)}}"
+                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                    data-update-data-field="{{field.path || field.name}}"
+                    data-auto-complete="{{field.autocomplete || 'off'}}">
+                </igz-validating-input-field>
+                <igz-default-dropdown
+                    data-ng-if="field.type === 'dropdown'"
+                    data-select-property-only="id"
+                    data-placeholder="{{$ctrl.getFieldPlaceholderText(field)}}"
+                    data-values-array="field.values"
+                    data-form-object="$ctrl.editItemForm"
+                    data-is-required="!field.allowEmpty"
+                    data-prevent-drop-up="true"
+                    data-input-name="item_{{field.name}}"
+                    data-selected-item="$ctrl.getFieldValue(field)"
+                    data-item-select-callback="$ctrl.onSelectDropdownValue(item, field)"
+                    data-item-select-field="{{field.path || field.name}}"
+                    data-enable-overlap="true"
+                    data-enable-typing="field.enableTyping">
                 </igz-default-dropdown>
-            </div>
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && attribute.type === 'number-input'"
-                 data-ng-repeat="attribute in $ctrl.selectedClass.attributes">
-                <div class="field-label">
-                    <span data-ng-class="{asterisk: !attribute.allowEmpty}">{{$ctrl.convertFromCamelCase(attribute.name)}}</span>
-                </div>
-                <igz-number-input data-form-object="$ctrl.editItemForm"
-                                  data-input-name="{{attribute.name}}"
-                                  data-current-value="$ctrl.getAttrValue(attribute.name)"
-                                  data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
-                                  data-update-number-input-field="attributes.{{attribute.name}}"
-                                  data-placeholder=""
-                                  data-decimal-number="0"
-                                  data-value-step="1"
-                                  data-suffix-unit="{{attribute.unit}}"
-                                  data-validation-is-required="!attribute.allowEmpty"
-                                  data-allow-empty-field="attribute.allowEmpty"
-                                  data-min-value="0"
-                                  data-max-value="attribute.maxValue">
+                <igz-number-input
+                    data-ng-if="field.type === 'number-input'"
+                    data-form-object="$ctrl.editItemForm"
+                    data-input-name="item_{{field.name}}"
+                    data-current-value="$ctrl.getFieldValue(field)"
+                    data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
+                    data-update-number-input-field="{{field.path || field.name}}"
+                    data-placeholder="{{$ctrl.getFieldPlaceholderText(field)}}"
+                    data-precision="0"
+                    data-value-step="1"
+                    data-suffix-unit="{{field.unit}}"
+                    data-validation-is-required="!field.allowEmpty"
+                    data-allow-empty-field="field.allowEmpty"
+                    data-min-value="field.min"
+                    data-max-value="field.max">
                 </igz-number-input>
             </div>
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.username)">
-                <div class="field-label">{{ 'common:USERNAME' | i18next }}</div>
-                <igz-validating-input-field data-field-type="input"
-                                            data-input-name="username"
-                                            data-input-value="$ctrl.item.username"
-                                            data-is-focused="false"
-                                            data-form-object="$ctrl.editItemForm"
-                                            data-validation-rules="$ctrl.attributesValidationRules.string"
-                                            data-validation-is-required="false"
-                                            data-placeholder-text="{{ 'common:PLACEHOLDER.ENTER_USERNAME' | i18next }}"
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-update-data-field="username">
-                </igz-validating-input-field>
-            </div>
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.password)">
-                <div class="field-label">{{ 'common:PASSWORD' | i18next }}</div>
-                <igz-validating-input-field data-field-type="password"
-                                            data-input-name="password"
-                                            data-input-value="$ctrl.item.password"
-                                            data-is-focused="false"
-                                            data-form-object="$ctrl.editItemForm"
-                                            data-validation-rules="$ctrl.attributesValidationRules.string"
-                                            data-validation-is-required="false"
-                                            data-placeholder-text="{{ 'common:PLACEHOLDER.ENTER_PASSWORD' | i18next }}"
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-update-data-field="password">
-                </igz-validating-input-field>
-            </div>
-            <div class="igz-col-45 attribute-field attribute-field-checkbox"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.sasl.enable)">
-                <div class="checkbox-block">
-                    <input type="checkbox"
-                           class="small"
-                           id="saslEnable"
-                           data-ng-model="$ctrl.item.attributes.sasl.enable">
-                    <label for="saslEnable" class="checkbox-inline field-label">
-                        {{ 'functions:SASL_ENABLE' | i18next }}
-                    </label>
-                </div>
-            </div>
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.sasl.user)">
-                <div class="field-label">{{ 'functions:SASL_USERNAME' | i18next }}</div>
-                <igz-validating-input-field data-field-type="input"
-                                            data-input-name="itemSASLUsername"
-                                            data-input-value="$ctrl.item.attributes.sasl.user"
-                                            data-is-focused="false"
-                                            data-form-object="$ctrl.editItemForm"
-                                            data-validation-rules="$ctrl.attributesValidationRules.string"
-                                            data-validation-is-required="false"
-                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_SASL_USERNAME' | i18next }}"
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-update-data-field="attributes.sasl.user">
-                </igz-validating-input-field>
-            </div>
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.sasl.password)">
-                <div class="field-label">{{ 'functions:SASL_PASSWORD' | i18next }}</div>
-                <igz-validating-input-field data-field-type="input"
-                                            data-input-name="itemSASLPassword"
-                                            data-input-value="$ctrl.item.attributes.sasl.password"
-                                            data-is-focused="false"
-                                            data-form-object="$ctrl.editItemForm"
-                                            data-validation-rules="$ctrl.attributesValidationRules.string"
-                                            data-validation-is-required="false"
-                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_SASL_PASSWORD' | i18next }}"
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-update-data-field="attributes.sasl.password">
-                </igz-validating-input-field>
-            </div>
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && !$ctrl.isNil($ctrl.item.attributes.event.body)">
-                <div class="field-label">{{ 'functions:EVENT_BODY' | i18next }}</div>
-                <igz-validating-input-field data-field-type="input"
-                                            data-input-name="eventBody"
-                                            data-input-value="$ctrl.item.attributes.event.body"
-                                            data-is-focused="false"
-                                            data-form-object="$ctrl.editItemForm"
-                                            data-validation-rules="$ctrl.attributesValidationRules.string"
-                                            data-validation-is-required="false"
-                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_EVENT_BODY' | i18next }}"
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-update-data-field="attributes.event.body">
-                </igz-validating-input-field>
-            </div>
-            <div class="igz-col-91 attribute-field ingresses-wrapper"
-                 data-ng-if="$ctrl.isClassSelected() && $ctrl.isHttpTrigger()">
-
+            <div class="igz-col-91 attribute-field ingresses-wrapper" data-ng-if="$ctrl.isHttpTrigger()">
                 <div class="field-label">{{ 'functions:INGRESSES_HOSTS' | i18next }}</div>
-
                 <div data-ng-if="$ctrl.ingresses.length > 0" class="table-headers ingresses-table-headers">
                     <div class="host-header asterisk">{{ 'functions:HOST' | i18next }}</div>
                     <div class="paths-header asterisk">{{ 'common:PATH' | i18next }}</div>
@@ -435,9 +324,9 @@
                                              data-additional-value-optional="true"
                                              data-submit-on-fly="true"
                                              data-item-index="$index"
-                                             data-validation-rules="$ctrl.validationRules['host']"
+                                             data-validation-rules="$ctrl.validationRules.host"
                                              data-action-handler-callback="$ctrl.handleIngressAction(actionType, index)"
-                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                                             data-change-data-callback="$ctrl.onChangeKeyValueData(newData, index)">
                         </ncl-key-value-input>
                     </div>
                 </div>
@@ -448,12 +337,8 @@
                 </div>
             </div>
 
-
-            <div class="igz-col-91 attribute-field annotations-wrapper"
-                 data-ng-if="$ctrl.isClassSelected() && $ctrl.isHttpTrigger()">
-
+            <div class="igz-col-91 attribute-field annotations-wrapper" data-ng-if="$ctrl.isHttpTrigger()">
                 <div class="field-label">{{ 'functions:ANNOTATIONS' | i18next }}</div>
-
                 <div data-ng-if="$ctrl.annotations.length > 0" class="table-headers">
                     <div class="key-header">{{ 'common:KEY' | i18next }}</div>
                     <div class="value-header">{{ 'common:VALUE' | i18next }}</div>
@@ -471,11 +356,10 @@
                                              data-submit-on-fly="true"
                                              data-item-index="$index"
                                              data-action-handler-callback="$ctrl.handleAnnotationAction(actionType, index)"
-                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                                             data-change-data-callback="$ctrl.onChangeKeyValueData(newData, index)">
                         </ncl-key-value-input>
                     </div>
                 </div>
-
                 <div class="igz-create-button create-annotation-button"
                      data-ng-click="$ctrl.addNewAnnotation($event)">
                     <span class="igz-icon-add-round"></span>
@@ -483,34 +367,8 @@
                 </div>
             </div>
 
-            <div class="igz-col-91 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() && $ctrl.isCronTrigger()">
-
-                <div class="field-label">
-                    <span class="asterisk">{{ 'common:SCHEDULE' | i18next }}</span>
-                </div>
-
-                <div class="schedule-input-wrapper">
-                    <igz-validating-input-field data-field-type="schedule"
-                                                data-input-name="item_schedule"
-                                                data-input-value="$ctrl.item.attributes.schedule"
-                                                data-is-focused="false"
-                                                data-form-object="$ctrl.editItemForm"
-                                                data-validation-is-required="true"
-                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                data-update-data-field="attributes.schedule">
-                    </igz-validating-input-field>
-                    <div class="clear-button" data-ng-if="$ctrl.item.attributes.schedule">
-                        <a class="link" data-ng-click="$ctrl.onClearButtonClick()">{{ 'common:CLEAR' | i18next }}</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="igz-col-91 attribute-field event-headers-wrapper"
-                 data-ng-if="$ctrl.isClassSelected() && $ctrl.isCronTrigger()">
-
+            <div class="igz-col-91 attribute-field event-headers-wrapper" data-ng-if="$ctrl.isCronTrigger()">
                 <div class="field-label">{{ 'functions:EVENT_HEADERS' | i18next }}</div>
-
                 <div data-ng-if="$ctrl.eventHeaders.length > 0" class="table-headers">
                     <div class="key-header">{{ 'common:KEY' | i18next }}</div>
                     <div class="value-header">{{ 'common:VALUE' | i18next }}</div>
@@ -528,11 +386,10 @@
                                              data-submit-on-fly="true"
                                              data-item-index="$index"
                                              data-action-handler-callback="$ctrl.handleEventHeaderAction(actionType, index)"
-                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                                             data-change-data-callback="$ctrl.onChangeKeyValueData(newData, index)">
                         </ncl-key-value-input>
                     </div>
                 </div>
-
                 <div class="igz-create-button create-event-header"
                      data-ng-click="$ctrl.addNewEventHeader($event)">
                     <span class="igz-icon-add-round"></span>
@@ -540,11 +397,8 @@
                 </div>
             </div>
 
-            <div class="igz-col-91 attribute-field subscriptions-wrapper"
-                 data-ng-if="$ctrl.isClassSelected() && $ctrl.isMQTTTrigger()">
-
+            <div class="igz-col-91 attribute-field subscriptions-wrapper" data-ng-if="$ctrl.isMqttTrigger()">
                 <div class="field-label">{{ 'functions:SUBSCRIPTIONS' | i18next }}</div>
-
                 <div data-ng-if="$ctrl.subscriptions.length > 0" class="table-headers">
                     <div class="key-header">{{ 'functions:TOPIC' | i18next }}</div>
                     <div class="value-header">{{ 'functions:QOS' | i18next }}</div>
@@ -559,94 +413,18 @@
                                              data-use-type="false"
                                              data-submit-on-fly="true"
                                              data-item-index="$index"
-                                             data-validation-rules="$ctrl.attributesValidationRules.subscriptionQoS"
+                                             data-validation-rules="$ctrl.validationRules.subscriptionQoS"
                                              data-value-placeholder="0, 1 or 2"
                                              data-action-handler-callback="$ctrl.handleSubscriptionAction(actionType, index)"
-                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
+                                             data-change-data-callback="$ctrl.onChangeKeyValueData(newData, index)">
                         </ncl-key-value-input>
                     </div>
                 </div>
-
                 <div class="igz-create-button create-subscription-button"
                      data-ng-click="$ctrl.addNewSubscription($event)">
                     <span class="igz-icon-add-round"></span>
                     {{ 'functions:CREATE_NEW_SUBSCRIPTION' | i18next }}
                 </div>
-            </div>
-
-            <div class="igz-col-45 attribute-field topics-wrapper"
-                 data-ng-if="$ctrl.isClassSelected() && $ctrl.isKafkaTrigger()">
-
-                <div class="field-label">{{ 'functions:TOPICS' | i18next }}</div>
-
-                <div>
-                    <div class="table-body" data-ng-repeat="topic in $ctrl.topics">
-                        <ncl-key-value-input class="new-label-input"
-                                             data-list-class="topics-wrapper"
-                                             data-change-state-broadcast="change-state-deploy-button"
-                                             data-row-data="topic"
-                                             data-use-type="false"
-                                             data-submit-on-fly="true"
-                                             data-item-index="$index"
-                                             data-only-value-input="true"
-                                             data-validation-rules="$ctrl.attributesValidationRules.string"
-                                             data-action-handler-callback="$ctrl.handleTopicAction(actionType, index)"
-                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
-                        </ncl-key-value-input>
-                    </div>
-                </div>
-
-                <div class="igz-create-button create-topic-button"
-                     data-ng-click="$ctrl.addNewTopic($event)">
-                    <span class="igz-icon-add-round"></span>
-                    {{ 'functions:CREATE_NEW_TOPIC' | i18next }}
-                </div>
-            </div>
-
-            <div class="igz-col-45 attribute-field brokers-wrapper"
-                 data-ng-if="$ctrl.isClassSelected() && $ctrl.isKafkaTrigger()">
-
-                <div class="field-label">{{ 'functions:BROKERS' | i18next }}</div>
-
-                <div>
-                    <div class="table-body" data-ng-repeat="broker in $ctrl.brokers">
-                        <ncl-key-value-input class="new-label-input"
-                                             data-list-class="brokers-wrapper"
-                                             data-change-state-broadcast="change-state-deploy-button"
-                                             data-row-data="broker"
-                                             data-use-type="false"
-                                             data-submit-on-fly="true"
-                                             data-item-index="$index"
-                                             data-only-value-input="true"
-                                             data-validation-rules="$ctrl.attributesValidationRules.string"
-                                             data-action-handler-callback="$ctrl.handleBrokerAction(actionType, index)"
-                                             data-change-data-callback="$ctrl.onChangeData(newData, index)">
-                        </ncl-key-value-input>
-                    </div>
-                </div>
-
-                <div class="igz-create-button create-broker-button"
-                     data-ng-click="$ctrl.addNewBroker($event)">
-                    <span class="igz-icon-add-round"></span>
-                    {{ 'functions:CREATE_NEW_BROKER' | i18next }}
-                </div>
-            </div>
-
-            <div class="igz-col-45 attribute-field"
-                 data-ng-if="$ctrl.isClassSelected() &&
-                             $ctrl.isTriggerType() &&
-                             (!$ctrl.isCronTrigger() || !$ctrl.platformKindIsKube)">
-                <div class="field-label">{{ 'functions:WORKER_ALLOCATOR_NAME' | i18next }}</div>
-                <igz-validating-input-field data-field-type="input"
-                                            data-input-name="itemWorkerAllocatorName"
-                                            data-input-value="$ctrl.item.workerAllocatorName"
-                                            data-is-focused="false"
-                                            data-form-object="$ctrl.editItemForm"
-                                            data-validation-is-required="false"
-                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_WORKER_ALLOCATOR_NAME' | i18next }}"
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                            data-update-data-field="workerAllocatorName">
-                </igz-validating-input-field>
             </div>
         </div>
     </form>

@@ -335,6 +335,7 @@
         /**
          * Changes selected item depending on typed value
          */
+        /* eslint complexity: ["error", 13] */
         function onChangeTypingInput() {
             ctrl.isDropdownContainerShown = false;
 
@@ -343,6 +344,15 @@
 
                 ctrl.formObject[ctrl.inputName].$setValidity('text', true);
 
+                if (!ctrl.isRequired) {
+                    ctrl.selectItem({
+                        id: '',
+                        name: '',
+                        visible: true
+                    });
+                }
+
+                // emulate a click to open drop-down menu in case the user cleared the text input field
                 $element.find('.default-dropdown-field')[0].dispatchEvent(new Event('click'));
             } else {
                 if (ctrl.autocomplete) {
@@ -455,7 +465,7 @@
         /**
          * Sets current item as selected
          * @param {Object} item - current item
-         * @param {Object} event
+         * @param {Object} [event]
          */
         function selectItem(item, event) {
             if (!item.disabled) {

@@ -33,10 +33,13 @@
         ctrl.validationRules = {
             itemName: [],
             itemPath: ValidationService.getValidationRules('function.itemPath', [{
-                label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                label: $i18next.t('functions:UNIQUENESS', { lng: lng }),
                 pattern: validateUniqueness.bind(null, 'volumeMount.mountPath')
             }]),
             containerName: ValidationService.getValidationRules('container.name')
+        };
+        ctrl.maxLengths = {
+            containerSubPath: ValidationService.getMaxLength('function.containerSubPath')
         };
 
         ctrl.$onInit = onInit;
@@ -56,7 +59,7 @@
         function onInit() {
             ctrl.validationRules.itemName = ValidationService.getValidationRules('k8s.dns1123Label').concat([
                 {
-                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                    label: $i18next.t('functions:UNIQUENESS', { lng: lng }),
                     pattern: validateUniqueness.bind(null, 'volume.name')
                 }
             ]);
@@ -92,7 +95,7 @@
         //
 
         /**
-         * Toggle create binding mode
+         * Toggle create volume mode
          * @param {Event} event
          */
         function createVolume(event) {
@@ -139,13 +142,13 @@
          */
         function handleAction(actionType, selectedItem, index) {
             if (actionType === 'delete') {
-                deleteHandler(selectedItem, index);
+                deleteHandler(index);
             } else if (actionType === 'edit') {
                 editHandler(selectedItem);
             } else if (actionType === 'update') {
                 updateHandler(selectedItem);
             } else {
-                DialogsService.alert($i18next.t('functions:ERROR_MSG.FUNCTIONALITY_IS_NOT_IMPLEMENTED', {lng: lng}));
+                DialogsService.alert($i18next.t('functions:ERROR_MSG.FUNCTIONALITY_IS_NOT_IMPLEMENTED', { lng: lng }));
             }
 
             $rootScope.$broadcast('change-state-deploy-button', { component: 'volume', isDisabled: false });
@@ -173,10 +176,9 @@
 
         /**
          * Deletes selected item
-         * @param {Object} selectedItem - an object of selected data-binding
          * @param {number} index - index of variable in array
          */
-        function deleteHandler(selectedItem, index) {
+        function deleteHandler(index) {
             ctrl.volumes.splice(index, 1);
 
             // since uniqueness validation rule of some fields is dependent on the entire volume list, whenever a volume
@@ -192,7 +194,7 @@
 
         /**
          * Toggles item to edit mode
-         * @param {Object} selectedItem - an object of selected data-binding
+         * @param {Object} selectedItem - an object of selected volume
          */
         function editHandler(selectedItem) {
             var volume = lodash.find(ctrl.volumes, ['volume.name', selectedItem.volume.name]);
@@ -209,7 +211,7 @@
 
         /**
          * Updates data in selected item
-         * @param {Object} selectedItem - an object of selected data-binding
+         * @param {Object} selectedItem - an object of selected volume
          */
         function updateHandler(selectedItem) {
             var workingCopy = angular.copy(ctrl.volumes);

@@ -27,6 +27,7 @@
         var lng = i18next.language;
 
         ctrl.createEvent = true;
+        ctrl.testEventsForm = null;
         ctrl.headers = [];
         ctrl.isSplashShowed = {
             value: false

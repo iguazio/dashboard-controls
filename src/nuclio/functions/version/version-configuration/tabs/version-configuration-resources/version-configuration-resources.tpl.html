@@ -164,7 +164,7 @@
                                           data-update-number-input-field="minReplicas"
                                           data-allow-empty-field="true"
                                           data-placeholder=""
-                                          data-decimal-number="0"
+                                          data-precision="0"
                                           data-value-step="1"
                                           data-validation-is-required="false"
                                           data-min-value="0"
@@ -189,7 +189,7 @@
                                           data-update-number-input-field="maxReplicas"
                                           data-allow-empty-field="true"
                                           data-placeholder="{{ $ctrl.minReplicas === 0 ? ('functions:PLACEHOLDER.MAX_REQUIRED' | i18next) : '' }}"
-                                          data-decimal-number="0"
+                                          data-precision="0"
                                           data-value-step="1"
                                           data-validation-is-required="$ctrl.minReplicas === 0"
                                           data-min-value="$ctrl.minReplicas || 1">

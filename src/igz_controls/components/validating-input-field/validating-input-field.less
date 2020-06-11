@@ -281,6 +281,28 @@
             padding: 7px 30px 6px 10px;
         }
     }
+
+    //
+    // Cron schedule
+    //
+
+    .schedule-input-wrapper {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: baseline;
+
+        .field.invalid .cron-select {
+            background-color: @input-textarea-field-not-disabled-focus-invalid-bg-color;
+            border: @input-textarea-field-not-disabled-focus-invalid-border;
+        }
+
+        .clear-button {
+            margin-left: 15px;
+            background-color: transparent;
+            font-size: 14px;
+            position: static;
+        }
+    }
 }
 
 // an invalid input field should be displayed as invalid in case it is in a submitted form even if the field is pristine

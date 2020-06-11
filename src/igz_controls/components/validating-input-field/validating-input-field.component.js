@@ -80,7 +80,8 @@
      * @param {string} validationRules[].label - The text to display as the description of the rule. For example:
      *     "Must begin with: A-Z, a-z, 0-9, -".
      * @param {RegExp|function} validationRules[].pattern - The regex pattern to test input against, or a function that
-     *     will be invoked with the current input value.
+     *     should return `true` in case rule is valid or `false` otherwise. The function will be invoked with the
+     *     current input value, the input field name and the `ngForm` (if provided to `formObject` attribute).
      * @param {string} [validationRules[].name] - A unique name for the rule among the list.
      */
     angular.module('iguazio.dashboard-controls')
@@ -307,8 +308,13 @@
          * Clears search input field.
          */
         function clearInputField() {
-            ctrl.data = '';
-            onChange();
+            if (ctrl.selectedFieldType === 'schedule') {
+                ngModel.$setViewValue('');
+                ngModel.$commitViewValue();
+            } else {
+                ctrl.data = '';
+                onChange();
+            }
         }
 
         /**
@@ -455,7 +461,7 @@
          */
         function checkPatternsValidity(value) {
             lodash.forEach(ctrl.validationRules, function (rule) {
-                rule.isValid = lodash.isFunction(rule.pattern) ? rule.pattern(value) :
+                rule.isValid = lodash.isFunction(rule.pattern) ? rule.pattern(value, ctrl.inputName, ctrl.formObject) :
                                /* else, it is a RegExp */        rule.pattern.test(value);
             });
 

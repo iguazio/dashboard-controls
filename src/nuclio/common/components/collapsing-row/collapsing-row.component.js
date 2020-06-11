@@ -15,7 +15,7 @@
             transclude: true
         });
 
-    function NclCollapsingRowController($timeout, $i18next, i18next, lodash, DialogsService, FunctionsService) {
+    function NclCollapsingRowController($i18next, $timeout, i18next, lodash, DialogsService, FunctionsService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -76,10 +76,9 @@
 
         /**
          * Checks if input have to be visible for specific item type
-         * @param {string} name - input name
          * @returns {boolean}
          */
-        function isVolumeType(name) {
+        function isVolumeType() {
             return ctrl.type === 'volume';
         }
 
