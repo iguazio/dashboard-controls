@@ -190,6 +190,12 @@
                 }
             });
 
+            if (lodash.get(ConfigService, 'nuclio.platformKind') === 'kube') {
+                lodash.defaults(ctrl.version.spec, {
+                    waitReadinessTimeoutBeforeFailure: false
+                });
+            }
+
             lodash.merge(ctrl.version, {
                 ui: {
                     deployedVersion: VersionHelperService.isVersionDeployed(ctrl.version) ? getVersionCopy() : null,
