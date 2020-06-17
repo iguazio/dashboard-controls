@@ -10,13 +10,13 @@
     .question-mark {
         cursor: default;
 
-        &:before {
+        &::before {
             color: @icon-help-round-before-color;
             background-color: @icon-help-round-before-bg-color;
         }
 
         &:hover {
-            &:before {
+            &::before {
                 color: @icon-help-round-hover-before-color;
             }
 
@@ -26,13 +26,13 @@
         }
 
         &.igz-icon-alert-message {
-            &:before {
+            &::before {
                 color: @icon-warn-hover-before-color;
                 background-color: @icon-warn-before-bg-color;
             }
 
             &:hover {
-                &:before {
+                &::before {
                     color: @icon-warn-before-color;
                 }
             }
@@ -65,7 +65,7 @@
         white-space: pre-line;
         z-index: 9999;
 
-        &:before {
+        &::before {
             position: absolute;
             content: '';
         }
@@ -74,25 +74,45 @@
         &.bottom {
             left: -132px;
 
-            &:before {
+            &::before {
                 right: calc(50% - 9px);
+            }
+
+            &-left {
+                left: -260px;
+
+                &::before {
+                    right: 4px;
+                }
+            }
+
+            &-right {
+                left: -6px;
+
+                &::before {
+                    right: calc(100% - 22px);
+                }
             }
         }
 
-        &.top {
+        &.top,
+        &.top-left,
+        &.top-right {
             bottom: calc(100% + 8px);
 
-            &:before {
+            &::before {
                 .triangle-arrow(down; @row-description-triangle-color; 8px; 10px);
 
                 bottom: -10px;
             }
         }
 
-        &.bottom {
+        &.bottom,
+        &.bottom-left,
+        &.bottom-right {
             top: calc(100% + 8px);
 
-            &:before {
+            &::before {
                 .triangle-arrow(up; @row-description-triangle-color; 8px; 10px);
 
                 top: -10px;
@@ -103,15 +123,31 @@
         &.left {
             top: calc(50% - 20px);
 
-            &:before {
+            &::before {
                 top: 7px;
+            }
+
+            &-left {
+                top: calc(50% - 20px);
+
+                &::before {
+                    top: 7px;
+                }
+            }
+
+            &-right{
+                top: calc(50% - 20px);
+
+                &::before {
+                    top: 7px;
+                }
             }
         }
 
         &.right {
             left: 32px;
 
-            &:before {
+            &::before {
                 .triangle-arrow(right; @row-description-triangle-color; 8px; 10px);
 
                 left: -8px;
@@ -121,7 +157,7 @@
         &.left {
             left: -290px;
 
-            &:before {
+            &::before {
                 .triangle-arrow(left; @row-description-triangle-color; 8px; 10px);
 
                 right: -8px;

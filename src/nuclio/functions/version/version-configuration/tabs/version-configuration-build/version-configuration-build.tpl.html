@@ -148,17 +148,32 @@
                 </igz-validating-input-field>
             </div>
             <div class="igz-col-100 build-field build-checkboxes">
-                <div class="checkbox-block"
-                     data-uib-tooltip="{{ 'functions:TOOLTIP.DISABLE_CACHE' | i18next }}"
-                     data-tooltip-placement="bottom"
-                     data-tooltip-append-to-body="true"
-                     data-tooltip-popup-delay="500">
+                <div class="checkbox-block">
                     <input type="checkbox"
                            class="small"
                            id="noCache"
                            data-ng-model="$ctrl.version.spec.build.noCache"
                            data-ng-disabled="$ctrl.disabled">
                     <label for="noCache" class="checkbox-inline">{{ 'functions:DISABLE_CACHE' | i18next }}</label>
+                    <igz-more-info
+                        data-description="{{ 'functions:TOOLTIP.DISABLE_CACHE' | i18next }}"
+                        data-trigger="click"
+                        data-default-tooltip-placement="top">
+                    </igz-more-info>
+                </div>
+                <div class="checkbox-block" data-ng-if="$ctrl.platformKindIsKube">
+                    <input type="checkbox"
+                           class="small"
+                           id="wait-readiness-timeout-before-failure"
+                           data-ng-model="$ctrl.version.spec.waitReadinessTimeoutBeforeFailure"
+                           data-ng-disabled="$ctrl.disabled">
+                    <label for="wait-readiness-timeout-before-failure"
+                           class="checkbox-inline">{{ 'functions:ALWAYS_WAIT_FOR_READINESS_TIMEOUT_EXPIRATION' | i18next }}</label>
+                    <igz-more-info
+                            data-description="{{ 'functions:TOOLTIP.ALWAYS_WAIT_FOR_READINESS_TIMEOUT_EXPIRATION' | i18next }}"
+                            data-trigger="click"
+                            data-default-tooltip-placement="top-left">
+                    </igz-more-info>
                 </div>
             </div>
             <div class="igz-col-100 build-field files-field">

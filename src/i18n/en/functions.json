@@ -313,6 +313,7 @@
         "V3IO_STREAM_CONTAINER": "Either select/enter a local container in this field or enter a remote URL in the \"Remote URL\" field.",
         "V3IO_STREAM_URL": "Either enter a remote URL in this field or select/enter a local container in the \"Container name\" field.",
         "VOLUMES": "Volumes that define data paths and the required information for accessing the data from the function",
+        "ALWAYS_WAIT_FOR_READINESS_TIMEOUT_EXPIRATION": "Wait for the expiration of the readiness timeout period even if the deployment fails or isn't expected to complete before this period expires.",
         "WORK_DIR": "The relative path to the function-code directory within the extracted archive-file directory (default: \"/\" — the root directory)"
     },
     "TOPIC": "Topic",
@@ -324,6 +325,7 @@
     "V3IO": "V3IO",
     "VIEW_YAML": "View YAML",
     "VOLUMES": "Volumes",
+    "ALWAYS_WAIT_FOR_READINESS_TIMEOUT_EXPIRATION": "Always wait for readiness-timeout expiration",
     "WELCOME_DESCRIPTION": "Write from scratch or use an example repository to build an event driven application project.",
     "WORK_DIRECTORY": "Work directory",
     "WORKER_ALLOCATOR_NAME": "Worker allocator name",
