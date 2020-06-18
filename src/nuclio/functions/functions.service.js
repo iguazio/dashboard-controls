@@ -467,25 +467,32 @@
                         tooltipPlacement: 'right',
                         fields: [
                             {
-                                name: 'url',
-                                label: $i18next.t('functions:REMOTE_URL', { lng: lng }),
-                                type: 'input',
-                                fieldType: 'input',
-                                placeholder: $i18next.t('functions:PLACEHOLDER.ENTER_REMOTE_URL', { lng: lng }),
-                                moreInfoDescription: $i18next.t('functions:TOOLTIP.V3IO_STREAM_URL', { lng: lng }),
+                                name: 'containerName',
+                                type: 'dropdown',
+                                enableTyping: true,
+                                path: 'attributes.containerName',
+                                values: lodash.get(additionalData, 'containers', []),
+                                defaultValue: lodash.get(additionalData, 'containers[0].id', ''),
+                                placeholder: $i18next.t('common:PLACEHOLDER.SELECT_OR_ENTER', { lng: lng }),
+                                moreInfoDescription:
+                                    $i18next.t('functions:TOOLTIP.V3IO_STREAM_CONTAINER', { lng: lng }),
+                                moreInfoHtml: true,
                                 allowEmpty: false
                             },
                             {
-                                name: 'containerName',
-                                type: 'dropdown',
-                                path: 'attributes.containerName',
-                                values: [{ id: '', name: 'Remote' }].concat(lodash.get(additionalData, 'containers', [])),
-                                placeholder: 'Select or enter...',
-                                moreInfoDescription:
-                                    $i18next.t('functions:TOOLTIP.V3IO_STREAM_CONTAINER', { lng: lng }),
-                                visible: lodash.has(additionalData, 'containers'),
-                                enableTyping: true,
-                                allowEmpty: true
+                                name: 'url',
+                                label: $i18next.t('common:URL', { lng: lng }),
+                                type: 'input',
+                                fieldType: 'input',
+                                defaultValue: lodash.get(
+                                    ConfigService,
+                                    'nuclio.defaultFunctionConfig.attributes.spec.triggers.v3ioStream.url',
+                                    ''
+                                ),
+                                placeholder: $i18next.t('common:PLACEHOLDER.ENTER_URL', { lng: lng }),
+                                moreInfoDescription: $i18next.t('functions:TOOLTIP.V3IO_STREAM_URL', { lng: lng }),
+                                moreInfoHtml: true,
+                                allowEmpty: false
                             },
                             {
                                 name: 'password',
