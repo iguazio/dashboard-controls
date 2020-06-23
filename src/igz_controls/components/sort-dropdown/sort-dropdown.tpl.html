@@ -1,20 +1,22 @@
 <div class="igz-custom-dropdown dropdown" data-uib-dropdown
      data-is-open="$ctrl.isOpen">
     <div class="igz-action-item"
-         data-ng-class="{'subtemplate-show': $ctrl.isOpen}"
-         data-ng-click="$ctrl.setValuesVisibility()"
-         data-uib-dropdown-toggle>
+         data-ng-class="{ 'subtemplate-show': $ctrl.isOpen }"
+         data-uib-dropdown-toggle
+         data-uib-tooltip="{{ 'common:TOOLTIP.SORT' | i18next }}"
+         data-tooltip-append-to-body="true"
+         data-tooltip-placement="top">
         <span class="action-icon igz-icon-sort"></span>
     </div>
     <ul class="dropdown-menu dropdown-list"
         data-ng-if="$ctrl.isOpen">
         <li class="dropdown-menu-item"
-            data-ng-repeat="option in $ctrl.sortOptions"
+            data-ng-repeat="option in $ctrl.sortOptions track by option.value"
             data-ng-show="option.visible"
-            data-ng-click="$ctrl.toggleSortingOrder(option)">
+            data-ng-click="$ctrl.handleOptionClick(option)">
             <span class="item-name"
-                  data-ng-class="$ctrl.getItemClass(option.active)">{{option.label}}</span>
-            <span class="igz-icon-sort-{{$ctrl.reverseSorting ? 'down' : 'up'}}"
+                  data-ng-class="{ 'active-item': option.active }">{{option.label}}</span>
+            <span class="igz-icon-sort-{{option.desc ? 'down' : 'up'}}"
                   data-ng-show="option.active">
             </span>
         </li>
