@@ -42,11 +42,9 @@
                         </igz-action-item-refresh>
                         <igz-sort-dropdown class="igz-component pull-left"
                                            data-sort-options="$ctrl.sortOptions"
+                                           data-selected-option="$ctrl.sortedColumnName"
                                            data-reverse-sorting="$ctrl.isReverseSorting"
-                                           data-update-data-callback="$ctrl.onSortOptionsChange"
-                                           data-uib-tooltip="{{ 'common:TOOLTIP.SORT' | i18next }}"
-                                           data-tooltip-append-to-body="true"
-                                           data-tooltip-placement="top">
+                                           data-on-sort-change="$ctrl.onSortOptionsChange(option)">
                         </igz-sort-dropdown>
                     </div>
                 </div>
@@ -103,17 +101,29 @@
                     <div class="igz-col-12-5 common-table-cell">
                         {{ 'functions:INVOCATION_URL' | i18next }}
                     </div>
-                    <div class="igz-col-10 common-table-cell">
+                    <div class="igz-col-10 common-table-cell sortable"
+                         data-ng-class="$ctrl.getColumnSortingClasses('ui.metrics.invocationPerSec', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('ui.metrics.invocationPerSec')">
                         {{ 'functions:INVOCATION_PER_SEC' | i18next }}
+                        <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-15 common-table-cell">
+                    <div class="igz-col-15 common-table-cell sortable"
+                         data-ng-class="$ctrl.getColumnSortingClasses('ui.metrics[\'cpu.cores\']', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('ui.metrics[\'cpu.cores\']')">
                         {{ 'common:CPU_CORES' | i18next }}
+                        <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-15 common-table-cell">
+                    <div class="igz-col-15 common-table-cell sortable"
+                         data-ng-class="$ctrl.getColumnSortingClasses('ui.metrics.size', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('ui.metrics.size')">
                         {{ 'common:MEMORY' | i18next }}
+                        <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-15 common-table-cell">
+                    <div class="igz-col-15 common-table-cell sortable"
+                         data-ng-class="$ctrl.getColumnSortingClasses('ui.metrics.count', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('ui.metrics.count')">
                         {{ 'functions:INVOCATION' | i18next }}&nbsp;#
+                        <span class="sort-arrow"></span>
                     </div>
                 </div>
                 <div class="common-table-cell actions-menu">&nbsp;</div>
@@ -130,7 +140,7 @@
                     <div class="sortable-wrapper"
                          data-ng-hide="$ctrl.searchStates.searchNotFound && $ctrl.searchStates.searchInProgress"
                          data-ng-model="$ctrl.data.working.ui.children">
-                        <div data-ng-repeat="aFunction in $ctrl.functions track by aFunction.metadata.name">
+                        <div data-ng-repeat="aFunction in $ctrl.sortedFunctions track by aFunction.metadata.name">
                             <div data-igz-show-hide-search-item="aFunction">
                                 <ncl-function-collapsing-row
                                         data-action-handler-callback="$ctrl.handleFunctionVersionAction(actionType, checkedItems)"

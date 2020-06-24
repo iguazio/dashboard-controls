@@ -14,17 +14,16 @@
                 getFunctions: '&',
                 getProject: '&',
                 getStatistics: '&',
-                updateFunction: '&',
+                updateFunction: '&'
             },
             templateUrl: 'nuclio/functions/functions.tpl.html',
             controller: FunctionsController
         });
 
-    function FunctionsController($filter, $interval, $q, $rootScope, $scope, $state,
-                                 $stateParams, $timeout, $transitions, $i18next, i18next, lodash,
-                                 ActionCheckboxAllService, CommonTableService, ConfigService,
-                                 DialogsService, ElementLoadingStatusService, FunctionsService,
-                                 NuclioHeaderService, TableSizeService) {
+    function FunctionsController($filter, $interval, $q, $rootScope, $scope, $state, $stateParams, $timeout,
+                                 $transitions, $i18next, i18next, lodash, CommonTableService, ConfigService,
+                                 DialogsService, ElementLoadingStatusService, FunctionsService, NuclioHeaderService,
+                                 TableSizeService) {
         var ctrl = this;
         var lng = i18next.language;
         var title = {}; // breadcrumbs config
@@ -34,14 +33,14 @@
         var METRICS = {
             FUNCTION_CPU: 'nuclio_function_cpu',
             FUNCTION_MEMORY: 'nuclio_function_mem',
-            FUNCTION_EVENTS: 'nuclio_processor_handled_events_total',
-            MAX_CPU_VALUE: 200
+            FUNCTION_EVENTS: 'nuclio_processor_handled_events_total'
         };
 
 
         ctrl.checkedItemsCount = 0;
         ctrl.filtersCounter = 0;
         ctrl.functions = [];
+        ctrl.sortedFunctions = [];
         ctrl.isFiltersShowed = {
             value: false,
             changeValue: function (newVal) {
@@ -60,24 +59,44 @@
         ctrl.searchStates = {};
         ctrl.sortOptions = [
             {
-                label: $i18next.t('common:NAME', {lng: lng}),
+                label: $i18next.t('common:NAME', { lng: lng }),
                 value: 'metadata.name',
                 active: true
             },
             {
-                label: $i18next.t('common:STATUS', {lng: lng}),
-                value: 'status.state',
+                label: $i18next.t('common:STATUS', { lng: lng }),
+                value: 'ui.convertedStatus',
                 active: false
             },
             {
-                label: $i18next.t('common:REPLICAS', {lng: lng}),
+                label: $i18next.t('common:REPLICAS', { lng: lng }),
                 value: 'spec.replicas',
                 active: false,
                 visible: ConfigService.isDemoMode()
             },
             {
-                label: $i18next.t('functions:RUNTIME', {lng: lng}),
+                label: $i18next.t('functions:RUNTIME', { lng: lng }),
                 value: 'spec.runtime',
+                active: false
+            },
+            {
+                label: $i18next.t('functions:INVOCATION_PER_SEC', { lng: lng }),
+                value: 'ui.metrics.invocationPerSec',
+                active: false
+            },
+            {
+                label: $i18next.t('common:CPU_CORES', { lng: lng }),
+                value: 'ui.metrics[\'cpu.cores\']',
+                active: false
+            },
+            {
+                label: $i18next.t('common:MEMORY', { lng: lng }),
+                value: 'ui.metrics.size',
+                active: false
+            },
+            {
+                label: $i18next.t('functions:INVOCATION', { lng: lng }) + ' #',
+                value: 'ui.metrics.count',
                 active: false
             }
         ];
@@ -124,10 +143,10 @@
             // initializes version actions array
             ctrl.versionActions = angular.copy(FunctionsService.initVersionActions());
 
-            $scope.$on('action-panel_fire-action', onFireAction);
-            $scope.$on('action-checkbox_item-checked', onItemChecked);
-            $scope.$on('action-checkbox-all_checked-items-count-change', onItemsCountChange);
             $scope.$on('action-checkbox-all_check-all', onCheckAll);
+            $scope.$on('action-checkbox-all_checked-items-count-change', onItemsCountChange);
+            $scope.$on('action-checkbox_item-checked', onItemChecked);
+            $scope.$on('action-panel_fire-action', onFireAction);
 
             $transitions.onStart({}, stateChangeStart);
 
@@ -213,26 +232,14 @@
         }
 
         /**
-         * Sorts the table by column name depends on selected value in sort dropdown
-         * @param {Object} option
+         * Sorts the table by column name depends on selected option.
+         * @param {Object} option - The selected option.
          */
         function onSortOptionsChange(option) {
-            var previousElement = lodash.find(ctrl.sortOptions, ['active', true]);
-            var newElement = lodash.find(ctrl.sortOptions, ['label', option.label]);
+            ctrl.isReverseSorting = option.desc;
+            ctrl.sortedColumnName = option.value;
 
-            // change state of selected element, and of previous element
-            previousElement.active = false;
-            newElement.active = true;
-
-            // if previous value is equal to new value, then change sorting predicate
-            if (previousElement.label === newElement.label) {
-                newElement.desc = !option.desc;
-            }
-
-            ctrl.isReverseSorting = newElement.desc;
-            ctrl.sortedColumnName = newElement.value;
-
-            ctrl.sortTableByColumn(ctrl.sortedColumnName, true);
+            sortTable();
         }
 
         /**
@@ -257,17 +264,19 @@
         function refreshFunctions() {
             ctrl.isSplashShowed.value = true;
 
-            return ctrl.getFunctions({id: ctrl.project.metadata.name})
+            return ctrl.getFunctions({ id: ctrl.project.metadata.name })
                 .then(function (functions) {
                     ctrl.functions = lodash.map(functions, function (functionFromResponse) {
-                        var foundFunction = lodash.find(ctrl.functions, ['metadata.name', functionFromResponse.metadata.name]);
+                        var foundFunction =
+                            lodash.find(ctrl.functions, ['metadata.name', functionFromResponse.metadata.name]);
                         var ui = lodash.get(foundFunction, 'ui');
                         functionFromResponse.ui = lodash.defaultTo(ui, functionFromResponse.ui);
 
                         return functionFromResponse;
                     });
 
-                    if (ctrl.createFunctionWhenEmpty && lodash.isEmpty(ctrl.functions) && !$stateParams.createCancelled) {
+                    if (ctrl.createFunctionWhenEmpty && lodash.isEmpty(ctrl.functions) &&
+                        !$stateParams.createCancelled) {
                         ctrl.isSplashShowed.value = false;
                         openNewFunctionScreen();
                     } else {
@@ -284,7 +293,7 @@
                 })
                 .then(updateStatistics)
                 .catch(function (error) {
-                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', { lng: lng });
 
                     DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                 })
@@ -294,21 +303,17 @@
         }
 
         /**
-         * Sorts the table by column name
-         * @param {string} columnName - name of column
-         * @param {boolean} isJustSorting - if it is needed just to sort data without changing reverse
+         * Sorts the table by column.
+         * @param {string} columnName - The name of the column to sort by.
          */
-        function sortTableByColumn(columnName, isJustSorting) {
-            if (!isJustSorting) {
+        function sortTableByColumn(columnName) {
+            // set the sorting order (ascending if selected a different column, or toggle if selected the same column)
+            ctrl.isReverseSorting = columnName === ctrl.sortedColumnName ? !ctrl.isReverseSorting : false;
 
-                // changes the order of sorting the column
-                ctrl.isReverseSorting = (columnName === ctrl.sortedColumnName) ? !ctrl.isReverseSorting : false;
-            }
-
-            // saves the name of sorted column
+            // save the name of the column to sort by
             ctrl.sortedColumnName = columnName;
 
-            ctrl.functions = $filter('orderBy')(ctrl.functions, columnName, ctrl.isReverseSorting);
+            sortTable();
         }
 
         /**
@@ -326,18 +331,18 @@
          * Initializes functions list
          */
         function initFunctions() {
-            ctrl.getProject({id: $stateParams.projectId})
+            ctrl.getProject({ id: $stateParams.projectId })
                 .then(function (project) {
                     ctrl.project = project;
                     title.project = project;
-                    title.tab = $i18next.t('common:FUNCTIONS', {lng: lng});
+                    title.tab = $i18next.t('common:FUNCTIONS', { lng: lng });
 
                     NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
 
                     return ctrl.refreshFunctions()
                 })
                 .then(function () {
-                    sortTableByColumn(ctrl.sortedColumnName, true);
+                    sortTable();
                     startAutoUpdate();
                 })
                 .finally(function () {
@@ -347,7 +352,7 @@
                 })
                 .catch(function (error) {
                     ctrl.isSplashShowed.value = false;
-                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', { lng: lng });
 
                     DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
                         $state.go('app.projects');
@@ -415,6 +420,14 @@
         }
 
         /**
+         * Sorts table according to the current sort-by column and sorting order (ascending/descending).
+         */
+        function sortTable() {
+            ctrl.sortedFunctions =
+                lodash.orderBy(ctrl.functions, [ctrl.sortedColumnName], ctrl.isReverseSorting ? ['desc'] : ['asc']);
+        }
+
+        /**
          * Starts auto-update statistics.
          */
         function startAutoUpdate() {
@@ -442,31 +455,28 @@
 
         /**
          * Updates actions of action panel according to selected nodes
-         * @param {Object} event - triggering event
-         * @param {Object} data - passed data
          */
-        function updatePanelActions(event, data) {
+        function updatePanelActions() {
             if (FunctionsService.checkedItem === 'functions' || !ctrl.isDemoMode()) {
-                updatePanelFunctionActions(data);
+                updatePanelFunctionActions();
             } else if (FunctionsService.checkedItem === 'versions') {
-                updatePanelVersionActions(data);
+                updatePanelVersionActions();
             }
 
             /**
              * Updates function actions
-             * @param {Object} actionData - passed data
              */
-            function updatePanelFunctionActions(actionData) {
+            function updatePanelFunctionActions() {
                 var checkedRows = lodash.filter(ctrl.functions, 'ui.checked');
-                var checkedRowsCount = lodash.get(actionData, 'checkedCount') || checkedRows.length;
+                var checkedRowsCount = checkedRows.length;
 
                 if (checkedRowsCount > 0) {
 
                     // sets visibility status of `duplicate, export, viewConfig` actions
                     // visible if only one function is checked
-                    var duplicateAction = lodash.find(ctrl.functionActions, {'id': 'duplicate'});
-                    var exportAction = lodash.find(ctrl.functionActions, {'id': 'export'});
-                    var viewConfigAction = lodash.find(ctrl.functionActions, {'id': 'viewConfig'});
+                    var duplicateAction = lodash.find(ctrl.functionActions, { id: 'duplicate' });
+                    var exportAction = lodash.find(ctrl.functionActions, { id: 'export' });
+                    var viewConfigAction = lodash.find(ctrl.functionActions, { id: 'viewConfig' });
 
                     if (!lodash.isNil(duplicateAction)) {
                         duplicateAction.visible = checkedRowsCount === 1;
@@ -481,7 +491,7 @@
                     }
 
                     // sets confirm message for `delete action` depending on count of checked rows
-                    var deleteAction = lodash.find(ctrl.functionActions, {'id': 'delete'});
+                    var deleteAction = lodash.find(ctrl.functionActions, { id: 'delete' });
                     var isApiGatewayFunction = lodash.some(checkedRows, function (row) {
                         var apiGateways = lodash.get(row, 'status.apiGateways', []);
 
@@ -489,14 +499,16 @@
                     });
 
                     if (!lodash.isNil(deleteAction) && !isApiGatewayFunction) {
+                        var functionName = checkedRows[0].metadata.name;
                         deleteAction.confirm = {
                             message: checkedRowsCount === 1 ?
-                                $i18next.t('functions:DELETE_FUNCTION', {lng: lng}) + ' “' + checkedRows[0].metadata.name + '”?' :
-                                $i18next.t('functions:DELETE_FUNCTIONS_CONFIRM', {lng: lng}),
+                                $i18next.t('functions:DELETE_FUNCTION', { lng: lng }) + ' “' + functionName + '”?' :
+                                $i18next.t('functions:DELETE_FUNCTIONS_CONFIRM', { lng: lng }),
                             description: checkedRowsCount === 1 ?
-                                $i18next.t('functions:DELETE_FUNCTION_DESCRIPTION', {lng: lng}) : null,
-                            yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
-                            noLabel: $i18next.t('common:CANCEL', {lng: lng}),
+                                $i18next.t('functions:DELETE_FUNCTION_DESCRIPTION', { lng: lng }) :
+                                null,
+                            yesLabel: $i18next.t('common:YES_DELETE', { lng: lng }),
+                            noLabel: $i18next.t('common:CANCEL', { lng: lng }),
                             type: 'nuclio_alert'
                         };
                         deleteAction.handler = function (action) {
@@ -505,12 +517,15 @@
                             });
                         }
                     } else if (isApiGatewayFunction) {
-                        var message = $i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTIONS', {lng: lng});
+                        var message = $i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTIONS', { lng: lng });
 
                         if (checkedRowsCount === 1) {
                             var apiGatewayName = lodash.get(checkedRows[0], 'status.apiGateways[0]', '');
 
-                            message = $i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION', {lng: lng, apiGatewayName: apiGatewayName});
+                            message = $i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION', {
+                                lng: lng,
+                                apiGatewayName: apiGatewayName
+                            });
                         }
 
                         deleteAction.confirm = {};
@@ -523,34 +538,33 @@
 
             /**
              * Updates version actions
-             * @param {Object} actionData - passed data
              */
-            function updatePanelVersionActions(actionData) {
+            function updatePanelVersionActions() {
                 var checkedRows = lodash.chain(ctrl.functions)
                     .map(function (functionItem) {
                         return lodash.filter(functionItem.versions, 'ui.checked');
                     })
                     .flatten()
                     .value();
-                var checkedRowsCount = lodash.get(actionData, 'checkedCount') || checkedRows.length;
+                var checkedRowsCount = checkedRows.length;
 
                 if (checkedRowsCount > 0) {
 
                     // sets visibility status of `edit action`
                     // visible if only one version is checked
-                    var editAction = lodash.find(ctrl.versionActions, {'id': 'edit'});
+                    var editAction = lodash.find(ctrl.versionActions, { id: 'edit' });
 
                     if (!lodash.isNil(editAction)) {
                         editAction.visible = checkedRowsCount === 1;
                     }
 
                     // sets confirm message for `delete action` depending on count of checked rows
-                    var deleteAction = lodash.find(ctrl.versionActions, {'id': 'delete'});
+                    var deleteAction = lodash.find(ctrl.versionActions, { id: 'delete' });
 
                     if (!lodash.isNil(deleteAction)) {
                         deleteAction.confirm.message = checkedRowsCount === 1 ?
-                            $i18next.t('functions:DELETE_VERSION', {lng: lng}) + ' “' + checkedRows[0].name + '”?' :
-                            $i18next.t('functions:DELETE_VERSIONS_CONFIRM', {lng: lng});
+                            $i18next.t('functions:DELETE_VERSION', { lng: lng }) + ' “' + checkedRows[0].name + '”?' :
+                            $i18next.t('functions:DELETE_VERSIONS_CONFIRM', { lng: lng });
                     }
                 }
             }
@@ -586,13 +600,6 @@
                 .catch(handleError.bind(null, args.metric));
 
             /**
-             * Returns CPU value
-             */
-            function getCpuValue(value) {
-                return Number(value) / METRICS.MAX_CPU_VALUE * 100;
-            }
-
-            /**
              * Sets error message to the relevant function
              */
             function handleError(type, error) {
@@ -600,7 +607,9 @@
                     lodash.set(aFunction, 'ui.error.' + type, error.msg);
 
                     $timeout(function () {
-                        $rootScope.$broadcast('element-loading-status_hide-spinner', {name: type + '-' + aFunction.metadata.name});
+                        $rootScope.$broadcast('element-loading-status_hide-spinner', {
+                            name: type + '-' + aFunction.metadata.name
+                        });
                     });
                 });
             }
@@ -710,7 +719,8 @@
                                     countLineChartData: lodash.map(funcValues, function (dataPoint) {
                                         return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
                                     }),
-                                    invocationPerSec: $filter('scale')(invocationPerSec, Number.isInteger(invocationPerSec) ? 0 : 2)
+                                    invocationPerSec:
+                                        $filter('scale')(invocationPerSec, Number.isInteger(invocationPerSec) ? 0 : 2)
                                 }
                             })
                         }
@@ -720,6 +730,14 @@
                 ElementLoadingStatusService.hideSpinnerGroup(lodash.map(ctrl.functions, function (aFunction) {
                     return type + '-' + lodash.get(aFunction, 'metadata.name');
                 }));
+
+                // if the column values have just been updated, and the table is sorted by this column - update sort
+                if (type === METRICS.FUNCTION_CPU && ctrl.sortedColumnName === 'ui.metrics[\'cpu.cores\']' ||
+                    type === METRICS.FUNCTION_MEMORY && ctrl.sortedColumnName === 'ui.metrics.size' ||
+                    type === METRICS.FUNCTION_EVENTS &&
+                        lodash.includes(['ui.metrics.invocationPerSec', 'ui.metrics.count'], ctrl.sortedColumnName)) {
+                    sortTable();
+                }
             }
         }
     }
