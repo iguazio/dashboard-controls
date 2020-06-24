@@ -25,6 +25,8 @@
      * @param {string} [dropdownType='regular'] - type of the predefined dropdown (`'regular'`, `'badges-dropdown'`,
      *     `'priority'`).
      * @param {boolean} [enableTyping=false] - set to `true` to allow typing new value in the collapsed dropdown input.
+     *     In case the entered value does not match any of the options in `valuesArray`, the `item` parameter passed
+     *     to `itemSelectCallback` will have a `typed` property of `true`.
      * @param {boolean} [enableOverlap=false] - set to `true` to dropdown overlap the parental block (please set z-index
      *     for `.default-container` if it needed).
      * @param {Object} [formObject] - form object.
@@ -378,6 +380,7 @@
                 if (ctrl.enableTyping) {
                     var newItem = {
                         id: ctrl.typedValue,
+                        typed: true,
                         visible: true
                     };
                     lodash.set(newItem, ctrl.nameKey || 'name', ctrl.typedValue);

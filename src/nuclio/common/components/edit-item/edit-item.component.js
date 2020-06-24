@@ -20,7 +20,7 @@
         });
 
     function NclEditItemController($document, $element, $i18next, $rootScope, $scope, $timeout, i18next, lodash,
-                                   ConverterService, EventHelperService, FormValidationService,
+                                   ConfigService, ConverterService, EventHelperService, FormValidationService,
                                    PreventDropdownCutOffService, ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
@@ -771,11 +771,17 @@
 
         /**
          * Sets new selected value from dropdown
-         * @param {Object} item
-         * @param {string} field
+         * @param {Object} item - The selected item from dropdown menu.
+         * @param {string} field - The path of the model.
          */
         function onSelectDropdownValue(item, field) {
             lodash.set(ctrl.item, field, item.id);
+
+            if (!item.typed && field === 'attributes.containerName') {
+                ctrl.item.url = lodash.get(ConfigService,
+                                           'nuclio.defaultFunctionConfig.attributes.spec.triggers.v3ioStream.url',
+                                           '');
+            }
 
             validateValues();
             updateChangesState();
@@ -1092,11 +1098,6 @@
             } else if (ctrl.item.kind === 'kafka-cluster') {
                 ctrl.item.attributes.sasl.enable = !lodash.isEmpty(ctrl.item.attributes.sasl.user) &&
                     !lodash.isEmpty(ctrl.item.attributes.sasl.password);
-            } else if (ctrl.item.kind === 'v3ioStream') {
-                var urlField = lodash.find(ctrl.selectedClass.fields, { name: 'url' });
-                var containerNameField = lodash.find(ctrl.selectedClass.fields, { name: 'containerName' });
-                var containerNameValue = getFieldValue(containerNameField);
-                urlField.allowEmpty = !lodash.isEmpty(containerNameValue);
             }
         }
     }

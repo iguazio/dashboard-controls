@@ -359,6 +359,7 @@
         "SEARCH": "Search...",
         "SELECT": "Select...",
         "SELECT_CONTAINER": "Select a container...",
+        "SELECT_OR_ENTER": "Select option or enter input...",
         "SELECT_PROJECTION": "Select a projection",
         "SELECT_TYPE": "Select type..."
     },

@@ -245,7 +245,8 @@ describe('igzDefaultDropdown component:', function () {
                 item: {
                     id: ctrl.typedValue,
                     name: ctrl.typedValue,
-                    visible: true
+                    visible: true,
+                    typed: true
                 },
                 isItemChanged: true,
                 field: ctrl.itemSelectField
@@ -270,7 +271,8 @@ describe('igzDefaultDropdown component:', function () {
                     attr: {
                         name: ctrl.typedValue
                     },
-                    visible: true
+                    visible: true,
+                    typed: true
                 },
                 isItemChanged: true,
                 field: ctrl.itemSelectField
