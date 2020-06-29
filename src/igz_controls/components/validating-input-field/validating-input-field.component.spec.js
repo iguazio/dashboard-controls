@@ -15,14 +15,15 @@ describe('igzValidatingInputField component:', function () {
         defaultInputModelOptions = {
             updateOn: 'default blur',
             debounce: {
-                '*': 200,
-                'blur': 0
+                'default': 250,
+                '*': 0
             },
             allowInvalid: true
         };
 
         var formObject = {
             attributeName: {
+                $setValidity: angular.noop,
                 $viewValue: 'some value'
             }
         };
@@ -56,23 +57,21 @@ describe('igzValidatingInputField component:', function () {
             expect(ctrl.inputModelOptions).toEqual(defaultInputModelOptions);
             expect(ctrl.inputFocused).toBeTruthy();
             expect(ctrl.spellcheck).toBeTruthy();
-            expect(ctrl.data).toBe(ctrl.inputValue)
         });
     });
 
     describe('$onChanges():', function () {
-        it('should set new value to ctrl.data', function () {
+        it('should set new value to ctrl.data and ctrl.startValue', function () {
             var changes = {
                 inputValue: {
-                    currentValue: 'some new value',
-                    isFirstChange: function () {
-                        return false;
-                    }
+                    currentValue: 'some new value'
                 }
             };
+
             ctrl.$onChanges(changes);
 
             expect(ctrl.data).toEqual(changes.inputValue.currentValue);
+            expect(ctrl.startValue).toEqual(ctrl.data);
         })
     });
 
@@ -195,25 +194,6 @@ describe('igzValidatingInputField component:', function () {
             ];
 
             expect(ctrl.isValueInvalid()).toBeFalsy();
-        });
-    });
-
-    describe('openValidationPopUp()', function () {
-        it('opens validation pop-up', function () {
-            ctrl.validationRules = [
-                {
-                    label: 'Alphanumeric characters (a–z, A–Z, 0–9)',
-                    pattern: /^[a-zA-Z0-9]*$/,
-                    isValid: false
-                }
-            ];
-            ctrl.isValidationPopUpShown = false;
-            ctrl.inputFocused = false;
-
-            ctrl.openValidationPopUp();
-
-            expect(ctrl.isValidationPopUpShown).toBeTruthy();
-            expect(ctrl.inputFocused).toBeTruthy();
         });
     });
 });
