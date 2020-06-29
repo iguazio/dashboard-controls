@@ -163,7 +163,7 @@
         function onChanges(changes) {
             if (angular.isDefined(changes.inputValue)) {
                 ctrl.data = lodash.defaultTo(changes.inputValue.currentValue, '');
-                ctrl.startValue = lodash.defaultTo(ctrl.inputValue, '');
+                ctrl.startValue = ctrl.data;
 
                 if (angular.isDefined(ctrl.validationRules) && !lodash.isEmpty(ctrl.data)) {
                     checkPatternsValidity(ctrl.data);
@@ -295,6 +295,7 @@
             lodash.forEach(ctrl.validationRules, function (rule) {
                 rule.isValid = lodash.isFunction(rule.pattern) ? rule.pattern(value) : rule.pattern.test(value);
             });
+            ctrl.formObject[ctrl.inputName].$setValidity('rules', !ctrl.isValueInvalid());
         }
 
         /**
