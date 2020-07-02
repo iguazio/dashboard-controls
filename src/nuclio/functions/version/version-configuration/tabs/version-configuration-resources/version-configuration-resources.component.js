@@ -11,10 +11,8 @@
             controller: NclVersionConfigurationResourcesController
         });
 
-    function NclVersionConfigurationResourcesController($i18next, $timeout, $rootScope, $scope, i18next, lodash,
-                                                        ConfigService) {
+    function NclVersionConfigurationResourcesController($rootScope, $scope, $timeout, lodash, ConfigService) {
         var ctrl = this;
-        var lng = i18next.language;
 
         var defaultUnit = {
             id: 'gb',
@@ -191,15 +189,14 @@
                 }
 
                 lodash.set(ctrl.version, 'spec.' + field, newData);
-
-                ctrl.cpuWarningOpen = !lodash.isNil(lodash.get(ctrl.version, 'spec.resources.limits.cpu')) &&
-                    lodash.isNil(lodash.get(ctrl.version, 'spec.resources.requests.cpu'));
-
                 ctrl.onChangeCallback();
             } else {
                 lodash.unset(ctrl.version, 'spec.' + field);
                 ctrl[isRequestsInput(field) ? 'requestsCpuValue' : 'limitsCpuValue'] = null;
             }
+
+            ctrl.cpuWarningOpen = !lodash.isNil(lodash.get(ctrl.version, 'spec.resources.limits.cpu')) &&
+                lodash.isNil(lodash.get(ctrl.version, 'spec.resources.requests.cpu'));
 
             checkIfCpuInputsValid();
         }
