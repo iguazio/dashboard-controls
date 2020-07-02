@@ -288,8 +288,9 @@
                             }]);
                             lodash.set(functionItem, 'spec.version', 1);
                         });
-
                     }
+
+                    sortTable();
                 })
                 .then(updateStatistics)
                 .catch(function (error) {
