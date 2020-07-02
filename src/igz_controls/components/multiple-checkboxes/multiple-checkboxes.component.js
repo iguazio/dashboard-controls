@@ -143,6 +143,7 @@
                 dropdownApply: '<',
                 dropdownApplyCallback: '&?',
                 groups: '<',
+                isApplyButtonDisabled: '<?',
                 labelPath: '@?',
                 options: '<',
                 selectAllNone: '<',
