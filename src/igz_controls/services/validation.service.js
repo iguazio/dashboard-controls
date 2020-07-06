@@ -28,7 +28,7 @@
                 itemPath: 255,
                 containerSubPath: 255,
                 triggerName: 128,
-                v3ioConsumerGroupName: 255
+                v3ioConsumerGroupName: 256
             },
             service: {
                 name: 53,
