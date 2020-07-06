@@ -100,6 +100,7 @@
             initParametersData();
             initTargetCpuSlider();
 
+            ctrl.memoryWarningOpen = false;
             ctrl.minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
             ctrl.maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
 
@@ -194,9 +195,6 @@
                 lodash.unset(ctrl.version, 'spec.' + field);
                 ctrl[isRequestsInput(field) ? 'requestsCpuValue' : 'limitsCpuValue'] = null;
             }
-
-            ctrl.cpuWarningOpen = !lodash.isNil(lodash.get(ctrl.version, 'spec.resources.limits.cpu')) &&
-                lodash.isNil(lodash.get(ctrl.version, 'spec.resources.requests.cpu'));
 
             checkIfCpuInputsValid();
         }
