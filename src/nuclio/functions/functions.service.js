@@ -499,7 +499,7 @@
                                 label: $i18next.t('functions:ACCESS_KEY', { lng: lng }),
                                 type: 'input',
                                 fieldType: 'password',
-                                path: 'attributes.password',
+                                path: 'password',
                                 placeholder: $i18next.t('functions:PLACEHOLDER.ENTER_ACCESS_KEY', { lng: lng }),
                                 allowEmpty: false,
                                 autocomplete: 'new-password'
