@@ -57,6 +57,10 @@
                     default: '25',
                     demo: '17-5'
                 },
+                'communication': {
+                    default: '25',
+                    demo: '17-5'
+                },
                 'audit': {
                     default: '20',
                     demo: '20'
@@ -64,6 +68,10 @@
             },
             severity: {
                 'event-log': {
+                    default: '2-5',
+                    demo: '2-5'
+                },
+                'communication': {
                     default: '2-5',
                     demo: '2-5'
                 },
@@ -77,6 +85,10 @@
                     default: '25',
                     demo: '16'
                 },
+                'communication': {
+                    default: '25',
+                    demo: '16'
+                },
                 'audit': {
                     default: '20',
                     demo: '20'
@@ -84,6 +96,10 @@
             },
             classification: {
                 'event-log': {
+                    default: '12-5',
+                    demo: '10'
+                },
+                'communication': {
                     default: '12-5',
                     demo: '10'
                 },
@@ -96,10 +112,18 @@
                 'event-log': {
                     default: '14',
                     demo: '14'
+                },
+                'communication': {
+                    default: '14',
+                    demo: '14'
                 }
             },
             tags: {
                 'event-log': {
+                    default: '12-5',
+                    demo: '12-5'
+                },
+                'communication': {
                     default: '12-5',
                     demo: '12-5'
                 }
@@ -108,10 +132,18 @@
                 'event-log': {
                     default: '12-5',
                     demo: '12-5'
+                },
+                'communication': {
+                    default: '12-5',
+                    demo: '12-5'
                 }
             },
             description: {
                 'event-log': {
+                    default: '35',
+                    demo: '15'
+                },
+                'communication': {
                     default: '35',
                     demo: '15'
                 },
