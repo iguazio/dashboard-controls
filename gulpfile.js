@@ -156,7 +156,9 @@ gulp.task('inject-version', function () {
  */
 gulp.task('test-unit-run', function (done) {
     var karmaServer = require('karma').Server;
-    var files = [__dirname + '/' + config.assets_dir + '/js/' + config.output_files.vendor.js]
+    var files = config.test_files.unit.vendor.map(function (vendorPath) {
+        return __dirname + '/' + vendorPath;
+    })
         .concat(__dirname + '/' + config.test_files.unit.modules)
         .concat([__dirname + '/' + config.assets_dir + '/js/' + config.output_files.app.js])
         .concat(__dirname + '/' + ((argv.spec !== undefined) ? 'src/**/' + argv.spec : config.test_files.unit.tests));
@@ -166,6 +168,17 @@ gulp.task('test-unit-run', function (done) {
         files: files,
         action: 'run'
     }, done).start();
+});
+
+/**
+ * Build vendor.less (include all vendor less files)
+ */
+gulp.task('vendor.less', function () {
+    var distFolder = config.assets_dir + '/less';
+
+    gulp.src(config.vendor_files.less)
+        .pipe(concat(config.output_files.vendor.less))
+        .pipe(gulp.dest(distFolder));
 });
 
 /**
@@ -195,5 +208,5 @@ gulp.task('test-unit', function (next) {
  * Base build task
  */
 gulp.task('build', function (next) {
-    runSequence('lint', 'clean', 'inject-version', 'vendor.js', ['app.less', 'app.js', 'fonts', 'images', 'i18n'], next);
+    runSequence('lint', 'clean', 'inject-version', 'vendor.less', 'vendor.js', ['app.less', 'app.js', 'fonts', 'images', 'i18n'], next);
 });

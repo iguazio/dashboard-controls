@@ -44,25 +44,11 @@ module.exports = {
      */
     vendor_files: {
         js: [
-            'node_modules/jquery/dist/jquery.js',
-            'node_modules/angular/angular.js',
-            'node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js',
-            'node_modules/@uirouter/angularjs/release/angular-ui-router.min.js',
-            'node_modules/jquery-ui/ui/widget.js',
-            'node_modules/jquery-ui/ui/widgets/mouse.js',
-            'node_modules/jquery-ui/ui/widgets/sortable.js',
-            'node_modules/angular-sanitize/angular-sanitize.js',
-            'node_modules/moment/moment.js',
-            'node_modules/js-base64/base64.js',
-            'node_modules/ng-file-upload/dist/ng-file-upload.js',
-            'node_modules/ng-file-upload/dist/FileAPI.js',
-            'node_modules/i18next/i18next.js',
-            'node_modules/ng-i18next/dist/ng-i18next.js',
-            'node_modules/bootstrap/js/dropdown.js',
-            'node_modules/ng-dialog/js/ngDialog.js',
-            'node_modules/lodash/lodash.js',
-            'node_modules/monaco-editor/min/vs/loader.js',
-            'node_modules/angular-download/angular-download.js'
+            'src/third-party/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js',
+            'src/third-party/ng-scrollbars/scrollbars.min.js'
+        ],
+        less: [
+            'src/third-party/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.less',
         ]
     },
 
@@ -80,6 +66,27 @@ module.exports = {
                 '!src/igz_controls/**/*.spec.js',
                 'src/nuclio/**/*.js',
                 '!src/nuclio/**/*.spec.js'
+            ],
+            vendor: [
+                'node_modules/jquery/dist/jquery.js',
+                'node_modules/angular/angular.js',
+                'node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js',
+                'node_modules/@uirouter/angularjs/release/angular-ui-router.min.js',
+                'node_modules/jquery-ui/ui/widget.js',
+                'node_modules/jquery-ui/ui/widgets/mouse.js',
+                'node_modules/jquery-ui/ui/widgets/sortable.js',
+                'node_modules/angular-sanitize/angular-sanitize.js',
+                'node_modules/moment/moment.js',
+                'node_modules/js-base64/base64.js',
+                'node_modules/ng-file-upload/dist/ng-file-upload.js',
+                'node_modules/ng-file-upload/dist/FileAPI.js',
+                'node_modules/i18next/i18next.js',
+                'node_modules/ng-i18next/dist/ng-i18next.js',
+                'node_modules/bootstrap/js/dropdown.js',
+                'node_modules/ng-dialog/js/ngDialog.js',
+                'node_modules/lodash/lodash.js',
+                'node_modules/monaco-editor/min/vs/loader.js',
+                'node_modules/angular-download/angular-download.js'
             ],
             modules: [
                 'node_modules/angular-mocks/angular-mocks.js'
@@ -100,7 +107,8 @@ module.exports = {
             less: 'iguazio.dashboard-controls.less'
         },
         vendor: {
-            js: 'vendor.js'
+            js: 'vendor.js',
+            less: 'vendor.less'
         }
     }
 };
