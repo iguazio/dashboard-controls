@@ -48,7 +48,7 @@ module.exports = {
             'src/third-party/ng-scrollbars/scrollbars.min.js'
         ],
         less: [
-            'src/third-party/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.less',
+            'src/third-party/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.less'
         ]
     },
 
