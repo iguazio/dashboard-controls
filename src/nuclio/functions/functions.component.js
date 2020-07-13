@@ -27,8 +27,10 @@
         var ctrl = this;
         var lng = i18next.language;
         var title = {}; // breadcrumbs config
-        var updatingInterval = null;
-        var updatingIntervalTime = 30000;
+        var updatingFunctionsInterval = null;
+        var updatingFunctionsIntervalTime = 10000;
+        var updatingStatisticsInterval = null;
+        var updatingStatisticsIntervalTime = 30000;
 
         var METRICS = {
             FUNCTION_CPU: 'nuclio_function_cpu',
@@ -261,8 +263,8 @@
          * Refreshes function list
          * @returns {Promise}
          */
-        function refreshFunctions() {
-            ctrl.isSplashShowed.value = true;
+        function refreshFunctions(autoRefresh) {
+            ctrl.isSplashShowed.value = !autoRefresh;
 
             return ctrl.getFunctions({ id: ctrl.project.metadata.name })
                 .then(function (functions) {
@@ -292,7 +294,11 @@
 
                     sortTable();
                 })
-                .then(updateStatistics)
+                .then(function () {
+                    if (!autoRefresh) {
+                        updateStatistics()
+                    }
+                })
                 .catch(function (error) {
                     var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', { lng: lng });
 
@@ -432,8 +438,12 @@
          * Starts auto-update statistics.
          */
         function startAutoUpdate() {
-            if (lodash.isNull(updatingInterval)) {
-                updatingInterval = $interval(updateStatistics, updatingIntervalTime);
+            if (lodash.isNull(updatingFunctionsInterval)) {
+                updatingFunctionsInterval = $interval(refreshFunctions.bind(null, true), updatingFunctionsIntervalTime);
+            }
+
+            if (lodash.isNull(updatingStatisticsInterval)) {
+                updatingStatisticsInterval = $interval(updateStatistics, updatingStatisticsIntervalTime);
             }
         }
 
@@ -448,9 +458,14 @@
          * Stops auto-update statistics
          */
         function stopAutoUpdate() {
-            if (!lodash.isNull(updatingInterval)) {
-                $interval.cancel(updatingInterval);
-                updatingInterval = null;
+            if (!lodash.isNull(updatingFunctionsInterval)) {
+                $interval.cancel(updatingFunctionsInterval);
+                updatingFunctionsInterval = null;
+            }
+
+            if (!lodash.isNull(updatingStatisticsInterval)) {
+                $interval.cancel(updatingStatisticsInterval);
+                updatingStatisticsInterval = null;
             }
         }
 
