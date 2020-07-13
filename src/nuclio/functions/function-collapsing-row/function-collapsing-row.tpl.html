@@ -135,7 +135,7 @@
         </div>
     </div>
     <div class="items-wrapper" data-uib-collapse="$ctrl.isFunctionCollapsed">
-        <div data-ng-repeat="version in $ctrl.function.versions">
+        <div data-ng-repeat="version in $ctrl.function.versions track by version.name">
             <ncl-function-version-row class="function-version-wrapper"
                                       data-action-handler-callback="$ctrl.handleAction(actionType, checkedItems)"
                                       data-converted-status-state="$ctrl.convertedStatusState"
