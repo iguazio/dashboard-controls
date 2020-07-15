@@ -163,9 +163,9 @@
 
                 ctrl.topics = lodash.chain(ctrl.item.attributes.topics)
                     .defaultTo([])
-                    .map(function (value, key) {
+                    .map(function (value, index) {
                         return {
-                            name: key,
+                            name: index,
                             value: value,
                             ui: {
                                 editModeActive: false,
@@ -178,9 +178,9 @@
 
                 ctrl.brokers = lodash.chain(ctrl.item.attributes.brokers)
                     .defaultTo([])
-                    .map(function (value, key) {
+                    .map(function (value, index) {
                         return {
-                            name: key,
+                            name: index,
                             value: value,
                             ui: {
                                 editModeActive: false,
@@ -743,9 +743,25 @@
                 } else if (field.name === 'subscriptions') {
                     ctrl.subscriptions = [];
                 } else if (field.name === 'kafka-topics') {
-                    ctrl.topics = [];
+                    ctrl.topics = [{
+                        name: '',
+                        value: '',
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'topic'
+                        }
+                    }];
                 } else if (field.name === 'kafka-brokers') {
-                    ctrl.brokers = [];
+                    ctrl.brokers = [{
+                        name: '',
+                        value: '',
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'broker'
+                        }
+                    }];
                 } else if (field.name === 'annotations') {
                     ctrl.annotations = [];
                 }
@@ -1042,9 +1058,7 @@
          * Updates topics fields
          */
         function updateTopics() {
-            var newTopics = lodash.map(ctrl.topics, function (topic) {
-                return topic.value;
-            });
+            var newTopics = lodash.map(ctrl.topics, 'value');
 
             lodash.set(ctrl.item, 'attributes.topics', newTopics);
         }
@@ -1053,9 +1067,7 @@
          * Updates Brokers fields
          */
         function updateBrokers() {
-            var newBrokers = lodash.map(ctrl.brokers, function (broker) {
-                return broker.value;
-            });
+            var newBrokers = lodash.map(ctrl.brokers, 'value');
 
             lodash.set(ctrl.item, 'attributes.brokers', newBrokers);
         }

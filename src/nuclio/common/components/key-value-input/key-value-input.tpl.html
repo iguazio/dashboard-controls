@@ -138,13 +138,13 @@
                 </igz-validating-input-field>
             </div>
         </div>
-        <div class="three-dot-menu" data-ng-if="::$ctrl.showDotMenu() && !$ctrl.isDisabled">
+        <div class="three-dot-menu" data-ng-if="$ctrl.actions.length > 1 && !$ctrl.isDisabled">
             <igz-action-menu data-actions="$ctrl.actions"
                              data-on-fire-action="$ctrl.onFireAction"
                              data-list-class="$ctrl.listClass">
             </igz-action-menu>
         </div>
-        <div class="igz-action-panel" data-ng-if="::!$ctrl.showDotMenu() && !$ctrl.isDisabled">
+        <div class="igz-action-panel" data-ng-if="$ctrl.actions.length === 1 && !$ctrl.isDisabled">
             <div class="actions-list">
                 <div class="igz-action-item"
                      data-ng-click="$ctrl.onClickAction($ctrl.actions[0])">

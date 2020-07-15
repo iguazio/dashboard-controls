@@ -20,6 +20,7 @@
                 keyTooltip: '<?',
                 keyValidationPattern: '<?',
                 listClass: '@?',
+                noDelete: '<?',
                 onlyValueInput: '<?',
                 rowData: '<',
                 submitOnFly: '<?',
@@ -48,6 +49,7 @@
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
         ctrl.$onDestroy = onDestroy;
+        ctrl.$onChanges = onChanges;
 
         ctrl.onEditInput = onEditInput;
         ctrl.getInputValue = getInputValue;
@@ -61,7 +63,6 @@
         ctrl.onFireAction = onFireAction;
         ctrl.onKeyChanged = onKeyChanged;
         ctrl.onTypeChanged = onTypeChanged;
-        ctrl.showDotMenu = showDotMenu;
 
         //
         // Hook methods
@@ -119,6 +120,19 @@
                     component: ctrl.data.ui.name,
                     isDisabled: ctrl.keyValueInputForm.$invalid
                 });
+            }
+        }
+
+        /**
+         * On changes hook method
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (lodash.has(changes, 'noDelete')) {
+                lodash.defaults(ctrl, {
+                    noDelete: false
+                });
+                ctrl.actions = initActions();
             }
         }
 
@@ -308,13 +322,6 @@
             $document.on('keypress', saveChanges);
         }
 
-        /**
-         * Checks if show dot menu
-         */
-        function showDotMenu() {
-            return ctrl.actions.length > 1;
-        }
-
         //
         // Private method
         //
@@ -371,7 +378,7 @@
          * @returns {Array.<Object>}
          */
         function initActions() {
-            return [
+            return ctrl.noDelete ? [] : [
                 {
                     label: $i18next.t('common:DELETE', {lng: lng}),
                     id: 'delete',
