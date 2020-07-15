@@ -182,7 +182,7 @@
             </div>
 
             <div class="igz-col-45 attribute-field brokers-wrapper" data-ng-if="$ctrl.isKafkaTrigger()">
-                <div class="field-label">{{ 'functions:BROKERS' | i18next }}</div>
+                <div class="field-label asterisk">{{ 'functions:BROKERS' | i18next }}</div>
                 <div>
                     <div class="table-body" data-ng-repeat="broker in $ctrl.brokers">
                         <ncl-key-value-input class="new-label-input"
@@ -191,6 +191,7 @@
                                              data-row-data="broker"
                                              data-use-type="false"
                                              data-submit-on-fly="true"
+                                             data-no-delete="$ctrl.brokers.length <= 1"
                                              data-item-index="$index"
                                              data-only-value-input="true"
                                              data-action-handler-callback="$ctrl.handleBrokerAction(actionType, index)"
@@ -206,7 +207,7 @@
             </div>
 
             <div class="igz-col-45 attribute-field topics-wrapper" data-ng-if="$ctrl.isKafkaTrigger()">
-                <div class="field-label">{{ 'functions:TOPICS' | i18next }}</div>
+                <div class="field-label asterisk">{{ 'functions:TOPICS' | i18next }}</div>
                 <div>
                     <div class="table-body" data-ng-repeat="topic in $ctrl.topics">
                         <ncl-key-value-input class="new-label-input"
@@ -215,6 +216,7 @@
                                              data-row-data="topic"
                                              data-use-type="false"
                                              data-submit-on-fly="true"
+                                             data-no-delete="$ctrl.topics.length <= 1"
                                              data-item-index="$index"
                                              data-only-value-input="true"
                                              data-action-handler-callback="$ctrl.handleTopicAction(actionType, index)"
