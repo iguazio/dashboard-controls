@@ -356,11 +356,18 @@
                     generateRule.endWith('a-z 0-9'),
                     generateRule.length({max: lengths.service.name})
                 ],
-                resources: [
-                    generateRule.validCharacters('a-z A-Z 0-9 - _ .'),
-                    generateRule.beginNotWith('.'),
-                    generateRule.length({max: lengths.service.resources})
-                ],
+                resources: {
+                    configuration: [
+                        generateRule.validCharacters('a-z A-Z 0-9 - _ .'),
+                        generateRule.beginNotWith('.'),
+                        generateRule.length({max: lengths.service.resources})
+                    ],
+                    catalog: [
+                        generateRule.validCharacters('a-z 0-9 - _ .'),
+                        generateRule.beginNotWith('.'),
+                        generateRule.length({max: lengths.service.resources})
+                    ]
+                },
                 persistentVolumeClaims: {
                     value: [generateRule.length({max: lengths.service.persistentVolumeClaims.value})]
                 }
