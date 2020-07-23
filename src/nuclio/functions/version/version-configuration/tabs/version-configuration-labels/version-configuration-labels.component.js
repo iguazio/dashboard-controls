@@ -48,8 +48,8 @@
             value: ValidationService.getValidationRules('k8s.qualifiedName')
         };
 
-        ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
+        ctrl.$onChanges = onChanges;
 
         ctrl.isVersionDeployed = VersionHelperService.isVersionDeployed;
 
@@ -62,46 +62,49 @@
         //
 
         /**
-         * Initialization method
-         */
-        function onInit() {
-            var labels = lodash.get(ctrl.version, 'metadata.labels', []);
-
-            ctrl.labels = lodash.chain(labels)
-                .omitBy(function (value, key) {
-                    return lodash.startsWith(key, 'nuclio.io/');
-                })
-                .map(function (value, key) {
-                    return {
-                        name: key,
-                        value: value,
-                        ui: {
-                            editModeActive: false,
-                            isFormValid: false,
-                            name: 'label'
-                        }
-                    }
-                })
-                .value();
-            ctrl.labels = lodash.compact(ctrl.labels);
-            ctrl.addNewLabelTooltip = ctrl.isVersionDeployed(ctrl.version) ?
-                $i18next.t('functions:TOOLTIP.ADD_LABELS', {lng: lng}) : '';
-
-            $timeout(function () {
-                if (ctrl.labelsForm.$invalid) {
-                    ctrl.labelsForm.$setSubmitted();
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'label', isDisabled: true});
-                }
-            })
-        }
-
-        /**
          * Post linking method
          */
         function postLink() {
 
             // Bind DOM-related preventDropdownCutOff method to component's controller
             PreventDropdownCutOffService.preventDropdownCutOff($element, '.three-dot-menu');
+        }
+
+        /**
+         * On changes hook method.
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.version)) {
+                var labels = lodash.get(ctrl.version, 'metadata.labels', []);
+
+                ctrl.labels = lodash.chain(labels)
+                    .omitBy(function (value, key) {
+                        return lodash.startsWith(key, 'nuclio.io/');
+                    })
+                    .map(function (value, key) {
+                        return {
+                            name: key,
+                            value: value,
+                            ui: {
+                                editModeActive: false,
+                                isFormValid: false,
+                                name: 'label'
+                            }
+                        }
+                    })
+                    .value();
+                ctrl.labels = lodash.compact(ctrl.labels);
+                ctrl.addNewLabelTooltip = ctrl.isVersionDeployed(ctrl.version) ?
+                    $i18next.t('functions:TOOLTIP.ADD_LABELS', {lng: lng}) : '';
+
+                $timeout(function () {
+                    if (ctrl.labelsForm.$invalid) {
+                        ctrl.labelsForm.$setSubmitted();
+                        $rootScope.$broadcast('change-state-deploy-button', {component: 'label', isDisabled: true});
+                    }
+                })
+            }
         }
 
         //

@@ -47,8 +47,8 @@
             ])
         };
 
-        ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
+        ctrl.$onChanges = onChanges;
 
         ctrl.addNewAnnotation = addNewAnnotation;
         ctrl.handleAction = handleAction;
@@ -59,38 +59,41 @@
         //
 
         /**
-         * Initialization method
-         */
-        function onInit() {
-            var annotations =  lodash.get(ctrl.version, 'metadata.annotations', []);
-
-            ctrl.annotations = lodash.map(annotations, function (value, key) {
-                return {
-                    name: key,
-                    value: value,
-                    ui: {
-                        editModeActive: false,
-                        isFormValid: false,
-                        name: 'annotation'
-                    }
-                };
-            });
-
-            $timeout(function () {
-                if (ctrl.annotationsForm.$invalid) {
-                    ctrl.annotationsForm.$setSubmitted();
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'annotation', isDisabled: true});
-                }
-            });
-        }
-
-        /**
          * Post linking method
          */
         function postLink() {
 
             // Bind DOM-related preventDropdownCutOff method to component's controller
             PreventDropdownCutOffService.preventDropdownCutOff($element, '.three-dot-menu');
+        }
+
+        /**
+         * On changes hook method.
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.version)) {
+                var annotations =  lodash.get(ctrl.version, 'metadata.annotations', []);
+
+                ctrl.annotations = lodash.map(annotations, function (value, key) {
+                    return {
+                        name: key,
+                        value: value,
+                        ui: {
+                            editModeActive: false,
+                            isFormValid: false,
+                            name: 'annotation'
+                        }
+                    };
+                });
+
+                $timeout(function () {
+                    if (ctrl.annotationsForm.$invalid) {
+                        ctrl.annotationsForm.$setSubmitted();
+                        $rootScope.$broadcast('change-state-deploy-button', {component: 'annotation', isDisabled: true});
+                    }
+                });
+            }
         }
 
         //

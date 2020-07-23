@@ -43,6 +43,7 @@
         };
 
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
 
         ctrl.createVolume = createVolume;
@@ -64,23 +65,32 @@
                 }
             ]);
 
-            // get volumes list
-            ctrl.volumes = lodash.map(lodash.get(ctrl.version, 'spec.volumes', []), function (value) {
-                var volumeItem = angular.copy(value);
-
-                volumeItem.ui = {
-                    changed: false,
-                    editModeActive: false,
-                    isFormValid: true,
-                    name: 'volume'
-                };
-
-                return volumeItem;
-            });
-
             ctrl.classList = FunctionsService.getClassesList('volume');
 
             $scope.$on('edit-item-has-been-changed', updateVolumesChangesState);
+        }
+
+        /**
+         * On changes hook method.
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.version)) {
+
+                // get volumes list
+                ctrl.volumes = lodash.map(lodash.get(ctrl.version, 'spec.volumes', []), function (value) {
+                    var volumeItem = angular.copy(value);
+
+                    volumeItem.ui = {
+                        changed: false,
+                        editModeActive: false,
+                        isFormValid: true,
+                        name: 'volume'
+                    };
+
+                    return volumeItem;
+                });
+            }
         }
 
         /**

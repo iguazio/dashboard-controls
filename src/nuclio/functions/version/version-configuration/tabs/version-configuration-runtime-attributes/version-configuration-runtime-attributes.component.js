@@ -26,8 +26,8 @@
             }
         };
 
-        ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
+        ctrl.$onChanges = onChanges;
 
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.addNewAttribute = addNewAttribute;
@@ -41,42 +41,45 @@
         //
 
         /**
-         * Initialization method
-         */
-        function onInit() {
-
-            // Set attributes from ctrl.version to local ctrl.runtimeAttributes.
-            // The attributes stored in arrays are converted to a string by using `join('\n')` method
-            lodash.assign(ctrl.runtimeAttributes, {
-                jvmOptions: lodash.get(ctrl.version, 'spec.runtimeAttributes.jvmOptions', []).join('\n'),
-                arguments: lodash.get(ctrl.version, 'spec.runtimeAttributes.arguments', '')
-            });
-
-            // Set attributes stored in key-value inputs
-            var attributes = lodash.get(ctrl.version, 'spec.runtimeAttributes.responseHeaders', []);
-            ctrl.attributes = lodash.chain(attributes)
-                .map(function (value, key) {
-                    return {
-                        name: key,
-                        value: value,
-                        ui: {
-                            editModeActive: false,
-                            isFormValid: false,
-                            name: 'runtime-attribute'
-                        }
-                    }
-                })
-                .value();
-            ctrl.attributes = lodash.compact(ctrl.attributes);
-        }
-
-        /**
          * Post linking method
          */
         function postLink() {
 
             // Bind DOM-related preventDropdownCutOff method to component's controller
             PreventDropdownCutOffService.preventDropdownCutOff($element, '.three-dot-menu');
+        }
+
+        /**
+         * On changes hook method.
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.version)) {
+
+                // Set attributes from ctrl.version to local ctrl.runtimeAttributes.
+                // The attributes stored in arrays are converted to a string by using `join('\n')` method
+                lodash.assign(ctrl.runtimeAttributes, {
+                    jvmOptions: lodash.get(ctrl.version, 'spec.runtimeAttributes.jvmOptions', []).join('\n'),
+                    arguments: lodash.get(ctrl.version, 'spec.runtimeAttributes.arguments', '')
+                });
+
+                // Set attributes stored in key-value inputs
+                var attributes = lodash.get(ctrl.version, 'spec.runtimeAttributes.responseHeaders', []);
+                ctrl.attributes = lodash.chain(attributes)
+                    .map(function (value, key) {
+                        return {
+                            name: key,
+                            value: value,
+                            ui: {
+                                editModeActive: false,
+                                isFormValid: false,
+                                name: 'runtime-attribute'
+                            }
+                        }
+                    })
+                    .value();
+                ctrl.attributes = lodash.compact(ctrl.attributes);
+            }
         }
 
         //
@@ -89,8 +92,9 @@
          * @param {string} field
          */
         function inputValueCallback(newData, field) {
+            lodash.set(ctrl.runtimeAttributes, field, newData)
+
             if (field === 'jvmOptions') {
-                ctrl.runtimeAttributes.jvmOptions = newData;
                 lodash.set(ctrl.version, 'spec.runtimeAttributes.jvmOptions', newData.replace(/\r/g, '\n').split(/\n+/));
             } else {
                 lodash.set(ctrl.version, 'spec.runtimeAttributes.' + field, newData);

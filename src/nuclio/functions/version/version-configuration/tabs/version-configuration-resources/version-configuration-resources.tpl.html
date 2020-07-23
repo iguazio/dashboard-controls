@@ -20,9 +20,9 @@
                                           data-form-object="$ctrl.resourcesForm"
                                           data-input-name="requestMemory"
                                           data-update-number-input-callback="$ctrl.memoryInputCallback(newData, field)"
-                                          data-update-number-input-field="spec.resources.requests.memory"
+                                          data-update-number-input-field="resources.requests.memory"
                                           data-min-value="1"
-                                          data-current-value="$ctrl.requestsMemoryValue;"
+                                          data-current-value="$ctrl.resources.requests.memory"
                                           data-value-step="1">
                         </igz-number-input>
                     </div>
@@ -44,8 +44,8 @@
                                           data-input-name="limitsMemory"
                                           data-min-value="1"
                                           data-update-number-input-callback="$ctrl.memoryInputCallback(newData, field)"
-                                          data-update-number-input-field="spec.resources.limits.memory"
-                                          data-current-value="$ctrl.limitsMemoryValue;"
+                                          data-update-number-input-field="resources.limits.memory"
+                                          data-current-value="$ctrl.resources.limits.memory"
                                           data-value-step="1">
                         </igz-number-input>
                     </div>
@@ -70,12 +70,12 @@
                                           data-form-object="$ctrl.resourcesForm"
                                           data-input-name="requestCpu"
                                           data-placeholder="{{ $ctrl.selectedCpuRequestItem.placeholder }}"
-                                          data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)"
+                                          data-update-number-input-callback="$ctrl.cpuInputCallback(newData, field)"
                                           data-update-number-input-field="resources.requests.cpu"
                                           data-min-value="$ctrl.selectedCpuRequestItem.minValue"
                                           data-precision="{{ $ctrl.selectedCpuRequestItem.precision }}"
                                           data-value-step="{{ $ctrl.selectedCpuRequestItem.step }}"
-                                          data-current-value="$ctrl.requestsCpuValue">
+                                          data-current-value="$ctrl.resources.requests.cpu">
                         </igz-number-input>
                     </div>
                     <div class="row-input cpu-dropdown">
@@ -95,12 +95,12 @@
                                           data-form-object="$ctrl.resourcesForm"
                                           data-input-name="limitsCpu"
                                           data-placeholder="{{ $ctrl.selectedCpuLimitItem.placeholder }}"
-                                          data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)"
+                                          data-update-number-input-callback="$ctrl.cpuInputCallback(newData, field)"
                                           data-update-number-input-field="resources.limits.cpu"
                                           data-min-value="$ctrl.selectedCpuLimitItem.minValue"
                                           data-precision="{{ $ctrl.selectedCpuLimitItem.precision }}"
                                           data-value-step="{{ $ctrl.selectedCpuLimitItem.step }}"
-                                          data-current-value="$ctrl.limitsCpuValue">
+                                          data-current-value="$ctrl.resources.limits.cpu">
                         </igz-number-input>
                     </div>
                     <div class="row-input cpu-dropdown">
@@ -127,12 +127,12 @@
                                           data-validation-is-required="false"
                                           data-form-object="$ctrl.resourcesForm"
                                           data-input-name="limitsGpu"
-                                          data-update-number-input-callback="$ctrl.inputGpuValueCallback(newData, field)"
+                                          data-update-number-input-callback="$ctrl.gpuInputCallback(newData, field)"
                                           data-update-number-input-field="limits"
                                           data-min-value="1"
                                           data-max-value="4"
                                           data-value-step="1"
-                                          data-current-value="$ctrl.limitsGpuValue">
+                                          data-current-value="$ctrl.resources.limits.gpu">
                         </igz-number-input>
                     </div>
                 </div>
@@ -154,7 +154,7 @@
                         <igz-number-input data-form-object="$ctrl.resourcesForm"
                                           data-input-name="minReplicas"
                                           data-current-value="$ctrl.minReplicas"
-                                          data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
+                                          data-update-number-input-callback="$ctrl.replicasInputCallback(newData, field)"
                                           data-update-number-input-field="minReplicas"
                                           data-allow-empty-field="true"
                                           data-placeholder=""
@@ -179,7 +179,7 @@
                         <igz-number-input data-form-object="$ctrl.resourcesForm"
                                           data-input-name="maxReplicas"
                                           data-current-value="$ctrl.maxReplicas"
-                                          data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
+                                          data-update-number-input-callback="$ctrl.replicasInputCallback(newData, field)"
                                           data-update-number-input-field="maxReplicas"
                                           data-allow-empty-field="true"
                                           data-placeholder="{{ $ctrl.minReplicas === 0 ? ('functions:PLACEHOLDER.MAX_REQUIRED' | i18next) : '' }}"

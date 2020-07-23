@@ -49,6 +49,7 @@
         ctrl.triggers = [];
 
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
 
         ctrl.checkClassUniqueness = checkClassUniqueness;
@@ -72,36 +73,6 @@
                     .value();
             }
 
-            ctrl.triggers = lodash.map(ctrl.version.spec.triggers, function (value, key) {
-                var triggersItem = angular.copy(value);
-                triggersItem.id = key;
-                triggersItem.name = key;
-
-                triggersItem.ui = {
-                    changed: false,
-                    editModeActive: false,
-                    isFormValid: true,
-                    name: 'trigger'
-                };
-
-                triggersItem.attributes = lodash.defaultTo(triggersItem.attributes, {});
-
-                if (value.kind === 'cron') {
-                    var scheduleValueArray = lodash.chain(triggersItem)
-                        .get('attributes.schedule', '')
-                        .split(' ')
-                        .value();
-
-                    if (scheduleValueArray.length === 6) {
-                        triggersItem.attributes.schedule = lodash.chain(scheduleValueArray)
-                            .takeRight(5)
-                            .join(' ')
-                            .value();
-                    }
-                }
-
-                return triggersItem;
-            });
             ctrl.classList = FunctionsService.getClassesList('trigger', additionalData);
 
             $scope.$on('edit-item-has-been-changed', updateTriggersChangesState);
@@ -115,6 +86,45 @@
 
                 $rootScope.$broadcast('igzWatchWindowResize::resize');
             }, 1000);
+        }
+
+        /**
+         * On changes hook method.
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.version)) {
+                ctrl.triggers = lodash.map(ctrl.version.spec.triggers, function (value, key) {
+                    var triggersItem = angular.copy(value);
+                    triggersItem.id = key;
+                    triggersItem.name = key;
+
+                    triggersItem.ui = {
+                        changed: false,
+                        editModeActive: false,
+                        isFormValid: true,
+                        name: 'trigger'
+                    };
+
+                    triggersItem.attributes = lodash.defaultTo(triggersItem.attributes, {});
+
+                    if (value.kind === 'cron') {
+                        var scheduleValueArray = lodash.chain(triggersItem)
+                            .get('attributes.schedule', '')
+                            .split(' ')
+                            .value();
+
+                        if (scheduleValueArray.length === 6) {
+                            triggersItem.attributes.schedule = lodash.chain(scheduleValueArray)
+                                .takeRight(5)
+                                .join(' ')
+                                .value();
+                        }
+                    }
+
+                    return triggersItem;
+                });
+            }
         }
 
         /**

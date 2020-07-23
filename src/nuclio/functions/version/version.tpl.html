@@ -13,11 +13,21 @@
                                       data-skip-selection="true">
                 </igz-default-dropdown>
             </div>
+            <div class="actions-bar-left">
+                <div class="igz-action-panel">
+                    <div class="actions-list">
+                        <igz-action-item-refresh
+                                data-is-disabled="!$ctrl.isFunctionDeployed"
+                                data-refresh="$ctrl.refreshFunction()">
+                        </igz-action-item-refresh>
+                    </div>
+                </div>
+            </div>
             <div class="actions-bar-left actions-buttons-block">
                 <button class="ncl-new-entity-button igz-button-primary"
                         data-ng-class="{'disabled': $ctrl.isDeployButtonDisabled()}"
                         data-ng-click="$ctrl.isInValidDeployState() || $ctrl.deployButtonClick($event)"
-                        data-uib-tooltip="{{ ($ctrl.deployResult.status.state === 'building' ? 'functions:TOOLTIP.DEPLOY_IN_PROGRESS' :
+                        data-uib-tooltip="{{ ($ctrl.version.status.state === 'building' ? 'functions:TOOLTIP.DEPLOY_IN_PROGRESS' :
                                               $ctrl.version.ui.isTriggersChanged || $ctrl.version.ui.isVolumesChanged ? 'functions:TOOLTIP.APPLY_CHANGES_TO_DEPLOY' :
                                               'functions:TOOLTIP.DEPLOY_INVALID_CONFIG') | i18next }}"
                         data-tooltip-enable="$ctrl.isDeployButtonDisabled()"
@@ -33,7 +43,7 @@
     <div data-ng-if="$ctrl.isDeployResultShown"
          class="ncl-edit-version-execution-result deploy-result"
          data-ng-class="{'in-progress': $ctrl.isInValidDeployState(),
-                         'failed'     : $ctrl.deployResult.status.state === 'error'}">
+                         'failed'     : $ctrl.version.status.state === 'error'}">
         <div class="btn-close igz-icon-close"
              data-ng-if="!$ctrl.isInValidDeployState()"
              data-ng-click="$ctrl.toggleDeployResult()"></div>
@@ -41,14 +51,14 @@
              data-ng-class="$ctrl.rowIsCollapsed.deployBlock ? 'igz-icon-right' : 'igz-icon-down'"
              data-ng-click="$ctrl.onRowCollapse('deployBlock')"></div>
         <div class="ncl-execution-result-status"
-             data-ng-class="{'succeeded'  : $ctrl.deployResult.status.state === 'ready',
+             data-ng-class="{'succeeded'  : $ctrl.version.status.state === 'ready',
                              'in-progress': $ctrl.isInValidDeployState(),
                              'collapsed'  : $ctrl.rowIsCollapsed.deployBlock}">
             <span class="result-status-icon"
-                  data-ng-class="{'igz-icon-tick-round' : $ctrl.deployResult.status.state === 'ready',
+                  data-ng-class="{'igz-icon-tick-round' : $ctrl.version.status.state === 'ready',
                                   'igz-icon-properties' : $ctrl.isInValidDeployState(),
-                                  'igz-icon-block'      : $ctrl.deployResult.status.state === 'error'}"></span>
-            <span class="result-state">{{$ctrl.getDeployStatusState($ctrl.deployResult.status.state)}}</span>
+                                  'igz-icon-block'      : $ctrl.version.status.state === 'error'}"></span>
+            <span class="result-state">{{$ctrl.getDeployStatusState($ctrl.version.status.state)}}</span>
         </div>
         <div class="ncl-execution-result-block collapsed-block-content-wrapper"
              data-uib-collapse="$ctrl.rowIsCollapsed.deployBlock">
@@ -56,9 +66,9 @@
                 {{ 'common:LOGS' | i18next }}
             </div>
 
-            <ncl-deploy-log data-log-entries="$ctrl.deployResult.status.state === 'error' ?
-                                                        $ctrl.deployResult.status.message :
-                                                        $ctrl.deployResult.status.logs">
+            <ncl-deploy-log data-log-entries="$ctrl.version.status.state === 'error' ?
+                                                        $ctrl.version.status.message :
+                                                        $ctrl.version.status.logs">
             </ncl-deploy-log>
         </div>
     </div>

@@ -77,17 +77,17 @@
         ctrl.windowSizeSlider = {};
 
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
 
-        ctrl.numberInputCallback = numberInputCallback;
-        ctrl.sliderInputCallback = sliderInputCallback;
-
         ctrl.cpuDropdownCallback = cpuDropdownCallback;
-        ctrl.memoryInputCallback = memoryInputCallback;
-        ctrl.memoryDropdownCallback = memoryDropdownCallback;
-        ctrl.inputGpuValueCallback = inputGpuValueCallback;
-        ctrl.inputValueCallback = inputValueCallback;
+        ctrl.cpuInputCallback = cpuInputCallback;
+        ctrl.gpuInputCallback = gpuInputCallback;
         ctrl.isInactivityWindowShown = isInactivityWindowShown;
+        ctrl.memoryDropdownCallback = memoryDropdownCallback;
+        ctrl.memoryInputCallback = memoryInputCallback;
+        ctrl.replicasInputCallback = replicasInputCallback;
+        ctrl.sliderInputCallback = sliderInputCallback;
 
         //
         // Hook methods
@@ -97,19 +97,11 @@
          * Initialization method
          */
         function onInit() {
-            initParametersData();
             initTargetCpuSlider();
 
             ctrl.memoryWarningOpen = false;
-            ctrl.minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
-            ctrl.maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
-
-            initScaleToZeroData();
 
             $timeout(function () {
-                setFormValidity();
-                checkIfCpuInputsValid();
-
                 $scope.$watch('$ctrl.resourcesForm.$invalid', function (value) {
                     $rootScope.$broadcast('change-state-deploy-button', {
                         component: 'resources',
@@ -117,6 +109,27 @@
                     });
                 });
             });
+        }
+
+        /**
+         * On changes hook method.
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.version)) {
+                initParametersData();
+                updateTargetCpuSlider();
+
+                ctrl.minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
+                ctrl.maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
+
+                initScaleToZeroData();
+
+                $timeout(function () {
+                    setFormValidity();
+                    checkIfCpuInputsValid();
+                });
+            }
         }
 
         /**
@@ -142,13 +155,13 @@
         function cpuDropdownCallback(item, isItemChanged, field) {
             if (!lodash.isEqual(item, ctrl[field])) {
                 if (isRequestsInput(field)) {
-                    if (ctrl.requestsCpuValue) {
-                        ctrl.requestsCpuValue = item.onChange(ctrl.requestsCpuValue);
-                        lodash.set(ctrl.version, 'spec.resources.requests.cpu', ctrl.requestsCpuValue + item.unit);
+                    if (ctrl.resources.requests.cpu) {
+                        ctrl.resources.requests.cpu = item.onChange(ctrl.resources.requests.cpu);
+                        lodash.set(ctrl.version, 'spec.resources.requests.cpu', ctrl.resources.requests.cpu + item.unit);
                     }
-                } else if (ctrl.limitsCpuValue) {
-                    ctrl.limitsCpuValue = item.onChange(ctrl.limitsCpuValue);
-                    lodash.set(ctrl.version, 'spec.resources.limits.cpu', ctrl.limitsCpuValue + item.unit);
+                } else if (ctrl.resources.limits.cpu) {
+                    ctrl.resources.limits.cpu = item.onChange(ctrl.resources.limits.cpu);
+                    lodash.set(ctrl.version, 'spec.resources.limits.cpu', ctrl.resources.limits.cpu + item.unit);
                 }
 
                 lodash.set(ctrl, field, item);
@@ -158,34 +171,17 @@
         }
 
         /**
-         * Number input callback for GPU fields
-         * @param {number} newData
-         * @param {string} field
-         */
-        function inputGpuValueCallback(newData, field) {
-            if (angular.isNumber(newData)) {
-                ctrl.limitsGpuValue = newData;
-
-                lodash.set(ctrl.version, ['spec', 'resources', field, 'nvidia.com/gpu'], String(newData));
-                ctrl.onChangeCallback();
-            } else {
-                lodash.unset(ctrl.version, ['spec', 'resources', field, 'nvidia.com/gpu']);
-                ctrl.limitsGpuValue = null;
-            }
-        }
-
-        /**
          * Number input callback
          * @param {number} newData
          * @param {string} field
          */
-        function inputValueCallback(newData, field) {
+        function cpuInputCallback(newData, field) {
             if (angular.isNumber(newData)) {
                 if (isRequestsInput(field)) {
-                    ctrl.requestsCpuValue = newData;
+                    ctrl.resources.requests.cpu = newData;
                     newData = newData + ctrl.selectedCpuRequestItem.unit;
                 } else {
-                    ctrl.limitsCpuValue = newData;
+                    ctrl.resources.limits.cpu = newData;
                     newData = newData + ctrl.selectedCpuLimitItem.unit;
                 }
 
@@ -193,10 +189,26 @@
                 ctrl.onChangeCallback();
             } else {
                 lodash.unset(ctrl.version, 'spec.' + field);
-                ctrl[isRequestsInput(field) ? 'requestsCpuValue' : 'limitsCpuValue'] = null;
+                ctrl[isRequestsInput(field) ? 'resources.requests.cpu' : 'resources.limits.cpu'] = null;
             }
 
             checkIfCpuInputsValid();
+        }
+
+        /**
+         * Number input callback for GPU fields
+         * @param {number} newData
+         * @param {string} field
+         */
+        function gpuInputCallback(newData, field) {
+            if (angular.isNumber(newData)) {
+                lodash.set(ctrl.version, ['spec', 'resources', field, 'nvidia.com/gpu'], String(newData));
+                lodash.set(ctrl.resources, [field, 'gpu'], String(newData));
+                ctrl.onChangeCallback();
+            } else {
+                lodash.unset(ctrl.version, ['spec', 'resources', field, 'nvidia.com/gpu']);
+                lodash.set(ctrl.resources, [field, 'gpu'], null);
+            }
         }
 
         /**
@@ -205,36 +217,6 @@
          */
         function isInactivityWindowShown() {
             return lodash.get(scaleToZero, 'mode') === 'enabled';
-        }
-
-        /**
-         * Memory number input callback
-         * @param {number} newData
-         * @param {string} field
-         */
-        function memoryInputCallback(newData, field) {
-            var newValue, sizeUnit;
-
-            sizeUnit = isRequestsInput(field) ? lodash.get(ctrl.selectedRequestUnit, 'unit', 'G') :
-                                                lodash.get(ctrl.selectedLimitUnit, 'unit', 'G');
-
-            if (!angular.isNumber(newData)) {
-                lodash.unset(ctrl.version, field);
-
-                // if new value isn't number that both fields will be valid, because one of them is empty
-                ctrl.resourcesForm.requestMemory.$setValidity('equality', true);
-                ctrl.resourcesForm.limitsMemory.$setValidity('equality', true);
-            } else {
-                newValue = newData + sizeUnit;
-                lodash.set(ctrl.version, field, newValue);
-
-                checkIfMemoryInputsValid(newValue, field);
-            }
-
-            ctrl.memoryWarningOpen = !lodash.isNil(lodash.get(ctrl.version, 'spec.resources.limits.memory')) &&
-                lodash.isNil(lodash.get(ctrl.version, 'spec.resources.requests.memory'));
-
-            ctrl.onChangeCallback();
         }
 
         /**
@@ -266,11 +248,42 @@
         }
 
         /**
-         * Update data callback
+         * Memory number input callback
+         * @param {number} newData
+         * @param {string} field
+         */
+        function memoryInputCallback(newData, field) {
+            var newValue, sizeUnit;
+
+            sizeUnit = isRequestsInput(field) ? lodash.get(ctrl.selectedRequestUnit, 'unit', 'G') :
+                                                lodash.get(ctrl.selectedLimitUnit, 'unit', 'G');
+
+            if (!angular.isNumber(newData)) {
+                lodash.unset(ctrl.version.spec, field);
+
+                // if new value isn't number that both fields will be valid, because one of them is empty
+                ctrl.resourcesForm.requestMemory.$setValidity('equality', true);
+                ctrl.resourcesForm.limitsMemory.$setValidity('equality', true);
+            } else {
+                newValue = newData + sizeUnit;
+                lodash.set(ctrl.version.spec, field, newValue);
+                lodash.set(ctrl, field, newData);
+
+                checkIfMemoryInputsValid(newValue, field);
+            }
+
+            ctrl.memoryWarningOpen = !lodash.isNil(lodash.get(ctrl.version, 'spec.resources.limits.memory')) &&
+                lodash.isNil(lodash.get(ctrl.version, 'spec.resources.requests.memory'));
+
+            ctrl.onChangeCallback();
+        }
+
+        /**
+         * Replicas data update callback
          * @param {string|number} newData
          * @param {string} field
          */
-        function numberInputCallback(newData, field) {
+        function replicasInputCallback(newData, field) {
             if (lodash.isNil(newData) || newData === '') {
                 lodash.unset(ctrl.version.spec, field);
             } else {
@@ -401,11 +414,17 @@
             var limitsCpu      = lodash.get(ctrl.version, 'spec.resources.limits.cpu');
             var limitsGpu      = lodash.get(ctrl.version, ['spec', 'resources', 'limits', 'nvidia.com/gpu']);
 
-            ctrl.requestsMemoryValue = parseValue(requestsMemory);
-            ctrl.limitsMemoryValue   = parseValue(limitsMemory);
-            ctrl.requestsCpuValue    = parseValue(requestsCpu);
-            ctrl.limitsCpuValue      = parseValue(limitsCpu);
-            ctrl.limitsGpuValue      = parseValue(limitsGpu);
+            ctrl.resources = {
+                requests: {
+                    memory: parseValue(requestsMemory),
+                    cpu: parseValue(requestsCpu)
+                },
+                limits: {
+                    memory: parseValue(limitsMemory),
+                    cpu: parseValue(limitsCpu),
+                    gpu: parseValue(limitsGpu)
+                }
+            }
 
             // get size unit from memory values into int or set default, example: '15G' -> 'G'
             ctrl.selectedRequestUnit = lodash.isNil(requestsMemory) ? defaultUnit :

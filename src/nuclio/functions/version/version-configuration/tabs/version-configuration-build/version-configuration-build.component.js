@@ -45,6 +45,7 @@
         };
 
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
 
         ctrl.deleteFile = deleteFile;
@@ -63,19 +64,28 @@
          */
         function onInit() {
             ctrl.platformKindIsKube = lodash.get(ConfigService, 'nuclio.platformKind') === 'kube';
-            ctrl.disabled = lodash.get(ctrl.version, 'spec.build.codeEntryType') === 'image';
-            ctrl.build.commands = lodash.get(ctrl.version, 'spec.build.commands', []);
-            ctrl.build.commands = ctrl.build.commands.join('\n').replace(/''/g, '\'');
+        }
 
-            ctrl.build.dependencies = lodash.get(ctrl.version, 'spec.build.dependencies', []).join('\n');
-            ctrl.build.runtimeAttributes.repositories = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories', []).join('\n');
+        /**
+         * On changes hook method.
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.version)) {
+                ctrl.disabled = lodash.get(ctrl.version, 'spec.build.codeEntryType') === 'image';
+                ctrl.build.commands = lodash.get(ctrl.version, 'spec.build.commands', []);
+                ctrl.build.commands = ctrl.build.commands.join('\n').replace(/''/g, '\'');
 
-            $timeout(function () {
-                if (ctrl.buildForm.$invalid) {
-                    ctrl.buildForm.$setSubmitted();
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'build', isDisabled: true});
-                }
-            });
+                ctrl.build.dependencies = lodash.get(ctrl.version, 'spec.build.dependencies', []).join('\n');
+                ctrl.build.runtimeAttributes.repositories = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories', []).join('\n');
+
+                $timeout(function () {
+                    if (ctrl.buildForm.$invalid) {
+                        ctrl.buildForm.$setSubmitted();
+                        $rootScope.$broadcast('change-state-deploy-button', {component: 'build', isDisabled: true});
+                    }
+                });
+            }
         }
 
         /**

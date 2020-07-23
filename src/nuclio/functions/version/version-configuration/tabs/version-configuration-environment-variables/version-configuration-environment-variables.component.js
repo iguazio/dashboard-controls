@@ -47,8 +47,8 @@
             }
         };
 
-        ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
+        ctrl.$onChanges = onChanges;
 
         ctrl.addNewVariable = addNewVariable;
         ctrl.handleAction = handleAction;
@@ -60,39 +60,42 @@
         //
 
         /**
-         * Initialization method
-         */
-        function onInit() {
-            ctrl.variables = lodash.chain(ctrl.version)
-                .get('spec.env', [])
-                .map(function (variable) {
-                    variable.ui = {
-                        editModeActive: false,
-                        isFormValid: false,
-                        name: 'variable'
-                    };
-
-                    return variable;
-                })
-                .value();
-
-            ctrl.isOnlyValueTypeInputs = !lodash.some(ctrl.variables, 'valueFrom');
-
-            $timeout(function () {
-                if (ctrl.environmentVariablesForm.$invalid) {
-                    ctrl.environmentVariablesForm.$setSubmitted();
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'variable', isDisabled: true});
-                }
-            })
-        }
-
-        /**
          * Post linking method
          */
         function postLink() {
 
             // Bind DOM-related preventDropdownCutOff method to component's controller
             PreventDropdownCutOffService.preventDropdownCutOff($element, '.three-dot-menu');
+        }
+
+        /**
+         * On changes hook method.
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.version)) {
+                ctrl.variables = lodash.chain(ctrl.version)
+                    .get('spec.env', [])
+                    .map(function (variable) {
+                        variable.ui = {
+                            editModeActive: false,
+                            isFormValid: false,
+                            name: 'variable'
+                        };
+
+                        return variable;
+                    })
+                    .value();
+
+                ctrl.isOnlyValueTypeInputs = !lodash.some(ctrl.variables, 'valueFrom');
+
+                $timeout(function () {
+                    if (ctrl.environmentVariablesForm.$invalid) {
+                        ctrl.environmentVariablesForm.$setSubmitted();
+                        $rootScope.$broadcast('change-state-deploy-button', {component: 'variable', isDisabled: true});
+                    }
+                })
+            }
         }
 
         //
