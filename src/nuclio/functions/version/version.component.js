@@ -7,6 +7,7 @@
             bindings: {
                 project: '<',
                 version: '<',
+                containers: '<',
                 createVersion: '&',
                 deleteFunction: '&',
                 getProject: '&',
@@ -35,7 +36,6 @@
                 updateOnContentResize: true
             }
         };
-        ctrl.deployResult = {};
         ctrl.isSplashShowed = {
             value: false
         };
@@ -59,6 +59,7 @@
         ctrl.isInValidDeployState = isInValidDeployState;
         ctrl.onRowCollapse = onRowCollapse;
         ctrl.onSelectAction = onSelectAction;
+        ctrl.refreshFunction = refreshFunction;
         ctrl.toggleDeployResult = toggleDeployResult;
 
         //
@@ -288,7 +289,7 @@
                 'configuringResources'
             ];
 
-            return lodash.includes(validStates, ctrl.deployResult.status.state);
+            return lodash.includes(validStates, ctrl.version.status.state);
         }
 
         /**
@@ -359,6 +360,31 @@
                     className: 'ngdialog-theme-iguazio duplicate-function-dialog-wrapper'
                 });
             }
+        }
+
+        /**
+         * Refreshes function data
+         */
+        function refreshFunction() {
+            ctrl.isSplashShowed.value = true;
+
+            ctrl.getFunction({metadata: ctrl.version.metadata, projectID: lodash.get(ctrl.project, 'metadata.name')})
+                .then(function (response) {
+                    var versionUI = ctrl.version.ui;
+                    ctrl.version = response;
+                    ctrl.version.ui = versionUI;
+
+                    setInvocationUrl();
+                    setIngressHost();
+                })
+                .catch(function (error) {
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTION', {lng: lng});
+
+                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                })
+                .finally(function () {
+                    ctrl.isSplashShowed.value = false;
+                })
         }
 
         /**
@@ -435,23 +461,17 @@
 
                             ctrl.versionDeployed = true;
 
-                            ctrl.version.status = response.status;
+                            ctrl.version = response;
                             ctrl.version.ui = {
                                 deployedVersion: getVersionCopy(),
                                 versionChanged: false
                             };
-
-                            lodash.assign(ctrl.version.spec, response.spec);
 
                             setInvocationUrl();
                             setIngressHost();
 
                             ctrl.isFunctionDeployed = true;
                         }
-
-                        ctrl.version.ui.deployResult = response;
-
-                        ctrl.deployResult = response;
 
                         $rootScope.$broadcast('deploy-result-changed');
 
@@ -474,11 +494,7 @@
          * @param {string} value
          */
         function setDeployResult(value) {
-            ctrl.deployResult = {
-                status: {
-                    state: value
-                }
-            };
+            lodash.set(ctrl.version, 'status.state', value);
             lodash.set(lodash.find(ctrl.navigationTabsConfig, 'status'), 'status', value);
         }
 
@@ -508,10 +524,7 @@
          */
         function setInvocationUrl() {
             var ip = ConfigService.nuclio.externalIPAddress;
-            var port = lodash.defaultTo(
-                lodash.get(ctrl.version, 'ui.deployResult.status.httpPort'),
-                lodash.get(ctrl.version, 'status.httpPort')
-            );
+            var port = lodash.get(ctrl.version, 'status.httpPort');
 
             ctrl.version.ui.invocationUrl =
                 lodash.isEmpty(ip) || lodash.toFinite(port) === 0 ? '' : 'http://' + ip + ':' + port;

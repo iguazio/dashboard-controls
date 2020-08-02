@@ -38,7 +38,7 @@ describe('nclVersionConfigurationBuild component:', function () {
         Upload = null;
     });
 
-    describe('onInit(): ', function () {
+    describe('onChanges(): ', function () {
        it('should set ctrl.buildCommands', function () {
            ctrl.version = {
                spec: {
@@ -48,7 +48,10 @@ describe('nclVersionConfigurationBuild component:', function () {
                }
            };
 
-           ctrl.$onInit();
+           var changes = {
+               version: ctrl.version
+           };
+           ctrl.$onChanges(changes);
 
            expect(ctrl.build.commands).toEqual('1\n2');
        });

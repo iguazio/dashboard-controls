@@ -359,10 +359,7 @@
          * @returns {string}
          */
         function getInvocationUrl() {
-            var status = lodash.defaultTo(
-                lodash.get(ctrl.version, 'ui.deployResult.status'),
-                lodash.get(ctrl.version, 'status', {})
-            );
+            var status = lodash.get(ctrl.version, 'status', {});
 
             if (lodash.toFinite(status.httpPort) === 0 || !lodash.includes(['ready', 'scaledToZero'], status.state)) {
                 status.httpPort = null;
@@ -416,17 +413,13 @@
          * @returns {boolean}
          */
         function isDisabledTestButton() {
-            var httpPort = lodash.get(ctrl.version, 'ui.deployResult.status.httpPort', null);
+            var httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
 
             if (lodash.get(ctrl.version, 'status.state') === 'ready' && lodash.get(ctrl.version, 'spec.disable')) {
                 return true;
             }
 
-            if (lodash.isNil(httpPort)) {
-                httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
-            }
-
-            var state = lodash.get(ctrl.version, 'ui.deployResult.status.state');
+            var state = lodash.get(ctrl.version, 'status.state');
             if (httpPort && lodash.includes(['imported', 'building', 'error'], state)) {
                 httpPort = null;
             }

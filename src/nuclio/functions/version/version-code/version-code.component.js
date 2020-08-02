@@ -150,6 +150,7 @@
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
+        ctrl.$onChanges = onChanges;
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.inputValueCallback = inputValueCallback;
@@ -163,38 +164,6 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.runtimeArray = getRuntimes();
-            ctrl.selectedRuntime = lodash.find(ctrl.runtimeArray, ['id', ctrl.version.spec.runtime]);
-            ctrl.editorLanguage = ctrl.selectedRuntime.language;
-
-            var sourceCode = lodash.get(ctrl.version, 'spec.build.functionSourceCode', '');
-            if (lodash.isEmpty(sourceCode)) {
-                ctrl.sourceCode = lodash.get(ctrl.version, 'ui.versionCode', sourceCode);
-            } else {
-                ctrl.sourceCode = Base64.decode(sourceCode);
-
-                lodash.set(ctrl.version, 'ui.versionCode', sourceCode);
-            }
-
-            if (lodash.has(ctrl.version, 'spec.build.codeEntryType')) {
-                ctrl.selectedEntryType = lodash.find(ctrl.codeEntryTypeArray, ['id', ctrl.version.spec.build.codeEntryType]);
-                if (ctrl.selectedEntryType.id === 'github') {
-                    ctrl.githubToken = lodash.chain(ctrl.version.spec.build)
-                        .get('codeEntryAttributes.headers', {})
-                        .find(function (value, key) {
-                            return key.toLowerCase() === 'authorization'
-                        })
-                        .defaultTo('token ')
-                        .value()
-                        .split(/\s+/g)[1];
-                }
-            } else {
-                ctrl.selectedEntryType = ctrl.codeEntryTypeArray[0];
-                lodash.set(ctrl.version, 'spec.build.codeEntryType', ctrl.selectedEntryType.id);
-            }
-
-            previousEntryType = ctrl.selectedEntryType;
-
             $scope.$on('ui.layout.resize', onLayoutResize);
             $scope.$on('navigation-tabs_toggle-test-pane', toggleTestPane);
         }
@@ -204,6 +173,46 @@
          */
         function postLink() {
             $timeout(onDragNDropFile);
+        }
+
+        /**
+         * On changes hook method.
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.version)) {
+                ctrl.runtimeArray = getRuntimes();
+                ctrl.selectedRuntime = lodash.find(ctrl.runtimeArray, ['id', ctrl.version.spec.runtime]);
+                ctrl.editorLanguage = ctrl.selectedRuntime.language;
+
+                var sourceCode = lodash.get(ctrl.version, 'spec.build.functionSourceCode', '');
+                if (lodash.isEmpty(sourceCode)) {
+                    ctrl.sourceCode = lodash.get(ctrl.version, 'ui.versionCode', sourceCode);
+                } else {
+                    ctrl.sourceCode = Base64.decode(sourceCode);
+
+                    lodash.set(ctrl.version, 'ui.versionCode', sourceCode);
+                }
+
+                if (lodash.has(ctrl.version, 'spec.build.codeEntryType')) {
+                    ctrl.selectedEntryType = lodash.find(ctrl.codeEntryTypeArray, ['id', ctrl.version.spec.build.codeEntryType]);
+                    if (ctrl.selectedEntryType.id === 'github') {
+                        ctrl.githubToken = lodash.chain(ctrl.version.spec.build)
+                            .get('codeEntryAttributes.headers', {})
+                            .find(function (value, key) {
+                                return key.toLowerCase() === 'authorization'
+                            })
+                            .defaultTo('token ')
+                            .value()
+                            .split(/\s+/g)[1];
+                    }
+                } else {
+                    ctrl.selectedEntryType = ctrl.codeEntryTypeArray[0];
+                    lodash.set(ctrl.version, 'spec.build.codeEntryType', ctrl.selectedEntryType.id);
+                }
+
+                previousEntryType = ctrl.selectedEntryType;
+            }
         }
 
         //
