@@ -92,7 +92,7 @@
          * @param {string} field
          */
         function inputValueCallback(newData, field) {
-            lodash.set(ctrl.runtimeAttributes, field, newData)
+            lodash.set(ctrl.runtimeAttributes, field, newData);
 
             if (field === 'jvmOptions') {
                 lodash.set(ctrl.version, 'spec.runtimeAttributes.jvmOptions', newData.replace(/\r/g, '\n').split(/\n+/));
