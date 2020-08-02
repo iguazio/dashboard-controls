@@ -50,7 +50,7 @@ describe('nclVersionConfigurationBuild component:', function () {
 
            var changes = {
                version: ctrl.version
-           }
+           };
            ctrl.$onChanges(changes);
 
            expect(ctrl.build.commands).toEqual('1\n2');
