@@ -75,7 +75,7 @@
                                 isFormValid: false,
                                 name: 'runtime-attribute'
                             }
-                        }
+                        };
                     })
                     .value();
                 ctrl.attributes = lodash.compact(ctrl.attributes);
