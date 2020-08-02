@@ -91,7 +91,7 @@
                                 isFormValid: false,
                                 name: 'label'
                             }
-                        }
+                        };
                     })
                     .value();
                 ctrl.labels = lodash.compact(ctrl.labels);
