@@ -524,7 +524,7 @@
          */
         function setInvocationUrl() {
             var ip = ConfigService.nuclio.externalIPAddress;
-            var port = lodash.get(ctrl.version, 'status.httpPort')
+            var port = lodash.get(ctrl.version, 'status.httpPort');
 
             ctrl.version.ui.invocationUrl =
                 lodash.isEmpty(ip) || lodash.toFinite(port) === 0 ? '' : 'http://' + ip + ':' + port;
