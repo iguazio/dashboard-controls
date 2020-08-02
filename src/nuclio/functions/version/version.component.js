@@ -494,7 +494,7 @@
          * @param {string} value
          */
         function setDeployResult(value) {
-            lodash.set(ctrl.version, 'status.state', value)
+            lodash.set(ctrl.version, 'status.state', value);
             lodash.set(lodash.find(ctrl.navigationTabsConfig, 'status'), 'status', value);
         }
 
