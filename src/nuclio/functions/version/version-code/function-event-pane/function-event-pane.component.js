@@ -359,7 +359,7 @@
          * @returns {string}
          */
         function getInvocationUrl() {
-            var status = lodash.get(ctrl.version, 'status', {})
+            var status = lodash.get(ctrl.version, 'status', {});
 
             if (lodash.toFinite(status.httpPort) === 0 || !lodash.includes(['ready', 'scaledToZero'], status.state)) {
                 status.httpPort = null;
