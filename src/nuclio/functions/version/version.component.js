@@ -371,8 +371,8 @@
             ctrl.getFunction({metadata: ctrl.version.metadata, projectID: lodash.get(ctrl.project, 'metadata.name')})
                 .then(function (response) {
                     var versionUI = ctrl.version.ui;
-                    ctrl.version = response
-                    ctrl.version.ui = versionUI
+                    ctrl.version = response;
+                    ctrl.version.ui = versionUI;
 
                     setInvocationUrl();
                     setIngressHost();
