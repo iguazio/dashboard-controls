@@ -21,7 +21,7 @@
 
     function NclEditItemController($document, $element, $i18next, $rootScope, $scope, $timeout, i18next, lodash,
                                    ConfigService, ConverterService, EventHelperService, FormValidationService,
-                                   PreventDropdownCutOffService, ValidationService) {
+                                   PreventDropdownCutOffService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -40,10 +40,8 @@
                 updateOnContentResize: true
             }
         };
-
-        ctrl.fieldTypeValidationRules = {
-            arrayInt: ValidationService.getValidationRules('function.arrayInt')
-        };
+        ctrl.isAdvancedVisible = false;
+        ctrl.isAdvancedCollapsed = true;
 
         ctrl.isShowFieldError = FormValidationService.isShowFieldError;
         ctrl.isShowFieldInvalidState = FormValidationService.isShowFieldInvalidState;
@@ -59,9 +57,6 @@
         ctrl.addNewIngress = addNewIngress;
         ctrl.addNewSubscription = addNewSubscription;
         ctrl.addNewTopic = addNewTopic;
-        ctrl.convertFromCamelCase = convertFromCamelCase;
-        ctrl.getFieldPlaceholderText = getFieldPlaceholderText;
-        ctrl.getFieldValue = getFieldValue;
         ctrl.getItemName = getItemName;
         ctrl.getSelectedClassMoreInfo = getSelectedClassMoreInfo;
         ctrl.handleAnnotationAction = handleAnnotationAction;
@@ -248,6 +243,8 @@
 
             itemCopy = lodash.cloneDeep(lodash.omit(ctrl.item, 'ui'));
 
+            setAdvancedVisibility();
+
             $scope.$on('deploy-function-version', onFunctionDeploy);
         }
 
@@ -275,14 +272,6 @@
         //
         // Public methods
         //
-
-        /**
-         * Converts field names in class list from camel case.
-         * @param {string} str - The string to convert.
-         */
-        function convertFromCamelCase(str) {
-            return lodash.upperFirst(lodash.lowerCase(str));
-        }
 
         /**
          * Adds new ingress
@@ -412,17 +401,6 @@
         }
 
         /**
-         * Returns the value of a field.
-         * @param {Object} field - The field.
-         * @param {string} field.name - The name of the field.
-         * @param {string} field.path - The path in item this field is bound to.
-         * @returns {*} the value of the field.
-         */
-        function getFieldValue(field) {
-            return lodash.get(ctrl.item, lodash.defaultTo(field.path, field.name));
-        }
-
-        /**
          * Returns value for Name input.
          * Value could has different path depends on item type.
          * @returns {string}
@@ -542,14 +520,21 @@
 
         /**
          * Determines whether or not a field should be displayed.
-         * @param {Object} field - The field to test.
-         * @param {string} field.type - The type of the field.
-         * @param {boolean} field.visible - The visibility of the field.
-         * @returns {boolean} `true` in case the field should be displayed, or `false` otherwise.
+         * @returns {Function} filter expression
          */
-        function isFieldVisible(field) {
-            return lodash.defaultTo(field.visible, true) &&
-                lodash.includes(['input', 'dropdown', 'number-input', 'arrayInt'], field.type);
+        function isFieldVisible(showAdvanced) {
+            /**
+             * Filter expression
+             * @param {Object} field - The field to test.
+             * @param {string} field.type - The type of the field.
+             * @param {boolean} field.visible - The visibility of the field.
+             * @returns {boolean} `true` in case the field should be displayed, or `false` otherwise.
+             */
+            return function (field) {
+                return lodash.defaultTo(field.visible, true) &&
+                    lodash.includes(['input', 'dropdown', 'number-input', 'arrayInt'], field.type) &&
+                    (showAdvanced ? field.isAdvanced : !field.isAdvanced);
+            }
         }
 
         /**
@@ -782,6 +767,7 @@
                 ctrl.onSelectClassCallback()
             }
 
+            setAdvancedVisibility();
             updateChangesState();
         }
 
@@ -853,19 +839,6 @@
             }
         }
 
-        /**
-         * Return placeholder text for a field.
-         * @param {Object} field - The field.
-         * @returns {string} the placeholder text for the field.
-         */
-        function getFieldPlaceholderText(field) {
-            var fieldName = lodash.defaultTo(field.label, ctrl.convertFromCamelCase(field.name).toLowerCase());
-            var defaultPlaceholder = field.type === 'dropdown' ?
-                $i18next.t('common:PLACEHOLDER.SELECT', { lng: lng }) :
-                $i18next.t('common:PLACEHOLDER.ENTER_GENERIC', { lng: lng, fieldName: fieldName });
-            return lodash.defaultTo(field.placeholder, defaultPlaceholder);
-        }
-
         //
         // Private methods
         //
@@ -925,6 +898,13 @@
          */
         function onFunctionDeploy(event, data) {
             ctrl.onSubmitForm(data.event)
+        }
+
+        /**
+         * Sets visibility of the `Advanced` section
+         */
+        function setAdvancedVisibility() {
+            ctrl.isAdvancedVisible = lodash.some(ctrl.selectedClass.fields, 'isAdvanced')
         }
 
         /**

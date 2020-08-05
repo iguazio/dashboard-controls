@@ -1,0 +1,72 @@
+<div class="field-label">
+    <span data-ng-class="{ asterisk: $ctrl.field.allowEmpty === false }">
+        {{$ctrl.field.label || $ctrl.convertFromCamelCase($ctrl.field.name)}}
+    </span>
+    <igz-more-info
+            data-ng-if="$ctrl.field.moreInfoDescription"
+            data-description="{{$ctrl.field.moreInfoDescription}}"
+            data-icon-type="{{$ctrl.field.moreInfoIconType}}"
+            data-is-html-enabled="$ctrl.field.moreInfoHtml"
+            data-is-open="$ctrl.field.moreInfoOpen"
+            data-trigger="click">
+    </igz-more-info>
+</div>
+<igz-validating-input-field
+        data-ng-if="$ctrl.field.type === 'input'"
+        data-field-type="{{$ctrl.field.fieldType}}"
+        data-input-name="item_{{$ctrl.field.name}}"
+        data-input-value="$ctrl.getFieldValue()"
+        data-is-focused="false"
+        data-form-object="$ctrl.editItemForm"
+        data-validation-rules="$ctrl.validationRules[$ctrl.field.pattern]"
+        data-validation-is-required="!$ctrl.field.allowEmpty"
+        data-placeholder-text="{{$ctrl.getFieldPlaceholderText()}}"
+        data-update-data-callback="$ctrl.inputValueCallback({newData: newData, field: field})"
+        data-update-data-field="{{$ctrl.field.path || $ctrl.field.name}}"
+        data-auto-complete="{{$ctrl.field.autocomplete || 'off'}}">
+</igz-validating-input-field>
+<igz-validating-input-field
+        data-ng-if="$ctrl.field.type === 'arrayInt'"
+        data-field-type="input"
+        data-input-name="item_{{$ctrl.field.name}}"
+        data-input-value="$ctrl.getFieldValue()"
+        data-is-focused="false"
+        data-form-object="$ctrl.editItemForm"
+        data-validation-rules="$ctrl.fieldTypeValidationRules.arrayInt"
+        data-validation-is-required="!$ctrl.field.allowEmpty"
+        data-placeholder-text="{{$ctrl.getFieldPlaceholderText()}}"
+        data-update-data-callback="$ctrl.inputValueCallback({newData: newData, field: field})"
+        data-update-data-field="{{$ctrl.field.path || $ctrl.field.name}}"
+        data-auto-complete="{{$ctrl.field.autocomplete || 'off'}}">
+</igz-validating-input-field>
+<igz-default-dropdown
+        data-ng-if="$ctrl.field.type === 'dropdown'"
+        data-select-property-only="id"
+        data-placeholder="{{$ctrl.getFieldPlaceholderText()}}"
+        data-values-array="$ctrl.field.values"
+        data-form-object="$ctrl.editItemForm"
+        data-is-required="!$ctrl.field.allowEmpty"
+        data-prevent-drop-up="true"
+        data-input-name="item_{{$ctrl.field.name}}"
+        data-selected-item="$ctrl.getFieldValue()"
+        data-item-select-callback="$ctrl.onSelectDropdownValue({item: item, field: field})"
+        data-item-select-field="{{$ctrl.field.path || $ctrl.field.name}}"
+        data-enable-overlap="true"
+        data-enable-typing="$ctrl.field.enableTyping">
+</igz-default-dropdown>
+<igz-number-input
+        data-ng-if="$ctrl.field.type === 'number-input'"
+        data-form-object="$ctrl.editItemForm"
+        data-input-name="item_{{$ctrl.field.name}}"
+        data-current-value="$ctrl.getFieldValue()"
+        data-update-number-input-callback="$ctrl.numberInputCallback({newData: newData, field: field})"
+        data-update-number-input-field="{{$ctrl.field.path || $ctrl.field.name}}"
+        data-placeholder="{{$ctrl.getFieldPlaceholderText()}}"
+        data-precision="0"
+        data-value-step="1"
+        data-suffix-unit="{{$ctrl.field.unit}}"
+        data-validation-is-required="!$ctrl.field.allowEmpty"
+        data-allow-empty-field="$ctrl.field.allowEmpty"
+        data-min-value="$ctrl.field.min"
+        data-max-value="$ctrl.field.max">
+</igz-number-input>

@@ -116,6 +116,7 @@
                                         visible: true
                                     }
                                 ],
+                                isAdvanced: true,
                                 defaultValue: 'pool',
                                 path: 'attributes.workerAllocationMode',
                                 type: 'dropdown'
@@ -134,6 +135,7 @@
                                 type: 'input',
                                 fieldType: 'input',
                                 path: 'attributes.sessionTimeout',
+                                isAdvanced: true,
                                 allowEmpty: true,
                                 placeholder: $i18next.t('functions:PLACEHOLDER.ENTER_DURATION', { lng: lng }),
                                 defaultValue: '10s'
@@ -144,6 +146,7 @@
                                 type: 'input',
                                 fieldType: 'input',
                                 path: 'attributes.heartbeatInterval',
+                                isAdvanced: true,
                                 allowEmpty: true,
                                 placeholder: $i18next.t('functions:PLACEHOLDER.ENTER_DURATION', { lng: lng }),
                                 defaultValue: '3s'
@@ -153,6 +156,7 @@
                                 label: $i18next.t('functions:BYTES_TO_FETCH_DEFAULT', { lng: lng }),
                                 type: 'number-input',
                                 path: 'attributes.fetchDefault',
+                                isAdvanced: true,
                                 allowEmpty: true,
                                 unit: $i18next.t('common:BYTES', { lng: lng }),
                                 min: 1,
@@ -166,6 +170,7 @@
                                 type: 'input',
                                 fieldType: 'input',
                                 path: 'attributes.rebalanceTimeout',
+                                isAdvanced: true,
                                 allowEmpty: true,
                                 placeholder: $i18next.t('functions:PLACEHOLDER.ENTER_DURATION', { lng: lng }),
                                 defaultValue: '60s'
@@ -177,6 +182,7 @@
                                 type: 'input',
                                 fieldType: 'input',
                                 path: 'attributes.maxWaitHandlerDuringRebalance',
+                                isAdvanced: true,
                                 allowEmpty: true,
                                 placeholder: $i18next.t('functions:PLACEHOLDER.ENTER_DURATION', { lng: lng }),
                                 defaultValue: '5s'
@@ -185,6 +191,7 @@
                                 name: 'workerAllocatorName',
                                 type: 'input',
                                 fieldType: 'input',
+                                isAdvanced: true,
                                 allowEmpty: true
                             }
                         ]
@@ -233,6 +240,7 @@
                                 name: 'workerAllocatorName',
                                 type: 'input',
                                 fieldType: 'input',
+                                isAdvanced: true,
                                 allowEmpty: true
                             }
                         ]
@@ -269,6 +277,7 @@
                                 name: 'workerAllocatorName',
                                 type: 'input',
                                 fieldType: 'input',
+                                isAdvanced: true,
                                 allowEmpty: true
                             }
                         ]
@@ -339,6 +348,7 @@
                                 name: 'workerAllocatorName',
                                 type: 'input',
                                 fieldType: 'input',
+                                isAdvanced: true,
                                 allowEmpty: true,
                                 visible: !platformKindIsKube
                             }
@@ -401,6 +411,7 @@
                                 name: 'workerAllocatorName',
                                 type: 'input',
                                 fieldType: 'input',
+                                isAdvanced: true,
                                 allowEmpty: true
                             }
                         ]
@@ -451,6 +462,7 @@
                                 name: 'workerAllocatorName',
                                 type: 'input',
                                 fieldType: 'input',
+                                isAdvanced: true,
                                 allowEmpty: true
                             },
                             {
@@ -492,6 +504,7 @@
                                 placeholder: $i18next.t('common:PLACEHOLDER.ENTER_URL', { lng: lng }),
                                 moreInfoDescription: $i18next.t('functions:TOOLTIP.V3IO_STREAM_URL', { lng: lng }),
                                 moreInfoHtml: true,
+                                isAdvanced: true,
                                 allowEmpty: false
                             },
                             {
@@ -557,7 +570,8 @@
                                 ],
                                 defaultValue: 'pool',
                                 path: 'attributes.workerAllocationMode',
-                                type: 'dropdown'
+                                type: 'dropdown',
+                                isAdvanced: true
                             },
                             {
                                 name: 'maxWorkers',
@@ -571,6 +585,7 @@
                                 name: 'readBatchSize',
                                 type: 'number-input',
                                 path: 'attributes.readBatchSize',
+                                isAdvanced: true,
                                 allowEmpty: true,
                                 unit: $i18next.t('common:BYTES', { lng: lng }),
                                 min: 1,
@@ -583,6 +598,7 @@
                                 unit: 'ms',
                                 type: 'number-input',
                                 path: 'attributes.pollingIntervalMs',
+                                isAdvanced: true,
                                 allowEmpty: true,
                                 defaultValue: 500
                             },
@@ -592,6 +608,7 @@
                                 type: 'input',
                                 fieldType: 'input',
                                 path: 'attributes.sessionTimeout',
+                                isAdvanced: true,
                                 allowEmpty: true,
                                 placeholder: $i18next.t('functions:PLACEHOLDER.ENTER_DURATION', { lng: lng }),
                                 defaultValue: '10s'
@@ -602,6 +619,7 @@
                                 type: 'input',
                                 fieldType: 'input',
                                 path: 'attributes.heartbeatInterval',
+                                isAdvanced: true,
                                 allowEmpty: true,
                                 placeholder: $i18next.t('functions:PLACEHOLDER.ENTER_DURATION', { lng: lng }),
                                 defaultValue: '3s'
@@ -612,6 +630,7 @@
                                 type: 'input',
                                 fieldType: 'input',
                                 path: 'attributes.sequenceNumberCommitInterval',
+                                isAdvanced: true,
                                 allowEmpty: true,
                                 placeholder: $i18next.t('functions:PLACEHOLDER.ENTER_DURATION', { lng: lng }),
                                 defaultValue: '1s'
@@ -620,6 +639,7 @@
                                 name: 'workerAllocatorName',
                                 type: 'input',
                                 fieldType: 'input',
+                                isAdvanced: true,
                                 allowEmpty: true
                             }
                         ]
@@ -675,6 +695,7 @@
                                 name: 'workerAllocatorName',
                                 type: 'input',
                                 fieldType: 'input',
+                                isAdvanced: true,
                                 allowEmpty: true
                             }
                         ]
@@ -724,6 +745,7 @@
                                 name: 'workerAllocatorName',
                                 type: 'input',
                                 fieldType: 'input',
+                                isAdvanced: true,
                                 allowEmpty: true
                             }
                         ]
