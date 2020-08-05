@@ -77,7 +77,7 @@
          * Initialization method
          */
         function onInit() {
-            setDeployResult(lodash.get(ctrl.version, 'status.state', 'ready'));
+            setDeployResult(lodash.get(ctrl.version, 'status.state', ''));
 
             ctrl.isFunctionDeployed = !$stateParams.isNewFunction;
             ctrl.actions = [
