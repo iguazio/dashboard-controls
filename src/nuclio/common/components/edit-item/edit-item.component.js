@@ -820,7 +820,7 @@
                                 .values()
                                 .flatten()
                                 .some(function (error) {
-                                    var field = lodash.find(ctrl.selectedClass.fields, ['name', error.$name]);
+                                    var field = lodash.find(ctrl.selectedClass.fields, ['name', error.$name.replace('item_', '')]);
 
                                     return lodash.get(field, 'isAdvanced', false);
                                 })
@@ -1071,8 +1071,8 @@
         function validateValues() {
             if (ctrl.item.kind === 'cron') {
                 var scheduleField = lodash.find(ctrl.selectedClass.fields, {name: 'schedule'});
-                var intervalInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.interval.$viewValue);
-                var scheduleInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.schedule.$viewValue);
+                var intervalInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_interval.$viewValue);
+                var scheduleInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_schedule.$viewValue);
                 var bothFilled = intervalInputIsFilled && scheduleInputIsFilled;
 
                 scheduleField.allowEmpty = intervalInputIsFilled;
@@ -1080,15 +1080,15 @@
                     moreInfoIconType: bothFilled ? 'warn' : 'info',
                     moreInfoOpen: bothFilled
                 });
-                ctrl.editItemForm.interval.$validate();
+                ctrl.editItemForm.item_interval.$validate();
                 if (intervalInputIsFilled) {
-                    ctrl.editItemForm.interval.$setDirty();
+                    ctrl.editItemForm.item_interval.$setDirty();
                 }
             } else if (ctrl.item.kind === 'rabbit-mq') {
                 var queueName = lodash.find(ctrl.selectedClass.fields, {name: 'queueName'});
                 var topics = lodash.find(ctrl.selectedClass.fields, {name: 'topics'});
-                var queueNameIsFilled = !lodash.isEmpty(ctrl.editItemForm.queueName.$viewValue);
-                var topicsIsFilled = !lodash.isEmpty(ctrl.editItemForm.topics.$viewValue);
+                var queueNameIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_queueName.$viewValue);
+                var topicsIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_topics.$viewValue);
 
                 // Queue Name and Topics cannot be both empty at the same time
                 // at least one of them should be filled
@@ -1097,8 +1097,8 @@
                 topics.allowEmpty = queueNameIsFilled;
 
                 // update validity: if empty is not allowed and value is currently empty - mark invalid, otherwise valid
-                ctrl.editItemForm.queueName.$setValidity('text', queueName.allowEmpty || queueNameIsFilled);
-                ctrl.editItemForm.topics.$setValidity('text', topics.allowEmpty || topicsIsFilled);
+                ctrl.editItemForm.item_queueName.$setValidity('text', queueName.allowEmpty || queueNameIsFilled);
+                ctrl.editItemForm.item_topics.$setValidity('text', topics.allowEmpty || topicsIsFilled);
             } else if (ctrl.item.kind === 'kafka-cluster') {
                 ctrl.item.attributes.sasl.enable = !lodash.isEmpty(ctrl.item.attributes.sasl.user) &&
                     !lodash.isEmpty(ctrl.item.attributes.sasl.password);
