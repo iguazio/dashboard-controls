@@ -14,7 +14,7 @@
 <igz-validating-input-field
         data-ng-if="$ctrl.field.type === 'input'"
         data-field-type="{{$ctrl.field.fieldType}}"
-        data-input-name="item_{{$ctrl.field.name}}"
+        data-input-name="{{$ctrl.field.name}}"
         data-input-value="$ctrl.getFieldValue()"
         data-is-focused="false"
         data-form-object="$ctrl.editItemForm"
@@ -28,7 +28,7 @@
 <igz-validating-input-field
         data-ng-if="$ctrl.field.type === 'arrayInt'"
         data-field-type="input"
-        data-input-name="item_{{$ctrl.field.name}}"
+        data-input-name="{{$ctrl.field.name}}"
         data-input-value="$ctrl.getFieldValue()"
         data-is-focused="false"
         data-form-object="$ctrl.editItemForm"
@@ -47,7 +47,7 @@
         data-form-object="$ctrl.editItemForm"
         data-is-required="!$ctrl.field.allowEmpty"
         data-prevent-drop-up="true"
-        data-input-name="item_{{$ctrl.field.name}}"
+        data-input-name="{{$ctrl.field.name}}"
         data-selected-item="$ctrl.getFieldValue()"
         data-item-select-callback="$ctrl.onSelectDropdownValue({item: item, field: field})"
         data-item-select-field="{{$ctrl.field.path || $ctrl.field.name}}"
@@ -57,7 +57,7 @@
 <igz-number-input
         data-ng-if="$ctrl.field.type === 'number-input'"
         data-form-object="$ctrl.editItemForm"
-        data-input-name="item_{{$ctrl.field.name}}"
+        data-input-name="{{$ctrl.field.name}}"
         data-current-value="$ctrl.getFieldValue()"
         data-update-number-input-callback="$ctrl.numberInputCallback({newData: newData, field: field})"
         data-update-number-input-field="{{$ctrl.field.path || $ctrl.field.name}}"

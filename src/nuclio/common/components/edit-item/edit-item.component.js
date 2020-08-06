@@ -815,6 +815,18 @@
                     if (ctrl.editItemForm.$invalid) {
                         ctrl.item.ui.isFormValid = false;
 
+                        if (ctrl.isAdvancedVisible) {
+                            ctrl.isAdvancedCollapsed = !lodash.chain(ctrl.editItemForm.$error)
+                                .values()
+                                .flatten()
+                                .some(function (error) {
+                                    var field = lodash.find(ctrl.selectedClass.fields, ['name', error.$name]);
+
+                                    return lodash.get(field, 'isAdvanced', false);
+                                })
+                                .value();
+                        }
+
                         $rootScope.$broadcast('change-state-deploy-button', {
                             component: ctrl.item.ui.name,
                             isDisabled: true
@@ -1058,9 +1070,9 @@
         /* eslint complexity: ["error", 11] */
         function validateValues() {
             if (ctrl.item.kind === 'cron') {
-                var scheduleField = lodash.find(ctrl.selectedClass.fields, { name: 'schedule' });
-                var intervalInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_interval.$viewValue);
-                var scheduleInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_schedule.$viewValue);
+                var scheduleField = lodash.find(ctrl.selectedClass.fields, {name: 'schedule'});
+                var intervalInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.interval.$viewValue);
+                var scheduleInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.schedule.$viewValue);
                 var bothFilled = intervalInputIsFilled && scheduleInputIsFilled;
 
                 scheduleField.allowEmpty = intervalInputIsFilled;
@@ -1068,15 +1080,15 @@
                     moreInfoIconType: bothFilled ? 'warn' : 'info',
                     moreInfoOpen: bothFilled
                 });
-                ctrl.editItemForm.item_interval.$validate();
+                ctrl.editItemForm.interval.$validate();
                 if (intervalInputIsFilled) {
-                    ctrl.editItemForm.item_interval.$setDirty();
+                    ctrl.editItemForm.interval.$setDirty();
                 }
             } else if (ctrl.item.kind === 'rabbit-mq') {
-                var queueName = lodash.find(ctrl.selectedClass.fields, { name: 'queueName' });
-                var topics = lodash.find(ctrl.selectedClass.fields, { name: 'topics' });
-                var queueNameIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_queueName.$viewValue);
-                var topicsIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_topics.$viewValue);
+                var queueName = lodash.find(ctrl.selectedClass.fields, {name: 'queueName'});
+                var topics = lodash.find(ctrl.selectedClass.fields, {name: 'topics'});
+                var queueNameIsFilled = !lodash.isEmpty(ctrl.editItemForm.queueName.$viewValue);
+                var topicsIsFilled = !lodash.isEmpty(ctrl.editItemForm.topics.$viewValue);
 
                 // Queue Name and Topics cannot be both empty at the same time
                 // at least one of them should be filled
@@ -1085,8 +1097,8 @@
                 topics.allowEmpty = queueNameIsFilled;
 
                 // update validity: if empty is not allowed and value is currently empty - mark invalid, otherwise valid
-                ctrl.editItemForm.item_queueName.$setValidity('text', queueName.allowEmpty || queueNameIsFilled);
-                ctrl.editItemForm.item_topics.$setValidity('text', topics.allowEmpty || topicsIsFilled);
+                ctrl.editItemForm.queueName.$setValidity('text', queueName.allowEmpty || queueNameIsFilled);
+                ctrl.editItemForm.topics.$setValidity('text', topics.allowEmpty || topicsIsFilled);
             } else if (ctrl.item.kind === 'kafka-cluster') {
                 ctrl.item.attributes.sasl.enable = !lodash.isEmpty(ctrl.item.attributes.sasl.user) &&
                     !lodash.isEmpty(ctrl.item.attributes.sasl.password);

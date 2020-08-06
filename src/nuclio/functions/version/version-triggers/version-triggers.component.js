@@ -36,7 +36,7 @@
                 name: 'scheduleIsEmpty',
                 label: $i18next.t('functions:TRIGGER_CRON_INTERVAL_NO_SCHEDULE', { lng: lng }),
                 pattern: function (value, inputName, formObject) {
-                    return lodash.isEmpty(lodash.get(formObject, 'item_schedule.$modelValue'));
+                    return lodash.isEmpty(lodash.get(formObject, 'schedule.$modelValue'));
                 }
             }]),
             interval: ValidationService.getValidationRules('function.interval'),
