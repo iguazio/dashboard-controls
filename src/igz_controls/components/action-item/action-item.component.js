@@ -100,6 +100,8 @@
                 if (angular.isFunction(ctrl.action.callback)) {
                     ctrl.action.callback(ctrl.action);
                 }
+
+                event.stopPropagation();
             }
         }
 
