@@ -504,7 +504,7 @@
                                 placeholder: $i18next.t('common:PLACEHOLDER.ENTER_URL', { lng: lng }),
                                 moreInfoDescription: $i18next.t('functions:TOOLTIP.V3IO_STREAM_URL', { lng: lng }),
                                 moreInfoHtml: true,
-                                isAdvanced: true,
+                                isAdvanced: !lodash.isEmpty(lodash.get(additionalData, 'containers')),
                                 allowEmpty: false
                             },
                             {

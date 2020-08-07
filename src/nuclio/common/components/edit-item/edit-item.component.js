@@ -816,7 +816,7 @@
                         ctrl.item.ui.isFormValid = false;
 
                         if (ctrl.isAdvancedVisible) {
-                            ctrl.isAdvancedCollapsed = !lodash.chain(ctrl.editItemForm.$error)
+                            var isAdvancedInvalid = lodash.chain(ctrl.editItemForm.$error)
                                 .values()
                                 .flatten()
                                 .some(function (error) {
@@ -825,6 +825,10 @@
                                     return lodash.get(field, 'isAdvanced', false);
                                 })
                                 .value();
+
+                            if (isAdvancedInvalid) {
+                                ctrl.isAdvancedCollapsed = false
+                            }
                         }
 
                         $rootScope.$broadcast('change-state-deploy-button', {
