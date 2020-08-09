@@ -348,7 +348,7 @@
                                 name: 'workerAllocatorName',
                                 type: 'input',
                                 fieldType: 'input',
-                                isAdvanced: true,
+                                isAdvanced: !platformKindIsKube,
                                 allowEmpty: true,
                                 visible: !platformKindIsKube
                             }
