@@ -456,6 +456,8 @@
             interval = $interval(function () {
                 ctrl.getFunction({ metadata: ctrl.version.metadata, projectID: lodash.get(ctrl.project, 'metadata.name') })
                     .then(function (response) {
+                        ctrl.version.status = response.status;
+
                         if (response.status.state === 'ready' || response.status.state === 'error') {
                             terminateInterval();
 
