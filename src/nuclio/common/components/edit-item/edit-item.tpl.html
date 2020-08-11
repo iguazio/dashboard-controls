@@ -232,79 +232,15 @@
             </div>
 
             <div class="igz-col-{{field.fieldType === 'schedule' ? '91' : '45'}} attribute-field"
-                 data-ng-repeat="field in $ctrl.selectedClass.fields | filter:$ctrl.isFieldVisible track by field.name">
-                <div class="field-label">
-                    <span data-ng-class="{ asterisk: field.allowEmpty === false }">
-                        {{field.label || $ctrl.convertFromCamelCase(field.name)}}
-                    </span>
-                    <igz-more-info
-                        data-ng-if="field.moreInfoDescription"
-                        data-description="{{field.moreInfoDescription}}"
-                        data-icon-type="{{field.moreInfoIconType}}"
-                        data-is-html-enabled="field.moreInfoHtml"
-                        data-is-open="field.moreInfoOpen"
-                        data-trigger="click">
-                    </igz-more-info>
-                </div>
-                <igz-validating-input-field
-                    data-ng-if="field.type === 'input'"
-                    data-field-type="{{field.fieldType}}"
-                    data-input-name="item_{{field.name}}"
-                    data-input-value="$ctrl.getFieldValue(field)"
-                    data-is-focused="false"
-                    data-form-object="$ctrl.editItemForm"
-                    data-validation-rules="$ctrl.validationRules[field.pattern]"
-                    data-validation-is-required="!field.allowEmpty"
-                    data-placeholder-text="{{$ctrl.getFieldPlaceholderText(field)}}"
-                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                    data-update-data-field="{{field.path || field.name}}"
-                    data-auto-complete="{{field.autocomplete || 'off'}}">
-                </igz-validating-input-field>
-                <igz-validating-input-field
-                    data-ng-if="field.type === 'arrayInt'"
-                    data-field-type="input"
-                    data-input-name="item_{{field.name}}"
-                    data-input-value="$ctrl.getFieldValue(field)"
-                    data-is-focused="false"
-                    data-form-object="$ctrl.editItemForm"
-                    data-validation-rules="$ctrl.fieldTypeValidationRules.arrayInt"
-                    data-validation-is-required="!field.allowEmpty"
-                    data-placeholder-text="{{$ctrl.getFieldPlaceholderText(field)}}"
-                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                    data-update-data-field="{{field.path || field.name}}"
-                    data-auto-complete="{{field.autocomplete || 'off'}}">
-                </igz-validating-input-field>
-                <igz-default-dropdown
-                    data-ng-if="field.type === 'dropdown'"
-                    data-select-property-only="id"
-                    data-placeholder="{{$ctrl.getFieldPlaceholderText(field)}}"
-                    data-values-array="field.values"
-                    data-form-object="$ctrl.editItemForm"
-                    data-is-required="!field.allowEmpty"
-                    data-prevent-drop-up="true"
-                    data-input-name="item_{{field.name}}"
-                    data-selected-item="$ctrl.getFieldValue(field)"
-                    data-item-select-callback="$ctrl.onSelectDropdownValue(item, field)"
-                    data-item-select-field="{{field.path || field.name}}"
-                    data-enable-overlap="true"
-                    data-enable-typing="field.enableTyping">
-                </igz-default-dropdown>
-                <igz-number-input
-                    data-ng-if="field.type === 'number-input'"
-                    data-form-object="$ctrl.editItemForm"
-                    data-input-name="item_{{field.name}}"
-                    data-current-value="$ctrl.getFieldValue(field)"
-                    data-update-number-input-callback="$ctrl.numberInputCallback(newData, field)"
-                    data-update-number-input-field="{{field.path || field.name}}"
-                    data-placeholder="{{$ctrl.getFieldPlaceholderText(field)}}"
-                    data-precision="0"
-                    data-value-step="1"
-                    data-suffix-unit="{{field.unit}}"
-                    data-validation-is-required="!field.allowEmpty"
-                    data-allow-empty-field="field.allowEmpty"
-                    data-min-value="field.min"
-                    data-max-value="field.max">
-                </igz-number-input>
+                 data-ng-repeat="field in $ctrl.selectedClass.fields | filter:$ctrl.isFieldVisible() track by field.name">
+                <ncl-edit-item-field data-edit-item-form="$ctrl.editItemForm"
+                                     data-field="field"
+                                     data-item="$ctrl.item"
+                                     data-validation-rules="$ctrl.validationRules"
+                                     data-input-value-callback="$ctrl.inputValueCallback(newData, field)"
+                                     data-number-input-callback="$ctrl.numberInputCallback(newData, field)"
+                                     data-on-select-dropdown-value="$ctrl.onSelectDropdownValue(item, field)">
+                </ncl-edit-item-field>
             </div>
             <div class="igz-col-91 attribute-field ingresses-wrapper" data-ng-if="$ctrl.isHttpTrigger()">
                 <div class="field-label">{{ 'functions:INGRESSES_HOSTS' | i18next }}</div>
@@ -429,6 +365,29 @@
                     {{ 'functions:CREATE_NEW_SUBSCRIPTION' | i18next }}
                 </div>
             </div>
+
+            <div class="advanced-section igz-col-100" data-ng-if="$ctrl.isAdvancedVisible">
+                <div class="collapsed-block-title"
+                     data-ng-click="$ctrl.isAdvancedCollapsed = !$ctrl.isAdvancedCollapsed"
+                     data-ng-class="{'collapsed': $ctrl.isAdvancedCollapsed}">
+                    <span class="igz-icon-down icon-collapsed" data-ng-if="!$ctrl.isAdvancedCollapsed"></span>
+                    <span class="igz-icon-right icon-collapsed" data-ng-if="$ctrl.isAdvancedCollapsed"></span>
+                    {{ 'common:ADVANCED' | i18next }}
+                </div>
+
+                <div class="collapsed-block-content-wrapper" data-uib-collapse="$ctrl.isAdvancedCollapsed">
+                    <div class="igz-col-{{field.fieldType === 'schedule' ? '91' : '45'}} attribute-field"
+                         data-ng-repeat="field in $ctrl.selectedClass.fields | filter:$ctrl.isFieldVisible(true) track by field.name">
+                        <ncl-edit-item-field data-edit-item-form="$ctrl.editItemForm"
+                                             data-field="field"
+                                             data-item="$ctrl.item"
+                                             data-validation-rules="$ctrl.validationRules"
+                                             data-input-value-callback="$ctrl.inputValueCallback(newData, field)"
+                                             data-number-input-callback="$ctrl.numberInputCallback(newData, field)"
+                                             data-on-select-dropdown-value="$ctrl.onSelectDropdownValue(item, field)">
+                        </ncl-edit-item-field>
+                    </div>
+                </div>
         </div>
     </form>
 </div>
