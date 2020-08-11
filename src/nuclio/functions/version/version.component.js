@@ -451,6 +451,7 @@
          */
         function pullFunctionState() {
             ctrl.isDeployResultShown = true;
+            lodash.set(ctrl.version, 'status.logs', []);
             setDeployResult('building');
 
             interval = $interval(function () {
