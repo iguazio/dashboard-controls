@@ -1,6 +1,7 @@
 describe('igzActionItem component:', function () {
     var $componentController;
     var $rootScope;
+    var clickEvent
     var ctrl;
     var ngDialog;
     var ngDialogSpy;
@@ -14,6 +15,7 @@ describe('igzActionItem component:', function () {
             ngDialog = _ngDialog_;
         });
 
+        clickEvent = new Event('click');
         ngDialogSpy = spyOn(ngDialog, 'openConfirm').and.returnValue({
             then: function (thenCallback) {
                 thenCallback();
@@ -50,6 +52,7 @@ describe('igzActionItem component:', function () {
     afterEach(function () {
         $componentController = null;
         $rootScope = null;
+        clickEvent = null;
         ctrl = null;
         ngDialog = null;
         ngDialogSpy = null;
@@ -58,26 +61,26 @@ describe('igzActionItem component:', function () {
     describe('onClickAction()', function () {
         it('should just call action.handler if action.confirm is not defined', function () {
             var spy = spyOn(ctrl.action, 'handler');
-            ctrl.onClickAction();
+            ctrl.onClickAction(clickEvent);
             expect(spy).toHaveBeenCalled();
         });
 
         it('should show confirm dialog and then call action.handler if action.confirm is defined', function () {
             var spy = spyOn(ctrl.action, 'handler');
-            ctrl.onClickAction();
+            ctrl.onClickAction(clickEvent);
             expect(ngDialogSpy).toHaveBeenCalled();
             expect(spy).toHaveBeenCalled();
         });
 
         it('should show subtemplate if action.template is defined', function () {
             expect(ctrl.action.subTemplateProps.isShown).toBeFalsy();
-            ctrl.onClickAction();
+            ctrl.onClickAction(clickEvent);
             expect(ctrl.action.subTemplateProps.isShown).toBeTruthy();
         });
 
         it('should call action.callback if defined', function () {
             var spy = spyOn(ctrl.action, 'callback');
-            ctrl.onClickAction();
+            ctrl.onClickAction(clickEvent);
             expect(spy).toHaveBeenCalled();
         });
 
@@ -91,6 +94,12 @@ describe('igzActionItem component:', function () {
 
             expect(spyHandler).not.toHaveBeenCalled();
             expect(spyCallback).not.toHaveBeenCalled();
+        });
+
+        it('should call `event.stopPropagation` if action.active is `true`', function () {
+            var spy = spyOn(clickEvent, 'stopPropagation');
+            ctrl.onClickAction(clickEvent);
+            expect(spy).toHaveBeenCalled();
         });
     });
 });
