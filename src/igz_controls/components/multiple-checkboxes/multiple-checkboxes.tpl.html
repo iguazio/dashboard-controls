@@ -129,7 +129,8 @@
                 {{ 'common:CANCEL' | i18next }}
             </button>
             <button class="igz-button-primary small"
-                    data-ng-click="$ctrl.onApply($event)">
+                    data-ng-click="$ctrl.onApply($event)"
+                    data-ng-disabled="$ctrl.isApplyButtonDisabled">
                 {{ 'common:APPLY' | i18next }}
             </button>
         </div>

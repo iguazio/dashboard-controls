@@ -4,6 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .component('igzInfoPageFilters', {
             bindings: {
+                isDisabled: '<?',
                 isFiltersShowed: '<',
                 changeStateCallback: '&',
                 toggleMethod: '&',
