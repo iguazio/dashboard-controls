@@ -451,11 +451,14 @@
          */
         function pullFunctionState() {
             ctrl.isDeployResultShown = true;
+            lodash.set(ctrl.version, 'status.logs', []);
             setDeployResult('building');
 
             interval = $interval(function () {
                 ctrl.getFunction({ metadata: ctrl.version.metadata, projectID: lodash.get(ctrl.project, 'metadata.name') })
                     .then(function (response) {
+                        ctrl.version.status = response.status;
+
                         if (response.status.state === 'ready' || response.status.state === 'error') {
                             terminateInterval();
 
