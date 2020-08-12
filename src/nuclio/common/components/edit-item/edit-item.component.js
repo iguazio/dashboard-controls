@@ -870,7 +870,7 @@
                 '.actions-menu',
                 '.single-action',
                 '.ngdialog',
-                '.mCustomScrollBox'
+                '.mCSB_draggerContainer'
             ];
 
             return lodash.every(elementsForValidation, function (element) {
