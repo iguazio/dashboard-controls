@@ -870,7 +870,8 @@
                 '.actions-menu',
                 '.single-action',
                 '.ngdialog',
-                '.mCSB_draggerContainer'
+                '.mCSB_draggerContainer',
+                '.create-trigger-button'
             ];
 
             return lodash.every(elementsForValidation, function (element) {

@@ -31,7 +31,13 @@
             host: {
                 key: ValidationService.getValidationRules('k8s.dns1123Subdomain')
             },
-            itemName: ValidationService.getValidationRules('function.triggerName'),
+            itemName: ValidationService.getValidationRules('function.triggerName', [{
+                name: 'uniqueness',
+                label: $i18next.t('functions:UNIQUENESS', { lng: lng }),
+                pattern: function (value) {
+                    return lodash.filter(ctrl.triggers, ['name', value]).length <= 1;
+                }
+            }]),
             cronInterval: ValidationService.getValidationRules('function.interval', [{
                 name: 'scheduleIsEmpty',
                 label: $i18next.t('functions:TRIGGER_CRON_INTERVAL_NO_SCHEDULE', { lng: lng }),
@@ -56,6 +62,7 @@
         ctrl.createTrigger = createTrigger;
         ctrl.editTriggerCallback = editTriggerCallback;
         ctrl.handleAction = handleAction;
+        ctrl.isCreateNewTriggerEnabled = isCreateNewTriggerEnabled;
 
         //
         // Hook methods
@@ -95,18 +102,20 @@
         function onChanges(changes) {
             if (angular.isDefined(changes.version)) {
                 ctrl.triggers = lodash.map(ctrl.version.spec.triggers, function (value, key) {
-                    var triggersItem = angular.copy(value);
-                    triggersItem.id = key;
-                    triggersItem.name = key;
+                    var triggersItem = lodash.assign(lodash.cloneDeep(value), {
+                        id: key,
+                        name: key,
+                        ui: {
+                            changed: false,
+                            editModeActive: false,
+                            isFormValid: true,
+                            name: 'trigger'
+                        }
+                    });
 
-                    triggersItem.ui = {
-                        changed: false,
-                        editModeActive: false,
-                        isFormValid: true,
-                        name: 'trigger'
-                    };
-
-                    triggersItem.attributes = lodash.defaultTo(triggersItem.attributes, {});
+                    lodash.defaults(triggersItem, {
+                        attributes: {}
+                    });
 
                     if (value.kind === 'cron') {
                         var scheduleValueArray = lodash.chain(triggersItem)
@@ -161,7 +170,7 @@
          */
         function createTrigger(event) {
             $timeout(function () {
-                if (!isTriggerInEditMode()) {
+                if (ctrl.isCreateNewTriggerEnabled()) {
                     ctrl.triggers.push({
                         id: '',
                         name: '',
@@ -213,6 +222,19 @@
             });
 
             VersionHelperService.updateIsVersionChanged(ctrl.version);
+        }
+
+        /**
+         * Tests whether "Create new trigger" button is enabled.
+         * @returns {boolean} `true` in case "Create new trigger" button is enabled, or `false` otherwise.
+         */
+        function isCreateNewTriggerEnabled() {
+            return !lodash.some(ctrl.triggers, {
+                id: '',
+                ui: {
+                    editModeActive: true
+                }
+            });
         }
 
         //
@@ -328,14 +350,6 @@
             }
 
             checkClassUniqueness();
-        }
-
-        /**
-         * Check if trigger is in edit mode
-         * @returns {boolean}
-         */
-        function isTriggerInEditMode() {
-            return lodash.some(ctrl.triggers, ['ui.editModeActive', true]);
         }
 
         /**
