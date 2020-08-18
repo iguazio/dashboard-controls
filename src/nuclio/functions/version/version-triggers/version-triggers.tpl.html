@@ -22,7 +22,7 @@
             <div class="igz-scrollable-container"
                  data-ng-scrollbars
                  data-ng-scrollbars-config="$ctrl.scrollConfig">
-                <ncl-collapsing-row data-ng-repeat="trigger in $ctrl.triggers"
+                <ncl-collapsing-row data-ng-repeat="trigger in $ctrl.triggers track by trigger.name"
                                     data-item="trigger"
                                     data-type="trigger"
                                     data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)">
@@ -37,6 +37,7 @@
                     </ncl-edit-item>
                 </ncl-collapsing-row>
                 <div class="common-table-row create-trigger-button igz-create-button"
+                     data-ng-if="$ctrl.isCreateNewTriggerEnabled()"
                      data-ng-click="$ctrl.createTrigger($event)">
                     <span class="igz-icon-add-round"></span>
                     {{ 'functions:CREATE_NEW_TRIGGER' | i18next }}
