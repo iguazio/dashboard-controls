@@ -1,0 +1,30 @@
+<div class="override-function-dialog">
+    <div class="close-button igz-icon-close" data-ng-click="$ctrl.onClose()"></div>
+    <div class="title">
+        {{ 'functions:NAME_IN_USE' | i18next }}
+        <div class="sub-title">
+            {{ 'functions:YOU_CAN_VIEW_EXISTING_FUNCTION' | i18next }}
+        </div>
+    </div>
+    <div class="buttons">
+        <button class="ncl-secondary-button igz-button-secondary function-redirect-button"
+                data-test-id="functions.override_function_visit_function.button"
+                tabindex="0"
+                data-ng-click="$ctrl.openExistingFunction()">
+            {{ 'functions:GO_TO_EXISTING_FUNCTION' | i18next }}
+        </button>
+        <button class="ncl-secondary-button igz-button-just-text"
+                data-test-id="functions.override_function_cancel.button"
+                tabindex="1"
+                data-ng-click="$ctrl.onClose()"
+                data-ng-keydown="$ctrl.onClose($event)">
+            {{ 'common:CANCEL' | i18next }}
+        </button>
+        <button class="ncl-primary-button igz-button-primary"
+                data-test-id="functions.override_function_override.button"
+                tabindex="2"
+                data-ng-click="$ctrl.overrideFunction()">
+            {{ 'functions:OVERRIDE' | i18next }}
+        </button>
+    </div>
+</div>
