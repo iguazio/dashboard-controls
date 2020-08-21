@@ -4,13 +4,14 @@
     angular.module('iguazio.dashboard-controls')
         .factory('FunctionsService', FunctionsService);
 
-    function FunctionsService($i18next, i18next, lodash, ConfigService) {
+    function FunctionsService($i18next, i18next, lodash, ngDialog, ConfigService) {
         return {
             checkedItem: '',
             getClassesList: getClassesList,
             getHandler: getHandler,
             initFunctionActions: initFunctionActions,
-            initVersionActions: initVersionActions
+            initVersionActions: initVersionActions,
+            openOverrideFunctionDialog: openOverrideFunctionDialog
         };
 
         //
@@ -866,6 +867,27 @@
                     }
                 }
             ];
+        }
+
+        /**
+         * Opens `Override function` dialog
+         * @param {Object} project
+         * @param {Object} newFunction
+         * @param {Object} existingFunction
+         */
+        function openOverrideFunctionDialog(project, newFunction, existingFunction) {
+            ngDialog.open({
+                template: '<ncl-override-function-dialog data-close-dialog="closeThisDialog(status)"' +
+                    'data-project="ngDialogData.project" data-new-function="ngDialogData.newFunction"' +
+                    'data-existing-function="ngDialogData.existingFunction"></ncl-override-function-dialog>',
+                plain: true,
+                data: {
+                    project: project,
+                    newFunction: newFunction,
+                    existingFunction: existingFunction,
+                },
+                className: 'ngdialog-theme-nuclio'
+            });
         }
     }
 }());

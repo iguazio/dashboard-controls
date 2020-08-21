@@ -19,7 +19,7 @@
         });
 
     function FunctionFromTemplateController($element, $window, $scope, $state, $timeout, $i18next, i18next, lodash,
-                                            ngDialog, DialogsService, ValidationService) {
+                                            ngDialog, DialogsService, FunctionsService, ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
         var templatesOriginalObject = {}; // will always save original templates
@@ -292,9 +292,9 @@
             ctrl.toggleSplashScreen({value: true});
 
             ctrl.getFunction({metadata: {name: ctrl.functionName}})
-                .then(function () {
+                .then(function (existingFunction) {
                     ctrl.toggleSplashScreen({value: false});
-                    DialogsService.alert($i18next.t('functions:ERROR_MSG.FUNCTION_NAME_ALREADY_IN_USE', {lng: lng}))
+                    FunctionsService.openOverrideFunctionDialog(ctrl.project, ctrl.functionData.rendered, existingFunction);
                 })
                 .catch(function (error) {
                     if (error.status === 404) {
@@ -303,9 +303,9 @@
                         $state.go('app.project.function.edit.code', {
                             isNewFunction: true,
                             id: ctrl.project.metadata.name,
-                            functionId: ctrl.functionData.rendered.metadata.name,
                             projectId: ctrl.project.metadata.name,
                             projectNamespace: ctrl.project.metadata.namespace,
+                            functionId: ctrl.functionData.rendered.metadata.name,
                             functionData: ctrl.functionData.rendered
                         });
                     }

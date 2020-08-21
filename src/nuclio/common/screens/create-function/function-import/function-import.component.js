@@ -6,6 +6,7 @@
             bindings: {
                 project: '<',
                 projects: '<',
+                getFunction: '&',
                 toggleSplashScreen: '&',
                 createNewProject: '<',
                 selectedProject: '<'
@@ -15,7 +16,7 @@
         });
 
     function FunctionImportController($document, $rootScope, $scope, $state, $timeout, $i18next, i18next, YAML, lodash,
-                                      DialogsService, EventHelperService) {
+                                      DialogsService, EventHelperService, FunctionsService) {
         var ctrl = this;
 
         var importedFunction = null;
@@ -82,22 +83,33 @@
                     if (isYamlFile(file.name)) {
                         ctrl.toggleSplashScreen({ value: true });
 
-                        lodash.defaults(importedFunction, {
-                            metadata: {}
-                        });
+                        ctrl.getFunction({metadata: {name: importedFunction.metadata.name}})
+                            .then(function (existingFunction) {
+                                ctrl.toggleSplashScreen({value: false});
+                                FunctionsService.openOverrideFunctionDialog(ctrl.project, importedFunction, existingFunction);
+                            })
+                            .catch(function (error) {
+                                if (error.status === 404) {
+                                    ctrl.toggleSplashScreen({value: true});
 
-                        if (lodash.isEmpty(ctrl.project) && ctrl.selectedProject.id !== 'new_project') {
-                            ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
-                        }
+                                    lodash.defaults(importedFunction, {
+                                        metadata: {}
+                                    });
 
-                        $state.go('app.project.function.edit.code', {
-                            isNewFunction: true,
-                            id: ctrl.project.metadata.name,
-                            functionId: importedFunction.metadata.name,
-                            projectId: ctrl.project.metadata.name,
-                            projectNamespace: ctrl.project.metadata.namespace,
-                            functionData: importedFunction
-                        });
+                                    if (lodash.isEmpty(ctrl.project) && ctrl.selectedProject.id !== 'new_project') {
+                                        ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
+                                    }
+
+                                    $state.go('app.project.function.edit.code', {
+                                        isNewFunction: true,
+                                        id: ctrl.project.metadata.name,
+                                        projectId: ctrl.project.metadata.name,
+                                        projectNamespace: ctrl.project.metadata.namespace,
+                                        functionId: importedFunction.metadata.name,
+                                        functionData: importedFunction
+                                    });
+                                }
+                            })
                     }
                 }
             }, 100);
