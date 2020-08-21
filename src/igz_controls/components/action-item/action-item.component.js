@@ -80,9 +80,6 @@
          */
         function onClickAction(event) {
             if (ctrl.action.active) {
-                if (!lodash.isNil(ctrl.action.popupText)) {
-                    $rootScope.$broadcast('browse-action_change-loading-text', {textToDisplay: ctrl.action.popupText});
-                }
 
                 // shows confirmation dialog if action.confirm is true
                 if (lodash.isNonEmpty(ctrl.action.confirm)) {
