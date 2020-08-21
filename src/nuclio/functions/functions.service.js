@@ -698,6 +698,14 @@
                                 fieldType: 'input',
                                 isAdvanced: true,
                                 allowEmpty: true
+                            },
+                            {
+                                name: 'url',
+                                label: 'URL',
+                                type: 'input',
+                                fieldType: 'input',
+                                isAdvanced: true,
+                                allowEmpty: true
                             }
                         ]
                     },
