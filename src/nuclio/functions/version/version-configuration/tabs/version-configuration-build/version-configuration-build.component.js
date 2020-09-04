@@ -37,6 +37,7 @@
         };
         ctrl.disabled = true;
         ctrl.platformKindIsKube = false;
+        ctrl.onBuildImageDescription = '';
 
         ctrl.defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
         ctrl.imageNameValidationPattern = ValidationService.dockerReference;
@@ -63,6 +64,13 @@
          * Initialization method
          */
         function onInit() {
+            ctrl.onBuildImageDescription = $i18next.t('functions:ONBUILD_IMAGE_DESCRIPTION', {
+                interpolation: {
+                    prefix: '__',
+                    suffix: '__'
+                },
+                lng: lng
+            });
             ctrl.platformKindIsKube = lodash.get(ConfigService, 'nuclio.platformKind') === 'kube';
         }
 
