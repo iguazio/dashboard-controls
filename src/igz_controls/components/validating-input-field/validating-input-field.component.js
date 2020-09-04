@@ -150,7 +150,6 @@
         var fieldElement = {};
         var lastValidValue = '';
         var ngModel = null;
-        var showPopUpOnTop = false;
 
         ctrl.bordersModeClass = '';
         ctrl.data = '';
@@ -159,6 +158,7 @@
         ctrl.isValidationPopUpShown = false;
         ctrl.preventInputBlur = false;
         ctrl.selectedFieldType = FIELD_TYPES.INPUT;
+        ctrl.showPopUpOnTop = false;
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
@@ -170,11 +170,11 @@
         ctrl.hasInvalidRule = hasInvalidRule;
         ctrl.isCounterVisible = isCounterVisible;
         ctrl.isFieldInvalid = isFieldInvalid;
-        ctrl.isOverflowed = isOverflowed;
         ctrl.onBlur = onBlur;
         ctrl.onChange = onChange;
         ctrl.onFocus = onFocus;
         ctrl.onKeyDown = onKeyDown;
+        ctrl.toggleValidationPopUp = toggleValidationPopUp;
 
         //
         // Hook methods
@@ -232,8 +232,6 @@
          * Post linking method
          */
         function postLink() {
-            $document.on('click', handleValidationIconClick);
-
             $scope.$applyAsync(function () {
                 fieldElement = $element.find('.field');
                 ngModel = fieldElement.controller('ngModel');
@@ -297,7 +295,7 @@
          */
         function onDestroy() {
             angular.element($window).off('animationend');
-            $document.off('click', handleValidationIconClick);
+            $document.off('click', handleDocumentClick);
         }
 
         //
@@ -354,20 +352,6 @@
             return ctrl.onlyValidCharacters ? false :
                 (lodash.get(ctrl.formObject, '$submitted') || lodash.get(ngModel, '$dirty')) &&
                     lodash.get(ngModel, '$invalid');
-        }
-
-        /**
-         * Checks whether validation-rule pop-up has overflowed.
-         * @returns {boolean} `ture` in case of overflow, or `false` otherwise.
-         */
-        function isOverflowed() {
-            var popUp = $element.find('.validation-pop-up');
-
-            if (!showPopUpOnTop && ctrl.isValidationPopUpShown) {
-                showPopUpOnTop = $window.innerHeight - popUp.offset().top - popUp.outerHeight() < 0;
-            }
-
-            return showPopUpOnTop;
         }
 
         /**
@@ -451,6 +435,33 @@
             }
         }
 
+        /**
+         * Shows/hides the validation pop up.
+         */
+        function toggleValidationPopUp() {
+            if (!lodash.isEmpty(ctrl.validationRules)) {
+                var popUp = $element.find('.validation-pop-up');
+                ctrl.isValidationPopUpShown = !ctrl.isValidationPopUpShown;
+
+                if (ctrl.isValidationPopUpShown) {
+                    $document.on('click', handleDocumentClick);
+
+                    // in order for the calculation in the function of `$timeout` below to work, the pop up should first
+                    // be positioned downwards, then it will determine whether it does not have enough room there and
+                    // will move it upwards in that case.
+                    ctrl.showPopUpOnTop = false;
+
+                    $timeout(function () {
+                        fieldElement.focus();
+                        ctrl.inputFocused = true;
+                        ctrl.showPopUpOnTop = $window.innerHeight - popUp.offset().top - popUp.outerHeight() < 0;
+                    });
+                } else {
+                    $document.off('click', handleDocumentClick);
+                }
+            }
+        }
+
         //
         // Private methods
         //
@@ -472,45 +483,13 @@
          * Handles click on validation icon and show/hide validation pop-up.
          * @param {Event} event - The `click` event.
          */
-        function handleValidationIconClick(event) {
-            var popUp = $element.find('.validation-pop-up-wrapper');
-            if (event.target === $element.find('.validation-icon')[0]) {
-                if (!lodash.isEmpty(ctrl.validationRules)) {
-                    ctrl.isValidationPopUpShown = !ctrl.isValidationPopUpShown;
-
-                    $timeout(function () {
-                        fieldElement.focus();
-                        ctrl.inputFocused = true;
-                        popUp.css('height', popUp.outerHeight() > 0 ? popUp.outerHeight().toString() : 'auto');
-                    })
-                }
-            } else if (showPopUpOnTop && event.target === popUp[0] || $element.find(event.target).length === 0) {
-                // when `showPopUpOnTop` is `true`, the `.validation-pop-up-wrapper` stays with `position: fixed` below
-                // the input field, and only its child `.validation-pop-up` moves above the input field with
-                // `position: relative`.
-                // so clicking below the input field seems like clicking outside of it, but actually you might be
-                // clicking on this invisible wrapper that is nested in `$element`.
-                // that's why `showPopUpOnTop && event.target === popUp[0]` condition means the user intended to close
-                // the validation pop-up.
-                //
-                // ----------------------------
-                // |                          |
-                // |    .validation-pop-up    |
-                // |    position: relative    |
-                // ----------------------------
-                // ----------------------------
-                // |      .input-field        |
-                // ----------------------------
-                // ----------------------------
-                // |                          |  <-- clicking here means the pop-up should be closed
-                // |.validation-pop-up-wrapper|
-                // |     position: fixed      |
-                // ----------------------------
+        function handleDocumentClick(event) {
+            if ($element.find(event.target).length === 0) {
                 ctrl.isValidationPopUpShown = false;
             }
 
             if (!ctrl.isValidationPopUpShown) {
-                showPopUpOnTop = false;
+                $document.off('click', handleDocumentClick);
             }
         }
 

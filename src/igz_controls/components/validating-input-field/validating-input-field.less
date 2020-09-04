@@ -170,7 +170,8 @@
         z-index: 4;
 
         .validation-pop-up {
-            position: relative;
+            position: absolute;
+            width: 260px;
             border-radius: 3px;
             opacity: 1;
             box-shadow: @validation-pop-up-box-shadow;
@@ -181,12 +182,12 @@
                 opacity: 0;
             }
 
-            &.ng-hide-remove {
+            &.ng-hide-remove, &.ng-hide-add {
                 transition: opacity 0.1s ease-in;
             }
 
             &.validation-pop-up-top {
-                top: calc(-100% - 38px);
+                bottom: 38px;
             }
 
             &.validation-pop-up-bottom {
