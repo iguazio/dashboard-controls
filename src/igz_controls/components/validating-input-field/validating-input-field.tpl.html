@@ -4,6 +4,7 @@
         <div class="validation-icon"
              data-ng-if="$ctrl.validationRules.length > 0 && !$ctrl.readOnly && ($ctrl.inputFocused || $ctrl.isFieldInvalid())"
              data-ng-mousedown="$ctrl.preventInputBlur = true"
+             data-ng-click="$ctrl.toggleValidationPopUp()"
              data-ng-class="[$ctrl.inputFocused ? '' : $ctrl.bordersModeClass, {
                  'igz-icon-verify-info': $ctrl.inputIsTouched && $ctrl.data === '',
                  'igz-icon-verify-error': $ctrl.hasInvalidRule() && $ctrl.data !== '',
@@ -53,7 +54,7 @@
         <div class="validation-pop-up-wrapper">
             <div class="validation-pop-up"
                  data-ng-show="$ctrl.isValidationPopUpShown"
-                 data-ng-class="$ctrl.isOverflowed() ? 'validation-pop-up-top' : 'validation-pop-up-bottom'">
+                 data-ng-class="$ctrl.showPopUpOnTop ? 'validation-pop-up-top' : 'validation-pop-up-bottom'">
                 <div class="validation-rule"
                      data-ng-repeat="rule in $ctrl.validationRules">
                     <span class="validation-rule-icon"
@@ -96,6 +97,7 @@
         <div class="validation-icon"
              data-ng-if="$ctrl.validationRules.length > 0 && !$ctrl.readOnly && ($ctrl.inputFocused || $ctrl.isFieldInvalid())"
              data-ng-mousedown="$ctrl.preventInputBlur = true"
+             data-ng-click="$ctrl.toggleValidationPopUp()"
              data-ng-class="[$ctrl.inputFocused ? '' : $ctrl.bordersModeClass, {
                  'igz-icon-verify-info': $ctrl.inputIsTouched && $ctrl.data === '',
                  'igz-icon-verify-error': $ctrl.hasInvalidRule() && $ctrl.data !== '',
@@ -136,8 +138,9 @@
         <span data-ng-if="$ctrl.inputIcon" class="input-icon {{$ctrl.inputIcon}}"></span>
 
         <div class="validation-pop-up-wrapper">
-            <div class="validation-pop-up validation-pop-up-top"
-                 data-ng-show="$ctrl.isValidationPopUpShown">
+            <div class="validation-pop-up"
+                 data-ng-show="$ctrl.isValidationPopUpShown"
+                 data-ng-class="$ctrl.showPopUpOnTop ? 'validation-pop-up-top' : 'validation-pop-up-bottom'">
                 <div class="validation-rule"
                      data-ng-repeat="rule in $ctrl.validationRules">
                     <span class="validation-rule-icon"
