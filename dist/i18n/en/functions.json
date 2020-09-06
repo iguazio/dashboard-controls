@@ -154,7 +154,7 @@
     "NOT_START_WITH_FORBIDDEN_WORDS": "Must not start with 'kubernetes.io' or 'k8s.io'",
     "NOT_YET_DEPLOYED": "Not yet deployed",
     "ONBUILD_IMAGE": "Onbuild image",
-    "ONBUILD_IMAGE_DESCRIPTION": "The name of an \"onbuild\" container image from which to build the function's processor image; the name can include {\\{ .Label }} and {\\{ .Arch }} for formatting",
+    "ONBUILD_IMAGE_DESCRIPTION": "The name of an \"onbuild\" container image from which to build the function's processor image; the name can include {{ .Label }} and {{ .Arch }} for formatting",
     "OVERRIDE": "Override",
     "PATH_DESCRIPTION": "A relative directory path within the data container",
     "PERSISTENT_VOLUME_CLAIM_NAME": "Persistent Volume Claim Name",
