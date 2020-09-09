@@ -33,7 +33,6 @@
          */
         function onInit() {
             $scope.$on('splash-screen_show-error', showError);
-            $scope.$on('browse-action_change-loading-text', changeLoadingText);
         }
 
         //
@@ -53,16 +52,6 @@
         //
         // Private methods
         //
-
-        /**
-         * Changes displayed text on loading spinner
-         * @param {Object} event - broadcast event
-         * @param {Object} data - broadcast data with text to be displayed
-         */
-        function changeLoadingText(event, data) {
-            ctrl.textToDisplay = data.textToDisplay;
-        }
-
 
         /**
          * Shows error text
