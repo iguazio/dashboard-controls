@@ -123,6 +123,13 @@
                     pattern: new RegExp('[' + convertToPattern(chars) + ']$')
                 };
             },
+            endNotWith: function (chars) {
+                return {
+                    name: 'endNot',
+                    label: $i18next.t('common:END_NOT_WITH', {lng: lng}) + ': ' + convertToLabel(chars),
+                    pattern: new RegExp('[^' + convertToPattern(chars) + ']$')
+                };
+            },
             beginEndWith: function (chars) {
                 var convertedPattern = convertToPattern(chars);
 
@@ -370,7 +377,8 @@
                 },
                 persistentVolumeClaims: {
                     value: [generateRule.length({max: lengths.service.persistentVolumeClaims.value})]
-                }
+                },
+                hiveMetastorePath: [generateRule.endNotWith('/')]
             },
             container: {
                 name: [
