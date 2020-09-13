@@ -118,6 +118,7 @@
     "ENABLE": "Enable",
     "ENABLED": "Enabled",
     "ENCRYPTION": "Encryption",
+    "END_NOT_WITH": "Must not end with",
     "END_TIME": "End time",
     "END_WITH": "Must end with",
     "ENVIRONMENT_VARIABLES": "Environment Variables",
