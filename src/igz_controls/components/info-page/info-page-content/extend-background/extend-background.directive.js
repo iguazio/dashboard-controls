@@ -39,16 +39,19 @@
              */
             function elementMinHeight() {
                 var container = angular.element(containerPath);
-                var containerBox = container[0].getBoundingClientRect();
-                var paddingBottom = parseInt(container.css('padding-bottom'), 10);
-                var box = element[0].getBoundingClientRect();
 
-                if (containerBox.height === 0) {
-                    element.css('height', '100%');
-                    element.css('padding-bottom', '45px');
-                } else {
-                    element.css('padding-bottom', '0');
-                    element.css('height', (containerBox.bottom + paddingBottom - box.top) + 'px');
+                if (angular.isDefined(container[0])) {
+                    var containerBox = container[0].getBoundingClientRect();
+                    var paddingBottom = parseInt(container.css('padding-bottom'), 10);
+                    var box = element[0].getBoundingClientRect();
+
+                    if (containerBox.height === 0) {
+                        element.css('height', '100%');
+                        element.css('padding-bottom', '45px');
+                    } else {
+                        element.css('padding-bottom', '0');
+                        element.css('height', (containerBox.bottom + paddingBottom - box.top) + 'px');
+                    }
                 }
             }
         }
