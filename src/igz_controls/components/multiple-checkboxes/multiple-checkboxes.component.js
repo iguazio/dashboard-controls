@@ -526,12 +526,17 @@
          */
         function updateOptionsState() {
             if (ctrl.groups) {
-                lodash.forEach(ctrl.optionList, function (group, name) {
-                    var viewValue = lodash.get(ctrl.ngModelCtrl.$viewValue, name, []);
+                lodash.forEach(ctrl.optionList, function (group, key) {
+                    var viewValue = lodash.get(ctrl.ngModelCtrl.$viewValue, key, []);
 
                     lodash.forEach(group.options, function (option) {
                         option.checked = group.allItemsChecked ? true : lodash.includes(viewValue, option.value);
                     });
+
+                    var checkedItems = lodash.filter(group.options, 'checked');
+
+                    group.allItemsChecked = checkedItems.length === group.options.length;
+                    lodash.set(ctrl.optionList, key + '.itemsChecked', checkedItems.length);
                 });
             } else {
                 lodash.forEach(ctrl.optionList, function (option) {
