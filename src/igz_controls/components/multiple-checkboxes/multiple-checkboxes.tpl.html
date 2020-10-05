@@ -99,7 +99,7 @@
                      data-ng-click="$ctrl.onCheckAllItems($event)">
                 </div>
             </div>
-            <ul data-ng-if="!$ctrl.groups && !$ctrl.gropdown"
+            <ul data-ng-if="!$ctrl.groups"
                 class="checkboxes-list checkboxes-regular-list">
                 <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in $ctrl.optionList track by $index">
                     <input class="multiple-checkboxes-option-input"
