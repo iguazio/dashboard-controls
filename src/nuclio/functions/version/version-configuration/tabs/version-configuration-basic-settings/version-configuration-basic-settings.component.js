@@ -97,16 +97,19 @@
                 if (ctrl.basicSettingsForm.$valid) {
                     if (lodash.includes(field, 'timeout')) {
                         lodash.set(ctrl.version, 'spec.timeoutSeconds', ctrl.timeout.min * 60 + ctrl.timeout.sec);
+                    } else if (lodash.startsWith(field, 'spec.securityContext.') && newData === '') {
+                        lodash.unset(ctrl.version, field);
                     } else {
                         lodash.set(ctrl.version, field, newData);
                     }
 
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'settings', isDisabled: false});
-
                     ctrl.onChangeCallback();
-                } else {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'settings', isDisabled: true});
                 }
+
+                $rootScope.$broadcast('change-state-deploy-button', {
+                    component: 'settings',
+                    isDisabled: !ctrl.basicSettingsForm.$valid
+                });
             });
         }
 
