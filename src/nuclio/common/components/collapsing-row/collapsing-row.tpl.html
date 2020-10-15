@@ -11,8 +11,17 @@
         <div data-ng-show="!$ctrl.item.ui.editModeActive" class="igz-row common-table-cells-container item-row">
 
             <!-- Name -->
-            <div class="text-ellipsis item-name" data-ng-if="!$ctrl.isNil($ctrl.item.name)">
-                {{$ctrl.item.name}}
+            <div class="item-name" data-ng-if="!$ctrl.isNil($ctrl.item.name)">
+                <div class="text-ellipsis" >
+                    {{$ctrl.item.name}}
+                </div>
+                <igz-more-info data-ng-if="$ctrl.item.ui.moreInfoMsg.name"
+                               data-trigger="click"
+                               data-is-html-enabled="true"
+                               data-is-open="$ctrl.item.ui.moreInfoMsg.name.isOpen"
+                               data-icon-type="{{$ctrl.item.ui.moreInfoMsg.name.type}}"
+                               data-description="{{$ctrl.item.ui.moreInfoMsg.name.description}}">
+                </igz-more-info>
             </div>
             <div class="text-ellipsis item-name" data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.name)">
                 {{ $ctrl.item.volumeMount.name }}

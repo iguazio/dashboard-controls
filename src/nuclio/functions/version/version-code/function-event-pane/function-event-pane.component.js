@@ -152,7 +152,6 @@
         ctrl.deleteEvent = deleteEvent;
         ctrl.deleteFile = deleteFile;
         ctrl.fixLeftBar = fixLeftBar;
-        ctrl.getInvocationUrl = getInvocationUrl;
         ctrl.getMethodColor = getMethodColor;
         ctrl.handleAction = handleAction;
         ctrl.inputValueCallback = inputValueCallback;
@@ -352,23 +351,6 @@
          */
         function fixLeftBar() {
             ctrl.fixedLeftBar = true;
-        }
-
-        /**
-         * Gets invocation url
-         * @returns {string}
-         */
-        function getInvocationUrl() {
-            var status = lodash.get(ctrl.version, 'status', {});
-
-            if (lodash.toFinite(status.httpPort) === 0 || !lodash.includes(['ready', 'scaledToZero'], status.state)) {
-                status.httpPort = null;
-            }
-
-            setInvocationUrl(ConfigService.nuclio.externalIPAddress, status.httpPort);
-
-            return lodash.isNull(status.httpPort) ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
-                                                    lodash.trimEnd(ctrl.version.ui.invocationUrl, '/') + '/';
         }
 
         /**
@@ -916,16 +898,6 @@
 
             localStorage.setItem('test-events', angular.toJson(updatedHistory));
             updateHistory();
-        }
-
-        /**
-         * Sets the invocation URL of the function
-         * @param {string} ip - external IP address
-         * @param {number} port - HTTP port
-         */
-        function setInvocationUrl(ip, port) {
-            ctrl.version.ui.invocationUrl =
-                lodash.isEmpty(ip) || lodash.toFinite(port) === 0 ? '' : 'http://' + ip + ':' + port;
         }
 
         /**

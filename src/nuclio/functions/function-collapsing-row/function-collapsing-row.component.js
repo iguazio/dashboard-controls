@@ -21,7 +21,8 @@
 
     function NclFunctionCollapsingRowController($interval, $state, $i18next, i18next, lodash, ngDialog,
                                                 ActionCheckboxAllService, ConfigService, DialogsService,
-                                                ExportService, FunctionsService, NuclioHeaderService, TableSizeService) {
+                                                ExportService, FunctionsService, NuclioHeaderService, TableSizeService,
+                                                VersionHelperService) {
         var ctrl = this;
 
         var apiGateways = [];
@@ -129,19 +130,11 @@
          * @param {Object} changes
          */
         function onChanges(changes) {
-            var httpPort = lodash.get(ctrl.function, 'status.httpPort', 0);
             if (lodash.has(changes, 'function')) {
-                var externalAddress = ConfigService.nuclio.externalIPAddress;
-
                 convertStatusState();
                 setStatusIcon();
 
-                ctrl.invocationUrl = {
-                    text: lodash.isEmpty(externalAddress) ? $i18next.t('common:N_A', {lng: lng})                 :
-                          lodash.toFinite(httpPort) === 0 ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
-                                                            'http://' + externalAddress + ':' + httpPort,
-                    valid: !lodash.isEmpty(externalAddress) && lodash.toFinite(httpPort) !== 0
-                };
+                ctrl.invocationUrl = VersionHelperService.getInvocationUrl(ctrl.function);
             }
         }
 
