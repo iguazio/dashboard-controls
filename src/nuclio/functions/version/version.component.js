@@ -384,7 +384,7 @@
                 })
                 .finally(function () {
                     ctrl.isSplashShowed.value = false;
-                })
+                });
         }
 
         /**

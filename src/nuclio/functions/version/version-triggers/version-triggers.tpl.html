@@ -1,5 +1,8 @@
 <div class="ncl-version-trigger ncl-version">
     <div class="common-table">
+        <div class="content-message-pane"
+             data-ng-if="$ctrl.isHttpTriggerMsgShown()" ng-i18next="[html]functions:HTTP_TRIGGER_MSG">
+        </div>
         <div class="common-table-header header-row">
             <div class="common-table-cell header-name">
                 {{ 'common:NAME' | i18next }}
@@ -14,9 +17,6 @@
         <div class="content-message-pane"
              data-ng-if="$ctrl.triggers.length === 0">
             {{ 'functions:TRIGGERS_NOT_FOUND' | i18next }}
-        </div>
-        <div class="content-message-pane"
-             data-ng-if="$ctrl.isHttpTriggerMsgShown()" ng-i18next="[html]functions:HTTP_TRIGGER_MSG">
         </div>
 
         <div class="common-table-body" data-igz-extend-background>

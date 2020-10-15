@@ -148,7 +148,7 @@
                     .value();
             }
 
-            updateNameValidationRules()
+            updateNameValidationRules();
 
             if (ctrl.isTriggerType() && ctrl.isKafkaTrigger()) {
                 lodash.defaultsDeep(ctrl.item.attributes, {
@@ -259,14 +259,12 @@
                         name: 'mustNotBe',
                         label: $i18next.t('common:MUST_NOT_BE', {lng: lng}) + ': default-http',
                         pattern: function (value) {
-                            return value !== 'default-http'
+                            return value !== 'default-http';
                         }
-                    })
+                    });
                 }
             } else {
-                lodash.remove(ctrl.validationRules.itemName, function (rule) {
-                    return rule.name === 'mustNotBe'
-                })
+                lodash.remove(ctrl.validationRules.itemName, ['name', 'mustNotBe']);
             }
         }
 
@@ -556,7 +554,7 @@
                 return lodash.defaultTo(field.visible, true) &&
                     lodash.includes(['input', 'dropdown', 'number-input', 'arrayInt'], field.type) &&
                     (showAdvanced ? field.isAdvanced : !field.isAdvanced);
-            }
+            };
         }
 
         /**
@@ -786,7 +784,7 @@
             }
 
             if (lodash.isFunction(ctrl.onSelectClassCallback)) {
-                ctrl.onSelectClassCallback()
+                ctrl.onSelectClassCallback();
             }
 
             setAdvancedVisibility();
@@ -850,7 +848,7 @@
                                 .value();
 
                             if (isAdvancedInvalid) {
-                                ctrl.isAdvancedCollapsed = false
+                                ctrl.isAdvancedCollapsed = false;
                             }
                         }
 
@@ -899,8 +897,8 @@
 
             return lodash.every(elementsForValidation, function (element) {
                 return element === '.mCustomScrollBox' && event.target.closest('.row-collapse') ||
-                    !event.target.closest(element)
-            })
+                    !event.target.closest(element);
+            });
         }
 
         /**
@@ -937,7 +935,7 @@
          * @param {{event: MouseEvent|KeyboardEvent}} data - broadcast data with DOM event
          */
         function onFunctionDeploy(event, data) {
-            ctrl.onSubmitForm(data.event)
+            ctrl.onSubmitForm(data.event);
         }
 
         /**

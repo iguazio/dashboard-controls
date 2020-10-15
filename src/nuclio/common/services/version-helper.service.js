@@ -30,13 +30,13 @@
                     return {
                         text: ingresses[0].host,
                         valid: true
-                    }
+                    };
                 }
 
                 var serviceType = lodash.get(httpTrigger, 'attributes.serviceType', null);
                 var state = lodash.get(version, 'status.state', null);
                 var disable = lodash.get(version, 'spec.disable', false);
-                var httpPort = lodash.get(version, 'status.httpPort', null)
+                var httpPort = lodash.get(version, 'status.httpPort', null);
                 var externalIPAddress = ConfigService.nuclio.externalIPAddress;
 
                 if (serviceType === 'NodePort' &&
@@ -48,7 +48,7 @@
                     return {
                         text: 'http://' + externalIPAddress + ':' + httpPort,
                         valid: true
-                    }
+                    };
 
                 }
             }
@@ -56,7 +56,7 @@
             return {
                 text: 'URL not exposed',
                 valid: false
-            }
+            };
         }
 
         /**

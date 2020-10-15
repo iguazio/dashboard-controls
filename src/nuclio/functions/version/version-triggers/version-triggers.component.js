@@ -122,18 +122,18 @@
          * Adds default HTTP trigger to the trigger list
          */
         function addDefaultHttpTrigger() {
-            var defaultTriggers = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes.spec.triggers')
-            var defaultHttpTrigger = lodash.find(defaultTriggers, ['kind', 'http'])
+            var defaultTriggers = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes.spec.triggers');
+            var defaultHttpTrigger = angular.copy(lodash.find(defaultTriggers, ['kind', 'http']));
 
             if (!lodash.isEmpty(defaultHttpTrigger)) {
-                var triggers = lodash.get(ctrl.version, 'spec.triggers', {})
-                var triggerItem = createTriggerItem(defaultHttpTrigger)
-                triggers[defaultHttpTrigger.name] = defaultHttpTrigger
+                var triggers = lodash.get(ctrl.version, 'spec.triggers', {});
+                var triggerItem = createTriggerItem(defaultHttpTrigger);
+                triggers[defaultHttpTrigger.name] = defaultHttpTrigger;
 
                 lodash.set(ctrl.version, 'spec.triggers', triggers);
-                ctrl.triggers.push(triggerItem)
+                ctrl.triggers.push(triggerItem);
 
-                updateTriggerInfoMsg(triggerItem, true)
+                updateTriggerInfoMsg(triggerItem, true);
                 checkClassUniqueness();
             }
         }
@@ -152,7 +152,7 @@
                         classData.tooltipOriginal,
                     disabled: classIsUsed
                 });
-            })
+            });
         }
 
         /**
@@ -222,9 +222,8 @@
          * @returns {boolean} `true` in case "HTTP trigger message" is shown, or `false` otherwise.
          */
         function isHttpTriggerMsgShown() {
-            var httpTrigger = lodash.find(ctrl.version.spec.triggers, ['kind', 'http'])
-
-            return lodash.isNil(httpTrigger)
+            var httpTrigger = lodash.find(ctrl.version.spec.triggers, ['kind', 'http']);
+            return lodash.isNil(httpTrigger);
         }
 
         //
@@ -233,27 +232,28 @@
 
         /**
          * Creates the new trigger item
-         * @param {Object} [trigger] - trigger data from `ctrl.version`
+         * @param {Object} [trigger] - trigger object
          * @returns {Object} - trigger item
          */
         function createTriggerItem(trigger) {
-            var triggerItem = lodash.assign(trigger ? trigger : {}, {
-                id: trigger ? trigger.name : '',
-                name: trigger ? trigger.name : '',
-                kind: trigger ? trigger.kind : '',
+            var noTriggerProvided = lodash.isNil(trigger);
+            var triggerItem = lodash.assign({}, noTriggerProvided ? {} : trigger, {
+                id: noTriggerProvided ? '' : trigger.name,
+                name: noTriggerProvided ? '' : trigger.name,
+                kind: noTriggerProvided ? '' : trigger.kind,
                 ui: {
-                    changed: lodash.isNil(trigger),
-                    editModeActive: lodash.isNil(trigger),
-                    isFormValid: !lodash.isNil(trigger),
+                    changed: noTriggerProvided,
+                    editModeActive: noTriggerProvided,
+                    isFormValid: !noTriggerProvided,
                     name: 'trigger',
-                    selectedClass: trigger ? lodash.find(ctrl.classList, ['id', trigger.kind]) : ''
+                    selectedClass: noTriggerProvided ? '' : lodash.find(ctrl.classList, ['id', trigger.kind])
                 }
-            })
+            });
 
-            if (!trigger) {
+            if (noTriggerProvided) {
                 lodash.merge(triggerItem, {
                     attributes: {},
-                })
+                });
             }
 
             return triggerItem;
@@ -271,7 +271,7 @@
 
             $timeout(function () {
                 $rootScope.$broadcast('igzWatchWindowResize::resize');
-            })
+            });
         }
 
         /**
@@ -386,9 +386,9 @@
                         type: trigger.name === 'default-http' ? 'warn' : 'info',
                         description: $i18next.t('functions:HTTP_TRIGGER_NAME_DESCRIPTION', {lng: lng})
                     }
-                })
+                });
             } else {
-                lodash.unset(trigger, 'ui.moreInfoMsg')
+                lodash.unset(trigger, 'ui.moreInfoMsg');
             }
         }
 
