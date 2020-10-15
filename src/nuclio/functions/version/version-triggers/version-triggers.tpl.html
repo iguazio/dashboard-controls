@@ -11,11 +11,12 @@
                 {{ 'common:INFO' | i18next }}
             </div>
         </div>
-        <div class="search-input-not-found"
+        <div class="content-message-pane"
              data-ng-if="$ctrl.triggers.length === 0">
-            <div class="search-message">
-                {{ 'functions:TRIGGERS_NOT_FOUND' | i18next }}
-            </div>
+            {{ 'functions:TRIGGERS_NOT_FOUND' | i18next }}
+        </div>
+        <div class="content-message-pane"
+             data-ng-if="$ctrl.isHttpTriggerMsgShown()" ng-i18next="[html]functions:HTTP_TRIGGER_MSG">
         </div>
 
         <div class="common-table-body" data-igz-extend-background>

@@ -4,15 +4,60 @@
     angular.module('iguazio.dashboard-controls')
         .factory('VersionHelperService', VersionHelperService);
 
-    function VersionHelperService(lodash) {
+    function VersionHelperService(lodash, ConfigService) {
         return {
             isVersionDeployed: isVersionDeployed,
-            updateIsVersionChanged: updateIsVersionChanged
+            updateIsVersionChanged: updateIsVersionChanged,
+            getInvocationUrl: getInvocationUrl
         };
 
         //
         // Public methods
         //
+
+        /**
+         * Get correct invocation url otherwise returns `URL not exposed` message
+         * @param {Object} version
+         * @returns {{text: string, valid: boolean}} URL invocation data
+         */
+        function getInvocationUrl(version) {
+            var httpTrigger = lodash.find(version.spec.triggers, ['kind', 'http']);
+
+            if (!lodash.isNil(httpTrigger)) {
+                var ingresses = lodash.get(httpTrigger, 'attributes.ingresses', null)
+
+                if (!lodash.isEmpty(ingresses)) {
+                    return {
+                        text: ingresses[0].host,
+                        valid: true
+                    }
+                }
+
+                var serviceType = lodash.get(httpTrigger, 'attributes.serviceType', null);
+                var state = lodash.get(version, 'status.state', null);
+                var disable = lodash.get(version, 'spec.disable', false);
+                var httpPort = lodash.get(version, 'status.httpPort', null)
+                var externalIPAddress = ConfigService.nuclio.externalIPAddress;
+
+                if (serviceType === 'NodePort' &&
+                    state === 'ready'          &&
+                    disable === false          &&
+                    !lodash.isNil(httpPort)    &&
+                    httpPort !== 0             &&
+                    !lodash.isEmpty(externalIPAddress)) {
+                    return {
+                        text: 'http://' + externalIPAddress + ':' + httpPort,
+                        valid: true
+                    }
+
+                }
+            }
+
+            return {
+                text: 'URL not exposed',
+                valid: false
+            }
+        }
 
         /**
          * Tests whether the version is deployed.

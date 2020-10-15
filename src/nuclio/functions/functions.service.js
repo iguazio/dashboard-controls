@@ -467,6 +467,25 @@
                                 allowEmpty: true
                             },
                             {
+                                name: 'serviceType',
+                                values: [
+                                    {
+                                        id: 'ClusterIP',
+                                        name: 'Cluster IP',
+                                        visible: true
+                                    },
+                                    {
+                                        id: 'NodePort',
+                                        name: 'Node Port',
+                                        visible: true
+                                    }
+                                ],
+                                path: 'attributes.serviceType',
+                                type: 'dropdown',
+                                allowEmpty: true,
+                                isAdvanced: true
+                            },
+                            {
                                 name: 'annotations',
                                 type: 'key-value'
                             }

@@ -8,25 +8,20 @@
                     <span class="monitoring-block-title">
                         {{ 'functions:INVOCATION_URL' | i18next }}:
                     </span>
-                    <div class="monitoring-invocation-url-wrapper"
-                         data-ng-if="($ctrl.version.status.state === 'ready' || $ctrl.version.status.state === 'scaledToZero') && $ctrl.version.ui.invocationUrl !== ''">
+                    <div class="monitoring-invocation-url-wrapper" data-ng-if="$ctrl.version.ui.invocationUrl.valid">
                         <a class="monitoring-invocation-url"
-                           href="{{$ctrl.version.ui.invocationUrl}}">
-                            {{$ctrl.version.ui.invocationUrl}}
+                           href="{{$ctrl.version.ui.invocationUrl.text}}">
+                            {{$ctrl.version.ui.invocationUrl.text}}
                         </a>
                         <div class="igz-action-panel">
                             <div class="actions-list">
-                                <igz-copy-to-clipboard data-value="$ctrl.version.ui.invocationUrl"></igz-copy-to-clipboard>
+                                <igz-copy-to-clipboard data-value="$ctrl.version.ui.invocationUrl.text"></igz-copy-to-clipboard>
                             </div>
                         </div>
                     </div>
-                    <span data-ng-if="($ctrl.version.status.state === 'ready' || $ctrl.version.status.state === 'scaledToZero') && $ctrl.version.ui.invocationUrl === ''"
+                    <span data-ng-if="!$ctrl.version.ui.invocationUrl.valid"
                           class="monitoring-invocation-field-invalid">
-                        {{ 'common:N_A' | i18next }}
-                    </span>
-                    <span data-ng-if="$ctrl.version.status.state !== 'ready' && $ctrl.version.status.state !== 'scaledToZero'"
-                          class="monitoring-invocation-field-invalid">
-                        {{ 'functions:NOT_YET_DEPLOYED' | i18next }}
+                            {{$ctrl.version.ui.invocationUrl.text}}
                     </span>
                 </div>
                 <div class="monitoring-block"

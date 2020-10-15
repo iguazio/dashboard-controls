@@ -90,6 +90,8 @@
          */
         // eslint-disable-next-line
         function onInit() {
+            ctrl.validationRules = angular.copy(ctrl.validationRules);
+
             lodash.defaults(ctrl, {
                 classPlaceholder: $i18next.t('functions:PLACEHOLDER.SELECT_CLASS', { lng: lng })
             });
@@ -145,6 +147,8 @@
                     })
                     .value();
             }
+
+            updateNameValidationRules()
 
             if (ctrl.isTriggerType() && ctrl.isKafkaTrigger()) {
                 lodash.defaultsDeep(ctrl.item.attributes, {
@@ -246,6 +250,24 @@
             setAdvancedVisibility();
 
             $scope.$on('deploy-function-version', onFunctionDeploy);
+        }
+
+        function updateNameValidationRules() {
+            if (ctrl.isTriggerType() && !lodash.isEmpty(ctrl.selectedClass) && !ctrl.isHttpTrigger()) {
+                if (!lodash.find(ctrl.validationRules.itemName, ['name', 'mustNotBe'])) {
+                    ctrl.validationRules.itemName.push({
+                        name: 'mustNotBe',
+                        label: $i18next.t('common:MUST_NOT_BE', {lng: lng}) + ': default-http',
+                        pattern: function (value) {
+                            return value !== 'default-http'
+                        }
+                    })
+                }
+            } else {
+                lodash.remove(ctrl.validationRules.itemName, function (rule) {
+                    return rule.name === 'mustNotBe'
+                })
+            }
         }
 
         /**
@@ -769,6 +791,7 @@
 
             setAdvancedVisibility();
             updateChangesState();
+            updateNameValidationRules();
         }
 
         /**

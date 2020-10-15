@@ -526,11 +526,7 @@
          * Sets the invocation URL of the function
          */
         function setInvocationUrl() {
-            var ip = ConfigService.nuclio.externalIPAddress;
-            var port = lodash.get(ctrl.version, 'status.httpPort');
-
-            ctrl.version.ui.invocationUrl =
-                lodash.isEmpty(ip) || lodash.toFinite(port) === 0 ? '' : 'http://' + ip + ':' + port;
+            ctrl.version.ui.invocationUrl = VersionHelperService.getInvocationUrl(ctrl.version);
         }
 
         /**

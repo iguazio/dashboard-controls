@@ -287,6 +287,10 @@
 
             if (angular.isDefined(changes.validationRules)) {
                 ctrl.validationRules = angular.copy(lodash.defaultTo(changes.validationRules.currentValue, []));
+
+                if (ctrl.data !== '') {
+                    ngModel.$validate();
+                }
             }
         }
 

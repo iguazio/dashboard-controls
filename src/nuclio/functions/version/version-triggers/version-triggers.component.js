@@ -11,8 +11,8 @@
             controller: NclVersionTriggersController
         });
 
-    function NclVersionTriggersController($i18next, $rootScope, $scope, $timeout, i18next, lodash, DialogsService,
-                                          FunctionsService, ValidationService, VersionHelperService) {
+    function NclVersionTriggersController($i18next, $rootScope, $scope, $timeout, i18next, lodash, ConfigService,
+                                          DialogsService, FunctionsService, ValidationService, VersionHelperService) {
         var ctrl = this;
         var lng = i18next.language;
         var uniqueClasses = ['http'];
@@ -58,11 +58,13 @@
         ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
 
+        ctrl.addDefaultHttpTrigger = addDefaultHttpTrigger;
         ctrl.checkClassUniqueness = checkClassUniqueness;
         ctrl.createTrigger = createTrigger;
         ctrl.editTriggerCallback = editTriggerCallback;
         ctrl.handleAction = handleAction;
         ctrl.isCreateNewTriggerEnabled = isCreateNewTriggerEnabled;
+        ctrl.isHttpTriggerMsgShown = isHttpTriggerMsgShown;
 
         //
         // Hook methods
@@ -101,38 +103,7 @@
          */
         function onChanges(changes) {
             if (angular.isDefined(changes.version)) {
-                ctrl.triggers = lodash.map(ctrl.version.spec.triggers, function (value, key) {
-                    var triggersItem = lodash.assign(lodash.cloneDeep(value), {
-                        id: key,
-                        name: key,
-                        ui: {
-                            changed: false,
-                            editModeActive: false,
-                            isFormValid: true,
-                            name: 'trigger'
-                        }
-                    });
-
-                    lodash.defaults(triggersItem, {
-                        attributes: {}
-                    });
-
-                    if (value.kind === 'cron') {
-                        var scheduleValueArray = lodash.chain(triggersItem)
-                            .get('attributes.schedule', '')
-                            .split(' ')
-                            .value();
-
-                        if (scheduleValueArray.length === 6) {
-                            triggersItem.attributes.schedule = lodash.chain(scheduleValueArray)
-                                .takeRight(5)
-                                .join(' ')
-                                .value();
-                        }
-                    }
-
-                    return triggersItem;
-                });
+                updateTriggerList();
             }
         }
 
@@ -146,6 +117,26 @@
         //
         // Public methods
         //
+
+        /**
+         * Adds default HTTP trigger to the trigger list
+         */
+        function addDefaultHttpTrigger() {
+            var defaultTriggers = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes.spec.triggers')
+            var defaultHttpTrigger = lodash.find(defaultTriggers, ['kind', 'http'])
+
+            if (!lodash.isEmpty(defaultHttpTrigger)) {
+                var triggers = lodash.get(ctrl.version, 'spec.triggers', {})
+                var triggerItem = createTriggerItem(defaultHttpTrigger)
+                triggers[defaultHttpTrigger.name] = defaultHttpTrigger
+
+                lodash.set(ctrl.version, 'spec.triggers', triggers);
+                ctrl.triggers.push(triggerItem)
+
+                updateTriggerInfoMsg(triggerItem, true)
+                checkClassUniqueness();
+            }
+        }
 
         /**
          * Checks if classes should be disabled
@@ -171,18 +162,7 @@
         function createTrigger(event) {
             $timeout(function () {
                 if (ctrl.isCreateNewTriggerEnabled()) {
-                    ctrl.triggers.push({
-                        id: '',
-                        name: '',
-                        kind: '',
-                        attributes: {},
-                        ui: {
-                            changed: true,
-                            editModeActive: true,
-                            isFormValid: false,
-                            name: 'trigger'
-                        }
-                    });
+                    ctrl.triggers.push(createTriggerItem());
                     $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: true});
                     event.stopPropagation();
                 }
@@ -237,9 +217,47 @@
             });
         }
 
+        /**
+         * Tests whether the `HTTP trigger message` is shown
+         * @returns {boolean} `true` in case "HTTP trigger message" is shown, or `false` otherwise.
+         */
+        function isHttpTriggerMsgShown() {
+            var httpTrigger = lodash.find(ctrl.version.spec.triggers, ['kind', 'http'])
+
+            return lodash.isNil(httpTrigger)
+        }
+
         //
         // Private methods
         //
+
+        /**
+         * Creates the new trigger item
+         * @param {Object} [trigger] - trigger data from `ctrl.version`
+         * @returns {Object} - trigger item
+         */
+        function createTriggerItem(trigger) {
+            var triggerItem = lodash.assign(trigger ? trigger : {}, {
+                id: trigger ? trigger.name : '',
+                name: trigger ? trigger.name : '',
+                kind: trigger ? trigger.kind : '',
+                ui: {
+                    changed: lodash.isNil(trigger),
+                    editModeActive: lodash.isNil(trigger),
+                    isFormValid: !lodash.isNil(trigger),
+                    name: 'trigger',
+                    selectedClass: trigger ? lodash.find(ctrl.classList, ['id', trigger.kind]) : ''
+                }
+            })
+
+            if (!trigger) {
+                lodash.merge(triggerItem, {
+                    attributes: {},
+                })
+            }
+
+            return triggerItem;
+        }
 
         /**
          * Deletes selected item
@@ -251,7 +269,9 @@
 
             checkClassUniqueness();
 
-            $rootScope.$broadcast('igzWatchWindowResize::resize');
+            $timeout(function () {
+                $rootScope.$broadcast('igzWatchWindowResize::resize');
+            })
         }
 
         /**
@@ -349,7 +369,58 @@
                 angular.copy(selectedItem, currentTrigger);
             }
 
+            updateTriggerInfoMsg(currentTrigger);
             checkClassUniqueness();
+        }
+
+        /**
+         * Sets trigger's data for `more-info` tooltip
+         * @param {Object} trigger - the trigger object for updating `more-info` data
+         * @param {boolean} isOpen - determines if tooltip should be opened
+         */
+        function updateTriggerInfoMsg(trigger, isOpen) {
+            if (trigger.kind === 'http') {
+                lodash.set(trigger, 'ui.moreInfoMsg', {
+                    name: {
+                        isOpen: Boolean(isOpen),
+                        type: trigger.name === 'default-http' ? 'warn' : 'info',
+                        description: $i18next.t('functions:HTTP_TRIGGER_NAME_DESCRIPTION', {lng: lng})
+                    }
+                })
+            } else {
+                lodash.unset(trigger, 'ui.moreInfoMsg')
+            }
+        }
+
+        /**
+         * Updates trigger list for displaying on the page
+         */
+        function updateTriggerList() {
+            ctrl.triggers = lodash.map(ctrl.version.spec.triggers, function (trigger) {
+                var triggersItem = lodash.assign(lodash.cloneDeep(trigger), createTriggerItem(trigger));
+
+                lodash.defaults(triggersItem, {
+                    attributes: {}
+                });
+
+                if (trigger.kind === 'cron') {
+                    var scheduleValueArray = lodash.chain(triggersItem)
+                        .get('attributes.schedule', '')
+                        .split(' ')
+                        .value();
+
+                    if (scheduleValueArray.length === 6) {
+                        triggersItem.attributes.schedule = lodash.chain(scheduleValueArray)
+                            .takeRight(5)
+                            .join(' ')
+                            .value();
+                    }
+                }
+
+                updateTriggerInfoMsg(trigger);
+
+                return triggersItem;
+            });
         }
 
         /**

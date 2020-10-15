@@ -61,9 +61,9 @@ describe('igzValidatingInputField component:', function () {
 
         ctrl = $componentController('igzValidatingInputField', { $element: element }, bindings);
         ctrl.$onInit();
-        ctrl.$onChanges(changes);
         ctrl.$postLink();
         $rootScope.$apply();
+        ctrl.$onChanges(changes);
     });
 
     afterEach(function () {
