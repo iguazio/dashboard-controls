@@ -299,6 +299,7 @@
     "MOVE": "Move",
     "MUST_CONTAIN_EXACTLY_ONE": "Must contain exactly one",
     "MUST_HAVE_DOT_AFTER_AT": "Must have at least one . after @",
+    "MUST_NOT_BE": "Must not be",
     "N_A": "N/A",
     "NAME": "Name",
     "NAME_IS_REQUIRED": "Name is required",
