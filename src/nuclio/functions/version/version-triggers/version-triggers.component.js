@@ -11,8 +11,9 @@
             controller: NclVersionTriggersController
         });
 
-    function NclVersionTriggersController($i18next, $rootScope, $scope, $timeout, i18next, lodash, ConfigService,
-                                          DialogsService, FunctionsService, ValidationService, VersionHelperService) {
+    function NclVersionTriggersController($i18next, $rootScope, $scope, $timeout, $window, i18next, lodash,
+                                          ConfigService, DialogsService, FunctionsService, ValidationService,
+                                          VersionHelperService) {
         var ctrl = this;
         var lng = i18next.language;
         var uniqueClasses = ['http'];
@@ -135,6 +136,10 @@
 
                 updateTriggerInfoMsg(triggerItem, true);
                 checkClassUniqueness();
+
+                $timeout(function () {
+                    $window.dispatchEvent(new Event('resize'));
+                });
             }
         }
 
