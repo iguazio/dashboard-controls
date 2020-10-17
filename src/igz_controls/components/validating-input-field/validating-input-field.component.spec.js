@@ -39,7 +39,8 @@ describe('igzValidatingInputField component:', function () {
                 isFirstChange: angular.noop
             },
             validationRules: {
-                currentValue: []
+                currentValue: [],
+                isFirstChange: angular.noop
             }
         };
         var element = angular.element('<igz-validating-input-field></igz-validating-input-field>');
@@ -123,7 +124,8 @@ describe('igzValidatingInputField component:', function () {
             ];
             var changes = {
                 validationRules: {
-                    currentValue: newRules
+                    currentValue: newRules,
+                    isFirstChange: angular.noop
                 }
             };
             expect(ctrl.validationRules).toEqual([]);
