@@ -391,22 +391,24 @@
         }
 
         /**
-         * Checks if `Test` button should be disabled
-         * @returns {boolean}
+         * Checks whether "Test" button should be disabled.
+         * @returns {boolean} returns `true` in case "Test" button should be disabled, or `false` otherwise.
          */
         function isDisabledTestButton() {
-            var httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
-
-            if (lodash.get(ctrl.version, 'status.state') === 'ready' && lodash.get(ctrl.version, 'spec.disable')) {
-                return true;
-            }
-
+            var httpPort = lodash.get(ctrl.version, 'status.httpPort');
             var state = lodash.get(ctrl.version, 'status.state');
-            if (httpPort && lodash.includes(['imported', 'building', 'error'], state)) {
-                httpPort = null;
-            }
+            var disabled = lodash.get(ctrl.version, 'spec.disable');
+            var serviceType = lodash.chain(ctrl.version)
+                .get('spec.triggers', [])
+                .find(['kind', 'http'])
+                .get('attributes.serviceType')
+                .value();
 
-            return lodash.isNull(httpPort) || ctrl.uploadingData.uploading || ctrl.testing;
+            return lodash.includes(['imported', 'building', 'error'], state) ||
+                state === 'ready' && disabled ||
+                ctrl.uploadingData.uploading ||
+                ctrl.testing ||
+                serviceType === 'NodePort' && lodash.isNil(httpPort);
         }
 
         /**
