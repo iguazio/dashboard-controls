@@ -58,7 +58,7 @@
          */
         function getIconClass() {
             return ctrl.action.icon ? ctrl.action.icon                                                :
-                                      ctrl.actions && lodash.some(ctrl.actions, 'icon') ? 'fake-icon' : '';
+                                      ctrl.actions && lodash.some(ctrl.actions, 'icon') ? 'icon-placeholder' : '';
         }
 
         function getTooltipText() {
