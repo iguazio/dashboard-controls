@@ -325,6 +325,7 @@
     "TRIGGERS_NOT_FOUND": "There are currently no triggers, you can create a trigger by clicking the ‘Create a new trigger’ button",
     "UNIQUENESS": "Uniqueness",
     "UNSPECIFIED_FIELD_NAME": "Unspecified field name",
+    "URL_NOT_EXPOSED": "URL not exposed",
     "V3IO": "V3IO",
     "VIEW_YAML": "View YAML",
     "VOLUMES": "Volumes",
