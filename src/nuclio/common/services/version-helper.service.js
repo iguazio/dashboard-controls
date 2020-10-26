@@ -4,11 +4,12 @@
     angular.module('iguazio.dashboard-controls')
         .factory('VersionHelperService', VersionHelperService);
 
-    function VersionHelperService(lodash, ConfigService) {
+    function VersionHelperService($i18next, i18next, lodash, ConfigService, FunctionsService) {
         return {
             isVersionDeployed: isVersionDeployed,
-            updateIsVersionChanged: updateIsVersionChanged,
-            getInvocationUrl: getInvocationUrl
+            getInvocationUrl: getInvocationUrl,
+            getServiceType: getServiceType,
+            updateIsVersionChanged: updateIsVersionChanged
         };
 
         //
@@ -24,37 +25,37 @@
             var httpTrigger = lodash.find(version.spec.triggers, ['kind', 'http']);
 
             if (!lodash.isNil(httpTrigger)) {
-                var ingresses = lodash.get(httpTrigger, 'attributes.ingresses', null)
+                var ingress = lodash.get(httpTrigger, 'attributes.ingresses[0]');
 
-                if (!lodash.isEmpty(ingresses)) {
+                if (!lodash.isEmpty(ingress)) {
                     return {
-                        text: ingresses[0].host,
+                        text: ingress.host,
                         valid: true
                     };
                 }
 
-                var serviceType = lodash.get(httpTrigger, 'attributes.serviceType', null);
-                var state = lodash.get(version, 'status.state', null);
+                var serviceType = lodash.get(httpTrigger, 'attributes.serviceType');
+                var state = lodash.get(version, 'status.state');
                 var disable = lodash.get(version, 'spec.disable', false);
-                var httpPort = lodash.get(version, 'status.httpPort', null);
-                var externalIPAddress = ConfigService.nuclio.externalIPAddress;
+                var httpPort = lodash.defaultTo(lodash.get(version, 'status.httpPort'), 0);
+                var externalIpAddress = lodash.get(ConfigService, 'nuclio.externalIPAddress');
 
-                if (serviceType === 'NodePort' &&
-                    state === 'ready'          &&
-                    disable === false          &&
-                    !lodash.isNil(httpPort)    &&
-                    httpPort !== 0             &&
-                    !lodash.isEmpty(externalIPAddress)) {
+                if (
+                    state === 'ready' &&
+                    disable === false &&
+                    (serviceType === 'NodePort' || !FunctionsService.isKubePlatform()) &&
+                    httpPort !== 0 &&
+                    !lodash.isEmpty(externalIpAddress)
+                ) {
                     return {
-                        text: 'http://' + externalIPAddress + ':' + httpPort,
+                        text: 'http://' + externalIpAddress + ':' + httpPort,
                         valid: true
                     };
-
                 }
             }
 
             return {
-                text: 'URL not exposed',
+                text: $i18next.t('functions:URL_NOT_EXPOSED', { lng: i18next.language }),
                 valid: false
             };
         }
@@ -67,6 +68,20 @@
         function isVersionDeployed(version) {
             var state = lodash.get(version, 'status.state', '');
             return !lodash.isEmpty(state);
+        }
+
+        /**
+         * Retrieves the service type of the HTTP trigger of the function version.
+         * @param {Object} version - The function version.
+         * @returns {string} the service type of the HTTP trigger of the function version (e.g. `'ClusterIP'`,
+         *     `'NodePort'`).
+         */
+        function getServiceType(version) {
+            return lodash.chain(version)
+                .get('spec.triggers', [])
+                .find(['kind', 'http'])
+                .get('attributes.serviceType')
+                .value();
         }
 
         /**

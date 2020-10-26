@@ -12,7 +12,7 @@
         });
 
     function NclVersionConfigurationBuildController($rootScope, $scope, $timeout, $i18next, i18next, lodash, ngDialog,
-                                                    Upload, ConfigService, ValidationService) {
+                                                    Upload, ConfigService, FunctionsService, ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
         var uploadType = '';
@@ -71,7 +71,7 @@
                 },
                 lng: lng
             });
-            ctrl.platformKindIsKube = lodash.get(ConfigService, 'nuclio.platformKind') === 'kube';
+            ctrl.platformKindIsKube = FunctionsService.isKubePlatform();
         }
 
         /**

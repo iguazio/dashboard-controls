@@ -5,14 +5,17 @@
         .factory('FunctionsService', FunctionsService);
 
     function FunctionsService($i18next, i18next, lodash, ngDialog, ConfigService) {
-        return {
+        var self = {
             checkedItem: '',
             getClassesList: getClassesList,
             getHandler: getHandler,
             initFunctionActions: initFunctionActions,
             initVersionActions: initVersionActions,
+            isKubePlatform: isKubePlatform,
             openOverrideFunctionDialog: openOverrideFunctionDialog
         };
+
+        return self;
 
         //
         // Public methods
@@ -27,7 +30,6 @@
         function getClassesList(type, additionalData) {
             var lng = i18next.language;
             var defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
-            var platformKindIsKube = lodash.get(ConfigService, 'nuclio.platformKind') === 'kube';
             var classesList = {
                 trigger: [
                     {
@@ -297,7 +299,7 @@
                                 min: 1,
                                 max: 100000,
                                 defaultValue: 1,
-                                visible: !platformKindIsKube
+                                visible: !self.isKubePlatform()
                             },
                             {
                                 name: 'workerAvailabilityTimeoutMilliseconds',
@@ -312,7 +314,7 @@
                                                             'spec.triggers.cron.workerAvailabilityTimeoutMilliseconds',
                                                             '')
                                     }),
-                                visible: !platformKindIsKube
+                                visible: !self.isKubePlatform()
                             },
                             {
                                 name: 'interval',
@@ -349,9 +351,9 @@
                                 name: 'workerAllocatorName',
                                 type: 'input',
                                 fieldType: 'input',
-                                isAdvanced: !platformKindIsKube,
+                                isAdvanced: !self.isKubePlatform(),
                                 allowEmpty: true,
-                                visible: !platformKindIsKube
+                                visible: !self.isKubePlatform()
                             }
                         ]
                     },
@@ -483,7 +485,8 @@
                                 path: 'attributes.serviceType',
                                 type: 'dropdown',
                                 allowEmpty: true,
-                                isAdvanced: true
+                                isAdvanced: true,
+                                visible: self.isKubePlatform()
                             },
                             {
                                 name: 'annotations',
@@ -894,6 +897,14 @@
                     }
                 }
             ];
+        }
+
+        /**
+         * Tests whether Nuclio runs on Kubernetes platform.
+         * @returns {boolean} `true` in case Nuclio runs on Kubernetes platform, or `false` otherwise.
+         */
+        function isKubePlatform() {
+            return lodash.get(ConfigService, 'nuclio.platformKind') === 'kube';
         }
 
         /**

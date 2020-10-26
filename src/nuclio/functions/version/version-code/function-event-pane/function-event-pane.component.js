@@ -18,7 +18,7 @@
 
     function NclFunctionEventPaneController($element, $i18next, $timeout, $q, download, i18next, lodash, moment,
                                             ConfigService, ConverterService, DialogsService, EventHelperService,
-                                            ValidationService, VersionHelperService) {
+                                            FunctionsService, ValidationService, VersionHelperService) {
         var ctrl = this;
 
         var canceler = null;
@@ -395,20 +395,16 @@
          * @returns {boolean} returns `true` in case "Test" button should be disabled, or `false` otherwise.
          */
         function isDisabledTestButton() {
-            var httpPort = lodash.get(ctrl.version, 'status.httpPort');
+            var httpPort = lodash.defaultTo(lodash.get(ctrl.version, 'status.httpPort'), 0);
             var state = lodash.get(ctrl.version, 'status.state');
             var disabled = lodash.get(ctrl.version, 'spec.disable');
-            var serviceType = lodash.chain(ctrl.version)
-                .get('spec.triggers', [])
-                .find(['kind', 'http'])
-                .get('attributes.serviceType')
-                .value();
+            var serviceType = VersionHelperService.getServiceType(ctrl.version);
 
-            return lodash.includes(['imported', 'building', 'error'], state) ||
-                state === 'ready' && disabled ||
+            return state !== 'ready' ||
+                disabled ||
+                (!FunctionsService.isKubePlatform() || serviceType === 'NodePort') && httpPort === 0 ||
                 ctrl.uploadingData.uploading ||
-                ctrl.testing ||
-                serviceType === 'NodePort' && lodash.isNil(httpPort);
+                ctrl.testing;
         }
 
         /**
@@ -603,11 +599,11 @@
          */
         function testEvent(event) {
             ctrl.testEventsForm.$setPristine();
-            var httpPort = lodash.get(ctrl.version, 'status.httpPort', null);
 
-            if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) && !ctrl.testing &&
-                !lodash.isNull(httpPort) && !ctrl.uploadingData.uploading && !ctrl.isDisabledTestButton()) {
+            if ((lodash.isNil(event) || event.keyCode === EventHelperService.ENTER) && !ctrl.isDisabledTestButton()) {
                 var startTime = moment();
+                var serviceTypeIsClusterIp = VersionHelperService.getServiceType(ctrl.version) === 'ClusterIP';
+                var platformIsKube = FunctionsService.isKubePlatform();
                 canceler = $q.defer();
                 canceledInvocation = false;
                 ctrl.testing = true;
@@ -617,7 +613,11 @@
                 var eventData = angular.copy(ctrl.selectedEvent);
                 lodash.set(eventData, 'spec.attributes.logLevel', ctrl.eventLogLevel);
 
-                ctrl.invokeFunction({eventData: eventData, canceler: canceler.promise})
+                ctrl.invokeFunction({
+                    eventData: eventData,
+                    invokeVia: platformIsKube && serviceTypeIsClusterIp ? 'domain-name' : 'external-ip',
+                    canceler: canceler.promise
+                })
                     .then(function (response) {
                         return $q.reject(response);
                     })
