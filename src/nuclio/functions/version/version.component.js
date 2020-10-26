@@ -22,7 +22,7 @@
 
     function NclVersionController($i18next, $interval, $rootScope, $scope, $state, $stateParams, $transitions, $timeout,
                                   i18next, lodash, ngDialog, ConfigService, DialogsService, ExportService,
-                                  NuclioHeaderService, VersionHelperService) {
+                                  FunctionsService, NuclioHeaderService, VersionHelperService) {
         var ctrl = this;
         var deregisterFunction = null;
         var interval = null;
@@ -191,7 +191,7 @@
                 }
             });
 
-            if (lodash.get(ConfigService, 'nuclio.platformKind') === 'kube') {
+            if (FunctionsService.isKubePlatform()) {
                 lodash.defaults(ctrl.version.spec, {
                     waitReadinessTimeoutBeforeFailure: false
                 });
