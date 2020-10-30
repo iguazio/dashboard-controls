@@ -1,0 +1,11 @@
+<div class="toast-status-panel"
+     data-ng-show="$ctrl.isToastPanelShown">
+    <div class="btn-close igz-icon-close"
+         data-ng-if="!$ctrl.permanent && $ctrl.panelState !== 'in-progress'"
+         data-ng-click="$ctrl.closeToastPanel()">
+    </div>
+    <div class="panel-status">
+        <span class="panel-status-icon"></span>
+        <span class="panel-status-msg">{{$ctrl.getStateMessage($ctrl.panelState)}}</span>
+    </div>
+</div>

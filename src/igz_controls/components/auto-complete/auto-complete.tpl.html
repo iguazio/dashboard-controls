@@ -1,0 +1,81 @@
+<div class="auto-complete-wrapper">
+    <div class="input-row"
+         data-ng-keydown="$ctrl.handleDropDownKeydown($event)">
+        <igz-validating-input-field class="auto-complete-input"
+                                    data-field-type="input"
+                                    data-is-focused="$ctrl.isFocused"
+                                    data-update-data-callback="$ctrl.handleInputChange(newData)"
+                                    data-item-blur-callback="$ctrl.handleInputBlur(event, inputValue, inputName)"
+                                    data-input-value="$ctrl.currentValue"
+                                    data-form-object="$ctrl.formObject"
+                                    data-input-name="{{$ctrl.inputName}}"
+                                    data-validation-is-required="$ctrl.isRequired"
+                                    data-placeholder-text="{{$ctrl.placeholder}}"
+                                    data-is-disabled="$ctrl.isDisabled"
+                                    data-auto-complete="{{$ctrl.browserAutoComplete}}"
+                                    data-trim="false"
+                                    data-borders-mode="{{$ctrl.bordersMode}}"
+                                    data-tooltip="$ctrl.tooltip">
+        </igz-validating-input-field>
+        <igz-default-dropdown data-ng-if="$ctrl.isDropdownShown"
+                              class="auto-complete-filters"
+                              data-values-array="$ctrl.filters"
+                              data-selected-item="$ctrl.selectedFilter"
+                              data-item-select-callback="$ctrl.handleFilterChange(item, isItemChanged)"
+                              data-is-disabled="$ctrl.isDisabled">
+        </igz-default-dropdown>
+    </div>
+
+    <div class="suggestions-row">
+        <div class="auto-complete-suggestions-container"
+             tabindex="-1"
+             data-ng-if="$ctrl.isSuggestionsShown"
+             data-ng-class="{'auto-complete-suggestions-with-filters': $ctrl.isDropdownShown}"
+             data-ng-style="{'top': $ctrl.topPosition}"
+             data-ng-scrollbars>
+            <ul class="list" tabindex="-1">
+                <li class="list-item"
+                    tabindex="0"
+                    data-ng-repeat="item in $ctrl.suggestions track by $index"
+                    data-ng-click="$ctrl.handleSuggestionClick(item.value)"
+                    data-ng-keydown="$ctrl.handleSuggestionKeydown($event, item)">
+                    <div class="list-item-block">
+                        <span class="list-item-name"
+                              uib-tooltip="{{ item.label }}"
+                              data-tooltip-placement="auto"
+                              data-tooltip-popup-delay="200"
+                              data-tooltip-append-to-body="true">
+                            {{ item.label }}
+                        </span>
+                        <span data-ng-if="item.additionalInfo"
+                              class="list-item-additional-info">
+                            {{ item.additionalInfo }}
+                        </span>
+                    </div>
+                </li>
+                <li class="list-item readonly"
+                    data-ng-if="$ctrl.suggestions.length === 0 && $ctrl.loading"
+                    tabindex="-1">
+                    <div class="list-item-block">
+                        <span class="list-item-name">{{ 'common:LOADING_CAPITALIZE_ELLIPSIS' | i18next }}</span>
+                    </div>
+                </li>
+                <li class="list-item readonly"
+                    data-ng-if="$ctrl.suggestions.length === 0 && !$ctrl.loading && $ctrl.emptyMessage"
+                    tabindex="-1">
+                    <div class="list-item-block">
+                        <span class="list-item-name">{{$ctrl.emptyMessage}}</span>
+                    </div>
+                </li>
+                <hr data-ng-if="$ctrl.isMoreLabelShown" tabindex="-1">
+                <li class="list-item readonly"
+                    data-ng-if="$ctrl.isMoreLabelShown"
+                    tabindex="-1">
+                    <div class="list-item-block">
+                        <span class="list-item-name">{{ 'common:MORE_ELLIPSIS' | i18next }}</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

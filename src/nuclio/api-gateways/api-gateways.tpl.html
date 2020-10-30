@@ -1,0 +1,175 @@
+<div class="ncl-api-gateways-wrapper">
+
+    <!--splash screen-->
+    <igz-splash-screen data-is-splash-showed="$ctrl.isSplashShowed"></igz-splash-screen>
+
+    <!--filters-->
+    <igz-info-page-filters data-is-filters-showed="$ctrl.isFiltersShowed.value"
+                           data-apply-filters="$ctrl.onApplyFilters()"
+                           data-reset-filters="$ctrl.onResetFilters()"
+                           data-change-state-callback="$ctrl.isFiltersShowed.changeValue(newVal)"
+                           data-toggle-method="$ctrl.toggleFilters()">
+
+        <igz-search-input class="info-page-filters-item igz-component"
+                          data-data-set="$ctrl.apiGateways"
+                          data-search-keys="$ctrl.filtersData.apiGatewayName.keys"
+                          data-multi-search-name="apiGatewayName"
+                          data-search-callback="$ctrl.onChangeSearchQuery(searchQuery, multiSearchName)"
+                          data-placeholder="{{ 'functions:PLACEHOLDER.ENTER_API_GATEWAY_NAME' | i18next }}"
+                          data-live-search="false"
+                          data-search-states="$ctrl.searchStates">
+        </igz-search-input>
+        <igz-search-input class="info-page-filters-item igz-component"
+                          data-data-set="$ctrl.apiGateways"
+                          data-search-keys="$ctrl.filtersData.endPoint.keys"
+                          data-multi-search-name="endPoint"
+                          data-search-callback="$ctrl.onChangeSearchQuery(searchQuery, multiSearchName)"
+                          data-placeholder="{{ 'functions:PLACEHOLDER.ENTER_ENDPOINT' | i18next }}"
+                          data-live-search="false"
+                          data-search-states="$ctrl.searchStates">
+        </igz-search-input>
+        <igz-search-input class="info-page-filters-item igz-component"
+                          data-data-set="$ctrl.apiGateways"
+                          data-search-keys="$ctrl.filtersData.primary.keys"
+                          data-multi-search-name="primary"
+                          data-search-callback="$ctrl.onChangeSearchQuery(searchQuery, multiSearchName)"
+                          data-placeholder="{{ 'functions:PLACEHOLDER.ENTER_PRIMARY_FUNCTION_NAME' | i18next }}"
+                          data-live-search="false"
+                          data-search-states="$ctrl.searchStates">
+        </igz-search-input>
+        <igz-search-input class="info-page-filters-item igz-component"
+                          data-data-set="$ctrl.apiGateways"
+                          data-search-keys="$ctrl.filtersData.canary.keys"
+                          data-multi-search-name="canary"
+                          data-search-callback="$ctrl.onChangeSearchQuery(searchQuery, multiSearchName)"
+                          data-placeholder="{{ 'functions:PLACEHOLDER.ENTER_CANARY_FUNCTION_NAME' | i18next }}"
+                          data-live-search="false"
+                          data-search-states="$ctrl.searchStates">
+        </igz-search-input>
+    </igz-info-page-filters>
+
+    <!--actions bar-->
+    <igz-info-page-actions-bar class="igz-component">
+        <div class="actions-bar-left">
+            <igz-action-panel data-actions="$ctrl.apiGatewayActions"></igz-action-panel>
+        </div>
+        <div class="actions-bar-right">
+            <div class="actions-bar-left actions-buttons-block">
+                <button class="igz-button-primary"
+                        data-test-id="api-gateways.new-api-gateway.button"
+                        data-ng-click="$ctrl.openApiGatewayWizard(false)">
+                    {{ 'functions:NEW_API_GATEWAY' | i18next }}
+                </button>
+            </div>
+            <div class="actions-bar-left actions-content-block">
+                <div class="igz-action-panel">
+                    <div class="actions-list">
+                        <igz-action-item-refresh data-refresh="$ctrl.refreshApiGateways()"></igz-action-item-refresh>
+                    </div>
+                </div>
+            </div>
+            <igz-actions-panes data-filters-toggle-method="$ctrl.toggleFilters()"
+                               data-filters-counter="$ctrl.filtersCounter"
+                               data-show-filter-icon="true"
+                               data-is-filters-opened="$ctrl.isFiltersShowed.value">
+            </igz-actions-panes>
+        </div>
+    </igz-info-page-actions-bar>
+
+    <!--page content-->
+    <igz-info-page-content class="igz-component">
+        <div class="common-table" data-test-id="api-gateways.list">
+            <div class="common-table-header">
+                <div class="common-table-cell igz-col-3">
+                    <igz-action-checkbox-all class="check-all-rows"
+                                             data-items-count="$ctrl.apiGateways.length">
+                    </igz-action-checkbox-all>
+                </div>
+                <div class="igz-row common-table-cells-container">
+                    <div class="common-table-cell igz-col-12-5 sortable"
+                         data-ng-class="$ctrl.getColumnSortingClasses('name', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('name')">
+                        {{ 'common:NAME' | i18next }}
+                        <span class="sort-arrow"></span>
+                    </div>
+                    <div class="common-table-cell igz-col-25 sortable"
+                         data-ng-class="$ctrl.getColumnSortingClasses('endpoint', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('endpoint')">
+                        {{ 'functions:ENDPOINT' | i18next }}
+                        <span class="sort-arrow"></span>
+                    </div>
+                    <div class="common-table-cell igz-col-10 sortable"
+                         data-ng-class="$ctrl.getColumnSortingClasses('primary', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('primary')">
+                        {{ 'common:PRIMARY' | i18next }}
+                        <span class="sort-arrow"></span>
+                    </div>
+                    <div class="common-table-cell igz-col-10 sortable"
+                         data-ng-class="$ctrl.getColumnSortingClasses('canary', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('canary')">
+                        {{ 'functions:CANARY' | i18next }}
+                        <span class="sort-arrow"></span>
+                    </div>
+                    <div class="common-table-cell igz-col-7-5 sortable"
+                         data-ng-class="$ctrl.getColumnSortingClasses('canaryPercentage', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('canaryPercentage')">
+                        {{ 'functions:CANARY' | i18next }} %
+                        <span class="sort-arrow"></span>
+                    </div>
+                    <div class="common-table-cell igz-col-7-5 sortable"
+                         data-ng-class="$ctrl.getColumnSortingClasses('authenticationMode', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('authenticationMode')">
+                        {{ 'functions:AUTH_TYPE' | i18next }}
+                        <span class="sort-arrow"></span>
+                    </div>
+                    <div class="common-table-cell igz-col-7-5 sortable status"
+                         data-ng-class="$ctrl.getColumnSortingClasses('status', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('status')">
+                        {{ 'common:STATUS' | i18next }}
+                        <span class="sort-arrow"></span>
+                    </div>
+                    <div class="common-table-cell igz-col-7-5 sortable"
+                         data-ng-class="$ctrl.getColumnSortingClasses('createdBy', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('createdBy')">
+                        {{ 'common:CREATED_BY' | i18next }}
+                        <span class="sort-arrow"></span>
+                    </div>
+                    <div class="common-table-cell igz-col-12-5 sortable"
+                         data-ng-class="$ctrl.getColumnSortingClasses('createdAt', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                         data-ng-click="$ctrl.sortTableByColumn('createdAt')">
+                        {{ 'common:CREATED_AT' | i18next }}
+                        <span class="sort-arrow"></span>
+                    </div>
+                </div>
+                <div class="common-table-cell actions-menu">&nbsp;</div>
+            </div>
+
+            <div class="search-input-not-found"
+                 data-ng-if="$ctrl.isApiGatewaysListEmpty()">
+                <div class="search-message" data-ng-i18next="[html]functions:API_GATEWAYS_NOT_FOUND"></div>
+            </div>
+
+            <div class="common-table-body" data-igz-extend-background>
+                <div class="igz-scrollable-container"
+                     data-ng-scrollbars>
+                    <div data-ng-repeat="apiGateway in $ctrl.apiGateways track by apiGateway.metadata.name">
+                        <div data-igz-show-hide-search-item="apiGateway">
+                            <ncl-api-gateway-row
+                                    data-api-gateway="apiGateway"
+                                    data-action-handler-callback="$ctrl.handleApiGatewayAction(actionType, checkedItems)"
+                                    data-api-gateways="$ctrl.apiGateways"
+                                    data-create-api-gateway="$ctrl.createApiGateway({apiGateway: apiGateway, projectName: projectName})"
+                                    data-delete-api-gateway="$ctrl.deleteApiGateway({apiGateway: apiGateway})"
+                                    data-get-functions="$ctrl.getFunctions({projectName: projectName})"
+                                    data-update-api-gateway="$ctrl.updateApiGateway({apiGateway: apiGateway, projectName: projectName})"
+                                    data-is-splash-showed="$ctrl.isSplashShowed"
+                                    data-update-function="$ctrl.pollAndUpdate(apiGateway)"
+                                    data-project="$ctrl.project">
+                            </ncl-api-gateway-row>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </igz-info-page-content>
+</div>

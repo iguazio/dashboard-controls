@@ -20,12 +20,16 @@
          */
         function getNavigationTabsConfig(state) {
             var navigationTabsConfigs = {
+                'app.project': getProjectConfig(state),
                 'app.container': getContainersConfig(),
-                'app.cluster': getClustersConfig(),
+                'app.cluster': getClusterConfig(),
+                'app.clusters': getClustersConfig(),
+                'app.app-cluster': getAppClustersConfig(),
                 'app.events': getEventsConfig(),
                 'app.storage-pool': getStoragePoolsConfig(),
                 'app.identity': getIdentityConfig(),
-                'app.control-panel': getControlPanelConfig()
+                'app.control-panel': getControlPanelConfig(),
+                'app.tenant': getTenantConfig()
             };
             var stateTest = state.match(/^[^.]*.[^.]*/);
 
@@ -37,53 +41,97 @@
         //
 
         /**
+         * Returns project navigation tabs config
+         * @returns {Array.<Object>}
+         */
+        function getProjectConfig(state) {
+            var config = [];
+            var lng = i18next.language;
+
+            if (state === 'app.project.functions' || state === 'app.project.api-gateways') {
+                config = [
+                    {
+                        tabName: $i18next.t('common:FUNCTIONS', {lng: lng}),
+                        uiRoute: 'app.project.functions',
+                    },
+                    {
+                        tabName: $i18next.t('functions:API_GATEWAYS', {lng: lng}),
+                        uiRoute: 'app.project.api-gateways',
+                    }
+                ];
+            }
+
+            return config;
+        }
+
+        /**
          * Returns containers navigation tabs config
          * @returns {Array.<Object>}
          */
         function getContainersConfig() {
             var lng = i18next.language;
-
             var config = [
                 {
-                    tabName: $i18next.t('common:OVERVIEW', {lng: lng}),
-                    id: 'overview',
-                    uiRoute: 'app.container.overview',
-                    capability: 'containers.overview'
-                },
-                {
                     tabName: $i18next.t('common:BROWSE', {lng: lng}),
-                    id: 'browse',
                     uiRoute: 'app.container.browser',
                     capability: 'containers.browse'
                 },
                 {
+                    tabName: $i18next.t('common:OVERVIEW', {lng: lng}),
+                    uiRoute: 'app.container.overview',
+                    capability: 'containers.overview'
+                },
+                {
                     tabName: $i18next.t('common:DATA_ACCESS_POLICY', {lng: lng}),
-                    id: 'dataAccessPolicy',
                     uiRoute: 'app.container.data-access-policy',
                     capability: 'containers.dataPolicy'
                 }
             ];
 
-            if (ConfigService.isStagingMode()) {
+            if (ConfigService.isDemoMode()) {
                 config.push(
                     {
                         tabName: $i18next.t('common:DATA_LIFECYCLE', {lng: lng}),
-                        id: 'dataLifecycle',
                         uiRoute: 'app.container.data-lifecycle',
                         capability: 'containers.dataLifecycle'
                     }
                 );
+
+                config.splice(1, 0, {
+                    tabName: $i18next.t('common:ANALYTICS', {lng: lng}),
+                    uiRoute: 'app.container.analytics',
+                    capability: 'containers.analytics'
+                });
             }
 
-            if (ConfigService.isDemoMode()) {
-                config.splice(1, 0,
-                              {
-                                  tabName: $i18next.t('common:ANALYTICS', {lng: lng}),
-                                  id: 'analytics',
-                                  uiRoute: 'app.container.analytics',
-                                  capability: 'containers.analytics'
-                              }
-                );
+            return config;
+        }
+
+        /**
+         * Returns cluster navigation tabs config
+         * @returns {Array.<Object>}
+         */
+        function getClusterConfig() {
+            var lng = i18next.language;
+            var config = [
+                {
+                    tabName: $i18next.t('common:NODES', {lng: lng}),
+                    uiRoute: 'app.cluster.nodes',
+                    capability: 'clusters.nodes'
+                },
+                {
+                    tabName: $i18next.t('common:SUPPORT_LOGS', {lng: lng}),
+                    uiRoute: 'app.cluster.support-logs',
+                    capability: 'clusters.collectLogs'
+                }
+            ];
+
+            if (ConfigService.isStagingMode()) {
+                config.unshift({
+                    tabName: $i18next.t('common:OVERVIEW', {lng: lng}),
+                    uiRoute: 'app.cluster.overview',
+                    capability: 'clusters.overview'
+                });
             }
 
             return config;
@@ -98,9 +146,31 @@
 
             return [
                 {
+                    tabName: $i18next.t('common:DATA', {lng: lng}),
+                    id: 'data',
+                    uiRoute: 'app.clusters.data',
+                    capability: 'clusters'
+                },
+                {
+                    tabName: $i18next.t('common:APPLICATION', {lng: lng}),
+                    id: 'app',
+                    uiRoute: 'app.clusters.app',
+                    capability: 'clusters'
+                }
+            ];
+        }
+
+        /**
+         * Returns app-clusters navigation tabs config
+         * @returns {Array.<Object>}
+         */
+        function getAppClustersConfig() {
+            var lng = i18next.language;
+
+            return [
+                {
                     tabName: $i18next.t('common:NODES', {lng: lng}),
-                    id: 'nodes',
-                    uiRoute: 'app.cluster.nodes',
+                    uiRoute: 'app.app-cluster.nodes',
                     capability: 'clusters.nodes'
                 }
             ];
@@ -112,31 +182,25 @@
          */
         function getStoragePoolsConfig() {
             var lng = i18next.language;
-
             var config = [
                 {
                     tabName: $i18next.t('common:OVERVIEW', {lng: lng}),
-                    id: 'overview',
                     uiRoute: 'app.storage-pool.overview',
                     capability: 'storagePools.overview'
                 },
                 {
                     tabName: $i18next.t('common:DEVICES', {lng: lng}),
-                    id: 'devices',
                     uiRoute: 'app.storage-pool.devices',
                     capability: 'storagePools.listDevices'
                 }
             ];
 
-            if (ConfigService.isStagingMode()) {
-                config.splice(1, 0,
-                              {
-                                  tabName: $i18next.t('common:CONTAINERS', {lng: lng}),
-                                  id: 'containers',
-                                  uiRoute: 'app.storage-pool.containers',
-                                  capability: 'storagePools.listContainers'
-                              }
-                );
+            if (ConfigService.isDemoMode()) {
+                config.splice(1, 0, {
+                    tabName: $i18next.t('common:CONTAINERS', {lng: lng}),
+                    uiRoute: 'app.storage-pool.containers',
+                    capability: 'storagePools.listContainers'
+                });
             }
 
             return config;
@@ -151,7 +215,6 @@
 
             return [{
                 tabName: $i18next.t('common:LOGS', {lng: lng}),
-                id: 'logs',
                 uiRoute: 'app.control-panel.logs'
             }];
         }
@@ -163,31 +226,23 @@
         function getIdentityConfig() {
             var lng = i18next.language;
 
-            var config = [
+            return [
                 {
                     tabName: $i18next.t('common:USERS', {lng: lng}),
-                    id: 'users',
                     uiRoute: 'app.identity.users',
                     capability: 'identity.users'
                 },
                 {
                     tabName: $i18next.t('common:GROUPS', {lng: lng}),
-                    id: 'groups',
                     uiRoute: 'app.identity.groups',
                     capability: 'identity.groups'
-                }
-            ];
-
-            if (ConfigService.isStagingMode()) {
-                config.push({
+                },
+                {
                     tabName: $i18next.t('common:IDP', {lng: lng}),
-                    id: 'idp',
                     uiRoute: 'app.identity.idp',
                     capability: 'identity.idp'
-                });
-            }
-
-            return config;
+                }
+            ];
         }
 
         /**
@@ -196,40 +251,53 @@
          */
         function getEventsConfig() {
             var lng = i18next.language;
-
             var config = [
                 {
                     tabName: $i18next.t('common:EVENT_LOG', {lng: lng}),
-                    id: 'eventLog',
                     uiRoute: 'app.events.event-log',
                     capability: 'events.eventLog'
                 },
                 {
                     tabName: $i18next.t('common:ALERTS', {lng: lng}),
-                    id: '',
                     uiRoute: 'app.events.alerts',
                     capability: 'events.alerts'
+                },
+                {
+                    tabName: $i18next.t('common:AUDIT', {lng: lng}),
+                    uiRoute: 'app.events.audit',
+                    capability: 'events.audit'
+                },
+                {
+                    tabName: $i18next.t('common:COMMUNICATION', {lng: lng}),
+                    uiRoute: 'app.events.communication',
+                    capability: 'events.communication'
                 }
             ];
 
-            if (ConfigService.isStagingMode()) {
-                config.push(
-                    {
-                        tabName: $i18next.t('common:ESCALATION', {lng: lng}),
-                        id: 'escalation',
-                        uiRoute: 'app.events.escalation',
-                        capability: 'events.escalations'
-                    },
-                    {
-                        tabName: $i18next.t('common:TASKS', {lng: lng}),
-                        id: 'tasks',
-                        uiRoute: 'app.events.tasks',
-                        capability: 'events.tasks'
-                    }
-                );
+            if (ConfigService.isDemoMode()) {
+                config.push({
+                    tabName: $i18next.t('common:ESCALATION', {lng: lng}),
+                    uiRoute: 'app.events.escalation',
+                    capability: 'events.escalations'
+                });
             }
 
             return config;
+        }
+
+        /**
+         * Returns tenants navigation tabs config
+         * @returns {Array.<Object>}
+         */
+        function getTenantConfig() {
+            var lng = i18next.language;
+
+            return [
+                {
+                    tabName: $i18next.t('common:OVERVIEW', {lng: lng}),
+                    uiRoute: 'app.tenant.overview'
+                }
+            ];
         }
     }
 }());

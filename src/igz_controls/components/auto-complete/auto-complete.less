@@ -1,0 +1,98 @@
+.auto-complete-wrapper {
+    .auto-complete-color-set();
+
+    position: relative;
+
+    .input-row {
+        display: flex;
+        width: 100%;
+
+        .auto-complete-input {
+            flex-grow: 3;
+        }
+
+        .auto-complete-filters {
+            width: 20%;
+        }
+    }
+
+    .suggestions-row {
+        .auto-complete-suggestions-container {
+            position: absolute;
+            background-color: @auto-complete-suggestions-container-bg-color;
+            border-radius: 2px;
+            box-shadow: @auto-complete-suggestions-container-box-shadow;
+            color: @auto-complete-suggestions-container-color;
+            max-height: 220px;
+            overflow: auto;
+            z-index: 1000;
+            width: 100%;
+            margin-top: 2px;
+
+            .list {
+                padding: 0;
+                margin: 0;
+
+                .list-item {
+                    color: @auto-complete-list-item-color;
+                    font-family: @font-family-sans-serif;
+                    font-size: 14px;
+                    list-style-type: none;
+                    margin: 0;
+                    outline: none;
+                    width: 100%;
+                    min-height: 32px;
+
+                    &:first-child {
+                        margin-top: 7px;
+                    }
+
+                    &:last-child {
+                        margin-bottom: 4px;
+                    }
+
+                    .list-item-block {
+                        display: flex;
+                        flex-flow: row nowrap;
+                        align-items: center;
+                        padding: 6px 16px;
+                        width: 100%;
+
+                        .list-item-name {
+                            flex: auto;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        }
+
+                        .list-item-additional-info {
+                            flex: none;
+                            margin-left: 6px;
+                            color: @auto-complete-list-item-additional-info-color;
+                        }
+                    }
+
+                    &:not(.readonly) {
+                        cursor: pointer;
+
+                        &:hover, &:focus {
+                            background-color: @auto-complete-list-item-hover-focus-bg-color;
+                        }
+                    }
+
+                    &.selected-item {
+                        color: @auto-complete-list-item-selected-color;
+                    }
+                }
+
+                hr {
+                    margin: 0;
+                }
+            }
+        }
+
+        .auto-complete-suggestions-with-filters {
+            width: 80%;
+        }
+    }
+}
