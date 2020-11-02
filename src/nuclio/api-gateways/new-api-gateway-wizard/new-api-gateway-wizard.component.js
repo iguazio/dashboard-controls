@@ -367,7 +367,7 @@
                 },
                 metadata: {
                     labels: {
-                        ['nuclio.io/project-name']: ctrl.project.metadata.name
+                        'nuclio.io/project-name': ctrl.project.metadata.name
                     }
                 }
             });
