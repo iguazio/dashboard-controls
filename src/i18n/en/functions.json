@@ -171,7 +171,7 @@
     "NO_INTERNET_ACCESS": "No internet access",
     "NO_LOGS_HAVE_BEEN_FOUND": "No logs have been found...",
     "NORMAL": "Normal",
-    "NOT_START_WITH_FORBIDDEN_WORDS": "Must not start with 'kubernetes.io' or 'k8s.io'",
+    "NOT_START_WITH_FORBIDDEN_WORDS": "Must not start with 'kubernetes.io', 'k8s.io' or 'nuclio.io'",
     "NOT_YET_DEPLOYED": "Not yet deployed",
     "OAUTH2": "OAuth2",
     "ONBUILD_IMAGE": "Onbuild image",
