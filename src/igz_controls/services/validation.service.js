@@ -180,14 +180,15 @@
                     pattern: new RegExp('^' + convertedPattern)
                 };
             },
-            mustNotBeOneOf: function (words) {
-                var convertedPattern = words.split(' ').join('|');
+            mustNotBe: function (words) {
+                var wordsArray = words.split(' ');
 
                 return {
-                    name: 'mustNotBeOneOf',
-                    label: $i18next.t('common:MUST_NOT_BE_ONE_OF', {lng: lng}) + ': ' + convertToLabel(words),
-                    pattern: new RegExp('^(?!' + convertedPattern + ').*|.*(?<!' + convertedPattern + ')$|^(' +
-                        convertedPattern + ').+$')
+                    name: 'mustNotBe',
+                    label: $i18next.t('common:MUST_NOT_BE', {lng: lng}) + ': ' + convertToLabel(words),
+                    pattern: function (value) {
+                        return !lodash.includes(wordsArray, value);
+                    }
                 };
             },
             length: function (options) {
@@ -330,7 +331,7 @@
             },
             function: {
                 name: commonRules.dns1035Label.concat(
-                    generateRule.mustNotBeOneOf('dashboard controller dlx scaler'),
+                    generateRule.mustNotBe('dashboard controller dlx scaler'),
                     generateRule.length({max: lengths.function.name})),
                 label: {
                     key: commonRules.prefixedQualifiedName.concat(generateRule.length({
@@ -373,7 +374,7 @@
             },
             apiGateway: {
                 name: commonRules.dns1035Label.concat(
-                    generateRule.mustNotBeOneOf('dashboard controller dlx scaler'),
+                    generateRule.mustNotBe('dashboard controller dlx scaler'),
                     generateRule.length({max: lengths.apiGateway.name}))
             },
             service: {
