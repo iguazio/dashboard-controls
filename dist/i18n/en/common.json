@@ -74,6 +74,7 @@
     "CREATE_TENANT": "Create tenant",
     "CREATE_VIEW": "Create view",
     "CREATED": "Created",
+    "CREATED_AT": "Created at",
     "CREATED_BY": "Created by",
     "CREATED_ON": "Created on",
     "CRITICAL": "Critical",
