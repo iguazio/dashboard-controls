@@ -30,6 +30,9 @@
                 triggerName: 128,
                 v3ioConsumerGroupName: 256
             },
+            apiGateway: {
+                name: 63
+            },
             service: {
                 name: 53,
                 resources: 253,
@@ -148,11 +151,43 @@
                     pattern: new RegExp('^([^' + convertedPattern + '].*)?[^' + convertedPattern + ']$')
                 };
             },
+            onlyAtTheBeginning: function (chars) {
+                var convertedPattern = convertToPattern(chars);
+
+                return {
+                    name: 'onlyAtTheBeginning',
+                    label: $i18next.t('common:ONLY_AT_THE_BEGINNING', {lng: lng}) + ': ' + convertToLabel(chars),
+                    pattern: new RegExp('^([' + convertedPattern + '])?[^' + convertedPattern + ']+$')
+                };
+            },
             validCharacters: function (chars) {
                 return {
                     name: 'validCharacters',
                     label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': ' + convertToLabel(chars),
                     pattern: new RegExp('^[' + convertToPattern(chars) + ']+$')
+                };
+            },
+            noConsecutiveCharacters: function (chars) {
+                var convertedPattern = chars.split(' ').map(function (charPair) {
+                    var charsPairArray = charPair.split('');
+
+                    return '(?!.*' + '\\' + charsPairArray[0] + '\\' + charsPairArray[1] + ')';
+                }).join('');
+
+                return {
+                    name: 'noConsecutiveCharacters',
+                    label: $i18next.t('common:NO_CONSECUTIVE_CHARACTER', {lng: lng}) + ': ' + convertToLabel(chars),
+                    pattern: new RegExp('^' + convertedPattern)
+                };
+            },
+            mustNotBeOneOf: function (words) {
+                var convertedPattern = words.split(' ').join('|');
+
+                return {
+                    name: 'mustNotBeOneOf',
+                    label: $i18next.t('common:MUST_NOT_BE_ONE_OF', {lng: lng}) + ': ' + convertToLabel(words),
+                    pattern: new RegExp('^(?!' + convertedPattern + ').*|.*(?<!' + convertedPattern + ')$|^(' +
+                        convertedPattern + ').+$')
                 };
             },
             length: function (options) {
@@ -169,28 +204,6 @@
                         pattern: new RegExp('^[\\S\\s]{' + min + ',' + max + '}$')
                     };
                 }
-            },
-            noConsecutiveCharacters: function (chars) {
-                var convertedPattern = chars.split(' ').map(function (charPair) {
-                    var charsPairArray = charPair.split('');
-
-                    return '(?!.*' + '\\' + charsPairArray[0] + '\\' + charsPairArray[1] + ')';
-                }).join('');
-
-                return {
-                    name: 'noConsecutiveCharacters',
-                    label: $i18next.t('common:NO_CONSECUTIVE_CHARACTER', {lng: lng}) + ': ' + convertToLabel(chars),
-                    pattern: new RegExp('^' + convertedPattern)
-                }
-            },
-            onlyAtTheBeginning: function (chars) {
-                var convertedPattern = convertToPattern(chars);
-
-                return {
-                    name: 'onlyAtTheBeginning',
-                    label: $i18next.t('common:ONLY_AT_THE_BEGINNING', {lng: lng}) + ': ' + convertToLabel(chars),
-                    pattern: new RegExp('^([' + convertedPattern + '])?[^' + convertedPattern + ']+$')
-                };
             }
         };
         var commonRules = {
@@ -316,7 +329,9 @@
                 ]
             },
             function: {
-                name: commonRules.dns1035Label.concat(generateRule.length({max: lengths.function.name})),
+                name: commonRules.dns1035Label.concat(
+                    generateRule.mustNotBeOneOf('dashboard controller dlx scaler'),
+                    generateRule.length({max: lengths.function.name})),
                 label: {
                     key: commonRules.prefixedQualifiedName.concat(generateRule.length({
                         max: lengths.function.label.key
@@ -355,6 +370,11 @@
                     generateRule.beginWith('a-z A-Z _'),
                     generateRule.length({ max: lengths.function.v3ioConsumerGroupName })
                 ]
+            },
+            apiGateway: {
+                name: commonRules.dns1035Label.concat(
+                    generateRule.mustNotBeOneOf('dashboard controller dlx scaler'),
+                    generateRule.length({max: lengths.apiGateway.name}))
             },
             service: {
                 name: [

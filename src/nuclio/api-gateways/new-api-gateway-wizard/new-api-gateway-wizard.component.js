@@ -65,7 +65,7 @@
         };
         ctrl.usernameIsFocused = false;
         ctrl.validationRules = {
-            apiGatewayName: ValidationService.getValidationRules('k8s.dns1035Label')
+            apiGatewayName: ValidationService.getValidationRules('apiGateway.name')
         };
 
         ctrl.$onInit = onInit;
