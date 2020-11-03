@@ -8,7 +8,8 @@
                 item: '<',
                 itemIndex: '<?',
                 type: '@',
-                listClass: '@?'
+                listClass: '@?',
+                deleteTestId: '@?'
             },
             templateUrl: 'nuclio/common/components/collapsing-row/collapsing-row.tpl.html',
             controller: NclCollapsingRowController,

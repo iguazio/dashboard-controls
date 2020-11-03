@@ -175,7 +175,7 @@
             var isFormValid = true;
             var labels = lodash.get(ctrl.version, 'metadata.labels', []);
             var nuclioLabels = lodash.pickBy(labels, function (value, key) {
-                return lodash.includes(key, 'nuclio.io/');
+                return lodash.startsWith(key, 'nuclio.io/');
             });
             var newLabels = {};
 
