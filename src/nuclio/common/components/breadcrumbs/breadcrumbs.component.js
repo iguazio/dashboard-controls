@@ -11,13 +11,12 @@
             controller: NclBreadcrumbsController
         });
 
-    function NclBreadcrumbsController($scope, $state, $transitions, lodash, NavigationTabsService) {
+    function NclBreadcrumbsController($scope, $state, $transitions, lodash) {
         var ctrl = this;
 
         ctrl.mainHeaderTitle = {};
 
         ctrl.$onInit = onInit;
-        ctrl.$postLink = postLink;
 
         ctrl.goToProjectsList = goToProjectsList;
         ctrl.goToFunctionsList = goToFunctionsList;
@@ -36,13 +35,6 @@
             $scope.$on('update-main-header-title', setMainHeaderTitle);
 
             $transitions.onSuccess({}, onStateChangeSuccess);
-        }
-
-        /**
-         * Post linking method
-         */
-        function postLink() {
-            ctrl.navigationTabsConfig = NavigationTabsService.getNavigationTabsConfig($state.current.name);
         }
 
         //
@@ -93,7 +85,6 @@
          */
         function onStateChangeSuccess(transition) {
             var toState = transition.$to();
-            ctrl.navigationTabsConfig = NavigationTabsService.getNavigationTabsConfig(toState.name);
 
             // Check to exclude prototypical inheritance of the `mainHeaderTitle` property from parent router state
             if (Object.prototype.hasOwnProperty.call(toState.data, 'mainHeaderTitle')) {

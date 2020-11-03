@@ -203,7 +203,7 @@
                     return initFunctions()
                         .then(function () {
                             ctrl.isSplashShowed.value = false;
-                        })
+                        });
                 }
 
             });
@@ -296,7 +296,7 @@
                 })
                 .then(function () {
                     if (!autoRefresh) {
-                        updateStatistics()
+                        updateStatistics();
                     }
                 })
                 .catch(function (error) {
@@ -346,7 +346,7 @@
 
                     NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
 
-                    return ctrl.refreshFunctions()
+                    return ctrl.refreshFunctions();
                 })
                 .then(function () {
                     sortTable();
@@ -409,7 +409,7 @@
          */
         function onItemChecked(event, data) {
             if (!lodash.isEmpty(data.itemType)) {
-                FunctionsService.checkedItem = data.itemType
+                FunctionsService.checkedItem = data.itemType;
             }
         }
 
@@ -718,7 +718,7 @@
                                         return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
                                     })
                                 }
-                            })
+                            });
                         } else if (type === METRICS.FUNCTION_MEMORY) {
                             lodash.merge(aFunction.ui, {
                                 metrics: {
@@ -727,7 +727,7 @@
                                         return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
                                     })
                                 }
-                            })
+                            });
                         } else { // type === METRICS.FUNCTION_COUNT
                             lodash.merge(aFunction.ui, {
                                 metrics: {
@@ -738,7 +738,7 @@
                                     invocationPerSec:
                                         $filter('scale')(invocationPerSec, Number.isInteger(invocationPerSec) ? 0 : 2)
                                 }
-                            })
+                            });
                         }
                     }
                 });

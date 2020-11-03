@@ -1,0 +1,272 @@
+<div class="main-part new-api-gateway-wizard" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig">
+    <div class="title">
+        <div>{{ ($ctrl.editWizard ? 'functions:EDIT_API_GATEWAY' : 'functions:CREATE_NEW_API_GATEWAY') | i18next }}</div>
+        <div class="close-button-wrapper" data-ng-click="$ctrl.closeWizard()">
+            <div class="igz-icon-close"></div>
+            <span>ESC</span>
+        </div>
+    </div>
+    <div class="content-wrapper">
+        <div class="content" data-ng-switch data-on="$ctrl.activeStep">
+            <igz-toast-status-panel data-panel-state="$ctrl.functionFetchPanel.state"
+                                    data-panel-messages="$ctrl.functionFetchPanel.messages">
+            </igz-toast-status-panel>
+            <form name="$ctrl.apiGatewayForm" class="api-gateway-form" novalidate
+                  data-ng-submit="$ctrl.saveApiGateway($event)">
+                <div class="content-body">
+                    <div class="api-gateway-globe"></div>
+                    <div class="connector"></div>
+
+                    <div class="api-gateway-block api-gateway-authentication">
+                        <div class="block-title">{{ 'functions:AUTHENTICATION' | i18next }}</div>
+
+                        <div class="fields-wrapper"
+                             data-ng-class="{'basic-authentication': $ctrl.selectedAuthenticationType === 'basicAuth'}">
+                            <div class="field-wrapper">
+                                <div class="field-label">{{ 'common:TYPE' | i18next }}</div>
+
+                                <div class="field-input">
+                                    <igz-default-dropdown data-select-property-only="id"
+                                                          data-test-id="api-gateways.wizard_auth-mode.dropdown"
+                                                          data-values-array="$ctrl.authMode"
+                                                          data-form-object="$ctrl.apiGatewayForm"
+                                                          data-is-required="true"
+                                                          data-prevent-drop-up="true"
+                                                          data-input-name="type"
+                                                          data-selected-item="$ctrl.selectedAuthenticationType"
+                                                          data-item-select-callback="$ctrl.selectAuthType(item, field)"
+                                                          data-item-select-field="spec.authenticationMode">
+                                    </igz-default-dropdown>
+                                </div>
+                            </div>
+
+                            <div class="field-wrapper authentication-field"
+                                 data-ng-if="$ctrl.selectedAuthenticationType === 'basicAuth'">
+                                <div class="field-label asterisk">
+                                    {{ 'common:USERNAME' | i18next }}
+                                </div>
+
+                                <div class="field-input">
+                                    <igz-validating-input-field class="api-gateway-username"
+                                                                data-test-id="api-gateways.wizard_username.input"
+                                                                data-field-type="input"
+                                                                data-input-name="username"
+                                                                data-input-value="$ctrl.apiGateway.spec.authentication.basicAuth.username"
+                                                                data-form-object="$ctrl.apiGatewayForm"
+                                                                data-is-focused="$ctrl.usernameIsFocused"
+                                                                data-validation-is-required="true"
+                                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                                data-update-data-field="spec.authentication.basicAuth.username">
+                                    </igz-validating-input-field>
+                                </div>
+                            </div>
+
+                            <div class="field-wrapper authentication-field"
+                                 data-ng-if="$ctrl.selectedAuthenticationType === 'basicAuth'">
+                                <div class="field-label asterisk">
+                                    {{ 'common:PASSWORD' | i18next }}
+                                </div>
+
+                                <div class="field-input">
+                                    <igz-validating-input-field class="api-gateway-password"
+                                                                data-test-id="api-gateways.wizard_password.input"
+                                                                data-field-type="password"
+                                                                data-input-name="password"
+                                                                data-input-value="$ctrl.apiGateway.spec.authentication.basicAuth.password"
+                                                                data-form-object="$ctrl.apiGatewayForm"
+                                                                data-validation-is-required="true"
+                                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                                data-update-data-field="spec.authentication.basicAuth.password">
+                                    </igz-validating-input-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="api-gateway-block api-gateway-basic-settings">
+
+                        <div class="block-title">{{ 'common:BASIC_SETTINGS' | i18next }}</div>
+
+                        <div class="fields-wrapper">
+                            <div class="field-wrapper">
+                                <div class="field-label"
+                                     data-ng-class="{ asterisk: !$ctrl.editWizard }">
+                                    {{ 'common:NAME' | i18next }}
+                                </div>
+
+                                <div class="field-input">
+                                    <igz-validating-input-field class="api-gateway-name"
+                                                                data-test-id="api-gateways.wizard_name.input"
+                                                                data-field-type="input"
+                                                                data-input-name="name"
+                                                                data-is-focused="!$ctrl.editWizard"
+                                                                data-input-value="$ctrl.apiGateway.spec.name"
+                                                                data-form-object="$ctrl.apiGatewayForm"
+                                                                data-read-only="$ctrl.editWizard"
+                                                                data-validation-is-required="true"
+                                                                data-validation-rules="$ctrl.validationRules.apiGatewayName"
+                                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                                data-update-data-field="spec.name">
+                                    </igz-validating-input-field>
+                                </div>
+                            </div>
+
+                            <div class="field-wrapper description-field">
+                                <div class="field-label">{{ 'common:DESCRIPTION' | i18next }}</div>
+
+                                <div class="field-input">
+                                    <igz-validating-input-field class="api-gateway-description"
+                                                                data-test-id="api-gateways.wizard_description.input"
+                                                                data-field-type="input"
+                                                                data-input-name="description"
+                                                                data-input-value="$ctrl.apiGateway.spec.description"
+                                                                data-form-object="$ctrl.apiGatewayForm"
+                                                                data-validation-is-required="false"
+                                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                                data-update-data-field="spec.description">
+                                    </igz-validating-input-field>
+                                </div>
+                            </div>
+
+                            <div class="field-wrapper path-field">
+                                <div class="field-label">{{ 'common:PATH' | i18next }}</div>
+
+                                <div class="field-input">
+                                    <igz-validating-input-field class="api-gateway-path"
+                                                                data-test-id="api-gateways.wizard_path.input"
+                                                                data-field-type="input"
+                                                                data-input-name="path"
+                                                                data-input-value="$ctrl.apiGateway.spec.path"
+                                                                data-form-object="$ctrl.apiGatewayForm"
+                                                                data-validation-is-required="false"
+                                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                                data-update-data-field="spec.path">
+                                    </igz-validating-input-field>
+                                </div>
+                            </div>
+
+                            <div class="end-point-block">
+                                <div class="end-point-title">{{ 'functions:ENDPOINT' | i18next }}</div>
+                                <div class="end-point-host">
+                                    <div class="host"
+                                         data-test-id="api-gateways.wizard_endpoint.text">{{ $ctrl.apiGateway.ui.endpoint }}</div>
+                                    <div class="copy-to-clipboard igz-action-panel">
+                                        <div class="actions-list">
+                                            <igz-copy-to-clipboard data-value="$ctrl.apiGateway.ui.endpoint"
+                                                                   data-tooltip-placement="bottom">
+                                            </igz-copy-to-clipboard>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="connector"></div>
+                    <div data-ng-class="{
+                            'connector': !$ctrl.canaryUpstream,
+                            'connector-split': $ctrl.canaryUpstream
+                         }"></div>
+                    <div class="api-gateway-circles"
+                         data-ng-class="{'only-primary': !$ctrl.canaryUpstream}">
+                        <div class="api-gateway-block function-circle primary-function">
+                            <div class="block-title primary-title">
+                                {{ 'common:PRIMARY' | i18next }}
+                            </div>
+
+                            <div class="function-name" data-ng-class="{'percentage-exists': $ctrl.canaryUpstream}">
+                                <div class="percentage" data-ng-if="$ctrl.canaryUpstream">
+                                    <div class="percentage-background"></div>
+                                    <span class="percentage-value"
+                                          data-test-id="api-gateways.wizard_primary-percentage.text">{{ 100 - $ctrl.canaryUpstream.percentage }}</span>
+                                </div>
+
+                                <div class="function-name-input">
+                                    <igz-auto-complete class="api-gateway-function-name"
+                                                       data-borders-mode="hover"
+                                                       data-no-match-policy="{{$ctrl.functionFetchPanel.state === null ? 'invalid' : 'allow'}}"
+                                                       data-is-required="true"
+                                                       data-form-object="$ctrl.apiGatewayForm"
+                                                       data-input-name="{{$ctrl.primaryFunctionInput}}"
+                                                       data-current-value="$ctrl.primaryUpstream.nucliofunction.name"
+                                                       data-on-request-suggestions="$ctrl.updateSuggestionsList(input, inputName)"
+                                                       data-on-suggestion-selected="$ctrl.selectSuggestion(value, inputName)"
+                                                       data-on-text-changed="$ctrl.selectSuggestion(value, inputName)"
+                                                       data-empty-message="{{ 'functions:NO_FUNCTIONS_AVAILABLE' | i18next }}"
+                                                       data-tooltip="{
+                                                           text: $ctrl.primaryUpstream.nucliofunction.name,
+                                                           placement: 'bottom'
+                                                       }">
+                                    </igz-auto-complete>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="igz-create-button create-canary-button"
+                             data-ng-if="!$ctrl.canaryUpstream"
+                             data-ng-click="$ctrl.createCanaryFunction()"
+                             data-test-id="api-gateways.wizard_create-canary.button">
+                            <span class="igz-icon-add-round"></span>
+                            {{ 'functions:CREATE_CANARY_FUNCTION' | i18next }}
+                        </div>
+
+                        <div class="primary-canary-slider"
+                             data-ng-if="$ctrl.canaryUpstream">
+                            <rzslider class="rzslider"
+                                      data-rz-slider-model="$ctrl.canaryUpstream.percentage"
+                                      data-rz-slider-options="$ctrl.sliderConfig">
+                            </rzslider>
+                        </div>
+
+                        <div class="api-gateway-block function-circle canary-function"
+                             data-ng-if="$ctrl.canaryUpstream">
+                            <div class="function-name percentage-exists">
+                                <div class="percentage swap">
+                                    <div class="percentage-background"></div>
+                                    <span class="percentage-value"
+                                          data-test-id="api-gateways.wizard_secondary-percentage.text">{{ $ctrl.canaryUpstream.percentage }}</span>
+                                </div>
+
+                                <div class="function-name-input">
+                                    <igz-auto-complete class="api-gateway-function-name"
+                                                       data-borders-mode="hover"
+                                                       data-no-match-policy="{{$ctrl.functionFetchPanel.state === null ? 'invalid' : 'allow'}}"
+                                                       data-is-required="true"
+                                                       data-is-focused="$ctrl.canaryUpstream.nucliofunction.name === ''"
+                                                       data-form-object="$ctrl.apiGatewayForm"
+                                                       data-input-name="{{$ctrl.canaryFunctionInput}}"
+                                                       data-current-value="$ctrl.canaryUpstream.nucliofunction.name"
+                                                       data-on-request-suggestions="$ctrl.updateSuggestionsList(input, inputName)"
+                                                       data-on-suggestion-selected="$ctrl.selectSuggestion(value, inputName)"
+                                                       data-on-text-changed="$ctrl.selectSuggestion(value, inputName)"
+                                                       data-placeholder="{{ 'common:FUNCTION_NAME' | i18next }}"
+                                                       data-empty-message="{{ 'functions:NO_FUNCTIONS_AVAILABLE' | i18next }}"
+                                                       data-tooltip="{
+                                                           text: $ctrl.canaryUpstream.nucliofunction.name,
+                                                           placement: 'bottom'
+                                                       }">
+                                    </igz-auto-complete>
+                                </div>
+                            </div>
+                            <igz-action-menu class="canary-action-menu"
+                                             data-actions="$ctrl.getActions()"
+                                             data-on-fire-action="$ctrl.onFireAction">
+                            </igz-action-menu>
+                            <div class="block-title canary-title">
+                                {{ 'functions:CANARY' | i18next }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="buttons-wrapper">
+                    <button class="igz-button-primary save-button"
+                            type="submit"
+                            data-test-id="api-gateways.wizard_save.button"
+                            data-ng-disabled="!$ctrl.isChangesHaveBeenMade() || !$ctrl.apiGatewayForm.$valid">
+                        {{ 'common:SAVE' | i18next }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

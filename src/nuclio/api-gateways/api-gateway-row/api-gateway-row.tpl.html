@@ -1,0 +1,68 @@
+<div class="ncl-api-gateway-row common-table-row">
+    <div class="common-table-cell igz-col-3">
+        <igz-action-checkbox data-ng-if="$ctrl.isSteadyState($ctrl.apiGateway)"
+                             data-item="$ctrl.apiGateway">
+        </igz-action-checkbox>
+    </div>
+
+    <div class="igz-row common-table-cells-container">
+        <div class="common-table-cell igz-col-12-5" data-test-id="api-gateways.item-name">
+            <span data-test-id="api-gateways.item-name.text"
+                  class="text-ellipsis"
+                  data-uib-tooltip-html="$ctrl.nameTooltip"
+                  data-tooltip-append-to-body="true"
+                  data-tooltip-popup-delay="100"
+                  data-tooltip-placement="top">
+                {{$ctrl.apiGateway.spec.name}}
+            </span>
+        </div>
+        <div class="common-table-cell igz-col-25" data-test-id="api-gateways.item-host">
+            <span class="text-ellipsis"
+                  data-uib-tooltip="{{$ctrl.apiGateway.ui.endpoint}}"
+                  data-tooltip-append-to-body="true"
+                  data-tooltip-popup-delay="100"
+                  data-tooltip-placement="top">
+                {{$ctrl.apiGateway.ui.endpoint}}
+            </span>
+            <div class="igz-action-panel">
+                <div class="actions-list">
+                    <igz-copy-to-clipboard data-value="$ctrl.apiGateway.ui.endpoint"></igz-copy-to-clipboard>
+                </div>
+            </div>
+        </div>
+        <div class="common-table-cell igz-col-10" data-test-id="api-gateways.item-primary">
+            {{$ctrl.getPrimaryName($ctrl.apiGateway)}}
+        </div>
+        <div class="common-table-cell igz-col-10" data-test-id="api-gateways.item-secondary-name">
+            {{$ctrl.getCanaryName($ctrl.apiGateway, 'common:N_A' | i18next)}}
+        </div>
+        <div class="common-table-cell igz-col-7-5" data-test-id="api-gateways.item-secondary-percentage">
+            {{$ctrl.getCanaryPercentage($ctrl.apiGateway, 'common:N_A' | i18next)}}
+        </div>
+        <div class="common-table-cell igz-col-7-5" data-test-id="api-gateways.item-auth-mode">
+            {{$ctrl.getAuthModeName()}}
+        </div>
+        <div class="common-table-cell igz-col-7-5 status" data-test-id="api-gateways.item-state"
+             data-ng-class="$ctrl.apiGateway.status.state">
+            <igz-element-loading-status class="element-loading-status-wrapper"
+                                        data-name="api-gateway-status-{{$ctrl.apiGateway.spec.name}}"
+                                        data-loading-status-size="small"
+                                        data-tooltip-label="{{'functions:API_GATEWAY_IN_TRANSIENT_STATE' | i18next}}">
+                <div>{{$ctrl.apiGateway.status.state}}</div>
+            </igz-element-loading-status>
+        </div>
+        <div class="common-table-cell igz-col-7-5" data-test-id="api-gateways.item-created-by">
+            {{$ctrl.getCreatedBy()}}
+        </div>
+        <div class="common-table-cell igz-col-12-5" data-test-id="api-gateways.item-created-at">
+            {{$ctrl.apiGateway.metadata.creationTimestamp | date:'MMM d, y h:mm:ss a'}}
+        </div>
+    </div>
+
+    <div class="common-table-cell actions-menu">
+        <igz-action-menu data-ng-if="$ctrl.isSteadyState($ctrl.apiGateway)"
+                         data-actions="$ctrl.apiGatewayActions"
+                         data-on-fire-action="$ctrl.onFireAction">
+        </igz-action-menu>
+    </div>
+</div>

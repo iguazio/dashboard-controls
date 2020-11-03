@@ -1,0 +1,34 @@
+.ncl-api-gateway-row {
+    .common-table-cells-container {
+        .common-table-cell {
+            &.status {
+                text-transform: capitalize;
+
+                &.ready {
+                    color: @tealish;
+                }
+
+                // just in case - for now these statuses will not be shown because there will be a loader
+                &.provisioning, &.waitingForProvisioning {
+                    color: @pale-orange;
+                }
+
+                &.error {
+                    color: @darkish-pink;
+                }
+            }
+        }
+    }
+
+    .actions-menu {
+        visibility: hidden;
+    }
+
+    &.common-table-row {
+        &:hover {
+            .actions-menu {
+                visibility: visible;
+            }
+        }
+    }
+}

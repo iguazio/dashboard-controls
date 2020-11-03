@@ -1,0 +1,59 @@
+.toast-status-panel {
+    .toast-status-panel-color-set();
+
+    margin-bottom: 20px;
+    padding: 16px 36px 16px 12px;
+    background-color: @toast-panel-bg-color;
+    border: @toast-panel-border;
+    position: relative;
+
+    &.in-progress {
+        background-color: @toast-panel-in-progress-bg-color;
+        border: @toast-panel-in-progress-border;
+    }
+
+    &.failed {
+        background-color: @toast-panel-failed-bg-color;
+        border: @toast-panel-failed-border;
+    }
+
+    .panel-status {
+        color: @toast-panel-status-color;
+        line-height: 24px;
+        font-size: 14px;
+        font-weight: 700;
+        font-family: @font-family-sans-serif;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+
+        &.in-progress {
+            color: @toast-panel-status-in-progress-color;
+        }
+
+        &.failed {
+            color: @toast-panel-status-failed-color;
+        }
+
+        .panel-status-icon {
+            font-size: 24px;
+
+            &.igz-icon-properties {
+                -webkit-animation: rotation 4s infinite linear;
+
+                @-webkit-keyframes rotation {
+                    from {
+                        -webkit-transform: rotate(0deg);
+                    }
+                    to {
+                        -webkit-transform: rotate(359deg);
+                    }
+                }
+            }
+        }
+
+        .panel-status-msg {
+            margin-left: 8px;
+        }
+    }
+}
