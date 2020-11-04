@@ -249,6 +249,7 @@
     "READINESS_TIMEOUT_SECONDS_DESCRIPTION": "The time, in seconds, that the controller will wait for the function to become ready before declaring failure (default: {{default}})",
     "REBALANCING_GRACE_PERIOD": "Rebalancing grace period",
     "REBALANCE_TIMEOUT": "Rebalance timeout",
+    "REDIRECT_UNAUTHORIZED_REQUESTS": "Redirect unauthorized requests",
     "REGION": "Region",
     "REMOTE_PATH": "Remote path",
     "REPLACE": "Replace",
@@ -319,6 +320,7 @@
         "NEW_TEST": "New test",
         "NO_INTERNET_ACCESS": "Use local Docker images rather than pulling from remote",
         "PREFIXED_NAME": "{{name}} keys are composed of an optional prefix and a name, separated by a forward slash (/) — '&lt;key prefix&gt;/&lt;key name&gt;'.",
+        "REDIRECT_UNAUTHORIZED_REQUESTS": "This option should be used if the API endpoint is used by GUI. It will redirect the application to the login screen upon unauthorized request.",
         "RUN_FUNCTION": "Run function",
         "SECRET": {
             "HEAD": "Kubernetes secret",

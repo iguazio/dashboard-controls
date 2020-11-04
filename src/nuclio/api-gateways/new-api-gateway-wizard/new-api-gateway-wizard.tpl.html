@@ -80,6 +80,22 @@
                                     </igz-validating-input-field>
                                 </div>
                             </div>
+
+                            <div class="field-wrapper"
+                                 data-ng-if="$ctrl.selectedAuthenticationType === 'oauth2'">
+                                <div class="redirect-unauthorized-requests-checkbox align-items-center">
+                                    <input id="redirect-unauthorized-requests-checkbox"
+                                           type="checkbox"
+                                           tabindex="-1"
+                                           data-ng-model="$ctrl.apiGateway.spec.authentication.dexAuth.redirectUnauthorizedToSignIn"/>
+                                    <label for="redirect-unauthorized-requests-checkbox"
+                                           tabindex="0">
+                                        {{ 'functions:REDIRECT_UNAUTHORIZED_REQUESTS' | i18next }}
+                                    </label>
+                                    <igz-more-info data-description="{{ 'functions:TOOLTIP.REDIRECT_UNAUTHORIZED_REQUESTS' | i18next }}">
+                                    </igz-more-info>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="connector"></div>
