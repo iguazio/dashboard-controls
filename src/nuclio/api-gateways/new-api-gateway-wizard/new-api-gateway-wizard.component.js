@@ -207,13 +207,21 @@
          * @param field {string} - model field
          */
         function selectAuthType(type, field) {
+            var fieldToOmit = type.id !== 'basicAuth' && type.id !== 'oauth2' ? ''           :
+                              type.id !== 'basicAuth'                         ? '.basicAuth' :
+                              type.id !== 'oauth2'                            ? '.dexAuth'   : null;
+
             lodash.set(ctrl.apiGateway, field, type.id);
 
             ctrl.selectedAuthenticationType = type.id;
             ctrl.usernameIsFocused = true;
 
-            if (type !== 'basicAuth') {
-                ctrl.apiGateway.spec = lodash.omit(ctrl.apiGateway.spec, 'authentication');
+            if (type.id === 'oauth2') {
+                lodash.set(ctrl.apiGateway.spec, 'authentication.dexAuth.redirectUnauthorizedToSignIn', false);
+            }
+
+            if (!lodash.isNil(fieldToOmit)) {
+                ctrl.apiGateway.spec = lodash.omit(ctrl.apiGateway.spec, 'authentication' + fieldToOmit);
             }
         }
 
