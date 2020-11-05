@@ -112,7 +112,7 @@
          * Destructor method
          */
         function onDestroy() {
-            $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: false});
+            $rootScope.$broadcast('change-state-deploy-button', { component: 'trigger', isDisabled: false });
         }
 
         //
@@ -121,21 +121,28 @@
 
         /**
          * Adds default HTTP trigger to the trigger list
+         * @param {Event} event
          */
-        function addDefaultHttpTrigger() {
+        function addDefaultHttpTrigger(event) {
             var defaultTriggers = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes.spec.triggers');
             var defaultHttpTrigger = angular.copy(lodash.find(defaultTriggers, ['kind', 'http']));
+
+            event.stopPropagation();
 
             if (!lodash.isEmpty(defaultHttpTrigger)) {
                 var triggers = lodash.get(ctrl.version, 'spec.triggers', {});
                 var triggerItem = createTriggerItem(defaultHttpTrigger);
+                triggerItem.name = 'http'; // make sure the name is not 'default-http'
+                triggerItem.ui.editModeActive = true;
                 triggers[defaultHttpTrigger.name] = defaultHttpTrigger;
 
                 lodash.set(ctrl.version, 'spec.triggers', triggers);
                 ctrl.triggers.push(triggerItem);
 
-                updateTriggerInfoMsg(triggerItem, true);
+                updateTriggerInfoMsg(triggerItem);
                 checkClassUniqueness();
+
+                $rootScope.$broadcast('change-state-deploy-button', { component: 'trigger', isDisabled: true });
 
                 $timeout(function () {
                     $window.dispatchEvent(new Event('resize'));
@@ -152,9 +159,8 @@
                 var classIsUsed = lodash.some(ctrl.triggers, ['ui.selectedClass.id', classId]);
 
                 lodash.merge(classData, {
-                    tooltip: classIsUsed ?
-                        classData.tooltipOriginal + ' - ' + $i18next.t('functions:CANNOT_CREATE_TRIGGER', {lng: lng}) :
-                        classData.tooltipOriginal,
+                    tooltip: classData.tooltipOriginal +
+                        (classIsUsed ? ' - ' + $i18next.t('functions:CANNOT_CREATE_TRIGGER', { lng: lng }) : ''),
                     disabled: classIsUsed
                 });
             });
@@ -168,7 +174,7 @@
             $timeout(function () {
                 if (ctrl.isCreateNewTriggerEnabled()) {
                     ctrl.triggers.push(createTriggerItem());
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: true});
+                    $rootScope.$broadcast('change-state-deploy-button', { component: 'trigger', isDisabled: true });
                     event.stopPropagation();
                 }
             }, 100);
@@ -196,13 +202,16 @@
             } else if (actionType === 'update') {
                 updateHandler(selectedItem);
             } else {
-                DialogsService.alert($i18next.t('functions:ERROR_MSG.FUNCTIONALITY_IS_NOT_IMPLEMENTED', {lng: lng}));
+                DialogsService.alert($i18next.t('functions:ERROR_MSG.FUNCTIONALITY_IS_NOT_IMPLEMENTED', { lng: lng }));
             }
 
-            $rootScope.$broadcast('change-state-deploy-button', {component: 'trigger', isDisabled: false});
+            $rootScope.$broadcast('change-state-deploy-button', { component: 'trigger', isDisabled: false });
             lodash.forEach(ctrl.triggers, function (trigger) {
                 if (!trigger.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', {component: trigger.ui.name, isDisabled: true});
+                    $rootScope.$broadcast(
+                        'change-state-deploy-button',
+                        { component: trigger.ui.name, isDisabled: true }
+                    );
                 }
             });
 
@@ -227,8 +236,7 @@
          * @returns {boolean} `true` in case "HTTP trigger message" is shown, or `false` otherwise.
          */
         function isHttpTriggerMsgShown() {
-            var httpTrigger = lodash.find(ctrl.version.spec.triggers, ['kind', 'http']);
-            return lodash.isNil(httpTrigger);
+            return !lodash.some(ctrl.version.spec.triggers, ['kind', 'http']);
         }
 
         //
@@ -257,7 +265,7 @@
 
             if (noTriggerProvided) {
                 lodash.merge(triggerItem, {
-                    attributes: {},
+                    attributes: {}
                 });
             }
 
@@ -381,15 +389,13 @@
         /**
          * Sets trigger's data for `more-info` tooltip
          * @param {Object} trigger - the trigger object for updating `more-info` data
-         * @param {boolean} isOpen - determines if tooltip should be opened
          */
-        function updateTriggerInfoMsg(trigger, isOpen) {
+        function updateTriggerInfoMsg(trigger) {
             if (trigger.kind === 'http') {
                 lodash.set(trigger, 'ui.moreInfoMsg', {
                     name: {
-                        isOpen: Boolean(isOpen),
                         type: trigger.name === 'default-http' ? 'warn' : 'info',
-                        description: $i18next.t('functions:HTTP_TRIGGER_NAME_DESCRIPTION', {lng: lng})
+                        description: $i18next.t('functions:HTTP_TRIGGER_NAME_DESCRIPTION', { lng: lng })
                     }
                 });
             } else {
@@ -422,7 +428,7 @@
                     }
                 }
 
-                updateTriggerInfoMsg(trigger);
+                updateTriggerInfoMsg(triggersItem);
 
                 return triggersItem;
             });
