@@ -29,7 +29,7 @@
 
                 if (!lodash.isEmpty(ingress)) {
                     return {
-                        text: ingress.host,
+                        text: 'http://' + ingress.host,
                         valid: true
                     };
                 }

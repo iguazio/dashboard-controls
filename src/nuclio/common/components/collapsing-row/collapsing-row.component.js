@@ -21,7 +21,6 @@
         var lng = i18next.language;
 
         ctrl.actions = [];
-        ctrl.isEditModeActive = false;
 
         ctrl.$onInit = onInit;
 
