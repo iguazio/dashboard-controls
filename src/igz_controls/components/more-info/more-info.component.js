@@ -30,8 +30,10 @@
 
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
+        ctrl.$onDestroy = onDestroy;
+
+        ctrl.handleQuestionMarkClick = handleQuestionMarkClick;
         ctrl.isClickMode = isClickMode;
-        ctrl.onQuestionMarkClick = onQuestionMarkClick;
 
         //
         // Hook methods
@@ -73,6 +75,13 @@
             }
         }
 
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            $document.off('click', hideTooltip);
+        }
+
         //
         // Public methods
         //
@@ -87,8 +96,10 @@
 
         /**
          * Handles click on question mark. Shows/hides tooltip. Works only for 'click' trigger.
+         * @param {Event} event
          */
-        function onQuestionMarkClick() {
+        function handleQuestionMarkClick(event) {
+            event.stopPropagation();
             if (ctrl.isClickMode()) {
                 ctrl.isDescriptionVisible = !ctrl.isDescriptionVisible;
                 toggleClickListener();
@@ -116,8 +127,12 @@
          */
         function toggleClickListener() {
             $timeout(function () {
-                ctrl.isDescriptionVisible ? $document.on('click', hideTooltip) : $document.off('click', hideTooltip);
-            })
+                if (ctrl.isDescriptionVisible) {
+                    $document.on('click', hideTooltip);
+                } else {
+                    $document.off('click', hideTooltip);
+                }
+            });
         }
     }
 }());
