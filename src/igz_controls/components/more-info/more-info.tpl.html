@@ -7,7 +7,7 @@
                  'igz-icon-help-round': $ctrl.selectedIconType === $ctrl.iconTypes.INFO,
                  'open': $ctrl.isDescriptionVisible
              }"
-             data-ng-click="$ctrl.onQuestionMarkClick()"
+             data-ng-click="$ctrl.handleQuestionMarkClick($event)"
              class="question-mark">
         </div>
         <div class="row-description"

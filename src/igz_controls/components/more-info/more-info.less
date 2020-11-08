@@ -52,7 +52,7 @@
     }
 
     .row-description {
-        width: 280px;
+        width: 240px;
         padding: 16px 19px;
         position: absolute;
         border-radius: 2px;
@@ -73,14 +73,14 @@
 
         &.top,
         &.bottom {
-            left: -132px;
+            left: -114px;
 
             &::before {
                 right: calc(50% - 9px);
             }
 
             &-left {
-                left: -260px;
+                left: -220px;
 
                 &::before {
                     right: 4px;
@@ -127,26 +127,10 @@
             &::before {
                 top: 7px;
             }
-
-            &-left {
-                top: calc(50% - 20px);
-
-                &::before {
-                    top: 7px;
-                }
-            }
-
-            &-right{
-                top: calc(50% - 20px);
-
-                &::before {
-                    top: 7px;
-                }
-            }
         }
 
         &.right {
-            left: 32px;
+            left: 26px;
 
             &::before {
                 .triangle-arrow(right; @row-description-triangle-color; 8px; 10px);
@@ -156,7 +140,7 @@
         }
 
         &.left {
-            left: -290px;
+            left: -250px;
 
             &::before {
                 .triangle-arrow(left; @row-description-triangle-color; 8px; 10px);
