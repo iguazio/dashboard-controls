@@ -25,11 +25,15 @@
             var httpTrigger = lodash.find(version.spec.triggers, ['kind', 'http']);
 
             if (!lodash.isNil(httpTrigger)) {
-                var ingress = lodash.get(httpTrigger, 'attributes.ingresses[0]');
+                var host = lodash.chain(httpTrigger)
+                    .get('attributes.ingresses', {}) // { key1: { host, paths }, key2: { host, paths } }
+                    .toPairs()                       // [['key1', { host, paths }], ['key2', { host, paths }]]
+                    .get('[0][1].host')              // host
+                    .value();
 
-                if (!lodash.isEmpty(ingress)) {
+                if (!lodash.isEmpty(host)) {
                     return {
-                        text: 'http://' + ingress.host,
+                        text: 'http://' + host,
                         valid: true
                     };
                 }
