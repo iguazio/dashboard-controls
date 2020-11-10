@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('NavigationTabsService', NavigationTabsService);
 
-    function NavigationTabsService($i18next, i18next, lodash, ConfigService) {
+    function NavigationTabsService($timeout, $i18next, i18next, lodash, ConfigService, FunctionsService) {
         return {
             getNavigationTabsConfig: getNavigationTabsConfig
         };
@@ -53,12 +53,17 @@
                     {
                         tabName: $i18next.t('common:FUNCTIONS', {lng: lng}),
                         uiRoute: 'app.project.functions',
-                    },
-                    {
-                        tabName: $i18next.t('functions:API_GATEWAYS', {lng: lng}),
-                        uiRoute: 'app.project.api-gateways',
                     }
                 ];
+
+                $timeout(function () {
+                    if (FunctionsService.isKubePlatform()) {
+                        config.push({
+                            tabName: $i18next.t('functions:API_GATEWAYS', {lng: lng}),
+                            uiRoute: 'app.project.api-gateways',
+                        });
+                    }
+                });
             }
 
             return config;
