@@ -12,8 +12,9 @@
         });
 
     function NclVersionConfigurationLabelsController($element, $i18next, $rootScope, $timeout, i18next, lodash,
-                                                     FormValidationService, PreventDropdownCutOffService,
-                                                     ValidationService, VersionHelperService) {
+                                                     FormValidationService, FunctionsService,
+                                                     PreventDropdownCutOffService, ValidationService,
+                                                     VersionHelperService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -21,6 +22,7 @@
             maxElementsCount: 10,
             childrenSelector: '.table-body'
         };
+        ctrl.isKubePlatform = false;
         ctrl.labelsForm = null;
         ctrl.scrollConfig = {
             axis: 'y',
@@ -55,6 +57,7 @@
 
         ctrl.addNewLabel = addNewLabel;
         ctrl.handleAction = handleAction;
+        ctrl.isLabelsDisabled = isLabelsDisabled;
         ctrl.onChangeData = onChangeData;
 
         //
@@ -65,6 +68,8 @@
          * Post linking method
          */
         function postLink() {
+            ctrl.isKubePlatform = FunctionsService.isKubePlatform();
+
 
             // Bind DOM-related preventDropdownCutOff method to component's controller
             PreventDropdownCutOffService.preventDropdownCutOff($element, '.three-dot-menu');
@@ -103,7 +108,7 @@
                         ctrl.labelsForm.$setSubmitted();
                         $rootScope.$broadcast('change-state-deploy-button', {component: 'label', isDisabled: true});
                     }
-                })
+                });
             }
         }
 
@@ -116,7 +121,7 @@
          */
         function addNewLabel(event) {
             // prevent adding labels for deployed functions
-            if (ctrl.isVersionDeployed(ctrl.version)) {
+            if (ctrl.isLabelsDisabled()) {
                 return;
             }
 
@@ -151,6 +156,14 @@
                     updateLabels();
                 });
             }
+        }
+
+        /**
+         * Checks if labels should be disabled
+         * @returns {boolean}
+         */
+        function isLabelsDisabled() {
+            return ctrl.isKubePlatform && ctrl.isVersionDeployed(ctrl.version);
         }
 
         /**
