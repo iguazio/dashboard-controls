@@ -1,3 +1,4 @@
+/* eslint max-statements: ["error", 60] */
 (function () {
     'use strict';
 
@@ -19,7 +20,7 @@
         });
 
     function NewApiGatewayWizardController($q, $scope, $rootScope, $timeout, $i18next, i18next, lodash, ngDialog,
-                                           ApiGatewaysService, DialogsService, ValidationService) {
+                                           ApiGatewaysService, ConfigService, DialogsService, ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -65,8 +66,11 @@
         };
         ctrl.usernameIsFocused = false;
         ctrl.validationRules = {
-            apiGatewayName: ValidationService.getValidationRules('apiGateway.name')
+            apiGatewayName: ValidationService.getValidationRules('apiGateway.name'),
+            host: ValidationService.getValidationRules('k8s.dns1123Subdomain')
         };
+
+        ctrl.nuclioConfigData = ConfigService.nuclio;
 
         ctrl.$onInit = onInit;
 

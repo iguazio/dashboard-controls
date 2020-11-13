@@ -68,20 +68,22 @@
          */
         function buildIngressHost(apiGateway, project) {
             var ingressHostTemplate = lodash.get(ConfigService, 'nuclio.ingressHostTemplate', '');
-            var namespace = lodash.get(ConfigService, 'nuclio.namespace', '');
-            var name = lodash.get(apiGateway, 'spec.name', '');
-            var projectName = lodash.get(project, 'metadata.name', '');
-            var path = lodash.get(apiGateway, 'spec.path', '');
 
-            var host = lodash.trimEnd(
-                ingressHostTemplate
-                    .replace(/{{\s\.ResourceName\s}}/, name)
-                    .replace(/{{\s\.ProjectName\s}}/, projectName)
-                    .replace(/{{\s\.Namespace\s}}/, namespace),
-                '/'
-            );
+            if (!lodash.isEmpty(ingressHostTemplate)) {
+                var namespace = lodash.get(ConfigService, 'nuclio.namespace', '');
+                var name = lodash.get(apiGateway, 'spec.name', '');
+                var projectName = lodash.get(project, 'metadata.name', '');
 
-            lodash.set(apiGateway, 'spec.host', host);
+                var host = lodash.trimEnd(
+                    ingressHostTemplate
+                        .replace(/{{\s\.ResourceName\s}}/, name)
+                        .replace(/{{\s\.ProjectName\s}}/, projectName)
+                        .replace(/{{\s\.Namespace\s}}/, namespace),
+                    '/'
+                );
+
+                lodash.set(apiGateway, 'spec.host', host);
+            }
 
             self.buildEndpoint(apiGateway);
         }

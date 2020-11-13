@@ -144,6 +144,26 @@
                                 </div>
                             </div>
 
+                            <div class="field-wrapper host-field"
+                                 data-ng-if="!$ctrl.nuclioConfigData.ingressHostTemplate">
+                                <div class="field-label asterisk">{{ 'functions:HOST' | i18next }}</div>
+
+                                <div class="field-input">
+                                    <igz-validating-input-field class="api-gateway-host"
+                                                                data-test-id="api-gateways.wizard_host.input"
+                                                                data-field-type="input"
+                                                                data-input-name="host"
+                                                                data-input-value="$ctrl.apiGateway.spec.host"
+                                                                data-placeholder-text="s-u-b.domain.com"
+                                                                data-form-object="$ctrl.apiGatewayForm"
+                                                                data-validation-is-required="true"
+                                                                data-validation-rules="$ctrl.validationRules.host"
+                                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                                data-update-data-field="spec.host">
+                                    </igz-validating-input-field>
+                                </div>
+                            </div>
+
                             <div class="field-wrapper path-field">
                                 <div class="field-label">{{ 'common:PATH' | i18next }}</div>
 
@@ -163,7 +183,8 @@
 
                             <div class="end-point-block">
                                 <div class="end-point-title">{{ 'functions:ENDPOINT' | i18next }}</div>
-                                <div class="end-point-host">
+                                <div class="end-point-host"
+                                     data-ng-if="$ctrl.apiGateway.spec.host && $ctrl.apiGateway.ui.endpoint">
                                     <div class="host"
                                          data-test-id="api-gateways.wizard_endpoint.text">{{ $ctrl.apiGateway.ui.endpoint }}</div>
                                     <div class="copy-to-clipboard igz-action-panel">
@@ -173,6 +194,9 @@
                                             </igz-copy-to-clipboard>
                                         </div>
                                     </div>
+                                </div>
+                                <div data-ng-if="!$ctrl.apiGateway.spec.host || !$ctrl.apiGateway.ui.endpoint">
+                                    {{ 'functions:ENTER_HOST_TO_SEE_ENDPOINT' | i18next }}
                                 </div>
                             </div>
                         </div>
