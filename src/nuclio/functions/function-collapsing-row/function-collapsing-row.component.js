@@ -244,6 +244,7 @@
             var status = lodash.chain(ctrl.function.status.state).lowerCase().upperFirst().value();
 
             ctrl.convertedStatusState = status === 'Error'                                ? 'Error'          :
+                                        status === 'Unhealthy'                            ? 'Unhealthy'      :
                                         status === 'Scaled to zero'                       ? 'Scaled to zero' :
                                         status === 'Ready' && ctrl.function.spec.disable  ? 'Standby'        :
                                         status === 'Ready' && !ctrl.function.spec.disable ? 'Running'        :
