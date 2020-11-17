@@ -59,7 +59,7 @@
          * @returns {boolean}
          */
         function checkIsErrorState() {
-            return lodash.get(ctrl.versionStatus, 'state') === 'error';
+            return lodash.includes(['error', 'unhealthy'], lodash.get(ctrl.versionStatus, 'state'));
         }
 
         /**

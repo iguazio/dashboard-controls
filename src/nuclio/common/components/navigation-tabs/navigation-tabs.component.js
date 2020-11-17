@@ -29,7 +29,7 @@
          * @returns {boolean}
          */
         function isFunctionBuilding(status) {
-            return !lodash.includes(['ready', 'error', 'not yet deployed'], status);
+            return !lodash.includes(['ready', 'error', 'unhealthy', 'not yet deployed'], status);
         }
 
         /**
