@@ -294,7 +294,10 @@
             ctrl.getFunction({metadata: {name: ctrl.functionName}})
                 .then(function (existingFunction) {
                     ctrl.toggleSplashScreen({value: false});
-                    FunctionsService.openOverrideFunctionDialog(ctrl.project, ctrl.functionData.rendered, existingFunction);
+                    FunctionsService.openFunctionConflictDialog(ctrl.project,
+                                                                ctrl.functionData.rendered,
+                                                                existingFunction,
+                                                                false);
                 })
                 .catch(function (error) {
                     if (error.status === 404) {
@@ -309,7 +312,7 @@
                             functionData: ctrl.functionData.rendered
                         });
                     }
-                })
+                });
         }
 
         /**

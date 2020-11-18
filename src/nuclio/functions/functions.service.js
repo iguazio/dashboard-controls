@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('FunctionsService', FunctionsService);
 
-    function FunctionsService($i18next, i18next, lodash, ngDialog, ConfigService) {
+    function FunctionsService($i18next, i18next, lodash, ngDialog, ConfigService, DialogsService) {
         var self = {
             checkedItem: '',
             getClassesList: getClassesList,
@@ -12,7 +12,7 @@
             initFunctionActions: initFunctionActions,
             initVersionActions: initVersionActions,
             isKubePlatform: isKubePlatform,
-            openOverrideFunctionDialog: openOverrideFunctionDialog
+            openFunctionConflictDialog: openFunctionConflictDialog
         };
 
         return self;
@@ -908,24 +908,34 @@
         }
 
         /**
-         * Opens `Override function` dialog
+         * Opens either the dialog with the error alert or the dialog with possibility to override the existing function
          * @param {Object} project
          * @param {Object} newFunction
          * @param {Object} existingFunction
+         * @param {boolean} isImport
          */
-        function openOverrideFunctionDialog(project, newFunction, existingFunction) {
-            ngDialog.open({
-                template: '<ncl-override-function-dialog data-close-dialog="closeThisDialog(status)"' +
-                    'data-project="ngDialogData.project" data-new-function="ngDialogData.newFunction"' +
-                    'data-existing-function="ngDialogData.existingFunction"></ncl-override-function-dialog>',
-                plain: true,
-                data: {
-                    project: project,
-                    newFunction: newFunction,
-                    existingFunction: existingFunction,
-                },
-                className: 'ngdialog-theme-nuclio'
-            });
+        function openFunctionConflictDialog(project, newFunction, existingFunction, isImport) {
+            var lng = i18next.language;
+            var existingFunctionProjectName = lodash.get(existingFunction,
+                                                         ['metadata', 'labels', 'nuclio.io/project-name']);
+            var currentProjectName = lodash.get(project, 'metadata.name');
+
+            if (!isImport && self.isKubePlatform() && existingFunctionProjectName !== currentProjectName) {
+                DialogsService.alert($i18next.t('functions:FUNCTION_NAME_IS_USED_WARNING', {lng: lng}));
+            } else {
+                ngDialog.open({
+                    template: '<ncl-override-function-dialog data-close-dialog="closeThisDialog(status)"' +
+                        'data-project="ngDialogData.project" data-new-function="ngDialogData.newFunction"' +
+                        'data-existing-function="ngDialogData.existingFunction"></ncl-override-function-dialog>',
+                    plain: true,
+                    data: {
+                        project: project,
+                        newFunction: newFunction,
+                        existingFunction: existingFunction,
+                    },
+                    className: 'ngdialog-theme-nuclio'
+                });
+            }
         }
     }
 }());
