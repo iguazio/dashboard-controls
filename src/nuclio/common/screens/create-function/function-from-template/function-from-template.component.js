@@ -296,8 +296,7 @@
                     ctrl.toggleSplashScreen({value: false});
                     FunctionsService.openFunctionConflictDialog(ctrl.project,
                                                                 ctrl.functionData.rendered,
-                                                                existingFunction,
-                                                                false);
+                                                                existingFunction);
                 })
                 .catch(function (error) {
                     if (error.status === 404) {

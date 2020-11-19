@@ -912,15 +912,14 @@
          * @param {Object} project
          * @param {Object} newFunction
          * @param {Object} existingFunction
-         * @param {boolean} isImport
          */
-        function openFunctionConflictDialog(project, newFunction, existingFunction, isImport) {
+        function openFunctionConflictDialog(project, newFunction, existingFunction) {
             var lng = i18next.language;
             var existingFunctionProjectName = lodash.get(existingFunction,
                                                          ['metadata', 'labels', 'nuclio.io/project-name']);
             var currentProjectName = lodash.get(project, 'metadata.name');
 
-            if (!isImport && self.isKubePlatform() && existingFunctionProjectName !== currentProjectName) {
+            if (self.isKubePlatform() && existingFunctionProjectName !== currentProjectName) {
                 DialogsService.alert($i18next.t('functions:FUNCTION_NAME_IS_USED_WARNING', {lng: lng}));
             } else {
                 ngDialog.open({
