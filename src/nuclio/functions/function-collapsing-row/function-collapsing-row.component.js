@@ -54,6 +54,15 @@
             }
         };
         ctrl.statusIcon = null;
+        ctrl.statusStateClasses = {
+            'Error': 'error-status',
+            'Unhealthy': 'unhealthy-status',
+            'Scaled to zero': 'scaled-to-zero-status',
+            'Standby': 'standby-status',
+            'Running': 'running-status',
+            'Imported': 'imported-status',
+            'Building': 'building-status'
+        };
         ctrl.title = null;
 
         ctrl.$onInit = onInit;

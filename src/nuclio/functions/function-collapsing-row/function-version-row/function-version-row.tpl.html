@@ -16,7 +16,7 @@
             {{$ctrl.version.name}}
         </div>
         <div class="common-table-cell function-status"
-             data-ng-class="[$ctrl.getFunctionsTableColSize('status')]">
+             data-ng-class="[$ctrl.getFunctionsTableColSize('status'), $ctrl.statusStateClasses[$ctrl.convertedStatusState]]">
             {{$ctrl.convertedStatusState}}
             <div class="status-icon"
                  data-uib-tooltip="{{$ctrl.getTooltip()}}"

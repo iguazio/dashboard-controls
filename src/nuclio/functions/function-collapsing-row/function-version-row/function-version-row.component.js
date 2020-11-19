@@ -12,6 +12,7 @@
                 isFunctionCollapsed: '<',
                 project: '<',
                 statusIcon: '<',
+                statusStateClasses: '<',
                 toggleFunctionState: '&',
                 version: '<',
                 versionsList: '<'
