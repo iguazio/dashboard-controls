@@ -46,7 +46,7 @@
             </div>
             <div class="common-table-cell function-status"
                  data-test-id="functions.item-status"
-                 data-ng-class="[$ctrl.getFunctionsTableColSize('status')]"
+                 data-ng-class="[$ctrl.getFunctionsTableColSize('status'), $ctrl.statusStateClasses[$ctrl.convertedStatusState]]"
                  data-ng-show="$ctrl.isFunctionCollapsed">
                 {{$ctrl.convertedStatusState}}
                 <div class="status-icon"
@@ -144,6 +144,7 @@
                                       data-is-function-collapsed="$ctrl.isFunctionCollapsed"
                                       data-project="$ctrl.project"
                                       data-status-icon="$ctrl.statusIcon"
+                                      data-status-state-classes="$ctrl.statusStateClasses"
                                       data-toggle-function-state="$ctrl.toggleFunctionState(event)"
                                       data-version="version"
                                       data-versions-list="$ctrl.function.attr.versions">
