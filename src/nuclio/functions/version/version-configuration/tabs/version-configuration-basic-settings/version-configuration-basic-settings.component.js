@@ -44,6 +44,7 @@
         ctrl.$onChanges = onChanges;
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
+        ctrl.lodash = lodash;
         ctrl.validationRules = {
             integer: ValidationService.getValidationRules('integer')
         };
@@ -78,6 +79,12 @@
                 });
 
                 ctrl.enableFunction = !lodash.get(ctrl.version, 'spec.disable', false);
+
+                $timeout(function () {
+                    if (ctrl.basicSettingsForm.$invalid) {
+                        ctrl.basicSettingsForm.$setSubmitted();
+                    }
+                });
             }
         }
 
@@ -93,19 +100,18 @@
         function inputValueCallback(newData, field) {
             lodash.set(ctrl, field, lodash.includes(field, 'timeout') ? Number(newData) : newData);
 
+            if (lodash.includes(field, 'timeout')) {
+                lodash.set(ctrl.version, 'spec.timeoutSeconds', ctrl.timeout.min * 60 + ctrl.timeout.sec);
+            } else if (lodash.startsWith(field, 'spec.securityContext.') && newData === '') {
+                lodash.unset(ctrl.version, field);
+            } else {
+                lodash.set(ctrl.version, field, newData);
+            }
+
+            ctrl.basicSettingsForm.$setSubmitted();
+            ctrl.onChangeCallback();
+
             $timeout(function () {
-                if (ctrl.basicSettingsForm.$valid) {
-                    if (lodash.includes(field, 'timeout')) {
-                        lodash.set(ctrl.version, 'spec.timeoutSeconds', ctrl.timeout.min * 60 + ctrl.timeout.sec);
-                    } else if (lodash.startsWith(field, 'spec.securityContext.') && newData === '') {
-                        lodash.unset(ctrl.version, field);
-                    } else {
-                        lodash.set(ctrl.version, field, newData);
-                    }
-
-                    ctrl.onChangeCallback();
-                }
-
                 $rootScope.$broadcast('change-state-deploy-button', {
                     component: 'settings',
                     isDisabled: !ctrl.basicSettingsForm.$valid
