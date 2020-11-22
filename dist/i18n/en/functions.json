@@ -126,7 +126,7 @@
     "EXPORT_ALL_PROJECTS": "Export all projects",
     "EXPORT_FUNCTION": "Export function",
     "FAILED_TO_DEPLOY": "Failed to deploy",
-    "FUNCTION_NAME_IS_USED_WARNING": "The name you provided is already in use by an existing function in another project. You can first delete that function and then create a new one in this project.",
+    "FUNCTION_NAME_IS_USED_WARNING": "The specified function name is already in use in another project. You can either delete the existing function or cancel.",
     "FUNCTIONS_NOT_FOUND": "There are currently no functions, you can create a function by clicking the ‘New Function’ button",
     "GET_STARTED_WITH_YOUR_PROJECT": "Get started with your project.",
     "GO_TO_EXISTING_FUNCTION": "Go to existing function",
@@ -164,7 +164,7 @@
     "MOUNT_PATH": "Mount Path",
     "MOUNT_PATH_DESCRIPTION": "A mount path for referencing the data from the function",
     "MOUNT_PATH_PARAMS": "Mount Path & Params",
-    "NAME_IN_USE": "The name you provided is already in use by an existing function. Override? Or cancel and choose another name?",
+    "NAME_IN_USE": "The specified function name is already in use by an existing function in this project. You can either override the existing function or cancel.",
     "NAMESPACE": "Namespace",
     "NEW_API_GATEWAY": "New API Gateway",
     "NEW_FUNCTION": "New function",
@@ -366,6 +366,5 @@
     "WORKER_AVAILABILITY_TIMEOUT": "Worker availability timeout",
     "WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS": "Worker availability timeout (Milliseconds)",
     "WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION": "The number of milliseconds to wait for a worker if one is not available.\n(default: {{default}})",
-    "YOU_CAN_DOWNLOAD_RESPONSE_BODY": "You can download response body",
-    "YOU_CAN_VIEW_EXISTING_FUNCTION": "You can also view the existing function of that name."
+    "YOU_CAN_DOWNLOAD_RESPONSE_BODY": "You can download response body"
 }
