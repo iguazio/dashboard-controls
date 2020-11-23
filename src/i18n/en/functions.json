@@ -31,6 +31,7 @@
     "CLICK_TO_DISABLE": "Click to disable",
     "CLICK_TO_ENABLE": "Click to enable",
     "CODE_ENTRY_TYPE": "Code entry type",
+    "CODE_ENTRY_TYPE_NOTE": "<b>Note:&nbsp</b>The UI configuration is merged with the external-code configuration (if exists) with precedence to the UI configuration.",
     "COLLAPSE_ALL": "Collapse all",
     "CONFIG_MAP": "Config map",
     "CONFIG_MAP_NAME": "Config map name",
