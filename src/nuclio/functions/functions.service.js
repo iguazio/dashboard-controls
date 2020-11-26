@@ -12,7 +12,8 @@
             initFunctionActions: initFunctionActions,
             initVersionActions: initVersionActions,
             isKubePlatform: isKubePlatform,
-            openFunctionConflictDialog: openFunctionConflictDialog
+            openFunctionConflictDialog: openFunctionConflictDialog,
+            openVersionOverwriteDialog: openVersionOverwriteDialog
         };
 
         return self;
@@ -935,6 +936,29 @@
                     className: 'ngdialog-theme-nuclio'
                 });
             }
+        }
+
+        /**
+         * Show pop-up with cancel button and overwrite function button
+         * @returns {Promise}
+         */
+        function openVersionOverwriteDialog() {
+            var lng = i18next.language;
+            var message = $i18next.t('functions:OVERWRITE_FUNCTION_MESSAGE', { lng: lng });
+            var cancelButtonCaption = $i18next.t('common:CANCEL', { lng: lng });
+            var overrideButtonCaption = $i18next.t('common:OVERWRITE', { lng: lng });
+
+            return ngDialog.openConfirm({
+                template: '<div class="title">' + message + '</div>' +
+                    '<div class="close-button igz-icon-close" data-ng-click="closeThisDialog()"></div>' +
+                    '<div class="buttons">' +
+                    '<button class="ncl-secondary-button igz-button-just-text" data-ng-click="closeThisDialog()" >' +
+                    cancelButtonCaption + '</button>' +
+                    '<button class="ncl-primary-button igz-button-primary" data-ng-click="confirm(allowOverwrite)">' +
+                    overrideButtonCaption + '</button></div>',
+                plain: true,
+                className: 'ngdialog-theme-iguazio alert-dialog'
+            });
         }
     }
 }());
