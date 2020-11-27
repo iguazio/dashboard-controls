@@ -189,6 +189,8 @@
          * Search input callback
          */
         function onChangeSearchQuery() {
+            ctrl.page.number = 0;
+
             paginateTemplates();
         }
 
@@ -200,6 +202,7 @@
 
             // set new runtime filter
             ctrl.selectedRuntimeFilter = runtime;
+            ctrl.page.number = 0;
 
             paginateTemplates();
         }
@@ -275,11 +278,6 @@
         function filterByTitleAndDescription(template) {
             var title = template.rendered.metadata.name.split(':')[0];
             var description = template.rendered.spec.description;
-
-            // reset pagination to first page if one of the filters was applied
-            if (!lodash.isEmpty(ctrl.searchQuery) || ctrl.selectedRuntimeFilter.id !== 'all') {
-                ctrl.page.number = 0;
-            }
 
             return lodash.isEmpty(ctrl.searchQuery) ||
                 lodash.includes(title, ctrl.searchQuery) || lodash.includes(description, ctrl.searchQuery);
