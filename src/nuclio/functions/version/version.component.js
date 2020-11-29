@@ -215,13 +215,14 @@
         /**
          * Deploys changed version
          * @param {MouseEvent} event
+         * @param {Object} [version] - version of existing function
          */
-        function deployButtonClick(event) {
+        function deployButtonClick(event, version) {
             if (!ctrl.isDeployDisabled) {
                 ctrl.isFunctionDeployed = false;
                 $rootScope.$broadcast('deploy-function-version', {event: event});
 
-                var versionCopy = lodash.omit(ctrl.version, ['status', 'ui']);
+                var versionCopy = lodash.omit(angular.isDefined(version) ? version : ctrl.version, ['status', 'ui']);
 
                 // set `nuclio.io/project-name` label to relate this function to its project
                 lodash.set(versionCopy, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.project.metadata.name);
@@ -233,7 +234,9 @@
                 ctrl.isLayoutCollapsed = false;
                 ctrl.isSplashShowed.value = true;
 
-                var method = VersionHelperService.isVersionDeployed(ctrl.version) ? ctrl.updateVersion : ctrl.createVersion;
+                var isVersionDeployed = VersionHelperService.isVersionDeployed(ctrl.version);
+                var method = isVersionDeployed ? ctrl.updateVersion : ctrl.createVersion;
+
                 method({ version: versionCopy, projectID: ctrl.project.metadata.name })
                     .then(function () {
                         pullFunctionState();
@@ -245,7 +248,14 @@
                     .catch(function (error) {
                         var defaultMsg = $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', {lng: lng});
 
-                        DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                        if (error.status === 409 && isVersionDeployed) {
+                            FunctionsService.openVersionOverwriteDialog()
+                                .then(function () {
+                                    deployButtonClick(event, lodash.omit(ctrl.version, ['metadata.resourceVersion']));
+                                });
+                        } else {
+                            DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                        }
                     })
                     .finally(function () {
                         ctrl.isSplashShowed.value = false;
