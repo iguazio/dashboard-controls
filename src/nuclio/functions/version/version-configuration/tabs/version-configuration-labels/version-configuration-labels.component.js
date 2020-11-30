@@ -53,8 +53,6 @@
         ctrl.$postLink = postLink;
         ctrl.$onChanges = onChanges;
 
-        ctrl.isVersionDeployed = VersionHelperService.isVersionDeployed;
-
         ctrl.addNewLabel = addNewLabel;
         ctrl.handleAction = handleAction;
         ctrl.isLabelsDisabled = isLabelsDisabled;
@@ -99,7 +97,7 @@
                     })
                     .value();
                 ctrl.labels = lodash.compact(ctrl.labels);
-                ctrl.addNewLabelTooltip = ctrl.isVersionDeployed(ctrl.version) ?
+                ctrl.addNewLabelTooltip = VersionHelperService.isVersionDeployed(ctrl.version) ?
                     $i18next.t('functions:TOOLTIP.ADD_LABELS', { lng: lng }) : '';
 
                 $timeout(function () {
@@ -162,7 +160,7 @@
          * @returns {boolean}
          */
         function isLabelsDisabled() {
-            return ctrl.isKubePlatform && ctrl.isVersionDeployed(ctrl.version);
+            return ctrl.isKubePlatform && VersionHelperService.isVersionDeployed(ctrl.version);
         }
 
         /**

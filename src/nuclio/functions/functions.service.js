@@ -9,6 +9,8 @@
             checkedItem: '',
             getClassesList: getClassesList,
             getHandler: getHandler,
+            getDisplayStatus: getDisplayStatus,
+            getSteadyStates: getSteadyStates,
             initFunctionActions: initFunctionActions,
             initVersionActions: initVersionActions,
             isKubePlatform: isKubePlatform,
@@ -837,6 +839,40 @@
         }
 
         /**
+         * Returns the status of the function for display.
+         * @param {Object} aFunction - The function.
+         * @returns {string} the status of the function for display.
+         */
+        function getDisplayStatus(aFunction) {
+            var state = lodash.get(aFunction, 'status.state');
+            var disabled = lodash.get(aFunction, 'spec.disable', false);
+
+            var stateToMessageKey = {
+                ready: disabled ? 'common:STANDBY' : 'common:RUNNING',
+                error: 'common:ERROR',
+                unhealthy: 'common:UNHEALTHY',
+                imported: 'common:IMPORTED',
+                scaledToZero: 'common:SCALED_TO_ZERO'
+            };
+
+            // in case there is no state - it means the function is not yet deployed
+            var messageKey = lodash.isEmpty(state) ? 'functions:NOT_YET_DEPLOYED' :
+
+                // default to building state in case the state is not any of the well-defined ones above
+                lodash.defaultTo(stateToMessageKey[state], 'common:BUILDING');
+
+            return $i18next.t(messageKey, { lng: i18next.lng });
+        }
+
+        /**
+         * Returns a list of all steady function states.
+         * @returns {Array.<string>} a list of all steady function states.
+         */
+        function getSteadyStates() {
+            return ['ready', 'error', 'unhealthy', 'imported', 'scaledToZero'];
+        }
+
+        /**
          * Function actions
          * @returns {Object[]} - array of actions
          */
@@ -922,7 +958,7 @@
             var currentProjectName = lodash.get(project, 'metadata.name');
 
             if (self.isKubePlatform() && existingFunctionProjectName !== currentProjectName) {
-                DialogsService.alert($i18next.t('functions:FUNCTION_NAME_IS_USED_WARNING', {lng: lng}));
+                DialogsService.alert($i18next.t('functions:FUNCTION_NAME_IS_USED_WARNING', { lng: lng }));
             } else {
                 ngDialog.open({
                     template: '<ncl-override-function-dialog data-close-dialog="closeThisDialog(status)"' +
@@ -932,7 +968,7 @@
                     data: {
                         project: project,
                         newFunction: newFunction,
-                        existingFunction: existingFunction,
+                        existingFunction: existingFunction
                     },
                     className: 'ngdialog-theme-nuclio'
                 });

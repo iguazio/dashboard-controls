@@ -26,10 +26,13 @@
                                                 VersionHelperService) {
         var ctrl = this;
 
+        var FUNCTION_STATE_POLLING_DELAY = 2000;
+
         var apiGateways = [];
         var tempFunctionCopy = null;
         var interval = null;
         var lng = i18next.language;
+        var steadyStates = FunctionsService.getSteadyStates();
 
         ctrl.functionActions = [];
         ctrl.functionNameTooltip = '';
@@ -254,17 +257,8 @@
          * Converts function status state.
          */
         function convertStatusState() {
-            var status = lodash.chain(ctrl.function.status.state).lowerCase().upperFirst().value();
-
-            ctrl.convertedStatusState = status === 'Error'                                ? 'Error'          :
-                                        status === 'Unhealthy'                            ? 'Unhealthy'      :
-                                        status === 'Scaled to zero'                       ? 'Scaled to zero' :
-                                        status === 'Ready' && ctrl.function.spec.disable  ? 'Standby'        :
-                                        status === 'Ready' && !ctrl.function.spec.disable ? 'Running'        :
-                                        status === 'Imported'                             ? 'Imported'       :
-                                        /* else */                                          'Building';
-
-            lodash.set(ctrl.function, 'ui.convertedStatus', ctrl.convertedStatusState);
+            ctrl.convertedStatusState = FunctionsService.getDisplayStatus(ctrl.function);
+            lodash.set(ctrl.function, 'ui.convertedStatus', ctrl.convertedStatusState); // used for sorting by status
         }
 
         /**
@@ -325,7 +319,7 @@
 
             lodash.merge(ctrl.function, propertiesToDisableFunction);
 
-            updateFunction('Disabling…');
+            updateFunction($i18next.t('COMMON:DISABLING', { lng: lng }) + '…');
         }
 
         function duplicateFunction() {
@@ -366,7 +360,7 @@
 
             lodash.merge(ctrl.function, propertiesToEnableFunction);
 
-            updateFunction('Enabling…');
+            updateFunction($i18next.t('COMMON:ENABLING', { lng: lng }) + '…');
         }
 
         /**
@@ -403,13 +397,13 @@
          * @param {string} [status='Building'] - The text to display in "Status" cell of the function while polling.
          */
         function pullFunctionState(status) {
-            ctrl.convertedStatusState = lodash.defaultTo(status, 'Building');
+            ctrl.convertedStatusState = lodash.defaultTo(status, $i18next.t('common:BUILDING', { lng: lng }));
             setStatusIcon();
 
             interval = $interval(function () {
                 ctrl.getFunction({ metadata: ctrl.function.metadata, projectID: ctrl.project.metadata.name })
-                    .then(function (response) {
-                        if (response.status.state === 'ready' || response.status.state === 'error') {
+                    .then(function (aFunction) {
+                        if (lodash.includes(steadyStates, lodash.get(aFunction, 'status.state'))) {
                             terminateInterval();
                             convertStatusState();
                             setStatusIcon();
@@ -424,7 +418,7 @@
 
                         return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                     });
-            }, 2000);
+            }, FUNCTION_STATE_POLLING_DELAY);
         }
 
         /**
@@ -432,9 +426,10 @@
          * @returns {string} - icon class
          */
         function setStatusIcon() {
-            ctrl.statusIcon = ctrl.convertedStatusState === 'Running' ? 'igz-icon-pause' :
-                              ctrl.convertedStatusState === 'Standby' ? 'igz-icon-play'  :
-                              /* else */                                '';
+            ctrl.statusIcon =
+                ctrl.convertedStatusState === $i18next.t('common:RUNNING', { lng: lng }) ? 'igz-icon-pause' :
+                ctrl.convertedStatusState === $i18next.t('common:STANDBY', { lng: lng }) ? 'igz-icon-play'  :
+                /* else */                                                                 '';
         }
 
         /**

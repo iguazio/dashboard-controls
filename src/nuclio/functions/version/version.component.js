@@ -26,6 +26,9 @@
         var deregisterFunction = null;
         var interval = null;
         var lng = i18next.language;
+        var steadyStates = FunctionsService.getSteadyStates();
+
+        var FUNCTION_STATE_POLLING_DELAY = 2000;
 
         ctrl.action = null;
         ctrl.isDemoMode = ConfigService.isDemoMode;
@@ -76,8 +79,6 @@
          * Initialization method
          */
         function onInit() {
-            setDeployResult(lodash.get(ctrl.version, 'status.state', ''));
-
             ctrl.isFunctionDeployed = !$stateParams.isNewFunction;
             ctrl.actions = [
                 {
@@ -127,10 +128,16 @@
                     tabName: $i18next.t('common:STATUS', { lng: lng }),
                     id: 'status',
                     uiRoute: 'app.project.function.edit.monitoring',
-                    status: VersionHelperService.isVersionDeployed(ctrl.version) ? lodash.get(ctrl.version, 'status.state') :
-                                                                                   'not yet deployed'
+                    indicator: {
+                        lightClass: '',
+                        tooltipClass: '',
+                        tooltipIconClass: '',
+                        tooltipText: ''
+                    }
                 }
             ];
+
+            setDeployResult(lodash.get(ctrl.version, 'status.state', ''));
 
             ctrl.requiredComponents = {};
 
@@ -223,7 +230,7 @@
                 ctrl.isSplashShowed.value = true;
 
                 var isVersionDeployed = VersionHelperService.isVersionDeployed(ctrl.version);
-                var method = isVersionDeployed ? ctrl.updateVersion : ctrl.createVersion;
+                var method = isVersionDeployed || ctrl.version.ui.overwrite ? ctrl.updateVersion : ctrl.createVersion;
 
                 method({ version: versionCopy, projectID: ctrl.project.metadata.name })
                     .then(function () {
@@ -237,15 +244,26 @@
                         var defaultMsg = $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', { lng: lng });
 
                         if (error.status === 409 && isVersionDeployed) {
-                            FunctionsService.openVersionOverwriteDialog()
+                            return FunctionsService.openVersionOverwriteDialog()
                                 .then(function () {
-                                    deployButtonClick(event, lodash.omit(ctrl.version, ['metadata.resourceVersion']));
+                                    deployButtonClick(event, lodash.omit(ctrl.version, 'metadata.resourceVersion'));
                                 })
                                 .catch(function () {
                                     ctrl.isFunctionDeployed = true;
                                 });
+                        } else if (error.status === 404 && method === ctrl.updateVersion) {
+                            // if this function no longer exists attempt to create it rather than update it
+                            lodash.merge(ctrl.version, {
+                                status: {
+                                    state: '' // if it was considered deployed before - now it is not
+                                },
+                                ui: {
+                                    overwrite: false // if it was considered an overwrite - now it is not
+                                }
+                            });
+                            return deployButtonClick(event, version);
                         } else {
-                            DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                            return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                         }
                     })
                     .finally(function () {
@@ -254,6 +272,10 @@
             }
         }
 
+        /**
+         * Returns current UI router state name.
+         * @returns {string} the current state name.
+         */
         function getCurrentStateName() {
             return $state.current.name;
         }
@@ -476,16 +498,16 @@
 
             interval = $interval(function () {
                 ctrl.getFunction({ metadata: ctrl.version.metadata, projectID: lodash.get(ctrl.project, 'metadata.name') })
-                    .then(function (response) {
-                        ctrl.version.status = response.status;
+                    .then(function (aFunction) {
+                        ctrl.version.status = aFunction.status;
 
-                        if (response.status.state === 'ready' || response.status.state === 'error') {
+                        if (lodash.includes(steadyStates, lodash.get(aFunction, 'status.state'))) {
                             terminateInterval();
 
                             ctrl.versionDeployed = true;
 
                             var versionUi = ctrl.version.ui;
-                            ctrl.version = response;
+                            ctrl.version = aFunction;
                             ctrl.version.ui = versionUi;
 
                             lodash.assign(ctrl.version.ui, {
@@ -502,7 +524,7 @@
 
                         $rootScope.$broadcast('deploy-result-changed');
 
-                        lodash.set(lodash.find(ctrl.navigationTabsConfig, 'status'), 'status', response.status.state);
+                        updateStatusTabIndicator();
 
                         $timeout(function () {
                             angular.element('.log-panel').mCustomScrollbar('scrollTo', 'bottom');
@@ -513,7 +535,7 @@
                             ctrl.isSplashShowed.value = false;
                         }
                     });
-            }, 2000);
+            }, FUNCTION_STATE_POLLING_DELAY);
         }
 
         /**
@@ -522,7 +544,7 @@
          */
         function setDeployResult(value) {
             lodash.set(ctrl.version, 'status.state', value);
-            lodash.set(lodash.find(ctrl.navigationTabsConfig, 'status'), 'status', value);
+            updateStatusTabIndicator();
         }
 
         /**
@@ -599,6 +621,33 @@
                 $interval.cancel(interval);
                 interval = null;
             }
+        }
+
+        /**
+         * Updates the status tab header's indicator color and tooltip text and color to reflect ths function's state.
+         */
+        function updateStatusTabIndicator() {
+            var state = lodash.get(ctrl.version, 'status.state');
+            var disabled = lodash.get(ctrl.version, 'spec.disable');
+
+            var deployedStateToKind = {
+                ready: disabled ? '' : 'ready',
+                error: 'error',
+                unhealthy: 'error',
+                imported: '',
+                scaledToZero: ''
+            };
+            var kind = VersionHelperService.isVersionDeployed(ctrl.version) ?
+                lodash.defaultTo(deployedStateToKind[state], 'building') :
+                '';
+
+            var statusTab = lodash.find(ctrl.navigationTabsConfig, { id: 'status' });
+            statusTab.indicator = {
+                lightClass: kind === '' ? '' : 'ncl-status-' + kind,
+                tooltipClass: kind === '' ? '' : 'ncl-status-tooltip-' + kind,
+                tooltipIconClass: kind === '' ? '' : 'ncl-icon-' + kind,
+                tooltipText: FunctionsService.getDisplayStatus(ctrl.version)
+            };
         }
     }
 }());

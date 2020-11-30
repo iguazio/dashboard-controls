@@ -15,7 +15,6 @@
         var isTestPaneToggled = true;
 
         ctrl.isTestPaneClosed = false;
-        ctrl.isFunctionBuilding = isFunctionBuilding;
         ctrl.isToggleButtonVisible = isToggleButtonVisible;
         ctrl.toggleTestPane = toggleTestPane;
 
@@ -24,26 +23,17 @@
         //
 
         /**
-         * Checks if it's 'building' state.
-         * @param {string} status - current status
-         * @returns {boolean}
-         */
-        function isFunctionBuilding(status) {
-            return !lodash.includes(['ready', 'error', 'unhealthy', 'not yet deployed'], status);
-        }
-
-        /**
          * Checks if 'toggle test pane' button should be visible.
          * It should, only when 'code' tab is reached.
          * @returns {boolean}
          */
         function isToggleButtonVisible() {
-            var isButtonVisible = lodash.get($state.$current, 'self.url', null) === '/code';
+            var isButtonVisible = lodash.get($state.$current, 'self.url') === '/code';
 
             if (!isButtonVisible) {
                 ctrl.isTestPaneClosed = false;
 
-                $rootScope.$broadcast('navigation-tabs_toggle-test-pane', {closeTestPane: ctrl.isTestPaneClosed});
+                $rootScope.$broadcast('navigation-tabs_toggle-test-pane', { closeTestPane: ctrl.isTestPaneClosed });
             }
 
             return isButtonVisible;
@@ -57,7 +47,7 @@
                 ctrl.isTestPaneClosed = !ctrl.isTestPaneClosed;
                 isTestPaneToggled = false;
 
-                $rootScope.$broadcast('navigation-tabs_toggle-test-pane', {closeTestPane: ctrl.isTestPaneClosed});
+                $rootScope.$broadcast('navigation-tabs_toggle-test-pane', { closeTestPane: ctrl.isTestPaneClosed });
 
                 // wait until toggling animation will be completed
                 $timeout(function () {

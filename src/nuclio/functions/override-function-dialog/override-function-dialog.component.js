@@ -54,11 +54,14 @@
          * Overrides the existing function
          */
         function overrideFunction() {
-            lodash.defaultsDeep(ctrl.newFunction, {
+            lodash.merge(ctrl.newFunction, {
                 status: {
-                    state: 'not yet deployed'
+                    state: ''
+                },
+                ui: {
+                    overwrite: true
                 }
-            })
+            });
 
             $state.go('app.project.function.edit.code', {
                 isNewFunction: true,
