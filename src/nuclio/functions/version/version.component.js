@@ -252,6 +252,9 @@
                             FunctionsService.openVersionOverwriteDialog()
                                 .then(function () {
                                     deployButtonClick(event, lodash.omit(ctrl.version, ['metadata.resourceVersion']));
+                                })
+                                .catch(function () {
+                                    ctrl.isFunctionDeployed = true;
                                 });
                         } else {
                             DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
