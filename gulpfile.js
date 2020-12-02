@@ -89,7 +89,8 @@ gulp.task('app.js', function () {
         .pipe(minifyHtml({
             removeComments: true,
             collapseWhitespace: true,
-            collapseInlineTagWhitespace: true
+            collapseInlineTagWhitespace: true,
+            conservativeCollapse: true
         }))
         .pipe(ngHtml2Js({
             moduleName: config.app_files.templates_module_name

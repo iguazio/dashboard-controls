@@ -86,8 +86,8 @@
                         <span class="field-label">{{ 'functions:CONFIG_MAP_NAME' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.configMap.name }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.persistentVolumeClaim.claimName)">
-                        <span class="field-label">{{ 'functions:PERSISTENT_VOLUME_CLAIM_NAME' | i18next }}</span>:
-                        &nbsp;{{ $ctrl.item.volume.persistentVolumeClaim.claimName }};&nbsp;
+                        <span class="field-label">{{ 'functions:PERSISTENT_VOLUME_CLAIM_NAME' | i18next }}</span>:&nbsp;
+                        {{ $ctrl.item.volume.persistentVolumeClaim.claimName }};&nbsp;
                     </span>
 
                     <!-- Worker Allocator name -->
