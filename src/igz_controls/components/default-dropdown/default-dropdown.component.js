@@ -182,7 +182,12 @@
 
             // checks if transclude template was passed
             $transclude(function (transclude) {
-                ctrl.isTranscludePassed = transclude.length > 0;
+                ctrl.isTranscludePassed = transclude.length > 0 && !(
+
+                    // a single text node with whitespace only, meaning there is nothing important between the opening
+                    // tag `<igz-default-dropdown>` and the closing tag `</igz-default-dropdown>`
+                    transclude.length === 1 && transclude[0].nodeType === 3 && transclude.text().trim() === ''
+                );
             });
 
             // set focus (for using keyboard) if ctrl.isFocused is true

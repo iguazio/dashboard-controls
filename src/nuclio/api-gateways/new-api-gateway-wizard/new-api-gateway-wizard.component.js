@@ -36,7 +36,7 @@
         ctrl.actions = [];
         ctrl.apiGatewayCopy = {};
         ctrl.apiGatewayForm = null;
-        ctrl.authMode = [];
+        ctrl.authModes = [];
         ctrl.canaryUpstream = null;
         ctrl.canaryFunctionInput = 'canaryName';
         ctrl.functionFetchPanel = {
@@ -93,8 +93,9 @@
          */
         function onInit() {
             var authenticationType = lodash.get(ctrl.apiGateway, 'spec.authenticationMode', null);
-            ctrl.authMode = ApiGatewaysService.getAuthModes();
-            ctrl.selectedAuthenticationType = lodash.defaultTo(authenticationType, ctrl.authMode[0].id);
+
+            ctrl.authModes = ApiGatewaysService.getAuthModes();
+            ctrl.selectedAuthenticationType = lodash.defaultTo(authenticationType, ctrl.authModes[0].id);
 
             initApiGateway();
 
