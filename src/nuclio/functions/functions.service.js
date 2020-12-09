@@ -957,7 +957,7 @@
                     '<button class="ncl-primary-button igz-button-primary" data-ng-click="confirm(allowOverwrite)">' +
                     overrideButtonCaption + '</button></div>',
                 plain: true,
-                className: 'ngdialog-theme-iguazio alert-dialog'
+                className: 'ngdialog-theme-iguazio alert-dialog function-deploy-stale'
             });
         }
     }
