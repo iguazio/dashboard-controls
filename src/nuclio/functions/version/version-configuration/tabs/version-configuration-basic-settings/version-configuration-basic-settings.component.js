@@ -12,7 +12,8 @@
         });
 
     function NclVersionConfigurationBasicSettingsController($rootScope, $timeout, $i18next, i18next, lodash,
-                                                            ConfigService, DialogsService, ValidationService) {
+                                                            ConfigService, DialogsService, FunctionsService,
+                                                            ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -41,6 +42,7 @@
             }
         ];
 
+        ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
@@ -56,6 +58,13 @@
         //
         // Hook methods
         //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            ctrl.platformIsKube = FunctionsService.isKubePlatform();
+        }
 
         /**
          * On changes hook method.
