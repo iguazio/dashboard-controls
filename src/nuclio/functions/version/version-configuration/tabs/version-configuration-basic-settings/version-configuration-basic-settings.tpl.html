@@ -106,7 +106,7 @@
                                   data-current-value="$ctrl.version.spec.securityContext.runAsGroup">
                 </igz-number-input>
             </div>
-            <div class="fs-group-block">
+            <div class="fs-group-block" data-ng-if="!$ctrl.platformIsKube">
                 <div class="label">{{ 'common:FS_GROUP' | i18next }}</div>
                 <igz-number-input data-allow-empty-field="true"
                                   data-value-step="1"
