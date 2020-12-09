@@ -185,7 +185,7 @@
                 ctrl.isTranscludePassed = transclude.length > 0 && !(
 
                     // a single text node with whitespace only, meaning there is nothing important between the opening
-                    // tag `<igz-toast-changes-panel>` and the closing tag `</igz-toast-changes-panel>`
+                    // tag `<igz-default-dropdown>` and the closing tag `</igz-default-dropdown>`
                     transclude.length === 1 && transclude[0].nodeType === 3 && transclude.text().trim() === ''
                 );
             });

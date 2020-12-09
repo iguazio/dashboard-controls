@@ -90,10 +90,12 @@
 
         /**
          * Returns the available authentication modes.
-         * @returns {Array} the available authentication modes.
+         * @returns {Array.<Object>} the available authentication modes.
          */
         function getAuthModes() {
-            return lodash.cloneDeep(authModes);
+            return lodash.filter(authModes, function (mode) {
+                return lodash.includes(ConfigService.nuclio.allowedAuthenticationModes, mode.id);
+            });
         }
 
         /**
