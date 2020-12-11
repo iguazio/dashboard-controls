@@ -3,6 +3,7 @@ describe('nclFunctionVersionRow component:', function () {
     var $state;
     var ctrl;
     var NuclioHeaderService;
+    var VersionHelperService;
     var functionItem;
     var project;
     var version;
@@ -10,10 +11,11 @@ describe('nclFunctionVersionRow component:', function () {
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_, _$state_, _NuclioHeaderService_) {
+        inject(function (_$componentController_, _$state_, _NuclioHeaderService_, _VersionHelperService_) {
             $componentController = _$componentController_;
             $state = _$state_;
             NuclioHeaderService = _NuclioHeaderService_;
+            VersionHelperService = _VersionHelperService_;
         });
 
         functionItem = {
@@ -64,6 +66,7 @@ describe('nclFunctionVersionRow component:', function () {
         $state = null;
         ctrl = null;
         NuclioHeaderService = null;
+        VersionHelperService = null;
         functionItem = null;
         project = null;
         version = null;
@@ -76,6 +79,14 @@ describe('nclFunctionVersionRow component:', function () {
             expect(ctrl.version.ui.delete).not.toBeUndefined();
 
             expect(ctrl.actions).not.toBe([]);
+        });
+    });
+
+    describe('isIngressInvalid(): ', function () {
+        it('should call VersionHelperService.isIngressInvalid() method', function () {
+            spyOn(VersionHelperService, 'isIngressInvalid');
+            ctrl.isIngressInvalid();
+            expect(VersionHelperService.isIngressInvalid).toHaveBeenCalled();
         });
     });
 

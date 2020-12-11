@@ -18,11 +18,15 @@
                 padding: 16px 23px 16px;
                 background-color: @white;
                 border: solid 1px @pale-grey;
+                overflow: hidden;
                 flex-grow: 1;
                 flex-basis: 500px;
-                overflow: hidden;
                 margin-right: 16px;
                 margin-bottom: 16px;
+
+                &.invocation-block {
+                    overflow: visible;
+                }
 
                 &.without-collapse {
                     padding: 0;

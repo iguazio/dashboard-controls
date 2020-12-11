@@ -343,6 +343,7 @@
         },
         "STOP_FUNCTION": "Stop function",
         "TARGET_CPU": "Applicable only when minimum and maximum number of replicas are not empty, are not equal to each other, and the maximum is greater than 1",
+        "TO_MAKE_FUNCTION_ACCESSIBLE": "To make the function accessible outside of the cluster, go to the <a class=\"link\" data-ui-sref=\"app.project.function.edit.triggers( {functionId:'{{functionId}}' })\" >Triggers</a> tab and configure an HTTP trigger with an ingress",
         "URL": "A URL for downloading the archive file",
         "USED_BY_API_GATEWAY": "Used by API gateway: \"{{apiGatewayName}}\"",
         "V3IO": "A directory in an Iguazio Data Science Platform data container",

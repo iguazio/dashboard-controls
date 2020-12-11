@@ -80,6 +80,17 @@
                         <igz-copy-to-clipboard data-value="$ctrl.invocationUrl.text"></igz-copy-to-clipboard>
                     </div>
                 </div>
+                <div class="igz-action-panel invocation-tooltip" data-ng-if="!$ctrl.invocationUrl.valid &&
+                $ctrl.isIngressInvalid()">
+                    <div class="actions-more-info">
+                        <igz-more-info
+                                data-description="{{ 'functions:TOOLTIP.TO_MAKE_FUNCTION_ACCESSIBLE' |
+                                i18next:{functionId: $ctrl.function.metadata.name} }}"
+                                data-is-html-enabled="true"
+                                data-trigger="click">
+                        </igz-more-info>
+                    </div>
+                </div>
             </div>
             <div class="igz-col-10 common-table-cell"
                  data-test-id="functions.item-invocation-per-sec"
