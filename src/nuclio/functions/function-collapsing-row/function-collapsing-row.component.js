@@ -265,7 +265,7 @@
 
         /**
          * Deletes function from functions list
-         * @param {Object} functionItem
+         * @param {Object} [functionItem]
          * @returns {Promise}
          */
         function deleteFunction(functionItem) {
@@ -273,7 +273,7 @@
                 ctrl.isSplashShowed.value = true;
 
                 return ctrl.handleDeleteFunction({
-                    functionData: functionItem ? functionItem.metadata : ctrl.function.metadata
+                    functionData: lodash.defaultTo(functionItem, ctrl.function).metadata
                 })
                     .then(function () {
                         lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
@@ -295,7 +295,8 @@
                     });
             } else {
                 DialogsService.alert($i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION', {
-                    lng: lng, apiGatewayName: apiGateways[0]
+                    lng: lng,
+                    apiGatewayName: apiGateways[0]
                 }));
             }
         }

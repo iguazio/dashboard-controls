@@ -425,12 +425,12 @@
 
         /**
          * Deletes function item
-         * @param {Object} version
+         * @param {Object} [version]
          */
         function deleteFunction(version) {
             ctrl.isSplashShowed.value = true;
 
-            ctrl.deleteFunction({ functionData: version ? version.metadata : ctrl.version.metadata })
+            ctrl.deleteFunction({ functionData: lodash.defaultTo(version, ctrl.version).metadata })
                 .then(function () {
                     $state.go('app.project.functions');
                 })
