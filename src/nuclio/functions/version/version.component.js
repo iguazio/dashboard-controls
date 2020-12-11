@@ -328,18 +328,7 @@
                 if (lodash.isEmpty(apiGateways)) {
                     DialogsService.confirm(item.dialog.message, item.dialog.yesLabel, item.dialog.noLabel, item.dialog.type)
                         .then(function () {
-                            ctrl.isSplashShowed.value = true;
-
-                            ctrl.deleteFunction({ functionData: ctrl.version.metadata })
-                                .then(function () {
-                                    $state.go('app.project.functions');
-                                })
-                                .catch(function (error) {
-                                    ctrl.isSplashShowed.value = false;
-                                    var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', {lng: lng});
-
-                                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
-                                });
+                            deleteFunction();
                         });
                 } else {
                     DialogsService.alert($i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION', {lng: lng, apiGatewayName: apiGateways[0]}));
@@ -432,6 +421,34 @@
             } else {
                 ctrl.isDeployDisabled = args.isDisabled;
             }
+        }
+
+        /**
+         * Deletes function item
+         * @param {Object} [version]
+         */
+        function deleteFunction(version) {
+            ctrl.isSplashShowed.value = true;
+
+            ctrl.deleteFunction({ functionData: lodash.defaultTo(version, ctrl.version).metadata })
+                .then(function () {
+                    $state.go('app.project.functions');
+                })
+                .catch(function (error) {
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', {lng: lng});
+
+                    if (error.status === 409) {
+                        FunctionsService.openVersionDeleteDialog()
+                            .then(function () {
+                                deleteFunction(lodash.omit(ctrl.version, ['metadata.resourceVersion']));
+                            });
+                    } else {
+                        DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                    }
+                })
+                .finally(function () {
+                    ctrl.isSplashShowed.value = false;
+                });
         }
 
         /**

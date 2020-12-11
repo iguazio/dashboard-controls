@@ -265,24 +265,39 @@
 
         /**
          * Deletes function from functions list
+         * @param {Object} [functionItem]
          * @returns {Promise}
          */
-        function deleteFunction() {
+        function deleteFunction(functionItem) {
             if (lodash.isEmpty(apiGateways)) {
                 ctrl.isSplashShowed.value = true;
 
-                return ctrl.handleDeleteFunction({functionData: ctrl.function.metadata})
+                return ctrl.handleDeleteFunction({
+                    functionData: lodash.defaultTo(functionItem, ctrl.function).metadata
+                })
                     .then(function () {
                         lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
                     })
                     .catch(function (error) {
-                        ctrl.isSplashShowed.value = false;
                         var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', {lng: lng});
 
-                        return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                        if (error.status === 409) {
+                            FunctionsService.openVersionDeleteDialog()
+                                .then(function () {
+                                    deleteFunction(lodash.omit(ctrl.function, ['metadata.resourceVersion']));
+                                });
+                        } else {
+                            DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                        }
+                    })
+                    .finally(function () {
+                        ctrl.isSplashShowed.value = false;
                     });
             } else {
-                DialogsService.alert($i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION', {lng: lng, apiGatewayName: apiGateways[0]}));
+                DialogsService.alert($i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION', {
+                    lng: lng,
+                    apiGatewayName: apiGateways[0]
+                }));
             }
         }
 

@@ -13,6 +13,7 @@
             initVersionActions: initVersionActions,
             isKubePlatform: isKubePlatform,
             openFunctionConflictDialog: openFunctionConflictDialog,
+            openVersionDeleteDialog: openVersionDeleteDialog,
             openVersionOverwriteDialog: openVersionOverwriteDialog
         };
 
@@ -952,9 +953,32 @@
                 template: '<div class="title">' + message + '</div>' +
                     '<div class="close-button igz-icon-close" data-ng-click="closeThisDialog()"></div>' +
                     '<div class="buttons">' +
-                    '<button class="ncl-secondary-button igz-button-just-text" data-ng-click="closeThisDialog()" >' +
+                    '<button class="igz-button-just-text" data-ng-click="closeThisDialog()" >' +
                     cancelButtonCaption + '</button>' +
-                    '<button class="ncl-primary-button igz-button-primary" data-ng-click="confirm(allowOverwrite)">' +
+                    '<button class="igz-button-primary" data-ng-click="confirm(allowOverwrite)">' +
+                    overrideButtonCaption + '</button></div>',
+                plain: true,
+                className: 'ngdialog-theme-iguazio alert-dialog'
+            });
+        }
+
+        /**
+         * Show pop-up with cancel button and delete function button
+         * @returns {Promise}
+         */
+        function openVersionDeleteDialog() {
+            var lng = i18next.language;
+            var message = $i18next.t('functions:DELETE_FUNCTION_MESSAGE', { lng: lng });
+            var cancelButtonCaption = $i18next.t('common:CANCEL', { lng: lng });
+            var overrideButtonCaption = $i18next.t('common:DELETE', { lng: lng });
+
+            return ngDialog.openConfirm({
+                template: '<div class="title">' + message + '</div>' +
+                    '<div class="close-button igz-icon-close" data-ng-click="closeThisDialog()"></div>' +
+                    '<div class="buttons">' +
+                    '<button class="igz-button-just-text" data-ng-click="closeThisDialog()" >' +
+                    cancelButtonCaption + '</button>' +
+                    '<button class="igz-button-remove" data-ng-click="confirm(allowDelete)">' +
                     overrideButtonCaption + '</button></div>',
                 plain: true,
                 className: 'ngdialog-theme-iguazio alert-dialog function-deploy-stale'
