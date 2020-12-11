@@ -66,6 +66,7 @@
     "DELETE_EVENT_DESCRIPTION": "Deleted event cannot be restored.",
     "DELETE_FUNCTION": "Delete function",
     "DELETE_FUNCTION_DESCRIPTION": "Deleted function cannot be restored.",
+    "DELETE_FUNCTION_MESSAGE": "The deployed version of this function is newer than the deleted version. To see the latest version before deleting the function, cancel the delete operation and refresh the UI.",
     "DELETE_FUNCTIONS_CONFIRM": "Are you sure you want to delete selected functions?",
     "DELETE_ITEM": "Delete item?",
     "DELETE_PROJECT": "Delete project",
