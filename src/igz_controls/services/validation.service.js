@@ -180,6 +180,21 @@
                     pattern: new RegExp('^' + convertedPattern)
                 };
             },
+            maxLengthBetweenDelimiters: function (delimiter, maxLength, delimiterDescription) {
+                return {
+                    name: 'labelsLength',
+                    label: $i18next.t('common:MAX_LENGTH_BETWEEN_DELIMITER', {
+                        lng: lng,
+                        delimiter: lodash.defaultTo(delimiterDescription, delimiter),
+                        maxLength: maxLength
+                    }),
+                    pattern: function (value) {
+                        return value.split(delimiter).every(function (item) {
+                            return item.length >= 1 && item.length <= maxLength;
+                        });
+                    }
+                };
+            },
             mustNotBe: function (words) {
                 var wordsArray = words.split(' ');
 
@@ -304,6 +319,9 @@
                     generateRule.validCharacters('a-z 0-9 - .'),
                     generateRule.beginEndWith('a-z 0-9'),
                     generateRule.noConsecutiveCharacters('.. .- -.'),
+                    generateRule.maxLengthBetweenDelimiters('.',
+                                                            lengths.k8s.dns1123Label,
+                                                            $i18next.t('common:PERIODS', { lng: lng })),
                     generateRule.length({max: lengths.k8s.dns1123Subdomain})
                 ],
                 envVarName: [
@@ -326,6 +344,9 @@
                     generateRule.onlyAtTheBeginning('*'),
                     generateRule.endWith('a-z 0-9'),
                     generateRule.noConsecutiveCharacters('.. .- -.'),
+                    generateRule.maxLengthBetweenDelimiters('.',
+                                                            lengths.k8s.dns1123Label,
+                                                            $i18next.t('common:PERIODS', { lng: lng })),
                     generateRule.length({max: lengths.k8s.wildcardDns1123Subdomain})
                 ]
             },
