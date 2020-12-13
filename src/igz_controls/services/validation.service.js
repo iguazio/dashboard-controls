@@ -108,28 +108,28 @@
             beginWith: function (chars) {
                 return {
                     name: 'begin',
-                    label: $i18next.t('common:BEGIN_WITH', {lng: lng}) + ': ' + convertToLabel(chars),
+                    label: $i18next.t('common:BEGIN_WITH', { lng: lng }) + ': ' + convertToLabel(chars),
                     pattern: new RegExp('^[' + convertToPattern(chars) + ']')
                 };
             },
             beginNotWith: function (chars) {
                 return {
                     name: 'beginNot',
-                    label: $i18next.t('common:BEGIN_NOT_WITH', {lng: lng}) + ': ' + convertToLabel(chars),
+                    label: $i18next.t('common:BEGIN_NOT_WITH', { lng: lng }) + ': ' + convertToLabel(chars),
                     pattern: new RegExp('^[^' + convertToPattern(chars) + ']')
                 };
             },
             endWith: function (chars) {
                 return {
                     name: 'end',
-                    label: $i18next.t('common:END_WITH', {lng: lng}) + ': ' + convertToLabel(chars),
+                    label: $i18next.t('common:END_WITH', { lng: lng }) + ': ' + convertToLabel(chars),
                     pattern: new RegExp('[' + convertToPattern(chars) + ']$')
                 };
             },
             endNotWith: function (chars) {
                 return {
                     name: 'endNot',
-                    label: $i18next.t('common:END_NOT_WITH', {lng: lng}) + ': ' + convertToLabel(chars),
+                    label: $i18next.t('common:END_NOT_WITH', { lng: lng }) + ': ' + convertToLabel(chars),
                     pattern: new RegExp('[^' + convertToPattern(chars) + ']$')
                 };
             },
@@ -138,7 +138,7 @@
 
                 return {
                     name: 'beginEnd',
-                    label: $i18next.t('common:BEGIN_END_WITH', {lng: lng}) + ': ' + convertToLabel(chars),
+                    label: $i18next.t('common:BEGIN_END_WITH', { lng: lng }) + ': ' + convertToLabel(chars),
                     pattern: new RegExp('^([' + convertedPattern + '].*)?[' + convertedPattern + ']$')
                 };
             },
@@ -147,7 +147,7 @@
 
                 return {
                     name: 'beginEndNot',
-                    label: $i18next.t('common:BEGIN_END_NOT_WITH', {lng: lng}) + ': ' + convertToLabel(chars),
+                    label: $i18next.t('common:BEGIN_END_NOT_WITH', { lng: lng }) + ': ' + convertToLabel(chars),
                     pattern: new RegExp('^([^' + convertedPattern + '].*)?[^' + convertedPattern + ']$')
                 };
             },
@@ -156,14 +156,14 @@
 
                 return {
                     name: 'onlyAtTheBeginning',
-                    label: $i18next.t('common:ONLY_AT_THE_BEGINNING', {lng: lng}) + ': ' + convertToLabel(chars),
+                    label: $i18next.t('common:ONLY_AT_THE_BEGINNING', { lng: lng }) + ': ' + convertToLabel(chars),
                     pattern: new RegExp('^([' + convertedPattern + '])?[^' + convertedPattern + ']+$')
                 };
             },
             validCharacters: function (chars) {
                 return {
                     name: 'validCharacters',
-                    label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': ' + convertToLabel(chars),
+                    label: $i18next.t('common:VALID_CHARACTERS', { lng: lng }) + ': ' + convertToLabel(chars),
                     pattern: new RegExp('^[' + convertToPattern(chars) + ']+$')
                 };
             },
@@ -176,7 +176,7 @@
 
                 return {
                     name: 'noConsecutiveCharacters',
-                    label: $i18next.t('common:NO_CONSECUTIVE_CHARACTER', {lng: lng}) + ': ' + convertToLabel(chars),
+                    label: $i18next.t('common:NO_CONSECUTIVE_CHARACTER', { lng: lng }) + ': ' + convertToLabel(chars),
                     pattern: new RegExp('^' + convertedPattern)
                 };
             },
@@ -200,7 +200,7 @@
 
                 return {
                     name: 'mustNotBe',
-                    label: $i18next.t('common:MUST_NOT_BE', {lng: lng}) + ': ' + convertToLabel(words),
+                    label: $i18next.t('common:MUST_NOT_BE', { lng: lng }) + ': ' + convertToLabel(words),
                     pattern: function (value) {
                         return !lodash.includes(wordsArray, value);
                     }
@@ -211,7 +211,7 @@
                 var max = Number.isSafeInteger(options.max) ? options.max : '';
 
                 if (min || max) {
-                    var label = $i18next.t('common:LENGTH', {lng: lng}) + ' – ' +
+                    var label = $i18next.t('common:LENGTH', { lng: lng }) + ' – ' +
                         (min ? 'min: ' + options.min + '\xa0\xa0' : '') + (max ? 'max: ' + options.max : '');
 
                     return {
@@ -227,7 +227,7 @@
                 generateRule.validCharacters('0-9'),
                 {
                     name: 'beginNot',
-                    label: $i18next.t('common:BEGIN_NOT_WITH', {lng: lng}) + ': 0',
+                    label: $i18next.t('common:BEGIN_NOT_WITH', { lng: lng }) + ': 0',
                     pattern: /^(?!0.+)/
                 }
             ],
@@ -236,7 +236,7 @@
                 generateRule.onlyAtTheBeginning('-'),
                 {
                     name: 'beginNot',
-                    label: $i18next.t('common:BEGIN_NOT_WITH', {lng: lng}) + ': 0',
+                    label: $i18next.t('common:BEGIN_NOT_WITH', { lng: lng }) + ': 0',
                     pattern: /^(?![-]0)(?!0.+)/
                 }
             ],
@@ -244,12 +244,12 @@
                 generateRule.beginEndNotWith('@ .'),
                 {
                     name: 'exactlyOne',
-                    label: $i18next.t('common:MUST_CONTAIN_EXACTLY_ONE', {lng: lng}) + ': @',
+                    label: $i18next.t('common:MUST_CONTAIN_EXACTLY_ONE', { lng: lng }) + ': @',
                     pattern: /^[^@]+@[^@]+$/
                 },
                 {
                     name: 'dotAfterAt',
-                    label: $i18next.t('common:MUST_HAVE_DOT_AFTER_AT', {lng: lng}),
+                    label: $i18next.t('common:MUST_HAVE_DOT_AFTER_AT', { lng: lng }),
                     pattern: /@.+\..+$/
                 }
             ],
@@ -298,7 +298,8 @@
                 {
                     name: 'prefixMaxLength',
                     label: '[' + $i18next.t('functions:PREFIX', { lng: lng }) + '] ' +
-                        $i18next.t('common:MAX_LENGTH_CHARACTERS', { lng: lng, count: lengths.k8s.prefixedQualifiedName }),
+                        $i18next.t('common:MAX_LENGTH_CHARACTERS',
+                                   { lng: lng, count: lengths.k8s.prefixedQualifiedName }),
                     pattern: /^(?![^/]{254,}\/)/
                 }
             ]
@@ -307,13 +308,13 @@
             k8s: {
                 configMapKey: [
                     generateRule.validCharacters('a-z A-Z 0-9 - _ .'),
-                    generateRule.length({max: lengths.k8s.configMapKey})
+                    generateRule.length({ max: lengths.k8s.configMapKey })
                 ],
-                dns1035Label: commonRules.dns1035Label.concat(generateRule.length({max: lengths.k8s.dns1035Label})),
+                dns1035Label: commonRules.dns1035Label.concat(generateRule.length({ max: lengths.k8s.dns1035Label })),
                 dns1123Label: [
                     generateRule.validCharacters('a-z 0-9 -'),
                     generateRule.beginEndWith('a-z 0-9'),
-                    generateRule.length({max: lengths.k8s.dns1123Label})
+                    generateRule.length({ max: lengths.k8s.dns1123Label })
                 ],
                 dns1123Subdomain: [
                     generateRule.validCharacters('a-z 0-9 - .'),
@@ -322,7 +323,7 @@
                     generateRule.maxLengthBetweenDelimiters('.',
                                                             lengths.k8s.dns1123Label,
                                                             $i18next.t('common:PERIODS', { lng: lng })),
-                    generateRule.length({max: lengths.k8s.dns1123Subdomain})
+                    generateRule.length({ max: lengths.k8s.dns1123Subdomain })
                 ],
                 envVarName: [
                     generateRule.validCharacters('a-z A-Z 0-9 - _ .'),
@@ -332,13 +333,13 @@
                 qualifiedName: [
                     generateRule.validCharacters('a-z A-Z 0-9 - _ .'),
                     generateRule.beginEndWith('a-z A-Z 0-9'),
-                    generateRule.length({max: lengths.k8s.qualifiedName})
+                    generateRule.length({ max: lengths.k8s.qualifiedName })
                 ],
                 wildcardDns1123Subdomain: [
                     generateRule.validCharacters('a-z A-Z 0-9 - . *'),
                     {
                         name: 'begin',
-                        label: $i18next.t('common:BEGIN_WITH', {lng: lng}) + ': *.',
+                        label: $i18next.t('common:BEGIN_WITH', { lng: lng }) + ': *.',
                         pattern: /^\*\..*$/
                     },
                     generateRule.onlyAtTheBeginning('*'),
@@ -347,22 +348,23 @@
                     generateRule.maxLengthBetweenDelimiters('.',
                                                             lengths.k8s.dns1123Label,
                                                             $i18next.t('common:PERIODS', { lng: lng })),
-                    generateRule.length({max: lengths.k8s.wildcardDns1123Subdomain})
+                    generateRule.length({ max: lengths.k8s.wildcardDns1123Subdomain })
                 ]
             },
             function: {
                 name: commonRules.dns1035Label.concat(
                     generateRule.mustNotBe('dashboard controller dlx scaler'),
-                    generateRule.length({max: lengths.function.name})),
+                    generateRule.length({ max: lengths.function.name })
+                ),
                 label: {
                     key: commonRules.prefixedQualifiedName.concat(generateRule.length({
                         max: lengths.function.label.key
                     }))
                 },
-                itemPath: [generateRule.length({max: lengths.function.itemPath})],
+                itemPath: [generateRule.length({ max: lengths.function.itemPath })],
                 subscriptionQoS: [
                     generateRule.validCharacters('0-2'),
-                    generateRule.length({max: 1})
+                    generateRule.length({ max: 1 })
                 ],
                 arrayInt: [
                     generateRule.validCharacters('0-9 - ,'),
@@ -372,13 +374,13 @@
                 interval: [
                     {
                         name: 'validCharacters',
-                        label: $i18next.t('common:VALID_CHARACTERS', {lng: lng}) + ': 0–9, m, s, h',
+                        label: $i18next.t('common:VALID_CHARACTERS', { lng: lng }) + ': 0–9, m, s, h',
                         pattern: /^[0-9msh]+$/
                     },
                     generateRule.beginWith('0-9'),
                     {
                         name: 'end',
-                        label: $i18next.t('common:END_WITH', {lng: lng}) + ': ms, s, m, h',
+                        label: $i18next.t('common:END_WITH', { lng: lng }) + ': ms, s, m, h',
                         pattern: /\d+(ms|[smh])$/
                     }
                 ],
@@ -396,29 +398,25 @@
             apiGateway: {
                 name: commonRules.dns1035Label.concat(
                     generateRule.mustNotBe('dashboard controller dlx scaler'),
-                    generateRule.length({max: lengths.apiGateway.name}))
+                    generateRule.length({ max: lengths.apiGateway.name })
+                )
             },
             service: {
-                name: [
-                    generateRule.validCharacters('a-z 0-9 -'),
-                    generateRule.beginWith('a-z'),
-                    generateRule.endWith('a-z 0-9'),
-                    generateRule.length({max: lengths.service.name})
-                ],
+                name: commonRules.dns1035Label.concat(generateRule.length({ max: lengths.service.name })),
                 resources: {
                     configuration: [
                         generateRule.validCharacters('a-z A-Z 0-9 - _ .'),
                         generateRule.beginNotWith('.'),
-                        generateRule.length({max: lengths.service.resources})
+                        generateRule.length({ max: lengths.service.resources })
                     ],
                     catalog: [
                         generateRule.validCharacters('a-z 0-9 - _ .'),
                         generateRule.beginNotWith('.'),
-                        generateRule.length({max: lengths.service.resources})
+                        generateRule.length({ max: lengths.service.resources })
                     ]
                 },
                 persistentVolumeClaims: {
-                    value: [generateRule.length({max: lengths.service.persistentVolumeClaims.value})]
+                    value: [generateRule.length({ max: lengths.service.persistentVolumeClaims.value })]
                 },
                 hiveMetastorePath: [generateRule.endNotWith('/')]
             },
@@ -430,55 +428,55 @@
                     generateRule.noConsecutiveCharacters('__'),
                     {
                         name: 'atLeastOneLowercaseLetter',
-                        label: $i18next.t('common:CONTAIN_LOWERCASE_LETTER', {lng: lng}) + ': a–z',
+                        label: $i18next.t('common:CONTAIN_LOWERCASE_LETTER', { lng: lng }) + ': a–z',
                         pattern: /^(?=.*[a-z])/
                     },
-                    generateRule.length({max: lengths.container.name})
+                    generateRule.length({ max: lengths.container.name })
                 ],
                 attribute: {
                     name: [
                         generateRule.validCharacters('a-z A-Z 0-9 _'),
                         generateRule.beginWith('a-z A-Z _'),
-                        generateRule.length({max: lengths.container.attribute.name})
+                        generateRule.length({ max: lengths.container.attribute.name })
                     ]
                 },
                 fileEdit: {
                     geohash: [
                         generateRule.validCharacters('a-z 0-9'),
-                        generateRule.length({max: lengths.container.fileEdit.geohash})
+                        generateRule.length({ max: lengths.container.fileEdit.geohash })
                     ],
                     id: [
                         generateRule.validCharacters('a-z A-Z 0-9 -'),
-                        generateRule.length({max: lengths.container.fileEdit.id})
+                        generateRule.length({ max: lengths.container.fileEdit.id })
                     ],
                     negativeInteger: commonRules.negativeInteger.concat(generateRule.length({
                         max: lengths.container.fileEdit.negativeInteger
                     })),
-                    email: commonRules.email.concat(generateRule.length({max: lengths.container.fileEdit.email})),
+                    email: commonRules.email.concat(generateRule.length({ max: lengths.container.fileEdit.email })),
                     custom: [
                         generateRule.validCharacters('a-z A-Z 0-9 - _ . , s'),
-                        generateRule.length({max: lengths.container.fileEdit.custom})
+                        generateRule.length({ max: lengths.container.fileEdit.custom })
                     ]
                 },
-                email: commonRules.email.concat(generateRule.length({max: lengths.container.email})),
-                minTimeToHoldInNewTier: commonRules.integer.concat(generateRule.length({max: 3})),
-                fullBackupOnEvery: commonRules.integer.concat(generateRule.length({max: 2})),
-                deleteFilesOlderThan: commonRules.integer.concat(generateRule.length({max: 3})),
+                email: commonRules.email.concat(generateRule.length({ max: lengths.container.email })),
+                minTimeToHoldInNewTier: commonRules.integer.concat(generateRule.length({ max: 3 })),
+                fullBackupOnEvery: commonRules.integer.concat(generateRule.length({ max: 2 })),
+                deleteFilesOlderThan: commonRules.integer.concat(generateRule.length({ max: 3 })),
                 alias: [
                     generateRule.validCharacters('a-z A-Z 0-9 - _'),
-                    generateRule.length({max: lengths.container.alias})
+                    generateRule.length({ max: lengths.container.alias })
                 ]
             },
             storagePool: {
                 name: [
                     generateRule.validCharacters('a-z A-Z 0-9 _'),
-                    generateRule.length({max: lengths.storagePool.name})
+                    generateRule.length({ max: lengths.storagePool.name })
                 ]
             },
             network: {
                 name: [
                     generateRule.validCharacters('a-z A-Z 0-9 - . ( ) \\ / : s'),
-                    generateRule.length({max: lengths.network.name})
+                    generateRule.length({ max: lengths.network.name })
                 ]
             },
             identity: {
@@ -486,21 +484,21 @@
                     name: [
                         generateRule.validCharacters('a-z A-Z - s'),
                         generateRule.beginWith('a-z A-Z'),
-                        generateRule.length({max: lengths.identity.user.name})
+                        generateRule.length({ max: lengths.identity.user.name })
                     ],
                     username: [
                         generateRule.validCharacters('a-z A-Z 0-9 - _'),
                         generateRule.beginWith('a-z A-Z'),
-                        generateRule.length({max: lengths.identity.user.username})
+                        generateRule.length({ max: lengths.identity.user.username })
                     ],
-                    email: commonRules.email.concat(generateRule.length({max: lengths.identity.user.email})),
-                    position: [generateRule.length({max: lengths.identity.user.position})],
-                    department: [generateRule.length({max: lengths.identity.user.department})]
+                    email: commonRules.email.concat(generateRule.length({ max: lengths.identity.user.email })),
+                    position: [generateRule.length({ max: lengths.identity.user.position })],
+                    department: [generateRule.length({ max: lengths.identity.user.department })]
                 },
                 address: [
                     {
                         name: 'begin',
-                        label: $i18next.t('common:BEGIN_WITH', {lng: lng}) + ': ldaps://, ldap://' ,
+                        label: $i18next.t('common:BEGIN_WITH', { lng: lng }) + ': ldaps://, ldap://' ,
                         pattern: /^ldaps?:\/\//
                     }
                 ]
@@ -510,15 +508,15 @@
                     generateRule.validCharacters('a-z A-Z 0-9 _'),
                     generateRule.beginWith('a-z A-Z'),
                     generateRule.endWith('a-z A-Z 0-9'),
-                    generateRule.length({max: lengths.tenant.name})
+                    generateRule.length({ max: lengths.tenant.name })
                 ],
-                email: commonRules.email.concat(generateRule.length({max: lengths.tenant.email}))
+                email: commonRules.email.concat(generateRule.length({ max: lengths.tenant.email }))
             },
             events: {
                 escalation: {
                     name: [
                         generateRule.validCharacters('a-z A-Z 0-9 - . ( ) \\ / : s'),
-                        generateRule.length({max: lengths.events.escalation.name})
+                        generateRule.length({ max: lengths.events.escalation.name })
                     ]
                 }
             },
@@ -530,12 +528,12 @@
                 generateRule.endWith('0-9'),
                 {
                     name: 'maxLengthWholePart',
-                    label: $i18next.t('common:MAX_LENGTH_WHOLE_PART', {lng: lng, length: 9}),
+                    label: $i18next.t('common:MAX_LENGTH_WHOLE_PART', { lng: lng, length: 9 }),
                     pattern: /^[-]?[\d]{1,9}(\..*)?$/
                 },
                 {
                     name: 'maxLengthDecimalPart',
-                    label: $i18next.t('common:MAX_LENGTH_DECIMAL_PART', {lng: lng, length: 2}),
+                    label: $i18next.t('common:MAX_LENGTH_DECIMAL_PART', { lng: lng, length: 2 }),
                     pattern: /^[-]?(\d+(\.\d{1,2})?)$/
                 }
             ],
@@ -543,14 +541,14 @@
                 generateRule.validCharacters('0-9 . + - e E'),
                 {
                     name: 'onlyAtTheBeginning',
-                    label: $i18next.t('common:ONLY_AT_THE_BEGINNING_AND_EXPONENT', {lng: lng}),
+                    label: $i18next.t('common:ONLY_AT_THE_BEGINNING_AND_EXPONENT', { lng: lng }),
                     pattern: /^[-+]?[^-+]+([eE].+)?$/
                 },
                 generateRule.beginWith('0-9 + -'),
                 generateRule.endWith('0-9'),
                 {
                     name: 'invalidExponent',
-                    label: $i18next.t('common:EXPONENT_IS_INVALID', {lng: lng}),
+                    label: $i18next.t('common:EXPONENT_IS_INVALID', { lng: lng }),
                     pattern: /^[-+]?[^eE]+([eE][-+]?[0-9]+)?$/
                 }
 
@@ -569,7 +567,7 @@
                 generateRule.onlyAtTheBeginning('+'),
                 generateRule.beginWith('0-9 +'),
                 generateRule.endWith('0-9'),
-                generateRule.length({min: 4, max: lengths.phone})
+                generateRule.length({ min: 4, max: lengths.phone })
             ]
         };
 
@@ -631,7 +629,7 @@
         function convertToLabel(chars) {
             return chars.replace(/-/g, '–')
                 .replace(/\s/g, ', ')
-                .replace(/\bs\b/, $i18next.t('common:SPACES', {lng: lng}));
+                .replace(/\bs\b/, $i18next.t('common:SPACES', { lng: lng }));
         }
 
         /**
