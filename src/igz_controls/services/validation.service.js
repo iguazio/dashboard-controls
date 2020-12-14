@@ -371,6 +371,9 @@
                     generateRule.beginEndWith('0-9'),
                     generateRule.noConsecutiveCharacters(',-')
                 ],
+                ingressHostPath: [
+                    generateRule.beginWith('/')
+                ],
                 interval: [
                     {
                         name: 'validCharacters',
