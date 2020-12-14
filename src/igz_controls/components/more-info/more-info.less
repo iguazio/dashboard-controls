@@ -20,7 +20,7 @@
                 color: @icon-help-round-hover-before-color;
             }
 
-            + .row-description {
+            + .row-description-wrapper.row-description {
                 color: @icon-help-description-hover-color;
             }
         }
@@ -42,13 +42,19 @@
             cursor: pointer;
         }
 
-        &+ .row-description {
+        &+ .row-description-wrapper {
             display: none;
         }
 
-        &:not(.click-trigger):hover + .row-description, &.open + .row-description {
+        &:not(.click-trigger):hover + .row-description-wrapper,
+        &.open + .row-description-wrapper {
             display: block;
         }
+    }
+
+    .row-description-wrapper {
+        position: fixed;
+        z-index: 4;
     }
 
     .row-description {
@@ -64,7 +70,6 @@
         font-weight: 400;
         white-space: pre-line;
         line-height: normal;
-        z-index: 9999;
 
         &::before {
             position: absolute;
@@ -99,7 +104,7 @@
         &.top,
         &.top-left,
         &.top-right {
-            bottom: calc(100% + 8px);
+            bottom: 35px;
 
             &::before {
                 .triangle-arrow(down; @row-description-triangle-color; 8px; 10px);
@@ -111,7 +116,7 @@
         &.bottom,
         &.bottom-left,
         &.bottom-right {
-            top: calc(100% + 8px);
+            top: 8px;
 
             &::before {
                 .triangle-arrow(up; @row-description-triangle-color; 8px; 10px);
@@ -122,7 +127,7 @@
 
         &.right,
         &.left {
-            top: calc(50% - 20px);
+            top: -30px;
 
             &::before {
                 top: 7px;
