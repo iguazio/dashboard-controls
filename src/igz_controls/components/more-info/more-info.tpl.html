@@ -10,15 +10,17 @@
              data-ng-click="$ctrl.handleQuestionMarkClick($event)"
              class="question-mark">
         </div>
-        <div class="row-description"
-             data-ng-if="$ctrl.isHtmlEnabled"
-             data-ng-class="$ctrl.defaultTooltipPlacement"
-             data-ng-bind-html="$ctrl.compiledDescription">
-        </div>
-        <div class="row-description"
-             data-ng-if="!$ctrl.isHtmlEnabled"
-             data-ng-class="$ctrl.defaultTooltipPlacement">
-            {{$ctrl.description}}
+        <div class="row-description-wrapper">
+            <div class="row-description"
+                 data-ng-if="$ctrl.isHtmlEnabled"
+                 data-ng-class="$ctrl.defaultTooltipPlacement"
+                 data-ng-bind-html="$ctrl.compiledDescription">
+            </div>
+            <div class="row-description"
+                 data-ng-if="!$ctrl.isHtmlEnabled"
+                 data-ng-class="$ctrl.defaultTooltipPlacement">
+                {{$ctrl.description}}
+            </div>
         </div>
     </div>
     <div data-ng-if="$ctrl.isDefaultTooltipEnabled">
