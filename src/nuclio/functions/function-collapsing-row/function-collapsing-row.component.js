@@ -1,3 +1,4 @@
+/*eslint max-statements: ["error", 52]*/
 (function () {
     'use strict';
 
@@ -72,6 +73,7 @@
         ctrl.getTooltip = getTooltip;
         ctrl.handleAction = handleAction;
         ctrl.isFunctionShowed = isFunctionShowed;
+        ctrl.isIngressInvalid = isIngressInvalid;
         ctrl.onFireAction = onFireAction;
         ctrl.onSelectRow = onSelectRow;
         ctrl.toggleFunctionRow = toggleFunctionRow;
@@ -80,6 +82,7 @@
         ctrl.functionsService = FunctionsService;
         ctrl.getFunctionsTableColSize = TableSizeService.getFunctionsTableColSize;
         ctrl.isDemoMode = ConfigService.isDemoMode;
+        ctrl.lodash = lodash;
 
         //
         // Hook methods
@@ -179,6 +182,14 @@
         }
 
         /**
+         * Checks if Ingress is invalid
+         * @returns {boolean}
+         */
+        function isIngressInvalid() {
+            return VersionHelperService.isIngressInvalid(lodash.find(ctrl.function.spec.triggers, ['kind', 'http']));
+        }
+
+        /**
          * According to given action name calls proper action handler
          * @param {string} actionType - a type of action
          */
@@ -192,7 +203,8 @@
          * @param {string} state - absolute state name or relative state path
          */
         function onSelectRow(event, state) {
-            if (lodash.isNil(event.target.closest('.igz-action-item'))) {
+            if (lodash.isNil(event.target.closest('.igz-action-item')) &&
+                lodash.isNil(event.target.closest('.actions-more-info'))) {
                 if (!angular.isString(state)) {
                     state = 'app.project.function.edit.code';
                 }

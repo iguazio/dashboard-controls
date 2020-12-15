@@ -6,18 +6,21 @@ describe('nclFunctionCollapsingRow component:', function () {
     var $state;
     var ctrl;
     var NuclioHeaderService;
+    var VersionHelperService;
     var functionItem;
 
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_, _$interval_, _$q_, _$rootScope_, _$state_, _NuclioHeaderService_) {
+        inject(function (_$componentController_, _$interval_, _$q_, _$rootScope_, _$state_, _NuclioHeaderService_,
+            _VersionHelperService_) {
             $componentController = _$componentController_;
             $interval = _$interval_;
             $q = _$q_;
             $rootScope = _$rootScope_;
             $state = _$state_;
             NuclioHeaderService = _NuclioHeaderService_;
+            VersionHelperService = _VersionHelperService_;
         });
 
         functionItem = {
@@ -69,6 +72,7 @@ describe('nclFunctionCollapsingRow component:', function () {
         $state = null;
         ctrl = null;
         NuclioHeaderService = null;
+        VersionHelperService = null;
         functionItem = null;
     });
 
@@ -76,6 +80,14 @@ describe('nclFunctionCollapsingRow component:', function () {
         it('should set initial values for actions and delete function method', function () {
             expect(ctrl.function.ui.delete).not.toBeUndefined();
             expect(ctrl.actions).not.toBe([]);
+        });
+    });
+
+    describe('isIngressInvalid(): ', function () {
+        it('should call VersionHelperService.isIngressInvalid() method', function () {
+            spyOn(VersionHelperService, 'isIngressInvalid');
+            ctrl.isIngressInvalid();
+            expect(VersionHelperService.isIngressInvalid).toHaveBeenCalled();
         });
     });
 

@@ -10,7 +10,7 @@
             controller: NclVersionMonitoringController
         });
 
-    function NclVersionMonitoringController($rootScope, $scope, $timeout, lodash, ConfigService) {
+    function NclVersionMonitoringController($rootScope, $scope, $timeout, lodash, ConfigService, VersionHelperService) {
         var ctrl = this;
 
         ctrl.versionStatus = {};
@@ -32,10 +32,12 @@
 
         ctrl.$onInit = onInit;
 
-        ctrl.isDemoMode = ConfigService.isDemoMode;
-
         ctrl.checkIsErrorState = checkIsErrorState;
+        ctrl.isIngressInvalid = isIngressInvalid;
         ctrl.onRowCollapse = onRowCollapse;
+
+        ctrl.isDemoMode = ConfigService.isDemoMode;
+        ctrl.lodash = lodash;
 
         //
         // Hook methods
@@ -60,6 +62,14 @@
          */
         function checkIsErrorState() {
             return lodash.includes(['error', 'unhealthy'], lodash.get(ctrl.versionStatus, 'state'));
+        }
+
+        /**
+         * Checks if Ingress is invalid
+         * @returns {boolean}
+         */
+        function isIngressInvalid() {
+            return VersionHelperService.isIngressInvalid(lodash.find(ctrl.version.spec.triggers, ['kind', 'http']));
         }
 
         /**

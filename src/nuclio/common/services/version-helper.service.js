@@ -1,3 +1,4 @@
+/*eslint complexity: ["error", 12]*/
 (function () {
     'use strict';
 
@@ -6,9 +7,10 @@
 
     function VersionHelperService($i18next, i18next, lodash, ConfigService, FunctionsService) {
         return {
-            isVersionDeployed: isVersionDeployed,
             getInvocationUrl: getInvocationUrl,
             getServiceType: getServiceType,
+            isIngressInvalid: isIngressInvalid,
+            isVersionDeployed: isVersionDeployed,
             updateIsVersionChanged: updateIsVersionChanged
         };
 
@@ -38,18 +40,19 @@
                     };
                 }
 
-                var serviceType = lodash.get(httpTrigger, 'attributes.serviceType');
                 var state = lodash.get(version, 'status.state');
                 var disable = lodash.get(version, 'spec.disable', false);
                 var httpPort = lodash.defaultTo(lodash.get(version, 'status.httpPort'), 0);
                 var externalIpAddress = lodash.get(ConfigService, 'nuclio.externalIPAddress');
+                var serviceType = lodash.get(httpTrigger, 'attributes.serviceType');
 
                 if (
                     state === 'ready' &&
                     disable === false &&
                     (serviceType === 'NodePort' || !FunctionsService.isKubePlatform()) &&
                     httpPort !== 0 &&
-                    !lodash.isEmpty(externalIpAddress)
+                    !lodash.isEmpty(externalIpAddress) &&
+                    !isIngressInvalid(httpTrigger)
                 ) {
                     return {
                         text: 'http://' + externalIpAddress + ':' + httpPort,
@@ -59,19 +62,9 @@
             }
 
             return {
-                text: $i18next.t('functions:URL_NOT_EXPOSED', { lng: i18next.language }),
+                text: $i18next.t('common:N_A', { lng: i18next.language }),
                 valid: false
             };
-        }
-
-        /**
-         * Tests whether the version is deployed.
-         * @param {Object} version
-         * @returns {boolean} `true` in case version is deployed, or `false` otherwise.
-         */
-        function isVersionDeployed(version) {
-            var state = lodash.get(version, 'status.state', '');
-            return !lodash.isEmpty(state);
         }
 
         /**
@@ -86,6 +79,28 @@
                 .find(['kind', 'http'])
                 .get('attributes.serviceType')
                 .value();
+        }
+
+        /**
+         * Check "ClusterIP" and "ingress" attributes
+         * @param {Object} httpTrigger
+         * @returns {boolean}
+         */
+        function isIngressInvalid(httpTrigger) {
+            var ingress = lodash.get(httpTrigger, 'attributes.ingresses[0]');
+            var serviceType = lodash.get(httpTrigger, 'attributes.serviceType');
+
+            return serviceType === 'ClusterIP' && lodash.isEmpty(ingress);
+        }
+
+        /**
+         * Tests whether the version is deployed.
+         * @param {Object} version
+         * @returns {boolean} `true` in case version is deployed, or `false` otherwise.
+         */
+        function isVersionDeployed(version) {
+            var state = lodash.get(version, 'status.state', '');
+            return !lodash.isEmpty(state);
         }
 
         /**

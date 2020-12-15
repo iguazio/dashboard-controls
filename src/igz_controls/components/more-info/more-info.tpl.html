@@ -14,7 +14,7 @@
             <div class="row-description"
                  data-ng-if="$ctrl.isHtmlEnabled"
                  data-ng-class="$ctrl.defaultTooltipPlacement"
-                 data-ng-bind-html="$ctrl.description">
+                 data-ng-bind-html="$ctrl.compiledDescription">
             </div>
             <div class="row-description"
                  data-ng-if="!$ctrl.isHtmlEnabled"
@@ -23,7 +23,6 @@
             </div>
         </div>
     </div>
-
     <div data-ng-if="$ctrl.isDefaultTooltipEnabled">
         <div data-ng-if="!$ctrl.isHtmlEnabled"
              class="question-mark igz-icon-help-round"
@@ -36,7 +35,6 @@
              data-tooltip-trigger="$ctrl.trigger"
              data-tooltip-append-to-body="true">
         </div>
-
         <div data-ng-if="$ctrl.isHtmlEnabled"
              class="question-mark igz-icon-help-round"
              data-ng-class="{'disabled': $ctrl.isDisabled}"
