@@ -83,14 +83,6 @@ describe('nclFunctionCollapsingRow component:', function () {
         });
     });
 
-    describe('isIngressInvalid(): ', function () {
-        it('should call VersionHelperService.isIngressInvalid() method', function () {
-            spyOn(VersionHelperService, 'isIngressInvalid');
-            ctrl.isIngressInvalid();
-            expect(VersionHelperService.isIngressInvalid).toHaveBeenCalled();
-        });
-    });
-
     describe('getTooltip(): ', function () {
         it('should gets correct tooltip regarding function status', function () {
             ctrl.function.spec.disable = true;

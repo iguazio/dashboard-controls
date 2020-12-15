@@ -24,45 +24,57 @@
          * @returns {{text: string, valid: boolean}} URL invocation data
          */
         function getInvocationUrl(version) {
-            var httpTrigger = lodash.find(version.spec.triggers, ['kind', 'http']);
+            // in case the function is not running - show "N/A"
+            var state = lodash.get(version, 'status.state');
+            var disable = lodash.get(version, 'spec.disable', false);
 
-            if (!lodash.isNil(httpTrigger)) {
-                var host = lodash.chain(httpTrigger)
-                    .get('attributes.ingresses', {}) // { key1: { host, paths }, key2: { host, paths } }
-                    .toPairs()                       // [['key1', { host, paths }], ['key2', { host, paths }]]
-                    .get('[0][1].host')              // host
-                    .value();
-
-                if (!lodash.isEmpty(host)) {
-                    return {
-                        text: 'http://' + host,
-                        valid: true
-                    };
-                }
-
-                var state = lodash.get(version, 'status.state');
-                var disable = lodash.get(version, 'spec.disable', false);
-                var httpPort = lodash.defaultTo(lodash.get(version, 'status.httpPort'), 0);
-                var externalIpAddress = lodash.get(ConfigService, 'nuclio.externalIPAddress');
-                var serviceType = lodash.get(httpTrigger, 'attributes.serviceType');
-
-                if (
-                    state === 'ready' &&
-                    disable === false &&
-                    (serviceType === 'NodePort' || !FunctionsService.isKubePlatform()) &&
-                    httpPort !== 0 &&
-                    !lodash.isEmpty(externalIpAddress) &&
-                    !isIngressInvalid(httpTrigger)
-                ) {
-                    return {
-                        text: 'http://' + externalIpAddress + ':' + httpPort,
-                        valid: true
-                    };
+            if (state !== 'ready' || disable) {
+                return {
+                    text: $i18next.t('common:N_A', { lng: i18next.language }),
+                    info: false,
+                    valid: false
                 }
             }
 
+            // otherwise, if the function has an HTTP-trigger ingress host - use it as invocation URL
+            var httpTrigger = lodash.find(version.spec.triggers, ['kind', 'http']);
+            var host = lodash.chain(httpTrigger)
+                .get('attributes.ingresses', {}) // { key1: { host, paths }, key2: { host, paths } }
+                .toPairs()                       // [['key1', { host, paths }], ['key2', { host, paths }]]
+                .get('[0][1].host')              // host
+                .value();
+
+            if (!lodash.isEmpty(host)) {
+                return {
+                    text: 'http://' + host,
+                    info: false,
+                    valid: true
+                };
+            }
+
+            // otherwise, if the HTTP trigger's service type is NodePort, or running on non-K8s platform, and both
+            // external IP address and port number exist - construct invocation URL from external IP address and port
+            var serviceType = lodash.get(httpTrigger, 'attributes.serviceType');
+            var httpPort = lodash.defaultTo(lodash.get(version, 'status.httpPort'), 0);
+            var externalIpAddress = lodash.get(ConfigService, 'nuclio.externalIPAddress');
+
+            if (
+                (serviceType === 'NodePort' || !FunctionsService.isKubePlatform()) &&
+                httpPort !== 0 &&
+                !lodash.isEmpty(externalIpAddress)
+            ) {
+                return {
+                    text: 'http://' + externalIpAddress + ':' + httpPort,
+                    info: false,
+                    valid: true
+                };
+            }
+
+            // otherwise, meaning the function is running with ClusterIP service type and no ingress host - show "N/A"
+            // plus info regarding the option to add ingress host
             return {
                 text: $i18next.t('common:N_A', { lng: i18next.language }),
+                info: true,
                 valid: false
             };
         }

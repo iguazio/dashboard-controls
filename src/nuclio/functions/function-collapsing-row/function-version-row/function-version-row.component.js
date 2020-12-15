@@ -22,8 +22,7 @@
         });
 
     function NclFunctionVersionRowController($state, $i18next, i18next, lodash, ActionCheckboxAllService,
-                                             ConfigService, FunctionsService, NuclioHeaderService, TableSizeService,
-                                             VersionHelperService) {
+                                             ConfigService, FunctionsService, NuclioHeaderService, TableSizeService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -43,7 +42,6 @@
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
 
-        ctrl.isIngressInvalid = isIngressInvalid;
         ctrl.onFireAction = onFireAction;
         ctrl.onSelectRow = onSelectRow;
         ctrl.onToggleFunctionState = onToggleFunctionState;
@@ -92,14 +90,6 @@
         //
         // Public methods
         //
-
-        /**
-         * Checks if Ingress is invalid
-         * @returns {boolean}
-         */
-        function isIngressInvalid() {
-            return VersionHelperService.isIngressInvalid(lodash.find(ctrl.function.spec.triggers, ['kind', 'http']));
-        }
 
         /**
          * According to given action name calls proper action handler
