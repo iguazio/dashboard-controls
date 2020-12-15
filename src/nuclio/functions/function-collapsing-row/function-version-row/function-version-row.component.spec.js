@@ -82,14 +82,6 @@ describe('nclFunctionVersionRow component:', function () {
         });
     });
 
-    describe('isIngressInvalid(): ', function () {
-        it('should call VersionHelperService.isIngressInvalid() method', function () {
-            spyOn(VersionHelperService, 'isIngressInvalid');
-            ctrl.isIngressInvalid();
-            expect(VersionHelperService.isIngressInvalid).toHaveBeenCalled();
-        });
-    });
-
     describe('onFireAction(): ', function () {
         it('should call actionHandlerCallback() method', function () {
             spyOn(ctrl, 'actionHandlerCallback');

@@ -73,7 +73,6 @@
         ctrl.getTooltip = getTooltip;
         ctrl.handleAction = handleAction;
         ctrl.isFunctionShowed = isFunctionShowed;
-        ctrl.isIngressInvalid = isIngressInvalid;
         ctrl.onFireAction = onFireAction;
         ctrl.onSelectRow = onSelectRow;
         ctrl.toggleFunctionRow = toggleFunctionRow;
@@ -179,14 +178,6 @@
          */
         function isFunctionShowed() {
             return ctrl.function.ui.isShowed;
-        }
-
-        /**
-         * Checks if Ingress is invalid
-         * @returns {boolean}
-         */
-        function isIngressInvalid() {
-            return VersionHelperService.isIngressInvalid(lodash.find(ctrl.function.spec.triggers, ['kind', 'http']));
         }
 
         /**
