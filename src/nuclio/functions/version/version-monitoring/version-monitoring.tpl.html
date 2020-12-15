@@ -23,7 +23,8 @@
                           class="monitoring-invocation-field-invalid">
                             {{$ctrl.version.ui.invocationUrl.text}}
                             <igz-more-info
-                                    data-ng-if="$ctrl.isIngressInvalid()"
+                                    data-ng-if="$ctrl.isIngressInvalid() &&
+                                    !$ctrl.lodash.startsWith($ctrl.lodash.get($ctrl.version, 'status.state'),'error')"
                                     data-description="{{ 'functions:TOOLTIP.TO_MAKE_FUNCTION_ACCESSIBLE' |
                                     i18next:{functionId: $ctrl.version.metadata.name} }}"
                                     data-is-html-enabled="true"

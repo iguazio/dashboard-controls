@@ -45,7 +45,7 @@
                 </div>
             </div>
             <div class="igz-action-panel invocation-tooltip" data-ng-if="!$ctrl.invocationUrl.valid &&
-             $ctrl.isIngressInvalid()">
+             $ctrl.isIngressInvalid() && !$ctrl.lodash.startsWith($ctrl.lodash.get($ctrl.function, 'status.state'),'error')">
                 <div class="actions-more-info">
                     <igz-more-info
                             data-description="{{ 'functions:TOOLTIP.TO_MAKE_FUNCTION_ACCESSIBLE' |

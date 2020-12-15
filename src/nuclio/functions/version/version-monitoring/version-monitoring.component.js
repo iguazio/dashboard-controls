@@ -37,6 +37,7 @@
         ctrl.onRowCollapse = onRowCollapse;
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
+        ctrl.lodash = lodash;
 
         //
         // Hook methods

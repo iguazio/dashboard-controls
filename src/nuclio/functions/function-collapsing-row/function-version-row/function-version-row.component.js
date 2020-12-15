@@ -51,6 +51,7 @@
         ctrl.functionsService = FunctionsService;
         ctrl.getFunctionsTableColSize = TableSizeService.getFunctionsTableColSize;
         ctrl.isDemoMode = ConfigService.isDemoMode;
+        ctrl.lodash = lodash;
 
         //
         // Hook methods
