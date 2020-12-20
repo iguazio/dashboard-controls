@@ -30,7 +30,8 @@
         ctrl.validationRules = {
             arrayInt: ValidationService.getValidationRules('function.arrayInt'),
             host: {
-                key: ValidationService.getValidationRules('k8s.dns1123Subdomain')
+                key: ValidationService.getValidationRules('k8s.dns1123Subdomain'),
+                value: ValidationService.getValidationRules('function.ingressHostPath')
             },
             itemName: ValidationService.getValidationRules('function.triggerName', [{
                 name: 'uniqueness',
