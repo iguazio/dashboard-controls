@@ -45,10 +45,12 @@ module.exports = {
     vendor_files: {
         js: [
             'src/third-party/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js',
-            'src/third-party/ng-scrollbars/scrollbars.min.js'
+            'src/third-party/ng-scrollbars/scrollbars.min.js',
+            'src/third-party/angular-ui-layout/ui-layout.js'
         ],
         less: [
-            'src/third-party/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.less'
+            'src/third-party/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.less',
+            'src/third-party/angular-ui-layout/ui-layout.less'
         ]
     },
 
