@@ -87,7 +87,7 @@
             var toState = transition.$to();
 
             // Check to exclude prototypical inheritance of the `mainHeaderTitle` property from parent router state
-            if (Object.prototype.hasOwnProperty.call(toState.data, 'mainHeaderTitle')) {
+            if (lodash.has(toState.data, 'mainHeaderTitle')) {
 
                 ctrl.mainHeaderTitle = {
                     title: toState.data.mainHeaderTitle

@@ -22,7 +22,7 @@
 
     function NclFunctionCollapsingRowController($interval, $state, $i18next, i18next, lodash, ngDialog,
                                                 ActionCheckboxAllService, ConfigService, DialogsService,
-                                                ExportService, FunctionsService, NuclioHeaderService, TableSizeService,
+                                                ExportService, FunctionsService, TableSizeService,
                                                 VersionHelperService) {
         var ctrl = this;
 
@@ -158,8 +158,8 @@
          * @returns {string} - tooltip
          */
         function getTooltip() {
-            return ctrl.function.spec.disable ? $i18next.t('functions:TOOLTIP.RUN_FUNCTION', {lng: lng}) :
-                $i18next.t('functions:TOOLTIP.STOP_FUNCTION', {lng: lng});
+            return ctrl.function.spec.disable ? $i18next.t('functions:TOOLTIP.RUN_FUNCTION', { lng: lng }) :
+                $i18next.t('functions:TOOLTIP.STOP_FUNCTION', { lng: lng });
         }
 
         /**
@@ -194,8 +194,10 @@
          * @param {string} state - absolute state name or relative state path
          */
         function onSelectRow(event, state) {
-            if (lodash.isNil(event.target.closest('.igz-action-item')) &&
-                lodash.isNil(event.target.closest('.actions-more-info'))) {
+            if (
+                lodash.isNil(event.target.closest('.igz-action-item')) &&
+                lodash.isNil(event.target.closest('.actions-more-info'))
+            ) {
                 if (!angular.isString(state)) {
                     state = 'app.project.function.edit.code';
                 }
@@ -209,8 +211,6 @@
                     functionId: ctrl.function.metadata.name,
                     projectNamespace: ctrl.project.metadata.namespace
                 });
-
-                NuclioHeaderService.updateMainHeader('common:PROJECTS', ctrl.title, $state.current.name);
             }
         }
 
@@ -237,7 +237,8 @@
             event.stopPropagation();
 
             if (!ctrl.function.spec.disable && !lodash.isEmpty(apiGateways)) {
-                DialogsService.alert($i18next.t('functions:ERROR_MSG.DISABLE_API_GW_FUNCTION', {lng: lng, apiGatewayName: apiGateways[0]}));
+                DialogsService.alert($i18next.t('functions:ERROR_MSG.DISABLE_API_GW_FUNCTION',
+                                                { lng: lng, apiGatewayName: apiGateways[0] }));
             } else if (!ctrl.function.spec.disable) {
                 disableFunction();
             } else {
@@ -282,7 +283,7 @@
                         lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
                     })
                     .catch(function (error) {
-                        var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', {lng: lng});
+                        var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', { lng: lng });
 
                         if (error.status === 409) {
                             FunctionsService.openVersionDeleteDialog()
@@ -382,14 +383,15 @@
         function initFunctionActions() {
             ctrl.functionActions = angular.copy(FunctionsService.initFunctionActions());
 
-            var deleteAction = lodash.find(ctrl.functionActions, {'id': 'delete'});
+            var deleteAction = lodash.find(ctrl.functionActions, { id: 'delete' });
 
             if (!lodash.isNil(deleteAction) && lodash.isEmpty(apiGateways)) {
                 deleteAction.confirm = {
-                    message: $i18next.t('functions:DELETE_FUNCTION', {lng: lng}) + ' “' + ctrl.function.metadata.name + '”?',
-                    description: $i18next.t('functions:DELETE_FUNCTION_DESCRIPTION', {lng: lng}),
-                    yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
-                    noLabel: $i18next.t('common:CANCEL', {lng: lng}),
+                    message: $i18next.t('functions:DELETE_FUNCTION', { lng: lng }) + ' “' +
+                        ctrl.function.metadata.name + '”?',
+                    description: $i18next.t('functions:DELETE_FUNCTION_DESCRIPTION', { lng: lng }),
+                    yesLabel: $i18next.t('common:YES_DELETE', { lng: lng }),
+                    noLabel: $i18next.t('common:CANCEL', { lng: lng }),
                     type: 'nuclio_alert'
                 }
             }
@@ -414,7 +416,7 @@
                         }
                     })
                     .catch(function (error) {
-                        var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTION', {lng: lng});
+                        var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTION', { lng: lng });
 
                         terminateInterval();
                         convertStatusState();
@@ -458,7 +460,7 @@
             // set `nuclio.io/project-name` label to relate this function to its project
             lodash.set(functionCopy, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.project.metadata.name);
 
-            ctrl.updateFunction({'function': functionCopy, projectID: ctrl.project.metadata.name})
+            ctrl.updateFunction({ 'function': functionCopy, projectID: ctrl.project.metadata.name })
                 .then(function () {
                     tempFunctionCopy = null;
 
@@ -467,7 +469,7 @@
                 .catch(function (error) {
                     ctrl.function = tempFunctionCopy;
 
-                    var defaultMsg = $i18next.t('functions:ERROR_MSG.UPDATE_FUNCTION', {lng: lng});
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.UPDATE_FUNCTION', { lng: lng });
 
                     return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                 })

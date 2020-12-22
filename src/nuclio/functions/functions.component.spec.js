@@ -72,7 +72,7 @@ describe('nclFunctions component: ', function () {
             ];
 
             var bindings = {
-                getProject: $q.when.bind($q),
+                project: project,
                 getFunctions: $q.when.bind($q),
             };
             var element = angular.element('<ncl-functions></ncl-functions>');
@@ -99,19 +99,15 @@ describe('nclFunctions component: ', function () {
 
     describe('$onInit(): ', function () {
         it('should initialize functions array', function () {
-            spyOn(ctrl, 'getProject').and.returnValue($q.when(project));
             spyOn(ctrl, 'refreshFunctions').and.callThrough();
             spyOn(ctrl, 'getFunctions').and.returnValue($q.when(functions));
 
-            ctrl.project = project;
             ctrl.functions = [];
 
             ctrl.$onInit();
             $rootScope.$digest();
             $timeout.flush();
 
-            expect(ctrl.getProject).toHaveBeenCalled();
-            expect(ctrl.project).toEqual(project);
             expect(ctrl.refreshFunctions).toHaveBeenCalled();
             expect(ctrl.getFunctions).toHaveBeenCalled();
             expect(ctrl.functions).toEqual(functions);
@@ -253,7 +249,6 @@ describe('nclFunctions component: ', function () {
     describe('refreshFunctions(): ', function () {
         it('should initialize functions list', function () {
             spyOn(ctrl, 'getFunctions').and.returnValue($q.when(functions));
-            ctrl.project = project;
             ctrl.functions = [];
 
             ctrl.refreshFunctions();

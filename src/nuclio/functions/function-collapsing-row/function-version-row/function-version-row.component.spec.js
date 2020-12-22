@@ -99,12 +99,10 @@ describe('nclFunctionVersionRow component:', function () {
             Object.defineProperty(event, 'target', {writable: false, value: {closest: angular.noop}});
 
             spyOn($state, 'go');
-            spyOn(NuclioHeaderService, 'updateMainHeader');
 
             ctrl.onSelectRow(event);
 
             expect($state.go).toHaveBeenCalled();
-            expect(NuclioHeaderService.updateMainHeader).toHaveBeenCalled();
         });
     });
 
