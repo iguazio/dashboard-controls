@@ -55,10 +55,6 @@
             if (ctrl.trigger !== 'click') {
                 ctrl.trigger = 'mouseenter';
             }
-            if (ctrl.isHtmlEnabled) {
-                var compiled = $compile('<span>' + ctrl.description + '</span>')($scope);
-                ctrl.compiledDescription = $sce.trustAsHtml(compiled[0].innerHTML);
-            }
         }
 
         /**
@@ -76,6 +72,11 @@
             if (lodash.has(changes, 'iconType')) {
                 var valueIsValid = lodash.includes(ctrl.iconTypes, changes.iconType.currentValue);
                 ctrl.selectedIconType = valueIsValid ? changes.iconType.currentValue : ctrl.iconTypes.INFO;
+            }
+
+            if (lodash.has(changes, 'description') && ctrl.isHtmlEnabled) {
+                var compiled = $compile('<span>' + ctrl.description + '</span>')($scope);
+                ctrl.compiledDescription = $sce.trustAsHtml(compiled[0].innerHTML);
             }
         }
 
