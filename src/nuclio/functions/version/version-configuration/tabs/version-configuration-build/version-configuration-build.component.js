@@ -44,6 +44,7 @@
         ctrl.maxLengths = {
             imageName: ValidationService.getMaxLength('function.imageName')
         };
+        ctrl.imageName = '';
 
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
@@ -87,10 +88,16 @@
                 ctrl.build.dependencies = lodash.get(ctrl.version, 'spec.build.dependencies', []).join('\n');
                 ctrl.build.runtimeAttributes.repositories = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories', []).join('\n');
 
+                ctrl.imageName = lodash.get(ctrl.version, 'spec.build.image');
+                var imageNamePrefix = ctrl.version.ui.imageNamePrefix;
+                if (!lodash.isEmpty(imageNamePrefix) && lodash.startsWith(ctrl.imageName, imageNamePrefix)) {
+                    ctrl.imageName = ctrl.imageName.replace(imageNamePrefix, '');
+                }
+
                 $timeout(function () {
                     if (ctrl.buildForm.$invalid) {
                         ctrl.buildForm.$setSubmitted();
-                        $rootScope.$broadcast('change-state-deploy-button', {component: 'build', isDisabled: true});
+                        $rootScope.$broadcast('change-state-deploy-button', { component: 'build', isDisabled: true });
                     }
                 });
             }
@@ -126,6 +133,11 @@
                     lodash.set(ctrl.build, field, newData);
                     lodash.set(ctrl.version, 'spec.build.' + field, commands);
                 }
+            } else if (field === 'imageName') {
+                var imageNamePrefix = ctrl.version.ui.imageNamePrefix;
+                var prefix = lodash.isEmpty(imageNamePrefix) ? '' : imageNamePrefix;
+                lodash.set(ctrl.version, 'spec.build.image', prefix + newData);
+                ctrl.imageName = newData;
             } else {
                 lodash.set(ctrl.version, field, newData);
             }
@@ -184,7 +196,7 @@
 
             Upload.upload({
                 url: '', // TODO
-                data: {file: file}
+                data: { file: file }
             }).then(function (response) { // on success
                 if (!uploadingData.uploaded && !lodash.isNil(response.config.data.file)) {
                     uploadingData.uploading = false;
@@ -235,13 +247,13 @@
             return [
                 {
                     id: 'script',
-                    label: $i18next.t('functions:SCRIPT', {lng: lng}),
+                    label: $i18next.t('functions:SCRIPT', { lng: lng }),
                     icon: 'ncl-icon-script',
                     active: true
                 },
                 {
                     id: 'file',
-                    label: $i18next.t('common:FILE', {lng: lng}),
+                    label: $i18next.t('common:FILE', { lng: lng }),
                     icon: 'ncl-icon-file',
                     active: true
                 }
