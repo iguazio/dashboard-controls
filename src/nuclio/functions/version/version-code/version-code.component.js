@@ -10,16 +10,17 @@
             controller: NclVersionCodeController
         });
 
-    function NclVersionCodeController($element, $rootScope, $scope, $timeout, $i18next, i18next, lodash, Base64,
-                                      ConfigService, DialogsService, VersionHelperService) {
+    function NclVersionCodeController($element, $rootScope, $scope, $timeout, $window, $i18next, i18next, lodash,
+                                      Base64, ConfigService, DialogsService, VersionHelperService) {
         var ctrl = this;
         var scrollContainer = null;
         var previousEntryType = null;
-        var testPaneWidth = 650;
-        var isAnimationCompleted = true;
         var lng = i18next.language;
 
         ctrl.githubToken = '';
+        ctrl.layout = {
+            collapsed: false
+        };
         ctrl.scrollConfig = {
             axis: 'xy',
             advanced: {
@@ -164,8 +165,11 @@
          * Initialization method
          */
         function onInit() {
-            $scope.$on('ui.layout.resize', onLayoutResize);
             $scope.$on('navigation-tabs_toggle-test-pane', toggleTestPane);
+            $scope.$on('ui.layout.resize', resizeScrollBar);
+            $scope.$on('ui.layout.loaded', resizeScrollBar);
+
+            angular.element($window).bind('resize', resizeScrollBar);
         }
 
         /**
@@ -200,7 +204,7 @@
                         ctrl.githubToken = lodash.chain(ctrl.version.spec.build)
                             .get('codeEntryAttributes.headers', {})
                             .find(function (value, key) {
-                                return key.toLowerCase() === 'authorization'
+                                return key.toLowerCase() === 'authorization';
                             })
                             .defaultTo('token ')
                             .value()
@@ -551,25 +555,13 @@
         }
 
         /**
-         * Broadcast callback from angular-ui-layout.
-         * Sets new width of test pane.
-         * @param event
-         * @param beforeContainerResize
-         * @param afterContainerResize
-         */
-        function onLayoutResize(event, beforeContainerResize, afterContainerResize) {
-            testPaneWidth = afterContainerResize.size;
-
-            resizeScrollBar(100);
-        }
-
-        /**
          * Resize scrollbar container.
          * Layout directive (splitter) makes changes to width of scrollbar container. But scrollbar doesn't handle
          * those changes in correct way. So we have to set width manually
-         * @param {number} timeout - function invocation delay
+         * @param {Event} e - native broadcast event object
+         * @param {number} [timeout=200] - function invocation delay in milliseconds
          */
-        function resizeScrollBar(timeout) {
+        function resizeScrollBar(e, timeout) {
             $timeout(function () {
                 var CODE_CONTAINER_MIN_WIDTH = 700;
 
@@ -589,7 +581,7 @@
                     // Enable scrolling again or show scrollbar
                     angular.element($element.find('.igz-scrollable-container')[0]).mCustomScrollbar('update');
                 }, 100);
-            }, timeout);
+            }, timeout || 200);
         }
 
         /**
@@ -598,88 +590,15 @@
          * @param {Object} data - contains data of test pane state (closed/opened)
          */
         function toggleTestPane(event, data) {
-            if (isAnimationCompleted) {
-                if (data.closeTestPane) {
-                    closeTestPane();
-                } else {
-                    openTestPane();
-                }
-            }
-
-            /**
-             * Closes Test pane
-             */
-            function closeTestPane() {
-                isAnimationCompleted = false;
-                var testPaneLeftPosition = parseInt(angular.element('.event-pane-section').css('left'));
-                var codeSectionWidth = parseInt(angular.element('.code-section').css('width'));
-
-                // move Test pane to left
-                angular.element('.event-pane-section').animate({
-                    'left': testPaneLeftPosition + testPaneWidth
-                }, {
-                    complete: onCloseCompleteAnimation
-                });
-
-                // resize code section to full width
-                angular.element('.code-section').animate({
-                    'width': (codeSectionWidth + testPaneWidth) + 'px'
-                }, 500);
-
-                // hide splitter
+            if (data.closeTestPane) {
+                ctrl.layout.collapsed = true;
                 angular.element(angular.element('.ui-splitbar')[0]).css('display', 'none');
-
-                resizeScrollBar(500);
-
-                /**
-                 * jQuery complete animation callback.
-                 * Hide Test pane when animation is completed
-                 */
-                function onCloseCompleteAnimation() {
-
-                    // hide Test pane
-                    angular.element('.event-pane-section').css('display', 'none');
-
-                    isAnimationCompleted = true;
-                }
+            } else {
+                ctrl.layout.collapsed = false;
+                angular.element(angular.element('.ui-splitbar')[0]).css('display', 'block');
             }
 
-            /**
-             * Opens Test pane
-             */
-            function openTestPane() {
-                isAnimationCompleted = false;
-                var codeSectionWidth = parseInt(angular.element('.code-section').css('width'));
-
-                // show Test pane
-                angular.element('.event-pane-section').css('display', 'block');
-
-                var testPaneLeftPosition = parseInt(angular.element('.event-pane-section').css('left'));
-
-                // resize code section
-                angular.element('.code-section').animate({
-                    'width': (codeSectionWidth - testPaneWidth) + 'px'
-                });
-
-                // move Test pane to be visible on the screen
-                angular.element('.event-pane-section').animate({
-                    'left': testPaneLeftPosition - testPaneWidth
-                }, {
-                    complete: onOpenCompleteAnimation
-                });
-
-                resizeScrollBar(500);
-
-                /**
-                 * jQuery complete animation callback.
-                 * Shows splitter, when animation is completed
-                 */
-                function onOpenCompleteAnimation() {
-                    angular.element(angular.element('.ui-splitbar')[0]).css('display', 'block');
-
-                    isAnimationCompleted = true;
-                }
-            }
+            resizeScrollBar(null, 300);
         }
     }
 }());

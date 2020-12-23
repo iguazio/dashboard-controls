@@ -1,5 +1,8 @@
-<div data-igz-extend-background data-ui-layout="{ flow : 'column', dividerSize: 3 }" class="ncl-edit-version-code ncl-version">
-    <div ui-layout-container min-size="200px" class="code-section">
+<div data-igz-extend-background
+     data-ui-layout="{ flow : 'column', dividerSize: 3 }"
+     ui-layout-loaded
+     class="ncl-edit-version-code ncl-version">
+    <div ui-layout-container="central" class="code-section">
         <form name="$ctrl.versionCodeForm" class="code-wrapper-block" novalidate>
             <div data-ng-if="$ctrl.selectedEntryType.id === 'sourceCode'"
                  class="igz-scrollable-container code-scrollable-container"
@@ -350,7 +353,12 @@
         </form>
     </div>
 
-    <div ui-layout-container size="650px" min-size="200px" class="event-pane-section">
+    <div ui-layout-container
+         size="650px"
+         min-size="{{$ctrl.layout.collapsed ? null : '300px'}}"
+         max-size="80%"
+         collapsed="$ctrl.layout.collapsed"
+         class="event-pane-section">
         <function-events-data-wrapper data-version="$ctrl.version"></function-events-data-wrapper>
     </div>
 </div>
