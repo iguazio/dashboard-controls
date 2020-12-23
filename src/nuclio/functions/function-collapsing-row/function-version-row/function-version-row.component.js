@@ -1,4 +1,3 @@
-/* eslint max-statements: ["error", 100] */
 (function () {
     'use strict';
 
@@ -21,8 +20,8 @@
             controller: NclFunctionVersionRowController
         });
 
-    function NclFunctionVersionRowController($state, $i18next, i18next, lodash, ActionCheckboxAllService,
-                                             ConfigService, FunctionsService, NuclioHeaderService, TableSizeService) {
+    function NclFunctionVersionRowController($state, $i18next, i18next, lodash, ActionCheckboxAllService, ConfigService,
+                                             FunctionsService, TableSizeService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -96,7 +95,7 @@
          * @param {string} actionType - a type of action
          */
         function onFireAction(actionType) {
-            ctrl.actionHandlerCallback({actionType: actionType, checkedItems: [ctrl.version]});
+            ctrl.actionHandlerCallback({ actionType: actionType, checkedItems: [ctrl.version] });
         }
 
         /**
@@ -105,8 +104,10 @@
          * @param {string} state - absolute state name or relative state path
          */
         function onSelectRow(event, state) {
-            if (lodash.isNil(event.target.closest('.igz-action-item')) &&
-                lodash.isNil(event.target.closest('.actions-more-info'))) {
+            if (
+                lodash.isNil(event.target.closest('.igz-action-item')) &&
+                lodash.isNil(event.target.closest('.actions-more-info'))
+            ) {
                 if (!angular.isString(state)) {
                     state = 'app.project.function.edit.code';
                 }
@@ -120,8 +121,6 @@
                     functionId: ctrl.function.metadata.name,
                     projectNamespace: ctrl.project.metadata.namespace
                 });
-
-                NuclioHeaderService.updateMainHeader('common:PROJECTS', ctrl.title, $state.current.name);
             }
         }
 
@@ -130,7 +129,7 @@
          * @param {MouseEvent} event
          */
         function onToggleFunctionState(event) {
-            ctrl.toggleFunctionState({event: event})
+            ctrl.toggleFunctionState({ event: event })
         }
 
         //
@@ -161,10 +160,11 @@
         function initVersionActions() {
             ctrl.versionActions = angular.copy(FunctionsService.initVersionActions());
 
-            var deleteAction = lodash.find(ctrl.versionActions, {'id': 'delete'});
+            var deleteAction = lodash.find(ctrl.versionActions, { id: 'delete' });
 
             if (!lodash.isNil(deleteAction)) {
-                deleteAction.confirm.message = $i18next.t('functions:DELETE_VERSION', {lng: lng}) + ' “' + ctrl.version.name + '”?'
+                deleteAction.confirm.message = $i18next.t('functions:DELETE_VERSION', { lng: lng }) + ' “' +
+                    ctrl.version.name + '”?'
             }
         }
     }

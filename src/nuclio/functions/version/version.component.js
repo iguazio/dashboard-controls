@@ -10,7 +10,6 @@
                 containers: '<',
                 createVersion: '&',
                 deleteFunction: '&',
-                getProject: '&',
                 getFunction: '&',
                 getFunctions: '&',
                 onEditCallback: '&?',
@@ -83,49 +82,49 @@
             ctrl.actions = [
                 {
                     id: 'exportFunction',
-                    name: $i18next.t('functions:EXPORT_FUNCTION', {lng: lng})
+                    name: $i18next.t('functions:EXPORT_FUNCTION', { lng: lng })
                 },
                 {
                     id: 'deleteFunction',
-                    name: $i18next.t('functions:DELETE_FUNCTION', {lng: lng}),
+                    name: $i18next.t('functions:DELETE_FUNCTION', { lng: lng }),
                     dialog: {
                         message: {
-                            message: $i18next.t('functions:DELETE_FUNCTION', {lng: lng}) + ' “' + ctrl.version.metadata.name + '”?',
-                            description: $i18next.t('functions:DELETE_FUNCTION_DESCRIPTION', {lng: lng})
+                            message: $i18next.t('functions:DELETE_FUNCTION', { lng: lng }) + ' “' + ctrl.version.metadata.name + '”?',
+                            description: $i18next.t('functions:DELETE_FUNCTION_DESCRIPTION', { lng: lng })
                         },
-                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
-                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
+                        yesLabel: $i18next.t('common:YES_DELETE', { lng: lng }),
+                        noLabel: $i18next.t('common:CANCEL', { lng: lng }),
                         type: 'nuclio_alert'
                     }
                 },
                 {
                     id: 'duplicateFunction',
-                    name: $i18next.t('functions:DUPLICATE_FUNCTION', {lng: lng})
+                    name: $i18next.t('functions:DUPLICATE_FUNCTION', { lng: lng })
                 },
                 {
                     id: 'viewConfig',
-                    name: $i18next.t('functions:VIEW_YAML', {lng: lng})
+                    name: $i18next.t('functions:VIEW_YAML', { lng: lng })
                 }
             ];
 
             ctrl.navigationTabsConfig = [
                 {
-                    tabName: $i18next.t('common:CODE', {lng: lng}),
+                    tabName: $i18next.t('common:CODE', { lng: lng }),
                     id: 'code',
                     uiRoute: 'app.project.function.edit.code'
                 },
                 {
-                    tabName: $i18next.t('common:CONFIGURATION', {lng: lng}),
+                    tabName: $i18next.t('common:CONFIGURATION', { lng: lng }),
                     id: 'configuration',
                     uiRoute: 'app.project.function.edit.configuration'
                 },
                 {
-                    tabName: $i18next.t('common:TRIGGERS', {lng: lng}),
+                    tabName: $i18next.t('common:TRIGGERS', { lng: lng }),
                     id: 'triggers',
                     uiRoute: 'app.project.function.edit.triggers'
                 },
                 {
-                    tabName: $i18next.t('common:STATUS', {lng: lng}),
+                    tabName: $i18next.t('common:STATUS', { lng: lng }),
                     id: 'status',
                     uiRoute: 'app.project.function.edit.monitoring',
                     status: VersionHelperService.isVersionDeployed(ctrl.version) ? lodash.get(ctrl.version, 'status.state') :
@@ -135,28 +134,14 @@
 
             ctrl.requiredComponents = {};
 
-            ctrl.getProject({ id: $stateParams.projectId })
-                .then(function (response) {
+            // breadcrumbs config
+            var title = {
+                project: ctrl.project,
+                function: $stateParams.functionId,
+                version: '$LATEST'
+            };
 
-                    // set projects data
-                    ctrl.project = response;
-
-                    // breadcrumbs config
-                    var title = {
-                        project: ctrl.project,
-                        function: $stateParams.functionId,
-                        version: '$LATEST'
-                    };
-
-                    NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
-                })
-                .then(setIngressHost)
-                .then(setImageNamePrefixTemplate)
-                .catch(function (error) {
-                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_PROJECT', {lng: lng});
-
-                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
-                });
+            NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
 
@@ -204,8 +189,9 @@
                 }
             });
 
-            setInvocationUrl();
+            setImageNamePrefixTemplate();
             setIngressHost();
+            setInvocationUrl();
         }
 
         //
@@ -220,7 +206,7 @@
         function deployButtonClick(event, version) {
             if (!ctrl.isDeployDisabled) {
                 ctrl.isFunctionDeployed = false;
-                $rootScope.$broadcast('deploy-function-version', {event: event});
+                $rootScope.$broadcast('deploy-function-version', { event: event });
 
                 var versionCopy = lodash.omit(angular.isDefined(version) ? version : ctrl.version, ['status', 'ui']);
 
@@ -246,7 +232,7 @@
                         });
                     })
                     .catch(function (error) {
-                        var defaultMsg = $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', {lng: lng});
+                        var defaultMsg = $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', { lng: lng });
 
                         if (error.status === 409 && isVersionDeployed) {
                             FunctionsService.openVersionOverwriteDialog()
@@ -276,9 +262,9 @@
          * @returns {string}
          */
         function getDeployStatusState(state) {
-            return state === 'ready' ? $i18next.t('functions:SUCCESSFULLY_DEPLOYED', {lng: lng}) :
-                   state === 'error' ? $i18next.t('functions:FAILED_TO_DEPLOY', {lng: lng})      :
-                   /* else */          $i18next.t('functions:DEPLOYING', {lng: lng});
+            return state === 'ready' ? $i18next.t('functions:SUCCESSFULLY_DEPLOYED', { lng: lng }) :
+                   state === 'error' ? $i18next.t('functions:FAILED_TO_DEPLOY', { lng: lng })      :
+                   /* else */          $i18next.t('functions:DEPLOYING', { lng: lng });
         }
 
         /**
@@ -331,7 +317,8 @@
                             deleteFunction();
                         });
                 } else {
-                    DialogsService.alert($i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION', {lng: lng, apiGatewayName: apiGateways[0]}));
+                    DialogsService.alert($i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION',
+                                                    { lng: lng, apiGatewayName: apiGateways[0] }));
                 }
             } else if (item.id === 'exportFunction') {
                 ExportService.exportFunction(ctrl.version);
@@ -370,17 +357,18 @@
         function refreshFunction() {
             ctrl.isSplashShowed.value = true;
 
-            ctrl.getFunction({metadata: ctrl.version.metadata, projectID: lodash.get(ctrl.project, 'metadata.name')})
+            ctrl.getFunction({ metadata: ctrl.version.metadata, projectID: lodash.get(ctrl.project, 'metadata.name') })
                 .then(function (response) {
                     var versionUi = ctrl.version.ui;
                     ctrl.version = response;
                     ctrl.version.ui = versionUi;
 
-                    setInvocationUrl();
+                    setImageNamePrefixTemplate();
                     setIngressHost();
+                    setInvocationUrl();
                 })
                 .catch(function (error) {
-                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTION', {lng: lng});
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTION', { lng: lng });
 
                     DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                 })
@@ -435,7 +423,7 @@
                     $state.go('app.project.functions');
                 })
                 .catch(function (error) {
-                    var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', {lng: lng});
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', { lng: lng });
 
                     if (error.status === 409) {
                         FunctionsService.openVersionDeleteDialog()
@@ -503,8 +491,9 @@
                                 versionChanged: false
                             });
 
-                            setInvocationUrl();
+                            setImageNamePrefixTemplate();
                             setIngressHost();
+                            setInvocationUrl();
 
                             ctrl.isFunctionDeployed = true;
                         }
@@ -582,14 +571,15 @@
          */
         function stateChangeStart(transition) {
             var toState = transition.$to();
-            if (lodash.get($state, 'params.functionId') !== transition.params('to').functionId &&
-                !VersionHelperService.isVersionDeployed(ctrl.version)) {
-
+            if (
+                lodash.get($state, 'params.functionId') !== transition.params('to').functionId &&
+                !VersionHelperService.isVersionDeployed(ctrl.version)
+            ) {
                 transition.abort();
 
-                DialogsService.confirm($i18next.t('common:LEAVE_PAGE_CONFIRM', {lng: lng}),
-                                       $i18next.t('common:LEAVE', {lng: lng}),
-                                       $i18next.t('common:DONT_LEAVE', {lng: lng}))
+                DialogsService.confirm($i18next.t('common:LEAVE_PAGE_CONFIRM', { lng: lng }),
+                                       $i18next.t('common:LEAVE', { lng: lng }),
+                                       $i18next.t('common:DONT_LEAVE', { lng: lng }))
                     .then(function () {
 
                         // unsubscribe from broadcast event

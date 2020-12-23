@@ -10,22 +10,21 @@
                 getApiGateway: '&',
                 getApiGateways: '&',
                 getFunctions: '&',
-                getProject: '&',
+                project: '<',
                 updateApiGateway: '&'
             },
             templateUrl: 'nuclio/api-gateways/api-gateways.tpl.html',
             controller: ApiGatewaysController
         });
 
-    function ApiGatewaysController($interval, $q, $rootScope, $scope, $state, $stateParams, $timeout, $i18next,
-                                   i18next, lodash, ngDialog, ApiGatewaysService, CommonTableService, ConfigService,
-                                   DialogsService, GeneralDataService, NuclioHeaderService) {
+    function ApiGatewaysController($interval, $q, $rootScope, $scope, $state, $timeout, $i18next, i18next, lodash,
+                                   ngDialog, ApiGatewaysService, CommonTableService, ConfigService, DialogsService,
+                                   GeneralDataService, NuclioHeaderService) {
         var ctrl = this;
         var lng = i18next.language;
 
         var POLL_TIMEOUT_DELAY_MILLIS = 300000;
 
-        var title = {}; // breadcrumbs config
         var pollingCancelDeferred = null;
         var pollingTimeout = null;
         var updatingInterval = null;
@@ -101,6 +100,16 @@
             $scope.$on('action-panel_fire-action', onFireAction);
             $scope.$on('action-checkbox-all_checked-items-count-change', updatePanelActions);
             $scope.$on('action-checkbox-all_check-all', updatePanelActions);
+
+            $timeout(function () {
+                // update breadcrumbs
+                var title = {
+                    project: ctrl.project,
+                    tab: $i18next.t('functions:API_GATEWAYS', { lng: lng })
+                };
+
+                NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
+            });
         }
 
         /**
@@ -344,16 +353,7 @@
          * Initializes API Gateways list
          */
         function initApiGateways() {
-            ctrl.getProject({projectId: $stateParams.projectId})
-                .then(function (project) {
-                    ctrl.project = project;
-                    title.project = project;
-                    title.tab = $i18next.t('functions:API_GATEWAYS', { lng: lng });
-
-                    NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
-
-                    return ctrl.refreshApiGateways();
-                })
+            return ctrl.refreshApiGateways()
                 .then(function () {
                     startAutoUpdate();
                 })

@@ -12,8 +12,8 @@
                 deleteFunction: '&',
                 getFunction: '&',
                 getFunctions: '&',
-                getProject: '&',
                 getStatistics: '&',
+                project: '<',
                 updateFunction: '&'
             },
             templateUrl: 'nuclio/functions/functions.tpl.html',
@@ -26,7 +26,6 @@
                                  TableSizeService) {
         var ctrl = this;
         var lng = i18next.language;
-        var title = {}; // breadcrumbs config
         var updatingFunctionsInterval = null;
         var updatingFunctionsIntervalTime = 10000;
         var updatingStatisticsInterval = null;
@@ -151,8 +150,19 @@
             $scope.$on('action-panel_fire-action', onFireAction);
 
             $transitions.onStart({}, stateChangeStart);
+            $transitions.onError({}, stateChangeError);
 
             updatePanelActions();
+
+            $timeout(function () {
+                // update breadcrumbs
+                var title = {
+                    project: ctrl.project,
+                    tab: $i18next.t('common:FUNCTIONS', { lng: lng })
+                };
+
+                NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
+            });
         }
 
         /**
@@ -277,8 +287,11 @@
                         return functionFromResponse;
                     });
 
-                    if (ctrl.createFunctionWhenEmpty && lodash.isEmpty(ctrl.functions) &&
-                        !$stateParams.createCancelled) {
+                    if (
+                        ctrl.createFunctionWhenEmpty &&
+                        lodash.isEmpty(ctrl.functions) &&
+                        !$stateParams.createCancelled
+                    ) {
                         ctrl.isSplashShowed.value = false;
                         openNewFunctionScreen();
                     } else {
@@ -293,8 +306,7 @@
                     }
 
                     sortTable();
-                })
-                .then(function () {
+
                     if (!autoRefresh) {
                         updateStatistics();
                     }
@@ -338,16 +350,7 @@
          * Initializes functions list
          */
         function initFunctions() {
-            ctrl.getProject({ id: $stateParams.projectId })
-                .then(function (project) {
-                    ctrl.project = project;
-                    title.project = project;
-                    title.tab = $i18next.t('common:FUNCTIONS', { lng: lng });
-
-                    NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
-
-                    return ctrl.refreshFunctions();
-                })
+            return ctrl.refreshFunctions()
                 .then(function () {
                     sortTable();
                     startAutoUpdate();
@@ -361,7 +364,7 @@
                     ctrl.isSplashShowed.value = false;
                     var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', { lng: lng });
 
-                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
+                    return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
                         $state.go('app.projects');
                     });
                 });
@@ -452,6 +455,13 @@
          */
         function stateChangeStart() {
             ctrl.isSplashShowed.value = true;
+        }
+
+        /**
+         * Opens a splash screen on error change state
+         */
+        function stateChangeError() {
+            ctrl.isSplashShowed.value = false;
         }
 
         /**
