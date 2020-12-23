@@ -26,14 +26,15 @@
 
     <div class="loading-error" data-ng-if="$ctrl.isShowError && $ctrl.checkSize('default')">
         <div class="sad-icon"></div>
-        <div class="loading-error-title">{{ 'common:OOPS' | i18next }}</div>
+        <div class="loading-error-title">{{$ctrl.title}}</div>
         <div class="loading-error-message">
-            <span>
-                {{ 'common:ERROR_MSG.ELEMENT_LOADING_DEFAULT_1' | i18next }}
-            </span>&nbsp;
-            <span class="refresh-page" data-ng-click="$ctrl.refreshPage($event)">
-                {{ 'common:ERROR_MSG.ELEMENT_LOADING_DEFAULT_2' | i18next }}
-            </span>.
+            <span data-ng-bind="$ctrl.errorMessage"></span>
+            <span data-ng-if="$ctrl.refresh">
+                <span>{{ 'common:ERROR_MSG.ELEMENT_LOADING_DEFAULT_2' | i18next }}</span>
+                <span class="refresh-page" data-ng-click="$ctrl.refreshPage($event)">
+                    {{ 'common:ERROR_MSG.ELEMENT_LOADING_DEFAULT_3' | i18next }}
+                </span>.
+            </span>
         </div>
     </div>
 

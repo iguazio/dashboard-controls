@@ -4,8 +4,11 @@
     angular.module('iguazio.dashboard-controls')
         .component('igzElementLoadingStatus', {
             bindings: {
+                errorMessage: '@?',
                 loadingStatusSize: '@?',
                 name: '@',
+                refresh: '<?',
+                title: '@?',
                 tooltipLabel: '@?'
             },
             templateUrl: 'igz_controls/components/element-loading-status/element-loading-status.tpl.html',
@@ -13,9 +16,10 @@
             transclude: true
         });
 
-    function IgzElementLoadingStatusController($scope, $element, $timeout, $state, lodash) {
+    function IgzElementLoadingStatusController($element, $scope, $state, $timeout, $i18next, i18next, lodash) {
         var ctrl = this;
         var defaultHeight = 0;
+        var lng = i18next.language;
 
         ctrl.isShowSpinner = true;
         ctrl.isShowContent = false;
@@ -23,6 +27,7 @@
 
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
+        ctrl.$onChanges = onChanges;
 
         ctrl.checkSize = checkSize;
         ctrl.refreshPage = refreshPage;
@@ -36,10 +41,6 @@
          * Initialization method
          */
         function onInit() {
-            lodash.defaults(ctrl, {
-                loadingStatusSize: 'default',
-                tooltipLabel: ''
-            });
             defaultHeight = ctrl.loadingStatusSize === 'small' ? 20 : 40;
 
             $scope.$on('element-loading-status_show-spinner', showSpinner);
@@ -53,9 +54,27 @@
          * Post linking method
          */
         function postLink() {
-
-            // Set height of spinner wrapper
             setWrapperHeight();
+        }
+
+        /**
+         * Changes method
+         */
+        function onChanges() {
+            lodash.defaults(ctrl, {
+                loadingStatusSize: 'default',
+                refresh: false,
+                title: '',
+                tooltipLabel: ''
+            });
+
+            if (lodash.isEmpty(ctrl.errorMessage)) {
+                lodash.assign(ctrl, {
+                    errorMessage: $i18next.t('common:ERROR_MSG.ELEMENT_LOADING_DEFAULT_1', { lng: lng }),
+                    title: $i18next.t('common:OOPS', { lng: lng }),
+                    refresh: true
+                });
+            }
         }
 
         //
