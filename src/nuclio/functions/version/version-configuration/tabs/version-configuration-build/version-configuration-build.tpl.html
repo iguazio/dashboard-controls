@@ -26,12 +26,11 @@
                     <span class="flex-none">{{ $ctrl.version.ui.imageNamePrefix }}</span>
                     <igz-validating-input-field data-field-type="input"
                                                 data-input-name="imageName"
-                                                data-input-value="$ctrl.version.spec.build.image"
+                                                data-input-value="$ctrl.imageName"
                                                 data-is-focused="false"
                                                 data-form-object="$ctrl.buildForm"
                                                 data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_IMAGE_NAME' | i18next }}"
                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                data-update-data-field="spec.build.image"
                                                 data-validation-max-length="{{$ctrl.maxLengths.imageName}}"
                                                 data-validation-pattern="$ctrl.imageNameValidationPattern"
                                                 data-is-disabled="$ctrl.disabled"

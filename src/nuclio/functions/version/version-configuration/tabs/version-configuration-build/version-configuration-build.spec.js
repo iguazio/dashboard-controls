@@ -45,6 +45,9 @@ describe('nclVersionConfigurationBuild component:', function () {
                    build: {
                        commands: ['1', '2']
                    }
+               },
+               ui: {
+                   imageNamePrefix: 'somePrefix'
                }
            };
 
