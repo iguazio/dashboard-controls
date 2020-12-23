@@ -559,7 +559,7 @@
          * Layout directive (splitter) makes changes to width of scrollbar container. But scrollbar doesn't handle
          * those changes in correct way. So we have to set width manually
          * @param {Event} e - native broadcast event object
-         * @param {number} timeout - function invocation delay
+         * @param {number} [timeout=200] - function invocation delay in milliseconds
          */
         function resizeScrollBar(e, timeout) {
             $timeout(function () {
