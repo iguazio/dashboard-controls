@@ -134,14 +134,16 @@
 
             ctrl.requiredComponents = {};
 
-            // breadcrumbs config
-            var title = {
-                project: ctrl.project,
-                function: $stateParams.functionId,
-                version: '$LATEST'
-            };
+            $timeout(function () {
+                // update breadcrumbs
+                var title = {
+                    project: ctrl.project,
+                    function: $stateParams.functionId,
+                    version: '$LATEST'
+                };
 
-            NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
+                NuclioHeaderService.updateMainHeader('common:PROJECTS', title, $state.current.name);
+            });
 
             $scope.$on('change-state-deploy-button', changeStateDeployButton);
 
