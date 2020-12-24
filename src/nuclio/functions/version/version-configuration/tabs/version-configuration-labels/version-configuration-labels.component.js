@@ -32,18 +32,18 @@
         };
         ctrl.tooltip = '<a class="link" target="_blank" ' +
             'href="https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/">' +
-            $i18next.t('functions:TOOLTIP.LABELS.HEAD', {lng: lng}) + '</a> ' +
-            $i18next.t('functions:TOOLTIP.LABELS.REST', {lng: lng});
+            $i18next.t('functions:TOOLTIP.LABELS.HEAD', { lng: lng }) + '</a> ' +
+            $i18next.t('functions:TOOLTIP.LABELS.REST', { lng: lng });
 
         ctrl.keyTooltip = $i18next.t('functions:TOOLTIP.PREFIXED_NAME', {
             lng: lng,
-            name: $i18next.t('common:LABEL', {lng: lng})
+            name: $i18next.t('common:LABEL', { lng: lng })
         });
         ctrl.validationRules = {
             key: ValidationService.getValidationRules('function.label.key', [
                 {
                     name: 'uniqueness',
-                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                    label: $i18next.t('functions:UNIQUENESS', { lng: lng }),
                     pattern: validateUniqueness
                 }
             ]),
@@ -80,10 +80,9 @@
          * @param {Object} changes
          */
         function onChanges(changes) {
-            if (angular.isDefined(changes.version)) {
-                var labels = lodash.get(ctrl.version, 'metadata.labels', []);
-
-                ctrl.labels = lodash.chain(labels)
+            if (lodash.has(changes, 'version')) {
+                ctrl.labels = lodash.chain(ctrl.version)
+                    .get('metadata.labels', {})
                     .omitBy(function (value, key) {
                         return lodash.startsWith(key, 'nuclio.io/');
                     })
@@ -101,12 +100,12 @@
                     .value();
                 ctrl.labels = lodash.compact(ctrl.labels);
                 ctrl.addNewLabelTooltip = ctrl.isVersionDeployed(ctrl.version) ?
-                    $i18next.t('functions:TOOLTIP.ADD_LABELS', {lng: lng}) : '';
+                    $i18next.t('functions:TOOLTIP.ADD_LABELS', { lng: lng }) : '';
 
                 $timeout(function () {
                     if (ctrl.labelsForm.$invalid) {
                         ctrl.labelsForm.$setSubmitted();
-                        $rootScope.$broadcast('change-state-deploy-button', {component: 'label', isDisabled: true});
+                        $rootScope.$broadcast('change-state-deploy-button', { component: 'label', isDisabled: true });
                     }
                 });
             }
@@ -137,7 +136,7 @@
                         }
                     });
 
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'label', isDisabled: true});
+                    $rootScope.$broadcast('change-state-deploy-button', { component: 'label', isDisabled: true });
                     event.stopPropagation();
                 }
             }, 50);
@@ -186,7 +185,7 @@
          */
         function updateLabels() {
             var isFormValid = true;
-            var labels = lodash.get(ctrl.version, 'metadata.labels', []);
+            var labels = lodash.get(ctrl.version, 'metadata.labels', {});
             var nuclioLabels = lodash.pickBy(labels, function (value, key) {
                 return lodash.startsWith(key, 'nuclio.io/');
             });
@@ -209,7 +208,7 @@
                 isDisabled: !isFormValid
             });
 
-            newLabels = lodash.merge(newLabels, nuclioLabels);
+            lodash.merge(newLabels, nuclioLabels);
 
             lodash.set(ctrl.version, 'metadata.labels', newLabels);
             ctrl.onChangeCallback();
