@@ -30,18 +30,18 @@
         };
         ctrl.tooltip = '<a class="link" target="_blank" ' +
             'href="https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/">' +
-            $i18next.t('functions:TOOLTIP.ANNOTATIONS.HEAD', {lng: lng}) + '</a> ' +
-            $i18next.t('functions:TOOLTIP.ANNOTATIONS.REST', {lng: lng});
+            $i18next.t('functions:TOOLTIP.ANNOTATIONS.HEAD', { lng: lng }) + '</a> ' +
+            $i18next.t('functions:TOOLTIP.ANNOTATIONS.REST', { lng: lng });
 
         ctrl.keyTooltip = $i18next.t('functions:TOOLTIP.PREFIXED_NAME', {
             lng: lng,
-            name: $i18next.t('functions:TOOLTIP.ANNOTATION', {lng: lng})
+            name: $i18next.t('functions:TOOLTIP.ANNOTATION', { lng: lng })
         });
         ctrl.validationRules = {
             key: ValidationService.getValidationRules('k8s.prefixedQualifiedName', [
                 {
                     name: 'uniqueness',
-                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                    label: $i18next.t('functions:UNIQUENESS', { lng: lng }),
                     pattern: validateUniqueness
                 }
             ])
@@ -72,25 +72,30 @@
          * @param {Object} changes
          */
         function onChanges(changes) {
-            if (angular.isDefined(changes.version)) {
-                var annotations =  lodash.get(ctrl.version, 'metadata.annotations', []);
-
-                ctrl.annotations = lodash.map(annotations, function (value, key) {
-                    return {
-                        name: key,
-                        value: value,
-                        ui: {
-                            editModeActive: false,
-                            isFormValid: false,
-                            name: 'annotation'
-                        }
-                    };
-                });
+            if (lodash.has(changes, 'version')) {
+                ctrl.annotations = lodash.chain(ctrl.version)
+                    .get('metadata.annotations', {})
+                    .omitBy(function (value, key) {
+                        return lodash.startsWith(key, 'nuclio.io/');
+                    })
+                    .map(function (value, key) {
+                        return {
+                            name: key,
+                            value: value,
+                            ui: {
+                                editModeActive: false,
+                                isFormValid: false,
+                                name: 'annotation'
+                            }
+                        };
+                    })
+                    .value();
 
                 $timeout(function () {
                     if (ctrl.annotationsForm.$invalid) {
                         ctrl.annotationsForm.$setSubmitted();
-                        $rootScope.$broadcast('change-state-deploy-button', {component: 'annotation', isDisabled: true});
+                        $rootScope.$broadcast('change-state-deploy-button',
+                                              { component: 'annotation', isDisabled: true });
                     }
                 });
             }
@@ -142,11 +147,11 @@
 
         /**
          * Changes annotations data
-         * @param {Object} label
+         * @param {Object} annotation
          * @param {number} index
          */
-        function onChangeData(label, index) {
-            ctrl.annotations[index] = lodash.cloneDeep(label);
+        function onChangeData(annotation, index) {
+            ctrl.annotations[index] = lodash.cloneDeep(annotation);
 
             updateAnnotations();
         }
@@ -160,6 +165,10 @@
          */
         function updateAnnotations() {
             var isFormValid = true;
+            var annotations = lodash.get(ctrl.version, 'metadata.annotations', {});
+            var nuclioAnnotations = lodash.pickBy(annotations, function (value, key) {
+                return lodash.startsWith(key, 'nuclio.io/');
+            });
             var newAnnotations = {};
 
             lodash.forEach(ctrl.annotations, function (annotation) {
@@ -178,6 +187,8 @@
                 component: 'annotation',
                 isDisabled: !isFormValid
             });
+
+            lodash.merge(newAnnotations, nuclioAnnotations);
 
             lodash.set(ctrl.version, 'metadata.annotations', newAnnotations);
             ctrl.onChangeCallback();

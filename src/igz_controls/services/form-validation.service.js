@@ -98,7 +98,7 @@
         /**
          * Returns a list of all controls (immediate and nested) of the provided control in case it is a form
          * (`ngForm`), or the control itself in case it is a field (`ngModel`).
-         * @param {Object} control - The form controller (`ngForm`) or the model controller (`ngForm`).
+         * @param {Object} control - The form controller (`ngForm`) or the model controller (`ngModel`).
          * @returns {Array.<Object>} An array of model controllers (`ngModel`) of all the fields of `control` in case it
          *     is a form, or an array with `control` only in case it is a field.
          */
