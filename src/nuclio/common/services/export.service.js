@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('ExportService', ExportService);
 
-    function ExportService($i18next, $q, $timeout, $window, i18next, lodash, YAML, DialogsService, YamlService) {
+    function ExportService($i18next, $q, $timeout, $window, i18next, lodash, DialogsService, YamlService) {
         return {
             exportFunction: exportFunction,
             getFunctionConfig: getFunctionConfig,
@@ -44,7 +44,7 @@
          * @param {Function} getFunctions
          */
         function exportProject(project, getFunctions) {
-            getFunctions(project.metadata.name)
+            getFunctions(project.metadata.name, false)
                 .then(function (functions) {
                     var functionsList = lodash.map(functions, function (functionItem) {
                         return lodash.chain(functionItem)
@@ -83,7 +83,7 @@
          */
         function exportProjects(projects, getFunctions) {
             var promises = lodash.map(projects, function (project) {
-                return getFunctions(project.metadata.name)
+                return getFunctions(project.metadata.name, false)
                     .then(function (functions) {
                         return lodash.map(functions, function (functionItem) {
                             return lodash.chain(functionItem)

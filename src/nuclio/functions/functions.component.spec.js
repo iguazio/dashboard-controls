@@ -109,7 +109,7 @@ describe('nclFunctions component: ', function () {
             $timeout.flush();
 
             expect(ctrl.refreshFunctions).toHaveBeenCalled();
-            expect(ctrl.getFunctions).toHaveBeenCalled();
+            expect(ctrl.getFunctions).toHaveBeenCalledWith({ id: 'my-project-1', enrichApiGateways: true });
             expect(ctrl.functions).toEqual(functions);
         });
 
@@ -256,7 +256,7 @@ describe('nclFunctions component: ', function () {
             $rootScope.$digest();
             $timeout.flush();
 
-            expect(ctrl.getFunctions).toHaveBeenCalled();
+            expect(ctrl.getFunctions).toHaveBeenCalledWith({ id: 'my-project-1', enrichApiGateways: true });
             expect(ctrl.functions).toEqual(functions);
         });
     });

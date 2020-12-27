@@ -232,7 +232,7 @@
                 var isVersionDeployed = VersionHelperService.isVersionDeployed(ctrl.version);
                 var method = isVersionDeployed || ctrl.version.ui.overwrite ? ctrl.updateVersion : ctrl.createVersion;
 
-                method({ version: versionCopy, projectID: ctrl.project.metadata.name })
+                method({ version: versionCopy, projectId: ctrl.project.metadata.name })
                     .then(function () {
                         pullFunctionState();
 
@@ -381,7 +381,7 @@
         function refreshFunction() {
             ctrl.isSplashShowed.value = true;
 
-            ctrl.getFunction({ metadata: ctrl.version.metadata, projectID: lodash.get(ctrl.project, 'metadata.name') })
+            ctrl.getFunction({ metadata: ctrl.version.metadata, projectId: lodash.get(ctrl.project, 'metadata.name') })
                 .then(function (response) {
                     var versionUi = ctrl.version.ui;
                     ctrl.version = response;
@@ -497,7 +497,7 @@
             setDeployResult('building');
 
             interval = $interval(function () {
-                ctrl.getFunction({ metadata: ctrl.version.metadata, projectID: lodash.get(ctrl.project, 'metadata.name') })
+                ctrl.getFunction({ metadata: ctrl.version.metadata, projectId: lodash.get(ctrl.project, 'metadata.name') })
                     .then(function (aFunction) {
                         ctrl.version.status = aFunction.status;
 

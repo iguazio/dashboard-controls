@@ -41,8 +41,6 @@
          * Initialization method
          */
         function onInit() {
-            defaultHeight = ctrl.loadingStatusSize === 'small' ? 20 : 40;
-
             $scope.$on('element-loading-status_show-spinner', showSpinner);
             $scope.$on('element-loading-status_hide-spinner', hideSpinner);
 
@@ -75,6 +73,8 @@
                     refresh: true
                 });
             }
+
+            defaultHeight = ctrl.loadingStatusSize === 'small' ? 20 : 40;
         }
 
         //

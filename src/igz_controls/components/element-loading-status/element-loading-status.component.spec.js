@@ -29,14 +29,16 @@ describe('igzElementLoadingStatus component:', function () {
         ctrl = null;
     });
 
-    describe('initial state:', function () {
+    describe('$onChanges(): ', function () {
         it('should be rendered with correct data', function () {
+            ctrl.$onChanges();
             expect(ctrl.loadingStatusSize).toEqual('default');
         });
     });
 
     describe('checkSize():', function () {
         it('should check if ctrl.loadingStatusSize to equal passing argument', function () {
+            ctrl.$onChanges();
             expect(ctrl.checkSize('default')).toBeTruthy();
         })
     });

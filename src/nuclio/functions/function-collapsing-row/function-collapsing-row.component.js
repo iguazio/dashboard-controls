@@ -401,7 +401,7 @@
             setStatusIcon();
 
             interval = $interval(function () {
-                ctrl.getFunction({ metadata: ctrl.function.metadata, projectID: ctrl.project.metadata.name })
+                ctrl.getFunction({ metadata: ctrl.function.metadata, projectId: ctrl.project.metadata.name })
                     .then(function (aFunction) {
                         if (lodash.includes(steadyStates, lodash.get(aFunction, 'status.state'))) {
                             terminateInterval();
@@ -455,7 +455,7 @@
             // set `nuclio.io/project-name` label to relate this function to its project
             lodash.set(functionCopy, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.project.metadata.name);
 
-            ctrl.updateFunction({ 'function': functionCopy, projectID: ctrl.project.metadata.name })
+            ctrl.updateFunction({ 'function': functionCopy, projectId: ctrl.project.metadata.name })
                 .then(function () {
                     tempFunctionCopy = null;
 

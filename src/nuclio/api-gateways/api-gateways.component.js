@@ -26,7 +26,6 @@
         var POLL_TIMEOUT_DELAY_MILLIS = 300000;
 
         var pollingCancelDeferred = null;
-        var pollingTimeout = null;
         var updatingInterval = null;
         var updatingIntervalTime = ConfigService.screenAutoRefreshIntervals.apiGateways;
         var apiGateways = [];
@@ -116,10 +115,6 @@
          * Destructor method
          */
         function onDestroy() {
-            if (!lodash.isNull(pollingTimeout)) {
-                $timeout.cancel(pollingTimeout);
-            }
-
             if (!lodash.isNull(pollingCancelDeferred)) {
                 pollingCancelDeferred.resolve();
             }
@@ -206,7 +201,7 @@
                     'data-project="ngDialogData.project" ' +
                     'data-create-api-gateway="ngDialogData.createApiGateway({apiGateway: apiGateway, projectName: projectName})" ' +
                     'data-update-api-gateway="ngDialogData.updateApiGateway({apiGateway: apiGateway, projectName: projectName})" ' +
-                    'data-get-functions="ngDialogData.getFunctions({projectName: projectName})" ' +
+                    'data-get-functions="ngDialogData.getFunctions({projectName: projectName, enrichApiGateways: enrichApiGateways})" ' +
                     'class="new-item-wizard igz-component"></ncl-new-api-gateway-wizard>',
                 plain: true,
                 scope: $scope,
@@ -241,11 +236,17 @@
 
         function pollAndUpdate(apiGateway) {
             ApiGatewaysService.showStatusSpinner(apiGateway);
-            var pollMethod = ctrl.getApiGateway.bind(null, {apiGatewayName: lodash.get(apiGateway, 'spec.name')});
-
+            var pollMethod = ctrl.getApiGateway.bind(null, {
+                apiGatewayName: lodash.get(apiGateway, 'spec.name'),
+                projectName: lodash.get(ctrl.project, 'metadata.name', '')
+            });
+            pollingCancelDeferred = $q.defer();
+            $timeout(function () {
+                pollingCancelDeferred.resolve();
+            }, POLL_TIMEOUT_DELAY_MILLIS);
             GeneralDataService.poll(pollMethod,
                                     ApiGatewaysService.isSteadyState,
-                                    { timeoutMillis: POLL_TIMEOUT_DELAY_MILLIS })
+                                    { timeoutPromise: pollingCancelDeferred.promise })
                 .then(function (updatedApiGateway) {
                     if (!lodash.isNil(updatedApiGateway)) {
                         lodash.merge(apiGateway, updatedApiGateway);
@@ -269,7 +270,7 @@
                 ctrl.isSplashShowed.value = true;
             }
 
-            return ctrl.getApiGateways({projectName: lodash.get(ctrl.project, 'metadata.name', '')})
+            return ctrl.getApiGateways({ projectName: lodash.get(ctrl.project, 'metadata.name', '') })
                 .then(function (apiGatewaysList) {
                     apiGateways = lodash.map(apiGatewaysList, function (apiGateway) {
                         var foundApiGateway = lodash.find(apiGateways, ['metadata.name', apiGateway.metadata.name]);
