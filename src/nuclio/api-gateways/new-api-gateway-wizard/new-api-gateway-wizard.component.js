@@ -184,7 +184,9 @@
          * @returns {boolean} `true` in case changes have been made, or `false` otherwise.
          */
         function isChangesHaveBeenMade() {
-            return !lodash.isEqual(ctrl.apiGateway, ctrl.apiGatewayCopy);
+            var propsToPick = ['metadata', 'spec'];
+            return !lodash.isEqual(lodash.pick(ctrl.apiGateway, propsToPick),
+                                   lodash.pick(ctrl.apiGatewayCopy, propsToPick));
         }
 
         /**
@@ -255,8 +257,8 @@
                 });
                 lodash.set(apiGateway, 'metadata.name', lodash.get(apiGateway, 'spec.name'));
                 var promise = ctrl.editWizard ?
-                    ctrl.updateApiGateway({apiGateway: apiGateway, projectName: ctrl.project.metadata.name}) :
-                    ctrl.createApiGateway({apiGateway: apiGateway, projectName: ctrl.project.metadata.name});
+                    ctrl.updateApiGateway({ apiGateway: apiGateway, projectName: ctrl.project.metadata.name }) :
+                    ctrl.createApiGateway({ apiGateway: apiGateway, projectName: ctrl.project.metadata.name });
                 promise
                     .then(function () {
                         ctrl.closeDialog({ newApiGateway: apiGateway});
@@ -410,7 +412,7 @@
          * If fetch fails, shows a message to the user about the failure and retries fetch until successful.
          */
         function populateFunctionList() {
-            ctrl.getFunctions({projectName: ctrl.project.metadata.name})
+            ctrl.getFunctions({ projectName: ctrl.project.metadata.name, enrichApiGateways: true })
                 .then(function (data) {
                     functionsList = data;
                     ctrl.functionFetchPanel.state = null; // hide toast panel

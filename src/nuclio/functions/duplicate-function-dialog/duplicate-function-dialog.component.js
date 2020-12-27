@@ -15,7 +15,7 @@
         });
 
     function DuplicateFunctionDialogController($state, $i18next, i18next, lodash, DialogsService, EventHelperService,
-                                               FormValidationService, ValidationService) {
+                                               ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -53,13 +53,15 @@
 
                 if (ctrl.duplicateFunctionForm.$valid) {
                     var newFunction = lodash.pick(ctrl.version, 'spec');
-                    var projectID = lodash.get(ctrl.project, 'metadata.name');
+                    var projectId = lodash.get(ctrl.project, 'metadata.name');
 
                     lodash.set(newFunction, 'metadata.name', ctrl.newFunctionName);
 
-                    ctrl.getFunction({metadata: {name: ctrl.newFunctionName}})
+                    ctrl.getFunction({ metadata: { name: ctrl.newFunctionName } })
                         .then(function () {
-                            DialogsService.alert($i18next.t('functions:ERROR_MSG.FUNCTION_NAME_ALREADY_IN_USE', {lng: lng}))
+                            DialogsService.alert(
+                                $i18next.t('functions:ERROR_MSG.FUNCTION_NAME_ALREADY_IN_USE', { lng: lng })
+                            )
                         })
                         .catch(function (error) {
                             if (error.status === 404) {
@@ -69,7 +71,7 @@
                                     isNewFunction: true,
                                     id: ctrl.project.metadata.name,
                                     functionId: newFunction.metadata.name,
-                                    projectId: projectID,
+                                    projectId: projectId,
                                     projectNamespace: ctrl.project.metadata.namespace,
                                     functionData: newFunction
                                 });

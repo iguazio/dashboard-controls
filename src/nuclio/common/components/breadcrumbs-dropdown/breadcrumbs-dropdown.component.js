@@ -45,7 +45,7 @@
                         DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                     });
             } else if (ctrl.type === 'functions') {
-                ctrl.getFunctions({id: ctrl.project.metadata.name})
+                ctrl.getFunctions({ id: ctrl.project.metadata.name, enrichApiGateways: false })
                     .then(setNuclioItemsList)
                     .catch(function (error) {
                         var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
@@ -99,8 +99,7 @@
             $element.find('.breadcrumb-arrow').css('background-color', '');
 
             if (ctrl.type === 'projects') {
-                lodash.set(params, 'projectId', item.id);
-
+                params.projectId = item.id;
                 $state.go('app.project.functions', params);
             } else if (ctrl.type === 'functions') {
                 params = {

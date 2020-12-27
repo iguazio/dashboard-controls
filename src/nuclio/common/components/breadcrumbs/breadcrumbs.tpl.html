@@ -16,7 +16,7 @@
                               data-title="$ctrl.mainHeaderTitle.project.spec.displayName || $ctrl.mainHeaderTitle.project.metadata.name"
                               data-project="$ctrl.mainHeaderTitle.project"
                               data-type="projects"
-                              data-get-functions="$ctrl.getFunctions({id: id})"
+                              data-get-functions="$ctrl.getFunctions({id: id, enrichApiGateways: enrichApiGateways})"
                               data-get-projects="$ctrl.getProjects()">
     </ncl-breadcrumbs-dropdown>
 </span>
@@ -30,7 +30,7 @@
                                   data-title="$ctrl.mainHeaderTitle.function"
                                   data-project="$ctrl.mainHeaderTitle.project"
                                   data-type="functions"
-                                  data-get-functions="$ctrl.getFunctions({id: id})"
+                                  data-get-functions="$ctrl.getFunctions({id: id, enrichApiGateways: enrichApiGateways})"
                                   data-get-projects="$ctrl.getProjects()">
         </ncl-breadcrumbs-dropdown>
 </span>

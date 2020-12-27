@@ -27,9 +27,9 @@
         var ctrl = this;
         var lng = i18next.language;
         var updatingFunctionsInterval = null;
-        var updatingFunctionsIntervalTime = 10000;
         var updatingStatisticsInterval = null;
-        var updatingStatisticsIntervalTime = 30000;
+        var UPDATING_FUNCTIONS_INTERVAL_TIME = 30000;
+        var UPDATING_STATISTICS_INTERVAL_TIME = 30000;
 
         var METRICS = {
             FUNCTION_CPU: 'nuclio_function_cpu',
@@ -276,7 +276,7 @@
         function refreshFunctions(autoRefresh) {
             ctrl.isSplashShowed.value = !autoRefresh;
 
-            return ctrl.getFunctions({ id: ctrl.project.metadata.name })
+            return ctrl.getFunctions({ id: ctrl.project.metadata.name, enrichApiGateways: true })
                 .then(function (functions) {
                     ctrl.functions = lodash.map(functions, function (functionFromResponse) {
                         var foundFunction =
@@ -314,7 +314,7 @@
                 .catch(function (error) {
                     var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', { lng: lng });
 
-                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                    return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                 })
                 .finally(function () {
                     ctrl.isSplashShowed.value = false;
@@ -355,17 +355,18 @@
                     sortTable();
                     startAutoUpdate();
                 })
+                .catch(function (error) {
+                    ctrl.isSplashShowed.value = false;
+                    var defaultMessage = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', { lng: lng });
+                    var errorMessage = lodash.get(error, 'data.error', defaultMessage);
+
+                    return DialogsService.alert(errorMessage).then(function () {
+                        $state.go('app.projects');
+                    });
+                })
                 .finally(function () {
                     $timeout(function () {
                         $rootScope.$broadcast('igzWatchWindowResize::resize');
-                    });
-                })
-                .catch(function (error) {
-                    ctrl.isSplashShowed.value = false;
-                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', { lng: lng });
-
-                    return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
-                        $state.go('app.projects');
                     });
                 });
         }
@@ -442,11 +443,12 @@
          */
         function startAutoUpdate() {
             if (lodash.isNull(updatingFunctionsInterval)) {
-                updatingFunctionsInterval = $interval(refreshFunctions.bind(null, true), updatingFunctionsIntervalTime);
+                updatingFunctionsInterval = $interval(refreshFunctions.bind(null, true),
+                                                      UPDATING_FUNCTIONS_INTERVAL_TIME);
             }
 
             if (lodash.isNull(updatingStatisticsInterval)) {
-                updatingStatisticsInterval = $interval(updateStatistics, updatingStatisticsIntervalTime);
+                updatingStatisticsInterval = $interval(updateStatistics, UPDATING_STATISTICS_INTERVAL_TIME);
             }
         }
 
