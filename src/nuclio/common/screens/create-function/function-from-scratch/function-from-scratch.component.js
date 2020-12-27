@@ -15,10 +15,9 @@
             controller: FunctionFromScratchController
         });
 
-    function FunctionFromScratchController($document, $state, $timeout, $i18next, i18next, lodash, ConfigService,
-                                           EventHelperService, FunctionsService, ValidationService) {
+    function FunctionFromScratchController($document, $state, $timeout, lodash, ConfigService, EventHelperService,
+                                           FunctionsService, ValidationService) {
         var ctrl = this;
-        var lng = i18next.language;
 
         ctrl.functionData = {};
         ctrl.functionFromScratchForm = {};
@@ -90,18 +89,18 @@
 
                     // create function only when form is valid
                     if (ctrl.functionFromScratchForm.$valid) {
-                        ctrl.toggleSplashScreen({value: true});
+                        ctrl.toggleSplashScreen({ value: true });
 
                         ctrl.getFunction({metadata: {name: ctrl.functionData.metadata.name}})
                             .then(function (existingFunction) {
-                                ctrl.toggleSplashScreen({value: false});
+                                ctrl.toggleSplashScreen({ value: false });
                                 FunctionsService.openFunctionConflictDialog(ctrl.project,
                                                                             ctrl.functionData,
                                                                             existingFunction);
                             })
                             .catch(function (error) {
                                 if (error.status === 404) {
-                                    ctrl.toggleSplashScreen({value: true});
+                                    ctrl.toggleSplashScreen({ value: true });
 
                                     lodash.defaultsDeep(ctrl, {
                                         functionData: {
@@ -258,7 +257,7 @@
 
         /**
          * Gets default runtime
-         * @returns {object} default runtime
+         * @returns {Object} default runtime
          */
         function getDefaultRuntime() {
             return lodash.find(ctrl.runtimes, ['id', 'golang']);
@@ -318,8 +317,9 @@
                 .sortBy(['name'])
                 .value();
 
-            ctrl.selectedProject = lodash.isEmpty(ctrl.projectsList)         ? newProject           :
-                                   ctrl.selectedProject.id !== 'new_project' ? ctrl.selectedProject : lodash.first(ctrl.projectsList);
+            ctrl.selectedProject = lodash.isEmpty(ctrl.projectsList)         ? newProject                      :
+                                   ctrl.selectedProject.id === 'new_project' ? lodash.first(ctrl.projectsList) :
+                                   /* else */                                  ctrl.selectedProject;
         }
     }
 }());

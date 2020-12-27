@@ -1,32 +1,25 @@
 <div class="ncl-navigation-tabs-wrapper">
     <div class="ncl-navigation-tabs clearfix">
         <div class="navigation-tab"
-             data-ng-repeat="item in $ctrl.tabItems"
+             data-ng-repeat="item in $ctrl.tabItems track by item.id"
              data-ui-sref="{{item.uiRoute}}"
              data-ui-sref-active="active"
-             data-ng-class="{'ncl-status-monitoring': item.id === 'status'}">
+             data-ng-class="{'ncl-status-indicator': item.indicator}">
             {{item.tabName | uppercase}}
 
             <div class="ncl-status-light"
-                 data-ng-if="item.status"
-                 data-ng-class="{'ncl-status-ready': item.status === 'ready',
-                             'ncl-status-error': item.status === 'error' || item.status === 'unhealthy',
-                             'ncl-status-building': $ctrl.isFunctionBuilding(item.status)}">
+                 data-ng-if="item.indicator"
+                 data-ng-class="item.indicator.lightClass">
 
                 <div class="ncl-status-tooltip"
-                     data-ng-if="item.status"
-                     data-ng-class="{'ncl-status-tooltip-ready': item.status === 'ready',
-                                 'ncl-status-tooltip-error': item.status === 'error' || item.status === 'unhealthy',
-                                 'ncl-status-tooltip-building': $ctrl.isFunctionBuilding(item.status)}">
-
+                     data-ng-if="item.indicator.tooltipText"
+                     data-ng-class="item.indicator.tooltipClass">
                     <div class="ncl-status-icon"
-                         data-ng-if="item.status !== 'not yet deployed'"
-                         data-ng-class="{'ncl-icon-ready': item.status === 'ready',
-                                     'ncl-icon-error': item.status === 'error' || item.status === 'unhealthy',
-                                     'ncl-icon-building': $ctrl.isFunctionBuilding(item.status)}">
+                         data-ng-if="item.indicator.tooltipIconClass"
+                         data-ng-class="item.indicator.tooltipIconClass">
                     </div>
                     <div class="ncl-status-title">
-                        {{item.status}}
+                        {{item.indicator.tooltipText}}
                     </div>
                 </div>
             </div>
