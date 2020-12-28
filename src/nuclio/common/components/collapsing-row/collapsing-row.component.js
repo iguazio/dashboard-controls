@@ -87,7 +87,11 @@
          */
         function onCollapse(event) {
             if (!ctrl.item.ui.editModeActive) {
-                ctrl.actionHandlerCallback({actionType: 'edit', selectedItem: ctrl.item});
+                ctrl.actionHandlerCallback({
+                    actionType: 'edit',
+                    selectedItem: ctrl.item,
+                    index: ctrl.itemIndex
+                });
                 event.stopPropagation();
             } else {
                 $timeout(function () {
@@ -115,7 +119,11 @@
          * @param {string} actionType - a type of action
          */
         function onFireAction(actionType) {
-            ctrl.actionHandlerCallback({actionType: actionType, selectedItem: ctrl.item, index: ctrl.itemIndex});
+            ctrl.actionHandlerCallback({
+                actionType: actionType,
+                selectedItem: ctrl.item,
+                index: ctrl.itemIndex
+            });
         }
 
         /**
@@ -159,15 +167,15 @@
         function initActions() {
             return [
                 {
-                    label: $i18next.t('common:DELETE', {lng: lng}),
+                    label: $i18next.t('common:DELETE', { lng: lng }),
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
                     confirm: {
-                        message: $i18next.t('functions:DELETE_ITEM', {lng: lng}),
-                        description: $i18next.t('functions:DELETE_DESCRIPTION', {lng: lng}),
-                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
-                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
+                        message: $i18next.t('functions:DELETE_ITEM', { lng: lng }),
+                        description: $i18next.t('functions:DELETE_DESCRIPTION', { lng: lng }),
+                        yesLabel: $i18next.t('common:YES_DELETE', { lng: lng }),
+                        noLabel: $i18next.t('common:CANCEL', { lng: lng }),
                         type: 'nuclio_alert'
                     }
                 }

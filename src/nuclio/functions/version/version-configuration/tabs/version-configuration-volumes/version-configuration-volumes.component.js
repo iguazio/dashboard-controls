@@ -12,8 +12,8 @@
         });
 
     function NclVersionConfigurationVolumesController($rootScope, $scope, $timeout, $i18next, i18next, lodash,
-                                                      DialogsService, FormValidationService,
-                                                      FunctionsService, ValidationService) {
+                                                      DialogsService, FormValidationService, FunctionsService,
+                                                      ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -58,12 +58,7 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.validationRules.itemName = ValidationService.getValidationRules('k8s.dns1123Label').concat([
-                {
-                    label: $i18next.t('functions:UNIQUENESS', { lng: lng }),
-                    pattern: validateUniqueness.bind(null, 'volume.name')
-                }
-            ]);
+            ctrl.validationRules.itemName = ValidationService.getValidationRules('k8s.dns1123Label');
 
             ctrl.classList = FunctionsService.getClassesList('volume');
 
@@ -164,7 +159,8 @@
             $rootScope.$broadcast('change-state-deploy-button', { component: 'volume', isDisabled: false });
             lodash.forEach(ctrl.volumes, function (volume) {
                 if (!volume.ui.isFormValid) {
-                    $rootScope.$broadcast('change-state-deploy-button', { component: volume.ui.name, isDisabled: true });
+                    $rootScope.$broadcast('change-state-deploy-button',
+                                          { component: volume.ui.name, isDisabled: true });
                 }
             });
 
@@ -207,8 +203,7 @@
          * @param {Object} selectedItem - an object of selected volume
          */
         function editHandler(selectedItem) {
-            var volume = lodash.find(ctrl.volumes, ['volume.name', selectedItem.volume.name]);
-            volume.ui.editModeActive = true;
+            selectedItem.ui.editModeActive = true;
         }
 
         /**
