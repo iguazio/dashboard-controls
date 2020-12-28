@@ -93,7 +93,7 @@
             <div class="igz-col-45 attribute-field"
                  data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.container)">
                 <div class="field-label">
-                    <span class="asterisk">{{ 'functions:CONTAINER_NAME' | i18next }}</span>
+                    <span>{{ 'functions:CONTAINER_NAME' | i18next }}</span>
                     <igz-more-info data-description="{{ 'functions:CONTAINER_NAME_DESCRIPTION' | i18next }}"
                                    data-trigger="click">
                     </igz-more-info>
@@ -103,7 +103,6 @@
                                             data-input-value="$ctrl.item.volume.flexVolume.options.container"
                                             data-is-focused="false"
                                             data-form-object="$ctrl.editItemForm"
-                                            data-validation-is-required="true"
                                             data-validation-rules="$ctrl.validationRules.containerName"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_CONTAINER_NAME' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
