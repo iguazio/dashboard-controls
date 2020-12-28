@@ -400,11 +400,11 @@
             var disabled = lodash.get(ctrl.version, 'spec.disable');
             var serviceType = VersionHelperService.getServiceType(ctrl.version);
 
-            return state !== 'ready' ||
-                disabled ||
-                (!FunctionsService.isKubePlatform() || serviceType === 'NodePort') && httpPort === 0 ||
-                ctrl.uploadingData.uploading ||
-                ctrl.testing;
+            return state !== 'ready' && state !== 'scaledToZero'                                        ||
+                   disabled                                                                             ||
+                   (!FunctionsService.isKubePlatform() || serviceType === 'NodePort') && httpPort === 0 ||
+                   ctrl.uploadingData.uploading                                                         ||
+                   ctrl.testing;
         }
 
         /**
