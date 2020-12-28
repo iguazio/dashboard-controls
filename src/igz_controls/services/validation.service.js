@@ -258,6 +258,10 @@
                 generateRule.beginWith('a-z'),
                 generateRule.endWith('a-z 0-9')
             ],
+            dns1123Label: [
+                generateRule.validCharacters('a-z 0-9 -'),
+                generateRule.beginEndWith('a-z 0-9')
+            ],
             prefixedQualifiedName: [
                 {
                     name: 'nameValidCharacters',
@@ -311,11 +315,7 @@
                     generateRule.length({ max: lengths.k8s.configMapKey })
                 ],
                 dns1035Label: commonRules.dns1035Label.concat(generateRule.length({ max: lengths.k8s.dns1035Label })),
-                dns1123Label: [
-                    generateRule.validCharacters('a-z 0-9 -'),
-                    generateRule.beginEndWith('a-z 0-9'),
-                    generateRule.length({ max: lengths.k8s.dns1123Label })
-                ],
+                dns1123Label: commonRules.dns1123Label.concat(generateRule.length({ max: lengths.k8s.dns1123Label })),
                 dns1123Subdomain: [
                     generateRule.validCharacters('a-z 0-9 - .'),
                     generateRule.beginEndWith('a-z 0-9'),
@@ -352,7 +352,7 @@
                 ]
             },
             function: {
-                name: commonRules.dns1035Label.concat(
+                name: commonRules.dns1123Label.concat(
                     generateRule.mustNotBe('dashboard controller dlx scaler'),
                     generateRule.length({ max: lengths.function.name })
                 ),
@@ -399,7 +399,7 @@
                 ]
             },
             apiGateway: {
-                name: commonRules.dns1035Label.concat(
+                name: commonRules.dns1123Label.concat(
                     generateRule.mustNotBe('dashboard controller dlx scaler'),
                     generateRule.length({ max: lengths.apiGateway.name })
                 )
