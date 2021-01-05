@@ -95,6 +95,7 @@
         "DELETE_API_GW_FUNCTIONS": "Cannot delete the functions because some of them are being used by an API gateway.",
         "DELETE_EVENTS": "Oops: Unknown error occurred while deleting events",
         "DELETE_FUNCTION": "Unknown error occurred while deleting the function.",
+        "DELETE_NOT_EMPTY_PROJECT": "The project is not empty. Deleting it will also delete all of its resources, such as functions and API gateways.",
         "DELETE_PROJECT": "Unknown error occurred while deleting the project (try deleting its functions first).",
         "DELETE_API_GATEWAYS": "Oops: Unknown error occurred while deleting API Gateways",
         "DISABLE_API_GW_FUNCTION": "Cannot disable the function while it is being used by an API gateway (\"{{apiGatewayName}}\").",
