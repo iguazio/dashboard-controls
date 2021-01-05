@@ -321,6 +321,7 @@
     "NO_CONSECUTIVE_CHARACTER": "No consecutive characters",
     "NO_EVENTS": "No events",
     "NO_TASKS": "No {{- currentTab}} tasks",
+    "NOT_READY": "Not ready",
     "NODE": "Node",
     "NODES": "Nodes",
     "NONE": "None",
