@@ -26,7 +26,7 @@
         /**
          * Directly gets a value from local storage
          * @param {string} namespace - localStorage namespace (e.g.: 'login', 'session')
-         * @param {string} key - key nested in namespace
+         * @param {string} [key] - key nested in namespace
          * @returns {*} value stored at `key` in `namespace` object stored at `namespace` in `localStorage`, or
          *     the entire namespace as a plain object
          */
@@ -38,7 +38,7 @@
         /**
          * Removes keys from localStorage
          * @param {string} namespace - localStorage namespace (e.g.: 'login', 'session')
-         * @param {Array.<string>|string} keys - key(s) to be removed; if not provided, removes the entire namespace
+         * @param {Array.<string>|string} [keys] - key(s) to be removed; if not provided, removes the entire namespace
          */
         function removeItem(namespace, keys) {
             if (arguments.length === 1) {
@@ -62,7 +62,7 @@
          * @param {string} namespace - localStorage namespace (e.g.: 'login', 'session')
          * @param {string|Object} key - key to be set. If key is object then set whole object to localStorage.
          *     Otherwise add/set key-value pair to existing localStorage object.
-         * @param {string} value - value to be set
+         * @param {string} [value] - value to be set
          */
         function setItem(namespace, key, value) {
             if (arguments.length === 2 && lodash.isObject(key)) {
