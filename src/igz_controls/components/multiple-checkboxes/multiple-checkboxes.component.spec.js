@@ -1,6 +1,7 @@
 describe('igzMultipleCheckboxes component: ', function () {
     var $compile;
     var $rootScope;
+    var compiledElement;
     var ctrl;
     var externalScope;
     var lodash;
@@ -52,15 +53,18 @@ describe('igzMultipleCheckboxes component: ', function () {
                                                'data-base-id="{{baseId}}" ' +
                                                'data-disabled="disabled" ' +
                                                'required></igz-multiple-checkboxes>';
-        var compiledElement = $compile(element)(externalScope);
+        compiledElement = $compile(element)(externalScope);
         externalScope.$digest();
 
         ctrl = compiledElement.controller('igzMultipleCheckboxes');
     });
 
     afterEach(function () {
+        compiledElement.remove();
+
         $compile = null;
         $rootScope = null;
+        compiledElement = null;
         ctrl = null;
         externalScope = null;
         lodash = null;
