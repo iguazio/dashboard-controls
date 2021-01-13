@@ -139,7 +139,11 @@
                 lodash.set(ctrl.version, 'spec.build.image', prefix + newData);
                 ctrl.imageName = newData;
             } else {
-                lodash.set(ctrl.version, field, newData);
+                if (field === 'readinessTimeoutSeconds' && newData === '') {
+                    lodash.unset(ctrl.version, field);
+                } else {
+                    lodash.set(ctrl.version, field, newData);
+                }
             }
 
             $timeout(function () {
