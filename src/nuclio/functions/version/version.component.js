@@ -161,7 +161,7 @@
                 ctrl.isDeployResultShown = true;
                 ctrl.rowIsCollapsed.deployBlock = true;
 
-                pullFunctionState();
+                pollFunctionState();
             }
 
             ctrl.isLayoutCollapsed = true;
@@ -234,7 +234,7 @@
 
                 method({ version: versionCopy, projectId: ctrl.project.metadata.name })
                     .then(function () {
-                        pullFunctionState();
+                        pollFunctionState();
 
                         $timeout(function () {
                             $rootScope.$broadcast('igzWatchWindowResize::resize');
@@ -263,7 +263,9 @@
                             });
                             return deployButtonClick(event, version);
                         } else {
-                            return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                            return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
+                                ctrl.isFunctionDeployed = true;
+                            });
                         }
                     })
                     .finally(function () {
@@ -488,10 +490,10 @@
         }
 
         /**
-         * Pulls function status.
-         * Periodically sends request to get function's state, until state will not be 'ready' or 'error'
+         * Polls function status.
+         * Periodically sends request to get function's state, until state is steady.
          */
-        function pullFunctionState() {
+        function pollFunctionState() {
             ctrl.isDeployResultShown = true;
             lodash.set(ctrl.version, 'status.logs', []);
             setDeployResult('building');
