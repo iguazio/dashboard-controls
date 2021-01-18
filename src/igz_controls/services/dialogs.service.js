@@ -91,7 +91,7 @@
             return ngDialog.openConfirm({
                 template: template,
                 plain: true,
-                name: 'confirm',
+                name: 'confirm' + lodash.uniqueId(),
                 className: (type === 'nuclio_alert' ?
                     'ngdialog-theme-nuclio delete-entity-dialog-wrapper' : 'ngdialog-theme-iguazio') + ' confirm-dialog'
             });
