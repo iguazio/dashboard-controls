@@ -994,7 +994,7 @@
                     '<button class="igz-button-primary" data-ng-click="confirm(allowOverwrite)">' +
                     overrideButtonCaption + '</button></div>',
                 plain: true,
-                className: 'ngdialog-theme-iguazio alert-dialog'
+                className: 'ngdialog-theme-iguazio alert-dialog function-deploy-stale'
             });
         }
 
@@ -1017,7 +1017,7 @@
                     '<button class="igz-button-remove" data-ng-click="confirm(allowDelete)">' +
                     overrideButtonCaption + '</button></div>',
                 plain: true,
-                className: 'ngdialog-theme-iguazio alert-dialog function-deploy-stale'
+                className: 'ngdialog-theme-iguazio alert-dialog function-delete-stale'
             });
         }
     }
