@@ -143,8 +143,9 @@
          */
         function updateEnableStatus() {
             var apiGateways = lodash.get(ctrl.version, 'status.apiGateways', []);
+            var originallyDisabled = lodash.set(ctrl.version, 'spec.disable', false);
 
-            if (!lodash.isEmpty(apiGateways) && !ctrl.enableFunction) {
+            if (!lodash.isEmpty(apiGateways) && !ctrl.enableFunction && !originallyDisabled) {
                 DialogsService.alert($i18next.t('functions:ERROR_MSG.DISABLE_API_GW_FUNCTION', {
                     lng: lng,
                     apiGatewayName: apiGateways[0]
