@@ -28,7 +28,7 @@
         var lng = i18next.language;
         var steadyStates = FunctionsService.getSteadyStates();
 
-        var FUNCTION_STATE_POLLING_DELAY = 2000;
+        var FUNCTION_STATE_POLLING_DELAY = 3000;
 
         ctrl.action = null;
         ctrl.isDemoMode = ConfigService.isDemoMode;
@@ -361,7 +361,6 @@
             } else if (item.id === 'duplicateFunction') {
                 ngDialog.open({
                     template: '<ncl-duplicate-function-dialog data-close-dialog="closeThisDialog()" ' +
-                                  'data-get-functions="ngDialogData.getFunctions({id: id})" ' +
                                   'data-get-function="ngDialogData.getFunction({metadata: metadata})" ' +
                                   'data-project="ngDialogData.project" data-version="ngDialogData.version">' +
                               '</ncl-duplicate-function-dialog>',
@@ -383,7 +382,7 @@
         function refreshFunction() {
             ctrl.isSplashShowed.value = true;
 
-            ctrl.getFunction({ metadata: ctrl.version.metadata, projectId: lodash.get(ctrl.project, 'metadata.name') })
+            ctrl.getFunction({ metadata: ctrl.version.metadata, enrichApiGateways: true })
                 .then(function (response) {
                     var versionUi = ctrl.version.ui;
                     ctrl.version = response;
@@ -499,7 +498,7 @@
             setDeployResult('building');
 
             interval = $interval(function () {
-                ctrl.getFunction({ metadata: ctrl.version.metadata, projectId: lodash.get(ctrl.project, 'metadata.name') })
+                ctrl.getFunction({ metadata: ctrl.version.metadata, enrichApiGateways: true })
                     .then(function (aFunction) {
                         ctrl.version.status = aFunction.status;
 

@@ -5,7 +5,6 @@
         .component('nclDuplicateFunctionDialog', {
             bindings: {
                 closeDialog: '&',
-                getFunctions: '&',
                 getFunction: '&',
                 project: '<',
                 version: '<'
