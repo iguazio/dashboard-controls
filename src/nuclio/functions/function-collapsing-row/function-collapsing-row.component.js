@@ -319,7 +319,7 @@
 
             lodash.merge(ctrl.function, propertiesToDisableFunction);
 
-            updateFunction($i18next.t('COMMON:DISABLING', { lng: lng }) + '…');
+            updateFunction($i18next.t('common:DISABLING', { lng: lng }) + '…');
         }
 
         function duplicateFunction() {
@@ -360,7 +360,7 @@
 
             lodash.merge(ctrl.function, propertiesToEnableFunction);
 
-            updateFunction($i18next.t('COMMON:ENABLING', { lng: lng }) + '…');
+            updateFunction($i18next.t('common:ENABLING', { lng: lng }) + '…');
         }
 
         /**
