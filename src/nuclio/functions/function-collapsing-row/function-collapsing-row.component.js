@@ -407,6 +407,11 @@
                             terminateInterval();
                             convertStatusState();
                             setStatusIcon();
+
+                            if (FunctionsService.isKubePlatform()) {
+                                var newResourceVersion = lodash.get(aFunction, 'metadata.resourceVersion');
+                                lodash.set(ctrl.function, 'metadata.resourceVersion', newResourceVersion);
+                            }
                         }
                     })
                     .catch(function (error) {
