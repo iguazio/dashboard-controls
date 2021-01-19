@@ -4,6 +4,16 @@
     <!--actions bar-->
     <igz-info-page-actions-bar class="igz-component border-top">
         <div class="actions-bar-right">
+            <div class="actions-bar-left">
+                <span class="ncl-icon-api-gateway"
+                      data-test-id="functions.item-name_api-gw.icon"
+                      data-ng-if="$ctrl.version.status.apiGateways.length > 0"
+                      data-uib-tooltip="{{ 'functions:TOOLTIP.USED_BY_API_GATEWAY' | i18next:{apiGatewayName: $ctrl.version.status.apiGateways[0]} }}"
+                      data-tooltip-placement="top"
+                      data-tooltip-append-to-body="true"
+                      data-tooltip-popup-delay="200">
+                </span>
+            </div>
             <div class="actions-bar-left actions-buttons-block actions-dropdown-block">
                 <igz-default-dropdown data-select-property-only="id"
                                       data-placeholder="{{ 'functions:PLACEHOLDER.ACTIONS' | i18next }}"
