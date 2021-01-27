@@ -243,7 +243,7 @@
                             columnWidth: ctrl.columnHeadWidth + 'px',
                             nextColumnWidth: ctrl.nextBlockWidth + 'px'
                         });
-                    });
+                    }, 200);
                 }
             }
 
