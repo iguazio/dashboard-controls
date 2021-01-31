@@ -20,7 +20,8 @@
         });
 
     function NewApiGatewayWizardController($q, $scope, $rootScope, $timeout, $i18next, i18next, lodash, ngDialog,
-                                           ApiGatewaysService, ConfigService, DialogsService, ValidationService) {
+                                           ApiGatewaysService, ConfigService, DialogsService, FunctionsService,
+                                           ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -301,11 +302,11 @@
                 })
                 .map(function (aFunction) {
                     var name = lodash.get(aFunction, 'metadata.name');
-                    var state = lodash.get(aFunction, 'status.state');
+                    var status = FunctionsService.getDisplayStatus(aFunction);
                     return {
                         value: name,
                         label: name,
-                        additionalInfo: '(' + lodash.capitalize(state) + ')'
+                        additionalInfo: '(' + status + ')'
                     };
                 })
                 .value();
