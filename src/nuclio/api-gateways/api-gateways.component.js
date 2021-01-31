@@ -236,8 +236,9 @@
 
         function pollAndUpdate(apiGateway) {
             ApiGatewaysService.showStatusSpinner(apiGateway);
+            var name = lodash.get(apiGateway, 'metadata.name');
             var pollMethod = ctrl.getApiGateway.bind(null, {
-                apiGatewayName: lodash.get(apiGateway, 'spec.name'),
+                apiGatewayName: name,
                 projectName: lodash.get(ctrl.project, 'metadata.name', '')
             });
             pollingCancelDeferred = $q.defer();
@@ -249,8 +250,16 @@
                                     { timeoutPromise: pollingCancelDeferred.promise })
                 .then(function (updatedApiGateway) {
                     if (!lodash.isNil(updatedApiGateway)) {
-                        lodash.merge(apiGateway, updatedApiGateway);
-                        ApiGatewaysService.buildEndpoint(apiGateway);
+                        // if the periodic refresh occurs during polling then the provided `apiGateway` is no longer in
+                        // `apiGateways` which was refreshed with new objects
+                        // hence mutating `apiGateway` will have no visible result in the view
+                        // instead, find the relevant item in the currently-displayed API gateway list (`apiGateways`)
+                        // and mutate it
+                        var currentApiGateway = lodash.find(apiGateways, ['metadata.name', name]);
+                        if (!lodash.isNil(currentApiGateway)) {
+                            lodash.merge(currentApiGateway, updatedApiGateway);
+                            ApiGatewaysService.buildEndpoint(currentApiGateway);
+                        }
                     }
                 })
                 .finally(function () {
@@ -286,7 +295,7 @@
                     var steadyApiGateways = lodash.filter(apiGateways, ApiGatewaysService.isSteadyState);
                     ApiGatewaysService.hideStatusSpinner(steadyApiGateways);
 
-                    // show loaders for API gateways in steady state
+                    // show loaders for API gateways in transient state
                     var transientApiGateways = lodash.filter(apiGateways, ApiGatewaysService.isTransientState);
                     ApiGatewaysService.showStatusSpinner(transientApiGateways);
                 })
