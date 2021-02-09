@@ -370,13 +370,18 @@
                     visible: true
                 },
                 {
-                    id: 'python:2.7',
-                    name: 'Python 2.7',
+                    id: 'python:3.6',
+                    name: 'Python 3.6',
                     visible: true
                 },
                 {
-                    id: 'python:3.6',
-                    name: 'Python 3.6',
+                    id: 'python:3.7',
+                    name: 'Python 3.7',
+                    visible: true
+                },
+                {
+                    id: 'python:3.8',
+                    name: 'Python 3.8',
                     visible: true
                 },
                 {
