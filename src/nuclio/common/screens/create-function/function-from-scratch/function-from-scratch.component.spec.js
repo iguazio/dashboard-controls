@@ -26,14 +26,20 @@ describe('nclFunctionFromScratch Component:', function () {
                 visible: true
             },
             {
-                id: 'python:2.7',
-                name: 'Python 2.7',
+                id: 'python:3.6',
+                name: 'Python 3.6',
                 sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
                 visible: true
             },
             {
-                id: 'python:3.6',
-                name: 'Python 3.6',
+                id: 'python:3.7',
+                name: 'Python 3.7',
+                sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
+                visible: true
+            },
+            {
+                id: 'python:3.8',
+                name: 'Python 3.8',
                 sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
                 visible: true
             },

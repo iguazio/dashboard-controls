@@ -405,17 +405,25 @@
                     visible: true
                 },
                 {
-                    id: 'python:2.7',
+                    id: 'python:3.6',
                     ext: 'py',
-                    name: 'Python 2.7',
+                    name: 'Python 3.6',
                     language: 'python',
                     sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
                     visible: true
                 },
                 {
-                    id: 'python:3.6',
+                    id: 'python:3.7',
                     ext: 'py',
-                    name: 'Python 3.6',
+                    name: 'Python 3.7',
+                    language: 'python',
+                    sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
+                    visible: true
+                },
+                {
+                    id: 'python:3.8',
+                    ext: 'py',
+                    name: 'Python 3.8',
                     language: 'python',
                     sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
                     visible: true
