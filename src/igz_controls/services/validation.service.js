@@ -73,6 +73,7 @@
             },
             storagePool: {
                 name: 30,
+                username: 30,
                 description: 150,
                 url: 100
             },
