@@ -104,7 +104,8 @@
             }
 
             if (ctrl.isVolumeType()) {
-                var selectedTypeName = !lodash.isNil(ctrl.item.volume.flexVolume)            ? 'v3io'                  :
+                var selectedTypeName = !lodash.isNil(ctrl.item.volume.hostPath)              ? 'hostPath'              :
+                                       !lodash.isNil(ctrl.item.volume.flexVolume)            ? 'v3io'                  :
                                        !lodash.isNil(ctrl.item.volume.secret)                ? 'secret'                :
                                        !lodash.isNil(ctrl.item.volume.configMap)             ? 'configMap'             :
                                        !lodash.isNil(ctrl.item.volume.persistentVolumeClaim) ? 'persistentVolumeClaim' :
@@ -679,7 +680,20 @@
                     }
                 });
 
-                if (item.id === 'v3io') { // see https://github.com/v3io/flex-fuse
+                if (item.id === 'hostPath') {
+                    lodash.defaultsDeep(ctrl.item, {
+                        volume: {
+                            hostPath: {
+                                path: ''
+                            }
+                        },
+                        volumeMount: {
+                            readOnly: false
+                        }
+                    });
+
+                    cleanOtherVolumeClasses('hostPath');
+                } else if (item.id === 'v3io') { // see https://github.com/v3io/flex-fuse
                     lodash.defaultsDeep(ctrl.item, {
                         volume: {
                             flexVolume: {
@@ -923,7 +937,7 @@
         function cleanOtherVolumeClasses(selectedClass) {
             var removeVolume = lodash.unset.bind(null, ctrl.item.volume);
 
-            lodash.chain(['flexVolume', 'secret', 'configMap', 'persistentVolumeClaim'])
+            lodash.chain(['hostPath', 'flexVolume', 'secret', 'configMap', 'persistentVolumeClaim'])
                 .without(selectedClass)
                 .forEach(removeVolume)
                 .value();

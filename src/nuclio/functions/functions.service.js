@@ -786,16 +786,16 @@
                         ]
                     }
                 ],
-                volume: [
+                volume: self.isKubePlatform() ? [
                     {
                         id: 'v3io',
-                        name: 'V3IO',
+                        name: $i18next.t('functions:V3IO', { lng: lng }),
                         tooltip: $i18next.t('functions:TOOLTIP.V3IO', { lng: lng }),
                         moreInfoDescription: $i18next.t('functions:TOOLTIP.V3IO', { lng: lng })
                     },
                     {
                         id: 'secret',
-                        name: 'Secret',
+                        name: $i18next.t('functions:SECRET', { lng: lng }),
                         tooltip: $i18next.t('functions:TOOLTIP.SECRET.HEAD', { lng: lng }) + ' ' +
                             $i18next.t('functions:TOOLTIP.SECRET.REST', { lng: lng }),
                         moreInfoDescription: 'A <a class="link" target="_blank" ' +
@@ -805,7 +805,7 @@
                     },
                     {
                         id: 'configMap',
-                        name: 'ConfigMap',
+                        name: $i18next.t('functions:CONFIGMAP', { lng: lng }),
                         tooltip: $i18next.t('functions:TOOLTIP.CONFIG_MAP.HEAD', { lng: lng }) + ' ' +
                             $i18next.t('functions:TOOLTIP.CONFIG_MAP.REST', { lng: lng }),
                         moreInfoDescription: 'A <a class="link" target="_blank" ' +
@@ -815,7 +815,12 @@
                     },
                     {
                         id: 'persistentVolumeClaim',
-                        name: 'PVC'
+                        name: $i18next.t('functions:PVC', { lng: lng })
+                    }
+                ] : [
+                    {
+                        id: 'hostPath',
+                        name: $i18next.t('functions:HOST_PATH', { lng: lng })
                     }
                 ]
             };
