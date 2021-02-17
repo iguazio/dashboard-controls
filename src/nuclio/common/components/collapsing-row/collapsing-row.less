@@ -32,6 +32,7 @@
 
     .row-collapse {
         width: 40px;
+        flex: none;
         justify-content: center;
         align-items: flex-start;
         line-height: 51px;
@@ -53,12 +54,15 @@
     }
 
     .item-row {
-        line-height: 48px;
         display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
 
         .item-name {
             font-weight: bold;
             display: flex;
+            flex-flow: row nowrap;
+            align-items: baseline;
             width: 192px;
 
             .text-ellipsis {
@@ -104,6 +108,8 @@
     .single-action {
         visibility: hidden;
         align-items: flex-start;
+        flex: none;
+        padding-right: 4px;
 
         .igz-action-panel {
             transition: unset;

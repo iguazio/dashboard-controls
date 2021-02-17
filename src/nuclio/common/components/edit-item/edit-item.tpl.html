@@ -132,6 +132,27 @@
                 </igz-validating-input-field>
             </div>
 
+            <div class="igz-col-45 attribute-field" data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath.path)">
+                <div class="field-label">
+                    <span class="asterisk">{{ 'functions:HOST_PATH' | i18next }}</span>
+                </div>
+                <igz-validating-input-field data-field-type="input"
+                                            data-input-name="hostPath"
+                                            data-input-value="$ctrl.item.volume.hostPath.path"
+                                            data-is-focused="false"
+                                            data-form-object="$ctrl.editItemForm"
+                                            data-validation-is-required="true"
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_HOST_PATH' | i18next }}"
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-update-data-field="volume.hostPath.path">
+                </igz-validating-input-field>
+            </div>
+
+            <div class="igz-col-45 attribute-field" data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.readOnly)">
+                <input type="checkbox" id="{{$ctrl.getItemName()}}" data-ng-model="$ctrl.item.volumeMount.readOnly">
+                <label for="{{$ctrl.getItemName()}}" class="asterisk">{{ 'common:READ_ONLY' | i18next }}</label>
+            </div>
+
             <div class="igz-col-45 attribute-field" data-ng-if="!$ctrl.isNil($ctrl.item.volume.secret.secretName)">
                 <div class="field-label">
                     <span class="asterisk">{{ 'functions:SECRET_NAME' | i18next }}</span>

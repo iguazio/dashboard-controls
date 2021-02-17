@@ -31,6 +31,9 @@
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.ui.selectedClass)">
                 {{$ctrl.item.ui.selectedClass.name}}
             </div>
+            <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)">
+                {{ 'functions:HOST_PATH' | i18next }}
+            </div>
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume)">
                 {{ 'functions:V3IO' | i18next }}
             </div>
@@ -76,6 +79,12 @@
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.mountPath)">
                         <span class="field-label">{{ 'functions:MOUNT_PATH' | i18next }}</span>:&nbsp;{{ $ctrl.item.volumeMount.mountPath }};&nbsp;
                     </span>
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)">
+                        <span class="field-label">{{ 'functions:HOST_PATH' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.hostPath.path }};&nbsp;
+                    </span>
+                    <span data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.readOnly)">
+                        <span class="field-label">{{ 'common:READ_ONLY' | i18next }}</span>:&nbsp;{{ $ctrl.item.volumeMount.readOnly }};&nbsp;
+                    </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.container)">
                         <span class="field-label">{{ 'functions:CONTAINER_NAME' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.container }};&nbsp;
                     </span>
@@ -94,45 +103,6 @@
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.workerAllocatorName)">
                         <span class="field-label">{{ 'functions:WORKER_ALLOCATOR_NAME' | i18next }}</span>:&nbsp;{{ $ctrl.item.workerAllocatorName }};&nbsp;
                     </span>
-                </div>
-
-                <div data-ng-hide="!$ctrl.item.ui.expanded" class="expanded-item-info-block">
-                    <div class="igz-row common-table-cells-container item-info-row"
-                         data-ng-if="!$ctrl.isNil($ctrl.item.url)">
-                        <div class="igz-col-30 common-table-cell field-label">
-                            {{ 'common:URL' | i18next }}:
-                        </div>
-                        <div class="igz-col-70 common-table-cell">
-                            {{ $ctrl.item.url }}
-                        </div>
-                    </div>
-                    <div class="igz-row common-table-cells-container item-info-row"
-                         data-ng-if="!$ctrl.isNil($ctrl.item.maxWorkers)">
-                        <div class="igz-col-30 common-table-cell field-label">
-                            {{ 'functions:MAX_WORKERS' | i18next }}:
-                        </div>
-                        <div class="igz-col-70 common-table-cell">
-                            {{ $ctrl.item.maxWorkers }}
-                        </div>
-                    </div>
-                    <div class="igz-row common-table-cells-container item-info-row"
-                         data-ng-if="!$ctrl.isNil($ctrl.item.secret)">
-                        <div class="igz-col-30 common-table-cell field-label">
-                            {{ 'functions:SECRET' | i18next }}:
-                        </div>
-                        <div class="igz-col-70 common-table-cell">
-                            {{ $ctrl.item.secret }}
-                        </div>
-                    </div>
-                    <div class="igz-row common-table-cells-container item-info-row"
-                         data-ng-repeat="(key, value) in $ctrl.item.attributes">
-                        <div class="igz-col-30 common-table-cell field-label">
-                            {{ key }}:
-                        </div>
-                        <div class="igz-col-70 common-table-cell">
-                            {{ value }}
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
