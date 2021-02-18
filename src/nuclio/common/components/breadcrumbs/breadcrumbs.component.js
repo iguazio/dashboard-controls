@@ -11,7 +11,7 @@
             controller: NclBreadcrumbsController
         });
 
-    function NclBreadcrumbsController($scope, $state, $transitions, lodash) {
+    function NclBreadcrumbsController($scope, $state, $stateParams, $transitions, lodash) {
         var ctrl = this;
 
         ctrl.mainHeaderTitle = {};
@@ -19,7 +19,7 @@
         ctrl.$onInit = onInit;
 
         ctrl.goToProjectsList = goToProjectsList;
-        ctrl.goToFunctionsList = goToFunctionsList;
+        ctrl.goToProjectScreen = goToProjectScreen;
         ctrl.goToFunctionScreen = goToFunctionScreen;
 
         //
@@ -42,19 +42,24 @@
         //
 
         /**
-         * Changes state when the main header title is clicked
+         * Redirects to the projects screen
          */
         function goToProjectsList() {
             $state.go('app.projects');
         }
 
         /**
-         * Changes state when the Project subtitle is clicked
+         * Redirects to the project screen
          */
-        function goToFunctionsList() {
-            $state.go('app.project.functions');
+        function goToProjectScreen() {
+            $state.go('app.project', {
+                projectId: $stateParams.projectId
+            });
         }
 
+        /**
+         * Redirects to the function screen
+         */
         function goToFunctionScreen() {
             $state.go('app.project.function.edit.code');
         }
