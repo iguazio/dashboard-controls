@@ -18,10 +18,12 @@
             controller: IgzActionMenuController
         });
 
-    function IgzActionMenuController($element, $document, $i18next, $rootScope, $scope, $timeout, i18next, lodash,
+    function IgzActionMenuController($element, $document, $i18next, $rootScope, $scope, $window, $timeout, i18next, lodash,
                                      ConfigService, PreventDropdownCutOffService) {
         var ctrl = this;
         var lng = i18next.language;
+        var MENU_ROW_HEIGHT = 38;
+        var MENU_HEIGHT_OVERHEAD = 20;
 
         ctrl.isMenuShown = false;
         ctrl.preventDropdownCutOff = null;
@@ -100,7 +102,7 @@
          * Post linking method
          */
         function postLink() {
-
+            $scope.$on('igz-browser-context-menu_show', showMenu);
             // Bind DOM-related preventDropdownCutOff method to component's controller
             PreventDropdownCutOffService.preventDropdownCutOff($element, '.menu-dropdown');
 
@@ -132,14 +134,9 @@
                 $rootScope.$broadcast('close-all-action-menus');
                 ctrl.isMenuShown = true;
                 attachDocumentEvent();
-
-                if (angular.isDefined(ctrl.listClass)) {
-                    checkOpeningSide(ctrl.listClass);
-                } else {
-                    $timeout(function () {
-                        angular.element('.menu-dropdown').css('visibility', 'visible');
-                    });
-                }
+                $timeout(function () {
+                    showMenu(event);
+                });
             } else {
                 detachDocumentEvent();
                 ctrl.isMenuShown = false;
@@ -158,6 +155,39 @@
         //
         // Private methods
         //
+
+        /**
+         * Calculates the positioning of the context menu according to screen limitations
+         * @param {number} coord - the Y coodrinate of the position where the user clicked
+         * @param {number} itemListSize - the number of items on the context menu
+         */
+        function calculateBoundingBox(coord, itemListSize) {
+            var windowHeight = $window.innerHeight;
+            var parentalBlock = $document.find('.menu-dropdown')[0];
+            var menuTotalHeight = MENU_ROW_HEIGHT * itemListSize + MENU_HEIGHT_OVERHEAD;
+
+            if (windowHeight - coord < menuTotalHeight - 5) {
+                parentalBlock.classList.add('upward-menu');
+            }
+            angular.element('.menu-dropdown').css('visibility', 'visible');
+        }
+
+        /**
+         * Shows the menu at a given position
+         * @param {Event} event - click event
+         */
+        function showMenu(event) {
+            var visibleItemsQuantity;
+            var contextMenuMousePositionY;
+            // gets mouse coordinates
+            $timeout(function () {
+                visibleItemsQuantity = lodash.filter(ctrl.actions, ['visible', true]).length
+                if (angular.isDefined(event)) {
+                    contextMenuMousePositionY = event.clientY;
+                }
+                calculateBoundingBox(contextMenuMousePositionY, visibleItemsQuantity);
+            });
+        }
 
         /**
          * Attaches on click event handler to the document
@@ -201,40 +231,6 @@
                     closeActionMenu();
                 }
             });
-        }
-
-        /**
-         * Checks how to open drop-down menu in key-value list
-         * @param {string} elementClass - class of parental block of key-value list
-         */
-        function checkOpeningSide(elementClass) {
-            var parentalBlock = $document.find('.' + elementClass)[0];
-            var parentalRect = parentalBlock.getBoundingClientRect();
-            var dropdown;
-            var dropdownBottom;
-
-            $timeout(function () {
-                dropdown = angular.element($element).find('.menu-dropdown')[0];
-                dropdownBottom = dropdown.getBoundingClientRect().bottom;
-                dropdown = angular.element(dropdown);
-            });
-
-            if (lodash.includes(elementClass, 'scrollable')) {
-                var parentalHeight = parentalBlock.clientHeight;
-                var parentalTop = parentalRect.top;
-
-                $timeout(function () {
-                    (dropdownBottom - parentalTop) > parentalHeight ? dropdown.addClass('upward-menu') : dropdown.css({'visibility': 'visible'});
-
-                    angular.element('.' + elementClass + ' .mCSB_container').css({'height': 'auto'});
-                });
-            } else {
-                var parentalBottom = parentalRect.bottom;
-
-                $timeout(function () {
-                    dropdownBottom > parentalBottom ? dropdown.addClass('upward-menu') : dropdown.css({'visibility': 'visible'});
-                });
-            }
         }
     }
 }());
