@@ -19,7 +19,6 @@
                 keyPlaceholder: '@?',
                 keyTooltip: '<?',
                 keyValidationPattern: '<?',
-                listClass: '@?',
                 noDelete: '<?',
                 onlyValueInput: '<?',
                 rowData: '<',
