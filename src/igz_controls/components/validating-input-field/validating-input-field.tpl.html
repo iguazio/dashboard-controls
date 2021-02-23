@@ -48,8 +48,11 @@
 
         <span data-ng-if="$ctrl.inputIcon" class="input-icon {{$ctrl.inputIcon}}"></span>
         <span class="clear-button igz-icon-close"
-              data-ng-show="$ctrl.data && $ctrl.isClearIcon"
-              data-ng-click="$ctrl.clearInputField()">
+              data-ng-show="$ctrl.data && $ctrl.isClearIcon && !$ctrl.readOnly && !$ctrl.isDisabled"
+              data-ng-click="$ctrl.clearInputField()"
+              data-uib-tooltip="{{'common:CLEAR' | i18next}}"
+              data-tooltip-append-to-body="true"
+              data-tooltip-popup-delay="200">
         </span>
         <div class="validation-pop-up-wrapper">
             <div class="validation-pop-up"
