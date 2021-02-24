@@ -8,7 +8,6 @@
                 item: '<',
                 itemIndex: '<?',
                 type: '@',
-                listClass: '@?',
                 deleteTestId: '@?'
             },
             templateUrl: 'nuclio/common/components/collapsing-row/collapsing-row.tpl.html',
