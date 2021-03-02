@@ -54,6 +54,10 @@
      *     - `filter`: The `attribute` property of the item in `filterBy` array that is corresponding to the selected
      *                 option of the filter drop-down menu.
      *     - `inputName`: The name of the input field.
+     *     Suggestion list should be an array of objects where each object has the following properties:
+     *     - `value`: the value of the suggestion to use when selecting this suggestion from the drop-down menu.
+     *     - `label`: the label to show for this suggestion on the drop-down menu.
+     *     - `additionalInfo`: more text to show for the suggestion after the label in the drop-down menu.
      * @param {boolean} [suggestionsOnEmpty=true] - Set to `false` in order to prevent invoking `onRequestSuggestions`
      *     when input value changed and is now empty, and invoke `onEmptyData` instead. Default is `true` which will
      *     invoke `onRequestSuggestions` when input value is empty.
@@ -370,7 +374,7 @@
 
         /**
          * Attempts to update the field's value to `value` by notifying parent via invoking `method`.
-         * If it returns a resolved promise the field will be rendered invalid.
+         * If it returns a resolved promise the field will be rendered valid.
          * Otherwise, if a rejected promise is returned, the field will be rendered invalid in case the `invalid`
          * no-match policy is used, or reverted to the last valid value in case the `revert` no-match policy is used.
          * @param {*} value - The value to update to.
