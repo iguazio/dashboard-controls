@@ -7,13 +7,13 @@
     <span class="igz-icon-right ncl-header-subtitle"></span>
 </span>
 
-<span class="main-header-title" data-ng-if="$ctrl.mainHeaderTitle.project.spec.displayName || $ctrl.mainHeaderTitle.project.metadata.name">
+<span class="main-header-title" data-ng-if="$ctrl.mainHeaderTitle.project.metadata.name">
     <span class="main-header-title-text" data-ng-click="$ctrl.goToProjectScreen()">
-        {{$ctrl.mainHeaderTitle.project.spec.displayName || $ctrl.mainHeaderTitle.project.metadata.name}}
+        {{$ctrl.mainHeaderTitle.project.metadata.name}}
     </span>
 
     <ncl-breadcrumbs-dropdown data-state="$ctrl.mainHeaderTitle.state"
-                              data-title="$ctrl.mainHeaderTitle.project.spec.displayName || $ctrl.mainHeaderTitle.project.metadata.name"
+                              data-title="$ctrl.mainHeaderTitle.project.metadata.name"
                               data-project="$ctrl.mainHeaderTitle.project"
                               data-type="projects"
                               data-get-functions="$ctrl.getFunctions({id: id, enrichApiGateways: enrichApiGateways})"

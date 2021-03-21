@@ -37,7 +37,6 @@ describe('nclFunctionVersionRow component:', function () {
                 'namespace': 'nuclio'
             },
             'spec': {
-                'displayName': 'My project #1',
                 'description': 'Some description'
             }
         };
