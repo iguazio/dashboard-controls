@@ -201,7 +201,7 @@
                 .map(function (project) {
                     return {
                         id: project.metadata.name,
-                        name: lodash.defaultTo(project.spec.displayName, project.metadata.name)
+                        name: project.metadata.name
                     };
                 })
                 .sortBy(['name'])

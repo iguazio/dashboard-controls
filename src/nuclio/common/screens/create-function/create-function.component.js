@@ -80,7 +80,7 @@
 
                             ctrl.selectedProject = {
                                 id: project.metadata.name,
-                                name: lodash.defaultTo(project.spec.displayName, project.metadata.name)
+                                name: project.metadata.name
                             };
                         }
 

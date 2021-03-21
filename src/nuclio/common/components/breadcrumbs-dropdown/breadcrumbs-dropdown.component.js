@@ -126,7 +126,7 @@
             ctrl.itemsList = lodash.map(data, function (item) {
                 return {
                     id: item.metadata.name,
-                    name: lodash.defaultTo(item.spec.displayName, item.metadata.name),
+                    name: item.metadata.name,
                     isNuclioState: true
                 };
             });
