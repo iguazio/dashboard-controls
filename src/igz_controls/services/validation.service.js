@@ -507,11 +507,12 @@
                     }
                 ]
             },
-            tenant: {
+            tenant: { // ^(?=.{1,31}$)(([a-z][a-z0-9]*)(-[a-z0-9]+)*$)
                 name: [
-                    generateRule.validCharacters('a-z A-Z 0-9 _'),
-                    generateRule.beginWith('a-z A-Z'),
-                    generateRule.endWith('a-z A-Z 0-9'),
+                    generateRule.validCharacters('a-z 0-9 -'),
+                    generateRule.beginWith('a-z'),
+                    generateRule.endWith('a-z 0-9'),
+                    generateRule.noConsecutiveCharacters('--'),
                     generateRule.length({ max: lengths.tenant.name })
                 ],
                 email: commonRules.email.concat(generateRule.length({ max: lengths.tenant.email }))
