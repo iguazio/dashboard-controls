@@ -90,6 +90,7 @@
                             codeEntryAttributes: {
                                 branch: '',
                                 password: '',
+                                reference: '',
                                 username: '',
                                 workDir: ''
                             }
