@@ -80,6 +80,25 @@
                 tooltipPlacement: 'right'
             },
             {
+                id: 'git',
+                visible: true,
+                name: 'Git',
+                defaultValues: {
+                    spec: {
+                        build: {
+                            path: '',
+                            codeEntryAttributes: {
+                                branch: '',
+                                password: '',
+                                reference: '',
+                                username: '',
+                                workDir: ''
+                            }
+                        }
+                    }
+                },
+            },
+            {
                 id: 'github',
                 visible: true,
                 name: 'GitHub',

@@ -170,7 +170,7 @@
                         </igz-validating-input-field>
                     </div>
 
-                    <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
+                    <div data-ng-if="$ctrl.selectedEntryType.id === 'github' || $ctrl.selectedEntryType.id === 'git'"
                          class="ncl-code-entry-url">
                         <div class="field-label">
                             <span class="asterisk">{{ 'common:URL' | i18next }}</span>
@@ -188,7 +188,7 @@
                         </igz-validating-input-field>
                     </div>
 
-                    <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
+                    <div data-ng-if="$ctrl.selectedEntryType.id === 'github' || $ctrl.selectedEntryType.id === 'git'"
                          class="ncl-code-entry-url">
                         <div class="field-label">
                             <span class="asterisk">{{ 'functions:BRANCH' | i18next }}</span>
@@ -223,7 +223,58 @@
                         </igz-validating-input-field>
                     </div>
 
-                    <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
+                    <div data-ng-if="$ctrl.selectedEntryType.id === 'git'"
+                         class="ncl-code-entry-url">
+                        <div class="field-label">
+                            <span>{{ 'functions:REFERENCE' | i18next }}</span>
+                        </div>
+                        <igz-validating-input-field data-field-type="input"
+                                                    data-input-name="gitReference"
+                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.reference"
+                                                    data-is-focused="false"
+                                                    data-form-object="$ctrl.versionCodeForm"
+                                                    data-validation-is-required="false"
+                                                    data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_REFERENCE' | i18next }}"
+                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                    data-update-data-field="spec.build.codeEntryAttributes.reference">
+                        </igz-validating-input-field>
+                    </div>
+
+                    <div data-ng-if="$ctrl.selectedEntryType.id === 'git'"
+                         class="ncl-code-entry-url">
+                        <div class="field-label">
+                            <span>{{ 'common:USERNAME' | i18next }}</span>
+                        </div>
+                        <igz-validating-input-field data-field-type="input"
+                                                    data-input-name="gitUsername"
+                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.username"
+                                                    data-is-focused="false"
+                                                    data-form-object="$ctrl.versionCodeForm"
+                                                    data-validation-is-required="false"
+                                                    data-placeholder-text="{{ 'common:PLACEHOLDER.ENTER_USERNAME' | i18next }}"
+                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                    data-update-data-field="spec.build.codeEntryAttributes.username">
+                        </igz-validating-input-field>
+                    </div>
+
+                    <div data-ng-if="$ctrl.selectedEntryType.id === 'git'"
+                         class="ncl-code-entry-url">
+                        <div class="field-label">
+                            <span>{{ 'common:PASSWORD' | i18next }}</span>
+                        </div>
+                        <igz-validating-input-field data-field-type="password"
+                                                    data-input-name="gitPassword"
+                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.password"
+                                                    data-is-focused="false"
+                                                    data-form-object="$ctrl.versionCodeForm"
+                                                    data-validation-is-required="false"
+                                                    data-placeholder-text="{{'common:PLACEHOLDER.ENTER_PASSWORD' | i18next}}"
+                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                    data-update-data-field="spec.build.codeEntryAttributes.password">
+                        </igz-validating-input-field>
+                    </div>
+
+                    <div data-ng-if="$ctrl.selectedEntryType.id === 'github' || $ctrl.selectedEntryType.id === 'git'"
                          class="ncl-code-entry-url">
                         <div class="field-label">
                             <span>{{ 'functions:WORK_DIRECTORY' | i18next }}</span>
