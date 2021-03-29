@@ -132,6 +132,7 @@
     "FUNCTION_NAME_IS_USED_WARNING": "The specified function name is already used by a function in another project. To use it for a new function you must first delete the existing function.",
     "FUNCTIONS_NOT_FOUND": "There are currently no functions, you can create a function by clicking the ‘New Function’ button",
     "GET_STARTED_WITH_YOUR_PROJECT": "Get started with your project.",
+    "GIT": "Git",
     "GO_TO_EXISTING_FUNCTION": "Go to existing function",
     "HANDLER": "Handler",
     "HEADERS": "Headers",

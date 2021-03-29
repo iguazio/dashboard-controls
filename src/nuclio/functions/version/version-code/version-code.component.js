@@ -91,6 +91,7 @@
                                 branch: '',
                                 password: '',
                                 reference: '',
+                                tag: '',
                                 username: '',
                                 workDir: ''
                             }

@@ -226,6 +226,22 @@
                     <div data-ng-if="$ctrl.selectedEntryType.id === 'git'"
                          class="ncl-code-entry-url">
                         <div class="field-label">
+                            <span>{{ 'functions:GIT' | i18next }}</span>
+                        </div>
+                        <igz-validating-input-field data-field-type="input"
+                                                    data-input-name="git"
+                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.tag"
+                                                    data-is-focused="false"
+                                                    data-form-object="$ctrl.versionCodeForm"
+                                                    data-validation-is-required="false"
+                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                    data-update-data-field="spec.build.codeEntryAttributes.tag">
+                        </igz-validating-input-field>
+                    </div>
+
+                    <div data-ng-if="$ctrl.selectedEntryType.id === 'git'"
+                         class="ncl-code-entry-url">
+                        <div class="field-label">
                             <span>{{ 'functions:REFERENCE' | i18next }}</span>
                         </div>
                         <igz-validating-input-field data-field-type="input"
