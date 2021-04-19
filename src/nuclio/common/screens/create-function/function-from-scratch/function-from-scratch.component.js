@@ -220,6 +220,12 @@
                     visible: true
                 },
                 {
+                    id: 'python:3.9',
+                    name: 'Python 3.9',
+                    sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
+                    visible: true
+                },
+                {
                     id: 'dotnetcore',
                     name: '.NET Core',
                     sourceCode: 'dXNpbmcgU3lzdGVtOw0KdXNpbmcgTnVjbGlvLlNkazsNCg0KcHVibGljIGNsYXNzIG1haW4NCnsNCiAgICBwdWJ' +
