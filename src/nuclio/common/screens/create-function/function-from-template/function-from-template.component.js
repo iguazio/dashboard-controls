@@ -385,6 +385,11 @@
                     visible: true
                 },
                 {
+                    id: 'python:3.9',
+                    name: 'Python 3.9',
+                    visible: true
+                },
+                {
                     id: 'dotnetcore',
                     name: '.NET Core',
                     visible: true

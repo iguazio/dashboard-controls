@@ -47,6 +47,7 @@
             'python:3.6': 'Python 3.6',
             'python:3.7': 'Python 3.7',
             'python:3.8': 'Python 3.8',
+            'python:3.9': 'Python 3.9',
             'dotnetcore': '.NET Core',
             'java': 'Java',
             'nodejs': 'NodeJS',

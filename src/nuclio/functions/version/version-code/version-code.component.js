@@ -449,6 +449,14 @@
                     visible: true
                 },
                 {
+                    id: 'python:3.9',
+                    ext: 'py',
+                    name: 'Python 3.9',
+                    language: 'python',
+                    sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
+                    visible: true
+                },
+                {
                     id: 'dotnetcore',
                     ext: 'cs',
                     name: '.NET Core',
