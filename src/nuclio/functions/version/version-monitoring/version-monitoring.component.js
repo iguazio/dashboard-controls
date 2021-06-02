@@ -10,10 +10,9 @@
             controller: NclVersionMonitoringController
         });
 
-    function NclVersionMonitoringController($rootScope, $scope, $timeout, lodash, ConfigService) {
+    function NclVersionMonitoringController($rootScope, $timeout, lodash, FunctionsService) {
         var ctrl = this;
 
-        ctrl.versionStatus = {};
         ctrl.scrollConfig = {
             advanced: {
                 updateOnContentResize: true
@@ -35,9 +34,6 @@
         ctrl.checkIsErrorState = checkIsErrorState;
         ctrl.onRowCollapse = onRowCollapse;
 
-        ctrl.isDemoMode = ConfigService.isDemoMode;
-        ctrl.lodash = lodash;
-
         //
         // Hook methods
         //
@@ -46,9 +42,7 @@
          * Initialization method
          */
         function onInit() {
-            setVersionStatus();
-
-            $scope.$on('deploy-result-changed', setVersionStatus);
+            ctrl.isFunctionDeploying = lodash.partial(FunctionsService.isFunctionDeploying, ctrl.version);
         }
 
         //
@@ -60,7 +54,7 @@
          * @returns {boolean}
          */
         function checkIsErrorState() {
-            return lodash.includes(['error', 'unhealthy'], lodash.get(ctrl.versionStatus, 'state'));
+            return lodash.includes(['error', 'unhealthy'], lodash.get(ctrl.version.status, 'state'));
         }
 
         /**
@@ -73,17 +67,6 @@
             $timeout(function () {
                 $rootScope.$broadcast('igzWatchWindowResize::resize');
             }, 350);
-        }
-
-        //
-        // Private methods
-        //
-
-        /**
-         * Sets actual deploying status in `ctrl.versionStatus`
-         */
-        function setVersionStatus() {
-            ctrl.versionStatus = lodash.get(ctrl.version, 'status');
         }
     }
 }());

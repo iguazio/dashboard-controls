@@ -36,10 +36,6 @@
 
         ctrl.functionActions = [];
         ctrl.functionNameTooltip = '';
-        ctrl.invocationUrl = {
-            text: '',
-            valid: false
-        };
         ctrl.isFunctionCollapsed = true;
         ctrl.runtimes = {
             'golang': 'Go',
@@ -150,8 +146,6 @@
             if (lodash.has(changes, 'function')) {
                 convertStatusState();
                 setStatusIcon();
-
-                ctrl.invocationUrl = VersionHelperService.getInvocationUrl(ctrl.function);
             }
         }
 

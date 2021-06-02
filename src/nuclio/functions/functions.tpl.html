@@ -106,9 +106,6 @@
                         {{ 'functions:RUNTIME' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="common-table-cell" data-ng-class="[$ctrl.getFunctionsTableColSize('invocationUrl')]">
-                        {{ 'functions:INVOCATION_URL' | i18next }}
-                    </div>
                     <div class="common-table-cell sortable"
                          data-ng-class="[$ctrl.getColumnSortingClasses('ui.metrics.invocationPerSec', $ctrl.sortedColumnName, $ctrl.isReverseSorting),
                                         $ctrl.getFunctionsTableColSize('invocationPerSec')]"

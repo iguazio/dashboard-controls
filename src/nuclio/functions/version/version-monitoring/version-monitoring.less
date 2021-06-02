@@ -3,29 +3,33 @@
         padding: 24px 25px 22px 41px;
     }
 
-    .invocation-url-common {
-        margin-left: 5px;
-        font-family: Roboto;
-    }
-
     .ncl-version-monitoring-wrapper {
         > .row {
             display: flex;
+            flex-flow: row wrap;
             justify-content: space-between;
-            flex-wrap: wrap;
 
             .monitoring-block {
                 padding: 16px 23px 16px;
                 background-color: @white;
                 border: solid 1px @pale-grey;
                 overflow: hidden;
-                flex-grow: 1;
-                flex-basis: 500px;
+                flex: 1 0 500px;
                 margin-right: 16px;
                 margin-bottom: 16px;
 
                 &.invocation-block {
                     overflow: visible;
+                    display: flex;
+
+                    .internal-invocation-urls, .external-invocation-urls {
+                        flex: 1;
+
+                        & .invocation-url-list {
+                            list-style: none;
+                            padding: 0;
+                        }
+                    }
                 }
 
                 &.without-collapse {
@@ -57,14 +61,8 @@
                 }
 
                 .monitoring-invocation-url-wrapper {
-                    display: inline-flex;
+                    display: flex;
                     align-items: center;
-
-                    .monitoring-invocation-url {
-                        .invocation-url-common();
-                        color: @dark-sky-blue;
-                        text-decoration: none;
-                    }
 
                     .igz-action-panel {
                         top: -2px;
@@ -73,7 +71,8 @@
                 }
 
                 .monitoring-invocation-field-invalid {
-                    .invocation-url-common();
+                    margin-left: 5px;
+                    font-family: Roboto;
                 }
 
                 .monitoring-replicas {

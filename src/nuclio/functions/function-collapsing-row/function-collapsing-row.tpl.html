@@ -76,29 +76,6 @@
                 {{$ctrl.runtimes[$ctrl.function.spec.runtime]}}
             </div>
             <div class="common-table-cell"
-                 data-test-id="functions.item-invocation-url"
-                 data-ng-show="$ctrl.isFunctionCollapsed"
-                 data-ng-class="[$ctrl.getFunctionsTableColSize('invocationUrl')]">
-                <span class="common-table-cell-content"
-                      data-uib-tooltip="{{$ctrl.invocationUrl.text}}"
-                      data-tooltip-append-to-body="true"
-                      data-tooltip-placement="top">{{$ctrl.invocationUrl.text}}</span>
-                <div class="igz-action-panel" data-ng-if="$ctrl.invocationUrl.valid">
-                    <div class="actions-list">
-                        <igz-copy-to-clipboard data-value="$ctrl.invocationUrl.text"></igz-copy-to-clipboard>
-                    </div>
-                </div>
-                <div class="igz-action-panel invocation-tooltip" data-ng-if="$ctrl.invocationUrl.info">
-                    <div class="actions-more-info">
-                        <igz-more-info
-                                data-description="{{ 'functions:TOOLTIP.TO_MAKE_FUNCTION_ACCESSIBLE' | i18next:{functionId: $ctrl.function.metadata.name} }}"
-                                data-is-html-enabled="true"
-                                data-trigger="click">
-                        </igz-more-info>
-                    </div>
-                </div>
-            </div>
-            <div class="common-table-cell"
                  data-test-id="functions.item-invocation-per-sec"
                  data-ng-show="$ctrl.isFunctionCollapsed"
                  data-ng-class="[$ctrl.getFunctionsTableColSize('invocationPerSec')]">
@@ -161,7 +138,6 @@
                                       data-action-handler-callback="$ctrl.handleAction(actionType, checkedItems)"
                                       data-converted-status-state="$ctrl.convertedStatusState"
                                       data-function="$ctrl.function"
-                                      data-invocation-url="$ctrl.invocationUrl"
                                       data-is-function-collapsed="$ctrl.isFunctionCollapsed"
                                       data-project="$ctrl.project"
                                       data-status-icon="$ctrl.statusIcon"
