@@ -84,6 +84,9 @@
                         {{ 'common:STATUS' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
+                    <div class="common-table-cell" data-ng-class="[$ctrl.getFunctionsTableColSize('owner')]">
+                        {{ 'common:OWNER' | i18next }}
+                    </div>
                     <div class="common-table-cell sortable"
                          data-ng-if="$ctrl.isDemoMode()"
                          data-ng-class="[$ctrl.getColumnSortingClasses('spec.replicas', $ctrl.sortedColumnName, $ctrl.isReverseSorting),
@@ -92,35 +95,40 @@
                         {{ 'common:REPLICAS' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-7-5 common-table-cell sortable"
-                         data-ng-class="$ctrl.getColumnSortingClasses('spec.runtime', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                    <div class="common-table-cell sortable"
+                         data-ng-class="[$ctrl.getColumnSortingClasses('spec.runtime', $ctrl.sortedColumnName, $ctrl.isReverseSorting),
+                                        $ctrl.getFunctionsTableColSize('runtime')]"
                          data-ng-click="$ctrl.sortTableByColumn('spec.runtime')">
                         {{ 'functions:RUNTIME' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-12-5 common-table-cell">
+                    <div class="common-table-cell" data-ng-class="[$ctrl.getFunctionsTableColSize('invocationUrl')]">
                         {{ 'functions:INVOCATION_URL' | i18next }}
                     </div>
-                    <div class="igz-col-10 common-table-cell sortable"
-                         data-ng-class="$ctrl.getColumnSortingClasses('ui.metrics.invocationPerSec', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                    <div class="common-table-cell sortable"
+                         data-ng-class="[$ctrl.getColumnSortingClasses('ui.metrics.invocationPerSec', $ctrl.sortedColumnName, $ctrl.isReverseSorting),
+                                        $ctrl.getFunctionsTableColSize('invocationPerSec')]"
                          data-ng-click="$ctrl.sortTableByColumn('ui.metrics.invocationPerSec')">
                         {{ 'functions:INVOCATION_PER_SEC' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-15 common-table-cell sortable"
-                         data-ng-class="$ctrl.getColumnSortingClasses('ui.metrics[\'cpu.cores\']', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                    <div class="common-table-cell sortable"
+                         data-ng-class="[$ctrl.getColumnSortingClasses('ui.metrics[\'cpu.cores\']', $ctrl.sortedColumnName, $ctrl.isReverseSorting),
+                                        $ctrl.getFunctionsTableColSize('cpuCores')]"
                          data-ng-click="$ctrl.sortTableByColumn('ui.metrics[\'cpu.cores\']')">
                         {{ 'common:CPU_CORES' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-15 common-table-cell sortable"
-                         data-ng-class="$ctrl.getColumnSortingClasses('ui.metrics.size', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                    <div class="common-table-cell sortable"
+                         data-ng-class="[$ctrl.getColumnSortingClasses('ui.metrics.size', $ctrl.sortedColumnName, $ctrl.isReverseSorting),
+                                        $ctrl.getFunctionsTableColSize('metricsSize')]"
                          data-ng-click="$ctrl.sortTableByColumn('ui.metrics.size')">
                         {{ 'common:MEMORY' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="igz-col-15 common-table-cell sortable"
-                         data-ng-class="$ctrl.getColumnSortingClasses('ui.metrics.count', $ctrl.sortedColumnName, $ctrl.isReverseSorting)"
+                    <div class="common-table-cell sortable"
+                         data-ng-class="[$ctrl.getColumnSortingClasses('ui.metrics.count', $ctrl.sortedColumnName, $ctrl.isReverseSorting),
+                                        $ctrl.getFunctionsTableColSize('metricsCount')]"
                          data-ng-click="$ctrl.sortTableByColumn('ui.metrics.count')">
                         {{ 'functions:INVOCATION' | i18next }}&nbsp;#
                         <span class="sort-arrow"></span>
