@@ -84,8 +84,12 @@
                         {{ 'common:STATUS' | i18next }}
                         <span class="sort-arrow"></span>
                     </div>
-                    <div class="common-table-cell" data-ng-class="[$ctrl.getFunctionsTableColSize('owner')]">
+                    <div class="common-table-cell sortable"
+                         data-ng-class="[$ctrl.getColumnSortingClasses('metadata.labels[\'iguazio.com/username\']', $ctrl.sortedColumnName, $ctrl.isReverseSorting),
+                                         $ctrl.getFunctionsTableColSize('owner')]"
+                         data-ng-click="$ctrl.sortTableByColumn('metadata.labels[\'iguazio.com/username\']')">
                         {{ 'common:OWNER' | i18next }}
+                        <span class="sort-arrow"></span>
                     </div>
                     <div class="common-table-cell sortable"
                          data-ng-if="$ctrl.isDemoMode()"
