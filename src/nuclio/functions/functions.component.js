@@ -99,6 +99,11 @@
                 label: $i18next.t('functions:INVOCATION', { lng: lng }) + ' #',
                 value: 'ui.metrics.count',
                 active: false
+            },
+            {
+                label: $i18next.t('common:OWNER', { lng: lng }),
+                value: 'metadata.labels[\'iguazio.com/username\']',
+                active: false
             }
         ];
         ctrl.sortedColumnName = 'metadata.name';

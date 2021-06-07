@@ -31,13 +31,19 @@
              data-ng-class="[$ctrl.getFunctionsTableColSize('replicas')]">
             {{$ctrl.function.spec.replicas}}
         </div>
-        <div class="igz-col-7-5 common-table-cell">
+        <div class="common-table-cell"
+             data-ng-class="[$ctrl.getFunctionsTableColSize('owner')]">
+            {{$ctrl.function.metadata.labels['iguazio.com/username'] ? $ctrl.function.metadata.labels['iguazio.com/username'] : 'common:N_A' | i18next}}
+        </div>
+        <div class="common-table-cell"
+             data-ng-class="[$ctrl.getFunctionsTableColSize('runtime')]">
             {{$ctrl.runtimes[$ctrl.function.spec.runtime]}}
         </div>
-        <div class="igz-col-12-5 common-table-cell"
+        <div class="common-table-cell"
              data-uib-tooltip="{{$ctrl.invocationUrl.text}}"
              data-tooltip-append-to-body="true"
-             data-tooltip-placement="top">
+             data-tooltip-placement="top"
+             data-ng-class="[$ctrl.getFunctionsTableColSize('invocationUrl')]">
             <span class="common-table-cell-content">{{$ctrl.invocationUrl.text}}</span>
             <div class="igz-action-panel" data-ng-if="$ctrl.invocationUrl.valid">
                 <div class="actions-list">
@@ -54,13 +60,15 @@
                 </div>
             </div>
         </div>
-        <div class="igz-col-10 common-table-cell">
+        <div class="common-table-cell"
+             data-ng-class="[$ctrl.getFunctionsTableColSize('invocationPerSec')]">
             {{$ctrl.function.ui.metrics.invocation || 0}}
         </div>
 
-        <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-15"
+        <igz-element-loading-status class="common-table-cell element-loading-status-wrapper"
                                     data-name="nuclio_function_cpu-{{$ctrl.function.metadata.name}}"
-                                    data-loading-status-size="small">
+                                    data-loading-status-size="small"
+                                    data-ng-class="[$ctrl.getFunctionsTableColSize('cpuCores')]">
             <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_function_cpu && !$ctrl.isFunctionCollapsed"
                       data-type="functions_cpu"
                       data-entity="$ctrl.function">
@@ -70,9 +78,10 @@
             </div>
         </igz-element-loading-status>
 
-        <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-15"
+        <igz-element-loading-status class="common-table-cell element-loading-status-wrapper"
                                     data-name="nuclio_function_mem-{{$ctrl.function.metadata.name}}"
-                                    data-loading-status-size="small">
+                                    data-loading-status-size="small"
+                                    data-ng-class="[$ctrl.getFunctionsTableColSize('metricsSize')]">
             <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_function_mem && !$ctrl.isFunctionCollapsed"
                       data-type="functions_memory"
                       data-entity="$ctrl.function">
@@ -82,9 +91,10 @@
             </div>
         </igz-element-loading-status>
 
-        <igz-element-loading-status class="common-table-cell element-loading-status-wrapper igz-col-15"
+        <igz-element-loading-status class="common-table-cell element-loading-status-wrapper"
                                     data-name="nuclio_processor_handled_events_total-{{$ctrl.function.metadata.name}}"
-                                    data-loading-status-size="small">
+                                    data-loading-status-size="small"
+                                    data-ng-class="[$ctrl.getFunctionsTableColSize('metricsCount')]">
             <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_processor_handled_events_total && !$ctrl.isFunctionCollapsed"
                       data-type="functions_events"
                       data-entity="$ctrl.function">
