@@ -1,15 +1,37 @@
 <div class="ncl-version-configuration-resources">
-    <div class="title">{{ 'common:RESOURCES' | i18next }}</div>
-    <form name="$ctrl.resourcesForm" class="resources-wrapper" novalidate>
+    <form name="$ctrl.nodeSelectorsForm" novalidate>
+        <div class="title">{{ 'functions:NODE_SELECTORS' | i18next }}</div>
         <div class="row">
-
+            <div class="igz-row form-row">
+                <div class="table-body" data-ng-repeat="nodeSelector in $ctrl.nodeSelectors">
+                    <ncl-key-value-input class="node-selectors"
+                                         data-row-data="nodeSelector"
+                                         data-item-index="$index"
+                                         data-use-type="false"
+                                         data-validation-rules="$ctrl.nodeSelectorsValidationRules"
+                                         data-action-handler-callback="$ctrl.handleNodeSelectorsAction(actionType, index)"
+                                         data-change-data-callback="$ctrl.onChangeNodeSelectorsData(newData, index)"
+                                         data-submit-on-fly="true">
+                    </ncl-key-value-input>
+                </div>
+                <div class="igz-create-button" data-ng-click="$ctrl.addNewNodeSelector($event)">
+                    <span class="igz-icon-add-round"></span>
+                    {{ 'functions:CREATE_NEW_NODE_SELECTOR' | i18next }}
+                </div>
+            </div>
+        </div>
+    </form>
+    <form name="$ctrl.resourcesForm" class="resources-wrapper" novalidate>
+        <div class="title">{{ 'common:RESOURCES' | i18next }}</div>
+        <div class="row">
             <div class="igz-row form-row range-inputs-row">
                 <div class="igz-col-20 row-title">{{ 'common:MEMORY' | i18next }}
                     <igz-more-info data-trigger="click"
                                    data-is-html-enabled="true"
                                    data-is-open="$ctrl.memoryWarningOpen"
                                    data-icon-type="{{$ctrl.memoryWarningOpen ? 'warn' : 'info'}}"
-                                   data-description="{{ 'common:RESOURCES_WARNING_LIMIT_FILLED_REQUEST_EMPTY' | i18next:{ when: 'the function is deployed' } }}"></igz-more-info>
+                                   data-description="{{ 'common:RESOURCES_WARNING_LIMIT_FILLED_REQUEST_EMPTY' | i18next:{ when: 'the function is deployed' } }}">
+                    </igz-more-info>
                 </div>
 
                 <div class="igz-col-40 input-wrapper">
@@ -145,9 +167,10 @@
                 <div class="igz-col-40 input-wrapper">
                     <div class="input-title">
                         {{ 'functions:MIN' | i18next }}
-                        <igz-more-info data-description="{{ 'functions:MIN_REPLICAS' | i18next:{default: $ctrl.defaultFunctionConfig.spec.minReplicas} }}"
-                                       data-default-tooltip-placement="top"
-                                       data-trigger="click">
+                        <igz-more-info
+                                data-description="{{ 'functions:MIN_REPLICAS' | i18next:{default: $ctrl.defaultFunctionConfig.spec.minReplicas} }}"
+                                data-default-tooltip-placement="top"
+                                data-trigger="click">
                         </igz-more-info>
                     </div>
                     <div class="row-input replicas-number-input">
@@ -170,9 +193,10 @@
                 <div class="igz-col-40 input-wrapper">
                     <div class="input-title" data-ng-class="{ asterisk: $ctrl.minReplicas === 0 }">
                         {{ 'functions:MAX' | i18next }}
-                        <igz-more-info data-description="{{ 'functions:MAX_REPLICAS' | i18next:{default: $ctrl.defaultFunctionConfig.spec.maxReplicas} }}"
-                                       data-default-tooltip-placement="top"
-                                       data-trigger="click">
+                        <igz-more-info
+                                data-description="{{ 'functions:MAX_REPLICAS' | i18next:{default: $ctrl.defaultFunctionConfig.spec.maxReplicas} }}"
+                                data-default-tooltip-placement="top"
+                                data-trigger="click">
                         </igz-more-info>
                     </div>
                     <div class="row-input replicas-number-input">
@@ -216,8 +240,9 @@
             <div class="igz-row form-row range-inputs-row slider-block">
                 <div class="igz-col-25 row-title no-margin target-cpu-title">
                     <span>{{ 'common:TARGET_CPU' | i18next }}</span>
-                    <igz-more-info data-description="{{ 'functions:TARGET_CPU_DESCRIPTION' | i18next:{default: $ctrl.defaultFunctionConfig.spec.targetCPU} }}"
-                                   data-trigger="click">
+                    <igz-more-info
+                            data-description="{{ 'functions:TARGET_CPU_DESCRIPTION' | i18next:{default: $ctrl.defaultFunctionConfig.spec.targetCPU} }}"
+                            data-trigger="click">
                     </igz-more-info>
                 </div>
                 <div class="igz-col-75 row-input slider">
