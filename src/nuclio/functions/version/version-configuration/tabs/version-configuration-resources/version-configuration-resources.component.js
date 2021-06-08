@@ -577,8 +577,6 @@
                 })
                 .value();
 
-            console.log('nodeSelectors', ctrl.nodeSelectors);
-
             $timeout(function () {
                 if (ctrl.nodeSelectorsForm.$invalid) {
                     ctrl.nodeSelectorsForm.$setSubmitted();
