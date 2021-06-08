@@ -1,3 +1,4 @@
+/* eslint max-statements: ["error", 60] */
 (function () {
     'use strict';
 
@@ -11,8 +12,10 @@
             controller: NclVersionConfigurationResourcesController
         });
 
-    function NclVersionConfigurationResourcesController($rootScope, $scope, $timeout, lodash, ConfigService) {
+    function NclVersionConfigurationResourcesController($i18next, $rootScope, $scope, $timeout, i18next, lodash,
+                                                        ConfigService, FormValidationService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         var defaultUnit = {
             id: 'gb',
@@ -74,18 +77,31 @@
             { id: 'eb',    name: 'EB',    unit: 'E',  root: 1000, power: 6 },
             { id: 'eib',   name: 'EiB',   unit: 'Ei', root: 1024, power: 6 }
         ];
+        ctrl.nodeSelectors = [];
+        ctrl.nodeSelectorsValidationRules = {
+            key: [
+                {
+                    name: 'uniqueness',
+                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                    pattern: validateNodeSelectorUniqueness
+                }
+            ]
+        };
         ctrl.windowSizeSlider = {};
 
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
 
+        ctrl.addNewNodeSelector = addNewNodeSelector;
         ctrl.cpuDropdownCallback = cpuDropdownCallback;
         ctrl.cpuInputCallback = cpuInputCallback;
         ctrl.gpuInputCallback = gpuInputCallback;
+        ctrl.handleNodeSelectorsAction = handleNodeSelectorsAction;
         ctrl.isInactivityWindowShown = isInactivityWindowShown;
         ctrl.memoryDropdownCallback = memoryDropdownCallback;
         ctrl.memoryInputCallback = memoryInputCallback;
+        ctrl.onChangeNodeSelectorsData = onChangeNodeSelectorsData;
         ctrl.replicasInputCallback = replicasInputCallback;
         ctrl.sliderInputCallback = sliderInputCallback;
 
@@ -124,6 +140,7 @@
                 ctrl.maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
 
                 initScaleToZeroData();
+                initNodeSelectors();
 
                 $timeout(function () {
                     setFormValidity();
@@ -145,6 +162,29 @@
         //
         // Public methods
         //
+
+        /**
+         * Adds new node selector
+         * param {Event} event - native event object
+         */
+        function addNewNodeSelector(event) {
+            $timeout(function () {
+                if (ctrl.nodeSelectors.length < 1 || lodash.last(ctrl.nodeSelectors).ui.isFormValid) {
+                    ctrl.nodeSelectors.push({
+                        name: '',
+                        value: '',
+                        ui: {
+                            editModeActive: true,
+                            isFormValid: false,
+                            name: 'nodeSelector'
+                        }
+                    });
+
+                    $rootScope.$broadcast('change-state-deploy-button', { component: 'nodeSelector', isDisabled: true });
+                    event.stopPropagation();
+                }
+            }, 50);
+        }
 
         /**
          * CPU dropdown callback
@@ -212,6 +252,22 @@
         }
 
         /**
+         * Handler on Node selector action type
+         * @param {string} actionType
+         * @param {number} index - index of the "Node selector" in the array
+         */
+        function handleNodeSelectorsAction(actionType, index) {
+            if (actionType === 'delete') {
+                ctrl.nodeSelectors.splice(index, 1);
+
+                $timeout(function () {
+                    updateNodeSelectors();
+                });
+            }
+        }
+
+
+        /**
          * Checks whether the inactivity window can be shown
          * @returns {boolean}
          */
@@ -276,6 +332,17 @@
                 lodash.isNil(lodash.get(ctrl.version, 'spec.resources.requests.memory'));
 
             ctrl.onChangeCallback();
+        }
+
+        /**
+         * Changes Node selector data
+         * @param {Object} nodeSelector
+         * @param {number} index
+         */
+        function onChangeNodeSelectorsData(nodeSelector, index) {
+            ctrl.nodeSelectors[index] = lodash.cloneDeep(nodeSelector);
+
+            updateNodeSelectors();
         }
 
         /**
@@ -424,7 +491,7 @@
                     cpu: parseValue(limitsCpu),
                     gpu: parseValue(limitsGpu)
                 }
-            }
+            };
 
             // get size unit from memory values into int or set default, example: '15G' -> 'G'
             ctrl.selectedRequestUnit = lodash.isNil(requestsMemory) ? defaultUnit :
@@ -492,6 +559,35 @@
         }
 
         /**
+         * Initializes data for Node selectors section
+         */
+        function initNodeSelectors() {
+            ctrl.nodeSelectors = lodash.chain(ctrl.version)
+                .get('spec.nodeSelector', {})
+                .map(function (value, key) {
+                    return {
+                        name: key,
+                        value: value,
+                        ui: {
+                            editModeActive: false,
+                            isFormValid: key.length > 0 && value.length > 0,
+                            name: 'nodeSelector'
+                        }
+                    };
+                })
+                .value();
+
+            console.log('nodeSelectors', ctrl.nodeSelectors);
+
+            $timeout(function () {
+                if (ctrl.nodeSelectorsForm.$invalid) {
+                    ctrl.nodeSelectorsForm.$setSubmitted();
+                    $rootScope.$broadcast('change-state-deploy-button', { component: 'nodeSelector', isDisabled: true });
+                }
+            });
+        }
+
+        /**
          * Initializes data for "Scale to zero" section
          */
         function initScaleToZeroData() {
@@ -532,6 +628,33 @@
                     ctrl.resourcesForm[field].$$element.scope().$ctrl.numberInputChanged = true;
                 }
             }
+        }
+
+        /**
+         * Updates Node selectors
+         */
+        function updateNodeSelectors() {
+            var isFormValid = true;
+            var newNodeSelectors = {};
+
+            lodash.forEach(ctrl.nodeSelectors, function (nodeSelector) {
+                if (!nodeSelector.ui.isFormValid) {
+                    isFormValid = false;
+                }
+
+                newNodeSelectors[nodeSelector.name] = nodeSelector.value;
+            });
+
+            // since uniqueness validation rule of some fields is dependent on the entire label list, then whenever
+            // the list is modified - the rest of the labels need to be re-validated
+            FormValidationService.validateAllFields(ctrl.nodeSelectorsForm);
+
+            $rootScope.$broadcast('change-state-deploy-button', {
+                component: 'nodeSelector',
+                isDisabled: !isFormValid || ctrl.nodeSelectorsForm.$invalid
+            });
+
+            lodash.set(ctrl.version, 'spec.nodeSelector', newNodeSelectors);
         }
 
         /**
@@ -578,7 +701,16 @@
                         }
                     }
                 }
-            }
+            };
+        }
+
+        /**
+         * Determines `uniqueness` validation for Node selector `Key` field
+         * @param {string} value - value to validate
+         * @returns {boolean}
+         */
+        function validateNodeSelectorUniqueness(value) {
+            return lodash.filter(ctrl.nodeSelectors, ['name', value]).length === 1;
         }
     }
 }());
