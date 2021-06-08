@@ -523,8 +523,6 @@
                             ctrl.isFunctionDeployed = true;
                         }
 
-                        $rootScope.$broadcast('deploy-result-changed');
-
                         updateStatusTabIndicator();
 
                         $timeout(function () {

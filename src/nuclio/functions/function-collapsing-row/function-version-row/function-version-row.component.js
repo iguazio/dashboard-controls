@@ -7,7 +7,6 @@
                 actionHandlerCallback: '&',
                 convertedStatusState: '<',
                 function: '<',
-                invocationUrl: '<',
                 isFunctionCollapsed: '<',
                 project: '<',
                 statusIcon: '<',

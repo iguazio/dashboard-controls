@@ -5,49 +5,37 @@
         <div class="ncl-version-monitoring-wrapper">
             <div class="row">
                 <div class="monitoring-block invocation-block">
-                    <span class="monitoring-block-title">
-                        {{ 'functions:INVOCATION_URL' | i18next }}:
-                    </span>
-                    <div class="monitoring-invocation-url-wrapper" data-ng-if="$ctrl.version.ui.invocationUrl.valid">
-                        <a class="monitoring-invocation-url"
-                           href="{{$ctrl.version.ui.invocationUrl.text}}">
-                            {{$ctrl.version.ui.invocationUrl.text}}
-                        </a>
-                        <div class="igz-action-panel">
-                            <div class="actions-list">
-                                <igz-copy-to-clipboard data-value="$ctrl.version.ui.invocationUrl.text"></igz-copy-to-clipboard>
-                            </div>
-                        </div>
+                    <div class="internal-invocation-urls">
+                        <span class="monitoring-block-title">{{ 'functions:INTERNAL_INVOCATION_URLS' | i18next }}: </span>
+                        <ul class="invocation-url-list">
+                            <li class="monitoring-invocation-url-wrapper" data-ng-repeat="url in $ctrl.version.status.internalInvocationURLs">
+                                <span>{{url}}</span>
+                                <div class="igz-action-panel">
+                                    <div class="actions-list">
+                                        <igz-copy-to-clipboard data-value="url"></igz-copy-to-clipboard>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                    <span data-ng-if="!$ctrl.version.ui.invocationUrl.valid"
-                          class="monitoring-invocation-field-invalid">
-                            {{$ctrl.version.ui.invocationUrl.text}}
-                            <igz-more-info
-                                    data-ng-if="$ctrl.version.ui.invocationUrl.info"
-                                    data-description="{{ 'functions:TOOLTIP.TO_MAKE_FUNCTION_ACCESSIBLE' | i18next:{functionId: $ctrl.version.metadata.name} }}"
-                                    data-is-html-enabled="true"
-                                    data-trigger="click">
-                            </igz-more-info>
-                    </span>
-                </div>
-                <div class="monitoring-block"
-                     data-ng-if="$ctrl.isDemoMode()">
-                    <span class="monitoring-block-title">
-                        {{ 'common:REPLICAS' | i18next }}:
-                    </span>
-                    <span data-ng-if="$ctrl.version.status.state === 'ready' && $ctrl.version.spec.maxReplicas !== 0"
-                          class="monitoring-replicas">
-                            {{$ctrl.version.status.replicas}}/{{$ctrl.version.spec.maxReplicas}}
-                    </span>
-                    <span data-ng-if="$ctrl.version.status.state === 'ready' && $ctrl.version.spec.maxReplicas === 0"
-                          class="monitoring-replicas">
-                            {{$ctrl.version.status.replicas}}/{{$ctrl.version.status.replicas}}
-                    </span>
-
-                    <span data-ng-if="$ctrl.version.status.state !== 'ready'"
-                          class="monitoring-invocation-field-invalid">
-                        {{ 'functions:NOT_YET_DEPLOYED' | i18next }}
-                    </span>
+                    <div class="external-invocation-urls">
+                        <span class="monitoring-block-title">{{ 'functions:EXTERNAL_INVOCATION_URLS' | i18next }}: </span>
+                        <ul class="invocation-url-list"
+                            data-ng-if="$ctrl.version.status.externalInvocationURLs.length > 0 && !$ctrl.isFunctionDeploying()">
+                            <li class="monitoring-invocation-url-wrapper" data-ng-repeat="url in $ctrl.version.status.externalInvocationURLs">
+                                <span>{{url}}</span>
+                                <div class="igz-action-panel">
+                                    <div class="actions-list">
+                                        <igz-copy-to-clipboard data-value="url"></igz-copy-to-clipboard>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <p data-ng-if="!$ctrl.version.status.externalInvocationURLs.length && !$ctrl.isFunctionDeploying()"
+                              data-ng-i18next="[html:i18next]({functionId: $ctrl.version.metadata.name})functions:TOOLTIP.TO_MAKE_FUNCTION_ACCESSIBLE">
+                        </p>
+                        <p data-ng-if="$ctrl.isFunctionDeploying()" data-ng-i18next="common:N_A"></p>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -60,7 +48,7 @@
                     </span>
                     <div class="ncl-monitoring-build-logs collapsed-block-content-wrapper"
                          data-uib-collapse="$ctrl.rowIsCollapsed.buildLog">
-                        <ncl-deploy-log data-log-entries="$ctrl.versionStatus.logs"></ncl-deploy-log>
+                        <ncl-deploy-log data-log-entries="$ctrl.version.status.logs"></ncl-deploy-log>
                     </div>
                 </div>
             </div>
@@ -80,7 +68,7 @@
                              data-ng-scrollbars-config="$ctrl.scrollConfig">
                             <div class="log-entry">
                                 <span class="log-entry-error">
-                                    {{$ctrl.versionStatus.message}}
+                                    {{$ctrl.version.status.message}}
                                 </span>
                             </div>
                         </div>

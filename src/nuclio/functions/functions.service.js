@@ -13,6 +13,7 @@
             getSteadyStates: getSteadyStates,
             initFunctionActions: initFunctionActions,
             initVersionActions: initVersionActions,
+            isFunctionDeploying: isFunctionDeploying,
             isKubePlatform: isKubePlatform,
             openFunctionConflictDialog: openFunctionConflictDialog,
             openVersionDeleteDialog: openVersionDeleteDialog,
@@ -940,6 +941,16 @@
                     }
                 }
             ];
+        }
+
+        /**
+         * Tests whether the function is currently deploying (meaning not in a steady state).
+         * @param {Object} aFunction - The function to test.
+         * @returns {boolean} `true` if the function is deploying, or `false` otherwise.
+         */
+        function isFunctionDeploying(aFunction) {
+            var state = lodash.get(aFunction, 'status.state');
+            return !lodash.includes(self.getSteadyStates(), state);
         }
 
         /**
