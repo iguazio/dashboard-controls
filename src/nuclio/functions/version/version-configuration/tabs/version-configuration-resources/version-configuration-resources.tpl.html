@@ -1,26 +1,4 @@
 <div class="ncl-version-configuration-resources">
-    <form name="$ctrl.nodeSelectorsForm" novalidate>
-        <div class="title">{{ 'functions:NODE_SELECTORS' | i18next }}</div>
-        <div class="row">
-            <div class="igz-row form-row">
-                <div class="table-body" data-ng-repeat="nodeSelector in $ctrl.nodeSelectors">
-                    <ncl-key-value-input class="node-selectors"
-                                         data-row-data="nodeSelector"
-                                         data-item-index="$index"
-                                         data-use-type="false"
-                                         data-validation-rules="$ctrl.nodeSelectorsValidationRules"
-                                         data-action-handler-callback="$ctrl.handleNodeSelectorsAction(actionType, index)"
-                                         data-change-data-callback="$ctrl.onChangeNodeSelectorsData(newData, index)"
-                                         data-submit-on-fly="true">
-                    </ncl-key-value-input>
-                </div>
-                <div class="igz-create-button" data-ng-click="$ctrl.addNewNodeSelector($event)">
-                    <span class="igz-icon-add-round"></span>
-                    {{ 'functions:CREATE_NEW_NODE_SELECTOR' | i18next }}
-                </div>
-            </div>
-        </div>
-    </form>
     <form name="$ctrl.resourcesForm" class="resources-wrapper" novalidate>
         <div class="title">{{ 'common:RESOURCES' | i18next }}</div>
         <div class="row">
@@ -259,6 +237,28 @@
                                             data-tooltip-placement="bottom"
                                             data-tooltip-popup-delay="500">
                     </igz-slider-input-block>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form name="$ctrl.nodeSelectorsForm" novalidate>
+        <div class="title">{{ 'functions:NODE_SELECTORS' | i18next }}</div>
+        <div class="row">
+            <div class="igz-row form-row">
+                <div class="table-body" data-ng-repeat="nodeSelector in $ctrl.nodeSelectors">
+                    <ncl-key-value-input class="node-selectors"
+                                         data-row-data="nodeSelector"
+                                         data-item-index="$index"
+                                         data-use-type="false"
+                                         data-validation-rules="$ctrl.nodeSelectorsValidationRules"
+                                         data-action-handler-callback="$ctrl.handleNodeSelectorsAction(actionType, index)"
+                                         data-change-data-callback="$ctrl.onChangeNodeSelectorsData(newData, index)"
+                                         data-submit-on-fly="true">
+                    </ncl-key-value-input>
+                </div>
+                <div class="igz-create-button" data-ng-click="$ctrl.addNewNodeSelector($event)">
+                    <span class="igz-icon-add-round"></span>
+                    {{ 'functions:CREATE_NEW_NODE_SELECTOR' | i18next }}
                 </div>
             </div>
         </div>
