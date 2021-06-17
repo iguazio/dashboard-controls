@@ -29,17 +29,21 @@
         ctrl.createEvent = true;
         ctrl.testEventsForm = null;
         ctrl.headers = [];
+        ctrl.invocationUrls = {
+            options: [],
+            selected: {}
+        };
         ctrl.isSplashShowed = {
             value: false
         };
         ctrl.leftBarNavigationTabs = [
             {
                 id: 'saved',
-                tabName: $i18next.t('functions:SAVED', {lng: lng})
+                tabName: $i18next.t('functions:SAVED', { lng: lng })
             },
             {
                 id: 'history',
-                tabName: $i18next.t('functions:HISTORY', {lng: lng})
+                tabName: $i18next.t('functions:HISTORY', { lng: lng })
             }
         ];
         ctrl.logs = [];
@@ -73,11 +77,11 @@
         ctrl.requestNavigationTabs = [
             {
                 id: 'body',
-                tabName: $i18next.t('functions:BODY', {lng: lng})
+                tabName: $i18next.t('functions:BODY', { lng: lng })
             },
             {
                 id: 'headers',
-                tabName: $i18next.t('functions:HEADERS', {lng: lng})
+                tabName: $i18next.t('functions:HEADERS', { lng: lng })
             }
         ];
         ctrl.requestBodyTypes = [
@@ -103,16 +107,16 @@
         ctrl.responseNavigationTabs = [
             {
                 id: 'body',
-                tabName: $i18next.t('functions:BODY', {lng: lng})
+                tabName: $i18next.t('functions:BODY', { lng: lng })
             },
             {
                 id: 'headers',
-                tabName: $i18next.t('functions:HEADERS', {lng: lng}),
+                tabName: $i18next.t('functions:HEADERS', { lng: lng }),
                 badge: 0
             },
             {
                 id: 'logs',
-                tabName: $i18next.t('common:LOGS', {lng: lng}),
+                tabName: $i18next.t('common:LOGS', { lng: lng }),
                 badge: 0
             }
         ];
@@ -157,6 +161,7 @@
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.isDisabledTestButton = isDisabledTestButton;
         ctrl.onChangeData = onChangeData;
+        ctrl.onChangeInvocationUrl = onChangeInvocationUrl;
         ctrl.onChangeLogLevel = onChangeLogLevel;
         ctrl.onChangeRequestBodyType = onChangeRequestBodyType;
         ctrl.onChangeRequestMethod = onChangeRequestMethod;
@@ -179,6 +184,9 @@
         function onInit() {
             ctrl.isSplashShowed.value = true;
             ctrl.eventLogLevel = 'debug';
+
+            ctrl.invocationUrls.options = generateInvocationUrlsList();
+            ctrl.invocationUrls.selected = lodash.get(ctrl.invocationUrls.options[0], 'name');
 
             if (lodash.isNil(ctrl.version.ui.deployedVersion)) {
                 VersionHelperService.updateIsVersionChanged(ctrl.version);
@@ -207,12 +215,12 @@
                 }
             });
 
-            ctrl.getFunctionEvents({functionData: ctrl.version})
+            ctrl.getFunctionEvents({ functionData: ctrl.version })
                 .then(function (response) {
                     ctrl.savedEvents = response;
                 })
                 .catch(function (error) {
-                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_EVENTS', {lng: lng});
+                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_EVENTS', { lng: lng });
 
                     DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                 })
@@ -282,11 +290,11 @@
         function deleteEvent(event) {
             var dialogConfig = {
                 message: {
-                    message: $i18next.t('functions:DELETE_EVENT', {lng: lng}) + ' “' + event.spec.displayName + '”?',
-                    description: $i18next.t('functions:DELETE_EVENT_DESCRIPTION', {lng: lng})
+                    message: $i18next.t('functions:DELETE_EVENT', { lng: lng }) + ' “' + event.spec.displayName + '”?',
+                    description: $i18next.t('functions:DELETE_EVENT_DESCRIPTION', { lng: lng })
                 },
-                yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
-                noLabel: $i18next.t('common:CANCEL', {lng: lng}),
+                yesLabel: $i18next.t('common:YES_DELETE', { lng: lng }),
+                noLabel: $i18next.t('common:CANCEL', { lng: lng }),
                 type: 'nuclio_alert'
             };
 
@@ -300,11 +308,11 @@
                     };
                     ctrl.isSplashShowed.value = true;
 
-                    ctrl.deleteFunctionEvent({eventData: eventData})
+                    ctrl.deleteFunctionEvent({ eventData: eventData })
                         .then(function () {
 
                             // update test events list
-                            ctrl.getFunctionEvents({functionData: ctrl.version})
+                            ctrl.getFunctionEvents({ functionData: ctrl.version })
                                 .then(function (response) {
                                     ctrl.savedEvents = response;
 
@@ -313,13 +321,13 @@
                                     }
                                 })
                                 .catch(function (error) {
-                                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_EVENTS', {lng: lng});
+                                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_EVENTS', { lng: lng });
 
                                     DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                                 });
                         })
                         .catch(function (error) {
-                            var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_EVENTS', {lng: lng});
+                            var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_EVENTS', { lng: lng });
 
                             DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                         })
@@ -363,7 +371,7 @@
                    method === 'GET'    ? '#21d4ac' :
                    method === 'PUT'    ? '#239bca' :
                    method === 'DELETE' ? '#e54158' :
-                                         '#96a8d3';
+                   /* else */            '#96a8d3';
         }
 
         /**
@@ -419,6 +427,14 @@
         }
 
         /**
+         * Handles selecting invocation URL.
+         * @param {{ name: string }} invocationUrl - The selected invocation URL option.
+         */
+        function onChangeInvocationUrl(invocationUrl) {
+            ctrl.invocationUrls.selected = invocationUrl.name;
+        }
+
+        /**
          * Changes log level data
          * @param {Object} selectedLogLevel - selected log level
          */
@@ -445,7 +461,8 @@
                 };
 
                 ctrl.requestSourceCodeLanguage = bodyType.id === 'json' ? 'json' : 'textplain';
-                ctrl.selectedEvent.spec.attributes.headers['Content-Type'] = bodyType.id === 'json' ? 'application/json' : 'text/plain';
+                ctrl.selectedEvent.spec.attributes.headers['Content-Type'] =
+                    bodyType.id === 'json' ? 'application/json' : 'text/plain';
 
                 updateRequestHeaders();
             }
@@ -541,9 +558,9 @@
                 ctrl.isSplashShowed.value = true;
 
                 // save created event on beck-end
-                ctrl.createFunctionEvent({eventData: eventToSave, isNewEvent: ctrl.createEvent})
+                ctrl.createFunctionEvent({ eventData: eventToSave, isNewEvent: ctrl.createEvent })
                     .then(function (newEvent) {
-                        ctrl.getFunctionEvents({functionData: ctrl.version}).then(function (response) {
+                        ctrl.getFunctionEvents({ functionData: ctrl.version }).then(function (response) {
                             ctrl.savedEvents = response;
                         });
 
@@ -556,7 +573,7 @@
                         ctrl.isSplashShowed.value = false;
                     })
                     .catch(function (error) {
-                        var defaultMsg = $i18next.t('functions:ERROR_MSG.CREATE_UPDATE_FUNCTION_EVENT', {lng: lng});
+                        var defaultMsg = $i18next.t('functions:ERROR_MSG.CREATE_UPDATE_FUNCTION_EVENT', { lng: lng });
 
                         DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
                         ctrl.isSplashShowed.value = false;
@@ -602,8 +619,6 @@
 
             if ((lodash.isNil(event) || event.keyCode === EventHelperService.ENTER) && !ctrl.isDisabledTestButton()) {
                 var startTime = moment();
-                var serviceTypeIsClusterIp = VersionHelperService.getServiceType(ctrl.version) === 'ClusterIP';
-                var platformIsKube = FunctionsService.isKubePlatform();
                 canceler = $q.defer();
                 canceledInvocation = false;
                 ctrl.testing = true;
@@ -615,7 +630,7 @@
 
                 ctrl.invokeFunction({
                     eventData: eventData,
-                    invokeVia: platformIsKube && serviceTypeIsClusterIp ? 'domain-name' : 'external-ip',
+                    invokeUrl: ctrl.invocationUrls.selected,
                     canceler: canceler.promise
                 })
                     .then(function (response) {
@@ -681,14 +696,15 @@
 
                             ctrl.responseBodyType = textualFile ? 'code'  :
                                                     imageFile   ? 'image' :
-                                                                   $i18next.t('common:N_A', {lng: lng});
+                                                                   $i18next.t('common:N_A', { lng: lng });
 
                             ctrl.showResponse = true;
                         } else {
                             if (!canceledInvocation) {
                                 var statusText = angular.isDefined(invocationData.error) ? invocationData.error :
                                     invocationData.status + ' ' + invocationData.statusText;
-                                DialogsService.alert($i18next.t('functions:ERROR_MSG.INVOKE_FUNCTION', {lng: lng}) + statusText);
+                                DialogsService.alert($i18next.t('functions:ERROR_MSG.INVOKE_FUNCTION',
+                                                                { lng: lng }) + statusText);
                             }
 
                             ctrl.testing = false;
@@ -727,7 +743,7 @@
                     ctrl.uploadingData.progress = '100%';
 
                     if (onloadEvent.target.result === '') {
-                        DialogsService.alert($i18next.t('functions:ERROR_MSG.UPLOAD_FILE.UNKNOWN', {lng: lng}));
+                        DialogsService.alert($i18next.t('functions:ERROR_MSG.UPLOAD_FILE.UNKNOWN', { lng: lng }));
 
                         deleteFile();
                     } else {
@@ -737,7 +753,7 @@
                             ctrl.selectedEvent.spec.attributes.headers['Content-Type'] = file.type;
                             updateRequestHeaders();
                         } catch (ex) {
-                            DialogsService.alert($i18next.t('functions:ERROR_MSG.UPLOAD_FILE.DEFAULT', {lng: lng}) + ex);
+                            DialogsService.alert($i18next.t('functions:ERROR_MSG.UPLOAD_FILE.DEFAULT', { lng: lng }) + ex);
 
                             deleteFile();
                         }
@@ -796,7 +812,7 @@
                 byteArrays.push(byteArray);
             }
 
-            return new Blob(byteArrays, {type: contentType});
+            return new Blob(byteArrays, { type: contentType });
         }
 
         /**
@@ -842,6 +858,37 @@
             function returnValue() {
                 return value;
             }
+        }
+
+        /**
+         * Generates the list of dropdown options for the invocation URLs of the function.
+         * @returns {Array.<{ id: string, name: string, description: string, tooltip: string }>} the list of dropdown
+         *     options for the invocation URLs of the function.
+         */
+        function generateInvocationUrlsList() {
+            var external = lodash.chain(ctrl.version)
+                .get('status.externalInvocationUrls', [])
+                .map(function (url, index) {
+                    return {
+                        id: index.toString(),
+                        name: url,
+                        description: 'external',
+                        tooltip: url
+                    };
+                })
+                .value();
+            var internal = lodash.chain(ctrl.version)
+                .get('status.internalInvocationUrls', [])
+                .map(function (url, index) {
+                    return {
+                        id: index.toString(),
+                        name: url,
+                        description: 'internal',
+                        tooltip: url
+                    };
+                })
+                .value();
+            return external.concat(internal);
         }
 
         /**
