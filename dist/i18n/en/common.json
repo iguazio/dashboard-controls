@@ -71,6 +71,7 @@
     "CPU_USED": "CPU used",
     "CREATE": "Create",
     "CREATE_FUNCTION": "Create Function",
+    "CREATE_NEW_ENTRY": "Create a new entry",
     "CREATE_NEW_ENVIRONMENT_VARIABLE": "Create a new environment variable",
     "CREATE_TENANT": "Create tenant",
     "CREATE_VIEW": "Create view",
