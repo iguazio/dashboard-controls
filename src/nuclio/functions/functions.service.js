@@ -207,6 +207,7 @@
                     {
                         id: 'rabbit-mq',
                         name: 'RabbitMQ',
+                        description: $i18next.t('common:TECH_PREVIEW', { lng: lng }),
                         tooltip: 'RabbitMQ',
                         tooltipOriginal: 'RabbitMQ',
                         tooltipPlacement: 'right',
@@ -256,6 +257,7 @@
                     {
                         id: 'nats',
                         name: 'NATS',
+                        description: $i18next.t('common:TECH_PREVIEW', { lng: lng }),
                         tooltip: 'NATS',
                         tooltipOriginal: 'NATS',
                         tooltipPlacement: 'right',
@@ -365,6 +367,7 @@
                     {
                         id: 'eventhub',
                         name: 'Azure Event Hubs',
+                        description: $i18next.t('common:TECH_PREVIEW', { lng: lng }),
                         tooltip: 'Azure Event Hubs',
                         tooltipOriginal: 'Azure Event Hubs',
                         tooltipPlacement: 'right',
@@ -675,6 +678,7 @@
                     {
                         id: 'kinesis',
                         name: 'Kinesis',
+                        description: $i18next.t('common:TECH_PREVIEW', { lng: lng }),
                         tooltip: 'Kinesis',
                         tooltipOriginal: 'Kinesis',
                         tooltipPlacement: 'right',
@@ -739,6 +743,7 @@
                     {
                         id: 'mqtt',
                         name: 'MQTT',
+                        description: $i18next.t('common:TECH_PREVIEW', { lng: lng }),
                         tooltip: 'MQTT',
                         tooltipOriginal: 'MQTT',
                         tooltipPlacement: 'right',
