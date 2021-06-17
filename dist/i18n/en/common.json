@@ -468,6 +468,7 @@
     "TARGET_CPU": "Target CPU",
     "TARGET_CPU_DESCRIPTION": "Exceeding this threshold will increase the number of replicas",
     "TASKS": "Tasks",
+    "TECH_PREVIEW": "Tech Preview",
     "TENANT": "Tenant",
     "TENANT_NAME": "Tenant name",
     "TENANTS": "Tenants",
