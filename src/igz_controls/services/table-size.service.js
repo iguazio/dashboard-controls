@@ -155,36 +155,32 @@
         };
         var functionsTableColSizes = {
             headerName: {
-                default: '10',
+                default: '12-5',
                 demo: '10'
             },
             rowName: {
-                default: '10',
+                default: '12-5',
                 demo: '10'
             },
             status: {
-                default: '7-5',
-                demo: '7-5'
+                default: '12-5',
+                demo: '10'
             },
             replicas: {
                 default: '5',
                 demo: '5'
             },
             owner: {
-                default: '7-5',
-                demo: '7-5'
+                default: '10',
+                demo: '10'
             },
             runtime: {
-                default: '7-5',
-                demo: '7-5'
-            },
-            invocationUrl: {
-                default: '12-5',
+                default: '10',
                 demo: '10'
             },
             invocationPerSec: {
                 default: '10',
-                demo: '7-5'
+                demo: '10'
             },
             cpuCores: {
                 default: '15',
