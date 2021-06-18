@@ -5,9 +5,8 @@
     angular.module('iguazio.dashboard-controls')
         .factory('VersionHelperService', VersionHelperService);
 
-    function VersionHelperService($i18next, i18next, lodash, ConfigService, FunctionsService) {
+    function VersionHelperService(lodash) {
         return {
-            getInvocationUrl: getInvocationUrl,
             getServiceType: getServiceType,
             isIngressInvalid: isIngressInvalid,
             isVersionDeployed: isVersionDeployed,
@@ -17,67 +16,6 @@
         //
         // Public methods
         //
-
-        /**
-         * Get correct invocation url otherwise returns `URL not exposed` message
-         * @param {Object} version
-         * @returns {{text: string, valid: boolean}} URL invocation data
-         */
-        function getInvocationUrl(version) {
-            // in case the function is not running - show "N/A"
-            var state = lodash.get(version, 'status.state');
-            var disable = lodash.get(version, 'spec.disable', false);
-
-            if (state !== 'ready' || disable) {
-                return {
-                    text: $i18next.t('common:N_A', { lng: i18next.language }),
-                    info: false,
-                    valid: false
-                }
-            }
-
-            // otherwise, if the function has an HTTP-trigger ingress host - use it as invocation URL
-            var httpTrigger = lodash.find(version.spec.triggers, ['kind', 'http']);
-            var host = lodash.chain(httpTrigger)
-                .get('attributes.ingresses', {}) // { key1: { host, paths }, key2: { host, paths } }
-                .toPairs()                       // [['key1', { host, paths }], ['key2', { host, paths }]]
-                .get('[0][1].host')              // host
-                .value();
-
-            if (!lodash.isEmpty(host)) {
-                return {
-                    text: 'http://' + host,
-                    info: false,
-                    valid: true
-                };
-            }
-
-            // otherwise, if the HTTP trigger's service type is NodePort, or running on non-K8s platform, and both
-            // external IP address and port number exist - construct invocation URL from external IP address and port
-            var serviceType = lodash.get(httpTrigger, 'attributes.serviceType');
-            var httpPort = lodash.defaultTo(lodash.get(version, 'status.httpPort'), 0);
-            var externalIpAddress = lodash.get(ConfigService, 'nuclio.externalIPAddress');
-
-            if (
-                (serviceType === 'NodePort' || !FunctionsService.isKubePlatform()) &&
-                httpPort !== 0 &&
-                !lodash.isEmpty(externalIpAddress)
-            ) {
-                return {
-                    text: 'http://' + externalIpAddress + ':' + httpPort,
-                    info: false,
-                    valid: true
-                };
-            }
-
-            // otherwise, meaning the function is running with ClusterIP service type and no ingress host - show "N/A"
-            // plus info regarding the option to add ingress host
-            return {
-                text: $i18next.t('common:N_A', { lng: i18next.language }),
-                info: true,
-                valid: false
-            };
-        }
 
         /**
          * Retrieves the service type of the HTTP trigger of the function version.

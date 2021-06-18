@@ -200,7 +200,6 @@
 
             setImageNamePrefixTemplate();
             setIngressHost();
-            setInvocationUrl();
         }
 
         //
@@ -390,7 +389,6 @@
 
                     setImageNamePrefixTemplate();
                     setIngressHost();
-                    setInvocationUrl();
                 })
                 .catch(function (error) {
                     var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTION', { lng: lng });
@@ -518,7 +516,6 @@
 
                             setImageNamePrefixTemplate();
                             setIngressHost();
-                            setInvocationUrl();
 
                             ctrl.isFunctionDeployed = true;
                         }
@@ -565,13 +562,6 @@
                 defaultImageName: defaultImageName,
                 imageNamePrefix: imageNamePrefix
             });
-        }
-
-        /**
-         * Sets the invocation URL of the function
-         */
-        function setInvocationUrl() {
-            ctrl.version.ui.invocationUrl = VersionHelperService.getInvocationUrl(ctrl.version);
         }
 
         /**

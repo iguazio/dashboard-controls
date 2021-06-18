@@ -101,25 +101,26 @@
                              data-ng-scrollbars
                              data-ng-scrollbars-config="$ctrl.scrollConfig">
                             <div class="request-method">
-                                <igz-default-dropdown data-values-array="$ctrl.requestMethods"
+                                <igz-default-dropdown class="method-select"
+                                                      data-values-array="$ctrl.requestMethods"
                                                       data-select-property-only="name"
                                                       data-selected-item="$ctrl.selectedEvent.spec.attributes.method"
                                                       data-item-select-callback="$ctrl.onChangeRequestMethod(item)"
                                                       data-enable-overlap="true">
                                 </igz-default-dropdown>
-                                <div class="path">
-                                    <span class="invocation-url" data-ng-if="$ctrl.version.ui.invocationUrl.valid">
-                                        {{$ctrl.version.ui.invocationUrl.text}}/
-                                    </span>
-                                    <span data-ng-if="!$ctrl.version.ui.invocationUrl.valid">
-                                        {{ 'common:PATH' | i18next }}:
-                                    </span>
-                                    <igz-validating-input-field data-field-type="input"
-                                                                data-input-value="$ctrl.selectedEvent.spec.attributes.path"
-                                                                data-update-data-field="spec.attributes.path"
-                                                                data-update-data-callback="$ctrl.inputValueCallback(newData, field)">
-                                    </igz-validating-input-field>
-                                </div>
+                                <igz-default-dropdown class="invocation-urls-select"
+                                                      data-values-array="$ctrl.invocationUrls.options"
+                                                      data-select-property-only="name"
+                                                      data-selected-item="$ctrl.invocationUrls.selected"
+                                                      data-item-select-callback="$ctrl.onChangeInvocationUrl(item)"
+                                                      data-enable-overlap="true">
+                                </igz-default-dropdown>
+                                <igz-validating-input-field data-field-type="input"
+                                                            data-input-value="$ctrl.selectedEvent.spec.attributes.path"
+                                                            data-update-data-field="spec.attributes.path"
+                                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                            data-placeholder-text="{{'common:PATH' | i18next}}">
+                                </igz-validating-input-field>
                             </div>
                             <div class="request-body">
                                 <ncl-test-events-navigation-tabs data-active-tab="$ctrl.selectedRequestTab"
