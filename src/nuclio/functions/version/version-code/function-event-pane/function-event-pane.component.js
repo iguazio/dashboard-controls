@@ -198,7 +198,8 @@
                 metadata: {
                     namespace: lodash.get(ctrl.version, 'metadata.namespace'),
                     labels: {
-                        'nuclio.io/function-name': lodash.get(ctrl.version, 'metadata.name')
+                        'nuclio.io/function-name': lodash.get(ctrl.version, 'metadata.name'),
+                        'nuclio.io/project-name': lodash.get(ctrl.version, 'metadata.labels[\'nuclio.io/project-name\']')
                     }
                 },
                 spec: {
@@ -502,7 +503,8 @@
                 metadata: {
                     namespace: lodash.get(ctrl.version, 'metadata.namespace'),
                     labels: {
-                        'nuclio.io/function-name': lodash.get(ctrl.version, 'metadata.name')
+                        'nuclio.io/function-name': lodash.get(ctrl.version, 'metadata.name'),
+                        'nuclio.io/project-name': lodash.get(ctrl.version, 'metadata.labels[\'nuclio.io/project-name\']')
                     }
                 },
                 spec: {
@@ -554,6 +556,7 @@
 
                 // set `nuclio.io/function-name` label to relate this function event to its function
                 lodash.set(eventToSave, ['metadata', 'labels', 'nuclio.io/function-name'], ctrl.version.metadata.name);
+                lodash.set(eventToSave, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.version.metadata.labels['nuclio.io/project-name']);
 
                 ctrl.isSplashShowed.value = true;
 
