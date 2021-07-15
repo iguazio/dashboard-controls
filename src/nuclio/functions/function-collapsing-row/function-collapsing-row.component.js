@@ -22,8 +22,7 @@
 
     function NclFunctionCollapsingRowController($interval, $state, $i18next, i18next, lodash, ngDialog,
                                                 ActionCheckboxAllService, ConfigService, DialogsService,
-                                                ExportService, FunctionsService, TableSizeService,
-                                                VersionHelperService) {
+                                                ExportService, FunctionsService, TableSizeService) {
         var ctrl = this;
 
         var FUNCTION_STATE_POLLING_DELAY = 2000;

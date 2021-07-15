@@ -8,16 +8,19 @@ describe('nclFunctions component: ', function () {
     var functions;
     var project;
     var sortOptions;
+    var ElementLoadingStatusService;
+
 
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_, _$q_, _$rootScope_, _$state_, _$timeout_) {
+        inject(function (_$componentController_, _$q_, _$rootScope_, _$state_, _$timeout_, _ElementLoadingStatusService_) {
             $componentController = _$componentController_;
             $q = _$q_;
             $rootScope = _$rootScope_;
             $state = _$state_;
             $timeout = _$timeout_;
+            ElementLoadingStatusService = _ElementLoadingStatusService_;
 
             project = {
                 metadata: {
@@ -87,6 +90,7 @@ describe('nclFunctions component: ', function () {
 
     afterEach(function () {
         $componentController = null;
+        ElementLoadingStatusService = null;
         $q = null;
         $rootScope = null;
         $state = null;
@@ -98,11 +102,12 @@ describe('nclFunctions component: ', function () {
     });
 
     describe('$onInit(): ', function () {
-        it('should initialize functions array', function () {
+        it('should initialize pagination and  functions array', function () {
             spyOn(ctrl, 'refreshFunctions').and.callThrough();
             spyOn(ctrl, 'getFunctions').and.returnValue($q.when(functions));
 
             ctrl.functions = [];
+            ctrl.page = {};
 
             ctrl.$onInit();
             $rootScope.$digest();
@@ -111,13 +116,15 @@ describe('nclFunctions component: ', function () {
             expect(ctrl.refreshFunctions).toHaveBeenCalled();
             expect(ctrl.getFunctions).toHaveBeenCalledWith({ id: 'my-project-1', enrichApiGateways: true });
             expect(ctrl.functions).toEqual(functions);
+            expect(ctrl.page).toEqual({
+                number: 0,
+                size: 10
+            })
         });
 
         it('should initialize sort options', function () {
             expect(ctrl.sortOptions).not.toBe([]);
         });
-
-
     });
 
     describe('handleFunctionVersionAction(): ', function () {
@@ -162,6 +169,52 @@ describe('nclFunctions component: ', function () {
         });
     });
 
+    describe('paginationCallback(): ', function () {
+        beforeEach(function () {
+            ctrl.page = {
+                number: 0,
+                size: 5,
+                total: 2
+            }
+        });
+
+        it('should change pagination page number', function () {
+            ctrl.paginationCallback(2);
+
+            expect(ctrl.page.number).toEqual(2);
+        });
+
+        it('should show only first 5 functions from list and change total pages number', function () {
+            ctrl.visibleFunctions = [];
+            ctrl.originalSortedFunctions = Array(8).fill(functions[0]);
+
+            ctrl.paginationCallback(0);
+
+            expect(ctrl.page.total).toEqual(2);
+            expect(ctrl.visibleFunctions.length).toEqual(ctrl.page.size);
+        });
+
+        it('should change page number if its value >= total', function () {
+            ctrl.visibleFunctions = [];
+            ctrl.originalSortedFunctions = Array(8).fill(functions[0]);
+
+            ctrl.paginationCallback(5);
+
+            expect(ctrl.page.number).toEqual(1);
+        });
+
+        it('should hide spinners by calling hideSpinnerGroup method', function () {
+            spyOn(ElementLoadingStatusService, 'hideSpinnerGroup');
+            ctrl.visibleFunctions = [];
+            ctrl.originalSortedFunctions = Array(8).fill(functions[0]);
+
+            ctrl.paginationCallback(1);
+            $timeout.flush();
+
+            expect(ElementLoadingStatusService.hideSpinnerGroup).toHaveBeenCalledTimes(3);
+        });
+    });
+
     describe('onApplyFilters(): ', function () {
         it('should call `search-input_refresh-search` broadcast', function () {
             spyOn($rootScope, '$broadcast').and.callThrough();
@@ -190,7 +243,7 @@ describe('nclFunctions component: ', function () {
                 value: 'metadata.name',
                 desc: true
             };
-            ctrl.functions = ctrl.sortedFunctions = [
+            ctrl.functions = ctrl.originalSortedFunctions = [
                 {
                     metadata: {
                         name: 'name1'
@@ -207,7 +260,7 @@ describe('nclFunctions component: ', function () {
 
             expect(ctrl.sortedColumnName).toEqual('metadata.name');
             expect(ctrl.isReverseSorting).toEqual(true);
-            expect(ctrl.sortedFunctions).toEqual([
+            expect(ctrl.originalSortedFunctions).toEqual([
                 {
                     metadata: {
                         name: 'name2'
