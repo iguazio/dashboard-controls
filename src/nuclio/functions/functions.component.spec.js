@@ -169,7 +169,7 @@ describe('nclFunctions component: ', function () {
         });
     });
 
-    describe('paginationCallback(): ', function () {
+    fdescribe('paginationCallback(): ', function () {
         beforeEach(function () {
             ctrl.page = {
                 number: 0,
@@ -178,17 +178,18 @@ describe('nclFunctions component: ', function () {
             }
         });
 
-        it('should change pagination page number', function () {
-            ctrl.paginationCallback(2);
+        it('should change pagination page number and pagination size', function () {
+            ctrl.paginationCallback(2, 10);
 
             expect(ctrl.page.number).toEqual(2);
+            expect(ctrl.page.size).toEqual(10);
         });
 
         it('should show only first 5 functions from list and change total pages number', function () {
             ctrl.visibleFunctions = [];
             ctrl.originalSortedFunctions = Array(8).fill(functions[0]);
 
-            ctrl.paginationCallback(0);
+            ctrl.paginationCallback(0, 5);
 
             expect(ctrl.page.total).toEqual(2);
             expect(ctrl.visibleFunctions.length).toEqual(ctrl.page.size);
@@ -198,7 +199,7 @@ describe('nclFunctions component: ', function () {
             ctrl.visibleFunctions = [];
             ctrl.originalSortedFunctions = Array(8).fill(functions[0]);
 
-            ctrl.paginationCallback(5);
+            ctrl.paginationCallback(5, 5);
 
             expect(ctrl.page.number).toEqual(1);
         });
@@ -208,7 +209,7 @@ describe('nclFunctions component: ', function () {
             ctrl.visibleFunctions = [];
             ctrl.originalSortedFunctions = Array(8).fill(functions[0]);
 
-            ctrl.paginationCallback(1);
+            ctrl.paginationCallback(1, 5);
             $timeout.flush();
 
             expect(ElementLoadingStatusService.hideSpinnerGroup).toHaveBeenCalledTimes(3);

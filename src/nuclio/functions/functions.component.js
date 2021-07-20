@@ -280,11 +280,13 @@
         }
 
         /**
-         * Change pagination page callback
+         * Change pagination page and size callback
          * @param {number} page - page number
+         * @param {number} size - pagination size number
          */
-        function paginationCallback(page) {
+        function paginationCallback(page, size) {
             ctrl.page.number = page;
+            ctrl.page.size = size;
             paginateFunctions();
         }
 
