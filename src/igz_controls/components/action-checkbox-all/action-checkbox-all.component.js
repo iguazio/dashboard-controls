@@ -100,6 +100,8 @@
                 ctrl.checkedItemsCount += data.changedCheckedItemsCount;
             }
 
+            testAllItemsChecked();
+
             $rootScope.$broadcast('action-checkbox-all_checked-items-count-change', {
                 checkedCount: ctrl.checkedItemsCount
             });

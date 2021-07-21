@@ -37,11 +37,9 @@
             FUNCTION_EVENTS: 'nuclio_processor_handled_events_total'
         };
 
-
-        ctrl.checkedItemsCount = 0;
         ctrl.filtersCounter = 0;
         ctrl.functions = [];
-        ctrl.sortedFunctions = [];
+        ctrl.originalSortedFunctions = [];
         ctrl.isFiltersShowed = {
             value: false,
             changeValue: function (newVal) {
@@ -52,6 +50,7 @@
         ctrl.isSplashShowed = {
             value: true
         };
+        ctrl.page = {};
         ctrl.project = {};
         ctrl.searchKeys = [
             'metadata.name',
@@ -108,6 +107,7 @@
         ];
         ctrl.sortedColumnName = 'metadata.name';
         ctrl.versionActions = [];
+        ctrl.visibleFunctions = [];
 
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
@@ -120,6 +120,7 @@
         ctrl.onSortOptionsChange = onSortOptionsChange;
         ctrl.onUpdateFiltersCounter = onUpdateFiltersCounter;
         ctrl.openNewFunctionScreen = openNewFunctionScreen;
+        ctrl.paginationCallback = paginationCallback;
         ctrl.refreshFunctions = refreshFunctions;
         ctrl.sortTableByColumn = sortTableByColumn;
         ctrl.toggleFilters = toggleFilters;
@@ -142,6 +143,7 @@
             lodash.defaults(ctrl, { createFunctionWhenEmpty: true });
 
             initFunctions();
+            initPagination();
 
             // initializes function actions array
             ctrl.functionActions = angular.copy(FunctionsService.initFunctionActions());
@@ -237,6 +239,8 @@
          */
         function onApplyFilters() {
             $rootScope.$broadcast('search-input_refresh-search');
+
+            $timeout(paginateFunctions);
         }
 
         /**
@@ -246,6 +250,7 @@
             $rootScope.$broadcast('search-input_reset');
 
             ctrl.filtersCounter = 0;
+            $timeout(paginateFunctions);
         }
 
         /**
@@ -275,6 +280,17 @@
         }
 
         /**
+         * Change pagination page and size callback
+         * @param {number} page - page number
+         * @param {number} size - pagination size number
+         */
+        function paginationCallback(page, size) {
+            ctrl.page.number = page;
+            ctrl.page.size = size;
+            paginateFunctions();
+        }
+
+        /**
          * Refreshes function list
          * @returns {Promise}
          */
@@ -283,11 +299,12 @@
 
             return ctrl.getFunctions({ id: ctrl.project.metadata.name, enrichApiGateways: true })
                 .then(function (functions) {
+                    var prevFunctionsCopy = angular.copy(ctrl.functions);
                     ctrl.functions = lodash.map(functions, function (functionFromResponse) {
                         var foundFunction =
                             lodash.find(ctrl.functions, ['metadata.name', functionFromResponse.metadata.name]);
                         var ui = lodash.get(foundFunction, 'ui');
-                        functionFromResponse.ui = lodash.defaultTo(ui, functionFromResponse.ui);
+                        functionFromResponse.ui = lodash.defaultTo(ui, functionFromResponse.ui || {});
 
                         return functionFromResponse;
                     });
@@ -301,20 +318,30 @@
                         openNewFunctionScreen();
                     } else {
                         // TODO: unmock versions data
+
                         lodash.forEach(ctrl.functions, function (functionItem) {
-                            lodash.set(functionItem, 'versions', [{
+                            var mockVersions = {
                                 name: '$LATEST',
                                 invocation: '30'
-                            }]);
+                            };
+                            const foundFunction =
+                                    lodash.find(prevFunctionsCopy, ['metadata.name', functionItem.metadata.name]);
+
+                            if (foundFunction && foundFunction.versions) {
+                                functionItem.versions = angular.copy(foundFunction.versions);
+                            } else {
+                                lodash.set(functionItem, 'versions', [mockVersions]);
+                            }
+
                             lodash.set(functionItem, 'spec.version', 1);
                         });
                     }
 
-                    sortTable();
-
                     if (!autoRefresh) {
                         updateStatistics();
                     }
+
+                    sortTable(true);
                 })
                 .catch(function (error) {
                     var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', { lng: lng });
@@ -352,12 +379,20 @@
         //
 
         /**
+         * Hides charts spinners
+         */
+        function hideSpinners(type) {
+            ElementLoadingStatusService.hideSpinnerGroup(lodash.map(ctrl.functions, function (aFunction) {
+                return type + '-' + lodash.get(aFunction, 'metadata.name');
+            }));
+        }
+
+        /**
          * Initializes functions list
          */
         function initFunctions() {
             return ctrl.refreshFunctions()
                 .then(function () {
-                    sortTable();
                     startAutoUpdate();
                 })
                 .catch(function (error) {
@@ -374,6 +409,16 @@
                         $rootScope.$broadcast('igzWatchWindowResize::resize');
                     });
                 });
+        }
+
+        /**
+         * Init data for pagination
+         */
+        function initPagination() {
+            ctrl.page = {
+                number: ctrl.page.number || 0,
+                size: 10
+            };
         }
 
         /**
@@ -436,11 +481,44 @@
         }
 
         /**
+         * Paginates function's list
+         * @param {boolean} isRefresh - Checks if function has been called from refreshFunctions.
+         */
+        function paginateFunctions(isRefresh) {
+            let currentFunctions;
+            if (ctrl.searchStates.searchInProgress) {
+                currentFunctions = lodash.filter(ctrl.originalSortedFunctions, 'ui.isFitQuery');
+            } else {
+                currentFunctions = ctrl.originalSortedFunctions;
+            }
+
+            ctrl.page.total = Math.ceil(lodash.size(currentFunctions) / ctrl.page.size);
+
+            if (ctrl.page.total > 0 && ctrl.page.number >= ctrl.page.total) {
+                ctrl.page.number = ctrl.page.total - 1;
+            }
+
+            ctrl.visibleFunctions = lodash.slice(currentFunctions,
+                                                 (ctrl.page.number * ctrl.page.size),
+                                                 (ctrl.page.number * ctrl.page.size) + ctrl.page.size);
+
+            if (!isRefresh) {
+                $timeout(function () {
+                    hideSpinners(METRICS.FUNCTION_CPU);
+                    hideSpinners(METRICS.FUNCTION_MEMORY);
+                    hideSpinners(METRICS.FUNCTION_EVENTS);
+                });
+            }
+        }
+
+        /**
          * Sorts table according to the current sort-by column and sorting order (ascending/descending).
          */
-        function sortTable() {
-            ctrl.sortedFunctions =
+        function sortTable(isRefresh) {
+            ctrl.originalSortedFunctions =
                 lodash.orderBy(ctrl.functions, [ctrl.sortedColumnName], ctrl.isReverseSorting ? ['desc'] : ['asc']);
+
+            paginateFunctions(isRefresh);
         }
 
         /**
@@ -760,17 +838,17 @@
                     }
                 });
 
-                ElementLoadingStatusService.hideSpinnerGroup(lodash.map(ctrl.functions, function (aFunction) {
-                    return type + '-' + lodash.get(aFunction, 'metadata.name');
-                }));
-
                 // if the column values have just been updated, and the table is sorted by this column - update sort
                 if (type === METRICS.FUNCTION_CPU && ctrl.sortedColumnName === 'ui.metrics[\'cpu.cores\']' ||
                     type === METRICS.FUNCTION_MEMORY && ctrl.sortedColumnName === 'ui.metrics.size' ||
                     type === METRICS.FUNCTION_EVENTS &&
-                        lodash.includes(['ui.metrics.invocationPerSec', 'ui.metrics.count'], ctrl.sortedColumnName)) {
+                    lodash.includes(['ui.metrics.invocationPerSec', 'ui.metrics.count'], ctrl.sortedColumnName)) {
                     sortTable();
                 }
+
+                $timeout(function () {
+                    hideSpinners(type);
+                })
             }
         }
     }

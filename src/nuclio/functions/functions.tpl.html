@@ -64,8 +64,8 @@
                 <div class="common-table-cell igz-col-3">
                     <igz-action-checkbox-all class="check-all-rows"
                                              data-ng-show="!$ctrl.isDemoMode() || $ctrl.functionsService.checkedItem !== ''"
-                                             data-items-count="$ctrl.functions.length"
-                                             data-items-type="{{$ctrl.functionsService.checkedItem}}">
+                                             data-items-count="$ctrl.visibleFunctions.length"
+                                             data-items-type="{{$ctrl.isDemoMode() ? $ctrl.functionsService.checkedItem : 'functions'}}">
                     </igz-action-checkbox-all>
                 </div>
                 <div class="igz-col-3 common-table-cell"></div>
@@ -149,7 +149,7 @@
                     <div class="sortable-wrapper"
                          data-ng-hide="$ctrl.searchStates.searchNotFound && $ctrl.searchStates.searchInProgress"
                          data-ng-model="$ctrl.data.working.ui.children">
-                        <div data-ng-repeat="aFunction in $ctrl.sortedFunctions track by aFunction.metadata.name">
+                        <div data-ng-repeat="aFunction in $ctrl.visibleFunctions track by aFunction.metadata.name">
                             <div data-igz-show-hide-search-item="aFunction">
                                 <ncl-function-collapsing-row
                                         data-action-handler-callback="$ctrl.handleFunctionVersionAction(actionType, checkedItems)"
@@ -164,6 +164,12 @@
                                         data-update-function="$ctrl.updateFunction({function: function, projectId: projectId})">
                                 </ncl-function-collapsing-row>
                             </div>
+                        </div>
+                        <div class="functions-pagination">
+                            <igz-pagination data-page-data="$ctrl.page"
+                                            data-is-per-page-visible="false"
+                                            data-pagination-callback="$ctrl.paginationCallback(page, size)">
+                            </igz-pagination>
                         </div>
                     </div>
                 </div>
