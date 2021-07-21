@@ -169,7 +169,7 @@ describe('nclFunctions component: ', function () {
         });
     });
 
-    fdescribe('paginationCallback(): ', function () {
+    describe('paginationCallback(): ', function () {
         beforeEach(function () {
             ctrl.page = {
                 number: 0,
