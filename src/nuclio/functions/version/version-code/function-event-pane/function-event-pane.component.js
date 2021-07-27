@@ -149,6 +149,7 @@
         };
 
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
 
         ctrl.addNewHeader = addNewHeader;
         ctrl.cancelInvocation = cancelInvocation;
@@ -185,8 +186,7 @@
             ctrl.isSplashShowed.value = true;
             ctrl.eventLogLevel = 'debug';
 
-            ctrl.invocationUrls.options = generateInvocationUrlsList();
-            ctrl.invocationUrls.selected = lodash.get(ctrl.invocationUrls.options[0], 'name');
+            updateInvocationUrls()
 
             if (lodash.isNil(ctrl.version.ui.deployedVersion)) {
                 VersionHelperService.updateIsVersionChanged(ctrl.version);
@@ -230,6 +230,20 @@
                 });
 
             updateRequestHeaders();
+        }
+
+        /**
+         * Changes method
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (
+                !changes.version.isFirstChange() &&
+                (lodash.has(changes.version.currentValue, 'status.externalInvocationUrls') ||
+                    lodash.has(changes.version.currentValue, 'status.externalInvocationUrls'))
+            ) {
+                updateInvocationUrls();
+            }
         }
 
         //
@@ -1002,6 +1016,14 @@
             var nameField = 'metadata.labels[\'nuclio.io/function-name\']';
             ctrl.history = lodash.defaultTo(angular.fromJson(localStorage.getItem('test-events')), []);
             ctrl.history = lodash.filter(ctrl.history, [nameField, ctrl.version.metadata.name]);
+        }
+
+        /**
+         * Updates external and internal invocation urls
+         */
+        function updateInvocationUrls() {
+            ctrl.invocationUrls.options = generateInvocationUrlsList();
+            ctrl.invocationUrls.selected = lodash.get(ctrl.invocationUrls.options[0], 'name');
         }
     }
 }());
