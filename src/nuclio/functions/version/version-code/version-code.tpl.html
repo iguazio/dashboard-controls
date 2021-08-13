@@ -191,19 +191,29 @@
                     <div data-ng-if="$ctrl.selectedEntryType.id === 'github' || $ctrl.selectedEntryType.id === 'git'"
                          class="ncl-code-entry-url">
                         <div class="field-label">
-                            <span class="asterisk">{{ 'functions:BRANCH' | i18next }}</span>
+                            <span data-ng-class="{ asterisk: $ctrl.selectedEntryType.id === 'github' }">{{ 'functions:BRANCH' | i18next }}</span>
                             <igz-more-info data-description="{{ 'functions:TOOLTIP.GITHUB.BRANCH' | i18next }}"></igz-more-info>
                         </div>
-                        <igz-validating-input-field data-field-type="input"
-                                                    data-input-name="githubBranch"
-                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.branch"
-                                                    data-is-focused="false"
-                                                    data-form-object="$ctrl.versionCodeForm"
-                                                    data-validation-is-required="true"
-                                                    data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: master"
-                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.branch">
-                        </igz-validating-input-field>
+                        <div data-uib-tooltip="{{
+                            $ctrl.version.spec.build.codeEntryAttributes.tag ||
+                            $ctrl.version.spec.build.codeEntryAttributes.reference
+                                ? ('functions:TOOLTIP.GIT_BRANCH_TAG_REFERENCE_DISABLED' | i18next)
+                                : ''}}"
+                             data-tooltip-placement="top"
+                             data-tooltip-popup-delay="200"
+                             data-tooltip-append-to-body="true">
+                            <igz-validating-input-field data-field-type="input"
+                                                        data-input-name="githubBranch"
+                                                        data-input-value="$ctrl.version.spec.build.codeEntryAttributes.branch"
+                                                        data-is-focused="false"
+                                                        data-form-object="$ctrl.versionCodeForm"
+                                                        data-validation-is-required="$ctrl.selectedEntryType.id === 'github'"
+                                                        data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: master"
+                                                        data-is-disabled="$ctrl.version.spec.build.codeEntryAttributes.tag || $ctrl.version.spec.build.codeEntryAttributes.reference"
+                                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                        data-update-data-field="spec.build.codeEntryAttributes.branch">
+                            </igz-validating-input-field>
+                        </div>
                     </div>
 
                     <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
@@ -228,15 +238,26 @@
                         <div class="field-label">
                             <span>{{ 'common:TAG' | i18next }}</span>
                         </div>
-                        <igz-validating-input-field data-field-type="input"
-                                                    data-input-name="git"
-                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.tag"
-                                                    data-is-focused="false"
-                                                    data-form-object="$ctrl.versionCodeForm"
-                                                    data-validation-is-required="false"
-                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.tag">
-                        </igz-validating-input-field>
+                        <div data-uib-tooltip="{{
+                            $ctrl.version.spec.build.codeEntryAttributes.branch ||
+                            $ctrl.version.spec.build.codeEntryAttributes.reference
+                                ? ('functions:TOOLTIP.GIT_BRANCH_TAG_REFERENCE_DISABLED' | i18next)
+                                : ''}}"
+                             data-tooltip-placement="top"
+                             data-tooltip-popup-delay="200"
+                             data-tooltip-append-to-body="true">
+                            <igz-validating-input-field data-field-type="input"
+                                                        data-input-name="git"
+                                                        data-input-value="$ctrl.version.spec.build.codeEntryAttributes.tag"
+                                                        data-is-focused="false"
+                                                        data-form-object="$ctrl.versionCodeForm"
+                                                        data-validation-is-required="false"
+                                                        data-is-disabled="$ctrl.version.spec.build.codeEntryAttributes.branch || $ctrl.version.spec.build.codeEntryAttributes.reference"
+                                                        data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_TAG' | i18next }}"
+                                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                        data-update-data-field="spec.build.codeEntryAttributes.tag">
+                            </igz-validating-input-field>
+                        </div>
                     </div>
 
                     <div data-ng-if="$ctrl.selectedEntryType.id === 'git'"
@@ -244,16 +265,26 @@
                         <div class="field-label">
                             <span>{{ 'functions:REFERENCE' | i18next }}</span>
                         </div>
-                        <igz-validating-input-field data-field-type="input"
-                                                    data-input-name="gitReference"
-                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.reference"
-                                                    data-is-focused="false"
-                                                    data-form-object="$ctrl.versionCodeForm"
-                                                    data-validation-is-required="false"
-                                                    data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_REFERENCE' | i18next }}"
-                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.reference">
-                        </igz-validating-input-field>
+                        <div data-uib-tooltip="{{
+                            $ctrl.version.spec.build.codeEntryAttributes.branch ||
+                            $ctrl.version.spec.build.codeEntryAttributes.tag
+                                ? ('functions:TOOLTIP.GIT_BRANCH_TAG_REFERENCE_DISABLED' | i18next)
+                                : ''}}"
+                             data-tooltip-placement="top"
+                             data-tooltip-popup-delay="200"
+                             data-tooltip-append-to-body="true">
+                            <igz-validating-input-field data-field-type="input"
+                                                        data-input-name="gitReference"
+                                                        data-input-value="$ctrl.version.spec.build.codeEntryAttributes.reference"
+                                                        data-is-focused="false"
+                                                        data-form-object="$ctrl.versionCodeForm"
+                                                        data-validation-is-required="false"
+                                                        data-is-disabled="$ctrl.version.spec.build.codeEntryAttributes.branch || $ctrl.version.spec.build.codeEntryAttributes.tag"
+                                                        data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_REFERENCE' | i18next }}"
+                                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                        data-update-data-field="spec.build.codeEntryAttributes.reference">
+                            </igz-validating-input-field>
+                        </div>
                     </div>
 
                     <div data-ng-if="$ctrl.selectedEntryType.id === 'git'"
