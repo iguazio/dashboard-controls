@@ -270,6 +270,7 @@
     "RESPONSE": "Response",
     "RESPONSE_HEADERS": "Response headers",
     "RESPONSE_IMAGE": "Response image",
+    "REVERT_TO_DEFAULTS": "Revert to defaults",
     "RUNTIME": "Runtime",
     "RUNTIME_ATTRIBUTES": "Runtime Attributes",
     "SASL_PASSWORD": "SASL password",

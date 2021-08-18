@@ -12,8 +12,8 @@
             controller: NclVersionConfigurationResourcesController
         });
 
-    function NclVersionConfigurationResourcesController($i18next, $rootScope, $scope, $timeout, i18next, lodash,
-                                                        ConfigService, FormValidationService) {
+    function NclVersionConfigurationResourcesController($i18next, $rootScope, $scope, $stateParams, $timeout, i18next,
+                                                        lodash, ConfigService, FormValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -87,6 +87,7 @@
                 }
             ]
         };
+        ctrl.revertToDefaultsBtnIsHidden = true;
         ctrl.windowSizeSlider = {};
 
         ctrl.$onInit = onInit;
@@ -103,6 +104,7 @@
         ctrl.memoryInputCallback = memoryInputCallback;
         ctrl.onChangeNodeSelectorsData = onChangeNodeSelectorsData;
         ctrl.replicasInputCallback = replicasInputCallback;
+        ctrl.setNodeSelectorsDefaultValue = setNodeSelectorsDefaultValue;
         ctrl.sliderInputCallback = sliderInputCallback;
 
         //
@@ -182,6 +184,7 @@
 
                     $rootScope.$broadcast('change-state-deploy-button', { component: 'nodeSelector', isDisabled: true });
                     event.stopPropagation();
+                    checkNodeSelectorsIdentity();
                 }
             }, 50);
         }
@@ -371,6 +374,28 @@
         }
 
         /**
+         * Set Node selectors default value
+         */
+        function setNodeSelectorsDefaultValue() {
+            ctrl.nodeSelectors = lodash.chain(ConfigService)
+                .get('nuclio.defaultFunctionConfig.attributes.spec.nodeSelector', [])
+                .map(function (value, key) {
+                    return {
+                        name: key,
+                        value: value,
+                        ui: {
+                            editModeActive: false,
+                            isFormValid: key.length > 0 && value.length > 0,
+                            name: 'nodeSelector'
+                        }
+                    };
+                })
+                .value();
+
+            ctrl.revertToDefaultsBtnIsHidden = true;
+        }
+
+        /**
          * Update limits callback
          * @param {number} newValue
          * @param {string} field
@@ -408,6 +433,21 @@
 
             ctrl.resourcesForm.requestCpu.$setValidity('equality', isFieldsValid);
             ctrl.resourcesForm.limitsCpu.$setValidity('equality', isFieldsValid);
+        }
+
+        /**
+         * Checks whether the `Revert to defaults` button must be hidden
+         */
+        function checkNodeSelectorsIdentity() {
+            const nodeSelectors = lodash.map(ctrl.nodeSelectors, function (selector) {
+                return {
+                    key: selector.name,
+                    value: selector.value
+                }
+            })
+
+            ctrl.revertToDefaultsBtnIsHidden = lodash.isEqual(
+                lodash.get(ConfigService,'nuclio.defaultFunctionConfig.attributes.spec.nodeSelector', []), nodeSelectors);
         }
 
         /**
@@ -577,6 +617,12 @@
                 })
                 .value();
 
+            if ($stateParams.isNewFunction) {
+                setNodeSelectorsDefaultValue();
+            } else {
+                checkNodeSelectorsIdentity();
+            }
+
             $timeout(function () {
                 if (ctrl.nodeSelectorsForm.$invalid) {
                     ctrl.nodeSelectorsForm.$setSubmitted();
@@ -653,6 +699,7 @@
             });
 
             lodash.set(ctrl.version, 'spec.nodeSelector', newNodeSelectors);
+            checkNodeSelectorsIdentity();
         }
 
         /**

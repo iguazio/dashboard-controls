@@ -242,7 +242,14 @@
         </div>
     </form>
     <form name="$ctrl.nodeSelectorsForm" novalidate>
-        <div class="title">{{ 'functions:NODE_SELECTORS' | i18next }}</div>
+        <div class="igz-row-flex">
+            <div class="title">{{ 'functions:NODE_SELECTORS' | i18next }}</div>
+            <a class="link"
+               data-ng-click="$ctrl.setNodeSelectorsDefaultValue()"
+               data-ng-hide="$ctrl.revertToDefaultsBtnIsHidden">
+                {{ 'functions:REVERT_TO_DEFAULTS' | i18next }}
+            </a>
+        </div>
         <div class="row">
             <div class="igz-row form-row">
                 <div class="table-body" data-ng-repeat="nodeSelector in $ctrl.nodeSelectors">
