@@ -13,7 +13,7 @@
         });
 
     function NclVersionConfigurationResourcesController($i18next, $rootScope, $scope, $stateParams, $timeout, i18next,
-                                                        lodash, ConfigService, FormValidationService) {
+                                                        lodash, ConfigService, DialogsService, FormValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -99,12 +99,12 @@
         ctrl.cpuInputCallback = cpuInputCallback;
         ctrl.gpuInputCallback = gpuInputCallback;
         ctrl.handleNodeSelectorsAction = handleNodeSelectorsAction;
+        ctrl.handleRevertToDefaultsClick = handleRevertToDefaultsClick;
         ctrl.isInactivityWindowShown = isInactivityWindowShown;
         ctrl.memoryDropdownCallback = memoryDropdownCallback;
         ctrl.memoryInputCallback = memoryInputCallback;
         ctrl.onChangeNodeSelectorsData = onChangeNodeSelectorsData;
         ctrl.replicasInputCallback = replicasInputCallback;
-        ctrl.setNodeSelectorsDefaultValue = setNodeSelectorsDefaultValue;
         ctrl.sliderInputCallback = sliderInputCallback;
 
         //
@@ -269,6 +269,16 @@
             }
         }
 
+        /**
+         * Handle Revert do defaults click
+         */
+        function handleRevertToDefaultsClick() {
+            DialogsService.confirm($i18next.t('functions:REVERT_NODE_SELECTORS_TO_DEFAULTS', {lng: lng}),
+                                   $i18next.t('functions:YES_REVERT', {lng: lng}),
+                                   $i18next.t('common:CANCEL', {lng: lng})).then(function () {
+                setNodeSelectorsDefaultValue();
+            });
+        }
 
         /**
          * Checks whether the inactivity window can be shown
@@ -371,28 +381,6 @@
             }
 
             ctrl.onChangeCallback();
-        }
-
-        /**
-         * Set Node selectors default value
-         */
-        function setNodeSelectorsDefaultValue() {
-            ctrl.nodeSelectors = lodash.chain(ConfigService)
-                .get('nuclio.defaultFunctionConfig.attributes.spec.nodeSelector', [])
-                .map(function (value, key) {
-                    return {
-                        name: key,
-                        value: value,
-                        ui: {
-                            editModeActive: false,
-                            isFormValid: key.length > 0 && value.length > 0,
-                            name: 'nodeSelector'
-                        }
-                    };
-                })
-                .value();
-
-            ctrl.revertToDefaultsBtnIsHidden = true;
         }
 
         /**
@@ -650,6 +638,26 @@
          */
         function isRequestsInput(field) {
             return lodash.includes(field.toLowerCase(), 'request');
+        }
+
+        /**
+         * Set Node selectors default value
+         */
+        function setNodeSelectorsDefaultValue() {
+            ctrl.nodeSelectors = lodash.chain(ConfigService)
+                .get('nuclio.defaultFunctionConfig.attributes.spec.nodeSelector', [])
+                .map(function (value, key) {
+                    return {
+                        name: key,
+                        value: value,
+                        ui: {
+                            editModeActive: false,
+                            isFormValid: key.length > 0 && value.length > 0,
+                            name: 'nodeSelector'
+                        }
+                    };
+                })
+                .value();
         }
 
         /**
