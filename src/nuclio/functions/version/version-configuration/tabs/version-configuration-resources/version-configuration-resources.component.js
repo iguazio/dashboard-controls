@@ -270,11 +270,11 @@
         }
 
         /**
-         * Handle Revert do defaults click
+         * Opens pop up on revert to defaults click
          */
         function handleRevertToDefaultsClick() {
-            DialogsService.confirm($i18next.t('functions:REVERT_NODE_SELECTORS_TO_DEFAULTS', {lng: lng}),
-                                   $i18next.t('functions:YES_REVERT', {lng: lng}),
+            DialogsService.confirm($i18next.t('functions:REVERT_NODE_SELECTORS_TO_DEFAULTS_CONFIRM', {lng: lng}),
+                                   $i18next.t('functions:YES_REVERT_CONFIRM', {lng: lng}),
                                    $i18next.t('common:CANCEL', {lng: lng})).then(function () {
                 setNodeSelectorsDefaultValue();
             });
@@ -424,21 +424,6 @@
         }
 
         /**
-         * Checks whether the `Revert to defaults` button must be hidden
-         */
-        function checkNodeSelectorsIdentity() {
-            const nodeSelectors = lodash.map(ctrl.nodeSelectors, function (selector) {
-                return {
-                    key: selector.name,
-                    value: selector.value
-                }
-            })
-
-            ctrl.revertToDefaultsBtnIsHidden = lodash.isEqual(
-                lodash.get(ConfigService,'nuclio.defaultFunctionConfig.attributes.spec.nodeSelector', []), nodeSelectors);
-        }
-
-        /**
          * Checks if memory number inputs and drop-downs valid
          * Example:
          * Request: "4GB" - Limit: "6GB" are valid
@@ -470,6 +455,21 @@
         }
 
         /**
+         * Checks whether the `Revert to defaults` button must be hidden
+         */
+        function checkNodeSelectorsIdentity() {
+            const nodeSelectors = lodash.map(ctrl.nodeSelectors, function (selector) {
+                return {
+                    key: selector.name,
+                    value: selector.value
+                }
+            })
+
+            ctrl.revertToDefaultsBtnIsHidden = lodash.isEqual(
+                lodash.get(ConfigService,'nuclio.defaultFunctionConfig.attributes.spec.nodeSelector', []), nodeSelectors);
+        }
+
+        /**
          * Converts megabytes, gigabytes and terabytes into bytes
          * @param {string} value
          * @returns {number}
@@ -497,6 +497,39 @@
          */
         function extractUnit(str) {
             return lodash.get(str.match(/[a-zA-Z]+/), '[0]', '');
+        }
+
+        /**
+         * Initializes data for Node selectors section
+         */
+        function initNodeSelectors() {
+            ctrl.nodeSelectors = lodash.chain(ctrl.version)
+                .get('spec.nodeSelector', {})
+                .map(function (value, key) {
+                    return {
+                        name: key,
+                        value: value,
+                        ui: {
+                            editModeActive: false,
+                            isFormValid: key.length > 0 && value.length > 0,
+                            name: 'nodeSelector'
+                        }
+                    };
+                })
+                .value();
+
+            if ($stateParams.isNewFunction) {
+                setNodeSelectorsDefaultValue();
+            } else {
+                checkNodeSelectorsIdentity();
+            }
+
+            $timeout(function () {
+                if (ctrl.nodeSelectorsForm.$invalid) {
+                    ctrl.nodeSelectorsForm.$setSubmitted();
+                    $rootScope.$broadcast('change-state-deploy-button', { component: 'nodeSelector', isDisabled: true });
+                }
+            });
         }
 
         /**
@@ -543,6 +576,19 @@
         }
 
         /**
+         * Initializes data for "Scale to zero" section
+         */
+        function initScaleToZeroData() {
+            scaleToZero = lodash.get(ConfigService, 'nuclio.scaleToZero', {});
+
+            if (!lodash.isEmpty(scaleToZero)) {
+                scaleResourcesCopy = lodash.get(ctrl.version, 'spec.scaleToZero.scaleResources', scaleToZero.scaleResources);
+
+                updateScaleToZeroParameters();
+            }
+        }
+
+        /**
          * Initializes Target CPU slider.
          */
         function initTargetCpuSlider() {
@@ -567,97 +613,11 @@
         }
 
         /**
-         * Updates Target CPU slider state (enabled/disabled) and display value.
-         */
-        function updateTargetCpuSlider() {
-            var minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
-            var maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
-            var disabled = !lodash.isNumber(minReplicas) || !lodash.isNumber(maxReplicas) || maxReplicas <= 1 ||
-                minReplicas === maxReplicas;
-            var targetCpuValue = lodash.get(ctrl.version, 'spec.targetCPU', 75);
-
-            ctrl.targetCpuValueUnit = disabled ? '' : '%';
-            lodash.merge(ctrl.targetCpuSliderConfig, {
-                value: targetCpuValue,
-                valueLabel: disabled ? 'disabled' : targetCpuValue,
-                options: {
-                    disabled: disabled
-                }
-            });
-        }
-
-        /**
-         * Initializes data for Node selectors section
-         */
-        function initNodeSelectors() {
-            ctrl.nodeSelectors = lodash.chain(ctrl.version)
-                .get('spec.nodeSelector', {})
-                .map(function (value, key) {
-                    return {
-                        name: key,
-                        value: value,
-                        ui: {
-                            editModeActive: false,
-                            isFormValid: key.length > 0 && value.length > 0,
-                            name: 'nodeSelector'
-                        }
-                    };
-                })
-                .value();
-
-            if ($stateParams.isNewFunction) {
-                setNodeSelectorsDefaultValue();
-            } else {
-                checkNodeSelectorsIdentity();
-            }
-
-            $timeout(function () {
-                if (ctrl.nodeSelectorsForm.$invalid) {
-                    ctrl.nodeSelectorsForm.$setSubmitted();
-                    $rootScope.$broadcast('change-state-deploy-button', { component: 'nodeSelector', isDisabled: true });
-                }
-            });
-        }
-
-        /**
-         * Initializes data for "Scale to zero" section
-         */
-        function initScaleToZeroData() {
-            scaleToZero = lodash.get(ConfigService, 'nuclio.scaleToZero', {});
-
-            if (!lodash.isEmpty(scaleToZero)) {
-                scaleResourcesCopy = lodash.get(ctrl.version, 'spec.scaleToZero.scaleResources', scaleToZero.scaleResources);
-
-                updateScaleToZeroParameters();
-            }
-        }
-
-        /**
          * Checks if input is related to `CPU Request`
          * @param {string} field
          */
         function isRequestsInput(field) {
             return lodash.includes(field.toLowerCase(), 'request');
-        }
-
-        /**
-         * Set Node selectors default value
-         */
-        function setNodeSelectorsDefaultValue() {
-            ctrl.nodeSelectors = lodash.chain(ConfigService)
-                .get('nuclio.defaultFunctionConfig.attributes.spec.nodeSelector', [])
-                .map(function (value, key) {
-                    return {
-                        name: key,
-                        value: value,
-                        ui: {
-                            editModeActive: false,
-                            isFormValid: key.length > 0 && value.length > 0,
-                            name: 'nodeSelector'
-                        }
-                    };
-                })
-                .value();
         }
 
         /**
@@ -680,6 +640,26 @@
                     ctrl.resourcesForm[field].$$element.scope().$ctrl.numberInputChanged = true;
                 }
             }
+        }
+
+        /**
+         * Set Node selectors default value
+         */
+        function setNodeSelectorsDefaultValue() {
+            ctrl.nodeSelectors = lodash.chain(ConfigService)
+                .get('nuclio.defaultFunctionConfig.attributes.spec.nodeSelector', [])
+                .map(function (value, key) {
+                    return {
+                        name: key,
+                        value: value,
+                        ui: {
+                            editModeActive: false,
+                            isFormValid: key.length > 0 && value.length > 0,
+                            name: 'nodeSelector'
+                        }
+                    };
+                })
+                .value();
         }
 
         /**
@@ -755,6 +735,26 @@
                     }
                 }
             };
+        }
+
+        /**
+         * Updates Target CPU slider state (enabled/disabled) and display value.
+         */
+        function updateTargetCpuSlider() {
+            var minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
+            var maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
+            var disabled = !lodash.isNumber(minReplicas) || !lodash.isNumber(maxReplicas) || maxReplicas <= 1 ||
+                minReplicas === maxReplicas;
+            var targetCpuValue = lodash.get(ctrl.version, 'spec.targetCPU', 75);
+
+            ctrl.targetCpuValueUnit = disabled ? '' : '%';
+            lodash.merge(ctrl.targetCpuSliderConfig, {
+                value: targetCpuValue,
+                valueLabel: disabled ? 'disabled' : targetCpuValue,
+                options: {
+                    disabled: disabled
+                }
+            });
         }
 
         /**
