@@ -270,6 +270,8 @@
     "RESPONSE": "Response",
     "RESPONSE_HEADERS": "Response headers",
     "RESPONSE_IMAGE": "Response image",
+    "REVERT_NODE_SELECTORS_TO_DEFAULTS_CONFIRM": "Are you sure you want revert the node selectors to its defaults?",
+    "REVERT_TO_DEFAULTS": "Revert to defaults",
     "RUNTIME": "Runtime",
     "RUNTIME_ATTRIBUTES": "Runtime Attributes",
     "SASL_PASSWORD": "SASL password",
@@ -379,5 +381,6 @@
     "WORKER_AVAILABILITY_TIMEOUT": "Worker availability timeout",
     "WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS": "Worker availability timeout (Milliseconds)",
     "WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION": "The number of milliseconds to wait for a worker if one is not available.\n(default: {{default}})",
+    "YES_REVERT_CONFIRM": "Yes, revert",
     "YOU_CAN_DOWNLOAD_RESPONSE_BODY": "You can download response body"
 }
