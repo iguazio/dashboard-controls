@@ -13,7 +13,8 @@
         });
 
     function NclVersionConfigurationResourcesController($i18next, $rootScope, $scope, $stateParams, $timeout, i18next,
-                                                        lodash, ConfigService, DialogsService, FormValidationService) {
+                                                        lodash, ConfigService, DialogsService, FormValidationService,
+                                                        ValidationService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -85,7 +86,8 @@
                     label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
                     pattern: validateNodeSelectorUniqueness
                 }
-            ]
+            ],
+            value: ValidationService.getValidationRules('k8s.qualifiedName')
         };
         ctrl.revertToDefaultsBtnIsHidden = true;
         ctrl.windowSizeSlider = {};
