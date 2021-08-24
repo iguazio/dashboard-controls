@@ -409,7 +409,8 @@
          */
         function updateTriggerList() {
             ctrl.triggers = lodash.map(ctrl.version.spec.triggers, function (trigger) {
-                var triggersItem = lodash.assign(lodash.cloneDeep(trigger), createTriggerItem(trigger));
+                var clone = lodash.cloneDeep(trigger);
+                var triggersItem = lodash.assign(clone, createTriggerItem(clone));
 
                 lodash.defaults(triggersItem, {
                     attributes: {}
