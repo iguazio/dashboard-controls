@@ -144,7 +144,7 @@
                 ctrl.maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
 
                 initScaleToZeroData();
-                initNodeSelectors();
+                initNodeSelectors(changes.version.isFirstChange());
 
                 $timeout(function () {
                     setFormValidity();
@@ -504,7 +504,7 @@
         /**
          * Initializes data for Node selectors section
          */
-        function initNodeSelectors() {
+        function initNodeSelectors(isFirstInit) {
             ctrl.nodeSelectors = lodash.chain(ctrl.version)
                 .get('spec.nodeSelector', {})
                 .map(function (value, key) {
@@ -520,7 +520,7 @@
                 })
                 .value();
 
-            if ($stateParams.isNewFunction) {
+            if ($stateParams.isNewFunction && isFirstInit) {
                 setNodeSelectorsDefaultValue();
             } else {
                 checkNodeSelectorsIdentity();
