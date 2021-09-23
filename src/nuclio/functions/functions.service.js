@@ -15,6 +15,7 @@
             initVersionActions: initVersionActions,
             isFunctionDeploying: isFunctionDeploying,
             isKubePlatform: isKubePlatform,
+            openDeployDeletedFunctionDialog: openDeployDeletedFunctionDialog,
             openFunctionConflictDialog: openFunctionConflictDialog,
             openVersionDeleteDialog: openVersionDeleteDialog,
             openVersionOverwriteDialog: openVersionOverwriteDialog
@@ -994,6 +995,23 @@
                     className: 'ngdialog-theme-nuclio'
                 });
             }
+        }
+
+        /**
+         * Opens dialog with `Go to functions` button and `Deploy function from scratch` button
+         * @returns {Promise}
+         */
+        function openDeployDeletedFunctionDialog(version, deploy) {
+            ngDialog.open({
+                template: '<ncl-deploy-deleted-function-dialog data-close-dialog="closeThisDialog()"' +
+                    'data-version="ngDialogData.version" data-deploy="ngDialogData.deploy()"></ncl-deploy-deleted-function-dialog>',
+                plain: true,
+                data: {
+                    version: version,
+                    deploy: deploy
+                },
+                className: 'ngdialog-theme-nuclio'
+            });
         }
 
         /**

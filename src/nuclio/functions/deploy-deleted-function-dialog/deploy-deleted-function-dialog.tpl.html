@@ -1,0 +1,18 @@
+<div class="deploy-deleted-function-dialog">
+    <div class="close-button igz-icon-close" data-ng-click="$ctrl.onClose()"></div>
+    <div class="title">
+        {{ 'functions:DELETED_FUNCTION_WHILE_DEPLOYING_MSG' | i18next }}
+    </div>
+    <div class="buttons">
+        <button class="ncl-secondary-button igz-button-just-text"
+                tabindex="0"
+                data-ng-click="$ctrl.goToFunctions()">
+            {{ 'functions:GO_TO_FUNCTIONS' | i18next }}
+        </button>
+        <button class="ncl-primary-button igz-button-primary"
+                tabindex="1"
+                data-ng-click="$ctrl.deployFunction($event)">
+            {{ 'functions:DEPLOY' | i18next }}
+        </button>
+    </div>
+</div>
