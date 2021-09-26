@@ -174,7 +174,7 @@
                          class="ncl-code-entry-url">
                         <div class="field-label">
                             <span class="asterisk">{{ 'common:URL' | i18next }}</span>
-                            <igz-more-info data-description="{{ 'functions:TOOLTIP.GITHUB.URL' | i18next }}"></igz-more-info>
+                            <igz-more-info data-description="{{ $ctrl.selectedEntryType.id === 'git' ? 'functions:TOOLTIP.GIT.URL' : 'functions:TOOLTIP.GITHUB.URL' | i18next }}"></igz-more-info>
                         </div>
                         <igz-validating-input-field data-field-type="input"
                                                     data-input-name="githubUrl"
@@ -192,12 +192,12 @@
                          class="ncl-code-entry-url">
                         <div class="field-label">
                             <span data-ng-class="{ asterisk: $ctrl.selectedEntryType.id === 'github' }">{{ 'functions:BRANCH' | i18next }}</span>
-                            <igz-more-info data-description="{{ 'functions:TOOLTIP.GITHUB.BRANCH' | i18next }}"></igz-more-info>
+                            <igz-more-info data-description="{{ $ctrl.selectedEntryType.id === 'git' ? 'functions:TOOLTIP.GIT.BRANCH' : 'functions:TOOLTIP.GITHUB.BRANCH' | i18next }}"></igz-more-info>
                         </div>
                         <div data-uib-tooltip="{{
                             $ctrl.version.spec.build.codeEntryAttributes.tag ||
                             $ctrl.version.spec.build.codeEntryAttributes.reference
-                                ? ('functions:TOOLTIP.GIT_BRANCH_TAG_REFERENCE_DISABLED' | i18next)
+                                ? ('functions:TOOLTIP.GIT.BRANCH_TAG_REFERENCE_DISABLED' | i18next)
                                 : ''}}"
                              data-tooltip-placement="top"
                              data-tooltip-popup-delay="200"
@@ -241,7 +241,7 @@
                         <div data-uib-tooltip="{{
                             $ctrl.version.spec.build.codeEntryAttributes.branch ||
                             $ctrl.version.spec.build.codeEntryAttributes.reference
-                                ? ('functions:TOOLTIP.GIT_BRANCH_TAG_REFERENCE_DISABLED' | i18next)
+                                ? ('functions:TOOLTIP.GIT.BRANCH_TAG_REFERENCE_DISABLED' | i18next)
                                 : ''}}"
                              data-tooltip-placement="top"
                              data-tooltip-popup-delay="200"
@@ -268,7 +268,7 @@
                         <div data-uib-tooltip="{{
                             $ctrl.version.spec.build.codeEntryAttributes.branch ||
                             $ctrl.version.spec.build.codeEntryAttributes.tag
-                                ? ('functions:TOOLTIP.GIT_BRANCH_TAG_REFERENCE_DISABLED' | i18next)
+                                ? ('functions:TOOLTIP.GIT.BRANCH_TAG_REFERENCE_DISABLED' | i18next)
                                 : ''}}"
                              data-tooltip-placement="top"
                              data-tooltip-popup-delay="200"
@@ -291,6 +291,7 @@
                          class="ncl-code-entry-url">
                         <div class="field-label">
                             <span>{{ 'common:USERNAME' | i18next }}</span>
+                            <igz-more-info data-description="{{ 'functions:TOOLTIP.GIT.USERNAME' | i18next }}"></igz-more-info>
                         </div>
                         <igz-validating-input-field data-field-type="input"
                                                     data-input-name="gitUsername"

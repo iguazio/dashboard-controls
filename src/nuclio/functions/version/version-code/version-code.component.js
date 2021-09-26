@@ -98,6 +98,8 @@
                         }
                     }
                 },
+                tooltip: 'Download the function code from a Git repository',
+                tooltipPlacement: 'right'
             },
             {
                 id: 'github',
