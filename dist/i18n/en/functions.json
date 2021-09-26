@@ -74,6 +74,7 @@
     "DELETE_PROJECTS_CONFIRM": "Delete selected projects?",
     "DELETE_VERSION": "Delete version",
     "DELETE_VERSIONS_CONFIRM": "Are you sure you want to delete selected versions?",
+    "DELETED_FUNCTION_WHILE_DEPLOYING_MSG": "The function was deleted by someone else before it completed its deployment. You can deploy it again to recreate it, or go to the functions list.",
     "DEPENDENCIES": "Dependencies",
     "DEPLOY": "Deploy",
     "DEPLOYING": "Deploying...",
@@ -134,6 +135,7 @@
     "FUNCTIONS_NOT_FOUND": "There are currently no functions, you can create a function by clicking the ‘New Function’ button",
     "GET_STARTED_WITH_YOUR_PROJECT": "Get started with your project.",
     "GO_TO_EXISTING_FUNCTION": "Go to existing function",
+    "GO_TO_FUNCTIONS": "Go to functions",
     "HANDLER": "Handler",
     "HEADERS": "Headers",
     "HISTORY": "History",
@@ -315,7 +317,12 @@
         "DEPLOY_IN_PROGRESS": "Deploy is already in-progress",
         "DISABLE_CACHE": "Build the function's Docker image from scratch without reusing any previously built Docker image layers",
         "DISABLED_FUNCTION": "Only running and scaled-to-zero functions can be tested",
-        "GIT_BRANCH_TAG_REFERENCE_DISABLED": "Exactly one of Branch, Tag, and Reference fields must be filled. When one is filled, the others are disabled.",
+        "GIT": {
+            "BRANCH": "The Git repository branch from which to download the function code",
+            "BRANCH_TAG_REFERENCE_DISABLED": "Exactly one of Branch, Tag, and Reference fields must be filled. When one is filled, the others are disabled.",
+            "URL": "The URL of the Git repository that contains the function code",
+            "USERNAME": "Not required if you enter a PAT (Personal Access Token) in the Password field"
+        },
         "GITHUB": {
             "BRANCH": "The GitHub repository branch from which to download the function code",
             "TOKEN": "A GitHub access token for download authentication",
