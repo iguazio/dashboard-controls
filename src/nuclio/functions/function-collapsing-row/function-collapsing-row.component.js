@@ -268,7 +268,8 @@
                 ctrl.isSplashShowed.value = true;
 
                 return ctrl.handleDeleteFunction({
-                    functionData: lodash.defaultTo(functionItem, ctrl.function).metadata, ignoreValidation: ignoreValidation
+                    functionData: lodash.defaultTo(functionItem, ctrl.function).metadata,
+                    ignoreValidation: ignoreValidation
                 })
                     .then(function () {
                         lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
@@ -282,7 +283,10 @@
                                 .then(function () {
                                     deleteFunction(lodash.omit(ctrl.function, ['metadata.resourceVersion']));
                                 });
-                        } else if (error.status === 412 && error.data.error.includes('Function is being provisioned and cannot be deleted')) {
+                        } else if (
+                            error.status === 412 &&
+                            error.data.error.includes('Function is being provisioned and cannot be deleted')
+                        ) {
                             FunctionsService.openVersionDeleteDialog(true)
                                 .then(function () {
                                     deleteFunction(lodash.omit(ctrl.function, ['metadata.resourceVersion']), true);

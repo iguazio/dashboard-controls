@@ -437,11 +437,15 @@
         /**
          * Deletes function item
          * @param {Object} [version]
+         * @param {Boolean} [ignoreValidation] - determines whether to forcibly remove the function
          */
-        function deleteFunction(version) {
+        function deleteFunction(version, ignoreValidation) {
             ctrl.isSplashShowed.value = true;
 
-            ctrl.deleteFunction({ functionData: lodash.defaultTo(version, ctrl.version).metadata })
+            ctrl.deleteFunction({
+                functionData: lodash.defaultTo(version, ctrl.version).metadata,
+                ignoreValidation: ignoreValidation
+            })
                 .then(function () {
                     $state.go('app.project.functions');
                 })
@@ -452,6 +456,14 @@
                         FunctionsService.openVersionDeleteDialog()
                             .then(function () {
                                 deleteFunction(lodash.omit(ctrl.version, ['metadata.resourceVersion']));
+                            });
+                    } else if (
+                        error.status === 412 &&
+                        error.data.error.includes('Function is being provisioned and cannot be deleted')
+                    ) {
+                        FunctionsService.openVersionDeleteDialog(true)
+                            .then(function () {
+                                deleteFunction(lodash.omit(ctrl.version, ['metadata.resourceVersion']), true);
                             });
                     } else {
                         DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
