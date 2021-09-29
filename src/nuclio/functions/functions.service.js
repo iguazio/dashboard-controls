@@ -1021,11 +1021,13 @@
 
         /**
          * Show pop-up with cancel button and delete function button
+         * @param [deleteForcibly] - determines whether to forcibly remove the function
          * @returns {Promise}
          */
-        function openVersionDeleteDialog() {
+        function openVersionDeleteDialog(deleteForcibly) {
             var lng = i18next.language;
-            var message = $i18next.t('functions:DELETE_FUNCTION_MESSAGE', { lng: lng });
+            var message = $i18next.t(
+                deleteForcibly ? 'functions:DELETE_FUNCTION_FORCIBLY_CONFIRM' : 'functions:DELETE_OLDER_FUNCTION_CONFIRM', { lng: lng });
             var cancelButtonCaption = $i18next.t('common:CANCEL', { lng: lng });
             var overrideButtonCaption = $i18next.t('common:DELETE', { lng: lng });
 

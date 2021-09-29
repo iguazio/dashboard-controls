@@ -260,17 +260,20 @@
         /**
          * Deletes function from functions list
          * @param {Object} [functionItem]
+         * @param {Boolean} [ignoreValidation] - determines whether to forcibly remove the function
          * @returns {Promise}
          */
-        function deleteFunction(functionItem) {
+        function deleteFunction(functionItem, ignoreValidation) {
             if (lodash.isEmpty(apiGateways)) {
                 ctrl.isSplashShowed.value = true;
 
                 return ctrl.handleDeleteFunction({
-                    functionData: lodash.defaultTo(functionItem, ctrl.function).metadata
+                    functionData: lodash.defaultTo(functionItem, ctrl.function).metadata,
+                    ignoreValidation: ignoreValidation
                 })
                     .then(function () {
                         lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
+                        ctrl.refreshFunctionsList();
                     })
                     .catch(function (error) {
                         var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', { lng: lng });
@@ -279,6 +282,14 @@
                             FunctionsService.openVersionDeleteDialog()
                                 .then(function () {
                                     deleteFunction(lodash.omit(ctrl.function, ['metadata.resourceVersion']));
+                                });
+                        } else if (
+                            error.status === 412 &&
+                            error.data.error.includes('Function is being provisioned and cannot be deleted')
+                        ) {
+                            FunctionsService.openVersionDeleteDialog(true)
+                                .then(function () {
+                                    deleteFunction(lodash.omit(ctrl.function, ['metadata.resourceVersion']), true);
                                 });
                         } else {
                             DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
