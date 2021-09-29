@@ -251,15 +251,7 @@
                                     ctrl.isFunctionDeployed = true;
                                 });
                         } else if (error.status === 404 && method === ctrl.updateVersion) {
-                            // if this function no longer exists attempt to create it rather than update it
-                            lodash.merge(ctrl.version, {
-                                status: {
-                                    state: '' // if it was considered deployed before - now it is not
-                                },
-                                ui: {
-                                    overwrite: false // if it was considered an overwrite - now it is not
-                                }
-                            });
+                            clearVersionStatus(ctrl.version);
                             return deployButtonClick(event, version);
                         } else {
                             return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
@@ -435,6 +427,22 @@
         }
 
         /**
+         * Clear status of the current version
+         * * @param {Object} version
+         */
+        function clearVersionStatus(version) {
+            // if this function no longer exists attempt to create it rather than update it
+            lodash.merge(version, {
+                status: {
+                    state: '' // if it was considered deployed before - now it is not
+                },
+                ui: {
+                    overwrite: false // if it was considered an overwrite - now it is not
+                }
+            });
+        }
+
+        /**
          * Deletes function item
          * @param {Object} [version]
          * @param {Boolean} [ignoreValidation] - determines whether to forcibly remove the function
@@ -541,6 +549,11 @@
                     .catch(function (error) {
                         if (error.status !== 404) {
                             ctrl.isSplashShowed.value = false;
+                        } else {
+                            terminateInterval();
+                            clearVersionStatus(ctrl.version);
+
+                            return FunctionsService.openDeployDeletedFunctionDialog(ctrl.version, deployButtonClick);
                         }
                     });
             }, FUNCTION_STATE_POLLING_DELAY);
