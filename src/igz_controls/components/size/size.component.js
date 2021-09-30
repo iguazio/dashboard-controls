@@ -71,7 +71,7 @@
                 'functions_events', 'services_cpu', 'services_memory'], ctrl.type);
 
             ctrl.displayValueClasses = {
-                'short': lodash.includes(['functions_memory'], ctrl.type),
+                'short': lodash.includes(['functions_memory', 'services_memory'], ctrl.type),
                 'shorten': lodash.includes(['functions_events'], ctrl.type),
                 'shortest': lodash.includes(['clusters', 'nodes', 'services_cpu', 'functions_cpu'], ctrl.type)
             };
