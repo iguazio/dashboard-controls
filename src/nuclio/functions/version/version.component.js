@@ -1,4 +1,3 @@
-/* eslint max-statements: ["error", 100] */
 (function () {
     'use strict';
 
@@ -26,12 +25,26 @@
         var deregisterFunction = null;
         var interval = null;
         var lng = i18next.language;
-        var steadyStates = FunctionsService.getSteadyStates();
 
         var FUNCTION_STATE_POLLING_DELAY = 3000;
+        var DEPLOY_RESULT_STATUSES = {
+            SUCCEEDED: {
+                icon: 'igz-icon-tick-round',
+                state: 'succeeded',
+                text: $i18next.t('functions:SUCCESSFULLY_DEPLOYED', { lng: lng })
+            },
+            FAILED: {
+                icon: 'igz-icon-block',
+                state: 'failed',
+                text: $i18next.t('functions:FAILED_TO_DEPLOY', { lng: lng })
+            },
+            DEPLOYING: {
+                icon: 'igz-icon-properties',
+                state: 'in-progress',
+                text: $i18next.t('functions:DEPLOYING', { lng: lng })
+            }
+        };
 
-        ctrl.action = null;
-        ctrl.isDemoMode = ConfigService.isDemoMode;
         ctrl.scrollConfig = {
             axis: 'y',
             advanced: {
@@ -41,28 +54,26 @@
         ctrl.isSplashShowed = {
             value: false
         };
-        ctrl.rowIsCollapsed = {
-            statusCode: false,
-            headers: false,
-            body: false,
-            deployBlock: false
-        };
 
         ctrl.isDeployDisabled = false;
-        ctrl.isLayoutCollapsed = true;
+
+        ctrl.deployResult = {
+            shown: false,
+            collapsed: true,
+            status: DEPLOY_RESULT_STATUSES.DEPLOYING
+        };
 
         ctrl.$onDestroy = onDestroy;
         ctrl.$onInit = onInit;
 
         ctrl.deployButtonClick = deployButtonClick;
-        ctrl.getCurrentStateName = getCurrentStateName;
-        ctrl.getDeployStatusState = getDeployStatusState;
+        ctrl.hideDeployResult = hideDeployResult;
         ctrl.isDeployButtonDisabled = isDeployButtonDisabled;
-        ctrl.isInValidDeployState = isInValidDeployState;
-        ctrl.onRowCollapse = onRowCollapse;
-        ctrl.onSelectAction = onSelectAction;
+        ctrl.isFunctionDeploying = isFunctionDeploying;
+        ctrl.onActionSelect = onActionSelect;
+        ctrl.onDeployResultToggle = onDeployResultToggle;
         ctrl.refreshFunction = refreshFunction;
-        ctrl.toggleDeployResult = toggleDeployResult;
+
 
         //
         // Hook method
@@ -90,7 +101,8 @@
                     name: $i18next.t('functions:DELETE_FUNCTION', { lng: lng }),
                     dialog: {
                         message: {
-                            message: $i18next.t('functions:DELETE_FUNCTION', { lng: lng }) + ' “' + ctrl.version.metadata.name + '”?',
+                            message: $i18next.t('functions:DELETE_FUNCTION', { lng: lng }) +
+                                ' “' + ctrl.version.metadata.name + '”?',
                             description: $i18next.t('functions:DELETE_FUNCTION_DESCRIPTION', { lng: lng })
                         },
                         yesLabel: $i18next.t('common:YES_DELETE', { lng: lng }),
@@ -156,15 +168,13 @@
 
             deregisterFunction = $transitions.onStart({}, stateChangeStart);
 
-            if (ctrl.isInValidDeployState()) {
+            if (FunctionsService.isFunctionDeploying(ctrl.version)) {
                 ctrl.isFunctionDeployed = false;
-                ctrl.isDeployResultShown = true;
-                ctrl.rowIsCollapsed.deployBlock = true;
+                ctrl.deployResult.shown = true;
+                ctrl.deployResult.collapsed = true;
 
                 pollFunctionState();
             }
-
-            ctrl.isLayoutCollapsed = true;
 
             lodash.defaultsDeep(ctrl.version, {
                 spec: {
@@ -223,9 +233,8 @@
                 lodash.set(versionCopy, 'spec.build.mode', 'alwaysBuild');
 
                 ctrl.isTestResultShown = false;
-                ctrl.isDeployResultShown = false;
-                ctrl.rowIsCollapsed.deployBlock = true;
-                ctrl.isLayoutCollapsed = false;
+                ctrl.deployResult.shown = false;
+                ctrl.deployResult.collapsed = true;
                 ctrl.isSplashShowed.value = true;
 
                 var isVersionDeployed = VersionHelperService.isVersionDeployed(ctrl.version);
@@ -266,54 +275,29 @@
         }
 
         /**
-         * Returns current UI router state name.
-         * @returns {string} the current state name.
-         */
-        function getCurrentStateName() {
-            return $state.current.name;
-        }
-
-        /**
-         * Gets current status state
-         * @param {string} state
-         * @returns {string}
-         */
-        function getDeployStatusState(state) {
-            return state === 'ready' ? $i18next.t('functions:SUCCESSFULLY_DEPLOYED', { lng: lng }) :
-                   state === 'error' ? $i18next.t('functions:FAILED_TO_DEPLOY', { lng: lng })      :
-                   /* else */          $i18next.t('functions:DEPLOYING', { lng: lng });
-        }
-
-        /**
          * Checks if "Deploy" button is disabled
          * @returns {boolean}
          */
         function isDeployButtonDisabled() {
-            return ctrl.isInValidDeployState() || lodash.get(ctrl.version, 'ui.isTriggersChanged', false) ||
-                lodash.get(ctrl.version, 'ui.isVolumesChanged', false) || ctrl.isDeployDisabled;
+            return FunctionsService.isFunctionDeploying(ctrl.version) ||
+                lodash.get(ctrl.version, 'ui.isTriggersChanged', false) ||
+                lodash.get(ctrl.version, 'ui.isVolumesChanged', false) ||
+                ctrl.isDeployDisabled;
         }
 
         /**
-         * Checks if state of deploy is valid
-         * @returns {boolean}
+         * Tests whether the function is currently deploying (meaning not in a steady state).
+         * @returns {boolean} `true` if the function is deploying, or `false` otherwise.
          */
-        function isInValidDeployState() {
-            var validStates = [
-                'building',
-                'waitingForResourceConfiguration',
-                'waitingForBuild',
-                'configuringResources'
-            ];
-
-            return lodash.includes(validStates, ctrl.version.status.state);
+        function isFunctionDeploying() {
+            return FunctionsService.isFunctionDeploying(ctrl.version);
         }
 
         /**
-         * Called when row is collapsed/expanded
-         * @param {string} row - name of expanded/collapsed row
+         * Handles click on collapse/expand of deploy result.
          */
-        function onRowCollapse(row) {
-            ctrl.rowIsCollapsed[row] = !ctrl.rowIsCollapsed[row];
+        function onDeployResultToggle() {
+            ctrl.deployResult.collapsed = !ctrl.deployResult.collapsed;
 
             $timeout(function () {
                 $rootScope.$broadcast('igzWatchWindowResize::resize');
@@ -324,12 +308,17 @@
          * Called when action is selected
          * @param {Object} item - selected action
          */
-        function onSelectAction(item) {
+        function onActionSelect(item) {
             if (item.id === 'deleteFunction') {
                 var apiGateways = lodash.get(ctrl.version, 'status.apiGateways', []);
 
                 if (lodash.isEmpty(apiGateways)) {
-                    DialogsService.confirm(item.dialog.message, item.dialog.yesLabel, item.dialog.noLabel, item.dialog.type)
+                    DialogsService.confirm(
+                        item.dialog.message,
+                        item.dialog.yesLabel,
+                        item.dialog.noLabel,
+                        item.dialog.type
+                    )
                         .then(function () {
                             deleteFunction();
                         });
@@ -374,11 +363,8 @@
             ctrl.isSplashShowed.value = true;
 
             ctrl.getFunction({ metadata: ctrl.version.metadata, enrichApiGateways: true })
-                .then(function (response) {
-                    var versionUi = ctrl.version.ui;
-                    ctrl.version = response;
-                    ctrl.version.ui = versionUi;
-
+                .then(function (aFunction) {
+                    setVersion(aFunction);
                     setImageNamePrefixTemplate();
                     setIngressHost();
                 })
@@ -393,10 +379,10 @@
         }
 
         /**
-         * Shows/hides deploy version result
+         * Hides deploy result.
          */
-        function toggleDeployResult() {
-            ctrl.isDeployResultShown = !ctrl.isDeployResultShown;
+        function hideDeployResult() {
+            ctrl.deployResult.shown = false;
 
             $timeout(function () {
                 $rootScope.$broadcast('igzWatchWindowResize::resize');
@@ -511,23 +497,25 @@
          * Periodically sends request to get function's state, until state is steady.
          */
         function pollFunctionState() {
-            ctrl.isDeployResultShown = true;
+            ctrl.deployResult.shown = true;
             lodash.set(ctrl.version, 'status.logs', []);
             setDeployResult('building');
+            ctrl.deployResult.status = DEPLOY_RESULT_STATUSES.DEPLOYING;
 
             interval = $interval(function () {
                 ctrl.getFunction({ metadata: ctrl.version.metadata, enrichApiGateways: true })
                     .then(function (aFunction) {
                         ctrl.version.status = aFunction.status;
 
-                        if (lodash.includes(steadyStates, lodash.get(aFunction, 'status.state'))) {
+                        if (!ctrl.isFunctionDeploying()) {
                             terminateInterval();
 
-                            ctrl.versionDeployed = true;
+                            var state = lodash.get(aFunction, 'status.state');
+                            ctrl.deployResult.status = ['error', 'unhealthy'].includes(state) ?
+                                DEPLOY_RESULT_STATUSES.FAILED :
+                                DEPLOY_RESULT_STATUSES.SUCCEEDED;
 
-                            var versionUi = ctrl.version.ui;
-                            ctrl.version = aFunction;
-                            ctrl.version.ui = versionUi;
+                            setVersion(aFunction);
 
                             lodash.assign(ctrl.version.ui, {
                                 deployedVersion: getVersionCopy(),
@@ -604,6 +592,16 @@
         }
 
         /**
+         * Sets the function version to a new value.
+         * @param {Object} version - The new value.
+         */
+        function setVersion(version) {
+            var versionUi = ctrl.version.ui;
+            ctrl.version = version;
+            ctrl.version.ui = versionUi;
+        }
+
+        /**
          * Prevents change state if there are unsaved data
          * @param {Event} transition
          */
@@ -638,7 +636,7 @@
         }
 
         /**
-         * Updates the status tab header's indicator color and tooltip text and color to reflect ths function's state.
+         * Updates the status tab header's indicator color and tooltip text and color to reflect the function's state.
          */
         function updateStatusTabIndicator() {
             var state = lodash.get(ctrl.version, 'status.state');
