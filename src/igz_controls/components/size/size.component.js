@@ -6,6 +6,8 @@
         .component('igzSize', {
             bindings: {
                 entity: '<',
+                showChart: '<',
+                servicesScreen: '<',
                 type: '@'
             },
             templateUrl: 'igz_controls/components/size/size.tpl.html',
