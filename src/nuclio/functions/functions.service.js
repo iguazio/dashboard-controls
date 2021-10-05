@@ -955,8 +955,8 @@
          * @returns {boolean} `true` if the function is deploying, or `false` otherwise.
          */
         function isFunctionDeploying(aFunction) {
-            var state = lodash.get(aFunction, 'status.state');
-            return !lodash.includes(self.getSteadyStates(), state);
+            var state = lodash.get(aFunction, 'status.state', '');
+            return state !== '' && !lodash.includes(self.getSteadyStates(), state);
         }
 
         /**
