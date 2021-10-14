@@ -174,7 +174,7 @@
             "GET_CAPABILITIES": "Oops: Could not fetch your permission list",
             "GET_ERROR": {
                 "400": {
-                    "MISMATCH": "Tenant name mismatch between URL and provided input",
+                    "MISMATCH": "Oops: Username field contains invalid tenant for this dashboard URL",
                     "MISSING_PASSWORD": "Oops: Missing password",
                     "MISSING_USERNAME": "Oops: Missing username"
                 },
