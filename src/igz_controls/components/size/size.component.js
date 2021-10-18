@@ -39,6 +39,7 @@
         ctrl.outOf = '';
 
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
@@ -47,6 +48,16 @@
         //
         // Hook methods
         //
+
+        /**
+         * On change bindings method
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (changes.showChart.currentValue) {
+                timeout = $timeout(updateChart);
+            }
+        }
 
         /**
          * Initialization method
