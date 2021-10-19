@@ -6,6 +6,8 @@
         .component('igzSize', {
             bindings: {
                 entity: '<',
+                showChart: '<',
+                servicesScreen: '<',
                 type: '@'
             },
             templateUrl: 'igz_controls/components/size/size.tpl.html',
@@ -37,6 +39,7 @@
         ctrl.outOf = '';
 
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
@@ -45,6 +48,16 @@
         //
         // Hook methods
         //
+
+        /**
+         * On change bindings method
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (changes.showChart.currentValue) {
+                timeout = $timeout(updateChart);
+            }
+        }
 
         /**
          * Initialization method
@@ -71,7 +84,7 @@
                 'functions_events', 'services_cpu', 'services_memory'], ctrl.type);
 
             ctrl.displayValueClasses = {
-                'short': lodash.includes(['functions_memory'], ctrl.type),
+                'short': lodash.includes(['functions_memory', 'services_memory'], ctrl.type),
                 'shorten': lodash.includes(['functions_events'], ctrl.type),
                 'shortest': lodash.includes(['clusters', 'nodes', 'services_cpu', 'functions_cpu'], ctrl.type)
             };
