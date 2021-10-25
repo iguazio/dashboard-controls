@@ -295,7 +295,7 @@
     "SUB_PATH": "Sub path",
     "SUBSCRIPTIONS": "Subscriptions",
     "SUCCESSFULLY_DEPLOYED": "Successfully deployed",
-    "TARGET_CPU_DESCRIPTION": "Exceeding this threshold will increase the number of replicas (default: {{default}}). Note that the percentage of utilization is based on the resource request. <a href=\"https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-resource-metrics\" target=\"_blank\">more info</a>",
+    "TARGET_CPU_DESCRIPTION": "Exceeding this threshold will increase the number of replicas (default: {{default}}). Note that the percentage of utilization is based on the resource request. <a class=\"link\" href=\"https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-resource-metrics\" target=\"_blank\">more info</a>",
     "TEMPLATE_PARAMETERS": "Template parameters",
     "TEMPLATES": "Templates",
     "THEME": "Theme",
