@@ -64,7 +64,7 @@
 
     <div class="size-chart"
          id="size-chart-{{$ctrl.entity.id}}"
-         data-ng-show="!$ctrl.servicesScreen || $ctrl.showChart">
+         data-ng-show="$ctrl.defaultTo($ctrl.showChart, true)">
         <highchart data-config="$ctrl.entity.ui.lineChartOptions[$ctrl.type]"
                    class="igz-highcharts-wrapper"
                    data-uib-tooltip="{{$ctrl.tooltip}}"
