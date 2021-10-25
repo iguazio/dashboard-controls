@@ -7,7 +7,6 @@
             bindings: {
                 entity: '<',
                 showChart: '<',
-                servicesScreen: '<',
                 type: '@'
             },
             templateUrl: 'igz_controls/components/size/size.tpl.html',
@@ -42,7 +41,7 @@
         ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
 
-        ctrl.isDemoMode = ConfigService.isDemoMode;
+        ctrl.defaultTo = lodash.defaultTo;
         ctrl.getDisplayValue = getDisplayValue;
 
         //
