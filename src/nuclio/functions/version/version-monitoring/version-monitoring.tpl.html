@@ -7,7 +7,7 @@
                 <div class="monitoring-block invocation-block">
                     <div class="internal-invocation-urls">
                         <span class="monitoring-block-title">{{ 'functions:INTERNAL_INVOCATION_URLS' | i18next }}: </span>
-                        <ul class="invocation-url-list">
+                        <ul class="invocation-url-list" ng-if="!$ctrl.isFunctionDeploying()">
                             <li class="monitoring-invocation-url-wrapper" data-ng-repeat="url in $ctrl.version.status.internalInvocationUrls">
                                 <span>{{url}}</span>
                                 <div class="igz-action-panel">
@@ -17,9 +17,15 @@
                                 </div>
                             </li>
                         </ul>
+                        <p data-ng-if="!$ctrl.version.status.internalInvocationUrls.length || $ctrl.isFunctionDeploying()" data-ng-i18next="common:N_A"></p>
                     </div>
                     <div class="external-invocation-urls">
                         <span class="monitoring-block-title">{{ 'functions:EXTERNAL_INVOCATION_URLS' | i18next }}: </span>
+                        <igz-more-info
+                                data-description="{{ 'functions:TOOLTIP.TO_MAKE_FUNCTION_ACCESSIBLE' | i18next:{functionId: $ctrl.version.metadata.name} }}"
+                                data-trigger="click"
+                                data-is-html-enabled="true">
+                        </igz-more-info>
                         <ul class="invocation-url-list"
                             data-ng-if="$ctrl.version.status.externalInvocationUrls.length > 0 && !$ctrl.isFunctionDeploying()">
                             <li class="monitoring-invocation-url-wrapper" data-ng-repeat="url in $ctrl.version.status.externalInvocationUrls">
@@ -31,10 +37,7 @@
                                 </div>
                             </li>
                         </ul>
-                        <p data-ng-if="!$ctrl.version.status.externalInvocationUrls.length && !$ctrl.isFunctionDeploying()"
-                              data-ng-i18next="[html:i18next]({functionId: $ctrl.version.metadata.name})functions:TOOLTIP.TO_MAKE_FUNCTION_ACCESSIBLE">
-                        </p>
-                        <p data-ng-if="$ctrl.isFunctionDeploying()" data-ng-i18next="common:N_A"></p>
+                        <p data-ng-if="!$ctrl.version.status.externalInvocationUrls || $ctrl.version.status.externalInvocationUrls.length === 0 || $ctrl.isFunctionDeploying()" data-ng-i18next="common:N_A"></p>
                     </div>
                 </div>
             </div>
