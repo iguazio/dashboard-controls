@@ -25,7 +25,7 @@
         var ctrl = this;
         var lng = i18next.language;
 
-        var itemCopy = {};
+        var itemInitial = {};
 
         ctrl.editItemForm = {};
         ctrl.selectedClass = {};
@@ -132,6 +132,7 @@
                         };
                     })
                     .value();
+                ctrl.ingressesInitial = lodash.cloneDeep(ctrl.ingresses);
 
                 ctrl.annotations = lodash.chain(ctrl.item.annotations)
                     .defaultTo([])
@@ -147,6 +148,7 @@
                         };
                     })
                     .value();
+                ctrl.annotationsInitial = lodash.cloneDeep(ctrl.annotations);
             }
 
             updateNameValidationRules();
@@ -175,6 +177,7 @@
                         };
                     })
                     .value();
+                ctrl.topicsInitial = lodash.cloneDeep(ctrl.topics);
 
                 ctrl.brokers = lodash.chain(ctrl.item.attributes.brokers)
                     .defaultTo([])
@@ -190,6 +193,7 @@
                         };
                     })
                     .value();
+                ctrl.brokersInitial = lodash.cloneDeep(ctrl.brokers);
             }
 
             if (ctrl.isTriggerType() && ctrl.isMqttTrigger()) {
@@ -207,6 +211,7 @@
                         };
                     })
                     .value();
+                ctrl.subscriptionsInitial = lodash.cloneDeep(ctrl.subscriptions);
             }
 
             if (ctrl.isTriggerType() && ctrl.isCronTrigger()) {
@@ -232,6 +237,7 @@
                         };
                     })
                     .value();
+                ctrl.eventHeadersInitial = lodash.cloneDeep(ctrl.eventHeaders);
             }
 
             var fields = lodash.get(ctrl.selectedClass, 'fields');
@@ -246,7 +252,7 @@
                 lodash.set(ctrl.item, 'ui.changed', false);
             }
 
-            itemCopy = lodash.cloneDeep(lodash.omit(ctrl.item, 'ui'));
+            itemInitial = lodash.cloneDeep(lodash.omit(ctrl.item, 'ui'));
 
             setAdvancedVisibility();
 
@@ -450,6 +456,8 @@
 
                 checkValidation('ingresses');
             }
+
+            updateChangesState();
         }
 
         /**
@@ -464,6 +472,8 @@
 
                 checkValidation('eventHeaders');
             }
+
+            updateChangesState();
         }
 
         /**
@@ -478,6 +488,8 @@
 
                 checkValidation('annotations');
             }
+
+            updateChangesState();
         }
 
         /**
@@ -492,6 +504,8 @@
 
                 checkValidation('subscriptions');
             }
+
+            updateChangesState();
         }
 
         /**
@@ -506,6 +520,8 @@
 
                 checkValidation('topics');
             }
+
+            updateChangesState();
         }
 
         /**
@@ -520,6 +536,8 @@
 
                 checkValidation('brokers');
             }
+
+            updateChangesState();
         }
 
         /**
@@ -1060,12 +1078,19 @@
          * Updates `ctrl.item.ui.changed` property when user updates trigger
          */
         function updateChangesState() {
+            var keyValueIsChanged = !lodash.isEqual(ctrl.annotations, ctrl.annotationsInitial)     ||
+                                    !lodash.isEqual(ctrl.ingresses, ctrl.ingressesInitial)         ||
+                                    !lodash.isEqual(ctrl.eventHeaders, ctrl.eventHeadersInitial)   ||
+                                    !lodash.isEqual(ctrl.subscriptions, ctrl.subscriptionsInitial) ||
+                                    !lodash.isEqual(ctrl.topics, ctrl.topicsInitial)               ||
+                                    !lodash.isEqual(ctrl.brokers, ctrl.brokersInitial);
             var currentChangesState = lodash.get(ctrl.item, 'ui.changed', false);
 
             ctrl.item.ui.changed = !lodash.chain(ctrl.item)
                 .omit(['$$hashKey', 'ui'])
-                .isEqual(itemCopy)
-                .value();
+                .isEqual(itemInitial)
+                .value() || keyValueIsChanged;
+
 
             if (currentChangesState !== ctrl.item.ui.changed) {
                 $rootScope.$broadcast('edit-item-has-been-changed', {});
