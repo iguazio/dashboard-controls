@@ -8,6 +8,7 @@
                                             data-is-focused="true"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
+                                            data-read-only="$ctrl.readOnly"
                                             data-validation-rules="$ctrl.validationRules.itemName"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_NAME' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -25,6 +26,7 @@
                 <igz-default-dropdown data-select-property-only="id"
                                       data-input-name="itemClass"
                                       data-is-required="true"
+                                      data-read-only="$ctrl.readOnly"
                                       data-placeholder="{{ $ctrl.classPlaceholder }}"
                                       data-prevent-drop-up="true"
                                       data-values-array="$ctrl.classList"
@@ -61,6 +63,7 @@
                                             data-is-focused="false"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
+                                            data-read-only="$ctrl.readOnly"
                                             data-validation-rules="$ctrl.validationRules.itemPath"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_MOUNT_PATH' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -83,6 +86,7 @@
                                             data-is-focused="false"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
+                                            data-read-only="$ctrl.readOnly"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_ACCESS_KEY' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="volume.flexVolume.options.accessKey"
@@ -102,6 +106,7 @@
                                             data-input-name="containerName"
                                             data-input-value="$ctrl.item.volume.flexVolume.options.container"
                                             data-is-focused="false"
+                                            data-read-only="$ctrl.readOnly"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-rules="$ctrl.validationRules.containerName"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_CONTAINER_NAME' | i18next }}"
@@ -124,6 +129,7 @@
                                             data-is-focused="false"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="false"
+                                            data-read-only="$ctrl.readOnly"
                                             data-validation-max-length="{{$ctrl.maxLengths.containerSubPath}}"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_PATH_IN_CONTAINER' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -142,6 +148,7 @@
                                             data-is-focused="false"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
+                                            data-read-only="$ctrl.readOnly"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_HOST_PATH' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="volume.hostPath.path">
@@ -163,6 +170,7 @@
                                             data-is-focused="false"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
+                                            data-read-only="$ctrl.readOnly"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_SECRET_NAME' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="volume.secret.secretName">
@@ -179,6 +187,7 @@
                                             data-is-focused="false"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
+                                            data-read-only="$ctrl.readOnly"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_CONFIG_MAP_NAME' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="volume.configMap.name">
@@ -195,6 +204,7 @@
                                             data-input-value="$ctrl.item.volume.persistentVolumeClaim.claimName"
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
+                                            data-read-only="$ctrl.readOnly"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_PERSISTENT_VOLUME_CLAIM_NAME' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="volume.persistentVolumeClaim.claimName">
@@ -210,6 +220,7 @@
                                              data-row-data="broker"
                                              data-use-type="false"
                                              data-submit-on-fly="true"
+                                             data-is-disabled="$ctrl.readOnly"
                                              data-no-delete="$ctrl.brokers.length <= 1"
                                              data-item-index="$index"
                                              data-only-value-input="true"
@@ -219,6 +230,7 @@
                     </div>
                 </div>
                 <div class="igz-create-button create-broker-button"
+                     data-ng-class="{'disabled': $ctrl.readOnly}"
                      data-ng-click="$ctrl.addNewBroker($event)">
                     <span class="igz-icon-add-round"></span>
                     {{ 'functions:ADD_BROKER' | i18next }}
@@ -234,6 +246,7 @@
                                              data-row-data="topic"
                                              data-use-type="false"
                                              data-submit-on-fly="true"
+                                             data-is-disabled="$ctrl.readOnly"
                                              data-no-delete="$ctrl.topics.length <= 1"
                                              data-item-index="$index"
                                              data-only-value-input="true"
@@ -243,6 +256,7 @@
                     </div>
                 </div>
                 <div class="igz-create-button create-topic-button"
+                     data-ng-class="{'disabled': $ctrl.readOnly}"
                      data-ng-click="$ctrl.addNewTopic($event)">
                     <span class="igz-icon-add-round"></span>
                     {{ 'functions:ADD_TOPIC' | i18next }}
@@ -254,6 +268,7 @@
                 <ncl-edit-item-field data-edit-item-form="$ctrl.editItemForm"
                                      data-field="field"
                                      data-item="$ctrl.item"
+                                     data-read-only="$ctrl.readOnly"
                                      data-validation-rules="$ctrl.validationRules"
                                      data-input-value-callback="$ctrl.inputValueCallback(newData, field)"
                                      data-number-input-callback="$ctrl.numberInputCallback(newData, field)"
@@ -279,6 +294,7 @@
                                              data-use-additional-value="true"
                                              data-additional-value-optional="true"
                                              data-submit-on-fly="true"
+                                             data-is-disabled="$ctrl.readOnly"
                                              data-item-index="$index"
                                              data-validation-rules="$ctrl.validationRules.host"
                                              data-action-handler-callback="$ctrl.handleIngressAction(actionType, index)"
@@ -287,6 +303,7 @@
                     </div>
                 </div>
                 <div class="igz-create-button create-ingress-button"
+                     data-ng-class="{'disabled': $ctrl.readOnly}"
                      data-ng-click="$ctrl.addNewIngress($event)">
                     <span class="igz-icon-add-round"></span>
                     {{ 'functions:CREATE_NEW_HOST' | i18next }}
@@ -309,6 +326,7 @@
                                              data-row-data="annotation"
                                              data-use-type="false"
                                              data-submit-on-fly="true"
+                                             data-is-disabled="$ctrl.readOnly"
                                              data-item-index="$index"
                                              data-action-handler-callback="$ctrl.handleAnnotationAction(actionType, index)"
                                              data-change-data-callback="$ctrl.onChangeKeyValueData(newData, index)">
@@ -316,6 +334,7 @@
                     </div>
                 </div>
                 <div class="igz-create-button create-annotation-button"
+                     data-ng-class="{'disabled': $ctrl.readOnly}"
                      data-ng-click="$ctrl.addNewAnnotation($event)">
                     <span class="igz-icon-add-round"></span>
                     {{ 'functions:CREATE_NEW_ANNOTATION' | i18next }}
@@ -338,6 +357,7 @@
                                              data-row-data="header"
                                              data-use-type="false"
                                              data-submit-on-fly="true"
+                                             data-is-disabled="$ctrl.readOnly"
                                              data-item-index="$index"
                                              data-action-handler-callback="$ctrl.handleEventHeaderAction(actionType, index)"
                                              data-change-data-callback="$ctrl.onChangeKeyValueData(newData, index)">
@@ -345,6 +365,7 @@
                     </div>
                 </div>
                 <div class="igz-create-button create-event-header"
+                     data-ng-class="{'disabled': $ctrl.readOnly}"
                      data-ng-click="$ctrl.addNewEventHeader($event)">
                     <span class="igz-icon-add-round"></span>
                     {{ 'functions:CREATE_NEW_EVENT_HEADER' | i18next }}
@@ -365,6 +386,7 @@
                                              data-row-data="subscription"
                                              data-use-type="false"
                                              data-submit-on-fly="true"
+                                             data-is-disabled="$ctrl.readOnly"
                                              data-item-index="$index"
                                              data-validation-rules="$ctrl.validationRules.subscriptionQoS"
                                              data-value-placeholder="0, 1 or 2"
@@ -374,6 +396,7 @@
                     </div>
                 </div>
                 <div class="igz-create-button create-subscription-button"
+                     data-ng-class="{'disabled': $ctrl.readOnly}"
                      data-ng-click="$ctrl.addNewSubscription($event)">
                     <span class="igz-icon-add-round"></span>
                     {{ 'functions:CREATE_NEW_SUBSCRIPTION' | i18next }}
@@ -395,6 +418,7 @@
                         <ncl-edit-item-field data-edit-item-form="$ctrl.editItemForm"
                                              data-field="field"
                                              data-item="$ctrl.item"
+                                             data-read-only="$ctrl.readOnly"
                                              data-validation-rules="$ctrl.validationRules"
                                              data-input-value-callback="$ctrl.inputValueCallback(newData, field)"
                                              data-number-input-callback="$ctrl.numberInputCallback(newData, field)"
@@ -402,6 +426,7 @@
                         </ncl-edit-item-field>
                     </div>
                 </div>
+            </div>
         </div>
     </form>
 </div>

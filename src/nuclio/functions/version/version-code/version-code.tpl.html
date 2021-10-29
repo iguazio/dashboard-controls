@@ -15,6 +15,7 @@
                                 <div class="col-label code-entry-type">{{ 'functions:CODE_ENTRY_TYPE' | i18next }}</div>
                                 <igz-default-dropdown data-values-array="$ctrl.codeEntryTypeArray"
                                                       data-item-select-callback="$ctrl.selectEntryTypeValue(item, isItemChanged, field)"
+                                                      data-read-only="$ctrl.isFunctionDeploying()"
                                                       data-selected-item="$ctrl.selectedEntryType">
                                 </igz-default-dropdown>
                             </div>
@@ -34,6 +35,7 @@
                                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                             data-update-data-field="spec.handler"
                                                             data-form-object="$ctrl.versionCodeForm"
+                                                            data-read-only="$ctrl.isFunctionDeploying()"
                                                             data-placeholder-text="{{ 'functions:HANDLER' | i18next }}">
                                 </igz-validating-input-field>
                             </div>
@@ -43,6 +45,7 @@
                                 <igz-default-dropdown data-values-array="$ctrl.themesArray"
                                                       data-item-select-callback="$ctrl.selectThemeValue(item, isItemChanged, field)"
                                                       data-selected-item="$ctrl.selectedTheme"
+                                                      data-read-only="$ctrl.isFunctionDeploying()"
                                                       data-on-close-dropdown="$ctrl.onCloseDropdown()">
                                 </igz-default-dropdown>
                             </div>
@@ -60,7 +63,7 @@
                                     data-show-text-size-dropdown="true"
                                     data-language="$ctrl.editorLanguage"
                                     data-on-change-source-code-callback="$ctrl.onChangeSourceCode(sourceCode, language)"
-                                    data-read-only="false">
+                                    data-read-only="$ctrl.isFunctionDeploying()">
                         </ncl-monaco>
                     </div>
                 </div>
@@ -77,14 +80,17 @@
                                 <div class="col-label code-entry-type">{{ 'functions:CODE_ENTRY_TYPE' | i18next }}</div>
                                 <igz-default-dropdown data-values-array="$ctrl.codeEntryTypeArray"
                                                       data-item-select-callback="$ctrl.selectEntryTypeValue(item, isItemChanged, field)"
-                                                      data-selected-item="$ctrl.selectedEntryType"></igz-default-dropdown>
+                                                      data-read-only="$ctrl.isFunctionDeploying()"
+                                                      data-selected-item="$ctrl.selectedEntryType">
+                                </igz-default-dropdown>
                             </div>
                             <div class="code-entry-col code-entry-runtime-col">
                                 <div class="col-label runtime">{{ 'functions:RUNTIME' | i18next }}</div>
                                 <igz-default-dropdown data-values-array="$ctrl.runtimeArray"
                                                       data-item-select-callback="$ctrl.selectRuntimeValue(item, isItemChanged, field)"
                                                       data-selected-item="$ctrl.selectedRuntime"
-                                                      data-is-disabled="true"></igz-default-dropdown>
+                                                      data-is-disabled="true">
+                                </igz-default-dropdown>
                             </div>
                             <div class="code-entry-col code-entry-handler-col">
                                 <div class="col-label handler">{{ 'functions:HANDLER' | i18next }}</div>
@@ -94,6 +100,7 @@
                                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                             data-update-data-field="spec.handler"
                                                             data-form-object="$ctrl.versionCodeForm"
+                                                            data-read-only="$ctrl.isFunctionDeploying()"
                                                             data-placeholder-text="{{ 'functions:HANDLER' | i18next }}">
                                 </igz-validating-input-field>
                             </div>
@@ -113,6 +120,7 @@
                                                     data-is-focused="true"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="true"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: mydockeruser/my-func:latest"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.image">
@@ -131,6 +139,7 @@
                                                     data-is-focused="true"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="true"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: https://v3io-webapi/users/iguazio/myfunction.zip"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.path">
@@ -149,6 +158,7 @@
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_ACCESS_KEY' | i18next }}"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.headers['X-V3io-Session-Key']">
@@ -164,6 +174,7 @@
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: /nuclio-functions/myfunc"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.workDir">
@@ -182,6 +193,7 @@
                                                     data-is-focused="true"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="true"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: https://github.com/my-organization/my-repository"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.path">
@@ -209,6 +221,7 @@
                                                         data-form-object="$ctrl.versionCodeForm"
                                                         data-validation-is-required="$ctrl.selectedEntryType.id === 'github'"
                                                         data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: master"
+                                                        data-read-only="$ctrl.isFunctionDeploying()"
                                                         data-is-disabled="$ctrl.version.spec.build.codeEntryAttributes.tag || $ctrl.version.spec.build.codeEntryAttributes.reference"
                                                         data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                         data-update-data-field="spec.build.codeEntryAttributes.branch">
@@ -228,6 +241,7 @@
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_TOKEN' | i18next }}"
                                                     data-update-data-callback="$ctrl.onChangeGithubToken(newData)">
                         </igz-validating-input-field>
@@ -252,6 +266,7 @@
                                                         data-is-focused="false"
                                                         data-form-object="$ctrl.versionCodeForm"
                                                         data-validation-is-required="false"
+                                                        data-read-only="$ctrl.isFunctionDeploying()"
                                                         data-is-disabled="$ctrl.version.spec.build.codeEntryAttributes.branch || $ctrl.version.spec.build.codeEntryAttributes.reference"
                                                         data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_TAG' | i18next }}"
                                                         data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -279,6 +294,7 @@
                                                         data-is-focused="false"
                                                         data-form-object="$ctrl.versionCodeForm"
                                                         data-validation-is-required="false"
+                                                        data-read-only="$ctrl.isFunctionDeploying()"
                                                         data-is-disabled="$ctrl.version.spec.build.codeEntryAttributes.branch || $ctrl.version.spec.build.codeEntryAttributes.tag"
                                                         data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_REFERENCE' | i18next }}"
                                                         data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -299,6 +315,7 @@
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'common:PLACEHOLDER.ENTER_USERNAME' | i18next }}"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.username">
@@ -316,6 +333,7 @@
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{'common:PLACEHOLDER.ENTER_PASSWORD' | i18next}}"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.password">
@@ -334,6 +352,7 @@
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: /nuclio-functions/myfunc"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.workDir">
@@ -352,6 +371,7 @@
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="true"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: my-s3-bucket"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.s3Bucket">
@@ -367,6 +387,7 @@
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="true"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: my-dir/nuclio_funcs.zip"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.s3ItemKey">
@@ -382,6 +403,7 @@
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_ACCESS_KEY_ID' | i18next }}"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.s3AccessKeyId">
@@ -397,6 +419,7 @@
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_SECRET_ACCESS_KEY' | i18next }}"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.s3SecretAccessKey">
@@ -412,6 +435,7 @@
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_SESSION_TOKEN' | i18next }}"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.s3SessionToken">
@@ -427,6 +451,7 @@
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: us-east-1"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.s3Region">
@@ -442,6 +467,7 @@
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
                                                     data-validation-is-required="false"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-placeholder-text="{{ 'common:FOR_EXAMPLE' | i18next }}: /nuclio-functions/myfunc"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="spec.build.codeEntryAttributes.workDir">

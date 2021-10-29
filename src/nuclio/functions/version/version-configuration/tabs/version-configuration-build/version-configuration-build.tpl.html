@@ -3,7 +3,7 @@
     <div class="configuration-build-title-wrapper">
         <div class="title pull-left">{{ 'functions:BUILD' | i18next }}</div>
 
-        <igz-action-menu data-ng-if="$ctrl.isDemoMode() && !$ctrl.disabled"
+        <igz-action-menu data-ng-if="$ctrl.isDemoMode() && !$ctrl.disabled && !$ctrl.isFunctionDeploying()"
                          data-actions="$ctrl.actions"
                          data-icon-class="ncl-icon-paperclip"
                          data-on-fire-action="$ctrl.onFireAction">
@@ -28,6 +28,7 @@
                                                 data-input-name="imageName"
                                                 data-input-value="$ctrl.imageName"
                                                 data-is-focused="false"
+                                                data-read-only="$ctrl.isFunctionDeploying()"
                                                 data-form-object="$ctrl.buildForm"
                                                 data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_IMAGE_NAME' | i18next }}"
                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -50,6 +51,7 @@
                                             data-input-name="baseImage"
                                             data-input-value="$ctrl.version.spec.build.baseImage"
                                             data-is-focused="false"
+                                            data-read-only="$ctrl.isFunctionDeploying()"
                                             data-form-object="$ctrl.buildForm"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_BASE_IMAGE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -70,6 +72,7 @@
                                             data-input-name="onbuildImage"
                                             data-input-value="$ctrl.version.spec.build.onbuildImage"
                                             data-is-focused="false"
+                                            data-read-only="$ctrl.isFunctionDeploying()"
                                             data-form-object="$ctrl.buildForm"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_ONBUILD_IMAGE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -89,6 +92,7 @@
                                             data-input-name="commands"
                                             data-input-value="$ctrl.build.commands"
                                             data-is-focused="false"
+                                            data-read-only="$ctrl.isFunctionDeploying()"
                                             data-form-object="$ctrl.buildForm"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_COMMAND_ON_EACH_LINE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -114,7 +118,7 @@
                                   data-value-step="1"
                                   data-validation-is-required="false"
                                   data-min-value="1"
-                                  data-is-disabled="$ctrl.disabled">
+                                  data-is-disabled="$ctrl.disabled || $ctrl.isFunctionDeploying()">
                 </igz-number-input>
             </div>
             <div class="igz-col-100 build-field"
@@ -124,6 +128,7 @@
                                             data-input-name="repositories"
                                             data-input-value="$ctrl.build.runtimeAttributes.repositories"
                                             data-is-focused="false"
+                                            data-read-only="$ctrl.isFunctionDeploying()"
                                             data-form-object="$ctrl.buildForm"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_REPOSITORY_ON_EACH_LINE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -139,6 +144,7 @@
                                             data-input-name="dependencies"
                                             data-input-value="$ctrl.build.dependencies"
                                             data-is-focused="false"
+                                            data-read-only="$ctrl.isFunctionDeploying()"
                                             data-form-object="$ctrl.buildForm"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_DEPENDENCY_ON_EACH_LINE' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
@@ -153,7 +159,7 @@
                            class="small"
                            id="noCache"
                            data-ng-model="$ctrl.version.spec.build.noCache"
-                           data-ng-disabled="$ctrl.disabled">
+                           data-ng-disabled="$ctrl.disabled || $ctrl.isFunctionDeploying()">
                     <label for="noCache" class="checkbox-inline">{{ 'functions:DISABLE_CACHE' | i18next }}</label>
                     <igz-more-info
                         data-description="{{ 'functions:TOOLTIP.DISABLE_CACHE' | i18next }}"
@@ -166,7 +172,7 @@
                            class="small"
                            id="wait-readiness-timeout-before-failure"
                            data-ng-model="$ctrl.version.spec.waitReadinessTimeoutBeforeFailure"
-                           data-ng-disabled="$ctrl.disabled">
+                           data-ng-disabled="$ctrl.disabled || $ctrl.isFunctionDeploying()">
                     <label for="wait-readiness-timeout-before-failure"
                            class="checkbox-inline">{{ 'functions:ALWAYS_WAIT_FOR_READINESS_TIMEOUT_EXPIRATION' | i18next }}</label>
                     <igz-more-info

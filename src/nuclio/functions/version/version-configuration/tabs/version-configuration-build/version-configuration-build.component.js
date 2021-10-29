@@ -5,7 +5,8 @@
         .component('nclVersionConfigurationBuild', {
             bindings: {
                 version: '<',
-                onChangeCallback: '<'
+                onChangeCallback: '<',
+                isFunctionDeploying: '&'
             },
             templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-build/version-configuration-build.tpl.html',
             controller: NclVersionConfigurationBuildController

@@ -29,6 +29,7 @@
                 <ncl-key-value-input class="new-label-input"
                                      data-row-data="annotation"
                                      data-use-type="false"
+                                     data-is-disabled="$ctrl.isFunctionDeploying()"
                                      data-item-index="$index"
                                      data-validation-rules="$ctrl.validationRules"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
@@ -38,6 +39,7 @@
             </div>
         </div>
         <div class="igz-create-button create-annotation-button"
+             data-ng-class="{'disabled': $ctrl.isFunctionDeploying()}"
              data-ng-click="$ctrl.addNewAnnotation($event)">
             <span class="igz-icon-add-round"></span>
             {{ 'functions:CREATE_NEW_ANNOTATION' | i18next }}

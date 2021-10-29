@@ -37,6 +37,9 @@
                         },
                         onFontSizeChanged: function (newFontSize) {
                             this.editor.updateOptions({ fontSize: newFontSize });
+                        },
+                        onReadOnlyChanged: function (newReadOnly) {
+                            this.editor.updateOptions({ readOnly: newReadOnly });
                         }
                     };
 
@@ -91,6 +94,7 @@
                     scope.$watch('wordWrap', editorContext.onWrapStateChanged.bind(editorContext));
                     scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
                     scope.$watch('fontSize', editorContext.onFontSizeChanged.bind(editorContext));
+                    scope.$watch('readOnly', editorContext.onReadOnlyChanged.bind(editorContext));
 
                     scope.$on('function-import-source-code', editorContext.onReadOnlyCodeFileChanged.bind(editorContext));
                 });
@@ -123,8 +127,8 @@
                             value: 'def ${1:name}():\r\t$0'
                         }
                     }
-                ]
+                ];
             }
-        })
+        });
     });
 }());

@@ -5,6 +5,7 @@
         .component('nclCollapsingRow', {
             bindings: {
                 actionHandlerCallback: '&',
+                readOnly: '<?',
                 item: '<',
                 itemIndex: '<?',
                 type: '@',

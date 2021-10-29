@@ -5,7 +5,8 @@
         .component('nclVersionConfigurationEnvironmentVariables', {
             bindings: {
                 version: '<',
-                onChangeCallback: '<'
+                onChangeCallback: '<',
+                isFunctionDeploying: '&'
             },
             templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-environment-variables/version-configuration-environment-variables.tpl.html',
             controller: NclVersionConfigurationEnvironmentVariablesController
@@ -94,7 +95,7 @@
                         ctrl.environmentVariablesForm.$setSubmitted();
                         $rootScope.$broadcast('change-state-deploy-button', {component: 'variable', isDisabled: true});
                     }
-                })
+                });
             }
         }
 
@@ -106,6 +107,10 @@
          * Adds new variable
          */
         function addNewVariable(event) {
+            if (ctrl.isFunctionDeploying()) {
+                return;
+            }
+
             $timeout(function () {
                 if (ctrl.variables.length < 1 || lodash.chain(ctrl.variables).last().get('ui.isFormValid', true).value()) {
                     ctrl.variables.push({

@@ -17,6 +17,7 @@
                     <div class="row-input memory-input memory-number-input">
                         <igz-number-input data-allow-empty-field="true"
                                           data-validation-is-required="false"
+                                          data-is-disabled="$ctrl.isFunctionDeploying()"
                                           data-form-object="$ctrl.resourcesForm"
                                           data-input-name="requestMemory"
                                           data-update-number-input-callback="$ctrl.memoryInputCallback(newData, field)"
@@ -27,7 +28,8 @@
                         </igz-number-input>
                     </div>
                     <div class="row-input memory-input memory-size-dropdown">
-                        <igz-default-dropdown data-values-array="$ctrl.dropdownOptions"
+                        <igz-default-dropdown data-read-only="$ctrl.isFunctionDeploying()"
+                                              data-values-array="$ctrl.dropdownOptions"
                                               data-selected-item="$ctrl.selectedRequestUnit"
                                               data-item-select-callback="$ctrl.memoryDropdownCallback(item, isItemChanges, field)"
                                               data-item-select-field="spec.resources.requests.memory">
@@ -40,6 +42,7 @@
                     <div class="row-input memory-input memory-number-input">
                         <igz-number-input data-allow-empty-field="true"
                                           data-validation-is-required="false"
+                                          data-is-disabled="$ctrl.isFunctionDeploying()"
                                           data-form-object="$ctrl.resourcesForm"
                                           data-input-name="limitsMemory"
                                           data-min-value="1"
@@ -50,7 +53,8 @@
                         </igz-number-input>
                     </div>
                     <div class="row-input memory-input memory-size-dropdown">
-                        <igz-default-dropdown data-values-array="$ctrl.dropdownOptions"
+                        <igz-default-dropdown data-read-only="$ctrl.isFunctionDeploying()"
+                                              data-values-array="$ctrl.dropdownOptions"
                                               data-selected-item="$ctrl.selectedLimitUnit"
                                               data-item-select-callback="$ctrl.memoryDropdownCallback(item, isItemChanges, field)"
                                               data-item-select-field="spec.resources.limits.memory">
@@ -67,6 +71,7 @@
                     <div class="row-input cpu-number-input">
                         <igz-number-input data-allow-empty-field="true"
                                           data-validation-is-required="false"
+                                          data-is-disabled="$ctrl.isFunctionDeploying()"
                                           data-form-object="$ctrl.resourcesForm"
                                           data-input-name="requestCpu"
                                           data-placeholder="{{ $ctrl.selectedCpuRequestItem.placeholder }}"
@@ -79,7 +84,8 @@
                         </igz-number-input>
                     </div>
                     <div class="row-input cpu-dropdown">
-                        <igz-default-dropdown data-values-array="$ctrl.cpuDropdownOptions"
+                        <igz-default-dropdown data-read-only="$ctrl.isFunctionDeploying()"
+                                              data-values-array="$ctrl.cpuDropdownOptions"
                                               data-selected-item="$ctrl.selectedCpuRequestItem"
                                               data-item-select-callback="$ctrl.cpuDropdownCallback(item, isItemChanged, field)"
                                               data-item-select-field="selectedCpuRequestItem">
@@ -92,6 +98,7 @@
                     <div class="row-input cpu-number-input">
                         <igz-number-input data-allow-empty-field="true"
                                           data-validation-is-required="false"
+                                          data-is-disabled="$ctrl.isFunctionDeploying()"
                                           data-form-object="$ctrl.resourcesForm"
                                           data-input-name="limitsCpu"
                                           data-placeholder="{{ $ctrl.selectedCpuLimitItem.placeholder }}"
@@ -104,7 +111,8 @@
                         </igz-number-input>
                     </div>
                     <div class="row-input cpu-dropdown">
-                        <igz-default-dropdown data-values-array="$ctrl.cpuDropdownOptions"
+                        <igz-default-dropdown data-read-only="$ctrl.isFunctionDeploying()"
+                                              data-values-array="$ctrl.cpuDropdownOptions"
                                               data-selected-item="$ctrl.selectedCpuLimitItem"
                                               data-item-select-callback="$ctrl.cpuDropdownCallback(item, isItemChanged, field)"
                                               data-item-select-field="selectedCpuLimitItem">
@@ -125,6 +133,7 @@
                     <div class="row-input gpu-number-input">
                         <igz-number-input data-allow-empty-field="true"
                                           data-validation-is-required="false"
+                                          data-is-disabled="$ctrl.isFunctionDeploying()"
                                           data-form-object="$ctrl.resourcesForm"
                                           data-input-name="limitsGpu"
                                           data-update-number-input-callback="$ctrl.gpuInputCallback(newData, field)"
@@ -158,10 +167,11 @@
                                           data-update-number-input-callback="$ctrl.replicasInputCallback(newData, field)"
                                           data-update-number-input-field="minReplicas"
                                           data-allow-empty-field="true"
+                                          data-validation-is-required="false"
+                                          data-is-disabled="$ctrl.isFunctionDeploying()"
                                           data-placeholder=""
                                           data-precision="0"
                                           data-value-step="1"
-                                          data-validation-is-required="false"
                                           data-min-value="0"
                                           data-max-value="$ctrl.maxReplicas || Infinity">
                         </igz-number-input>
@@ -184,6 +194,7 @@
                                           data-update-number-input-callback="$ctrl.replicasInputCallback(newData, field)"
                                           data-update-number-input-field="maxReplicas"
                                           data-allow-empty-field="true"
+                                          data-is-disabled="$ctrl.isFunctionDeploying()"
                                           data-placeholder="{{ $ctrl.minReplicas === 0 ? ('functions:PLACEHOLDER.MAX_REQUIRED' | i18next) : '' }}"
                                           data-precision="0"
                                           data-value-step="1"
@@ -246,6 +257,7 @@
         <div class="igz-row-flex">
             <div class="title">{{ 'functions:NODE_SELECTORS' | i18next }}</div>
             <a class="link"
+               data-ng-class="{ 'disabled': $ctrl.isFunctionDeploying() }"
                data-ng-click="$ctrl.handleRevertToDefaultsClick()"
                data-ng-hide="$ctrl.revertToDefaultsBtnIsHidden">
                 {{ 'functions:REVERT_TO_DEFAULTS' | i18next }}
@@ -258,13 +270,16 @@
                                          data-row-data="nodeSelector"
                                          data-item-index="$index"
                                          data-use-type="false"
+                                         data-is-disabled="$ctrl.isFunctionDeploying()"
                                          data-validation-rules="$ctrl.nodeSelectorsValidationRules"
                                          data-action-handler-callback="$ctrl.handleNodeSelectorsAction(actionType, index)"
                                          data-change-data-callback="$ctrl.onChangeNodeSelectorsData(newData, index)"
                                          data-submit-on-fly="true">
                     </ncl-key-value-input>
                 </div>
-                <div class="igz-create-button" data-ng-click="$ctrl.addNewNodeSelector($event)">
+                <div class="igz-create-button"
+                     data-ng-class="{ 'disabled': $ctrl.isFunctionDeploying() }"
+                     data-ng-click="$ctrl.addNewNodeSelector($event)">
                     <span class="igz-icon-add-round"></span>
                     {{ 'common:CREATE_NEW_ENTRY' | i18next }}
                 </div>

@@ -5,7 +5,8 @@
         .component('nclVersionConfigurationVolumes', {
             bindings: {
                 version: '<',
-                onChangeCallback: '&'
+                onChangeCallback: '&',
+                isFunctionDeploying: '&'
             },
             templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-volumes/version-configuration-volumes.tpl.html',
             controller: NclVersionConfigurationVolumesController
@@ -104,6 +105,10 @@
          * @param {Event} event
          */
         function createVolume(event) {
+            if (ctrl.isFunctionDeploying()) {
+                return;
+            }
+
             $timeout(function () {
                 if (!isVolumeInEditMode()) {
                     ctrl.volumes.push(

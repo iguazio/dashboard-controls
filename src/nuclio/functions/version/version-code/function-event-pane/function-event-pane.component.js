@@ -186,7 +186,7 @@
             ctrl.isSplashShowed.value = true;
             ctrl.eventLogLevel = 'debug';
 
-            updateInvocationUrls()
+            updateInvocationUrls();
 
             if (lodash.isNil(ctrl.version.ui.deployedVersion)) {
                 VersionHelperService.updateIsVersionChanged(ctrl.version);

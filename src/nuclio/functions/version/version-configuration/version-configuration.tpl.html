@@ -7,11 +7,13 @@
                 <ncl-version-configuration-basic-settings
                         class="configuration-block"
                         data-version="$ctrl.version"
+                        data-is-function-deploying="$ctrl.isFunctionDeploying()"
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback">
                 </ncl-version-configuration-basic-settings>
                 <ncl-version-configuration-resources
                         class="configuration-block"
                         data-version="$ctrl.version"
+                        data-is-function-deploying="$ctrl.isFunctionDeploying()"
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback">
                 </ncl-version-configuration-resources>
             </div>
@@ -19,6 +21,7 @@
                 <ncl-version-configuration-environment-variables
                         class="configuration-block"
                         data-version="$ctrl.version"
+                        data-is-function-deploying="$ctrl.isFunctionDeploying()"
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback">
                 </ncl-version-configuration-environment-variables>
             </div>
@@ -26,11 +29,13 @@
                 <ncl-version-configuration-labels
                         class="configuration-block"
                         data-version="$ctrl.version"
+                        data-is-function-deploying="$ctrl.isFunctionDeploying()"
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback">
                 </ncl-version-configuration-labels>
                 <ncl-version-configuration-annotations
                         class="configuration-block"
                         data-version="$ctrl.version"
+                        data-is-function-deploying="$ctrl.isFunctionDeploying()"
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback">
                 </ncl-version-configuration-annotations>
             </div>
@@ -38,11 +43,13 @@
                 <ncl-version-configuration-volumes
                     class="configuration-block"
                     data-version="$ctrl.version"
+                    data-is-function-deploying="$ctrl.isFunctionDeploying()"
                     data-on-change-callback="$ctrl.onConfigurationChangeCallback()">
                 </ncl-version-configuration-volumes>
                 <ncl-version-configuration-build
                         class="configuration-block"
                         data-version="$ctrl.version"
+                        data-is-function-deploying="$ctrl.isFunctionDeploying()"
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback">
                 </ncl-version-configuration-build>
             </div>
@@ -58,6 +65,7 @@
                         data-ng-if="$ctrl.isRuntimeBlockVisible()"
                         class="configuration-block runtime-attributes"
                         data-version="$ctrl.version"
+                        data-is-function-deploying="$ctrl.isFunctionDeploying()"
                         data-on-change-callback="$ctrl.onConfigurationChangeCallback">
                 </ncl-version-configuration-runtime-attributes>
                 <!--Invisible block to make `runtime-attributes` block half wide-->
