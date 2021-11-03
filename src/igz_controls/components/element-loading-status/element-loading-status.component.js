@@ -9,6 +9,7 @@
                 name: '@',
                 refresh: '<?',
                 title: '@?',
+                withoutLoader: '<?',
                 tooltipLabel: '@?'
             },
             templateUrl: 'igz_controls/components/element-loading-status/element-loading-status.tpl.html',
@@ -105,20 +106,22 @@
          * Set height of spinner wrapper
          */
         function setWrapperHeight() {
-            $timeout(function () {
-                var elementHeight = $element.height() > 0 ? $element.height() : defaultHeight;
-                var elementParentHeight = $element.parent().height() > 0 ? $element.parent().height() : defaultHeight;
+            if (!ctrl.withoutLoader) {
+                $timeout(function () {
+                    var elementHeight = $element.height() > 0 ? $element.height() : defaultHeight;
+                    var elementParentHeight = $element.parent().height() > 0 ? $element.parent().height() : defaultHeight;
 
-                if (ctrl.isShowSpinner) {
-                    $element.find('.loader-wrapper').height(elementParentHeight || elementHeight);
-                    $element.find('.loader-wrapper').addClass('appeared');
-                }
+                    if (ctrl.isShowSpinner) {
+                        $element.find('.loader-wrapper').height(elementParentHeight || elementHeight);
+                        $element.find('.loader-wrapper').addClass('appeared');
+                    }
 
-                if (ctrl.isShowError) {
-                    $element.find('.loading-error').height(elementHeight || elementParentHeight);
-                    $element.find('.loading-error').addClass('appeared');
-                }
-            });
+                    if (ctrl.isShowError) {
+                        $element.find('.loading-error').height(elementHeight || elementParentHeight);
+                        $element.find('.loading-error').addClass('appeared');
+                    }
+                });
+            }
         }
 
         //
