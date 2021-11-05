@@ -127,9 +127,8 @@
 
         /**
          * Show given loading spinner
-         * @param {Object} ev - angular event object
          */
-        function showSpinner(ev) {
+        function showSpinner() {
             ctrl.isShowError = false;
             ctrl.isShowContent = false;
             ctrl.isShowSpinner = true;
@@ -138,9 +137,8 @@
 
         /**
          * Hide given loading spinner
-         * @param {Object} ev - angular event object
          */
-        function hideSpinner(ev) {
+        function hideSpinner() {
             ctrl.isShowSpinner = false;
             $timeout(function () {
                 ctrl.isShowContent = true;
@@ -149,9 +147,8 @@
 
         /**
          * Show given loading error
-         * @param {Object} ev - angular event object
          */
-        function showError(ev) {
+        function showError() {
             ctrl.isShowError = true;
             ctrl.isShowSpinner = false;
             ctrl.setWrapperHeight();
@@ -159,9 +156,8 @@
 
         /**
          * Hide given loading error
-         * @param {Object} ev - angular event object
          */
-        function hideError(ev) {
+        function hideError() {
             ctrl.isShowError = false;
         }
     }

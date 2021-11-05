@@ -20,81 +20,81 @@ describe('ElementLoadingStatusService: ', function () {
 
     describe('loading spinners: ', function () {
         it('showSpinner() ', function () {
-            ElementLoadingStatusService.showSpinner('show spinner');
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-spinner', {name: 'show spinner'});
+            ElementLoadingStatusService.showSpinner('show-spinner');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-spinner-show-spinner' );
         });
 
         it('hideSpinner() ', function () {
-            ElementLoadingStatusService.hideSpinner('hide spinner');
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-spinner', {name: 'hide spinner'});
+            ElementLoadingStatusService.hideSpinner('hide-spinner');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-spinner-hide-spinner');
         });
 
         it('showSpinnerGroup() ', function () {
             var names = [
-                'show spinner 1',
-                'show spinner 2',
-                'show spinner 3'
+                'first-spinner',
+                'second-spinner',
+                'third-spinner'
             ];
 
             ElementLoadingStatusService.showSpinnerGroup(names);
 
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-spinner', {name: 'show spinner 1'});
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-spinner', {name: 'show spinner 2'});
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-spinner', {name: 'show spinner 3'});
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-spinner-first-spinner');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-spinner-second-spinner');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-spinner-third-spinner');
         });
 
         it('hideSpinnerGroup() ', function () {
             var names = [
-                'show spinner 1',
-                'show spinner 2',
-                'show spinner 3'
+                'first',
+                'second',
+                'third'
             ];
 
             ElementLoadingStatusService.hideSpinnerGroup(names);
 
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-spinner', {name: 'show spinner 1'});
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-spinner', {name: 'show spinner 2'});
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-spinner', {name: 'show spinner 3'});
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-spinner-first');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-spinner-second');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-spinner-third');
         });
     });
 
     describe('loading errors: ', function () {
         it('showLoadingError() ', function () {
-            ElementLoadingStatusService.showLoadingError('show error');
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-error', {name: 'show error'});
+            ElementLoadingStatusService.showLoadingError('first-error');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-error-first-error');
         });
 
         it('hideLoadingError() ', function () {
-            ElementLoadingStatusService.hideLoadingError('hide error');
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-error', {name: 'hide error'});
+            ElementLoadingStatusService.hideLoadingError('first-error');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-error-first-error');
         });
 
         it('showLoadingErrorGroup() ', function () {
             var names = [
-                'show error 1',
-                'show error 2',
-                'show error 3'
+                'first-error',
+                'second-error',
+                'third-error'
             ];
 
             ElementLoadingStatusService.showLoadingErrorGroup(names);
 
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-error', {name: 'show error 1'});
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-error', {name: 'show error 2'});
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-error', {name: 'show error 3'});
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-error-first-error');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-error-second-error');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-error-third-error');
         });
 
         it('hideLoadingErrorGroup() ', function () {
             var names = [
-                'show error 1',
-                'show error 2',
-                'show error 3'
+                'first-error',
+                'second-error',
+                'third-error'
             ];
 
             ElementLoadingStatusService.hideLoadingErrorGroup(names);
 
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-error', {name: 'show error 1'});
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-error', {name: 'show error 2'});
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-error', {name: 'show error 3'});
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-error-first-error');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-error-second-error');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-error-third-error');
         });
     });
 });
