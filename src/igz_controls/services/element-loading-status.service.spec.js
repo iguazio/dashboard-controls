@@ -45,28 +45,28 @@ describe('ElementLoadingStatusService: ', function () {
 
         it('hideSpinnerGroup() ', function () {
             var names = [
-                'first',
-                'second',
-                'third'
+                'first-spinner',
+                'second-spinner',
+                'third-spinner'
             ];
 
             ElementLoadingStatusService.hideSpinnerGroup(names);
 
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-spinner-first');
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-spinner-second');
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-spinner-third');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-spinner-first-spinner');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-spinner-second-spinner');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-spinner-third-spinner');
         });
     });
 
     describe('loading errors: ', function () {
         it('showLoadingError() ', function () {
-            ElementLoadingStatusService.showLoadingError('first-error');
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-error-first-error');
+            ElementLoadingStatusService.showLoadingError('show-error');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_show-error-show-error');
         });
 
         it('hideLoadingError() ', function () {
-            ElementLoadingStatusService.hideLoadingError('first-error');
-            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-error-first-error');
+            ElementLoadingStatusService.hideLoadingError('hide-error');
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('element-loading-status_hide-error-hide-error');
         });
 
         it('showLoadingErrorGroup() ', function () {
