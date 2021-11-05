@@ -9,20 +9,9 @@
         height: 100%;
         width: 100%;
         position: relative;
-        opacity: 0;
-        transition: opacity .2s;
 
-        &.appeared {
-            opacity: 1;
-            transition: opacity .5s;
-        }
-
-        // Overcome ngAnimate delay (hide this ng-if block immediately)
-        &.ng-leave {
-            transition: initial;
-            display: none;
-            height: 0;
-            width: 0;
+        .loader-text {
+            color: @loading-text-color;
         }
     }
 
@@ -32,18 +21,6 @@
         width: 100%;
         height: 100%;
         position: relative;
-        opacity: 0;
-        transition: opacity .2s;
-
-        &.appeared {
-            opacity: 1;
-            transition: opacity .5s;
-        }
-
-        // Overcome ngAnimate delay (hide this ng-if block immediately)
-        &.ng-leave {
-            display: none;
-        }
 
         .sad-icon {
             position: absolute;
