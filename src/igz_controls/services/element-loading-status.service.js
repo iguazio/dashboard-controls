@@ -22,7 +22,7 @@
          * @param {string} name - spinner name
          */
         function showSpinner(name) {
-            $rootScope.$broadcast('element-loading-status_show-spinner', {name: name});
+            $rootScope.$broadcast(`element-loading-status_show-spinner-${name}`);
         }
 
         /**
@@ -30,7 +30,7 @@
          * @param {string} name - spinner name
          */
         function hideSpinner(name) {
-            $rootScope.$broadcast('element-loading-status_hide-spinner', {name: name});
+            $rootScope.$broadcast(`element-loading-status_hide-spinner-${name}`);
         }
 
         /**
@@ -54,7 +54,7 @@
          * @param {string} name - spinner name
          */
         function showLoadingError(name) {
-            $rootScope.$broadcast('element-loading-status_show-error', {name: name});
+            $rootScope.$broadcast(`element-loading-status_show-error-${name}`);
         }
 
         /**
@@ -62,7 +62,7 @@
          * @param {string} name - spinner name
          */
         function hideLoadingError(name) {
-            $rootScope.$broadcast('element-loading-status_hide-error', {name: name});
+            $rootScope.$broadcast(`element-loading-status_hide-error-${name}`);
         }
 
         /**
