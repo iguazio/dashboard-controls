@@ -8,6 +8,7 @@
                 loadingStatusSize: '@?',
                 name: '@',
                 refresh: '<?',
+                textStatus: '<?',
                 title: '@?',
                 tooltipLabel: '@?'
             },
@@ -26,12 +27,10 @@
         ctrl.isShowError = false;
 
         ctrl.$onInit = onInit;
-        ctrl.$postLink = postLink;
         ctrl.$onChanges = onChanges;
 
         ctrl.checkSize = checkSize;
         ctrl.refreshPage = refreshPage;
-        ctrl.setWrapperHeight = setWrapperHeight;
 
         //
         // Hook methods
@@ -41,18 +40,11 @@
          * Initialization method
          */
         function onInit() {
-            $scope.$on('element-loading-status_show-spinner', showSpinner);
-            $scope.$on('element-loading-status_hide-spinner', hideSpinner);
+            $scope.$on('element-loading-status_show-spinner_' + ctrl.name, showSpinner);
+            $scope.$on('element-loading-status_hide-spinner_' + ctrl.name, hideSpinner);
 
-            $scope.$on('element-loading-status_show-error', showError);
-            $scope.$on('element-loading-status_hide-error', hideError);
-        }
-
-        /**
-         * Post linking method
-         */
-        function postLink() {
-            setWrapperHeight();
+            $scope.$on('element-loading-status_show-error_' + ctrl.name, showError);
+            $scope.$on('element-loading-status_hide-error_' + ctrl.name, hideError);
         }
 
         /**
@@ -101,80 +93,40 @@
             $state.go($state.current, {}, {reload: true});
         }
 
-        /**
-         * Set height of spinner wrapper
-         */
-        function setWrapperHeight() {
-            $timeout(function () {
-                var elementHeight = $element.height() > 0 ? $element.height() : defaultHeight;
-                var elementParentHeight = $element.parent().height() > 0 ? $element.parent().height() : defaultHeight;
-
-                if (ctrl.isShowSpinner) {
-                    $element.find('.loader-wrapper').height(elementParentHeight || elementHeight);
-                    $element.find('.loader-wrapper').addClass('appeared');
-                }
-
-                if (ctrl.isShowError) {
-                    $element.find('.loading-error').height(elementHeight || elementParentHeight);
-                    $element.find('.loading-error').addClass('appeared');
-                }
-            });
-        }
-
         //
         // Private methods
         //
 
         /**
          * Show given loading spinner
-         * @param {Object} ev - angular event object
-         * @param {Object} args - arguments passed from $broadcast
          */
-        function showSpinner(ev, args) {
-            if (args.name === ctrl.name) {
-                ctrl.isShowError = false;
-                ctrl.isShowContent = false;
-                ctrl.isShowSpinner = true;
-                ctrl.setWrapperHeight();
-            }
+        function showSpinner() {
+            ctrl.isShowError = false;
+            ctrl.isShowContent = false;
+            ctrl.isShowSpinner = true;
         }
 
         /**
          * Hide given loading spinner
-         * @param {Object} ev - angular event object
-         * @param {Object} args - arguments passed from $broadcast
          */
-        function hideSpinner(ev, args) {
-            if (args.name === ctrl.name) {
-                ctrl.isShowSpinner = false;
-                $timeout(function () {
-                    ctrl.isShowContent = true;
-                }, 2);
-            }
+        function hideSpinner() {
+            ctrl.isShowSpinner = false;
+            ctrl.isShowContent = true;
         }
 
         /**
          * Show given loading error
-         * @param {Object} ev - angular event object
-         * @param {Object} args - arguments passed from $broadcast
          */
-        function showError(ev, args) {
-            if (args.name === ctrl.name) {
-                ctrl.isShowError = true;
-                ctrl.isShowSpinner = false;
-                ctrl.setWrapperHeight();
-            }
+        function showError() {
+            ctrl.isShowError = true;
+            ctrl.isShowSpinner = false;
         }
 
         /**
          * Hide given loading error
-         * @param {Object} ev - angular event object
-         * @param {Object} args - arguments passed from $broadcast
          */
-        function hideError(ev, args) {
-            if (args.name === ctrl.name) {
-                ctrl.isShowError = false;
-            }
+        function hideError() {
+            ctrl.isShowError = false;
         }
     }
 }());

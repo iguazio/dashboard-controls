@@ -1,6 +1,7 @@
 <div class="element-loading-status" data-ng-class="'loading-status-' + $ctrl.loadingStatusSize">
     <div class="loader-wrapper" data-ng-if="$ctrl.isShowSpinner">
         <div class="loader-fading-circle"
+             data-ng-if="!$ctrl.textStatus"
              data-uib-tooltip="{{$ctrl.tooltipLabel}}"
              data-tooltip-placement="top"
              data-tooltip-popup-delay="100"
@@ -18,6 +19,7 @@
             <div class="loader-circle11 loader-circle"></div>
             <div class="loader-circle12 loader-circle"></div>
         </div>
+        <div data-ng-if="$ctrl.textStatus" class="loader-text">{{ 'common:LOADING_CAPITALIZE_ELLIPSIS' | i18next }}</div>
     </div>
 
     <div data-ng-if="$ctrl.isShowContent && !$ctrl.isShowError">
