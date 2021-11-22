@@ -17,9 +17,8 @@
             transclude: true
         });
 
-    function IgzElementLoadingStatusController($element, $scope, $state, $timeout, $i18next, i18next, lodash) {
+    function IgzElementLoadingStatusController($element, $scope, $state, $i18next, i18next, lodash) {
         var ctrl = this;
-        var defaultHeight = 0;
         var lng = i18next.language;
 
         ctrl.isShowSpinner = true;
@@ -65,8 +64,6 @@
                     refresh: true
                 });
             }
-
-            defaultHeight = ctrl.loadingStatusSize === 'small' ? 20 : 40;
         }
 
         //
