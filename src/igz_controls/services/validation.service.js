@@ -295,12 +295,6 @@
                     pattern: /^([a-z0-9]([^/]*[a-z0-9])?\/)?[^/]+$/
                 },
                 {
-                    name: 'prefixNotStart',
-                    label: '[' + $i18next.t('functions:PREFIX', { lng: lng }) + '] ' +
-                        $i18next.t('functions:NOT_START_WITH_FORBIDDEN_WORDS', { lng: lng }),
-                    pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)(?!nuclio\.io\/)/
-                },
-                {
                     name: 'prefixMaxLength',
                     label: '[' + $i18next.t('functions:PREFIX', { lng: lng }) + '] ' +
                         $i18next.t('common:MAX_LENGTH_CHARACTERS',
@@ -330,7 +324,6 @@
                     generateRule.validCharacters('a-z A-Z 0-9 - _ .'),
                     generateRule.beginNotWith('0-9 .')
                 ],
-                prefixedQualifiedName: commonRules.prefixedQualifiedName,
                 qualifiedName: [
                     generateRule.validCharacters('a-z A-Z 0-9 - _ .'),
                     generateRule.beginEndWith('a-z A-Z 0-9'),
@@ -358,9 +351,25 @@
                     generateRule.length({ max: lengths.function.name })
                 ),
                 label: {
-                    key: commonRules.prefixedQualifiedName.concat(generateRule.length({
-                        max: lengths.function.label.key
-                    }))
+                    key: commonRules.prefixedQualifiedName.concat(
+                        {
+                            name: 'prefixNotStart',
+                            label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' +
+                                $i18next.t('functions:NOT_START_WITH_FORBIDDEN_WORDS_LABEL', {lng: lng}),
+                            pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)(?!nuclio\.io\/)/
+                        },
+                        generateRule.length({
+                            max: lengths.function.label.key
+                        }))
+                },
+                annotation: {
+                    key: commonRules.prefixedQualifiedName.concat(
+                        {
+                            name: 'prefixNotStart',
+                            label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' +
+                                $i18next.t('functions:NOT_START_WITH_FORBIDDEN_WORDS_ANNOTATION', {lng: lng}),
+                            pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)/
+                        })
                 },
                 itemPath: [generateRule.length({ max: lengths.function.itemPath })],
                 subscriptionQoS: [
