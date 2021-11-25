@@ -38,7 +38,7 @@
             name: $i18next.t('functions:TOOLTIP.ANNOTATION', { lng: lng })
         });
         ctrl.validationRules = {
-            key: ValidationService.getValidationRules('k8s.prefixedQualifiedName', [
+            key: ValidationService.getValidationRules('function.annotation.key', [
                 {
                     name: 'uniqueness',
                     label: $i18next.t('functions:UNIQUENESS', { lng: lng }),
