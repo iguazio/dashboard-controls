@@ -298,7 +298,7 @@
                     name: 'prefixNotStart',
                     label: '[' + $i18next.t('functions:PREFIX', { lng: lng }) + '] ' +
                         $i18next.t('functions:NOT_START_WITH_FORBIDDEN_WORDS', { lng: lng }),
-                    pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)(?!nuclio\.io\/)/
+                    pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)/
                 },
                 {
                     name: 'prefixMaxLength',
