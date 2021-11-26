@@ -43,7 +43,11 @@
                 $timeout(initColumnsWidths);
                 $timeout(initElements);
 
-                angular.element($window).on('resize', reloadColumns);
+                angular.element($window).on('resize', function () {
+                    $timeout(function () {
+                        reloadColumns()
+                    }, 200)
+                });
                 $scope.$on('reload-columns', reloadColumns);
                 $scope.$on('resizable-table-column_reset-data', resetData);
                 $scope.$on('$destroy', onDestroy);
@@ -243,7 +247,7 @@
                             columnWidth: ctrl.columnHeadWidth + 'px',
                             nextColumnWidth: ctrl.nextBlockWidth + 'px'
                         });
-                    }, 200);
+                    });
                 }
             }
 

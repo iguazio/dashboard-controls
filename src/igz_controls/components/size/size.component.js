@@ -341,7 +341,7 @@
             $scope.$on('info-page-pane_toggled', updateChart);
             $scope.$on('resize-size-cells', updateChart);
 
-            timeout = $timeout(updateChart);
+            updateChart();
         }
 
         /**
