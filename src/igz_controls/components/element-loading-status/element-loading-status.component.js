@@ -21,10 +21,16 @@
         var ctrl = this;
         var lng = i18next.language;
 
-        ctrl.isShowSpinner = true;
         ctrl.isShowContent = false;
         ctrl.isShowError = false;
+        ctrl.isShowSpinner = true;
 
+        ctrl.deregisterHideError = null;
+        ctrl.deregisterHideSpinner = null;
+        ctrl.deregisterShowError = null;
+        ctrl.deregisterShowSpinner = null;
+
+        ctrl.$onDestroy = onDestroy;
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
 
@@ -36,20 +42,24 @@
         //
 
         /**
+         * Destructor method
+         */
+        function onDestroy() {
+            deregisterBroadcasts();
+        }
+
+        /**
          * Initialization method
          */
         function onInit() {
-            $scope.$on('element-loading-status_show-spinner_' + ctrl.name, showSpinner);
-            $scope.$on('element-loading-status_hide-spinner_' + ctrl.name, hideSpinner);
-
-            $scope.$on('element-loading-status_show-error_' + ctrl.name, showError);
-            $scope.$on('element-loading-status_hide-error_' + ctrl.name, hideError);
+            registerBroadcasts();
         }
 
         /**
          * Changes method
+         * @param {Object} changes
          */
-        function onChanges() {
+        function onChanges(changes) {
             lodash.defaults(ctrl, {
                 loadingStatusSize: 'default',
                 refresh: false,
@@ -63,6 +73,11 @@
                     title: $i18next.t('common:OOPS', { lng: lng }),
                     refresh: true
                 });
+            }
+
+            if (changes && changes.name && changes.name.currentValue !== changes.name.previousValue) {
+                deregisterBroadcasts();
+                registerBroadcasts();
             }
         }
 
@@ -95,12 +110,20 @@
         //
 
         /**
-         * Show given loading spinner
+         * Deregister broadcasts
          */
-        function showSpinner() {
+        function deregisterBroadcasts() {
+            ctrl.deregisterHideError();
+            ctrl.deregisterHideSpinner();
+            ctrl.deregisterShowError();
+            ctrl.deregisterShowSpinner();
+        }
+
+        /**
+         * Hide given loading error
+         */
+        function hideError() {
             ctrl.isShowError = false;
-            ctrl.isShowContent = false;
-            ctrl.isShowSpinner = true;
         }
 
         /**
@@ -112,6 +135,16 @@
         }
 
         /**
+         * Register broadcasts
+         */
+        function registerBroadcasts() {
+            ctrl.deregisterHideError = $scope.$on('element-loading-status_hide-error_' + ctrl.name, hideError);
+            ctrl.deregisterHideSpinner = $scope.$on('element-loading-status_hide-spinner_' + ctrl.name, hideSpinner);
+            ctrl.deregisterShowError = $scope.$on('element-loading-status_show-error_' + ctrl.name, showError);
+            ctrl.deregisterShowSpinner = $scope.$on('element-loading-status_show-spinner_' + ctrl.name, showSpinner);
+        }
+
+        /**
          * Show given loading error
          */
         function showError() {
@@ -120,10 +153,12 @@
         }
 
         /**
-         * Hide given loading error
+         * Show given loading spinner
          */
-        function hideError() {
+        function showSpinner() {
             ctrl.isShowError = false;
+            ctrl.isShowContent = false;
+            ctrl.isShowSpinner = true;
         }
     }
 }());
