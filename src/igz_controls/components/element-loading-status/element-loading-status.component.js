@@ -75,7 +75,10 @@
                 });
             }
 
-            if (changes && changes.name && changes.name.currentValue !== changes.name.previousValue) {
+            if (changes &&
+                changes.name &&
+                !lodash.isEmpty(changes.name.previousValue) &&
+                changes.name.currentValue !== changes.name.previousValue) {
                 deregisterBroadcasts();
                 registerBroadcasts();
             }

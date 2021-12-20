@@ -718,9 +718,7 @@
                     lodash.set(aFunction, 'ui.error.' + type, error.msg);
 
                     $timeout(function () {
-                        $rootScope.$broadcast('element-loading-status_hide-spinner', {
-                            name: type + '-' + aFunction.metadata.name
-                        });
+                        ElementLoadingStatusService.hideSpinner(type + '-' + aFunction.metadata.name);
                     });
                 });
             }
