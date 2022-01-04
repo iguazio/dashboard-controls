@@ -5,7 +5,8 @@
         .component('nclVersionConfigurationAnnotations', {
             bindings: {
                 version: '<',
-                onChangeCallback: '<'
+                onChangeCallback: '<',
+                isFunctionDeploying: '&'
             },
             templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-annotations/version-configuration-annotations.tpl.html',
             controller: NclVersionConfigurationAnnotationsController
@@ -109,6 +110,10 @@
          * Adds new annotation
          */
         function addNewAnnotation(event) {
+            if (ctrl.isFunctionDeploying()) {
+                return;
+            }
+
             $timeout(function () {
                 if (ctrl.annotations.length < 1 || lodash.last(ctrl.annotations).ui.isFormValid) {
                     ctrl.annotations.push({

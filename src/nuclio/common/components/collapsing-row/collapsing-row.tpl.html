@@ -1,5 +1,6 @@
 <div class="ncl-collapsing-row">
-    <div class="title-block common-table-row" data-ng-class="{'collapsed': !$ctrl.item.ui.editModeActive}">
+    <div class="title-block common-table-row"
+         data-ng-class="{'collapsed': !$ctrl.item.ui.editModeActive}">
         <div class="common-table-cell row-collapse">
             <span class="collapse-icon"
                   data-ng-click="$ctrl.onCollapse($event)"
@@ -108,12 +109,16 @@
         </div>
         <div data-ng-transclude class="igz-col-100" data-ng-if="$ctrl.item.ui.editModeActive"></div>
 
-        <div class="common-table-cell actions-menu" data-ng-if="::$ctrl.showDotMenu()">
+        <div class="common-table-cell actions-menu"
+             data-ng-hide="$ctrl.readOnly"
+             data-ng-if="::$ctrl.showDotMenu()">
             <igz-action-menu data-actions="$ctrl.actions"
                              data-on-fire-action="$ctrl.onFireAction">
             </igz-action-menu>
         </div>
-        <div class="common-table-cell single-action" data-ng-if="::!$ctrl.showDotMenu()">
+        <div class="common-table-cell single-action"
+             data-ng-hide="$ctrl.readOnly"
+             data-ng-if="::!$ctrl.showDotMenu()">
             <div class="igz-action-panel">
                 <div class="actions-list">
                     <div class="igz-action-item"

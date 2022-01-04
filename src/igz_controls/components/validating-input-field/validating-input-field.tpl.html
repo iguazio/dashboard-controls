@@ -158,7 +158,9 @@
         </div>
     </div>
 
-    <div data-ng-if="$ctrl.selectedFieldType === 'schedule'" class="schedule-input-wrapper">
+    <div data-ng-if="$ctrl.selectedFieldType === 'schedule'"
+         data-ng-hide="$ctrl.readOnly"
+         class="schedule-input-wrapper">
         <cron-selection class="field"
                         data-ng-class="{invalid: $ctrl.isFieldInvalid()}"
                         data-ng-model="$ctrl.data"

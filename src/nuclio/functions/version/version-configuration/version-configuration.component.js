@@ -4,7 +4,8 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclVersionConfiguration', {
             bindings: {
-                version: '<'
+                version: '<',
+                isFunctionDeploying: '&'
             },
             templateUrl: 'nuclio/functions/version/version-configuration/version-configuration.tpl.html',
             controller: NclVersionConfigurationController

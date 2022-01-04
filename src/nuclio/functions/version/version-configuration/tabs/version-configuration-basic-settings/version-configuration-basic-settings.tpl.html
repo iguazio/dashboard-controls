@@ -5,6 +5,7 @@
             <input type="checkbox"
                    class="small"
                    id="enable"
+                   data-ng-disabled="$ctrl.isFunctionDeploying()"
                    data-ng-model="$ctrl.enableFunction"
                    data-ng-change="$ctrl.updateEnableStatus()">
             <label for="enable" class="checkbox-inline">{{ 'common:ENABLED' | i18next }}</label>
@@ -13,7 +14,11 @@
             <div class="timeout-block">
                 <div class="label">
                     <div class="timeout-checkbox">
-                        <input type="checkbox" class="small" id="timeout" data-ng-model="$ctrl.enableTimeout">
+                        <input type="checkbox"
+                               class="small"
+                               id="timeout"
+                               data-ng-disabled="$ctrl.isFunctionDeploying()"
+                               data-ng-model="$ctrl.enableTimeout">
                         <label for="timeout" class="checkbox-inline">{{ 'functions:TIMEOUT' | i18next }}</label>
                     </div>
                 </div>
@@ -24,6 +29,7 @@
                                                     data-input-value="$ctrl.timeout.min"
                                                     data-is-focused="false"
                                                     data-is-disabled="!$ctrl.enableTimeout"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="timeout.min"
                                                     data-form-object="$ctrl.basicSettingsForm"
@@ -37,6 +43,7 @@
                                                     data-input-value="$ctrl.timeout.sec"
                                                     data-is-focused="false"
                                                     data-is-disabled="!$ctrl.enableTimeout"
+                                                    data-read-only="$ctrl.isFunctionDeploying()"
                                                     data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                     data-update-data-field="timeout.sec"
                                                     data-form-object="$ctrl.basicSettingsForm"
@@ -56,6 +63,7 @@
                                             data-input-name="description"
                                             data-input-value="$ctrl.version.spec.description"
                                             data-is-focused="false"
+                                            data-read-only="$ctrl.isFunctionDeploying()"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="spec.description"
                                             data-form-object="$ctrl.basicSettingsForm"
@@ -68,6 +76,7 @@
                 <div class="label">{{ 'functions:SERVICE_ACCOUNT' | i18next }}</div>
                 <igz-validating-input-field data-field-type="input"
                                             data-input-name="serviceAccount"
+                                            data-read-only="$ctrl.isFunctionDeploying()"
                                             data-input-value="$ctrl.version.spec.serviceAccount"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="spec.serviceAccount"
@@ -86,6 +95,7 @@
                                   data-value-step="1"
                                   data-min-value="0"
                                   data-max-value="2147483647"
+                                  data-is-disabled="$ctrl.isFunctionDeploying()"
                                   data-form-object="$ctrl.basicSettingsForm"
                                   data-input-name="run_as_user"
                                   data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)"
@@ -99,6 +109,7 @@
                                   data-value-step="1"
                                   data-min-value="0"
                                   data-max-value="2147483647"
+                                  data-is-disabled="$ctrl.isFunctionDeploying()"
                                   data-form-object="$ctrl.basicSettingsForm"
                                   data-input-name="run_as_group"
                                   data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)"
@@ -112,6 +123,7 @@
                                   data-value-step="1"
                                   data-min-value="0"
                                   data-max-value="2147483647"
+                                  data-is-disabled="$ctrl.isFunctionDeploying()"
                                   data-form-object="$ctrl.basicSettingsForm"
                                   data-input-name="fs_group"
                                   data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)"
@@ -128,6 +140,7 @@
                                           data-select-property-only="id"
                                           data-values-array="$ctrl.logLevelValues"
                                           data-item-select-callback="$ctrl.setPriority(item)"
+                                          data-read-only="$ctrl.isFunctionDeploying()"
                                           data-enable-overlap="true"
                                           data-prevent-drop-up="true">
                     </igz-default-dropdown>
@@ -137,6 +150,7 @@
                     <span class="label">{{ 'functions:LOGGER_DESTINATION' | i18next }}</span>
                     <igz-validating-input-field data-field-type="input"
                                                 data-input-name="arguments"
+                                                data-read-only="$ctrl.isFunctionDeploying()"
                                                 data-input-value="$ctrl.version.spec.loggerSinks[0].sink"
                                                 data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                                 data-update-data-field="spec.loggerSinks[0].sink"

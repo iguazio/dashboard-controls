@@ -31,7 +31,7 @@
                                      data-item-index="$index"
                                      data-use-type="false"
                                      data-validation-rules="$ctrl.validationRules"
-                                     data-is-disabled="$ctrl.isLabelsDisabled()"
+                                     data-is-disabled="$ctrl.isLabelsDisabled() || $ctrl.isFunctionDeploying()"
                                      data-action-handler-callback="$ctrl.handleAction(actionType, index)"
                                      data-change-data-callback="$ctrl.onChangeData(newData, index)"
                                      data-submit-on-fly="true"
@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="igz-create-button create-label-button"
-             data-ng-class="{'disabled': $ctrl.isLabelsDisabled()}"
+             data-ng-class="{'disabled': $ctrl.isLabelsDisabled() || $ctrl.isFunctionDeploying()}"
              data-ng-click="$ctrl.addNewLabel($event)"
              data-uib-tooltip="{{$ctrl.isLabelsDisabled() ? $ctrl.addNewLabelTooltip : ''}}"
              data-tooltip-append-to-body="true"

@@ -5,7 +5,8 @@
         .component('nclVersionConfigurationRuntimeAttributes', {
             bindings: {
                 version: '<',
-                onChangeCallback: '<'
+                onChangeCallback: '<',
+                isFunctionDeploying: '&'
             },
             templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-runtime-attributes/version-configuration-runtime-attributes.tpl.html',
             controller: NclVersionConfigurationRuntimeAttributesController
@@ -107,6 +108,10 @@
          * Adds new Attribute
          */
         function addNewAttribute(event) {
+            if (ctrl.isFunctionDeploying()) {
+                return;
+            }
+
             $timeout(function () {
                 if (ctrl.attributes.length < 1 || lodash.last(ctrl.attributes).ui.isFormValid) {
                     ctrl.attributes.push({

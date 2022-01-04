@@ -10,7 +10,8 @@
                 validationRules: '<',
                 inputValueCallback: '&',
                 numberInputCallback: '&',
-                onSelectDropdownValue: '&'
+                onSelectDropdownValue: '&',
+                readOnly: '<?'
             },
             templateUrl: 'nuclio/common/components/edit-item/edit-item-field/edit-item-field.tpl.html',
             controller: NclEditItemFieldController

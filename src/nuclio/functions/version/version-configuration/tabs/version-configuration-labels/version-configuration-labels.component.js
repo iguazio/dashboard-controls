@@ -5,7 +5,8 @@
         .component('nclVersionConfigurationLabels', {
             bindings: {
                 version: '<',
-                onChangeCallback: '<'
+                onChangeCallback: '<',
+                isFunctionDeploying: '&'
             },
             templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-labels/version-configuration-labels.tpl.html',
             controller: NclVersionConfigurationLabelsController
@@ -118,7 +119,7 @@
          */
         function addNewLabel(event) {
             // prevent adding labels for deployed functions
-            if (ctrl.isLabelsDisabled()) {
+            if (ctrl.isLabelsDisabled() || ctrl.isFunctionDeploying()) {
                 return;
             }
 

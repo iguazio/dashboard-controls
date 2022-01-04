@@ -6,7 +6,8 @@
         .component('nclVersionConfigurationResources', {
             bindings: {
                 version: '<',
-                onChangeCallback: '<'
+                onChangeCallback: '<',
+                isFunctionDeploying: '&'
             },
             templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-resources/version-configuration-resources.tpl.html',
             controller: NclVersionConfigurationResourcesController
@@ -172,6 +173,10 @@
          * param {Event} event - native event object
          */
         function addNewNodeSelector(event) {
+            if (ctrl.isFunctionDeploying()) {
+                return;
+            }
+
             $timeout(function () {
                 if (ctrl.nodeSelectors.length < 1 || lodash.last(ctrl.nodeSelectors).ui.isFormValid) {
                     ctrl.nodeSelectors.push({
@@ -725,7 +730,9 @@
                     stepsArray: scaleToZero.inactivityWindowPresets,
                     showTicks: true,
                     showTicksValues: true,
-                    disabled: !Number.isSafeInteger(ctrl.minReplicas) || ctrl.minReplicas > 0,
+                    disabled: !Number.isSafeInteger(ctrl.minReplicas) ||
+                              ctrl.minReplicas > 0                    ||
+                              ctrl.isFunctionDeploying(),
                     onChange: function (_, newValue) {
                         lodash.forEach(scaleResources, function (value) {
                             value.windowSize = newValue;
@@ -746,7 +753,7 @@
             var minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
             var maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
             var disabled = !lodash.isNumber(minReplicas) || !lodash.isNumber(maxReplicas) || maxReplicas <= 1 ||
-                minReplicas === maxReplicas;
+                minReplicas === maxReplicas || ctrl.isFunctionDeploying();
             var targetCpuValue = lodash.get(ctrl.version, 'spec.targetCPU', 75);
 
             ctrl.targetCpuValueUnit = disabled ? '' : '%';

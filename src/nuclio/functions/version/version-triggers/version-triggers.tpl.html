@@ -26,12 +26,14 @@
                 <ncl-collapsing-row data-ng-repeat="trigger in $ctrl.triggers track by trigger.name"
                                     data-item="trigger"
                                     data-type="trigger"
+                                    data-read-only="$ctrl.isFunctionDeploying()"
                                     data-delete-test-id="functions.triggers_delete.button"
                                     data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem)">
                     <ncl-edit-item class="common-table-cells-container edit-trigger-row"
                                    data-item="trigger"
                                    data-class-list="$ctrl.classList"
                                    data-type="trigger"
+                                   data-read-only="$ctrl.isFunctionDeploying()"
                                    data-validation-rules="$ctrl.validationRules"
                                    data-default-fields="$ctrl.defaultFields"
                                    data-on-select-class-callback="$ctrl.checkClassUniqueness()"
@@ -39,6 +41,7 @@
                     </ncl-edit-item>
                 </ncl-collapsing-row>
                 <div class="common-table-row create-trigger-button igz-create-button"
+                     data-ng-class="{'disabled': $ctrl.isFunctionDeploying()}"
                      data-ng-if="$ctrl.isCreateNewTriggerEnabled()"
                      data-ng-click="$ctrl.createTrigger($event)">
                     <span class="igz-icon-add-round"></span>

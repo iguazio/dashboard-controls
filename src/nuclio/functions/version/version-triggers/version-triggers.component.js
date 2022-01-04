@@ -5,7 +5,8 @@
         .component('nclVersionTriggers', {
             bindings: {
                 containers: '<?',
-                version: '<'
+                version: '<',
+                isFunctionDeploying: '&'
             },
             templateUrl: 'nuclio/functions/version/version-triggers/version-triggers.tpl.html',
             controller: NclVersionTriggersController
@@ -172,6 +173,10 @@
          * @returns {Promise}
          */
         function createTrigger(event) {
+            if (ctrl.isFunctionDeploying()) {
+                return;
+            }
+
             $timeout(function () {
                 if (ctrl.isCreateNewTriggerEnabled()) {
                     ctrl.triggers.push(createTriggerItem());

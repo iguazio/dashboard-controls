@@ -17,6 +17,7 @@
         data-input-name="item_{{$ctrl.field.name}}"
         data-input-value="$ctrl.getFieldValue()"
         data-is-focused="false"
+        data-read-only="$ctrl.readOnly"
         data-form-object="$ctrl.editItemForm"
         data-validation-rules="$ctrl.validationRules[$ctrl.field.pattern]"
         data-validation-is-required="!$ctrl.field.allowEmpty"
@@ -31,6 +32,7 @@
         data-input-name="item_{{$ctrl.field.name}}"
         data-input-value="$ctrl.getFieldValue()"
         data-is-focused="false"
+        data-read-only="$ctrl.readOnly"
         data-form-object="$ctrl.editItemForm"
         data-validation-rules="$ctrl.fieldTypeValidationRules.arrayInt"
         data-validation-is-required="!$ctrl.field.allowEmpty"
@@ -47,6 +49,7 @@
         data-form-object="$ctrl.editItemForm"
         data-is-required="!$ctrl.field.allowEmpty"
         data-prevent-drop-up="true"
+        data-read-only="$ctrl.readOnly"
         data-input-name="item_{{$ctrl.field.name}}"
         data-selected-item="$ctrl.getFieldValue()"
         data-item-select-callback="$ctrl.onSelectDropdownValue({item: item, field: field})"
@@ -67,6 +70,7 @@
         data-suffix-unit="{{$ctrl.field.unit}}"
         data-validation-is-required="!$ctrl.field.allowEmpty"
         data-allow-empty-field="$ctrl.field.allowEmpty"
+        data-is-disabled="$ctrl.readOnly"
         data-min-value="$ctrl.field.min"
         data-max-value="$ctrl.field.max">
 </igz-number-input>

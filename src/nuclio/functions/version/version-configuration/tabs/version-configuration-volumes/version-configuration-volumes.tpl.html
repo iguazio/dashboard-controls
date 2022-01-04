@@ -31,12 +31,14 @@
                                             data-item="volume"
                                             data-item-index="$index"
                                             data-type="volume"
+                                            data-read-only="$ctrl.isFunctionDeploying()"
                                             data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem, index)">
                             <ncl-edit-item class="common-table-cells-container edit-volume-row"
                                            data-item="volume"
                                            data-class-list="$ctrl.classList"
                                            data-class-placeholder="{{ 'functions:PLACEHOLDER.SELECT_TYPE' | i18next }}"
                                            data-type="volume"
+                                           data-read-only="$ctrl.isFunctionDeploying()"
                                            data-validation-rules="$ctrl.validationRules"
                                            data-max-lengths="$ctrl.maxLengths"
                                            data-on-submit-callback="$ctrl.editVolumeCallback(item)">
@@ -46,7 +48,8 @@
                 </div>
             </div>
         </div>
-        <div class="create-volume-button igz-create-button"
+        <div class="igz-create-button create-volume-button"
+             data-ng-class="{'disabled': $ctrl.isFunctionDeploying()}"
              data-ng-click="$ctrl.createVolume($event)">
             <span class="igz-icon-add-round"></span>
             {{ 'functions:CREATE_NEW_VOLUME' | i18next }}

@@ -13,7 +13,8 @@
                 onSubmitCallback: '&',
                 validationRules: '<?',
                 maxLengths: '<?',
-                defaultFields: '<?'
+                defaultFields: '<?',
+                readOnly: '<?'
             },
             templateUrl: 'nuclio/common/components/edit-item/edit-item.tpl.html',
             controller: NclEditItemController
@@ -299,6 +300,10 @@
          * @param {Event} event
          */
         function addNewIngress(event) {
+            if (ctrl.readOnly) {
+                return;
+            }
+
             $timeout(function () {
                 if (ctrl.ingresses.length < 1 || lodash.chain(ctrl.ingresses).last().get('ui.isFormValid', true).value()) {
                     ctrl.ingresses.push({
@@ -321,6 +326,10 @@
          * @param {Event} event
          */
         function addNewAnnotation(event) {
+            if (ctrl.readOnly) {
+                return;
+            }
+
             $timeout(function () {
                 if (ctrl.annotations.length < 1 || lodash.last(ctrl.annotations).ui.isFormValid) {
                     ctrl.annotations.push({
@@ -342,6 +351,10 @@
          * @param {Event} event
          */
         function addNewSubscription(event) {
+            if (ctrl.readOnly) {
+                return;
+            }
+
             $timeout(function () {
                 if (ctrl.subscriptions.length < 1 || lodash.last(ctrl.subscriptions).ui.isFormValid) {
                     ctrl.subscriptions.push({
@@ -363,6 +376,10 @@
          * @param {Event} event
          */
         function addNewTopic(event) {
+            if (ctrl.readOnly) {
+                return;
+            }
+
             $timeout(function () {
                 if (ctrl.topics.length < 1 || lodash.last(ctrl.topics).ui.isFormValid) {
                     ctrl.topics.push({
@@ -384,6 +401,10 @@
          * @param {Event} event
          */
         function addNewBroker(event) {
+            if (ctrl.readOnly) {
+                return;
+            }
+
             $timeout(function () {
                 if (ctrl.brokers.length < 1 || lodash.last(ctrl.brokers).ui.isFormValid) {
                     ctrl.brokers.push({
@@ -405,6 +426,10 @@
          * @param {Event} event - native event object
          */
         function addNewEventHeader(event) {
+            if (ctrl.readOnly) {
+                return;
+            }
+
             $timeout(function () {
                 if (ctrl.eventHeaders.length < 1 || lodash.last(ctrl.eventHeaders).ui.isFormValid) {
                     ctrl.eventHeaders.push({
