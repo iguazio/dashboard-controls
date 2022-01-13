@@ -70,7 +70,7 @@
             }
 
             return data.replace(/(\s*-)\s*\n\s+/g, '$1 ')
-                .replace(/(:\s)"(.+)"/g, '$1\'$2\'')
+                .replace(/(:\s)"(.+)"$/g, '$1\'$2\'')
                 .replace(/(:\s)"{2}/g, '$1\'\'')
                 .replace(/([^\\"])("+)/g, replacer)
                 .replace(/'(.+)'(:)/g, '"$1"$2')
