@@ -11,7 +11,7 @@
             controller: NclFunctionConfigDialogController
         });
 
-    function NclFunctionConfigDialogController(ExportService) {
+    function NclFunctionConfigDialogController(ExportService, MaskService) {
         var ctrl = this;
 
         ctrl.$onInit = onInit;
@@ -24,8 +24,10 @@
          * Initialization method
          */
         function onInit() {
+            var functionWithMask = MaskService.getObjectWithMask(ctrl.function);
             ctrl.title = ctrl.function.metadata.name + ' - configuration';
-            ctrl.sourceCode = ExportService.getFunctionConfig(ctrl.function);
+
+            ctrl.sourceCode = ExportService.getFunctionConfig(functionWithMask);
         }
     }
 }());

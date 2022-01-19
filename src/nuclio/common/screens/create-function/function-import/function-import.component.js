@@ -16,7 +16,8 @@
         });
 
     function FunctionImportController($document, $rootScope, $scope, $state, $timeout, $i18next, i18next, YAML, lodash,
-                                      DialogsService, EventHelperService, FunctionsService) {
+                                      DialogsService, EventHelperService, FunctionsService, MaskService,
+                                      YamlService) {
         var ctrl = this;
 
         var importedFunction = null;
@@ -140,12 +141,13 @@
                     importedFunction = YAML.parse(reader.result);
 
                     if (lodash.has(importedFunction, 'metadata.name')) {
-                        ctrl.sourceCode = reader.result;
+                        ctrl.sourceCode =
+                            YamlService.prepareYamlObject(MaskService.getObjectWithMask(importedFunction));
 
                         $scope.$apply();
                         $rootScope.$broadcast('function-import-source-code', ctrl.sourceCode);
                     } else {
-                        throw new Error('invalid yaml')
+                        throw new Error('invalid yaml');
                     }
                 } catch (error) {
                     DialogsService.alert($i18next.t('common:ERROR_MSG.IMPORT_YAML_FILE', {lng: lng}));

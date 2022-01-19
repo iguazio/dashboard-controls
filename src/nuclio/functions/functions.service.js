@@ -688,7 +688,7 @@
                                 name: 'accessKeyID',
                                 label: $i18next.t('functions:ACCESS_KEY_ID', { lng: lng }),
                                 type: 'input',
-                                fieldType: 'input',
+                                fieldType: 'password',
                                 path: 'attributes.accessKeyID',
                                 placeholder: $i18next.t('functions:PLACEHOLDER.ENTER_ACCESS_KEY_ID', { lng: lng }),
                                 allowEmpty: false
@@ -696,7 +696,7 @@
                             {
                                 name: 'secretAccessKey',
                                 type: 'input',
-                                fieldType: 'input',
+                                fieldType: 'password',
                                 path: 'attributes.secretAccessKey',
                                 allowEmpty: false
                             },
