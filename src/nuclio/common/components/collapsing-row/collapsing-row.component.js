@@ -16,7 +16,8 @@
             transclude: true
         });
 
-    function NclCollapsingRowController($i18next, $timeout, i18next, lodash, DialogsService, FunctionsService) {
+    function NclCollapsingRowController($i18next, $timeout, i18next, lodash, DialogsService, FunctionsService,
+                                        MaskService) {
         var ctrl = this;
         var lng = i18next.language;
 
@@ -26,6 +27,7 @@
 
         ctrl.isNil = lodash.isNil;
         ctrl.isNumber = lodash.isNumber;
+        ctrl.getMask = MaskService.getMask;
 
         ctrl.getAttributeValue = getAttributeValue;
         ctrl.isVolumeType = isVolumeType;
@@ -71,7 +73,16 @@
          * @returns {string|Object}
          */
         function getAttributeValue(key, value) {
-            return key === 'schedule' ? '0 ' + value : value;
+            var attrValue = value;
+
+            if (key === 'schedule') {
+                attrValue = '0 ' + value;
+            } else if (MaskService.commonSensitiveFields.includes(key) || key === 'sasl') {
+                attrValue = typeof value === 'string' ? MaskService.getMask(value) :
+                                                        MaskService.getObjectWithMask(value);
+            }
+
+            return attrValue;
         }
 
         /**

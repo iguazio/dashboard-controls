@@ -61,7 +61,7 @@
                         <span class="field-label">{{ 'functions:WORKER_AVAILABILITY_TIMEOUT' | i18next }}</span>:&nbsp;{{ $ctrl.item.workerAvailabilityTimeoutMilliseconds }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.secret)">
-                        <span class="field-label">{{ 'functions:SECRET' | i18next }}</span>:&nbsp;{{ $ctrl.item.secret }};&nbsp;
+                        <span class="field-label">{{ 'functions:SECRET' | i18next }}</span>:&nbsp;{{ $ctrl.getMask($ctrl.item.secret) }};&nbsp;
                     </span>
                     <span data-ng-repeat="(key, value) in $ctrl.item.attributes">
                         <span class="field-label">{{ key }}</span>:&nbsp;{{ $ctrl.getAttributeValue(key, value) }};&nbsp;
@@ -73,7 +73,7 @@
                         <span class="field-label">{{ 'common:USERNAME' | i18next }}</span>:&nbsp;{{ $ctrl.item.username }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.password)">
-                        <span class="field-label">{{ 'common:PASSWORD' | i18next }}</span>:&nbsp;{{ $ctrl.item.password }};&nbsp;
+                        <span class="field-label">{{ 'common:PASSWORD' | i18next }}</span>:&nbsp;{{ $ctrl.getMask($ctrl.item.password) }};&nbsp;
                     </span>
 
                     <!-- type Volume block -->
