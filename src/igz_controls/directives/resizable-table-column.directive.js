@@ -43,11 +43,7 @@
                 $timeout(initColumnsWidths);
                 $timeout(initElements);
 
-                angular.element($window).on('resize', function () {
-                    $timeout(function () {
-                        reloadColumns()
-                    }, 200)
-                });
+                angular.element($window).on('resize', reloadColumns);
                 $scope.$on('reload-columns', reloadColumns);
                 $scope.$on('resizable-table-column_reset-data', resetData);
                 $scope.$on('$destroy', onDestroy);
