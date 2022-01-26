@@ -53,7 +53,7 @@
          * @param {Object} changes
          */
         function onChanges(changes) {
-            if (changes.showChart.currentValue) {
+            if (changes && changes.showChart && changes.showChart.currentValue) {
                 timeout = $timeout(updateChart);
             }
         }
@@ -341,7 +341,7 @@
             $scope.$on('info-page-pane_toggled', updateChart);
             $scope.$on('resize-size-cells', updateChart);
 
-            updateChart();
+            timeout = $timeout(updateChart);
         }
 
         /**
