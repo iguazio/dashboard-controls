@@ -88,7 +88,6 @@
     "EDIT_PROJECT": "Edit Project",
     "ENDPOINT": "Endpoint",
     "ENTER_HOST_TO_SEE_ENDPOINT": "Enter host to see endpoint",
-    "ENVIRONMENT_VARIABLES": "Environment Variables",
     "ERROR_MSG": {
         "COULD_NOT_READ_FILE": "Could not read file...",
         "CREATE_FUNCTION_EVENT": "Error occurred while creating the new function event.",
