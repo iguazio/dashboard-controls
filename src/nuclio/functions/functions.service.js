@@ -7,6 +7,7 @@
     function FunctionsService($i18next, i18next, lodash, ngDialog, ConfigService, DialogsService) {
         var self = {
             checkedItem: '',
+            nuclioFunctionsGpu: 'kube_metrics_server_pods_gpu_utilization * on (pod) group_left(function_name)(nuclio_function_pod_labels)',
             getClassesList: getClassesList,
             getHandler: getHandler,
             getDisplayStatus: getDisplayStatus,

@@ -155,15 +155,15 @@
         };
         var functionsTableColSizes = {
             headerName: {
-                default: '12-5',
+                default: '10',
                 demo: '10'
             },
             rowName: {
-                default: '12-5',
+                default: '10',
                 demo: '10'
             },
             status: {
-                default: '12-5',
+                default: '10',
                 demo: '10'
             },
             replicas: {
@@ -183,16 +183,20 @@
                 demo: '10'
             },
             cpuCores: {
-                default: '15',
-                demo: '15'
+                default: '12-5',
+                demo: '12-5'
             },
             metricsSize: {
-                default: '15',
-                demo: '15'
+                default: '12-5',
+                demo: '12-5'
+            },
+            gpuCores: {
+                default: '12-5',
+                demo: '12-5'
             },
             metricsCount: {
-                default: '15',
-                demo: '15'
+                default: '12-5',
+                demo: '12-5'
             }
         };
 

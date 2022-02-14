@@ -33,6 +33,7 @@
 
         var METRICS = {
             FUNCTION_CPU: 'nuclio_function_cpu',
+            FUNCTION_GPU: encodeURI(FunctionsService.nuclioFunctionsGpu),
             FUNCTION_MEMORY: 'nuclio_function_mem',
             FUNCTION_EVENTS: 'nuclio_processor_handled_events_total'
         };
@@ -92,6 +93,11 @@
             {
                 label: $i18next.t('common:MEMORY', { lng: lng }),
                 value: 'ui.metrics.size',
+                active: false
+            },
+            {
+                label: $i18next.t('common:GPU_CORES', { lng: lng }),
+                value: 'ui.metrics[\'gpu.cores\']',
                 active: false
             },
             {
@@ -505,6 +511,7 @@
             if (!isRefresh) {
                 $timeout(function () {
                     hideSpinners(METRICS.FUNCTION_CPU);
+                    hideSpinners(METRICS.FUNCTION_GPU);
                     hideSpinners(METRICS.FUNCTION_MEMORY);
                     hideSpinners(METRICS.FUNCTION_EVENTS);
                 });
@@ -705,6 +712,11 @@
                 .then(parseData.bind(null, args.metric))
                 .catch(handleError.bind(null, args.metric));
 
+            args.metric = METRICS.FUNCTION_GPU;
+            ctrl.getStatistics(args)
+                .then(parseData.bind(null, args.metric))
+                .catch(handleError.bind(null, args.metric));
+
             args.metric = METRICS.FUNCTION_MEMORY;
             ctrl.getStatistics(args)
                 .then(parseData.bind(null, args.metric))
@@ -821,6 +833,15 @@
                                     })
                                 }
                             });
+                        } else if (type === METRICS.FUNCTION_GPU) {
+                            lodash.merge(aFunction.ui, {
+                                metrics: {
+                                    'gpu.cores': latestValue,
+                                    gpuCoresLineChartData: lodash.map(funcValues, function (dataPoint) {
+                                        return [dataPoint[0] * 1000, Number(dataPoint[1])]; // [time, value]
+                                    })
+                                }
+                            });
                         } else { // type === METRICS.FUNCTION_COUNT
                             lodash.merge(aFunction.ui, {
                                 metrics: {
@@ -838,6 +859,7 @@
 
                 // if the column values have just been updated, and the table is sorted by this column - update sort
                 if (type === METRICS.FUNCTION_CPU && ctrl.sortedColumnName === 'ui.metrics[\'cpu.cores\']' ||
+                    type === METRICS.FUNCTION_GPU && ctrl.sortedColumnName === 'ui.metrics[\'gpu.cores\']' ||
                     type === METRICS.FUNCTION_MEMORY && ctrl.sortedColumnName === 'ui.metrics.size' ||
                     type === METRICS.FUNCTION_EVENTS &&
                     lodash.includes(['ui.metrics.invocationPerSec', 'ui.metrics.count'], ctrl.sortedColumnName)) {

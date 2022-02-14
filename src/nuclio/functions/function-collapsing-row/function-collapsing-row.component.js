@@ -36,6 +36,7 @@
         ctrl.functionActions = [];
         ctrl.functionNameTooltip = '';
         ctrl.isFunctionCollapsed = true;
+        ctrl.nuclioFunctionsGpu = encodeURI(FunctionsService.nuclioFunctionsGpu);
         ctrl.runtimes = {
             'golang': 'Go',
             'python:2.7': 'Python 2.7',
@@ -104,6 +105,7 @@
                     metrics: {
                         count: null,
                         'cpu.idle': null,
+                        'gpu.idle': null,
                         size: null
                     }
                 }

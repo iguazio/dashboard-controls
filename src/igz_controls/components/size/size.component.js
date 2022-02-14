@@ -1,4 +1,4 @@
-/* eslint complexity: ["error", 14] */
+/* eslint complexity: ["error", 15] */
 (function () {
     'use strict';
 
@@ -32,6 +32,7 @@
 
         var CPU_TYPES = ['nodes', 'clusters'];
         var CPU_CORES_TYPES = ['services_cpu', 'functions_cpu'];
+        var GPU_CORES_TYPES = ['services_gpu', 'functions_gpu'];
         var SIZE_TYPES = ['containers', 'storage-pools', 'tenants', 'services_memory', 'functions_memory'];
         var COUNT_TYPES = ['functions_events'];
 
@@ -75,17 +76,19 @@
 
             ctrl.metricType = isCpu()      ? 'cpuLineChartData'      :
                               isCpuCores() ? 'cpuCoresLineChartData' :
+                              isGpuCores() ? 'gpuCoresLineChartData' :
                               isSize()     ? 'sizeLineChartData'     :
                                              'countLineChartData'    ;
 
             ctrl.displayValueWithTooltip = lodash.includes(['containers', 'tenants'], ctrl.type);
-            ctrl.justDisplayValue = lodash.includes(['clusters', 'nodes', 'functions_cpu', 'functions_memory',
-                'functions_events', 'services_cpu', 'services_memory'], ctrl.type);
+            ctrl.justDisplayValue = lodash.includes(['clusters', 'nodes', 'functions_cpu', 'functions_gpu',
+                'functions_memory', 'functions_events', 'services_cpu', 'services_gpu', 'services_memory'], ctrl.type);
 
             ctrl.displayValueClasses = {
                 'short': lodash.includes(['functions_memory', 'services_memory'], ctrl.type),
                 'shorten': lodash.includes(['functions_events'], ctrl.type),
-                'shortest': lodash.includes(['clusters', 'nodes', 'services_cpu', 'functions_cpu'], ctrl.type)
+                'shortest': lodash.includes(['clusters', 'nodes', 'services_cpu', 'services_gpu', 'functions_cpu',
+                    'functions_gpu'], ctrl.type)
             };
 
             lodash.defaults(ctrl.entity.ui, {
@@ -367,6 +370,7 @@
                                           '0';
             var metricName = isCpu()      ? 'cpu.idle'  :
                              isCpuCores() ? 'cpu.cores' :
+                             isGpuCores() ? 'gpu.cores' :
                              isSize()     ? 'size'      :
                                             'count';
             var value = ctrl.entity.ui.metrics[metricName];
@@ -375,7 +379,7 @@
 
             return lodash.isNil(value) ? defaultValue :
                    isCpu()      ? $filter('number')(value > 0 ? 100 - value : 0, 0) + '%' :
-                   isCpuCores() ? $filter('scale')(value, 0, 'nanos')                     :
+                   (isCpuCores() || isGpuCores()) ? $filter('scale')(value, 0, 'nanos')   :
                    isSize()     ? $filter('bytes')(value, 2) + sizePercentage             :
                                   $filter('scale')(value);
         }
@@ -418,6 +422,14 @@
         }
 
         /**
+         * Determines whether this chart is for GPU cores
+         * @returns {boolean} `true` if this chart is for GPU cores or `false` otherwise
+         */
+        function isGpuCores() {
+            return lodash.includes(GPU_CORES_TYPES, ctrl.type);
+        }
+
+        /**
          * Defines if max quota value and max point in chart data has difference less than 20%
          * @returns {boolean}
          */
@@ -443,7 +455,7 @@
          */
         function isTooltipEnabled() {
             return lodash.includes(['containers', 'storage-pools', 'tenants', 'services_memory', 'services_cpu',
-                'functions_memory', 'functions_cpu', 'functions_events'], ctrl.type);
+                'services_gpu', 'functions_memory', 'functions_cpu', 'functions_gpu', 'functions_events'], ctrl.type);
         }
 
         /**
@@ -456,9 +468,11 @@
                 'containers': prepareSizeData,
                 'nodes': prepareCpuData,
                 'functions_cpu': prepareCpuCoresData,
+                'functions_gpu': prepareGpuCoresData,
                 'functions_memory': prepareSizeData,
                 'functions_events': prepareCountData,
                 'services_cpu': prepareCpuData,
+                'services_gpu': prepareGpuData,
                 'services_memory': prepareSizeData,
                 'storage-pools': prepareStoragePoolsData,
                 'storage-pools_containers': prepareStoragePoolsContainersData,
@@ -473,6 +487,14 @@
 
             function prepareCpuCoresData() {
                 lodash.defaults(ctrl.entity.ui.metrics, {'cpu.cores': 0});
+            }
+
+            function prepareGpuCoresData() {
+                lodash.defaults(ctrl.entity.ui.metrics, {'gpu.cores': 0});
+            }
+
+            function prepareGpuData() {
+                lodash.defaults(ctrl.entity.ui.metrics, {'gpu.idle': 0});
             }
 
             function prepareSizeData() {
