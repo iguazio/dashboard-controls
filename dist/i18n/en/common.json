@@ -246,6 +246,7 @@
     "GET_VERSIONS": "Get versions",
     "GO_TO_CONTAINING_FOLDER": "Go to containing folder",
     "GPU": "GPU",
+    "GPU_CORES": "GPU (cores)",
     "GROUP": "Group",
     "GROUPS": "Groups",
     "GUIDE_SCREEN": "Guide Screen",

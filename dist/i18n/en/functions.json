@@ -377,6 +377,7 @@
     "UNSPECIFIED_FIELD_NAME": "Unspecified field name",
     "URL_NOT_EXPOSED": "URL not exposed",
     "V3IO": "V3IO",
+    "V3IO_INVALID_REPLICAS_MSG": "V3io_stream trigger requires min and max replicas to be the same",
     "VIEW_YAML": "View YAML",
     "VOLUMES": "Volumes",
     "ALWAYS_WAIT_FOR_READINESS_TIMEOUT_EXPIRATION": "Always wait for readiness-timeout expiration",
