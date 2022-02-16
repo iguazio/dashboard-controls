@@ -128,6 +128,13 @@
                         <span class="sort-arrow"></span>
                     </div>
                     <div class="common-table-cell sortable"
+                         data-ng-class="[$ctrl.getColumnSortingClasses('ui.metrics[\'gpu.cores\']', $ctrl.sortedColumnName, $ctrl.isReverseSorting),
+                                        $ctrl.getFunctionsTableColSize('gpuCores')]"
+                         data-ng-click="$ctrl.sortTableByColumn('ui.metrics[\'gpu.cores\']')">
+                        {{ 'common:GPU_CORES' | i18next }}
+                        <span class="sort-arrow"></span>
+                    </div>
+                    <div class="common-table-cell sortable"
                          data-ng-class="[$ctrl.getColumnSortingClasses('ui.metrics.count', $ctrl.sortedColumnName, $ctrl.isReverseSorting),
                                         $ctrl.getFunctionsTableColSize('metricsCount')]"
                          data-ng-click="$ctrl.sortTableByColumn('ui.metrics.count')">

@@ -111,6 +111,20 @@
             </igz-element-loading-status>
 
             <igz-element-loading-status class="common-table-cell element-loading-status-wrapper"
+                                        data-name="{{$ctrl.nuclioFunctionsGpu}}-{{$ctrl.function.metadata.name}}"
+                                        data-loading-status-size="small"
+                                        data-ng-class="[$ctrl.getFunctionsTableColSize('gpuCores')]">
+                <igz-size data-ng-if="!$ctrl.function.ui.error[$ctrl.nuclioFunctionsGpu] && $ctrl.isFunctionCollapsed"
+                          data-type="functions_gpu"
+                          data-entity="$ctrl.function"
+                          data-test-id="functions.item-gpu">
+                </igz-size>
+                <div data-ng-if="$ctrl.function.ui.error[$ctrl.nuclioFunctionsGpu] && $ctrl.isFunctionCollapsed">
+                    {{$ctrl.function.ui.error[$ctrl.nuclioFunctionsGpu]}}
+                </div>
+            </igz-element-loading-status>
+
+            <igz-element-loading-status class="common-table-cell element-loading-status-wrapper"
                                         data-name="nuclio_processor_handled_events_total-{{$ctrl.function.metadata.name}}"
                                         data-loading-status-size="small"
                                         data-ng-class="[$ctrl.getFunctionsTableColSize('metricsCount')]">
