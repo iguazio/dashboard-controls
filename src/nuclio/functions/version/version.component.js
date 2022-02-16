@@ -223,54 +223,61 @@
          */
         function deployButtonClick(event, version) {
             if (!ctrl.isDeployDisabled) {
-                ctrl.isFunctionDeployed = false;
-                $rootScope.$broadcast('deploy-function-version', { event: event });
-
                 var versionCopy = lodash.omit(angular.isDefined(version) ? version : ctrl.version, ['status', 'ui']);
+                var isV3ioExists = Object.values(versionCopy.spec.triggers).find(function (trigger) {
+                    return trigger.kind === 'v3ioStream'
+                });
 
-                // set `nuclio.io/project-name` label to relate this function to its project
-                lodash.set(versionCopy, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.project.metadata.name);
-                lodash.set(versionCopy, 'spec.build.mode', 'alwaysBuild');
+                if (versionCopy.spec.maxReplicas !== versionCopy.spec.minReplicas && isV3ioExists) {
+                    DialogsService.alert($i18next.t('functions:V3IO_INVALID_REPLICAS_MSG', {lng: lng}));
+                } else {
+                    ctrl.isFunctionDeployed = false;
+                    $rootScope.$broadcast('deploy-function-version', { event: event });
 
-                ctrl.isTestResultShown = false;
-                ctrl.deployResult.shown = false;
-                ctrl.deployResult.collapsed = true;
-                ctrl.isSplashShowed.value = true;
+                    // set `nuclio.io/project-name` label to relate this function to its project
+                    lodash.set(versionCopy, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.project.metadata.name);
+                    lodash.set(versionCopy, 'spec.build.mode', 'alwaysBuild');
 
-                var isVersionDeployed = VersionHelperService.isVersionDeployed(ctrl.version);
-                var method = isVersionDeployed || ctrl.version.ui.overwrite ? ctrl.updateVersion : ctrl.createVersion;
+                    ctrl.isTestResultShown = false;
+                    ctrl.deployResult.shown = false;
+                    ctrl.deployResult.collapsed = true;
+                    ctrl.isSplashShowed.value = true;
 
-                method({ version: versionCopy, projectId: ctrl.project.metadata.name })
-                    .then(function () {
-                        pollFunctionState();
+                    var isVersionDeployed = VersionHelperService.isVersionDeployed(ctrl.version);
+                    var method = isVersionDeployed || ctrl.version.ui.overwrite ? ctrl.updateVersion : ctrl.createVersion;
 
-                        $timeout(function () {
-                            $rootScope.$broadcast('igzWatchWindowResize::resize');
-                        });
-                    })
-                    .catch(function (error) {
-                        var defaultMsg = $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', { lng: lng });
+                    method({ version: versionCopy, projectId: ctrl.project.metadata.name })
+                        .then(function () {
+                            pollFunctionState();
 
-                        if (error.status === 409 && isVersionDeployed) {
-                            return FunctionsService.openVersionOverwriteDialog()
-                                .then(function () {
-                                    deployButtonClick(event, lodash.omit(ctrl.version, 'metadata.resourceVersion'));
-                                })
-                                .catch(function () {
+                            $timeout(function () {
+                                $rootScope.$broadcast('igzWatchWindowResize::resize');
+                            });
+                        })
+                        .catch(function (error) {
+                            var defaultMsg = $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', { lng: lng });
+
+                            if (error.status === 409 && isVersionDeployed) {
+                                return FunctionsService.openVersionOverwriteDialog()
+                                    .then(function () {
+                                        deployButtonClick(event, lodash.omit(ctrl.version, 'metadata.resourceVersion'));
+                                    })
+                                    .catch(function () {
+                                        ctrl.isFunctionDeployed = true;
+                                    });
+                            } else if (error.status === 404 && method === ctrl.updateVersion) {
+                                clearVersionStatus(ctrl.version);
+                                return deployButtonClick(event, version);
+                            } else {
+                                return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
                                     ctrl.isFunctionDeployed = true;
                                 });
-                        } else if (error.status === 404 && method === ctrl.updateVersion) {
-                            clearVersionStatus(ctrl.version);
-                            return deployButtonClick(event, version);
-                        } else {
-                            return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
-                                ctrl.isFunctionDeployed = true;
-                            });
-                        }
-                    })
-                    .finally(function () {
-                        ctrl.isSplashShowed.value = false;
-                    });
+                            }
+                        })
+                        .finally(function () {
+                            ctrl.isSplashShowed.value = false;
+                        });
+                }
             }
         }
 
