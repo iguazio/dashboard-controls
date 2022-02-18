@@ -155,12 +155,12 @@
         };
         var functionsTableColSizes = {
             headerName: {
-                default: '10',
-                demo: '10'
+                default: '20',
+                demo: '15'
             },
             rowName: {
-                default: '10',
-                demo: '10'
+                default: '20',
+                demo: '15'
             },
             status: {
                 default: '10',
@@ -171,16 +171,16 @@
                 demo: '5'
             },
             owner: {
-                default: '10',
-                demo: '10'
+                default: '7-5',
+                demo: '7-5'
             },
             runtime: {
-                default: '10',
-                demo: '10'
+                default: '7-5',
+                demo: '7-5'
             },
             invocationPerSec: {
-                default: '10',
-                demo: '10'
+                default: '5',
+                demo: '5'
             },
             cpuCores: {
                 default: '12-5',
