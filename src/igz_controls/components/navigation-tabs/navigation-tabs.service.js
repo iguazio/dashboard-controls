@@ -123,11 +123,6 @@
                     tabName: $i18next.t('common:NODES', {lng: lng}),
                     uiRoute: 'app.cluster.nodes',
                     capability: 'clusters.nodes'
-                },
-                {
-                    tabName: $i18next.t('common:SUPPORT_LOGS', {lng: lng}),
-                    uiRoute: 'app.cluster.support-logs',
-                    capability: 'clusters.collectLogs'
                 }
             ];
 
@@ -161,6 +156,12 @@
                     id: 'app',
                     uiRoute: 'app.clusters.app',
                     capability: 'clusters'
+                },
+                {
+                    tabName: $i18next.t('common:SUPPORT_LOGS', {lng: lng}),
+                    id: 'support-logs',
+                    uiRoute: 'app.clusters.support-logs',
+                    capability: 'clusters.collectLogs'
                 }
             ];
         }
