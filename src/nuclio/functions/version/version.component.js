@@ -224,7 +224,7 @@
         function deployButtonClick(event, version) {
             if (!ctrl.isDeployDisabled) {
                 var versionCopy = lodash.omit(angular.isDefined(version) ? version : ctrl.version, ['status', 'ui']);
-                var isV3ioExists = Object.values(versionCopy.spec.triggers).find(function (trigger) {
+                var isV3ioExists = Object.values(lodash.get(versionCopy, 'spec.triggers', {})).find(function (trigger) {
                     return trigger.kind === 'v3ioStream'
                 });
 
