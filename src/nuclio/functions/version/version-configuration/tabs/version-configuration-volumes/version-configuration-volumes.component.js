@@ -225,8 +225,8 @@
          */
         function updateHandler(selectedItem) {
             var workingCopy = angular.copy(ctrl.volumes);
-            var currentVolume = lodash.find(ctrl.volumes, ['volume.name', selectedItem.volume.name]);
-            var indexOfEditableElement = lodash.findIndex(ctrl.volumes, ['volume.name', selectedItem.volume.name]);
+            var currentVolume = lodash.find(ctrl.volumes, ['volumeMount.mountPath', selectedItem.volumeMount.mountPath]);
+            var indexOfEditableElement = lodash.findIndex(ctrl.volumes, ['volumeMount.mountPath', selectedItem.volumeMount.mountPath]);
 
             if (angular.isDefined(currentVolume)) {
                 workingCopy[indexOfEditableElement] = {
