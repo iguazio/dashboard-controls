@@ -44,8 +44,8 @@
         function getObjectWithMask(object, sensitiveFields) {
             sensitiveFields = sensitiveFields || commonSensitiveFields;
 
-            const objectJson = JSON.stringify(object, function (key, value) {
-                return sensitiveFields.includes(key) && typeof value === 'string' ?
+            var objectJson = JSON.stringify(object, function (key, value) {
+                return key === 'ui' ? undefined : sensitiveFields.includes(key) && typeof value === 'string' ?
                     value.replace(/./g, '*') : value;
             });
 
