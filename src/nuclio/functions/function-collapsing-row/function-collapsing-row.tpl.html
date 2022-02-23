@@ -10,7 +10,7 @@
                     data-item-type="functions">
             </igz-action-checkbox>
         </div>
-        <div class="common-table-cell igz-col-3 function-row-collapse">
+        <div class="common-table-cell function-collapse-cell function-row-collapse">
             <span data-ng-if="$ctrl.function.spec.version > -1"
                   class="collapse-icon"
                   data-ng-click="$ctrl.isFunctionCollapsed = !$ctrl.isFunctionCollapsed"
@@ -57,17 +57,17 @@
                      data-ng-click="$ctrl.toggleFunctionState($event)">
                 </div>
             </div>
-            <div data-ng-if="$ctrl.isDemoMode()"
-                 data-ng-show="$ctrl.isFunctionCollapsed"
-                 class="common-table-cell"
-                 data-ng-class="[$ctrl.getFunctionsTableColSize('replicas')]">
-                {{$ctrl.function.spec.replicas}}
-            </div>
             <div class="common-table-cell"
                  data-test-id="functions.item-owner"
                  data-ng-show="$ctrl.isFunctionCollapsed"
                  data-ng-class="[$ctrl.getFunctionsTableColSize('owner')]">
                 {{$ctrl.function.metadata.labels['iguazio.com/username'] ? $ctrl.function.metadata.labels['iguazio.com/username'] : 'common:N_A' | i18next}}
+            </div>
+            <div data-ng-if="$ctrl.isDemoMode()"
+                 data-ng-show="$ctrl.isFunctionCollapsed"
+                 class="common-table-cell"
+                 data-ng-class="[$ctrl.getFunctionsTableColSize('replicas')]">
+                {{$ctrl.function.spec.replicas}}
             </div>
             <div class="common-table-cell"
                  data-test-id="functions.item-runtime"

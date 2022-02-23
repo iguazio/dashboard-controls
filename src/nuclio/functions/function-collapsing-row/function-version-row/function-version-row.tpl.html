@@ -8,7 +8,7 @@
                 data-item-type="versions">
         </igz-action-checkbox>
     </div>
-    <div class="common-table-cell igz-col-3"></div>
+    <div class="common-table-cell function-collapse-cell"></div>
     <div class="igz-row common-table-cells-container"
          data-ng-click="$ctrl.onSelectRow($event)">
         <div class="common-table-cell"
@@ -26,14 +26,14 @@
                  data-ng-click="$ctrl.onToggleFunctionState($event)">
             </div>
         </div>
+        <div class="common-table-cell"
+             data-ng-class="[$ctrl.getFunctionsTableColSize('owner')]">
+            {{$ctrl.function.metadata.labels['iguazio.com/username'] ? $ctrl.function.metadata.labels['iguazio.com/username'] : 'common:N_A' | i18next}}
+        </div>
         <div data-ng-if="$ctrl.isDemoMode()"
              class="common-table-cell"
              data-ng-class="[$ctrl.getFunctionsTableColSize('replicas')]">
             {{$ctrl.function.spec.replicas}}
-        </div>
-        <div class="common-table-cell"
-             data-ng-class="[$ctrl.getFunctionsTableColSize('owner')]">
-            {{$ctrl.function.metadata.labels['iguazio.com/username'] ? $ctrl.function.metadata.labels['iguazio.com/username'] : 'common:N_A' | i18next}}
         </div>
         <div class="common-table-cell"
              data-ng-class="[$ctrl.getFunctionsTableColSize('runtime')]">
