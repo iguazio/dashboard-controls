@@ -260,14 +260,15 @@
                     var id = lodash.defaultTo(option.id, '');
 
                     return {
-                        label: fetchOptionProperty(option, newLabelPath, LABEL_PATH_DEFAULT),
-                        value: fetchOptionProperty(option, newValuePath, VALUE_PATH_DEFAULT),
+                        checked: option.checked,
                         disabled: fetchOptionProperty(option, newDisabledPath, DISABLED_PATH_DEFAULT, false),
                         enableTooltip: fetchOptionProperty(option, TOOLTIP_ENABLED, TOOLTIP_ENABLED, false),
-                        tooltipText: fetchOptionProperty(option, TOOLTIP_TEXT, TOOLTIP_TEXT),
-                        id: generateOptionId(newBaseId, id, index),
-                        checked: option.checked,
                         filtered: option.filtered,
+                        id: generateOptionId(newBaseId, id, index),
+                        label: fetchOptionProperty(option, newLabelPath, LABEL_PATH_DEFAULT),
+                        moreInfo: option.moreInfo,
+                        tooltipText: fetchOptionProperty(option, TOOLTIP_TEXT, TOOLTIP_TEXT),
+                        value: fetchOptionProperty(option, newValuePath, VALUE_PATH_DEFAULT),
                         visibility: fetchOptionProperty(option, VISIBILITY_DEFAULT, VISIBILITY_DEFAULT, true)
                     };
                 });

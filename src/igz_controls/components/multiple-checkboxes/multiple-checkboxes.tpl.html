@@ -164,6 +164,10 @@
                    data-tooltip-append-to-body="true">
                 {{item.label}}
             </label>
+            <igz-more-info data-ng-if="item.moreInfo"
+                           data-description="{{item.moreInfo}}"
+                           data-default-tooltip-placement="top">
+            </igz-more-info>
         </li>
     </ul>
 
