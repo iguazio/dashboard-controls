@@ -272,6 +272,7 @@
     "RESPONSE_IMAGE": "Response image",
     "REVERT_NODE_SELECTORS_TO_DEFAULTS_CONFIRM": "Are you sure you want revert the node selectors to its defaults?",
     "REVERT_TO_DEFAULTS": "Revert to defaults",
+    "RUN_ON_SPOT_NODES": "Run on Spot nodes",
     "RUNTIME": "Runtime",
     "RUNTIME_ATTRIBUTES": "Runtime Attributes",
     "SASL_PASSWORD": "SASL password",
@@ -340,6 +341,10 @@
         },
         "NEW_TEST": "New test",
         "NO_INTERNET_ACCESS": "Use local Docker images rather than pulling from remote",
+        "POD_TOLERATIONS": {
+            "ALLOW": "Allow function pods to run on spot nodes. Spot nodes might be tainted, using this option will make sure function pods tolerates those taints.",
+            "CONSTRAIN": "Constrain function pods to spot nodes using label selectors."
+        },
         "PREFIXED_NAME": "{{name}} keys are composed of an optional prefix and a name, separated by a forward slash (/) — '&lt;key prefix&gt;/&lt;key name&gt;'.",
         "REDIRECT_UNAUTHORIZED_REQUESTS": "This option should be used if the API endpoint is used by GUI. It will redirect the application to the login screen upon unauthorized request.",
         "RUN_FUNCTION": "Run function",

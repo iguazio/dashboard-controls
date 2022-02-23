@@ -1,4 +1,4 @@
-/* eslint max-statements: ["error", 60] */
+/* eslint max-statements: ["error", 65] */
 (function () {
     'use strict';
 
@@ -90,7 +90,24 @@
             ],
             value: ValidationService.getValidationRules('k8s.qualifiedName')
         };
+        ctrl.podTolerationsOptions = [
+            {
+                id: 'allow',
+                name: 'Allow',
+                tooltip: $i18next.t('functions:TOOLTIP.POD_TOLERATIONS.ALLOW', {lng: lng})
+            },
+            {
+                id: 'constrain',
+                name: 'Constrain',
+                tooltip: $i18next.t('functions:TOOLTIP.POD_TOLERATIONS.CONSTRAIN', {lng: lng})
+            },
+            {
+                id: 'none',
+                name: 'None'
+            }
+        ];
         ctrl.revertToDefaultsBtnIsHidden = true;
+        ctrl.selectedPodTolerationOption = null;
         ctrl.windowSizeSlider = {};
 
         ctrl.$onInit = onInit;
@@ -107,6 +124,7 @@
         ctrl.memoryDropdownCallback = memoryDropdownCallback;
         ctrl.memoryInputCallback = memoryInputCallback;
         ctrl.onChangeNodeSelectorsData = onChangeNodeSelectorsData;
+        ctrl.podTolerationDropdownCallback = podTolerationDropdownCallback;
         ctrl.replicasInputCallback = replicasInputCallback;
         ctrl.sliderInputCallback = sliderInputCallback;
 
@@ -119,6 +137,7 @@
          */
         function onInit() {
             initTargetCpuSlider();
+            initPodToleration();
 
             ctrl.memoryWarningOpen = false;
 
@@ -366,6 +385,16 @@
         }
 
         /**
+         * Pod toleration dropdown callback
+         * @param {Object} tolerationOption
+         * @param {boolean} isItemChanged
+         * @param {string} field
+         */
+        function podTolerationDropdownCallback(tolerationOption, isItemChanged, field) {
+            lodash.set(ctrl.version, field, tolerationOption.id);
+        }
+
+        /**
          * Replicas data update callback
          * @param {string|number} newData
          * @param {string} field
@@ -470,7 +499,7 @@
                     key: selector.name,
                     value: selector.value
                 }
-            })
+            });
 
             ctrl.revertToDefaultsBtnIsHidden = lodash.isEqual(
                 lodash.get(ConfigService,'nuclio.defaultFunctionConfig.attributes.spec.nodeSelector', []), nodeSelectors);
@@ -579,6 +608,21 @@
                 var parsedValue = parseFloat(value);
 
                 return parsedValue > 0 ? parsedValue : null;
+            }
+        }
+
+        /**
+         * Init default parameters for pod toleration
+         */
+        function initPodToleration() {
+            var preemptionMode = lodash.get(ctrl.version, 'spec.preemptionMode');
+
+            ctrl.selectedPodTolerationOption = preemptionMode                   ?
+                lodash.find(ctrl.podTolerationsOptions, ['id', preemptionMode]) :
+                lodash.find(ctrl.podTolerationsOptions, ['id', 'none']);
+
+            if (!preemptionMode) {
+                lodash.set(ctrl.version, 'spec.preemptionMode', ctrl.selectedPodTolerationOption.id);
             }
         }
 
