@@ -237,11 +237,7 @@
          * @param {Object} changes
          */
         function onChanges(changes) {
-            if (
-                !changes.version.isFirstChange() &&
-                (lodash.has(changes.version.currentValue, 'status.externalInvocationUrls') ||
-                    lodash.has(changes.version.currentValue, 'status.externalInvocationUrls'))
-            ) {
+            if (!changes.version.isFirstChange()) {
                 updateInvocationUrls();
             }
         }
