@@ -75,9 +75,6 @@
             if (lodash.has(changes, 'version')) {
                 ctrl.annotations = lodash.chain(ctrl.version)
                     .get('metadata.annotations', {})
-                    .omitBy(function (value, key) {
-                        return lodash.startsWith(key, 'nuclio.io/');
-                    })
                     .map(function (value, key) {
                         return {
                             name: key,
@@ -165,10 +162,6 @@
          */
         function updateAnnotations() {
             var isFormValid = true;
-            var annotations = lodash.get(ctrl.version, 'metadata.annotations', {});
-            var nuclioAnnotations = lodash.pickBy(annotations, function (value, key) {
-                return lodash.startsWith(key, 'nuclio.io/');
-            });
             var newAnnotations = {};
 
             lodash.forEach(ctrl.annotations, function (annotation) {
@@ -187,8 +180,6 @@
                 component: 'annotation',
                 isDisabled: !isFormValid
             });
-
-            lodash.merge(newAnnotations, nuclioAnnotations);
 
             lodash.set(ctrl.version, 'metadata.annotations', newAnnotations);
             ctrl.onChangeCallback();
