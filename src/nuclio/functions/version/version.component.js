@@ -244,7 +244,8 @@
                     ctrl.isSplashShowed.value = true;
 
                     var isVersionDeployed = VersionHelperService.isVersionDeployed(ctrl.version);
-                    var method = isVersionDeployed || ctrl.version.ui.overwrite ? ctrl.updateVersion : ctrl.createVersion;
+                    var method = isVersionDeployed || ctrl.version.ui.overwrite || ctrl.version.ui.failedDeploy ?
+                        ctrl.updateVersion : ctrl.createVersion;
 
                     method({ version: versionCopy, projectId: ctrl.project.metadata.name })
                         .then(function () {
@@ -268,6 +269,10 @@
                             } else if (error.status === 404 && method === ctrl.updateVersion) {
                                 clearVersionStatus(ctrl.version);
                                 return deployButtonClick(event, version);
+                            } else if (error.status === 500 && method === ctrl.createVersion) {
+                                return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
+                                    ctrl.version.ui.failedDeploy = true;
+                                });
                             } else {
                                 return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
                                     ctrl.isFunctionDeployed = true;
