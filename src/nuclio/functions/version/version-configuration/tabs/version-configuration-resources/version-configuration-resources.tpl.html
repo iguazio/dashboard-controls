@@ -2,6 +2,22 @@
     <form name="$ctrl.resourcesForm" class="resources-wrapper" novalidate>
         <div class="title">{{ 'common:RESOURCES' | i18next }}</div>
         <div class="row">
+            <div class="igz-row form-row">
+                <div class="igz-col-40 row-title">{{ 'functions:RUN_ON_SPOT_NODES' | i18next }}</div>
+
+                <div class="igz-col-20 input-wrapper"></div>
+
+                <div class="igz-col-40 input-wrapper">
+                    <div class="row-input preemtion-mode-input">
+                        <igz-default-dropdown data-values-array="$ctrl.podTolerationsOptions"
+                                              data-selected-item="$ctrl.selectedPodTolerationOption"
+                                              data-is-disabled="$ctrl.isFunctionDeploying()"
+                                              data-item-select-callback="$ctrl.podTolerationDropdownCallback(item, isItemChanged, field)"
+                                              data-item-select-field="spec.preemptionMode">
+                        </igz-default-dropdown>
+                    </div>
+                </div>
+            </div>
             <div class="igz-row form-row range-inputs-row">
                 <div class="igz-col-20 row-title">{{ 'common:MEMORY' | i18next }}
                     <igz-more-info data-trigger="click"
