@@ -184,10 +184,6 @@
          */
         function updateLabels() {
             var isFormValid = true;
-            var labels = lodash.get(ctrl.version, 'metadata.labels', {});
-            var nuclioLabels = lodash.pickBy(labels, function (value, key) {
-                return lodash.startsWith(key, 'nuclio.io/');
-            });
             var newLabels = {};
 
             lodash.forEach(ctrl.labels, function (label) {
@@ -206,8 +202,6 @@
                 component: 'label',
                 isDisabled: !isFormValid
             });
-
-            lodash.merge(newLabels, nuclioLabels);
 
             lodash.set(ctrl.version, 'metadata.labels', newLabels);
             ctrl.onChangeCallback();
