@@ -10,6 +10,7 @@
         return {
             fetchAllPages: fetchAllPages,
             getErrorMessage: getErrorMessage,
+            isDisconnectionError: isDisconnectionError,
             poll: poll,
             pruneObject: pruneObject,
             trackDeletion: trackDeletion
@@ -142,6 +143,15 @@
             }
 
             return lodash.defaultTo(result, messages.default);
+        }
+
+        /**
+         * Checks if the error status is equal '-1'. It means, that server is unreachable.
+         * @param {number} errorStatus - Error status code.
+         * @returns {Boolean} if true - server is unreachable
+         */
+        function isDisconnectionError(errorStatus) {
+            return errorStatus === -1;
         }
 
         /**
