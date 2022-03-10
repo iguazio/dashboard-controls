@@ -21,34 +21,44 @@
         };
         var containersTableColSizes = {
             name: {
-                production: '28',
-                demo: '12',
+                production: '25',
+                demo: '20',
                 staging: '25'
             },
+            profile: {
+                production: '',
+                demo: '10',
+                staging: ''
+            },
             usedCapacity: {
-                production: '28',
+                production: '25',
                 demo: '20',
                 staging: '25'
             },
             bandwidth: {
-                production: '15',
-                demo: '12',
+                production: '12-5',
+                demo: '10',
                 staging: '12-5'
             },
             iops: {
-                production: '15',
+                production: '12-5',
                 demo: '10',
                 staging: '12-5'
             },
             latency: {
-                production: '14',
-                demo: '11',
+                production: '12-5',
+                demo: '10',
                 staging: '12-5'
             },
             scannedItems: {
-                production: null,
+                production: '12-5',
                 demo: '10',
                 staging: '12-5'
+            },
+            cost: {
+                production: '',
+                demo: '10',
+                staging: ''
             }
         };
         var eventsTableColSizes = {
