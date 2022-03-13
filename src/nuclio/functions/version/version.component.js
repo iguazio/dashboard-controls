@@ -256,9 +256,10 @@
                             });
                         })
                         .catch(function (error) {
+                            var status = error.status;
                             var defaultMsg = $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', { lng: lng });
 
-                            if (error.status === 409 && isVersionDeployed) {
+                            if (status === 409 && isVersionDeployed) {
                                 return FunctionsService.openVersionOverwriteDialog()
                                     .then(function () {
                                         deployButtonClick(event, lodash.omit(ctrl.version, 'metadata.resourceVersion'));
@@ -266,12 +267,13 @@
                                     .catch(function () {
                                         ctrl.isFunctionDeployed = true;
                                     });
-                            } else if (error.status === 404 && method === ctrl.updateVersion) {
+                            } else if (status === 404 && method === ctrl.updateVersion) {
                                 clearVersionStatus(ctrl.version);
                                 return deployButtonClick(event, version);
-                            } else if (error.status === 500 && method === ctrl.createVersion) {
+                            } else if ((status === 400 || status === 500) && method === ctrl.createVersion) {
                                 return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
                                     ctrl.version.ui.failedDeploy = true;
+                                    ctrl.isFunctionDeployed = true;
                                 });
                             } else {
                                 return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
