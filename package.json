@@ -1,6 +1,6 @@
 {
     "name": "iguazio.dashboard-controls",
-    "version": "0.37.12-patch1",
+    "version": "v0.37.12-patch2",
     "main": "dist/js/iguazio.dashboard-controls.js",
     "description": "Collection of resources (such as CSS styles, fonts and images) and AngularJs 1.x components and services to share among different Iguazio repos.",
     "repository": {
