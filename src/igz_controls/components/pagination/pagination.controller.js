@@ -4,8 +4,8 @@
         .controller('PaginationController', PaginationController);
 
     /*eslint no-shadow: 0*/
-    function PaginationController($i18next, $injector , $location, $rootScope, $stateParams, $timeout,
-                                  i18next, lodash, ActionCheckboxAllService, PaginationService,
+    function PaginationController($i18next, $injector , $location, $q, $rootScope, $stateParams, $timeout,
+                                  i18next, lodash, ActionCheckboxAllService, GeneralDataService, PaginationService,
                                   entitiesType, onChangePageCallback, dataServiceName, vm, emptyOnPageChange) {
 
         // entityId - id of nested entity
@@ -34,6 +34,7 @@
          *     (e.g. filter, include, sort, etc.).
          */
         function changePage(pageNumber, perPage, additionalParams) {
+            var previousData = angular.copy(vm[entitiesType]);
             var pageAdditionalParams = lodash.cloneDeep(additionalParams);
             selectedItemId = lodash.defaultTo($stateParams.selectedItemId, $location.search().id);
             selectedItemId = isNumeric(selectedItemId) ? lodash.toInteger(selectedItemId) : selectedItemId;
@@ -122,17 +123,24 @@
                     vm.isSplashShowed.value = false;
                 })
                 .catch(function (error) {
-                    var errorMessages = {
-                        '400': $i18next.t('common:ERROR_MSG.PAGINATION.400', { lng: lng }),
-                        '403': $i18next.t('common:ERROR_MSG.PAGINATION.403', { lng: lng }),
-                        '500': $i18next.t('common:ERROR_MSG.ERROR_ON_SERVER_SIDE', { lng: lng }),
-                        'default': $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', { lng: lng })
-                    };
-                    var message = lodash.get(errorMessages, String(error.status), errorMessages.default);
+                    if (GeneralDataService.isDisconnectionError(error.status)) {
+                        vm[entitiesType] = previousData;
+                        vm.isSplashShowed.value = false;
 
-                    $rootScope.$broadcast('splash-screen_show-error', {
-                        alertText: message + ' ' + $i18next.t('common:ERROR_MSG.YOU_CAN_TRY_TO_REFRESH_PAGE', { lng: lng })
-                    });
+                        return $q.reject(error)
+                    } else {
+                        var errorMessages = {
+                            '400': $i18next.t('common:ERROR_MSG.PAGINATION.400', { lng: lng }),
+                            '403': $i18next.t('common:ERROR_MSG.PAGINATION.403', { lng: lng }),
+                            '500': $i18next.t('common:ERROR_MSG.ERROR_ON_SERVER_SIDE', { lng: lng }),
+                            'default': $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', { lng: lng })
+                        };
+                        var message = lodash.get(errorMessages, String(error.status), errorMessages.default);
+
+                        $rootScope.$broadcast('splash-screen_show-error', {
+                            alertText: message + ' ' + $i18next.t('common:ERROR_MSG.YOU_CAN_TRY_TO_REFRESH_PAGE', { lng: lng })
+                        });
+                    }
                 });
         }
 

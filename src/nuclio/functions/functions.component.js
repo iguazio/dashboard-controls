@@ -22,8 +22,8 @@
 
     function FunctionsController($filter, $interval, $q, $rootScope, $scope, $state, $stateParams, $timeout,
                                  $transitions, $i18next, i18next, lodash, CommonTableService, ConfigService,
-                                 DialogsService, ElementLoadingStatusService, FunctionsService, NuclioHeaderService,
-                                 TableSizeService) {
+                                 DialogsService, ElementLoadingStatusService, FunctionsService, GeneralDataService,
+                                 NuclioHeaderService, TableSizeService) {
         var ctrl = this;
         var lng = i18next.language;
         var updatingFunctionsInterval = null;
@@ -344,9 +344,11 @@
                     sortTable(true);
                 })
                 .catch(function (error) {
-                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', { lng: lng });
+                    if (!GeneralDataService.isDisconnectionError(error.status)) {
+                        var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {lng: lng});
 
-                    return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                        return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                    }
                 })
                 .finally(function () {
                     ctrl.isSplashShowed.value = false;
