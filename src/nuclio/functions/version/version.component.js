@@ -20,7 +20,7 @@
 
     function NclVersionController($i18next, $interval, $rootScope, $scope, $state, $stateParams, $transitions, $timeout,
                                   i18next, lodash, ngDialog, ConfigService, DialogsService, ExportService,
-                                  FunctionsService, NuclioHeaderService, VersionHelperService) {
+                                  FunctionsService, GeneralDataService, NuclioHeaderService, VersionHelperService) {
         var ctrl = this;
         var deregisterFunction = null;
         var interval = null;
@@ -369,9 +369,12 @@
                     setIngressHost();
                 })
                 .catch(function (error) {
-                    var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTION', { lng: lng });
+                    if (!GeneralDataService.isDisconnectionError(error.status)) {
 
-                    DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                        var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTION', {lng: lng});
+
+                        DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                    }
                 })
                 .finally(function () {
                     ctrl.isSplashShowed.value = false;
