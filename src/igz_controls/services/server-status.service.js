@@ -54,7 +54,7 @@
                     const dateNow = new Date();
                     const timeFromFirstFailure = (dateNow.getTime() - existingFailedResponse.date.getTime());
 
-                    if (timeFromFirstFailure >= 3000) {
+                    if (timeFromFirstFailure >= 300000) {
                         return showAlert()
                             .then(function () {
                                 location.reload();
