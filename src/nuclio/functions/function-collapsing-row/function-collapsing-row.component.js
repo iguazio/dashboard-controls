@@ -1,4 +1,4 @@
-/*eslint max-statements: ["error", 52]*/
+/*eslint max-statements: ["error", 55]*/
 (function () {
     'use strict';
 
@@ -36,7 +36,7 @@
         ctrl.functionActions = [];
         ctrl.functionNameTooltip = '';
         ctrl.isFunctionCollapsed = true;
-        ctrl.nuclioFunctionsGpu = encodeURI(FunctionsService.nuclioFunctionsGpu);
+        ctrl.nuclioFunctionsGpu = FunctionsService.functionMetrics.FUNCTION_GPU;
         ctrl.runtimes = {
             'golang': 'Go',
             'python:2.7': 'Python 2.7',

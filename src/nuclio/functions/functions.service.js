@@ -7,7 +7,14 @@
     function FunctionsService($i18next, i18next, lodash, ngDialog, ConfigService, DialogsService) {
         var self = {
             checkedItem: '',
-            nuclioFunctionsGpu: 'kube_metrics_server_pods_gpu_utilization * on (pod) group_left(function_name)(nuclio_function_pod_labels)',
+            functionMetrics: {
+                FUNCTION_CPU: 'nuclio_function_cpu',
+                FUNCTION_GPU: encodeURI(
+                    'kube_metrics_server_pods_gpu_utilization * on (pod) group_left(function_name)(nuclio_function_pod_labels)'
+                ),
+                FUNCTION_MEMORY: 'nuclio_function_mem',
+                FUNCTION_EVENTS: 'nuclio_processor_handled_events_total'
+            },
             getClassesList: getClassesList,
             getHandler: getHandler,
             getDisplayStatus: getDisplayStatus,
