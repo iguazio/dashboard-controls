@@ -327,7 +327,8 @@
                         <div class="field-label">
                             <span>{{ 'common:PASSWORD' | i18next }}</span>
                         </div>
-                        <igz-validating-input-field data-field-type="password"
+                        <igz-validating-input-field data-auto-complete="new-password"
+                                                    data-field-type="password"
                                                     data-input-name="gitPassword"
                                                     data-input-value="$ctrl.version.spec.build.codeEntryAttributes.password"
                                                     data-is-focused="false"
