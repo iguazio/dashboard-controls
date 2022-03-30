@@ -103,6 +103,7 @@
         "EXPORT_PROJECT": "Oops: Unknown error occurred while exporting the project",
         "EXPORT_PROJECTS": "Oops: Unknown error occurred while exporting projects",
         "FETCH_FUNCTION_LIST": "Couldn't fetch project's function list. Auto-complete suggestions will not be available. Any function name will be accepted, but the API gateway might not work properly in case such function does not exist or is not in an appropriate status.",
+        "FUNCTION_DEPLOYMENT_FAILURE": "Failed to deploy function.",
         "FUNCTION_NAME_ALREADY_IN_USE": "Function name already in use. Rename and try again.",
         "FUNCTIONALITY_IS_NOT_IMPLEMENTED": "This functionality is not implemented yet.",
         "GET_API_GATEWAYS": "Oops: Unknown error occurred while retrieving API Gateways",

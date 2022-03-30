@@ -1,3 +1,4 @@
+/*eslint complexity: ["error", 15]*/
 (function () {
     'use strict';
 
@@ -271,12 +272,15 @@
                                 clearVersionStatus(ctrl.version);
                                 return deployButtonClick(event, version);
                             } else if ((status === 400 || status === 500) && method === ctrl.createVersion) {
-                                return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
+                                return DialogsService.alert(lodash.get(error, 'data.error') || defaultMsg).then(function () {
                                     ctrl.version.ui.failedDeploy = true;
                                     ctrl.isFunctionDeployed = true;
                                 });
                             } else {
-                                return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg)).then(function () {
+                                var defaultMessage = status === 504 ?
+                                    $i18next.t('functions:ERROR_MSG.FUNCTION_DEPLOYMENT_FAILURE', { lng: lng }) : defaultMsg
+
+                                return DialogsService.alert(lodash.get(error, 'data.error') || defaultMessage).then(function () {
                                     ctrl.isFunctionDeployed = true;
                                 });
                             }
