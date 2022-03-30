@@ -24,7 +24,7 @@
         var ctrl = this;
         var lng = i18next.language;
 
-        ctrl.nuclioFunctionsGpu = encodeURI(FunctionsService.nuclioFunctionsGpu);
+        ctrl.nuclioFunctionsGpu = FunctionsService.functionMetrics.FUNCTION_GPU;
         ctrl.versionActions = [];
         ctrl.runtimes = {
             'golang': 'Go',

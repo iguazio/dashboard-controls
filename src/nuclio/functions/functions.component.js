@@ -31,13 +31,6 @@
         var UPDATING_FUNCTIONS_INTERVAL_TIME = 30000;
         var UPDATING_STATISTICS_INTERVAL_TIME = 30000;
 
-        var METRICS = {
-            FUNCTION_CPU: 'nuclio_function_cpu',
-            FUNCTION_GPU: encodeURI(FunctionsService.nuclioFunctionsGpu),
-            FUNCTION_MEMORY: 'nuclio_function_mem',
-            FUNCTION_EVENTS: 'nuclio_processor_handled_events_total'
-        };
-
         ctrl.filtersCounter = 0;
         ctrl.functions = [];
         ctrl.originalSortedFunctions = [];
@@ -512,10 +505,10 @@
 
             if (!isRefresh) {
                 $timeout(function () {
-                    hideSpinners(METRICS.FUNCTION_CPU);
-                    hideSpinners(METRICS.FUNCTION_GPU);
-                    hideSpinners(METRICS.FUNCTION_MEMORY);
-                    hideSpinners(METRICS.FUNCTION_EVENTS);
+                    hideSpinners(FunctionsService.functionMetrics.FUNCTION_CPU);
+                    hideSpinners(FunctionsService.functionMetrics.FUNCTION_GPU);
+                    hideSpinners(FunctionsService.functionMetrics.FUNCTION_MEMORY);
+                    hideSpinners(FunctionsService.functionMetrics.FUNCTION_EVENTS);
                 });
             }
         }
@@ -699,27 +692,27 @@
             var from = new Date(now - MILLIS_IN_AN_HOUR).toISOString();
             var until = new Date(now).toISOString();
             var args = {
-                metric: METRICS.FUNCTION_EVENTS,
+                metric: FunctionsService.functionMetrics.FUNCTION_EVENTS + '{project="' + ctrl.project.metadata.name + '"}',
                 from: from,
                 until: until,
                 interval: '5m'
             };
 
             ctrl.getStatistics(args)
-                .then(parseData.bind(null, args.metric))
-                .catch(handleError.bind(null, args.metric));
+                .then(parseData.bind(null, FunctionsService.functionMetrics.FUNCTION_EVENTS))
+                .catch(handleError.bind(null, FunctionsService.functionMetrics.FUNCTION_EVENTS));
 
-            args.metric = METRICS.FUNCTION_CPU;
+            args.metric = FunctionsService.functionMetrics.FUNCTION_CPU;
             ctrl.getStatistics(args)
                 .then(parseData.bind(null, args.metric))
                 .catch(handleError.bind(null, args.metric));
 
-            args.metric = METRICS.FUNCTION_GPU;
+            args.metric = FunctionsService.functionMetrics.FUNCTION_GPU;
             ctrl.getStatistics(args)
                 .then(parseData.bind(null, args.metric))
                 .catch(handleError.bind(null, args.metric));
 
-            args.metric = METRICS.FUNCTION_MEMORY;
+            args.metric = FunctionsService.functionMetrics.FUNCTION_MEMORY;
             ctrl.getStatistics(args)
                 .then(parseData.bind(null, args.metric))
                 .catch(handleError.bind(null, args.metric));
@@ -817,7 +810,7 @@
                                 .value();
                         }
 
-                        if (type === METRICS.FUNCTION_CPU) {
+                        if (type === FunctionsService.functionMetrics.FUNCTION_CPU) {
                             lodash.merge(aFunction.ui, {
                                 metrics: {
                                     'cpu.cores': latestValue,
@@ -826,7 +819,7 @@
                                     })
                                 }
                             });
-                        } else if (type === METRICS.FUNCTION_MEMORY) {
+                        } else if (type === FunctionsService.functionMetrics.FUNCTION_MEMORY) {
                             lodash.merge(aFunction.ui, {
                                 metrics: {
                                     size: Number(latestValue),
@@ -835,7 +828,7 @@
                                     })
                                 }
                             });
-                        } else if (type === METRICS.FUNCTION_GPU) {
+                        } else if (type === FunctionsService.functionMetrics.FUNCTION_GPU) {
                             lodash.merge(aFunction.ui, {
                                 metrics: {
                                     'gpu.cores': latestValue,
@@ -860,10 +853,10 @@
                 });
 
                 // if the column values have just been updated, and the table is sorted by this column - update sort
-                if (type === METRICS.FUNCTION_CPU && ctrl.sortedColumnName === 'ui.metrics[\'cpu.cores\']' ||
-                    type === METRICS.FUNCTION_GPU && ctrl.sortedColumnName === 'ui.metrics[\'gpu.cores\']' ||
-                    type === METRICS.FUNCTION_MEMORY && ctrl.sortedColumnName === 'ui.metrics.size' ||
-                    type === METRICS.FUNCTION_EVENTS &&
+                if (type === FunctionsService.functionMetrics.FUNCTION_CPU && ctrl.sortedColumnName === 'ui.metrics[\'cpu.cores\']' ||
+                    type === FunctionsService.functionMetrics.FUNCTION_GPU && ctrl.sortedColumnName === 'ui.metrics[\'gpu.cores\']' ||
+                    type === FunctionsService.functionMetrics.FUNCTION_MEMORY && ctrl.sortedColumnName === 'ui.metrics.size' ||
+                    type === FunctionsService.functionMetrics.FUNCTION_EVENTS &&
                     lodash.includes(['ui.metrics.invocationPerSec', 'ui.metrics.count'], ctrl.sortedColumnName)) {
                     sortTable();
                 }
