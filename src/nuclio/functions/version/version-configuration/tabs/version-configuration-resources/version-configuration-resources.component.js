@@ -1,4 +1,4 @@
-/* eslint max-statements: ["error", 65] */
+/* eslint max-statements: ["error", 70] */
 (function () {
     'use strict';
 
@@ -26,6 +26,7 @@
             root: 1000,
             power: 3
         };
+        var preemptionMode = '';
         var scaleResourcesCopy = [];
         var scaleToZero = {};
 
@@ -102,8 +103,9 @@
                 tooltip: $i18next.t('functions:TOOLTIP.POD_TOLERATIONS.CONSTRAIN', {lng: lng})
             },
             {
-                id: 'none',
-                name: 'None'
+                id: 'prevent',
+                name: 'Prevent',
+                tooltip: $i18next.t('functions:TOOLTIP.POD_TOLERATIONS.PREVENT', {lng: lng})
             }
         ];
         ctrl.revertToDefaultsBtnIsHidden = true;
@@ -117,6 +119,7 @@
         ctrl.addNewNodeSelector = addNewNodeSelector;
         ctrl.cpuDropdownCallback = cpuDropdownCallback;
         ctrl.cpuInputCallback = cpuInputCallback;
+        ctrl.getVersionPreemptionMode = getVersionPreemptionMode;
         ctrl.gpuInputCallback = gpuInputCallback;
         ctrl.handleNodeSelectorsAction = handleNodeSelectorsAction;
         ctrl.handleRevertToDefaultsClick = handleRevertToDefaultsClick;
@@ -137,7 +140,12 @@
          */
         function onInit() {
             initTargetCpuSlider();
-            initPodToleration();
+
+            preemptionMode = getVersionPreemptionMode() || lodash.get(ctrl.defaultFunctionConfig, 'spec.preemptionMode');
+
+            if (preemptionMode) {
+                initPodToleration();
+            }
 
             ctrl.memoryWarningOpen = false;
 
@@ -536,6 +544,14 @@
         }
 
         /**
+         * Gets PreemptionMode from version spec
+         * @returns {string}
+         */
+        function getVersionPreemptionMode() {
+            return lodash.get(ctrl.version, 'spec.preemptionMode')
+        }
+
+        /**
          * Initializes data for Node selectors section
          */
         function initNodeSelectors(isFirstInit) {
@@ -615,13 +631,9 @@
          * Init default parameters for pod toleration
          */
         function initPodToleration() {
-            var preemptionMode = lodash.get(ctrl.version, 'spec.preemptionMode');
+            ctrl.selectedPodTolerationOption = lodash.find(ctrl.podTolerationsOptions, ['id', preemptionMode]);
 
-            ctrl.selectedPodTolerationOption = preemptionMode                   ?
-                lodash.find(ctrl.podTolerationsOptions, ['id', preemptionMode]) :
-                lodash.find(ctrl.podTolerationsOptions, ['id', 'none']);
-
-            if (!preemptionMode) {
+            if (!getVersionPreemptionMode()) {
                 lodash.set(ctrl.version, 'spec.preemptionMode', ctrl.selectedPodTolerationOption.id);
             }
         }

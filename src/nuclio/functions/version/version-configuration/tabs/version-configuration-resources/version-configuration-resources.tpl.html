@@ -2,7 +2,7 @@
     <form name="$ctrl.resourcesForm" class="resources-wrapper" novalidate>
         <div class="title">{{ 'common:RESOURCES' | i18next }}</div>
         <div class="row">
-            <div class="igz-row form-row">
+            <div class="igz-row form-row" data-ng-if="$ctrl.selectedPodTolerationOption">
                 <div class="igz-col-40 row-title">{{ 'functions:RUN_ON_SPOT_NODES' | i18next }}</div>
 
                 <div class="igz-col-20 input-wrapper"></div>
