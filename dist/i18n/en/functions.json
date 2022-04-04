@@ -344,7 +344,8 @@
         "NO_INTERNET_ACCESS": "Use local Docker images rather than pulling from remote",
         "POD_TOLERATIONS": {
             "ALLOW": "Allow function pods to run on spot nodes. Spot nodes might be tainted, using this option will make sure function pods tolerates those taints.",
-            "CONSTRAIN": "Constrain function pods to spot nodes using label selectors."
+            "CONSTRAIN": "Constrain function pods to spot nodes using label selectors.",
+            "PREVENT": "Disallow function pods from running on Spot nodes"
         },
         "PREFIXED_NAME": "{{name}} keys are composed of an optional prefix and a name, separated by a forward slash (/) — '&lt;key prefix&gt;/&lt;key name&gt;'.",
         "REDIRECT_UNAUTHORIZED_REQUESTS": "This option should be used if the API endpoint is used by GUI. It will redirect the application to the login screen upon unauthorized request.",
