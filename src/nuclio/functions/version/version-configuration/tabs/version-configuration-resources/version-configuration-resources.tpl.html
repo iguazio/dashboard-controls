@@ -18,6 +18,22 @@
                     </div>
                 </div>
             </div>
+            <div class="igz-row form-row">
+                <div class="igz-col-40 row-title">{{ 'functions:PODS_PRIORITY' | i18next }}</div>
+
+                <div class="igz-col-20 input-wrapper"></div>
+
+                <div class="igz-col-40 input-wrapper">
+                    <div class="row-input priority-class-input">
+                        <igz-default-dropdown data-values-array="$ctrl.podsPriorityOptions"
+                                              data-selected-item="$ctrl.selectedPodsPriority"
+                                              data-is-disabled="$ctrl.isFunctionDeploying()"
+                                              data-item-select-callback="$ctrl.podsPriorityDropdownCallback(item, isItemChanged, field)"
+                                              data-item-select-field="spec.priorityClassName">
+                        </igz-default-dropdown>
+                    </div>
+                </div>
+            </div>
             <div class="igz-row form-row range-inputs-row">
                 <div class="igz-col-20 row-title">{{ 'common:MEMORY' | i18next }}
                     <igz-more-info data-trigger="click"
