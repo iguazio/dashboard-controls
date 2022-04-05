@@ -1,4 +1,4 @@
-/* eslint max-statements: ["error", 70] */
+/* eslint max-statements: ["error", 80] */
 (function () {
     'use strict';
 
@@ -91,6 +91,20 @@
             ],
             value: ValidationService.getValidationRules('k8s.qualifiedName')
         };
+        ctrl.podsPriorityOptions = [
+            {
+                id: 'igz-workload-high',
+                name: 'High',
+            },
+            {
+                id: 'igz-workload-medium',
+                name: 'Medium',
+            },
+            {
+                id: 'igz-workload-low',
+                name: 'Low',
+            }
+        ];
         ctrl.podTolerationsOptions = [
             {
                 id: 'allow',
@@ -110,6 +124,7 @@
         ];
         ctrl.revertToDefaultsBtnIsHidden = true;
         ctrl.selectedPodTolerationOption = null;
+        ctrl.selectedPodsPriority = {};
         ctrl.windowSizeSlider = {};
 
         ctrl.$onInit = onInit;
@@ -128,6 +143,7 @@
         ctrl.memoryInputCallback = memoryInputCallback;
         ctrl.onChangeNodeSelectorsData = onChangeNodeSelectorsData;
         ctrl.podTolerationDropdownCallback = podTolerationDropdownCallback;
+        ctrl.podsPriorityDropdownCallback = podsPriorityDropdownCallback;
         ctrl.replicasInputCallback = replicasInputCallback;
         ctrl.sliderInputCallback = sliderInputCallback;
 
@@ -139,6 +155,7 @@
          * Initialization method
          */
         function onInit() {
+            initPodsPriority();
             initTargetCpuSlider();
 
             preemptionMode = getVersionPreemptionMode() || lodash.get(ctrl.defaultFunctionConfig, 'spec.preemptionMode');
@@ -404,6 +421,16 @@
         }
 
         /**
+         * Pods priority dropdown callback
+         * @param {Object} priorityOption
+         * @param {boolean} isItemChanged
+         * @param {string} field
+         */
+        function podsPriorityDropdownCallback(priorityOption, isItemChanged, field) {
+            lodash.set(ctrl.version, field, priorityOption.id);
+        }
+
+        /**
          * Replicas data update callback
          * @param {string|number} newData
          * @param {string} field
@@ -625,6 +652,24 @@
                 var parsedValue = parseFloat(value);
 
                 return parsedValue > 0 ? parsedValue : null;
+            }
+        }
+
+        /**
+         * Init default parameters for pods priority
+         */
+        function initPodsPriority() {
+            var podsPriority = lodash.get(ctrl.version, 'spec.priorityClassName', '');
+
+            if (lodash.isEmpty(podsPriority)) {
+                var defaultPodsPriority = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes.spec.priorityClassName', '');
+
+                ctrl.selectedPodsPriority = lodash.isEmpty(defaultPodsPriority) ?
+                    lodash.find(ctrl.podsPriorityOptions, ['id', 'igz-workload-medium']) : defaultPodsPriority
+
+                lodash.set(ctrl.version, 'spec.priorityClassName', ctrl.selectedPodsPriority.id);
+            } else {
+                ctrl.selectedPodsPriority = lodash.find(ctrl.podsPriorityOptions, ['id', podsPriority]);
             }
         }
 
