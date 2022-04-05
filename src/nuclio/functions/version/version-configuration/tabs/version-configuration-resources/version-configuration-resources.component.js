@@ -399,6 +399,7 @@
          * @param {string} field
          */
         function podTolerationDropdownCallback(tolerationOption, isItemChanged, field) {
+            ctrl.selectedPodTolerationOption = lodash.find(ctrl.podTolerationsOptions, ['id', tolerationOption.id]);
             lodash.set(ctrl.version, field, tolerationOption.id);
         }
 
