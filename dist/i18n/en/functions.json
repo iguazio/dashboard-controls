@@ -249,6 +249,7 @@
         "SELECT_CLASS": "Select class",
         "SELECT_TYPE": "Select type"
     },
+    "PODS_PRIORITY": "Pods priority",
     "POLLING_INTERVAL": "Polling interval",
     "PREFIX": "Prefix",
     "PROJECT": "Project",
