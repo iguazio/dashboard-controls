@@ -45,54 +45,54 @@
         </div>
 
         <igz-element-loading-status class="common-table-cell element-loading-status-wrapper"
-                                    data-name="nuclio_function_cpu-{{$ctrl.function.metadata.name}}"
+                                    data-name="{{$ctrl.functionMetrics.FUNCTION_CPU}}-{{$ctrl.function.metadata.name}}"
                                     data-loading-status-size="small"
                                     data-ng-class="[$ctrl.getFunctionsTableColSize('cpuCores')]">
-            <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_function_cpu && !$ctrl.isFunctionCollapsed"
+            <igz-size data-ng-if="!$ctrl.function.ui.error[$ctrl.functionMetrics.FUNCTION_CPU] && !$ctrl.isFunctionCollapsed"
                       data-type="functions_cpu"
                       data-entity="$ctrl.function">
             </igz-size>
-            <div data-ng-if="$ctrl.function.ui.error.nuclio_function_cpu">
-                {{$ctrl.function.ui.error.nuclio_function_cpu}}
+            <div data-ng-if="$ctrl.function.ui.error[$ctrl.functionMetrics.FUNCTION_CPU]">
+                {{$ctrl.function.ui.error[$ctrl.functionMetrics.FUNCTION_CPU]}}
             </div>
         </igz-element-loading-status>
 
         <igz-element-loading-status class="common-table-cell element-loading-status-wrapper"
-                                    data-name="nuclio_function_mem-{{$ctrl.function.metadata.name}}"
+                                    data-name="{{$ctrl.functionMetrics.FUNCTION_MEMORY}}-{{$ctrl.function.metadata.name}}"
                                     data-loading-status-size="small"
                                     data-ng-class="[$ctrl.getFunctionsTableColSize('metricsSize')]">
-            <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_function_mem && !$ctrl.isFunctionCollapsed"
+            <igz-size data-ng-if="!$ctrl.function.ui.error[$ctrl.functionMetrics.FUNCTION_MEMORY] && !$ctrl.isFunctionCollapsed"
                       data-type="functions_memory"
                       data-entity="$ctrl.function">
             </igz-size>
-            <div data-ng-if="$ctrl.function.ui.error.nuclio_function_mem">
-                {{$ctrl.function.ui.error.nuclio_function_mem}}
+            <div data-ng-if="$ctrl.function.ui.error[$ctrl.functionMetrics.FUNCTION_MEMORY]">
+                {{$ctrl.function.ui.error[$ctrl.functionMetrics.FUNCTION_MEMORY]}}
             </div>
         </igz-element-loading-status>
 
         <igz-element-loading-status class="common-table-cell element-loading-status-wrapper"
-                                    data-name="{{$ctrl.nuclioFunctionsGpu}}-{{$ctrl.function.metadata.name}}"
+                                    data-name="{{$ctrl.functionMetrics.FUNCTION_GPU}}-{{$ctrl.function.metadata.name}}"
                                     data-loading-status-size="small"
                                     data-ng-class="[$ctrl.getFunctionsTableColSize('gpuCores')]">
-            <igz-size data-ng-if="!$ctrl.function.ui.error.kube_metrics_server_pods_gpu_utilization && !$ctrl.isFunctionCollapsed"
+            <igz-size data-ng-if="!$ctrl.function.ui.error[$ctrl.functionMetrics.FUNCTION_GPU] && !$ctrl.isFunctionCollapsed"
                       data-type="functions_gpu"
                       data-entity="$ctrl.function">
             </igz-size>
-            <div data-ng-if="$ctrl.function.ui.error.kube_metrics_server_pods_gpu_utilization">
-                {{$ctrl.function.ui.error.kube_metrics_server_pods_gpu_utilization}}
+            <div data-ng-if="$ctrl.function.ui.error[$ctrl.functionMetrics.FUNCTION_GPU]">
+                {{$ctrl.function.ui.error[$ctrl.functionMetrics.FUNCTION_GPU]}}
             </div>
         </igz-element-loading-status>
 
         <igz-element-loading-status class="common-table-cell element-loading-status-wrapper"
-                                    data-name="nuclio_processor_handled_events_total-{{$ctrl.function.metadata.name}}"
+                                    data-name="{{$ctrl.functionMetrics.FUNCTION_EVENTS}}-{{$ctrl.function.metadata.name}}"
                                     data-loading-status-size="small"
                                     data-ng-class="[$ctrl.getFunctionsTableColSize('metricsCount')]">
-            <igz-size data-ng-if="!$ctrl.function.ui.error.nuclio_processor_handled_events_total && !$ctrl.isFunctionCollapsed"
+            <igz-size data-ng-if="!$ctrl.function.ui.error[$ctrl.functionMetrics.FUNCTION_EVENTS] && !$ctrl.isFunctionCollapsed"
                       data-type="functions_events"
                       data-entity="$ctrl.function">
             </igz-size>
-            <div data-ng-if="$ctrl.function.ui.error.nuclio_processor_handled_events_total">
-                {{$ctrl.function.ui.error.nuclio_processor_handled_events_total}}
+            <div data-ng-if="$ctrl.function.ui.error[$ctrl.functionMetrics.FUNCTION_EVENTS]">
+                {{$ctrl.function.ui.error[$ctrl.functionMetrics.FUNCTION_EVENTS]}}
             </div>
         </igz-element-loading-status>
     </div>

@@ -35,8 +35,8 @@
 
         ctrl.functionActions = [];
         ctrl.functionNameTooltip = '';
+        ctrl.functionMetrics = FunctionsService.functionMetrics;
         ctrl.isFunctionCollapsed = true;
-        ctrl.nuclioFunctionsGpu = FunctionsService.functionMetrics.FUNCTION_GPU;
         ctrl.runtimes = {
             'golang': 'Go',
             'python:2.7': 'Python 2.7',
