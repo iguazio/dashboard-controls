@@ -16,6 +16,7 @@
                 dns1123Subdomain: 253,
                 prefixedQualifiedName: 253,
                 qualifiedName: 63,
+                secretName: 253,
                 wildcardDns1123Subdomain: 253
             },
             function: {
@@ -328,6 +329,12 @@
                     generateRule.validCharacters('a-z A-Z 0-9 - _ .'),
                     generateRule.beginEndWith('a-z A-Z 0-9'),
                     generateRule.length({ max: lengths.k8s.qualifiedName })
+                ],
+                secretName: [
+                    generateRule.validCharacters('a-z 0-9 - .'),
+                    generateRule.beginEndWith('a-z 0-9'),
+                    generateRule.noConsecutiveCharacters('.. .- -.'),
+                    generateRule.length({ max: lengths.k8s.secretName })
                 ],
                 wildcardDns1123Subdomain: [
                     generateRule.validCharacters('a-z A-Z 0-9 - . *'),

@@ -31,7 +31,7 @@
                 pattern: validateUniqueness.bind(null, 'name')
             }]),
             secretKey: ValidationService.getValidationRules('k8s.configMapKey'),
-            secret: ValidationService.getValidationRules('k8s.dns1123Subdomain'),
+            secret: ValidationService.getValidationRules('k8s.secretName'),
             configmapKey: ValidationService.getValidationRules('k8s.configMapKey', [
                 {
                     name: 'uniqueness',
