@@ -32,6 +32,10 @@
         var UPDATING_STATISTICS_INTERVAL_TIME = 30000;
 
         ctrl.filtersCounter = 0;
+        ctrl.functionCPUMetric = FunctionsService.functionMetrics.FUNCTION_CPU;
+        ctrl.functionEventsMetric = FunctionsService.functionMetrics.FUNCTION_EVENTS;
+        ctrl.functionGPUMetric = FunctionsService.functionMetrics.FUNCTION_GPU;
+        ctrl.functionMemoryMetric = FunctionsService.functionMetrics.FUNCTION_MEMORY;
         ctrl.functions = [];
         ctrl.originalSortedFunctions = [];
         ctrl.isFiltersShowed = {
@@ -505,10 +509,10 @@
 
             if (!isRefresh) {
                 $timeout(function () {
-                    hideSpinners(FunctionsService.functionMetrics.FUNCTION_CPU);
-                    hideSpinners(FunctionsService.functionMetrics.FUNCTION_GPU);
-                    hideSpinners(FunctionsService.functionMetrics.FUNCTION_MEMORY);
-                    hideSpinners(FunctionsService.functionMetrics.FUNCTION_EVENTS);
+                    hideSpinners(ctrl.functionCPUMetric);
+                    hideSpinners(ctrl.functionGPUMetric);
+                    hideSpinners(ctrl.functionMemoryMetric);
+                    hideSpinners(ctrl.functionEventsMetric);
                 });
             }
         }
@@ -691,31 +695,36 @@
             var now = Date.now();
             var from = new Date(now - MILLIS_IN_AN_HOUR).toISOString();
             var until = new Date(now).toISOString();
+            var projectName = '{project="' + ctrl.project.metadata.name + '"}';
+            var gpuUtilizationMetric = ' * on (pod) group_left(function_name)(nuclio_function_pod_labels{project="' +
+                ctrl.project.metadata.name + '"})';
             var args = {
-                metric: FunctionsService.functionMetrics.FUNCTION_EVENTS + '{project="' + ctrl.project.metadata.name + '"}',
+                metric: ctrl.functionEventsMetric + projectName,
                 from: from,
                 until: until,
                 interval: '5m'
             };
 
             ctrl.getStatistics(args)
-                .then(parseData.bind(null, FunctionsService.functionMetrics.FUNCTION_EVENTS))
-                .catch(handleError.bind(null, FunctionsService.functionMetrics.FUNCTION_EVENTS));
+                .then(parseData.bind(null, ctrl.functionEventsMetric))
+                .catch(handleError.bind(null, ctrl.functionEventsMetric));
 
-            args.metric = FunctionsService.functionMetrics.FUNCTION_CPU;
+            args.metric = ctrl.functionCPUMetric + projectName;
             ctrl.getStatistics(args)
-                .then(parseData.bind(null, args.metric))
-                .catch(handleError.bind(null, args.metric));
+                .then(parseData.bind(null, ctrl.functionCPUMetric))
+                .catch(handleError.bind(null, ctrl.functionCPUMetric));
 
-            args.metric = FunctionsService.functionMetrics.FUNCTION_GPU;
+            args.metric = ctrl.functionGPUMetric + gpuUtilizationMetric;
+            args.appendQueryParamsToUrlPath = true;
             ctrl.getStatistics(args)
-                .then(parseData.bind(null, args.metric))
-                .catch(handleError.bind(null, args.metric));
+                .then(parseData.bind(null, ctrl.functionGPUMetric))
+                .catch(handleError.bind(null, ctrl.functionGPUMetric));
+            delete args.appendQueryParamsToUrlPath;
 
-            args.metric = FunctionsService.functionMetrics.FUNCTION_MEMORY;
+            args.metric = ctrl.functionMemoryMetric + projectName;
             ctrl.getStatistics(args)
-                .then(parseData.bind(null, args.metric))
-                .catch(handleError.bind(null, args.metric));
+                .then(parseData.bind(null, ctrl.functionMemoryMetric))
+                .catch(handleError.bind(null, ctrl.functionMemoryMetric));
 
             /**
              * Sets error message to the relevant function
@@ -810,7 +819,7 @@
                                 .value();
                         }
 
-                        if (type === FunctionsService.functionMetrics.FUNCTION_CPU) {
+                        if (type === ctrl.functionCPUMetric) {
                             lodash.merge(aFunction.ui, {
                                 metrics: {
                                     'cpu.cores': latestValue,
@@ -819,7 +828,7 @@
                                     })
                                 }
                             });
-                        } else if (type === FunctionsService.functionMetrics.FUNCTION_MEMORY) {
+                        } else if (type === ctrl.functionMemoryMetric) {
                             lodash.merge(aFunction.ui, {
                                 metrics: {
                                     size: Number(latestValue),
@@ -828,7 +837,7 @@
                                     })
                                 }
                             });
-                        } else if (type === FunctionsService.functionMetrics.FUNCTION_GPU) {
+                        } else if (type === ctrl.functionGPUMetric) {
                             lodash.merge(aFunction.ui, {
                                 metrics: {
                                     'gpu.cores': latestValue,
@@ -853,10 +862,10 @@
                 });
 
                 // if the column values have just been updated, and the table is sorted by this column - update sort
-                if (type === FunctionsService.functionMetrics.FUNCTION_CPU && ctrl.sortedColumnName === 'ui.metrics[\'cpu.cores\']' ||
-                    type === FunctionsService.functionMetrics.FUNCTION_GPU && ctrl.sortedColumnName === 'ui.metrics[\'gpu.cores\']' ||
-                    type === FunctionsService.functionMetrics.FUNCTION_MEMORY && ctrl.sortedColumnName === 'ui.metrics.size' ||
-                    type === FunctionsService.functionMetrics.FUNCTION_EVENTS &&
+                if (type === ctrl.functionCPUMetric && ctrl.sortedColumnName === 'ui.metrics[\'cpu.cores\']' ||
+                    type === ctrl.functionGPUMetric && ctrl.sortedColumnName === 'ui.metrics[\'gpu.cores\']' ||
+                    type === ctrl.functionMemoryMetric && ctrl.sortedColumnName === 'ui.metrics.size' ||
+                    type === ctrl.functionEventsMetric &&
                     lodash.includes(['ui.metrics.invocationPerSec', 'ui.metrics.count'], ctrl.sortedColumnName)) {
                     sortTable();
                 }
