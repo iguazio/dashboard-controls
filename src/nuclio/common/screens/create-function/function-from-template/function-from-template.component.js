@@ -391,27 +391,22 @@
                 },
                 {
                     id: 'dotnetcore',
-                    name: '.NET Core',
+                    name: '.NET Core ' + $i18next.t('functions:TECH_PREVIEW_LABEL', {lng: lng}),
                     visible: true
                 },
                 {
                     id: 'java',
-                    name: 'Java',
+                    name: 'Java ' + $i18next.t('functions:TECH_PREVIEW_LABEL', {lng: lng}),
                     visible: true
                 },
                 {
                     id: 'nodejs',
-                    name: 'NodeJS',
+                    name: 'NodeJS ' + $i18next.t('functions:TECH_PREVIEW_LABEL', {lng: lng}),
                     visible: true
                 },
                 {
                     id: 'shell',
-                    name: 'Shell',
-                    visible: true
-                },
-                {
-                    id: 'ruby',
-                    name: 'Ruby',
+                    name: 'Shell ' + $i18next.t('functions:TECH_PREVIEW_LABEL', {lng: lng}),
                     visible: true
                 }
             ];
