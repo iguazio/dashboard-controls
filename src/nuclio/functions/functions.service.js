@@ -537,12 +537,12 @@
                                 defaultValue: lodash.get(
                                     ConfigService,
                                     'nuclio.defaultFunctionConfig.attributes.spec.triggers.v3ioStream.url',
-                                    ''
+                                    'http://v3io-webapi:8081'
                                 ),
                                 placeholder: $i18next.t('common:PLACEHOLDER.ENTER_URL', { lng: lng }),
                                 moreInfoDescription: $i18next.t('functions:TOOLTIP.V3IO_STREAM_URL', { lng: lng }),
                                 moreInfoHtml: true,
-                                isAdvanced: !lodash.isEmpty(lodash.get(additionalData, 'containers')),
+                                isAdvanced: false,
                                 allowEmpty: false
                             },
                             {
