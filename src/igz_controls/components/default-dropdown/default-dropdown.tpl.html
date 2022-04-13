@@ -72,8 +72,7 @@
 
                     <div class="list-item-label">
                         <span class="list-item-name"
-                          data-ng-class="{'capitalized': $ctrl.isCapitalized}">
-                        {{$ctrl.getName(item)}}</span>
+                          data-ng-class="{'capitalized': $ctrl.isCapitalized}" data-ng-bind-html="$ctrl.getNameTemplate(item)"></span>
                         <span data-ng-show="$ctrl.getDescription(item)"
                               class="description">{{$ctrl.getDescription(item)}}</span>
                     </div>

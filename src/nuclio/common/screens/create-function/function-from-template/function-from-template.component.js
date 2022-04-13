@@ -371,7 +371,8 @@
                 },
                 {
                     id: 'python:3.6',
-                    name: 'Python 3.6',
+                    name: 'Python 3.6 ' + $i18next.t('functions:DEPRECATED_SOON_LABEL', {lng: lng}),
+                    nameTemplate: 'Python 3.6 ' + '<b>' + $i18next.t('functions:DEPRECATED_SOON_LABEL', {lng: lng}) + '</b>',
                     visible: true
                 },
                 {
