@@ -695,11 +695,12 @@
             var now = Date.now();
             var from = new Date(now - MILLIS_IN_AN_HOUR).toISOString();
             var until = new Date(now).toISOString();
-            var projectName = '{project="' + ctrl.project.metadata.name + '"}';
-            var gpuUtilizationMetric = ' * on (pod) group_left(function_name)(nuclio_function_pod_labels{project="' +
+            var functionEventsProjectName = '{project="' + ctrl.project.metadata.name + '"}';
+            var projectName = '{project_name="' + ctrl.project.metadata.name + '"}';
+            var gpuUtilizationMetric = ' * on (pod) group_left(function_name)(nuclio_function_pod_labels{project_name="' +
                 ctrl.project.metadata.name + '"})';
             var args = {
-                metric: ctrl.functionEventsMetric + projectName,
+                metric: ctrl.functionEventsMetric + functionEventsProjectName,
                 from: from,
                 until: until,
                 interval: '5m'
