@@ -115,8 +115,8 @@
 
         ctrl.checkIsRequired = checkIsRequired;
         ctrl.getDescription = getDescription;
-        ctrl.getName = getName;
         ctrl.getIcon = getIcon;
+        ctrl.getNameTemplate = getNameTemplate;
         ctrl.getTooltip = getTooltip;
         ctrl.getValuesArray = getValuesArray;
         ctrl.isItemSelected = isItemSelected;
@@ -281,13 +281,12 @@
         }
 
         /**
-         * Returns the name of the provided item. Searches for a direct `name` property, or searches `name` property by
-         * `nameKey`
+         * Returns the name of the provided item. Searches for a direct `nameTemplate` property
          * @param {Object} item - the item whose name should be returned
          * @returns {string}
          */
-        function getName(item) {
-            return lodash.get(item, 'name', lodash.get(item, ctrl.nameKey, ''));
+        function getNameTemplate(item) {
+            return lodash.get(item, 'nameTemplate', getName(item));
         }
 
         /**
@@ -486,7 +485,7 @@
                     } else {
                         ctrl.selectedItem = item;
                     }
-                    ctrl.typedValue = ctrl.getName(item);
+                    ctrl.typedValue = getName(item);
                 }
 
                 if (angular.isFunction(ctrl.itemSelectCallback)) {
@@ -609,11 +608,21 @@
         //
 
         /**
+         * Returns the name of the provided item. Searches for a direct `name` property, or searches `name` property by
+         * `nameKey`
+         * @param {Object} item - the item whose name should be returned
+         * @returns {string}
+         */
+        function getName(item) {
+            return lodash.get(item, 'name', lodash.get(item, ctrl.nameKey, ''));
+        }
+
+        /**
          * Sets default input value
          */
         function setDefaultInputValue() {
             if (!lodash.isNil(ctrl.selectedItem)) {
-                ctrl.typedValue = ctrl.getName(angular.isDefined(ctrl.selectPropertyOnly) ?
+                ctrl.typedValue = getName(angular.isDefined(ctrl.selectPropertyOnly) ?
                     lodash.find(ctrl.valuesArray, [ctrl.selectPropertyOnly, ctrl.selectedItem]) : ctrl.selectedItem);
 
                 if (ctrl.typedValue === '' && ctrl.enableTyping) {
@@ -654,6 +663,22 @@
         }
 
         /**
+         * Takes the largest element and sets him width as min-width to all elements (needed to style drop-down list)
+         */
+        function setWidth() {
+            var labels = $element.find('.default-dropdown-container ul li').find('.list-item-label');
+            var minWidth = lodash(labels)
+                .map(function (label) {
+                    return angular.element(label)[0].clientWidth;
+                })
+                .min();
+
+            lodash.forEach(labels, function (label) {
+                angular.element(label).css('min-width', minWidth);
+            });
+        }
+
+        /**
          * Handle click on the document and not on the dropdown field and close the dropdown
          * @param {Object} e - event
          */
@@ -668,22 +693,6 @@
                     }
                 });
             }
-        }
-
-        /**
-         * Takes the largest element and sets him width as min-width to all elements (needed to style drop-down list)
-         */
-        function setWidth() {
-            var labels = $element.find('.default-dropdown-container ul li').find('.list-item-label');
-            var minWidth = lodash(labels)
-                .map(function (label) {
-                    return angular.element(label)[0].clientWidth;
-                })
-                .min();
-
-            lodash.forEach(labels, function (label) {
-                angular.element(label).css('min-width', minWidth);
-            });
         }
     }
 }());
