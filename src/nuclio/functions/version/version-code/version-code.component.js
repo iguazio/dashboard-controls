@@ -428,6 +428,14 @@
                     visible: true
                 },
                 {
+                    id: 'python',
+                    ext: 'py',
+                    name: 'Python',
+                    language: 'python',
+                    sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
+                    visible: true
+                },
+                {
                     id: 'python:3.6',
                     ext: 'py',
                     name: 'Python 3.6',
