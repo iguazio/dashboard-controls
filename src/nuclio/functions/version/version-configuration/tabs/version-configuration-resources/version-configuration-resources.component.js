@@ -26,6 +26,7 @@
             root: 1000,
             power: 3
         };
+
         var preemptionMode = '';
         var scaleResourcesCopy = [];
         var scaleToZero = {};
