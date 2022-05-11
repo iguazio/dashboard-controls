@@ -187,7 +187,8 @@
                         runtimeAttributes: {
                             repositories: []
                         }
-                    }
+                    },
+                    resources: $stateParams.isNewFunction ? lodash.get(ConfigService, 'nuclio.defaultFunctionPodResources', {}) : {}
                 },
                 ui: {
                     versionCode: '',
