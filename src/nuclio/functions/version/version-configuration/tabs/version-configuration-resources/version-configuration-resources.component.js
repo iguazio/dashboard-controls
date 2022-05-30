@@ -139,6 +139,7 @@
         ctrl.gpuInputCallback = gpuInputCallback;
         ctrl.handleNodeSelectorsAction = handleNodeSelectorsAction;
         ctrl.handleRevertToDefaultsClick = handleRevertToDefaultsClick;
+        ctrl.isPodsPriorityShown = isPodsPriorityShown;
         ctrl.isInactivityWindowShown = isInactivityWindowShown;
         ctrl.memoryDropdownCallback = memoryDropdownCallback;
         ctrl.memoryInputCallback = memoryInputCallback;
@@ -156,7 +157,10 @@
          * Initialization method
          */
         function onInit() {
-            initPodsPriority();
+            if (ctrl.isPodsPriorityShown()) {
+                initPodsPriority();
+            }
+
             initTargetCpuSlider();
 
             preemptionMode = getVersionPreemptionMode() || lodash.get(ctrl.defaultFunctionConfig, 'spec.preemptionMode');
@@ -330,6 +334,14 @@
                                    $i18next.t('common:CANCEL', {lng: lng})).then(function () {
                 setNodeSelectorsDefaultValue();
             });
+        }
+
+        /**
+         * Checks whether pods priority can be shown
+         * @returns {boolean}
+         */
+        function isPodsPriorityShown() {
+            return !lodash.isNil(lodash.get(ConfigService, 'nuclio.validFunctionPriorityClassNames'))
         }
 
         /**
