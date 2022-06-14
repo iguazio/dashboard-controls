@@ -303,6 +303,7 @@
     "MAX_LENGTH_WHOLE_PART": "Max length of the whole part: {{length}} characters",
     "MEMBERS": "Members",
     "MEMORY": "Memory",
+    "MIN": "Min",
     "MIGRATE": "Migrate",
     "MONACO": "Monaco",
     "MONITORING": "Monitoring",
