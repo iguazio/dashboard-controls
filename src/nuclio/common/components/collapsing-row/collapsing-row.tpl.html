@@ -33,7 +33,7 @@
                 {{$ctrl.item.ui.selectedClass.name}}
             </div>
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)">
-                {{ 'functions:HOST_PATH' | i18next }}
+                {{ 'common:HOST_PATH' | i18next }}
             </div>
             <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume)">
                 {{ 'functions:V3IO' | i18next }}
@@ -81,7 +81,7 @@
                         <span class="field-label">{{ 'functions:MOUNT_PATH' | i18next }}</span>:&nbsp;{{ $ctrl.item.volumeMount.mountPath }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)">
-                        <span class="field-label">{{ 'functions:HOST_PATH' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.hostPath.path }};&nbsp;
+                        <span class="field-label">{{ 'common:HOST_PATH' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.hostPath.path }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.readOnly)">
                         <span class="field-label">{{ 'common:READ_ONLY' | i18next }}</span>:&nbsp;{{ $ctrl.item.volumeMount.readOnly }};&nbsp;
