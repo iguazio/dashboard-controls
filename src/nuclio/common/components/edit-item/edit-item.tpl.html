@@ -140,7 +140,7 @@
 
             <div class="igz-col-45 attribute-field" data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath.path)">
                 <div class="field-label">
-                    <span class="asterisk">{{ 'functions:HOST_PATH' | i18next }}</span>
+                    <span class="asterisk">{{ 'common:HOST_PATH' | i18next }}</span>
                 </div>
                 <igz-validating-input-field data-field-type="input"
                                             data-input-name="hostPath"
@@ -149,7 +149,7 @@
                                             data-form-object="$ctrl.editItemForm"
                                             data-validation-is-required="true"
                                             data-read-only="$ctrl.readOnly"
-                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_HOST_PATH' | i18next }}"
+                                            data-placeholder-text="{{ 'common:PLACEHOLDER.ENTER_HOST_PATH' | i18next }}"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="volume.hostPath.path">
                 </igz-validating-input-field>

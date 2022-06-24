@@ -833,7 +833,7 @@
                 ] : [
                     {
                         id: 'hostPath',
-                        name: $i18next.t('functions:HOST_PATH', { lng: lng })
+                        name: $i18next.t('common:HOST_PATH', { lng: lng })
                     }
                 ]
             };
