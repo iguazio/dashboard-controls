@@ -258,7 +258,6 @@
     "PROMOTE_CANARY_CONFIRM": "Are you sure you want to promote canary to primary?",
     "PVC": "PVC",
     "QOS": "QoS",
-    "READ_MORE": "Read more",
     "READINESS_TIMEOUT_SECONDS": "Readiness timeout (seconds)",
     "READINESS_TIMEOUT_SECONDS_DESCRIPTION": "The time, in seconds, that the controller will wait for the function to become ready before declaring failure (default: {{default}})",
     "REBALANCING_GRACE_PERIOD": "Rebalancing grace period",
