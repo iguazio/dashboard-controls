@@ -374,7 +374,7 @@
                         {
                             name: 'prefixNotStart',
                             label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' +
-                                $i18next.t('functions:NOT_START_WITH_FORBIDDEN_WORDS_ANNOTATION', {lng: lng}),
+                                $i18next.t('common:NOT_START_WITH_FORBIDDEN_WORDS_K8S', {lng: lng}),
                             pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)/
                         })
                 },
@@ -439,6 +439,15 @@
                     value: [generateRule.length({ max: lengths.service.persistentVolumeClaims.value })]
                 },
                 hiveMetastorePath: [generateRule.endNotWith('/')]
+            },
+            clusters: {
+                label: commonRules.prefixedQualifiedName.concat(
+                    {
+                        name: 'prefixNotStart',
+                        label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' +
+                            $i18next.t('common:NOT_START_WITH_FORBIDDEN_WORDS_K8S', {lng: lng}),
+                        pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)/
+                    })
             },
             container: {
                 name: [
