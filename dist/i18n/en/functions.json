@@ -180,7 +180,6 @@
     "NO_LOGS_HAVE_BEEN_FOUND": "No logs have been found...",
     "NODE_SELECTORS": "Node selector",
     "NORMAL": "Normal",
-    "NOT_START_WITH_FORBIDDEN_WORDS_ANNOTATION": "Must not start with 'kubernetes.io', 'k8s.io'",
     "NOT_START_WITH_FORBIDDEN_WORDS_LABEL": "Must not start with 'kubernetes.io', 'k8s.io' or 'nuclio.io'",
     "NOT_YET_DEPLOYED": "Not yet deployed",
     "OAUTH2": "OAuth2",
