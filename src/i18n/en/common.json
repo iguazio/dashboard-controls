@@ -328,6 +328,7 @@
     "NO_EVENTS": "No events",
     "NO_TASKS": "No {{- currentTab}} tasks",
     "NOT_READY": "Not ready",
+    "NOT_START_WITH_FORBIDDEN_WORDS_K8S": "Must not start with 'kubernetes.io', 'k8s.io'",
     "NODE": "Node",
     "NODES": "Nodes",
     "NONE": "None",
