@@ -441,13 +441,35 @@
                 hiveMetastorePath: [generateRule.endNotWith('/')]
             },
             clusters: {
-                label: commonRules.prefixedQualifiedName.concat(
-                    {
-                        name: 'prefixNotStart',
-                        label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' +
-                            $i18next.t('common:NOT_START_WITH_FORBIDDEN_WORDS_K8S', {lng: lng}),
-                        pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)/
-                    })
+                label: {
+                    key: commonRules.prefixedQualifiedName.concat(
+                        {
+                            name: 'prefixNotStart',
+                            label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' +
+                                $i18next.t('common:NOT_START_WITH_FORBIDDEN_WORDS_K8S', {lng: lng}),
+                            pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)/
+                        }),
+                    value: [
+                        {
+                            name: 'valueBeginEnd',
+                            label: '[' + $i18next.t('common:VALUE', { lng: lng }) + '] ' +
+                                $i18next.t('common:BEGIN_END_WITH', { lng: lng }) + ': a–z, A–Z, 0–9',
+                            pattern: /^([^/]+\/)?([A-Za-z0-9][^/]*)?[A-Za-z0-9]$/
+                        },
+                        {
+                            name: 'valueMaxLength',
+                            label: '[' + $i18next.t('common:VALUE', { lng: lng }) + '] ' +
+                                $i18next.t('common:MAX_LENGTH_CHARACTERS', { lng: lng, count: 63 }),
+                            pattern: /^([^/]+\/)?[^/]{1,63}$/
+                        },
+                        {
+                            name: 'valueValidCharacters',
+                            label: '[' + $i18next.t('common:VALUE', { lng: lng }) + '] ' +
+                                $i18next.t('common:VALID_CHARACTERS', { lng: lng }) + ': a–z, A–Z, 0–9, –, _, .',
+                            pattern: /^[a-zA-Z0-9\-_.]+$/
+                        }
+                    ]
+                }
             },
             container: {
                 name: [
