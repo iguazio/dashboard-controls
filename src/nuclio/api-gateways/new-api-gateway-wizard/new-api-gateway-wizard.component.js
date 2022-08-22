@@ -265,7 +265,7 @@
                         ctrl.closeDialog({ newApiGateway: apiGateway});
                     })
                     .catch(function (error) {
-                        var errorMessage = lodash.get(error, 'data.errors[0].detail', error.statusText);
+                        var errorMessage = lodash.get(error, 'data.error', lodash.get(error, 'data.errors[0].detail', error.statusText));
 
                         DialogsService.alert(errorMessage);
                     });
