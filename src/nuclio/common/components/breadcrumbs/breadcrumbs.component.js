@@ -13,6 +13,7 @@
 
     function NclBreadcrumbsController($scope, $state, $stateParams, $transitions, lodash) {
         var ctrl = this;
+        var siteOrigin = '';
 
         ctrl.mainHeaderTitle = {};
 
@@ -30,6 +31,12 @@
          * Initialization function
          */
         function onInit() {
+            var origin = sessionStorage.getItem('origin')
+
+            if (origin) {
+                siteOrigin = origin
+            }
+
             setMainHeaderTitle();
 
             $scope.$on('update-main-header-title', setMainHeaderTitle);
@@ -45,7 +52,11 @@
          * Redirects to the projects screen
          */
         function goToProjectsList() {
-            $state.go('app.projects');
+            if (siteOrigin) {
+                window.location.href = ctrl.siteOrigin + '/projects'
+            } else {
+                $state.go('app.projects');
+            }
         }
 
         /**
