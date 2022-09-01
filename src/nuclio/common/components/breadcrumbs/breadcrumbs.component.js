@@ -53,7 +53,7 @@
          */
         function goToProjectsList() {
             if (siteOrigin) {
-                window.location.href = ctrl.siteOrigin + '/projects'
+                window.location.href = siteOrigin + '/mlrun/projects'
             } else {
                 $state.go('app.projects');
             }
