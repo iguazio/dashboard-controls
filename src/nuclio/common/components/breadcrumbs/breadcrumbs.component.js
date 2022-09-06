@@ -13,7 +13,7 @@
 
     function NclBreadcrumbsController($scope, $state, $stateParams, $transitions, lodash) {
         var ctrl = this;
-        var siteOrigin = '';
+        var siteOrigin = null;
 
         ctrl.mainHeaderTitle = {};
 
@@ -31,11 +31,7 @@
          * Initialization function
          */
         function onInit() {
-            var origin = sessionStorage.getItem('origin')
-
-            if (origin) {
-                siteOrigin = origin
-            }
+            siteOrigin = sessionStorage.getItem('origin')
 
             setMainHeaderTitle();
 
@@ -63,9 +59,13 @@
          * Redirects to the project screen
          */
         function goToProjectScreen() {
-            $state.go('app.project', {
-                projectId: $stateParams.projectId
-            });
+            if (siteOrigin) {
+                window.location.href = siteOrigin + '/mlrun/projects/' + $stateParams.projectId
+            } else {
+                $state.go('app.project', {
+                    projectId: $stateParams.projectId
+                });
+            }
         }
 
         /**
