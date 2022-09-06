@@ -26,6 +26,7 @@
                                  NuclioHeaderService, TableSizeService) {
         var ctrl = this;
         var lng = i18next.language;
+        var siteOrigin = null;
         var updatingFunctionsInterval = null;
         var updatingStatisticsInterval = null;
         var UPDATING_FUNCTIONS_INTERVAL_TIME = 30000;
@@ -141,6 +142,7 @@
          * Initialization method
          */
         function onInit() {
+            siteOrigin = sessionStorage.getItem('origin')
             ctrl.isSplashShowed.value = true;
 
             lodash.defaults(ctrl, { createFunctionWhenEmpty: true });
@@ -315,7 +317,8 @@
                     if (
                         ctrl.createFunctionWhenEmpty &&
                         lodash.isEmpty(ctrl.functions) &&
-                        !$stateParams.createCancelled
+                        !$stateParams.createCancelled &&
+                        !siteOrigin
                     ) {
                         ctrl.isSplashShowed.value = false;
                         openNewFunctionScreen();
