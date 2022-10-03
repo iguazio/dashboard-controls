@@ -269,7 +269,7 @@ such restriction.
                     visible: true
                 },
                 {
-                    id: 'shell',
+                    id: 'shell2',
                     name: 'Shell',
                     sourceCode: 'ZWNobyAiSGVsbG8gZnJvbSBOdWNsaW8i',
                     visible: true
