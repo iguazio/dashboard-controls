@@ -15,9 +15,10 @@
             controller: FunctionFromScratchController
         });
 
-    function FunctionFromScratchController($document, $state, $timeout, lodash, ConfigService, EventHelperService,
-                                           FunctionsService, ValidationService) {
+    function FunctionFromScratchController($document, $state, $timeout, $i18next, i18next, lodash, ConfigService,
+                                           EventHelperService, FunctionsService, ValidationService) {
         var ctrl = this;
+        var lng = i18next.language;
 
         ctrl.functionData = {};
         ctrl.functionFromScratchForm = {};
@@ -227,7 +228,7 @@
                 },
                 {
                     id: 'dotnetcore',
-                    name: '.NET Core',
+                    name: '.NET Core ' + $i18next.t('functions:TECH_PREVIEW_LABEL', { lng: lng }),
                     sourceCode: 'dXNpbmcgU3lzdGVtOw0KdXNpbmcgTnVjbGlvLlNkazsNCg0KcHVibGljIGNsYXNzIG1haW4NCnsNCiAgICBwdWJ' +
                     'saWMgb2JqZWN0IGhhbmRsZXIoQ29udGV4dCBjb250ZXh0LCBFdmVudCBldmVudEJhc2UpDQogICAgew0KICAgICAgICByZXR1cm' +
                     '4gbmV3IFJlc3BvbnNlKCkNCiAgICAgICAgew0KICAgICAgICAgICAgU3RhdHVzQ29kZSA9IDIwMCwNCiAgICAgICAgICAgIENvb' +
@@ -237,7 +238,7 @@
                 },
                 {
                     id: 'java',
-                    name: 'Java',
+                    name: 'Java '  + $i18next.t('functions:TECH_PREVIEW_LABEL', { lng: lng }),
                     sourceCode: 'aW1wb3J0IGlvLm51Y2xpby5Db250ZXh0Ow0KaW1wb3J0IGlvLm51Y2xpby5FdmVudDsNCmltcG9ydCBpby5udWN' +
                     'saW8uRXZlbnRIYW5kbGVyOw0KaW1wb3J0IGlvLm51Y2xpby5SZXNwb25zZTsNCg0KcHVibGljIGNsYXNzIEhhbmRsZXIgaW1wbG' +
                     'VtZW50cyBFdmVudEhhbmRsZXIgew0KDQogICAgQE92ZXJyaWRlDQogICAgcHVibGljIFJlc3BvbnNlIGhhbmRsZUV2ZW50KENvb' +
@@ -247,20 +248,20 @@
                 },
                 {
                     id: 'nodejs',
+                    name: 'NodeJS ' + $i18next.t('functions:TECH_PREVIEW_LABEL', { lng: lng }),
                     sourceCode: 'ZXhwb3J0cy5oYW5kbGVyID0gZnVuY3Rpb24oY29udGV4dCwgZXZlbnQpIHsNCiAgICBjb250ZXh0LmNhbGxiYWN' +
                     'rKCcnKTsNCn07', // source code in base64
-                    name: 'NodeJS',
                     visible: true
                 },
                 {
                     id: 'shell',
-                    name: 'Shell',
+                    name: 'Shell ' + $i18next.t('functions:TECH_PREVIEW_LABEL', { lng: lng }),
                     sourceCode: 'ZWNobyAiSGVsbG8gZnJvbSBOdWNsaW8i',
                     visible: true
                 },
                 {
                     id: 'ruby',
-                    name: 'Ruby',
+                    name: 'Ruby ' + $i18next.t('functions:TECH_PREVIEW_LABEL', { lng: lng }),
                     sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpDQplbmQ=', // source code in base64
                     visible: true
                 }
