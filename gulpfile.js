@@ -82,7 +82,7 @@ function appLess() {
     var distFolder = config.assets_dir + '/less';
 
     var task = gulp
-        .src(config.app_files.less_files)
+        .src(config.app_files.less_files, {allowEmpty: true})
         .pipe(concat(config.output_files.app.less))
         .pipe(gulp.dest(distFolder));
 
