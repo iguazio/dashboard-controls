@@ -13,7 +13,6 @@ var config = require('./build.config');
 var cache = require('gulp-file-transform-cache');
 var gulp = require('gulp');
 var concat = require('gulp-concat');
-var runSequence = require('run-sequence');
 var eslint = require('gulp-eslint');
 var argv = require('yargs').argv;
 var minifyHtml = require('gulp-htmlmin');
@@ -36,26 +35,34 @@ var state = {
 /**
  * Set build for testing
  */
-gulp.task('set-testing', function () {
+function setTesting(next) {
     state.isForTesting = true;
-});
+    next();
+}
 
 //
 // ******* Tasks *******
 //
 
+gulp.task('build', build);
+gulp.task('test-unit', testUnit);
+
+//
+// ******* Functions *******
+//
+
 /**
  * Clean build directory
  */
-gulp.task('clean', function () {
+function clean() {
     return gulp.src([config.build_dir, config.cache_file])
         .pipe(vinylPaths(del));
-});
+}
 
 /**
  * Build app.css (include all project less files)
  */
-gulp.task('app.less', function () {
+function appLess() {
     var distFolder = config.assets_dir + '/less';
 
     var task = gulp
@@ -64,12 +71,12 @@ gulp.task('app.less', function () {
         .pipe(gulp.dest(distFolder));
 
     return task;
-});
+}
 
 /**
  * Build app.js (include all project js files and templates)
  */
-gulp.task('app.js', function () {
+function appJs() {
     var distFolder = config.assets_dir + '/js';
     var sourceFiles = config.app_files.js;
 
@@ -101,22 +108,22 @@ gulp.task('app.js', function () {
         .pipe(gulp.dest(distFolder));
 
     return task;
-});
+}
 
 /**
  * Copy all fonts to the build directory
  */
-gulp.task('fonts', function () {
+function fonts() {
     var distFolder = config.assets_dir + '/fonts';
 
     return gulp.src(config.source_dir + '/igz_controls/fonts/**/*')
         .pipe(gulp.dest(distFolder));
-});
+}
 
 /**
  * Optimize all images and copy them to the build directory
  */
-gulp.task('images', function () {
+function images() {
     var distFolder = config.assets_dir + '/images';
 
     return gulp.src(config.source_dir + '/igz_controls/images/**/*')
@@ -126,36 +133,38 @@ gulp.task('images', function () {
             interlaced: true
         }))
         .pipe(gulp.dest(distFolder));
-});
+}
 
 /**
  * Lint source code
  */
-gulp.task('lint', function () {
+function lint() {
     return gulp.src(config.app_files.js)
         .pipe(eslint())
         .pipe(eslint.format('compact'))
         .pipe(eslint.failAfterError());
-});
+}
 
-gulp.task('i18n', function () {
+function i18n() {
     var distFolder = config.assets_dir + '/i18n';
 
     return gulp.src(config.app_files.i18n)
         .pipe(gulp.dest(distFolder));
-});
+}
 
-gulp.task('inject-version', function () {
+function injectVersion(done) {
     exec('git describe --tags --abbrev=40', function (err, stdout) {
         buildVersion = stdout;
     });
-});
+
+    done();
+}
 
 /**
  * Run unit tests (Karma)
  * Task for development environment only
  */
-gulp.task('test-unit-run', function (done) {
+function testUnitRun(done) {
     var karmaServer = require('karma').Server;
     var files = config.test_files.unit.vendor.map(function (vendorPath) {
         return __dirname + '/' + vendorPath;
@@ -169,38 +178,37 @@ gulp.task('test-unit-run', function (done) {
         files: files,
         action: 'run'
     }, done).start();
-});
+}
 
 /**
  * Build vendor.less (include all vendor less files)
  */
-gulp.task('vendor.less', function () {
+function vendorLess() {
     var distFolder = config.assets_dir + '/less';
 
-    gulp.src(config.vendor_files.less)
+    return gulp.src(config.vendor_files.less)
         .pipe(concat(config.output_files.vendor.less))
         .pipe(gulp.dest(distFolder));
-});
+}
 
 /**
  * Build vendor.js (include all vendor js files)
  */
-gulp.task('vendor.js', function () {
+function vendorJs() {
     var distFolder = config.assets_dir + '/js';
 
     return gulp.src(config.vendor_files.js)
         .pipe(concat(config.output_files.vendor.js))
         .pipe(gulp.dest(distFolder));
-});
+}
 
 /**
  * Task for unit test running
  * Task for development environment only
  */
-gulp.task('test-unit', function (next) {
-    runSequence('set-testing', 'build', 'test-unit-run', next);
-});
-
+function testUnit(next) {
+    gulp.series(setTesting, build, testUnitRun)(next);
+}
 //
 // ******* Task chains *******
 //
@@ -208,6 +216,6 @@ gulp.task('test-unit', function (next) {
 /**
  * Base build task
  */
-gulp.task('build', function (next) {
-    runSequence('lint', 'clean', 'inject-version', 'vendor.less', 'vendor.js', ['app.less', 'app.js', 'fonts', 'images', 'i18n'], next);
-});
+function build(next) {
+    gulp.series(lint, clean, injectVersion, vendorLess, vendorJs, gulp.parallel(appLess, appJs, fonts, images, i18n))(next);
+}
