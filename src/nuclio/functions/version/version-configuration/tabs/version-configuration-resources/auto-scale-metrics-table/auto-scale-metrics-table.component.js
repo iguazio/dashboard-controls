@@ -173,9 +173,11 @@ such restriction.
             if (ctrl.scaleMetrics.length > 0) {
                 FormValidationService.validateAllFields(ctrl.autoScaleMetricsForm);
 
-                $rootScope.$broadcast('change-state-deploy-button', {
-                    component: 'scaleMetrics',
-                    isDisabled: !isFormValid || ctrl.autoScaleMetricsForm.$invalid
+                $timeout(function () {
+                    $rootScope.$broadcast('change-state-deploy-button', {
+                        component: 'scaleMetrics',
+                        isDisabled: !isFormValid || ctrl.autoScaleMetricsForm.$invalid
+                    });
                 });
             }
 
