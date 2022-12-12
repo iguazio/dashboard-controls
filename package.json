@@ -21,7 +21,7 @@
         "email": "erann@iguazio.com"
     },
     "dependencies": {
-        "@babel/core": "^7.19.6",
+        "babel-core": "^6.26.0",
         "@uirouter/angularjs": "^1.0.20",
         "angular": "^1.8.0",
         "angular-download": "0.0.5",
@@ -36,7 +36,7 @@
         "eslint-plugin-angular": "^4.0.1",
         "express": "4.18.1",
         "gulp": "^4.0.2",
-        "gulp-babel": "^8.0.0",
+        "gulp-babel": "^7.0.0",
         "gulp-concat": "^2.6.1",
         "gulp-eslint": "^6.0.0",
         "gulp-file-transform-cache": ">=1.0.6",
