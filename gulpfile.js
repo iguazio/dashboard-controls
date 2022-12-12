@@ -138,7 +138,7 @@ function images() {
 /**
  * Lint source code
  */
-function lint() {
+ function lint() {
     return gulp.src(config.app_files.js, {allowEmpty: true})
         .pipe(eslint())
         .pipe(eslint.format('compact'))
