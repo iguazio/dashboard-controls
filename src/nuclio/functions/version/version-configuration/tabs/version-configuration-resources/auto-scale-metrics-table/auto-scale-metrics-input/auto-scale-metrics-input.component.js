@@ -24,7 +24,8 @@ such restriction.
                 changeDataCallback: '&',
                 isDisabled: '<?',
                 itemIndex: '<',
-                keyList: '<',
+                typeList: '<',
+                presetsList: '<',
                 rowData: '<',
             },
             templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-resources/auto-scale-metrics-table/auto-scale-metrics-input/auto-scale-metrics-input.tpl.html',
@@ -61,7 +62,7 @@ such restriction.
         ctrl.getSelectedItem = getSelectedItem;
         ctrl.onClickAction = onClickAction;
         ctrl.onEditInput = onEditInput;
-        ctrl.handleMetricChange = handleMetricChange;
+        ctrl.handleDropdownChange = handleDropdownChange;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.sliderInputCallback = sliderInputCallback;
 
@@ -87,8 +88,8 @@ such restriction.
             lodash.defaults(ctrl, {isDisabled: false});
 
             ctrl.sliderConfig = {
-                value: lodash.get(ctrl.metricData, 'value', 75),
-                valueLabel: lodash.get(ctrl.metricData, 'value', 75),
+                value: lodash.get(ctrl.metricData, 'threshold', 75),
+                valueLabel: lodash.get(ctrl.metricData, 'threshold', 75),
                 pow: 0,
                 unitLabel: '%',
                 labelHelpIcon: false,
@@ -120,8 +121,8 @@ such restriction.
          * Gets selected item in dropdown
          * @returns {Object}
          */
-        function getSelectedItem() {
-            return lodash.get(ctrl.metricData, 'name') === '' ? ''  : ctrl.metricData;
+        function getSelectedItem(field) {
+            return lodash.get(ctrl.metricData, field) === '' ? ''  : ctrl.metricData;
         }
 
         /**
@@ -151,26 +152,35 @@ such restriction.
 
         /**
          * Handles the dropdown change
-         * @param {Object} metric - selected metric
+         * @param {Object} data - selected data
+         * @param {string} field
          */
-        function handleMetricChange(metric) {
-            var targetObj = {
-                kind: metric.originalKind,
-                name: metric.name
-            };
+        function handleDropdownChange(data, field) {
+            var targetObj = {};
 
-            if (ctrl.metricData.type !== metric.type) {
-                if (metric.type === 'percentage') {
-                    lodash.merge(ctrl.sliderConfig, {
-                        value: 1,
-                        valueLabel: 1
+            if (field === 'metricName') {
+                targetObj = {
+                    sourceType: data.sourceType,
+                    metricName: data.metricName
+                };
+
+                if (ctrl.metricData.displayType !== data.displayType) {
+                    if (data.displayType === 'percentage') {
+                        lodash.merge(ctrl.sliderConfig, {
+                            value: 1,
+                            valueLabel: 1
+                        });
+                    }
+
+                    lodash.merge(targetObj, {
+                        threshold: 1,
+                        displayType: data.displayType
                     });
                 }
-
-                lodash.merge(targetObj, {
-                    value: 1,
-                    type: metric.type
-                });
+            } else if (field === 'windowSize') {
+                targetObj = {
+                    windowSize: data.windowSize
+                }
             }
 
             lodash.merge(ctrl.metricData, targetObj);

@@ -28,7 +28,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_, _$rootScope_,  _$timeout_, _lodash_, _ConfigService_, _DialogsService_,
+        inject(function (_$componentController_, _$rootScope_, _$timeout_, _lodash_, _ConfigService_, _DialogsService_,
                          _FormValidationService_) {
             $componentController = _$componentController_;
             $rootScope = _$rootScope_;
@@ -45,22 +45,25 @@ describe('nclAutoScaleMetricsTable component:', function () {
                 spec: {
                     autoScaleMetrics: [
                         {
-                            name: 'gpu',
-                            targetValue: 23,
-                            type: 'percentage',
-                            kind: 'Resource'
+                            metricName: 'gpu',
+                            threshold: 23,
+                            displayType: 'percentage',
+                            sourceType: 'Resource',
+                            windowSize: '2m'
                         },
                         {
-                            name: 'cpu',
-                            targetValue: 32,
-                            type: 'int',
-                            kind: 'Resource'
+                            metricName: 'cpu',
+                            threshold: 32,
+                            displayType: 'int',
+                            sourceType: 'Resource',
+                            windowSize: '1m'
                         },
                         {
-                            name: 'nuclio_name',
-                            targetValue: 323,
-                            type: 'int',
-                            kind: 'Resource'
+                            metricName: 'nuclio_name',
+                            threshold: 323,
+                            displayType: 'int',
+                            sourceType: 'Resource',
+                            windowSize: '2m'
                         }
                     ]
                 }
@@ -87,18 +90,24 @@ describe('nclAutoScaleMetricsTable component:', function () {
             stopPropagation: angular.noop
         };
 
-        lodash.set(ConfigService, 'nuclio.supportedAutoScaleMetrics', [
-            {
-                name: 'cpu',
-                kind: 'Resource',
-                type: 'percentage'
-            },
-            {
-                name: 'memory',
-                kind: 'Resource',
-                type: 'percentage'
-            }
-        ]);
+        lodash.set(ConfigService, 'nuclio.autoScaleMetrics', {
+            metricPresets: [
+                {
+                    metricName: 'cpu',
+                    sourceType: 'Resource',
+                    displayType: 'percentage'
+                },
+                {
+                    metricName: 'memory',
+                    sourceType: 'Resource',
+                    displayType: 'percentage'
+                }
+            ],
+            windowSizePresets: [
+                '1m',
+                '2m'
+            ]
+        });
 
         ctrl.$onInit();
     });
@@ -126,10 +135,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
 
             expect(ctrl.scaleMetrics).toEqual([
                 {
-                    name: 'gpu',
-                    value: 23,
-                    type: 'percentage',
-                    kind: 'Resource',
+                    metricName: 'gpu',
+                    threshold: 23,
+                    displayType: 'percentage',
+                    sourceType: 'Resource',
+                    windowSize: '2m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -137,10 +147,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     }
                 },
                 {
-                    name: 'cpu',
-                    value: 32,
-                    type: 'int',
-                    kind: 'Resource',
+                    metricName: 'cpu',
+                    threshold: 32,
+                    displayType: 'int',
+                    sourceType: 'Resource',
+                    windowSize: '1m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -148,10 +159,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     }
                 },
                 {
-                    name: 'nuclio_name',
-                    value: 323,
-                    type: 'int',
-                    kind: 'Resource',
+                    metricName: 'nuclio_name',
+                    threshold: 323,
+                    displayType: 'int',
+                    sourceType: 'Resource',
+                    windowSize: '2m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -176,10 +188,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
 
             expect(ctrl.scaleMetrics).toEqual([
                 {
-                    name: 'gpu',
-                    value: 23,
-                    type: 'percentage',
-                    kind: 'Resource',
+                    metricName: 'gpu',
+                    threshold: 23,
+                    displayType: 'percentage',
+                    sourceType: 'Resource',
+                    windowSize: '2m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -187,10 +200,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     }
                 },
                 {
-                    name: 'cpu',
-                    value: 32,
-                    type: 'int',
-                    kind: 'Resource',
+                    metricName: 'cpu',
+                    threshold: 32,
+                    displayType: 'int',
+                    sourceType: 'Resource',
+                    windowSize: '1m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -198,10 +212,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     }
                 },
                 {
-                    name: 'nuclio_name',
-                    value: 323,
-                    type: 'int',
-                    kind: 'Resource',
+                    metricName: 'nuclio_name',
+                    threshold: 323,
+                    displayType: 'int',
+                    sourceType: 'Resource',
+                    windowSize: '2m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -220,19 +235,32 @@ describe('nclAutoScaleMetricsTable component:', function () {
             expect(ctrl.supportedAutoScaleMetrics).toEqual([
                 {
                     id: 'cpu',
-                    name: 'cpu',
-                    type: 'percentage',
+                    metricName: 'cpu',
+                    displayType: 'percentage',
                     tooltip: 'CPU usage (%)',
-                    disabled: true,
-                    originalKind: 'Resource'
+                    sourceType: 'Resource',
+                    disabled: true
                 },
                 {
                     id: 'memory',
-                    name: 'memory',
-                    type: 'percentage',
+                    metricName: 'memory',
+                    displayType: 'percentage',
                     tooltip: 'Memory usage (%)',
-                    disabled: false,
-                    originalKind: 'Resource'
+                    sourceType: 'Resource',
+                    disabled: false
+                }
+            ]);
+        });
+
+        it('should init ctrl.windowSizePresets list', function () {
+            expect(ctrl.windowSizePresets).toEqual([
+                {
+                    id: '1m',
+                    windowSize: '1m'
+                },
+                {
+                    id: '2m',
+                    windowSize: '2m'
                 }
             ]);
         });
@@ -240,10 +268,10 @@ describe('nclAutoScaleMetricsTable component:', function () {
         it('should validate form if ctrl.scaleMetrics.length > 0', function () {
             ctrl.scaleMetrics = [
                 {
-                    name: 'gpu',
-                    value: 23,
-                    type: 'percentage',
-                    kind: 'Resource',
+                    metricName: 'gpu',
+                    threshold: 23,
+                    displayType: 'percentage',
+                    sourceType: 'Resource',
                     ui: {
                         editModeActive: false,
                         isFormValid: false,
@@ -260,22 +288,25 @@ describe('nclAutoScaleMetricsTable component:', function () {
         it('should set "autoScaleMetrics" to ctrl.version', function () {
             expect(ctrl.version.spec.autoScaleMetrics).toEqual([
                 {
-                    name: 'gpu',
-                    targetValue: 23,
-                    type: 'percentage',
-                    kind: 'Resource'
+                    metricName: 'gpu',
+                    threshold: 23,
+                    displayType: 'percentage',
+                    sourceType: 'Resource',
+                    windowSize: '2m'
                 },
                 {
-                    name: 'cpu',
-                    targetValue: 32,
-                    type: 'int',
-                    kind: 'Resource'
+                    metricName: 'cpu',
+                    threshold: 32,
+                    displayType: 'int',
+                    sourceType: 'Resource',
+                    windowSize: '1m'
                 },
                 {
-                    name: 'nuclio_name',
-                    targetValue: 323,
-                    type: 'int',
-                    kind: 'Resource'
+                    metricName: 'nuclio_name',
+                    threshold: 323,
+                    displayType: 'int',
+                    sourceType: 'Resource',
+                    windowSize: '2m'
                 }
             ]);
         });
@@ -288,10 +319,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
 
             expect(ctrl.scaleMetrics).toEqual([
                 {
-                    name: 'gpu',
-                    value: 23,
-                    type: 'percentage',
-                    kind: 'Resource',
+                    metricName: 'gpu',
+                    threshold: 23,
+                    displayType: 'percentage',
+                    sourceType: 'Resource',
+                    windowSize: '2m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -299,10 +331,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     }
                 },
                 {
-                    name: 'cpu',
-                    value: 32,
-                    type: 'int',
-                    kind: 'Resource',
+                    metricName: 'cpu',
+                    threshold: 32,
+                    displayType: 'int',
+                    sourceType: 'Resource',
+                    windowSize: '1m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -310,10 +343,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     }
                 },
                 {
-                    name: 'nuclio_name',
-                    value: 323,
-                    type: 'int',
-                    kind: 'Resource',
+                    metricName: 'nuclio_name',
+                    threshold: 323,
+                    displayType: 'int',
+                    sourceType: 'Resource',
+                    windowSize: '2m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -321,9 +355,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     }
                 },
                 {
-                    name: '',
-                    value: '',
-                    type: 'int',
+                    metricName: '',
+                    displayType: 'int',
+                    threshold: '',
+                    windowSize: '',
+                    sourceType: '',
                     ui: {
                         editModeActive: true,
                         isFormValid: false,
@@ -341,10 +377,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
 
             expect(ctrl.scaleMetrics).toEqual([
                 {
-                    name: 'gpu',
-                    value: 23,
-                    type: 'percentage',
-                    kind: 'Resource',
+                    metricName: 'gpu',
+                    threshold: 23,
+                    displayType: 'percentage',
+                    sourceType: 'Resource',
+                    windowSize: '2m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -352,10 +389,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     }
                 },
                 {
-                    name: 'cpu',
-                    value: 32,
-                    type: 'int',
-                    kind: 'Resource',
+                    metricName: 'cpu',
+                    threshold: 32,
+                    displayType: 'int',
+                    sourceType: 'Resource',
+                    windowSize: '1m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -363,10 +401,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     }
                 },
                 {
-                    name: 'nuclio_name',
-                    value: 323,
-                    type: 'int',
-                    kind: 'Resource',
+                    metricName: 'nuclio_name',
+                    threshold: 323,
+                    displayType: 'int',
+                    sourceType: 'Resource',
+                    windowSize: '2m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -383,10 +422,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
 
             expect(ctrl.scaleMetrics).toEqual([
                 {
-                    name: 'gpu',
-                    value: 23,
-                    type: 'percentage',
-                    kind: 'Resource',
+                    metricName: 'gpu',
+                    threshold: 23,
+                    displayType: 'percentage',
+                    sourceType: 'Resource',
+                    windowSize: '2m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -394,10 +434,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     }
                 },
                 {
-                    name: 'cpu',
-                    value: 32,
-                    type: 'int',
-                    kind: 'Resource',
+                    metricName: 'cpu',
+                    threshold: 32,
+                    displayType: 'int',
+                    sourceType: 'Resource',
+                    windowSize: '1m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -408,19 +449,19 @@ describe('nclAutoScaleMetricsTable component:', function () {
             expect(ctrl.supportedAutoScaleMetrics).toEqual([
                 {
                     id: 'cpu',
-                    name: 'cpu',
-                    type: 'percentage',
+                    metricName: 'cpu',
+                    displayType: 'percentage',
                     tooltip: 'CPU usage (%)',
-                    disabled: true,
-                    originalKind: 'Resource'
+                    sourceType: 'Resource',
+                    disabled: true
                 },
                 {
                     id: 'memory',
-                    name: 'memory',
-                    type: 'percentage',
+                    metricName: 'memory',
+                    displayType: 'percentage',
                     tooltip: 'Memory usage (%)',
-                    disabled: false,
-                    originalKind: 'Resource'
+                    sourceType: 'Resource',
+                    disabled: false
                 }
             ]);
         })
@@ -429,10 +470,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
     describe('onChangeScaleMetricsData()', function () {
         it('should edit metric with provided index and change supportedAutoScaleMetrics disabled fields', function () {
             var newMetric = {
-                name: 'memory',
-                value: 52,
-                type: 'int',
-                kind: 'Resource',
+                metricName: 'memory',
+                threshold: 52,
+                displayType: 'int',
+                sourceType: 'Resource',
+                windowSize: '3m',
                 ui: {
                     editModeActive: false,
                     isFormValid: true,
@@ -443,10 +485,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
 
             expect(ctrl.scaleMetrics).toEqual([
                 {
-                    name: 'gpu',
-                    value: 23,
-                    type: 'percentage',
-                    kind: 'Resource',
+                    metricName: 'gpu',
+                    threshold: 23,
+                    displayType: 'percentage',
+                    sourceType: 'Resource',
+                    windowSize: '2m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -454,10 +497,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     }
                 },
                 {
-                    name: 'memory',
-                    value: 52,
-                    type: 'int',
-                    kind: 'Resource',
+                    metricName: 'memory',
+                    threshold: 52,
+                    displayType: 'int',
+                    sourceType: 'Resource',
+                    windowSize: '3m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -465,10 +509,11 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     }
                 },
                 {
-                    name: 'nuclio_name',
-                    value: 323,
-                    type: 'int',
-                    kind: 'Resource',
+                    metricName: 'nuclio_name',
+                    threshold: 323,
+                    displayType: 'int',
+                    sourceType: 'Resource',
+                    windowSize: '2m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true,
@@ -479,19 +524,19 @@ describe('nclAutoScaleMetricsTable component:', function () {
             expect(ctrl.supportedAutoScaleMetrics).toEqual([
                 {
                     id: 'cpu',
-                    name: 'cpu',
-                    type: 'percentage',
+                    metricName: 'cpu',
+                    displayType: 'percentage',
                     tooltip: 'CPU usage (%)',
-                    disabled: false,
-                    originalKind: 'Resource'
+                    sourceType: 'Resource',
+                    disabled: false
                 },
                 {
                     id: 'memory',
-                    name: 'memory',
-                    type: 'percentage',
+                    metricName: 'memory',
+                    displayType: 'percentage',
                     tooltip: 'Memory usage (%)',
-                    disabled: true,
-                    originalKind: 'Resource'
+                    sourceType: 'Resource',
+                    disabled: true
                 }
             ]);
         })
