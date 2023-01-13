@@ -4,40 +4,57 @@
              data-ng-mousedown="$ctrl.onEditInput()"
              novalidate>
         <div class="inputs-container">
-            <div class="input-key-wrapper">
-                <igz-default-dropdown class="input-key"
-                                      data-ng-if="$ctrl.keyList"
+            <div class="input-type-wrapper">
+                <igz-default-dropdown class="input-type"
+                                      data-ng-if="$ctrl.typeList"
                                       data-form-object="$ctrl.autoScaleMetricForm"
                                       data-prevent-drop-up="true"
                                       data-is-required="true"
                                       data-placeholder="{{ 'functions:PLACEHOLDER.CHOOSE_METRIC' | i18next }}"
-                                      data-input-name="key"
-                                      data-selected-item="$ctrl.getSelectedItem()"
+                                      data-input-name="metricName"
+                                      data-selected-item="$ctrl.getSelectedItem('metricName')"
                                       data-is-disabled="$ctrl.isDisabled"
-                                      data-values-array="$ctrl.keyList"
-                                      data-item-select-callback="$ctrl.handleMetricChange(item)">
+                                      data-values-array="$ctrl.typeList"
+                                      data-item-select-field="metricName"
+                                      data-name-key="metricName"
+                                      data-item-select-callback="$ctrl.handleDropdownChange(item, field)">
+                </igz-default-dropdown>
+            </div>
+            <div class="input-presets-wrapper">
+                <igz-default-dropdown class="input-presets"
+                                      data-ng-if="$ctrl.presetsList"
+                                      data-form-object="$ctrl.autoScaleMetricForm"
+                                      data-prevent-drop-up="true"
+                                      data-is-required="true"
+                                      data-input-name="windowSize"
+                                      data-selected-item="$ctrl.getSelectedItem('windowSize')"
+                                      data-is-disabled="$ctrl.isDisabled"
+                                      data-values-array="$ctrl.presetsList"
+                                      data-item-select-field="windowSize"
+                                      data-name-key="windowSize"
+                                      data-item-select-callback="$ctrl.handleDropdownChange(item, field)">
                 </igz-default-dropdown>
             </div>
             <div class="input-value-wrapper" data-ng-class="{'slider': $ctrl.rowData.type === 'percentage'}">
                 <igz-number-input class="input-value"
-                                  data-ng-if="$ctrl.metricData.type !== 'percentage'"
+                                  data-ng-if="$ctrl.metricData.displayType !== 'percentage'"
                                   data-is-disabled="$ctrl.isDisabled"
                                   data-form-object="$ctrl.autoScaleMetricForm"
-                                  data-input-name="value"
+                                  data-input-name="threshold"
                                   data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)"
-                                  data-update-number-input-field="value"
+                                  data-update-number-input-field="threshold"
                                   data-min-value="1"
-                                  data-current-value="$ctrl.metricData.value"
+                                  data-current-value="$ctrl.metricData.threshold"
                                   data-placeholder="{{ 'functions:PLACEHOLDER.ENTER_VALUE' | i18next }}"
                                   data-validation-is-required="true">
                 </igz-number-input>
                 <igz-slider-input-block data-slider-config="$ctrl.sliderConfig"
-                                        data-ng-if="$ctrl.metricData.type === 'percentage'"
+                                        data-ng-if="$ctrl.metricData.displayType === 'percentage'"
                                         data-measure-units="null"
                                         data-value-unit="$ctrl.unitLabel"
                                         data-slider-block-updating-broadcast=""
                                         data-on-change-callback="$ctrl.sliderInputCallback"
-                                        data-update-slider-input="value"
+                                        data-update-slider-input="threshold"
                                         data-allow-full-range="true">
                 </igz-slider-input-block>
             </div>

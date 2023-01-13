@@ -19,10 +19,11 @@ describe('nclAutoScaleMetricsInput component:', function () {
         var element = '<ncl-auto-scale-metrics-input></ncl-auto-scale-metrics-input>';
         var bindings = {
             rowData: {
-                name: 'gpu',
-                value: 23,
-                type: 'int',
-                kind: 'Resource',
+                metricName: 'gpu',
+                threshold: 23,
+                displayType: 'percentage',
+                sourceType: 'Resource',
+                windowSize: '2m',
                 ui: {
                     editModeActive: false
                 }
@@ -67,10 +68,11 @@ describe('nclAutoScaleMetricsInput component:', function () {
 
         it('should set ctrl.metricData', function () {
             expect(ctrl.metricData).toEqual({
-                name: 'gpu',
-                value: 23,
-                type: 'int',
-                kind: 'Resource',
+                metricName: 'gpu',
+                threshold: 23,
+                displayType: 'percentage',
+                sourceType: 'Resource',
+                windowSize: '2m',
                 ui: {
                     editModeActive: false
                 }
@@ -124,11 +126,12 @@ describe('nclAutoScaleMetricsInput component:', function () {
 
     describe('getSelectedItem(): ', function () {
         it('should return selectedItem', function () {
-            expect(ctrl.getSelectedItem()).toEqual({
-                name: 'gpu',
-                value: 23,
-                type: 'int',
-                kind: 'Resource',
+            expect(ctrl.getSelectedItem('metricName')).toEqual({
+                metricName: 'gpu',
+                threshold: 23,
+                displayType: 'percentage',
+                sourceType: 'Resource',
+                windowSize: '2m',
                 ui: {
                     editModeActive: false
                 }
@@ -136,9 +139,9 @@ describe('nclAutoScaleMetricsInput component:', function () {
         });
 
         it('should return "" if item isn`t selected', function () {
-            ctrl.metricData.name = "";
+            ctrl.metricData.metricName = "";
 
-            expect(ctrl.getSelectedItem()).toEqual("");
+            expect(ctrl.getSelectedItem('metricName')).toEqual("");
         });
     });
 
@@ -204,26 +207,27 @@ describe('nclAutoScaleMetricsInput component:', function () {
         });
     });
 
-    describe('handleMetricChange(): ', function () {
-        it('should change ctrl.metricData and ctrl.sliderConfig if type has changed', function () {
-            ctrl.handleMetricChange({
-                type: 'percentage',
-                name: 'nuclio_name',
-                originalKind: 'resources'
-            });
+    describe('handleDropdownChange(): ', function () {
+        it('should change ctrl.metricData and ctrl.sliderConfig if type has changed and field is "metricName"', function () {
+            ctrl.handleDropdownChange({
+                displayType: 'percentage',
+                metricName: 'nuclio_name',
+                sourceType: 'resources'
+            }, 'metricName');
 
             expect(ctrl.metricData).toEqual({
-                kind: 'resources',
-                name: 'nuclio_name',
-                value: 1,
-                type: 'percentage',
+                sourceType: 'resources',
+                metricName: 'nuclio_name',
+                threshold: 23,
+                windowSize: '2m',
+                displayType: 'percentage',
                 ui: {
                     editModeActive: false
                 }
             });
             expect(ctrl.sliderConfig).toEqual({
-                value: 1,
-                valueLabel: 1,
+                value: 23,
+                valueLabel: 23,
                 pow: 0,
                 unitLabel: '%',
                 labelHelpIcon: false,
@@ -238,18 +242,36 @@ describe('nclAutoScaleMetricsInput component:', function () {
             });
         });
 
-        it('should change ctrl.metricData and ctrl.sliderConfig if type has not changed', function () {
-            ctrl.handleMetricChange({
-                type: 'int',
-                name: 'nuclio_name',
-                originalKind: 'resources'
-            });
+        it('should change ctrl.metricData and ctrl.sliderConfig if type has not changed and field is "metricName"', function () {
+            ctrl.handleDropdownChange({
+                displayType: 'percentage',
+                metricName: 'nuclio_name',
+                sourceType: 'resources'
+            }, 'metricName');
 
             expect(ctrl.metricData).toEqual({
-                kind: 'resources',
-                name: 'nuclio_name',
-                value: 23,
-                type: 'int',
+                sourceType: 'resources',
+                metricName: 'nuclio_name',
+                threshold: 23,
+                windowSize: '2m',
+                displayType: 'percentage',
+                ui: {
+                    editModeActive: false
+                }
+            });
+        });
+
+        it('should change ctrl.metricData if field is "windowSize"', function () {
+            ctrl.handleDropdownChange({
+                windowSize: '3m'
+            }, 'windowSize');
+
+            expect(ctrl.metricData).toEqual({
+                metricName: 'gpu',
+                threshold: 23,
+                sourceType: 'Resource',
+                windowSize: '3m',
+                displayType: 'percentage',
                 ui: {
                     editModeActive: false
                 }
@@ -266,20 +288,21 @@ describe('nclAutoScaleMetricsInput component:', function () {
             spyOn(document, 'off');
             spyOn(ctrl, 'changeDataCallback');
 
-            ctrl.inputValueCallback(30, 'value');
+            ctrl.inputValueCallback(30, 'threshold');
             $scope.$digest();
 
-            expect(ctrl.metricData.value).toEqual(30);
+            expect(ctrl.metricData.threshold).toEqual(30);
             expect(ctrl.metricData.ui.editModeActive).toBeFalsy();
             expect(ctrl.metricData.ui.isFormValid).toBeTruthy();
             expect(ctrl.editMode).toBeFalsy();
             expect(document.off).toHaveBeenCalledTimes(2);
             expect(ctrl.changeDataCallback).toHaveBeenCalledWith({
                 newData: {
-                    name: 'gpu',
-                    value: 30,
-                    type: 'int',
-                    kind: 'Resource',
+                    metricName: 'gpu',
+                    threshold: 30,
+                    displayType: 'percentage',
+                    sourceType: 'Resource',
+                    windowSize: '2m',
                     ui: {
                         editModeActive: false,
                         isFormValid: true
@@ -297,19 +320,20 @@ describe('nclAutoScaleMetricsInput component:', function () {
             spyOn(document, 'off');
             spyOn(ctrl, 'changeDataCallback');
 
-            ctrl.inputValueCallback(30, 'value');
+            ctrl.inputValueCallback(30, 'threshold');
             $scope.$digest();
 
-            expect(ctrl.metricData.value).toEqual(30);
+            expect(ctrl.metricData.threshold).toEqual(30);
             expect(ctrl.metricData.ui.editModeActive).toBeTruthy();
             expect(ctrl.metricData.ui.isFormValid).toBeFalsy();
             expect(document.off).not.toHaveBeenCalled();
             expect(ctrl.changeDataCallback).toHaveBeenCalledWith({
                 newData: {
-                    name: 'gpu',
-                    value: 30,
-                    type: 'int',
-                    kind: 'Resource',
+                    metricName: 'gpu',
+                    threshold: 30,
+                    displayType: 'percentage',
+                    sourceType: 'Resource',
+                    windowSize: '2m',
                     ui: {
                         editModeActive: true,
                         isFormValid: false
@@ -321,16 +345,16 @@ describe('nclAutoScaleMetricsInput component:', function () {
     });
 
     describe('sliderInputCallback(): ', function () {
-        it('should change value in ctrl.metricsData', function () {
-            ctrl.sliderInputCallback(30, 'value');
+        it('should change threshold in ctrl.metricsData', function () {
+            ctrl.sliderInputCallback(30, 'threshold');
 
-            expect(ctrl.metricData.value).toEqual(30);
+            expect(ctrl.metricData.threshold).toEqual(30);
         });
 
-        it('should change value in ctrl.metricsData if newValue is null', function () {
-            ctrl.sliderInputCallback(null, 'value');
+        it('should change threshold in ctrl.metricsData if newValue is null', function () {
+            ctrl.sliderInputCallback(null, 'threshold');
 
-            expect(ctrl.metricData.value).toEqual(100);
+            expect(ctrl.metricData.threshold).toEqual(100);
         });
     });
 });

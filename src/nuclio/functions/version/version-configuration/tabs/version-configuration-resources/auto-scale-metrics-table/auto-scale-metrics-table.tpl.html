@@ -6,7 +6,8 @@
         <div class="igz-row form-row">
             <div class="table-body" data-ng-repeat="metric in $ctrl.scaleMetrics">
                 <ncl-auto-scale-metrics-input data-row-data="metric"
-                                              data-key-list="$ctrl.supportedAutoScaleMetrics"
+                                              data-presets-list="$ctrl.windowSizePresets"
+                                              data-type-list="$ctrl.supportedAutoScaleMetrics"
                                               data-item-index="$index"
                                               data-is-disabled="$ctrl.isFunctionDeploying()"
                                               data-action-handler-callback="$ctrl.handleScaleMetricsAction(actionType, index)"

@@ -17,6 +17,7 @@
 
         ctrl.scaleMetrics = [];
         ctrl.supportedAutoScaleMetrics = [];
+        ctrl.windowSizePresets = [];
 
         ctrl.$onInit = onInit;
 
@@ -33,6 +34,7 @@
          */
         function onInit() {
             initScaleMetrics();
+            initWindowSizePresets();
         }
 
         //
@@ -51,9 +53,11 @@
             $timeout(function () {
                 if (ctrl.scaleMetrics.length < 1 || lodash.last(ctrl.scaleMetrics).ui.isFormValid) {
                     ctrl.scaleMetrics.push({
-                        name: '',
-                        value: '',
-                        type: 'int',
+                        metricName: '',
+                        displayType: 'int',
+                        threshold: '',
+                        windowSize: '',
+                        sourceType: '',
                         ui: {
                             editModeActive: true,
                             isFormValid: false,
@@ -90,6 +94,52 @@
             generateScaleMetricsTypes();
         }
 
+        /**
+         * Initializes data for Auto scale metrics table
+         */
+        function initScaleMetrics() {
+            ctrl.scaleMetrics = lodash.chain(ctrl.version)
+                .get('spec.autoScaleMetrics', [])
+                .map(function (metric) {
+                    return {
+                        metricName: metric.metricName,
+                        sourceType: metric.sourceType,
+                        displayType: metric.displayType,
+                        threshold: metric.threshold,
+                        windowSize: metric.windowSize,
+                        ui: {
+                            editModeActive: false,
+                            isFormValid: metric.threshold > 0,
+                            name: 'scaleMetrics'
+                        }
+                    };
+                })
+                .value();
+
+            $timeout(function () {
+                if (ctrl.autoScaleMetricsForm.$invalid) {
+                    ctrl.autoScaleMetricsForm.$setSubmitted();
+                    $rootScope.$broadcast('change-state-deploy-button', {component: 'scaleMetrics', isDisabled: true});
+                }
+            });
+
+            generateScaleMetricsTypes();
+        }
+
+        /**
+         * Initializes window size presets for Auto scale metrics table
+         */
+        function initWindowSizePresets() {
+            ctrl.windowSizePresets = lodash.chain(ConfigService)
+                .get('nuclio.autoScaleMetrics.windowSizePresets', [])
+                .map(function (preset) {
+                    return {
+                        id: preset,
+                        windowSize: preset
+                    }
+                }).value();
+        }
+
         //
         // Private methods
         //
@@ -99,17 +149,17 @@
          */
         function generateScaleMetricsTypes() {
             ctrl.supportedAutoScaleMetrics = lodash.chain(ConfigService)
-                .get('nuclio.supportedAutoScaleMetrics', [])
-                .map(function (metrics) {
+                .get('nuclio.autoScaleMetrics.metricPresets', [])
+                .map(function (metric) {
                     return {
-                        id: metrics.name,
-                        name: metrics.name,
-                        type: metrics.type,
-                        tooltip: getTooltip(metrics.name),
+                        id: metric.metricName,
+                        metricName: metric.metricName,
+                        displayType: metric.displayType,
+                        tooltip: getTooltip(metric.metricName),
+                        sourceType: metric.sourceType,
                         disabled: ctrl.scaleMetrics.some(function (aMetric) {
-                            return aMetric.name === metrics.name;
-                        }),
-                        originalKind: metrics.kind
+                            return aMetric.metricName === metric.metricName;
+                        })
                     }
                 }).value();
 
@@ -132,7 +182,7 @@
                 nuclio_processor_worker_allocation_wait_duration_ms_sum: 'Wait time (ms) for worker allocation (averaged over a 30s window)'
             }
 
-            return tooltips[metricName];
+            return tooltips[metricName] || metricName;
         }
 
         /**
@@ -142,62 +192,32 @@
             var isFormValid = true;
             var newScaleMetrics = [];
 
-            lodash.forEach(ctrl.scaleMetrics, function (metrics) {
-                if (!metrics.ui.isFormValid) {
+            lodash.forEach(ctrl.scaleMetrics, function (metric) {
+                if (!metric.ui.isFormValid) {
                     isFormValid = false;
                 }
 
                 newScaleMetrics.push({
-                    name: metrics.name,
-                    type: metrics.type,
-                    kind: metrics.kind,
-                    targetValue: metrics.value
+                    metricName: metric.metricName,
+                    sourceType: metric.sourceType,
+                    displayType: metric.displayType,
+                    windowSize: metric.windowSize,
+                    threshold: metric.threshold
                 });
             });
 
             if (ctrl.scaleMetrics.length > 0) {
                 FormValidationService.validateAllFields(ctrl.autoScaleMetricsForm);
-
-                $timeout(function () {
-                    $rootScope.$broadcast('change-state-deploy-button', {
-                        component: 'scaleMetrics',
-                        isDisabled: !isFormValid || ctrl.autoScaleMetricsForm.$invalid
-                    });
-                });
             }
 
-            lodash.set(ctrl.version, 'spec.autoScaleMetrics', newScaleMetrics);
-        }
-
-        /**
-         * Initializes data for Auto scale metrics table
-         */
-        function initScaleMetrics() {
-            ctrl.scaleMetrics = lodash.chain(ctrl.version)
-                .get('spec.autoScaleMetrics', [])
-                .map(function (metric) {
-                    return {
-                        name: metric.name,
-                        value: metric.targetValue,
-                        type: metric.type,
-                        kind: metric.kind,
-                        ui: {
-                            editModeActive: false,
-                            isFormValid: metric.targetValue > 0,
-                            name: 'scaleMetrics'
-                        }
-                    };
-                })
-                .value();
-
             $timeout(function () {
-                if (ctrl.autoScaleMetricsForm.$invalid) {
-                    ctrl.autoScaleMetricsForm.$setSubmitted();
-                    $rootScope.$broadcast('change-state-deploy-button', {component: 'scaleMetrics', isDisabled: true});
-                }
+                $rootScope.$broadcast('change-state-deploy-button', {
+                    component: 'scaleMetrics',
+                    isDisabled: !isFormValid || ctrl.autoScaleMetricsForm.$invalid
+                });
             });
 
-            generateScaleMetricsTypes();
+            lodash.set(ctrl.version, 'spec.autoScaleMetrics', newScaleMetrics);
         }
     }
 }());
