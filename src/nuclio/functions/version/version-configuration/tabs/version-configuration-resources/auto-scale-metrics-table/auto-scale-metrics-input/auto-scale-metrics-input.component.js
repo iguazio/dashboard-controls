@@ -158,7 +158,7 @@ such restriction.
         function handleDropdownChange(data, field) {
             var targetObj = {};
 
-            if (field === 'metricName') {
+            if (field === 'displayName') {
                 targetObj = {
                     sourceType: data.sourceType,
                     metricName: data.metricName

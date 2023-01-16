@@ -138,6 +138,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'gpu',
                     threshold: 23,
                     displayType: 'percentage',
+                    displayName: 'Gpu',
                     sourceType: 'Resource',
                     windowSize: '2m',
                     ui: {
@@ -150,6 +151,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'cpu',
                     threshold: 32,
                     displayType: 'int',
+                    displayName: 'Cpu',
                     sourceType: 'Resource',
                     windowSize: '1m',
                     ui: {
@@ -162,6 +164,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'nuclio_name',
                     threshold: 323,
                     displayType: 'int',
+                    displayName: 'Nuclio name',
                     sourceType: 'Resource',
                     windowSize: '2m',
                     ui: {
@@ -191,6 +194,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'gpu',
                     threshold: 23,
                     displayType: 'percentage',
+                    displayName: 'Gpu',
                     sourceType: 'Resource',
                     windowSize: '2m',
                     ui: {
@@ -203,6 +207,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'cpu',
                     threshold: 32,
                     displayType: 'int',
+                    displayName: 'Cpu',
                     sourceType: 'Resource',
                     windowSize: '1m',
                     ui: {
@@ -215,6 +220,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'nuclio_name',
                     threshold: 323,
                     displayType: 'int',
+                    displayName: 'Nuclio name',
                     sourceType: 'Resource',
                     windowSize: '2m',
                     ui: {
@@ -237,6 +243,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     id: 'cpu',
                     metricName: 'cpu',
                     displayType: 'percentage',
+                    displayName: 'Cpu',
                     tooltip: 'CPU usage (%)',
                     sourceType: 'Resource',
                     disabled: true
@@ -245,6 +252,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     id: 'memory',
                     metricName: 'memory',
                     displayType: 'percentage',
+                    displayName: 'Memory',
                     tooltip: 'Memory usage (%)',
                     sourceType: 'Resource',
                     disabled: false
@@ -322,6 +330,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'gpu',
                     threshold: 23,
                     displayType: 'percentage',
+                    displayName: 'Gpu',
                     sourceType: 'Resource',
                     windowSize: '2m',
                     ui: {
@@ -334,6 +343,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'cpu',
                     threshold: 32,
                     displayType: 'int',
+                    displayName: 'Cpu',
                     sourceType: 'Resource',
                     windowSize: '1m',
                     ui: {
@@ -346,6 +356,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'nuclio_name',
                     threshold: 323,
                     displayType: 'int',
+                    displayName: 'Nuclio name',
                     sourceType: 'Resource',
                     windowSize: '2m',
                     ui: {
@@ -357,6 +368,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                 {
                     metricName: '',
                     displayType: 'int',
+                    displayName: '',
                     threshold: '',
                     windowSize: '',
                     sourceType: '',
@@ -380,6 +392,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'gpu',
                     threshold: 23,
                     displayType: 'percentage',
+                    displayName: 'Gpu',
                     sourceType: 'Resource',
                     windowSize: '2m',
                     ui: {
@@ -392,6 +405,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'cpu',
                     threshold: 32,
                     displayType: 'int',
+                    displayName: 'Cpu',
                     sourceType: 'Resource',
                     windowSize: '1m',
                     ui: {
@@ -404,6 +418,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'nuclio_name',
                     threshold: 323,
                     displayType: 'int',
+                    displayName: 'Nuclio name',
                     sourceType: 'Resource',
                     windowSize: '2m',
                     ui: {
@@ -425,6 +440,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'gpu',
                     threshold: 23,
                     displayType: 'percentage',
+                    displayName: 'Gpu',
                     sourceType: 'Resource',
                     windowSize: '2m',
                     ui: {
@@ -437,6 +453,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'cpu',
                     threshold: 32,
                     displayType: 'int',
+                    displayName: 'Cpu',
                     sourceType: 'Resource',
                     windowSize: '1m',
                     ui: {
@@ -451,6 +468,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     id: 'cpu',
                     metricName: 'cpu',
                     displayType: 'percentage',
+                    displayName: 'Cpu',
                     tooltip: 'CPU usage (%)',
                     sourceType: 'Resource',
                     disabled: true
@@ -459,6 +477,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     id: 'memory',
                     metricName: 'memory',
                     displayType: 'percentage',
+                    displayName: 'Memory',
                     tooltip: 'Memory usage (%)',
                     sourceType: 'Resource',
                     disabled: false
@@ -473,6 +492,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                 metricName: 'memory',
                 threshold: 52,
                 displayType: 'int',
+                displayName: 'Memory',
                 sourceType: 'Resource',
                 windowSize: '3m',
                 ui: {
@@ -488,6 +508,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'gpu',
                     threshold: 23,
                     displayType: 'percentage',
+                    displayName: 'Gpu',
                     sourceType: 'Resource',
                     windowSize: '2m',
                     ui: {
@@ -500,6 +521,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'memory',
                     threshold: 52,
                     displayType: 'int',
+                    displayName: 'Memory',
                     sourceType: 'Resource',
                     windowSize: '3m',
                     ui: {
@@ -512,6 +534,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     metricName: 'nuclio_name',
                     threshold: 323,
                     displayType: 'int',
+                    displayName: 'Nuclio name',
                     sourceType: 'Resource',
                     windowSize: '2m',
                     ui: {
@@ -526,6 +549,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     id: 'cpu',
                     metricName: 'cpu',
                     displayType: 'percentage',
+                    displayName: 'Cpu',
                     tooltip: 'CPU usage (%)',
                     sourceType: 'Resource',
                     disabled: false
@@ -534,6 +558,7 @@ describe('nclAutoScaleMetricsTable component:', function () {
                     id: 'memory',
                     metricName: 'memory',
                     displayType: 'percentage',
+                    displayName: 'Memory',
                     tooltip: 'Memory usage (%)',
                     sourceType: 'Resource',
                     disabled: true
