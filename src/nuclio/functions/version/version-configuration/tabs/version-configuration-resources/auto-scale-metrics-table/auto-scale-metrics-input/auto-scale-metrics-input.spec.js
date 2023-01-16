@@ -208,12 +208,12 @@ describe('nclAutoScaleMetricsInput component:', function () {
     });
 
     describe('handleDropdownChange(): ', function () {
-        it('should change ctrl.metricData and ctrl.sliderConfig if type has changed and field is "metricName"', function () {
+        it('should change ctrl.metricData and ctrl.sliderConfig if type has changed and field is "displayName"', function () {
             ctrl.handleDropdownChange({
                 displayType: 'percentage',
                 metricName: 'nuclio_name',
                 sourceType: 'resources'
-            }, 'metricName');
+            }, 'displayName');
 
             expect(ctrl.metricData).toEqual({
                 sourceType: 'resources',
@@ -242,12 +242,12 @@ describe('nclAutoScaleMetricsInput component:', function () {
             });
         });
 
-        it('should change ctrl.metricData and ctrl.sliderConfig if type has not changed and field is "metricName"', function () {
+        it('should change ctrl.metricData and ctrl.sliderConfig if type has not changed and field is "displayName"', function () {
             ctrl.handleDropdownChange({
                 displayType: 'percentage',
                 metricName: 'nuclio_name',
                 sourceType: 'resources'
-            }, 'metricName');
+            }, 'displayName');
 
             expect(ctrl.metricData).toEqual({
                 sourceType: 'resources',

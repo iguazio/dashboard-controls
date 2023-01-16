@@ -11,7 +11,7 @@
     "API_GATEWAYS_NOT_FOUND": "There are currently no API gateways. To create an API gateway, select <strong>\"New API Gateway\"</strong> from the action toolbar.",
     "ATTACH_FILE": "Attach file",
     "AUTHENTICATION": "Authentication",
-    "AUTO_SCALE_METRICS": "Auto Scale Metrics",
+    "AUTO_SCALE_METRICS": "Auto scale metrics",
     "AUTO_SCALE_METRICS_DESCRIPTION": "Set one or more metrics to activate Horizontal Pod Autoscaling (HPA). Scale-up occurs when any one metric crosses its specified threshold.\nScale-down occurs when all metrics are below their thresholds.",
     "AUTH_TYPE": "Auth type",
     "BASE_IMAGE": "Base image",

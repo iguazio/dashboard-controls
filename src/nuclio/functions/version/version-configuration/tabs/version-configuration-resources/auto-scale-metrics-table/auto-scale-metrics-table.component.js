@@ -55,6 +55,7 @@
                     ctrl.scaleMetrics.push({
                         metricName: '',
                         displayType: 'int',
+                        displayName: '',
                         threshold: '',
                         windowSize: '',
                         sourceType: '',
@@ -104,6 +105,7 @@
                     return {
                         metricName: metric.metricName,
                         sourceType: metric.sourceType,
+                        displayName: getName(metric.metricName),
                         displayType: metric.displayType,
                         threshold: metric.threshold,
                         windowSize: metric.windowSize,
@@ -154,6 +156,7 @@
                     return {
                         id: metric.metricName,
                         metricName: metric.metricName,
+                        displayName: getName(metric.metricName),
                         displayType: metric.displayType,
                         tooltip: getTooltip(metric.metricName),
                         sourceType: metric.sourceType,
@@ -164,6 +167,17 @@
                 }).value();
 
             updateScaleMetrics();
+        }
+
+        /**
+         * Returns appropriate name for metrics list.
+         * @param {string} metricName
+         * @returns {string} name
+         */
+        function getName(metricName) {
+            var name = metricName.replace(/_/g, ' ');
+
+            return name.charAt(0).toUpperCase() + name.slice(1);
         }
 
         /**
