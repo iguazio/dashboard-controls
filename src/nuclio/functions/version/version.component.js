@@ -275,7 +275,7 @@ such restriction.
                         })
                         .catch(function (error) {
                             var status = error.status;
-                            var defaultMsg = $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', { lng: lng });
+                            var defaultMsg = $i18next.t('functions:ERROR_MSG.UNKNOWN_ERROR_WITH_STATUS', { lng: lng, status: status });
 
                             if (status === 409 && isVersionDeployed) {
                                 return FunctionsService.openVersionOverwriteDialog()
@@ -295,7 +295,7 @@ such restriction.
                                 });
                             } else {
                                 var defaultMessage = status === 504 ?
-                                    $i18next.t('functions:ERROR_MSG.FUNCTION_DEPLOYMENT_FAILURE', { lng: lng }) : defaultMsg
+                                    $i18next.t('functions:ERROR_MSG.FUNCTION_DEPLOYMENT_FAILURE', { lng: lng, status: status }) : defaultMsg
 
                                 return DialogsService.alert(lodash.get(error, 'data.error') || defaultMessage).then(function () {
                                     ctrl.isFunctionDeployed = true;
