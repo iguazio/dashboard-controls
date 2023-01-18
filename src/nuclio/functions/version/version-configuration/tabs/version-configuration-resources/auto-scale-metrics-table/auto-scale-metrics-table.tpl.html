@@ -1,0 +1,25 @@
+<form name="$ctrl.autoScaleMetricsForm" novalidate>
+    <div class="title">{{ 'functions:AUTO_SCALE_METRICS' | i18next }}
+        <igz-more-info data-description="{{ 'functions:AUTO_SCALE_METRICS_DESCRIPTION' | i18next }}"></igz-more-info>
+    </div>
+    <div class="row">
+        <div class="igz-row form-row">
+            <div class="table-body" data-ng-repeat="metric in $ctrl.scaleMetrics">
+                <ncl-auto-scale-metrics-input data-row-data="metric"
+                                              data-presets-list="$ctrl.windowSizePresets"
+                                              data-type-list="$ctrl.supportedAutoScaleMetrics"
+                                              data-item-index="$index"
+                                              data-is-disabled="$ctrl.isFunctionDeploying()"
+                                              data-action-handler-callback="$ctrl.handleScaleMetricsAction(actionType, index)"
+                                              data-change-data-callback="$ctrl.onChangeScaleMetricsData(newData, index)">
+                </ncl-auto-scale-metrics-input>
+            </div>
+            <div class="igz-create-button"
+                 data-ng-class="{ 'disabled': $ctrl.isFunctionDeploying() || $ctrl.scaleMetrics.length  === $ctrl.supportedAutoScaleMetrics.length }"
+                 data-ng-click="$ctrl.scaleMetrics.length === $ctrl.supportedAutoScaleMetrics.length ? angular.noop : $ctrl.addNewScaleMetric($event)">
+                <span class="igz-icon-add-round"></span>
+                {{ 'common:CREATE_NEW_ENTRY' | i18next }}
+            </div>
+        </div>
+    </div>
+</form>
