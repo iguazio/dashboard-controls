@@ -55,6 +55,7 @@ such restriction.
         ctrl.metricData = {};
         ctrl.unitLabel = '%';
 
+        ctrl.$onChanges = onChanges;
         ctrl.$onDestroy = onDestroy;
         ctrl.$onInit = onInit;
         ctrl.$postLink = postLink;
@@ -69,6 +70,16 @@ such restriction.
         //
         // Hook methods
         //
+
+        /**
+         * On changes hook method.
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (angular.isDefined(changes.isDisabled)) {
+                updateSliderConfig();
+            }
+        }
 
         /**
          * Destructor method
@@ -89,12 +100,12 @@ such restriction.
 
             ctrl.sliderConfig = {
                 value: lodash.get(ctrl.metricData, 'threshold', 75),
-                valueLabel: lodash.get(ctrl.metricData, 'threshold', 75),
+                valueLabel: ctrl.isDisabled ? 'disabled' : lodash.get(ctrl.metricData, 'threshold', 75),
                 pow: 0,
-                unitLabel: '%',
+                unitLabel: ctrl.isDisabled ? '' : '%',
                 labelHelpIcon: false,
                 options: {
-                    disabled: false,
+                    disabled: ctrl.isDisabled,
                     floor: 1,
                     id: 'scaleMetrics',
                     ceil: 100,
@@ -269,6 +280,21 @@ such restriction.
                     });
                 })
             }
+        }
+
+        /**
+         * Updates slider config
+         */
+        function updateSliderConfig() {
+            lodash.merge(ctrl.sliderConfig, {
+                valueLabel: ctrl.isDisabled ? 'disabled' : lodash.get(ctrl.metricData, 'threshold', 75),
+                unitLabel: ctrl.isDisabled ? '' : '%',
+                options: {
+                    disabled: ctrl.isDisabled
+                }
+            });
+
+            ctrl.unitLabel = ctrl.isDisabled ? '' : '%';
         }
     }
 }());

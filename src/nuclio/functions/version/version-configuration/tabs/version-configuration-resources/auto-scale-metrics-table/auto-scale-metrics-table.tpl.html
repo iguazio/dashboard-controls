@@ -9,13 +9,13 @@
                                               data-presets-list="$ctrl.windowSizePresets"
                                               data-type-list="$ctrl.supportedAutoScaleMetrics"
                                               data-item-index="$index"
-                                              data-is-disabled="$ctrl.isFunctionDeploying()"
+                                              data-is-disabled="$ctrl.isDisabled"
                                               data-action-handler-callback="$ctrl.handleScaleMetricsAction(actionType, index)"
                                               data-change-data-callback="$ctrl.onChangeScaleMetricsData(newData, index)">
                 </ncl-auto-scale-metrics-input>
             </div>
             <div class="igz-create-button"
-                 data-ng-class="{ 'disabled': $ctrl.isFunctionDeploying() || $ctrl.scaleMetrics.length  === $ctrl.supportedAutoScaleMetrics.length }"
+                 data-ng-class="{ 'disabled': $ctrl.scaleMetrics.length  === $ctrl.supportedAutoScaleMetrics.length || $ctrl.isDisabled }"
                  data-ng-click="$ctrl.scaleMetrics.length === $ctrl.supportedAutoScaleMetrics.length ? angular.noop : $ctrl.addNewScaleMetric($event)">
                 <span class="igz-icon-add-round"></span>
                 {{ 'common:CREATE_NEW_ENTRY' | i18next }}
