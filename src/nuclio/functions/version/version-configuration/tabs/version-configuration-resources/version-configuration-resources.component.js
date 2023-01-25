@@ -149,6 +149,7 @@ such restriction.
         ctrl.$onDestroy = onDestroy;
 
         ctrl.addNewNodeSelector = addNewNodeSelector;
+        ctrl.areAutoScaleMetricsDisabled = areAutoScaleMetricsDisabled;
         ctrl.cpuDropdownCallback = cpuDropdownCallback;
         ctrl.cpuInputCallback = cpuInputCallback;
         ctrl.getVersionPreemptionMode = getVersionPreemptionMode;
@@ -259,6 +260,18 @@ such restriction.
                     checkNodeSelectorsIdentity();
                 }
             }, 50);
+        }
+
+        /**
+         * Checks whether Auto scale metrics block is disabled
+         * @returns {boolean}
+         */
+        function areAutoScaleMetricsDisabled() {
+            var minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
+            var maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
+
+            return !lodash.isNumber(minReplicas) || !lodash.isNumber(maxReplicas) || maxReplicas <= 1 ||
+              minReplicas === maxReplicas || ctrl.isFunctionDeploying();
         }
 
         /**
@@ -881,10 +894,7 @@ such restriction.
          * Updates Target CPU slider state (enabled/disabled) and display value.
          */
         function updateTargetCpuSlider() {
-            var minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
-            var maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
-            var disabled = !lodash.isNumber(minReplicas) || !lodash.isNumber(maxReplicas) || maxReplicas <= 1 ||
-                minReplicas === maxReplicas || ctrl.isFunctionDeploying();
+            var disabled = areAutoScaleMetricsDisabled();
             var targetCpuValue = lodash.get(ctrl.version, 'spec.targetCPU', 75);
 
             ctrl.targetCpuValueUnit = disabled ? '' : '%';
