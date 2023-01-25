@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .component('nclAutoScaleMetricsTable', {
             bindings: {
-                isFunctionDeploying: '&',
+                isDisabled: '<',
                 version: '<'
             },
             templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-resources/auto-scale-metrics-table/auto-scale-metrics-table.tpl.html',
@@ -46,7 +46,7 @@
          * param {Event} event - native event object
          */
         function addNewScaleMetric(event) {
-            if (ctrl.isFunctionDeploying()) {
+            if (ctrl.isDisabled) {
                 return;
             }
 
@@ -175,6 +175,10 @@
          * @returns {string} name
          */
         function getName(metricName) {
+            if (['cpu', 'gpu'].includes(metricName)) {
+                return metricName.toUpperCase();
+            }
+
             var name = metricName.replace(/_/g, ' ');
 
             return name.charAt(0).toUpperCase() + name.slice(1);

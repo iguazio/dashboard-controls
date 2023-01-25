@@ -35,9 +35,8 @@
                                       data-item-select-callback="$ctrl.handleDropdownChange(item, field)">
                 </igz-default-dropdown>
             </div>
-            <div class="input-value-wrapper" data-ng-class="{'slider': $ctrl.rowData.type === 'percentage'}">
+            <div class="input-value-wrapper dropdown" data-ng-if="$ctrl.metricData.displayType !== 'percentage'">
                 <igz-number-input class="input-value"
-                                  data-ng-if="$ctrl.metricData.displayType !== 'percentage'"
                                   data-is-disabled="$ctrl.isDisabled"
                                   data-form-object="$ctrl.autoScaleMetricForm"
                                   data-input-name="threshold"
@@ -48,8 +47,9 @@
                                   data-placeholder="{{ 'functions:PLACEHOLDER.ENTER_VALUE' | i18next }}"
                                   data-validation-is-required="true">
                 </igz-number-input>
+            </div>
+            <div class="input-value-wrapper slider" data-ng-if="$ctrl.metricData.displayType === 'percentage'">
                 <igz-slider-input-block data-slider-config="$ctrl.sliderConfig"
-                                        data-ng-if="$ctrl.metricData.displayType === 'percentage'"
                                         data-measure-units="null"
                                         data-value-unit="$ctrl.unitLabel"
                                         data-slider-block-updating-broadcast=""
