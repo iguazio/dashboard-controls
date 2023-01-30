@@ -260,7 +260,8 @@
                 </div>
             </div>
 
-            <div class="igz-row form-row range-inputs-row slider-block">
+            <div class="igz-row form-row range-inputs-row slider-block"
+                 data-ng-if="!$ctrl.customMetricsAreEnabled">
                 <div class="igz-col-25 row-title no-margin target-cpu-title">
                     <span>{{ 'common:TARGET_CPU' | i18next }}</span>
                     <igz-more-info
@@ -320,7 +321,8 @@
             </div>
         </div>
     </form>
-    <ncl-auto-scale-metrics-table data-is-function-deploying="$ctrl.isFunctionDeploying()"
+    <ncl-auto-scale-metrics-table data-ng-if="$ctrl.customMetricsAreEnabled"
+                                  data-is-function-deploying="$ctrl.isFunctionDeploying()"
                                   data-version="$ctrl.version">
     </ncl-auto-scale-metrics-table>
 </div>

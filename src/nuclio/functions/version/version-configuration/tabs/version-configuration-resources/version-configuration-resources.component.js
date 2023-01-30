@@ -79,7 +79,7 @@ such restriction.
                 }
             }
         ];
-
+        ctrl.customMetricsAreEnabled = lodash.get(ConfigService, 'nuclio.autoScaleMetrics.customMetricsEnabled', false);
         ctrl.defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
 
         ctrl.dropdownOptions = [
@@ -730,24 +730,26 @@ such restriction.
          * Initializes Target CPU slider.
          */
         function initTargetCpuSlider() {
-            ctrl.targetCpuValueUnit = '';
-            ctrl.targetCpuSliderConfig = {
-                value: lodash.get(ctrl.defaultFunctionConfig, 'spec.resources.targetCPU', 75),
-                valueLabel: 'disabled',
-                pow: 0,
-                unitLabel: '%',
-                labelHelpIcon: false,
-                options: {
-                    disabled: true,
-                    floor: 1,
-                    id: 'targetCPU',
-                    ceil: 100,
-                    step: 1,
-                    showSelectionBar: true
-                }
-            };
+            if (!ctrl.customMetricsAreEnabled) {
+                ctrl.targetCpuValueUnit = '';
+                ctrl.targetCpuSliderConfig = {
+                    value: lodash.get(ctrl.defaultFunctionConfig, 'spec.resources.targetCPU', 75),
+                    valueLabel: 'disabled',
+                    pow: 0,
+                    unitLabel: '%',
+                    labelHelpIcon: false,
+                    options: {
+                        disabled: true,
+                        floor: 1,
+                        id: 'targetCPU',
+                        ceil: 100,
+                        step: 1,
+                        showSelectionBar: true
+                    }
+                };
 
-            updateTargetCpuSlider();
+                updateTargetCpuSlider();
+            }
         }
 
         /**
