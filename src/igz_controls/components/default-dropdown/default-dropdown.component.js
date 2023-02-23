@@ -216,10 +216,8 @@
 
             if (angular.isDefined(changes.valuesArray)) {
                 if (!changes.valuesArray.isFirstChange()) {
-                    ctrl.valuesArray = angular.copy(changes.valuesArray.currentValue);
-                    valuesArrayCopy = angular.copy(ctrl.valuesArray);
+                    valuesArrayCopy = angular.copy(changes.valuesArray.currentValue);
 
-                    setValuesVisibility();
                     setDefaultInputValue();
                 }
             }

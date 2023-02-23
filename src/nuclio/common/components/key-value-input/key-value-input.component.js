@@ -274,6 +274,7 @@
             if (ctrl.submitOnFly) {
                 $timeout(saveChanges);
             }
+
         }
 
         /**
