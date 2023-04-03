@@ -285,6 +285,7 @@
     "SERVICE_ACCOUNT": "Service Account",
     "SESSION_TOKEN": "Session token",
     "SKIP": "Skip",
+    "SKIP_TLS_VERIFICATION": "Skip TLS verification",
     "SMALL": "Small",
     "SOURCE_CODE": "Source code",
     "START_FROM_SCRATCH": "Start from scratch",
