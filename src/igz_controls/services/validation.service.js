@@ -361,8 +361,8 @@
                     key: commonRules.prefixedQualifiedName.concat(
                         {
                             name: 'prefixNotStart',
-                            label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' +
-                                $i18next.t('functions:NOT_START_WITH_FORBIDDEN_WORDS_LABEL', {lng: lng}),
+                            label: '[' + $i18next.t('functions:PREFIX', { lng: lng }) + '] ' +
+                                $i18next.t('functions:NOT_START_WITH_FORBIDDEN_WORDS_LABEL', { lng: lng }),
                             pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)(?!nuclio\.io\/)/
                         },
                         generateRule.length({
@@ -373,8 +373,8 @@
                     key: commonRules.prefixedQualifiedName.concat(
                         {
                             name: 'prefixNotStart',
-                            label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' +
-                                $i18next.t('common:NOT_START_WITH_FORBIDDEN_WORDS_K8S', {lng: lng}),
+                            label: '[' + $i18next.t('functions:PREFIX', { lng: lng }) + '] ' +
+                                $i18next.t('common:NOT_START_WITH_FORBIDDEN_WORDS_K8S', { lng: lng }),
                             pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)/
                         })
                 },
@@ -445,8 +445,8 @@
                     key: commonRules.prefixedQualifiedName.concat(
                         {
                             name: 'prefixNotStart',
-                            label: '[' + $i18next.t('functions:PREFIX', {lng: lng}) + '] ' +
-                                $i18next.t('common:NOT_START_WITH_FORBIDDEN_WORDS_K8S', {lng: lng}),
+                            label: '[' + $i18next.t('functions:PREFIX', { lng: lng }) + '] ' +
+                                $i18next.t('common:NOT_START_WITH_FORBIDDEN_WORDS_K8S', { lng: lng }),
                             pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)/
                         }),
                     value: [
@@ -479,7 +479,7 @@
                             pattern: function (value) {
                                 return value >= 1
                             }
-                        },
+                        }
                     ]
                 }
             },
@@ -554,6 +554,10 @@
                         generateRule.beginWith('a-z A-Z'),
                         generateRule.length({ max: lengths.identity.user.username })
                     ],
+                    usernameMembers: [
+                        generateRule.validCharacters('a-z A-Z 0-9 - _'),
+                        generateRule.length({ max: lengths.identity.user.username })
+                    ],
                     email: commonRules.email.concat(generateRule.length({ max: lengths.identity.user.email })),
                     position: [generateRule.length({ max: lengths.identity.user.position })],
                     department: [generateRule.length({ max: lengths.identity.user.department })]
@@ -561,7 +565,7 @@
                 address: [
                     {
                         name: 'begin',
-                        label: $i18next.t('common:BEGIN_WITH', { lng: lng }) + ': ldaps://, ldap://' ,
+                        label: $i18next.t('common:BEGIN_WITH', { lng: lng }) + ': ldaps://, ldap://',
                         pattern: /^ldaps?:\/\//
                     }
                 ]
@@ -645,7 +649,8 @@
             dockerReference: /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]))*(:\d+)?\/)?[a-z0-9]+(([._]|__|[-]*)[a-z0-9]+)*(\/[a-z0-9]+(([._]|__|[-]*)[a-z0-9]+)*)*(:[\w][\w.-]{0,127})?(@[A-Za-z][A-Za-z0-9]*([-_+.][A-Za-z][A-Za-z0-9]*)*:[0-9a-fA-F]{32,})?$/,
 
             getMaxLength: getMaxLength,
-            getValidationRules: getValidationRules
+            getValidationRules: getValidationRules,
+            isValidByRules: isValidByRules
         };
 
         //
@@ -674,6 +679,19 @@
                 .cloneDeep()
                 .concat(lodash.defaultTo(additionalRules, []))
                 .value();
+        }
+
+        /**
+         * Checks if a value matches all the patterns specified in the rules array.
+         * @param {Array} rules - An array of objects containing a pattern property that represents a function or a regular expression.
+         * @param {string} value - The value to be validated against the rules.
+         * @return {boolean} Returns true if the value matches all the patterns in the rules array, else returns false.
+         */
+        function isValidByRules(rules, value) {
+            return rules.every(function (rule) {
+                return lodash.isFunction(rule.pattern) ? rule.pattern(value) :
+                    /* else, it is a RegExp */           rule.pattern.test(value);
+            })
         }
 
         //
