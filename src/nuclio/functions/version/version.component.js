@@ -233,6 +233,8 @@
                 if (versionCopy.spec.maxReplicas !== versionCopy.spec.minReplicas && isV3ioExists) {
                     DialogsService.alert($i18next.t('functions:V3IO_INVALID_REPLICAS_MSG', {lng: lng}));
                 } else {
+                    var withTimeoutHeader = ['git', 'github'].includes(lodash.get(ctrl.version, 'spec.build.codeEntryType', ''));
+
                     ctrl.isFunctionDeployed = false;
                     $rootScope.$broadcast('deploy-function-version', { event: event });
 
@@ -249,7 +251,7 @@
                     var method = isVersionDeployed || ctrl.version.ui.overwrite || ctrl.version.ui.failedDeploy ?
                         ctrl.updateVersion : ctrl.createVersion;
 
-                    method({ version: versionCopy, projectId: ctrl.project.metadata.name })
+                    method({ version: versionCopy, projectId: ctrl.project.metadata.name, withTimeoutHeader })
                         .then(function () {
                             pollFunctionState();
 
