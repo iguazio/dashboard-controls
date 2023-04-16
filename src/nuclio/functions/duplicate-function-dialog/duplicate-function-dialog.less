@@ -6,14 +6,27 @@
             width: 450px;
 
             .field-label.function-name-label,
-            .field-input.function-name-input {
+            .field-input.function-name-input,
+            .field-input.function-configuration-input {
                 width: 100%;
             }
 
-            .field-input.function-name-input {
+            .field-label.function-configuration-label {
+                width: 100%;
+                line-height: 30px;
+            }
+
+            .field-input.function-name-input,
+            .field-input.function-configuration-input {
                 .error {
                     top: 38px;
                 }
+            }
+
+            .field-label.function-configuration-path {
+                font-size: 14px;
+                margin-left: 3px;
+                line-height: 30px;
             }
         }
     }
