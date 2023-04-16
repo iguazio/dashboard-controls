@@ -204,6 +204,15 @@
                                     </div>
                                 </div>
                                 <div class="headers" data-ng-if="$ctrl.selectedRequestTab.id === 'headers'">
+                                    <div class="tls-verification">
+                                        <input type="checkbox"
+                                               class="small"
+                                               id="skip-tls-verification"
+                                               data-ng-model="$ctrl.skipTlsVerification"
+                                               data-ng-disabled="$ctrl.isFunctionDeploying()">
+                                        <label for="skip-tls-verification">{{ 'functions:SKIP_TLS_VERIFICATION' | i18next}}
+                                        </label>
+                                    </div>
                                     <div data-ng-if="$ctrl.headers.length > 0" class="table-headers">
                                         <div class="key-header">{{ 'common:KEY' | i18next }}</div>
                                         <div class="value-header">{{ 'common:VALUE' | i18next }}</div>

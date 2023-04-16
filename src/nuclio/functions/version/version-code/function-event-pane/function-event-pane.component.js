@@ -126,6 +126,7 @@
         ctrl.selectedResponseTab = ctrl.responseNavigationTabs[0];
         ctrl.selectedLeftBarTab = ctrl.leftBarNavigationTabs[0];
         ctrl.showLeftBar = false;
+        ctrl.skipTlsVerification = false;
         ctrl.maxLengths = {
             eventName: ValidationService.getMaxLength('function.eventName')
         };
@@ -643,6 +644,7 @@
 
                 ctrl.invokeFunction({
                     eventData: eventData,
+                    skipTlsVerification: ctrl.skipTlsVerification,
                     invokeUrl: ctrl.invocationUrls.selected,
                     canceler: canceler.promise
                 })
@@ -901,6 +903,7 @@
                     };
                 })
                 .value();
+
             return external.concat(internal);
         }
 
