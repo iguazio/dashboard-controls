@@ -14,6 +14,7 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
+/*eslint complexity: ["error", 15]*/
 (function () {
     'use strict';
 
@@ -35,6 +36,7 @@ such restriction.
         var lng = i18next.language;
 
         ctrl.duplicateFunctionForm = {};
+        ctrl.duplicateInputFieldsData = [];
         ctrl.inputModelOptions = {
             debounce: {
                 'default': 0
@@ -44,14 +46,27 @@ such restriction.
             functionName: ValidationService.getMaxLength('function.name')
         };
         ctrl.nameTakenError = false;
-        ctrl.newFunctionName = '';
+        ctrl.secretFieldsData = {};
         ctrl.validationRules = {
             functionName: ValidationService.getValidationRules('function.name')
         };
 
+        ctrl.$onInit = onInit;
+
         ctrl.duplicateFunction = duplicateFunction;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.onClose = onClose;
+
+        //
+        // Hook methods
+        //
+
+        /**
+         * Initialization method
+         */
+        function onInit() {
+            generateDuplicateInputFieldsData()
+        }
 
         //
         // Public methods
@@ -70,9 +85,15 @@ such restriction.
                     var newFunction = lodash.pick(ctrl.version, 'spec');
                     var projectId = lodash.get(ctrl.project, 'metadata.name');
 
-                    lodash.set(newFunction, 'metadata.name', ctrl.newFunctionName);
+                    lodash.forEach(ctrl.secretFieldsData, function (value, path) {
+                        if (path === 'name') {
+                            lodash.set(newFunction, 'metadata.name', value);
+                        } else {
+                            lodash.set(newFunction, path, value);
+                        }
+                    });
 
-                    ctrl.getFunction({ metadata: { name: ctrl.newFunctionName } })
+                    ctrl.getFunction({ metadata: { name: ctrl.secretFieldsData.name } })
                         .then(function () {
                             DialogsService.alert(
                                 $i18next.t('functions:ERROR_MSG.FUNCTION_NAME_ALREADY_IN_USE', { lng: lng })
@@ -97,11 +118,12 @@ such restriction.
         }
 
         /**
-         * Sets new data from input field as a name of the duplicated function
+         * Sets new data from input field
          * @param {string} newData - new string value which should be set
+         * @param {string} field
          */
-        function inputValueCallback(newData) {
-            ctrl.newFunctionName = newData;
+        function inputValueCallback(newData, field) {
+            ctrl.secretFieldsData[field] = newData;
         }
 
         /**
@@ -111,6 +133,98 @@ such restriction.
         function onClose(event) {
             if (angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) {
                 ctrl.closeDialog();
+            }
+        }
+
+        //
+        // Private methods
+        //
+
+        /**
+         * Generates the data to display new input fields
+         */
+        function generateDuplicateInputFieldsData() {
+            ctrl.duplicateInputFieldsData = lodash.map(findFunctionSecrets(), function (elem) {
+                var message = '';
+                var moreInfoData = '';
+
+                if (elem.key === 'password') {
+                    if (elem.path.includes('spec.triggers')) {
+                        // Trigger with type MQTT\V3IO, Access key field
+                        message = $i18next.t('functions:TRIGGER_ACCESS_KEY', { lng: lng, triggerName: elem.path.split('.')[2]});
+                    } else if (elem.path.includes('spec.build')) {
+                        // Code Entry Type: Git, Token field
+                        message = $i18next.t('functions:CODE_ENTRY_TYPE_PASSWORD', { lng: lng, codeEntryType: lodash.get(ctrl.version, 'spec.build.codeEntryType', '')});
+                    }
+                } else if (elem.key === 'accessKeyID') {
+                    // Trigger with type Kinesis, Access key ID field
+                    message = $i18next.t('functions:TRIGGER_ACCESS_KEY_ID', { lng: lng, triggerName: elem.path.split('.')[2]});
+                } else if (elem.key === 'secretAccessKey') {
+                    // Trigger with type Kinesis, Secret Access key field
+                    message = $i18next.t('functions:TRIGGER_SECRET_ACCESS_KEY', { lng: lng, triggerName: elem.path.split('.')[2]});
+                } else if (elem.key === 'accessKey') {
+                    // Volume with type V3IO, Access key field
+                    var volumeName = lodash.get(ctrl.version, elem.path.split('.').slice(0, 3).join('.') + '.volume.name', '');
+
+                    moreInfoData = $i18next.t('functions:ACCESS_KEY_DESCRIPTION');
+                    message = $i18next.t('functions:VOLUME_ACCESS_KEY', { lng: lng, volumeName});
+                } else if (elem.key === 's3SecretAccessKey') {
+                    // Code Entry Type: s3, Session access key field
+                    moreInfoData = $i18next.t('functions:TOOLTIP.S3.SECRET_ACCESS_KEY');
+                    message = $i18next.t('functions:CODE_ENTRY_TYPE_KEY', { lng: lng, codeEntryType: lodash.get(ctrl.version, 'spec.build.codeEntryType', '')});
+                } else if (elem.key === 's3SessionToken') {
+                    // Code Entry Type: s3, Session token field
+                    moreInfoData = $i18next.t('functions:TOOLTIP.S3.SESSION_TOKEN');
+                    message = $i18next.t('functions:CODE_ENTRY_TYPE_TOKEN', { lng: lng, codeEntryType: lodash.get(ctrl.version, 'spec.build.codeEntryType', '')});
+                } else if (elem.key === 'Authorization') {
+                    // Code Entry Type: GitHub, Token field
+                    moreInfoData = $i18next.t('functions:TOOLTIP.GITHUB.TOKEN');
+                    message = $i18next.t('functions:CODE_ENTRY_TYPE_TOKEN', { lng: lng, codeEntryType: lodash.get(ctrl.version, 'spec.build.codeEntryType', '')});
+                } else if (elem.key === 'X-V3io-Session-Key') {
+                    // Code Entry Type: Archive, Access key field
+                    moreInfoData = $i18next.t('functions:functions:TOOLTIP.V3IO_ACCESS_KEY');
+                    message = $i18next.t('functions:CODE_ENTRY_ACCESS_KEY', { lng: lng, codeEntryType: lodash.get(ctrl.version, 'spec.build.codeEntryType', '')});
+                }
+
+                return {
+                    moreInfoData,
+                    title: message || lodash.startCase(elem.key),
+                    key: elem.key,
+                    path: elem.path
+                }
+            });
+        }
+
+        /**
+         * Generates the list of fields in which the value starts with "$ref"
+         * @returns {Array.<Object>}
+         */
+        function findFunctionSecrets() {
+            var secretsArray = [];
+
+            iterateObject(ctrl.version.spec, 'spec');
+
+            return secretsArray;
+
+            function iterateObject(obj, prevPath) {
+                for (let [key, value] of Object.entries(obj)) {
+                    if (lodash.isArray(value)) {
+                        lodash.forEach(value, function (elem, index) {
+                            var path = prevPath + '.'  + key + '.[' + index + ']';
+
+                            iterateObject(elem, path);
+                        });
+                    } else if (lodash.isObject(value)) {
+                        var path = prevPath + '.' + key;
+
+                        iterateObject(value, path);
+                    } else if (lodash.isString(value) && value.includes('$ref')) {
+                        secretsArray.push({
+                            path: prevPath + '.' + key,
+                            key
+                        });
+                    }
+                }
             }
         }
     }
