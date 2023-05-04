@@ -6,6 +6,8 @@
     </div>
     <div class="panel-status">
         <span class="panel-status-icon"></span>
-        <span class="panel-status-msg">{{$ctrl.getStateMessage($ctrl.panelState)}}</span>
+        <div class="igz-scrollable-container msg-scrollable-container" data-ng-scrollbars>
+            <div class="panel-status-msg">{{$ctrl.getStateMessage($ctrl.panelState)}}</div>
+        </div>
     </div>
 </div>
