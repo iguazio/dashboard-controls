@@ -228,7 +228,7 @@ describe('nclFunctions component: ', function () {
             ctrl.paginationCallback(1, 5);
             $timeout.flush();
 
-            expect(ElementLoadingStatusService.hideSpinnerGroup).toHaveBeenCalledTimes(3);
+            expect(ElementLoadingStatusService.hideSpinnerGroup).toHaveBeenCalledTimes(4);
         });
     });
 

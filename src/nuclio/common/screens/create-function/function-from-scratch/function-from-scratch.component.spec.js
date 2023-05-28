@@ -21,16 +21,21 @@ describe('nclFunctionFromScratch Component:', function () {
     var $timeout;
     var ctrl;
     var runtimes;
+    var $i18next;
+    var lng;
 
     beforeEach(function () {
         module('iguazio.dashboard-controls');
 
-        inject(function (_$componentController_, _$rootScope_, _$q_, _$timeout_) {
+        inject(function (_$componentController_, _$rootScope_, _$q_, _$timeout_, _$i18next_) {
             $componentController = _$componentController_;
             $rootScope = _$rootScope_;
             $q = _$q_;
             $timeout = _$timeout_;
+            $i18next = _$i18next_;
         });
+
+        lng = i18next.language;
 
         runtimes = [
             {
@@ -67,7 +72,7 @@ describe('nclFunctionFromScratch Component:', function () {
             },
             {
                 id: 'dotnetcore',
-                name: '.NET Core',
+                name: '.NET Core ' + $i18next.t('functions:TECH_PREVIEW_LABEL', { lng: lng }),
                 sourceCode: 'dXNpbmcgU3lzdGVtOw0KdXNpbmcgTnVjbGlvLlNkazsNCg0KcHVibGljIGNsYXNzIG1haW4NCnsNCiAgICBwdWJ' +
                 'saWMgb2JqZWN0IGhhbmRsZXIoQ29udGV4dCBjb250ZXh0LCBFdmVudCBldmVudEJhc2UpDQogICAgew0KICAgICAgICByZXR1cm' +
                 '4gbmV3IFJlc3BvbnNlKCkNCiAgICAgICAgew0KICAgICAgICAgICAgU3RhdHVzQ29kZSA9IDIwMCwNCiAgICAgICAgICAgIENvb' +
@@ -77,7 +82,7 @@ describe('nclFunctionFromScratch Component:', function () {
             },
             {
                 id: 'java',
-                name: 'Java',
+                name: 'Java ' + $i18next.t('functions:TECH_PREVIEW_LABEL', { lng: lng }),
                 sourceCode: 'aW1wb3J0IGlvLm51Y2xpby5Db250ZXh0Ow0KaW1wb3J0IGlvLm51Y2xpby5FdmVudDsNCmltcG9ydCBpby5udWN' +
                 'saW8uRXZlbnRIYW5kbGVyOw0KaW1wb3J0IGlvLm51Y2xpby5SZXNwb25zZTsNCg0KcHVibGljIGNsYXNzIEhhbmRsZXIgaW1wbG' +
                 'VtZW50cyBFdmVudEhhbmRsZXIgew0KDQogICAgQE92ZXJyaWRlDQogICAgcHVibGljIFJlc3BvbnNlIGhhbmRsZUV2ZW50KENvb' +
@@ -89,18 +94,18 @@ describe('nclFunctionFromScratch Component:', function () {
                 id: 'nodejs',
                 sourceCode: 'ZXhwb3J0cy5oYW5kbGVyID0gZnVuY3Rpb24oY29udGV4dCwgZXZlbnQpIHsNCiAgICBjb250ZXh0LmNhbGxiYWN' +
                 'rKCcnKTsNCn07', // source code in base64
-                name: 'NodeJS',
+                name: 'NodeJS ' + $i18next.t('functions:TECH_PREVIEW_LABEL', { lng: lng }),
                 visible: true
             },
             {
                 id: 'shell',
-                name: 'Shell',
+                name: 'Shell ' + $i18next.t('functions:TECH_PREVIEW_LABEL', { lng: lng }),
                 sourceCode: 'ZWNobyAiSGVsbG8gZnJvbSBOdWNsaW8i',
                 visible: true
             },
             {
                 id: 'ruby',
-                name: 'Ruby',
+                name: 'Ruby ' + $i18next.t('functions:TECH_PREVIEW_LABEL', { lng: lng }),
                 sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpDQplbmQ=', // source code in base64
                 visible: true
             }

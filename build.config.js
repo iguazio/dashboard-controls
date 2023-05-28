@@ -103,6 +103,7 @@ module.exports = {
                 'node_modules/bootstrap/js/dropdown.js',
                 'node_modules/ng-dialog/js/ngDialog.js',
                 'node_modules/lodash/lodash.js',
+                'node_modules/restangular/src/restangular.js',
                 'node_modules/monaco-editor/min/vs/loader.js',
                 'node_modules/angular-download/angular-download.js'
             ],

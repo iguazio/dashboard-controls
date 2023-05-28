@@ -163,7 +163,8 @@ describe('igzMultipleCheckboxes component: ', function () {
                     tooltipText: undefined,
                     enableTooltip: false,
                     filtered: undefined,
-                    visibility: true
+                    visibility: true,
+                    moreInfo: undefined
                 },
                 {
                     id: 'baseId1',
@@ -174,7 +175,8 @@ describe('igzMultipleCheckboxes component: ', function () {
                     tooltipText: undefined,
                     enableTooltip: false,
                     filtered: undefined,
-                    visibility: true
+                    visibility: true,
+                    moreInfo: undefined
                 },
                 {
                     id: 'baseId2',
@@ -185,7 +187,8 @@ describe('igzMultipleCheckboxes component: ', function () {
                     tooltipText: undefined,
                     enableTooltip: false,
                     filtered: undefined,
-                    visibility: true
+                    visibility: true,
+                    moreInfo: undefined
                 }
             ];
             externalScope.options = [
@@ -222,7 +225,8 @@ describe('igzMultipleCheckboxes component: ', function () {
                     tooltipText: undefined,
                     enableTooltip: false,
                     filtered: undefined,
-                    visibility: true
+                    visibility: true,
+                    moreInfo: undefined
                 },
                 {
                     id: 'baseId1',
@@ -233,7 +237,8 @@ describe('igzMultipleCheckboxes component: ', function () {
                     tooltipText: undefined,
                     enableTooltip: false,
                     filtered: undefined,
-                    visibility: true
+                    visibility: true,
+                    moreInfo: undefined
                 },
                 {
                     id: 'baseId2',
@@ -244,7 +249,8 @@ describe('igzMultipleCheckboxes component: ', function () {
                     tooltipText: undefined,
                     enableTooltip: false,
                     filtered: undefined,
-                    visibility: true
+                    visibility: true,
+                    moreInfo: undefined
                 }
             ];
             externalScope.options = [
@@ -288,7 +294,8 @@ describe('igzMultipleCheckboxes component: ', function () {
                     tooltipText: undefined,
                     enableTooltip: false,
                     filtered: undefined,
-                    visibility: true
+                    visibility: true,
+                    moreInfo: undefined
                 },
                 {
                     id: 'baseId1',
@@ -299,7 +306,8 @@ describe('igzMultipleCheckboxes component: ', function () {
                     tooltipText: undefined,
                     enableTooltip: false,
                     filtered: undefined,
-                    visibility: true
+                    visibility: true,
+                    moreInfo: undefined
                 },
                 {
                     id: 'baseId2',
@@ -310,7 +318,8 @@ describe('igzMultipleCheckboxes component: ', function () {
                     tooltipText: undefined,
                     enableTooltip: false,
                     filtered: undefined,
-                    visibility: true
+                    visibility: true,
+                    moreInfo: undefined
                 }
             ];
             angular.extend(externalScope, {
@@ -363,7 +372,8 @@ describe('igzMultipleCheckboxes component: ', function () {
                     tooltipText: undefined,
                     enableTooltip: false,
                     filtered: undefined,
-                    visibility: true
+                    visibility: true,
+                    moreInfo: undefined
                 },
                 {
                     id: 'baseId1',
@@ -374,7 +384,8 @@ describe('igzMultipleCheckboxes component: ', function () {
                     tooltipText: undefined,
                     enableTooltip: false,
                     filtered: undefined,
-                    visibility: true
+                    visibility: true,
+                    moreInfo: undefined
                 },
                 {
                     id: 'baseId2',
@@ -385,7 +396,8 @@ describe('igzMultipleCheckboxes component: ', function () {
                     tooltipText: undefined,
                     enableTooltip: false,
                     filtered: undefined,
-                    visibility: true
+                    visibility: true,
+                    moreInfo: undefined
                 },
                 {
                     id: 'baseId3',
@@ -396,7 +408,8 @@ describe('igzMultipleCheckboxes component: ', function () {
                     tooltipText: undefined,
                     enableTooltip: false,
                     filtered: undefined,
-                    visibility: true
+                    visibility: true,
+                    moreInfo: undefined
                 }
 
             ];
