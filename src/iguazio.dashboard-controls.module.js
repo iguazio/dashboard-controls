@@ -8,6 +8,7 @@
         'ngFileUpload',
         'ngDialog',
         'ngSanitize',
+        'restangular',
         'download',
         'angular-yamljs',
         'jm.i18next',
