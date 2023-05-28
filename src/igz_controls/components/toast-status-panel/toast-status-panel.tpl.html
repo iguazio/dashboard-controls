@@ -6,6 +6,9 @@
     </div>
     <div class="panel-status">
         <span class="panel-status-icon"></span>
-        <span class="panel-status-msg">{{$ctrl.getStateMessage($ctrl.panelState)}}</span>
+        <div class="panel-status-msg" data-ng-if="$ctrl.isTranscludePassed" data-ng-transclude></div>
+        <span class="panel-status-msg" data-ng-if="!$ctrl.isTranscludePassed">
+            {{$ctrl.getStateMessage($ctrl.panelState)}}
+        </span>
     </div>
 </div>
