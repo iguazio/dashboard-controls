@@ -26,10 +26,11 @@ such restriction.
                 permanent: '<?'
             },
             templateUrl: 'igz_controls/components/toast-status-panel/toast-status-panel.tpl.html',
-            controller: IgzToastStatusPanelController
+            controller: IgzToastStatusPanelController,
+            transclude: true
         });
 
-    function IgzToastStatusPanelController($element, $rootScope, $timeout, lodash) {
+    function IgzToastStatusPanelController($element, $rootScope, $timeout, $transclude, lodash) {
         var ctrl = this;
         var statusIcons = {
             'succeeded': 'igz-icon-tick-round',
@@ -38,12 +39,23 @@ such restriction.
         };
 
         ctrl.isToastPanelShown = false;
+        ctrl.isTranscludePassed = false;
 
         ctrl.$onChanges = onChanges;
 
         ctrl.closeToastPanel = closeToastPanel;
         ctrl.getState = getState;
         ctrl.getStateMessage = getStateMessage;
+
+        // checks if transclude template was passed
+        $transclude(function (transclude) {
+            ctrl.isTranscludePassed = transclude.length > 0 && !(
+
+              // a single text node with whitespace only, meaning there is nothing important between the opening
+              // tag `<igz-toast-status-panel>` and the closing tag `</igz-toast-status-panel>`
+                transclude.length === 1 && transclude[0].nodeType === 3 && transclude.text().trim() === ''
+            );
+        });
 
         //
         // Hook methods
