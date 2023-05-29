@@ -7,7 +7,10 @@
     <div class="panel-status">
         <span class="panel-status-icon"></span>
         <div class="igz-scrollable-container msg-scrollable-container" data-ng-scrollbars>
-            <div class="panel-status-msg">{{$ctrl.getStateMessage($ctrl.panelState)}}</div>
+            <div class="panel-status-msg" data-ng-if="$ctrl.isTranscludePassed" data-ng-transclude></div>
+            <div class="panel-status-msg" data-ng-if="!$ctrl.isTranscludePassed">
+                {{$ctrl.getStateMessage($ctrl.panelState)}}
+            </div>
         </div>
     </div>
 </div>
