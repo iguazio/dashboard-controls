@@ -12,15 +12,41 @@
             </div>
             <div class="field-input function-name-input">
                 <igz-validating-input-field data-field-type="input"
-                                            data-input-name="new-name"
+                                            data-input-name="name"
                                             data-input-value="$ctrl.newFunctionName"
                                             data-is-focused="true"
                                             data-form-object="$ctrl.duplicateFunctionForm"
-                                            data-update-data-callback="$ctrl.inputValueCallback(newData)"
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-validation-is-required="true"
                                             data-validation-rules="$ctrl.validationRules.functionName"
                                             data-validation-max-length="{{$ctrl.maxLengths.functionName}}"
                                             data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_FUNCTION_NAME' | i18next }}">
+                </igz-validating-input-field>
+            </div>
+        </div>
+
+        <div class="subtitle" data-ng-if="$ctrl.duplicateInputFieldsData.length > 0">
+            {{ 'functions:DUPLICATE_FUNCTION_SUBTITLE' | i18next }}
+        </div>
+
+        <div class="field-group" data-ng-repeat="inputFieldData in $ctrl.duplicateInputFieldsData track by inputFieldData.path">
+            <div class="field-label function-configuration-label">
+                {{inputFieldData.title}}
+                <igz-more-info data-ng-if="inputFieldData.moreInfoData"
+                               data-description="{{inputFieldData.moreInfoData}}"
+                               data-default-tooltip-placement="top">
+                </igz-more-info>
+            </div>
+            <div class="field-label function-configuration-path">
+                {{ 'common:PATH' | i18next }}: {{inputFieldData.path}}
+            </div>
+            <div class="field-input function-configuration-input">
+                <igz-validating-input-field data-field-type="input"
+                                            data-input-name="{{inputFieldData.path}}"
+                                            data-form-object="$ctrl.duplicateFunctionForm"
+                                            data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                            data-validation-is-required="true"
+                                            data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_VALUE' | i18next }}">
                 </igz-validating-input-field>
             </div>
         </div>
