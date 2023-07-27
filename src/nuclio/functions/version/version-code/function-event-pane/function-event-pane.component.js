@@ -849,7 +849,7 @@
          * @param {*} value - the object or a JSON-serialized string to format.
          * @returns {*} JSON-serialized string representation of `value` formatted with newlines and indentation.
          *      In case of an error in JSON conversion or if `value` is not a string nor an object, returns `value`
-         *      as-is.
+         *      as a string.
          */
         function formatJson(value) {
             try {
@@ -867,11 +867,11 @@
             }
 
             /**
-             * Returns `value`.
-             * @returns {*} `value` as-is.
+             * Returns `value` as a string.
+             * @returns {*} `value` as a string.
              */
             function returnValue() {
-                return value;
+                return value.toString();
             }
         }
 
