@@ -364,7 +364,7 @@
 
             if (angular.isDefined(triggerItem.attributes)) {
                 triggerItem.attributes = lodash.omitBy(triggerItem.attributes, function (attribute) {
-                    return !lodash.isNumber(attribute) && lodash.isEmpty(attribute);
+                    return !lodash.isNumber(attribute) && lodash.isEmpty(attribute) && !lodash.isBoolean(attribute);
                 });
 
                 if (angular.isDefined(triggerItem.attributes.schedule)) {
