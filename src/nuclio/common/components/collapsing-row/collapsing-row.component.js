@@ -53,6 +53,18 @@
             });
 
             ctrl.classList = FunctionsService.getClassesList(ctrl.type);
+            ctrl.displayedAttributesFields = lodash.chain(ctrl.classList)
+                .find(function (aClass) {
+                    return aClass.id === ctrl.item.kind;
+                })
+                .get('fields', [])
+                .filter(function (field) {
+                    return lodash.get(field, 'path', '').startsWith('attributes');
+                })
+                .map(function (field) {
+                    return field.name;
+                })
+                .value();
 
             if (!lodash.isEmpty(ctrl.item.kind)) {
                 ctrl.selectedClass = lodash.find(ctrl.classList, ['id', ctrl.item.kind]);
