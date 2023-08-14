@@ -63,7 +63,9 @@
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.secret)">
                         <span class="field-label">{{ 'functions:SECRET' | i18next }}</span>:&nbsp;{{ $ctrl.getMask($ctrl.item.secret) }};&nbsp;
                     </span>
-                    <span data-ng-repeat="(key, value) in $ctrl.item.attributes">
+                    <span
+                         data-ng-repeat="(key, value) in $ctrl.item.attributes"
+                         data-ng-if="$ctrl.displayedAttributesFields.includes(key)">
                         <span class="field-label">{{ key }}</span>:&nbsp;{{ $ctrl.getAttributeValue(key, value) }};&nbsp;
                     </span>
                     <span data-ng-if="!$ctrl.isNil($ctrl.item.annotations)">
