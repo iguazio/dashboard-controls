@@ -198,6 +198,13 @@ such restriction.
                     pattern: new RegExp('^' + convertedPattern)
                 };
             },
+            notContainCharacters: function (chars) {
+                return {
+                    name: 'notContain',
+                    label: $i18next.t('common:NOT_CONTAIN', { lng: lng }) + ': ' + convertToLabel(chars),
+                    pattern: new RegExp('^[^' + convertToLabel(chars) + ']+$')
+                }
+            },
             maxLengthBetweenDelimiters: function (delimiter, maxLength, delimiterDescription) {
                 return {
                     name: 'labelsLength',
@@ -454,7 +461,15 @@ such restriction.
                 persistentVolumeClaims: {
                     value: [generateRule.length({ max: lengths.service.persistentVolumeClaims.value })]
                 },
-                hiveMetastorePath: [generateRule.endNotWith('/')]
+                hiveMetastorePath: [generateRule.endNotWith('/')],
+                dockerRegistryUrl: [
+                    {
+                        name: 'beginNot',
+                        label: $i18next.t('common:BEGIN_NOT_WITH', { lng: lng }) + ': https://',
+                        pattern: /^(?!https:\/\/)/
+                    },
+                    generateRule.notContainCharacters('/ :')
+                ]
             },
             clusters: {
                 label: {
