@@ -219,21 +219,15 @@ such restriction.
                     visible: true
                 },
                 {
-                    id: 'python:3.6',
-                    name: 'Python 3.6',
-                    sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
-                    visible: true
-                },
-                {
                     id: 'python:3.7',
-                    name: 'Python 3.7',
-                    sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
+                    name: 'Python 3.7 ' + $i18next.t('functions:DEPRECATED_SOON_LABEL', {lng: lng}),
+                    nameTemplate: 'Python 3.7 ' + '<b>' + $i18next.t('functions:DEPRECATED_SOON_LABEL', {lng: lng}) + '</b>',
                     visible: true
                 },
                 {
                     id: 'python:3.8',
-                    name: 'Python 3.8',
-                    sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
+                    name: 'Python 3.8 ' + $i18next.t('functions:DEPRECATED_SOON_LABEL', {lng: lng}),
+                    nameTemplate: 'Python 3.8 ' + '<b>' + $i18next.t('functions:DEPRECATED_SOON_LABEL', {lng: lng}) + '</b>',
                     visible: true
                 },
                 {
