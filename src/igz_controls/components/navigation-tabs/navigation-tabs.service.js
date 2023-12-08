@@ -247,6 +247,7 @@ such restriction.
          */
         function getIdentityConfig() {
             var lng = i18next.language;
+            var platformType = lodash.get(ConfigService.dashboard, 'platformType', '')
 
             return [
                 {
@@ -263,8 +264,13 @@ such restriction.
                     tabName: $i18next.t('common:IDP', {lng: lng}),
                     uiRoute: 'app.identity.idp',
                     capability: 'identity.idp'
+                },
+                {
+                    tabName: $i18next.t('common:KEYLOACK_ADMIN_CONSOLE', {lng: lng}),
+                    href: lodash.get(ConfigService.dashboard, ['authentication', 'sso', 'console_urls', platformType], ''),
+                    hidden: !(lodash.get(ConfigService.dashboard, 'authentication.sso.mode') && platformType)
                 }
-            ];
+            ]
         }
 
         /**

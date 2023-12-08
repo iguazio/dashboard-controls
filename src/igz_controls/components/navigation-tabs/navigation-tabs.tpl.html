@@ -1,9 +1,18 @@
 <div class="igz-navigation-tabs clearfix">
-    <div class="navigation-tab"
-         data-ng-repeat="item in $ctrl.tabItems"
-         data-ui-sref="{{item.uiRoute}}"
-         data-ui-sref-active="active"
-         data-igz-capability-enforcer="{{item.capability}}">
-        {{item.tabName | uppercase}}
+    <div  data-ng-repeat="item in $ctrl.tabItems" data-ng-if="!item.hidden">
+        <div class="navigation-tab"
+             data-ng-if="item.uiRoute"
+             data-ui-sref="{{item.uiRoute}}"
+             data-ui-sref-active="active"
+             data-igz-capability-enforcer="{{item.capability}}">
+            {{item.tabName | uppercase}}
+        </div>
+        <a class="navigation-tab"
+           data-ng-if="item.href"
+           data-ng-href="{{item.href}}"
+           target="_blank"
+           data-ui-sref-active="active">
+            {{item.tabName | uppercase}}
+        </a>
     </div>
 </div>
