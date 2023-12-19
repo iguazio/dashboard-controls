@@ -565,7 +565,7 @@
                         generateRule.length({ max: lengths.identity.user.name })
                     ],
                     username: [
-                        generateRule.validCharacters('a-z A-Z 0-9 - _'),
+                        generateRule.validCharacters('a-z A-Z 0-9 - _ @ .'),
                         generateRule.beginWith('a-z A-Z'),
                         generateRule.length({ max: lengths.identity.user.username })
                     ],
