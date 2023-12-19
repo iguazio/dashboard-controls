@@ -372,12 +372,14 @@
                 {
                     id: 'python:3.7',
                     name: 'Python 3.7 ' + $i18next.t('functions:DEPRECATED_SOON_LABEL', {lng: lng}),
+                    sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
                     nameTemplate: 'Python 3.7 ' + '<b>' + $i18next.t('functions:DEPRECATED_SOON_LABEL', {lng: lng}) + '</b>',
                     visible: true
                 },
                 {
                     id: 'python:3.8',
                     name: 'Python 3.8 ' + $i18next.t('functions:DEPRECATED_SOON_LABEL', {lng: lng}),
+                    sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
                     nameTemplate: 'Python 3.8 ' + '<b>' + $i18next.t('functions:DEPRECATED_SOON_LABEL', {lng: lng}) + '</b>',
                     visible: true
                 },
