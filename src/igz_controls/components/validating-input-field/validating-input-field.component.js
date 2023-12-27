@@ -14,6 +14,7 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
+/* eslint max-statements: ["error", 60] */
 (function () {
     'use strict';
 
@@ -99,6 +100,7 @@ such restriction.
      *     should return `true` in case rule is valid or `false` otherwise. The function will be invoked with the
      *     current input value, the input field name and the `ngForm` (if provided to `formObject` attribute).
      * @param {string} [validationRules[].name] - A unique name for the rule among the list.
+     * @param {boolean} [viewPassword=false] - Set to `true` to display a view password icon.
      */
     angular.module('iguazio.dashboard-controls')
         .component('igzValidatingInputField', {
@@ -132,7 +134,8 @@ such restriction.
                 validationIsRequired: '<?',
                 validationMaxLength: '@?',
                 validationPattern: '<?',
-                validationRules: '<*?'
+                validationRules: '<*?',
+                viewPassword: '<?'
             },
             templateUrl: 'igz_controls/components/validating-input-field/validating-input-field.tpl.html',
             controller: IgzValidatingInputFieldController
@@ -172,6 +175,7 @@ such restriction.
         ctrl.inputFocused = false;
         ctrl.inputIsTouched = false;
         ctrl.isValidationPopUpShown = false;
+        ctrl.passwordIsShown = false;
         ctrl.preventInputBlur = false;
         ctrl.selectedFieldType = FIELD_TYPES.INPUT;
         ctrl.showPopUpOnTop = false;
@@ -191,6 +195,7 @@ such restriction.
         ctrl.onFocus = onFocus;
         ctrl.onKeyDown = onKeyDown;
         ctrl.toggleValidationPopUp = toggleValidationPopUp;
+        ctrl.toggleViewPassword = toggleViewPassword;
 
         //
         // Hook methods
@@ -226,7 +231,8 @@ such restriction.
                 trim: true,
                 updateDataCallback: angular.noop,
                 updateDataField: ctrl.inputName,
-                validationIsRequired: false
+                validationIsRequired: false,
+                viewPassword: false
             });
 
             // if provided `fieldType` attribute is one of the available values, assign it
@@ -480,6 +486,13 @@ such restriction.
                     $document.off('click', handleDocumentClick);
                 }
             }
+        }
+
+        /**
+         * Shows/hides the password
+         */
+        function toggleViewPassword() {
+            ctrl.passwordIsShown = !ctrl.passwordIsShown;
         }
 
         //
