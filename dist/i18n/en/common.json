@@ -346,6 +346,7 @@
     "ONLY_AT_THE_BEGINNING": "Only at the beginning",
     "ONLY_AT_THE_BEGINNING_AND_EXPONENT": "Only at the beginning and in the exponent",
     "OOPS": "Oops!",
+    "OR": "OR",
     "OVERRIDE": "Override",
     "OVERRIDE_FUNCTION_CONFIRM": "The function \"{{functionName}}\" already exists in project \"{{projectName}}\", you can either skip its import or override the existing one with the imported one.",
     "OVERVIEW": "Overview",
