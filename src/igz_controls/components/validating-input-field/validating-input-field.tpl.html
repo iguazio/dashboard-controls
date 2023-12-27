@@ -108,6 +108,12 @@
              }]">
         </div>
 
+        <div class="view-password"
+             data-ng-if="$ctrl.data.length > 0 && $ctrl.viewPassword"
+             data-ng-class="$ctrl.passwordIsShown ? 'igz-icon-hide' : 'igz-icon-view'"
+             data-ng-click="$ctrl.toggleViewPassword()">
+        </div>
+
         <input class="input-field field"
                data-ng-class="[$ctrl.bordersModeClass, {
                    'invalid': $ctrl.isFieldInvalid(),
@@ -115,7 +121,7 @@
                    'with-validation-icon': $ctrl.validationRules.length > 0
                }]"
                data-igz-validate-password-confirmation="$ctrl.compareInputValue"
-               type="password"
+               type="{{$ctrl.passwordIsShown ? 'text' : 'password'}}"
                name="{{$ctrl.inputName}}"
                placeholder="{{$ctrl.placeholderText}}"
                tabindex="{{$ctrl.tabindex}}"
