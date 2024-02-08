@@ -466,7 +466,10 @@ such restriction.
          */
         function toggleValidationPopUp() {
             if (!lodash.isEmpty(ctrl.validationRules)) {
+                var windowWidth = $window.innerWidth;
                 var popUp = $element.find('.validation-pop-up');
+                var inputFieldWidth = $element[0].getBoundingClientRect().width;
+
                 ctrl.isValidationPopUpShown = !ctrl.isValidationPopUpShown;
 
                 if (ctrl.isValidationPopUpShown) {
@@ -481,6 +484,10 @@ such restriction.
                         fieldElement.focus();
                         ctrl.inputFocused = true;
                         ctrl.showPopUpOnTop = $window.innerHeight - popUp.offset().top - popUp.outerHeight() < 0;
+
+                        if (inputFieldWidth && popUp[0].getBoundingClientRect().right > windowWidth) {
+                            popUp.css('right', '-' + inputFieldWidth + 'px');
+                        }
                     });
                 } else {
                     $document.off('click', handleDocumentClick);
