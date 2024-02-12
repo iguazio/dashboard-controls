@@ -258,7 +258,9 @@ such restriction.
          * @returns {boolean} `true` in case "HTTP trigger message" is shown, or `false` otherwise.
          */
         function isHttpTriggerMsgShown() {
-            return !lodash.some(ctrl.version.spec.triggers, ['kind', 'http']);
+            const disableDefaultHttpTrigger = lodash.get(ConfigService, 'nuclio.disableDefaultHttpTrigger', false);
+
+            return !disableDefaultHttpTrigger && !lodash.some(ctrl.version.spec.triggers, ['kind', 'http']);
         }
 
         //
