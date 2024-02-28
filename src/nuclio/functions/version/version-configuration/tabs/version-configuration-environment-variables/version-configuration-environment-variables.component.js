@@ -35,6 +35,14 @@ such restriction.
         var ctrl = this;
         var lng = i18next.language;
 
+        var envVariableFromValidationRules = ValidationService.getValidationRules('k8s.configMapKey', [
+            {
+                name: 'uniqueness',
+                label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                pattern: validateUniqueness.bind(null, ['configMapRef.name', 'secretRef.name'])
+            }
+        ]);
+
         ctrl.environmentVariablesForm = null;
         ctrl.igzScrollConfig = {
             maxElementsCount: 10,
@@ -44,7 +52,7 @@ such restriction.
             key: ValidationService.getValidationRules('k8s.envVarName', [{
                 name: 'uniqueness',
                 label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
-                pattern: validateUniqueness.bind(null, 'name')
+                pattern: validateUniqueness.bind(null, ['name'])
             }]),
             secretKey: ValidationService.getValidationRules('k8s.configMapKey'),
             secret: ValidationService.getValidationRules('k8s.secretName'),
@@ -52,9 +60,11 @@ such restriction.
                 {
                     name: 'uniqueness',
                     label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
-                    pattern: validateUniqueness.bind(null, 'valueFrom.configMapKeyRef.key')
+                    pattern: validateUniqueness.bind(null, ['valueFrom.configMapKeyRef.key'])
                 }
-            ])
+            ]),
+            configmapRef: envVariableFromValidationRules,
+            secretRef: envVariableFromValidationRules
         };
         ctrl.variables = [];
         ctrl.scrollConfig = {
@@ -91,18 +101,18 @@ such restriction.
          */
         function onChanges(changes) {
             if (angular.isDefined(changes.version)) {
-                ctrl.variables = lodash.chain(ctrl.version)
-                    .get('spec.env', [])
-                    .map(function (variable) {
-                        variable.ui = {
-                            editModeActive: false,
-                            isFormValid: false,
-                            name: 'variable'
-                        };
+                ctrl.variables =
+                  lodash.concat(lodash.get(ctrl.version, 'spec.env', []),
+                                lodash.get(ctrl.version, 'spec.envFrom', []))
+                      .map(function (variable) {
+                          variable.ui = {
+                              editModeActive: false,
+                              isFormValid: false,
+                              name: 'variable'
+                          };
 
-                        return variable;
-                    })
-                    .value();
+                          return variable;
+                      });
 
                 ctrl.isOnlyValueTypeInputs = !lodash.some(ctrl.variables, 'valueFrom');
 
@@ -207,13 +217,23 @@ such restriction.
          */
         function updateVariables() {
             var isFormValid = true;
-            var variables = lodash.map(ctrl.variables, function (variable) {
-                if (!variable.ui.isFormValid) {
-                    isFormValid = false;
-                }
+            var variables = lodash.chain(ctrl.variables)
+                .map(function (variable) {
+                    if (!variable.ui.isFormValid) {
+                        isFormValid = false;
+                    }
 
-                return lodash.omit(variable, 'ui');
-            });
+                    return lodash.omit(variable, 'ui');
+                })
+                .reduce(function (acc, variable) {
+                    var envType = !lodash.get(variable, 'configMapRef.name', false) &&
+                               !lodash.get(variable, 'secretRef.name', false) ? 'env' : 'envFrom';
+
+                    acc[envType] = acc[envType] ? lodash.concat(acc[envType], variable) : [variable];
+
+                    return acc;
+                }, {})
+                .value();
 
             // since uniqueness validation rule of some fields is dependent on the entire environment variable list,
             // then whenever the list is modified - the rest of the environment variables need to be re-validated
@@ -224,17 +244,23 @@ such restriction.
                 isDisabled: !isFormValid
             });
 
-            lodash.set(ctrl.version, 'spec.env', variables);
+            lodash.set(ctrl.version, 'spec.env', lodash.get(variables, 'env', []));
+            lodash.set(ctrl.version, 'spec.envFrom', lodash.get(variables, 'envFrom', []));
+
             ctrl.onChangeCallback();
         }
 
         /**
-         * Determines `uniqueness` validation for `Key` and `ConfigMap key` fields
-         * @param {string} path
+         * Determines `uniqueness` validation for Environment Variables
+         * @param {Array} paths
          * @param {string} value
          */
-        function validateUniqueness(path, value) {
-            return lodash.filter(ctrl.variables, [path, value]).length === 1;
+        function validateUniqueness(paths, value) {
+            return lodash.filter(ctrl.variables, function (variable) {
+                return paths.some(function (path) {
+                    return lodash.get(variable, path) === value;
+                });
+            }).length === 1;
         }
     }
 }());
