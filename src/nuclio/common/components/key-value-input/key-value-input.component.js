@@ -43,6 +43,7 @@
 
         ctrl.data = {};
         ctrl.keyValueInputForm = null;
+        ctrl.onlyTypeNameInputs = false;
         ctrl.typesList = [];
 
         ctrl.$onInit = onInit;
@@ -85,7 +86,7 @@
                 isDisabled: false,
                 submitOnFly: false,
                 useAdditionalValue: false,
-                valuePlaceholder: $i18next.t('functions:PLACEHOLDER.ENTER_VALUE', {lng: lng}),
+                valuePlaceholder: $i18next.t('functions:PLACEHOLDER.ENTER_VALUE', {lng: lng})
             });
 
             $scope.$on('action-checkbox_item-checked', function () {
@@ -102,6 +103,8 @@
          * Post linking method
          */
         function postLink() {
+            ctrl.onlyTypeNameInputs = ['secretRef', 'configmapRef'].includes(ctrl.getType());
+
             $document.on('click', saveChanges);
             $document.on('keypress', saveChanges);
             ctrl.keyValueInputForm.$setPristine();
@@ -145,9 +148,11 @@
          */
         function getInputValue() {
             if (ctrl.useType) {
-                var specificType = ctrl.getType() === 'value'     ? 'value'                     :
-                                   ctrl.getType() === 'configmap' ? 'valueFrom.configMapKeyRef' :
-                                   /* else */                       'valueFrom.secretKeyRef';
+                var specificType = ctrl.getType() === 'value'        ? 'value'                     :
+                                   ctrl.getType() === 'configmap'    ? 'valueFrom.configMapKeyRef' :
+                                   ctrl.getType() === 'secret'       ? 'valueFrom.secretKeyRef'    :
+                                   ctrl.getType() === 'configmapRef' ? 'configMapRef'              :
+                                   /* else */                          'secretRef';
                 var value = lodash.get(ctrl.data, specificType);
 
                 return specificType === 'value' ? value : value.name;
@@ -185,9 +190,11 @@
          * @returns {string}
          */
         function getType() {
-            return !ctrl.useType || lodash.isNil(ctrl.data.valueFrom) ? 'value'     :
-                   lodash.isNil(ctrl.data.valueFrom.secretKeyRef)     ? 'configmap' :
-                   /* else */                                           'secret';
+            return !ctrl.useType || !lodash.isNil(ctrl.data.value)                ? 'value'       :
+                              lodash.get(ctrl.data, 'valueFrom.configMapKeyRef') ? 'configmap'    :
+                              lodash.get(ctrl.data, 'valueFrom.secretKeyRef')    ? 'secret'       :
+                              lodash.get(ctrl.data, 'configMapRef')              ? 'configmapRef' :
+                              /* else */                                           'secretRef';
         }
 
         /**
@@ -284,17 +291,32 @@
          */
         function onTypeChanged(newType, isItemChanged) {
             if (isItemChanged) {
+                var specificType;
+                var value;
+
+                ctrl.onlyTypeNameInputs = false;
+
                 if (newType.id === 'secret' || newType.id === 'configmap') {
-                    var specificType = newType.id === 'secret' ? 'secretKeyRef' : 'configMapKeyRef';
-                    var value = {
+                    specificType = newType.id === 'secret' ? 'secretKeyRef' : 'configMapKeyRef';
+                    value = {
                         key: '',
                         name: ''
                     };
 
-                    ctrl.data = lodash.omit(ctrl.data, ['value', 'valueFrom']);
+                    ctrl.data = lodash.omit(ctrl.data, ['value', 'valueFrom', 'secretRef', 'configMapRef']);
                     lodash.set(ctrl.data, 'valueFrom.' + specificType, value);
+                } else if (newType.id === 'secretRef' || newType.id === 'configmapRef') {
+                    ctrl.onlyTypeNameInputs = true;
+
+                    specificType = newType.id === 'secretRef' ? 'secretRef' : 'configMapRef';
+                    value = {
+                        name: ''
+                    };
+
+                    ctrl.data = lodash.omit(ctrl.data, ['value', 'valueFrom', 'secretRef', 'configMapRef', 'name']);
+                    lodash.set(ctrl.data, specificType, value);
                 } else {
-                    ctrl.data = lodash.omit(ctrl.data, 'valueFrom');
+                    ctrl.data = lodash.omit(ctrl.data, ['valueFrom', 'secretRef', 'configMapRef']);
                     lodash.set(ctrl.data, 'value', '');
                 }
 
@@ -356,8 +378,16 @@
                     name: $i18next.t('functions:SECRET', {lng: lng})
                 },
                 {
+                    id: 'secretRef',
+                    name: $i18next.t('functions:SECRET_KEY', {lng: lng})
+                },
+                {
                     id: 'configmap',
                     name: $i18next.t('functions:CONFIGMAP', {lng: lng})
+                },
+                {
+                    id: 'configmapRef',
+                    name: $i18next.t('functions:CONFIGMAP_KEY', {lng: lng})
                 }
             ];
         }
@@ -369,7 +399,9 @@
         function getValueField() {
             return !ctrl.useType || ctrl.getType() === 'value' ? 'value'                     :
                    ctrl.getType() === 'configmap'              ? 'valueFrom.configMapKeyRef' :
-                   /* else */                                    'valueFrom.secretKeyRef';
+                   ctrl.getType() === 'configmapRef'           ? 'configMapRef'    :
+                   ctrl.getType() === 'secret'                 ? 'valueFrom.secretKeyRef'    :
+                   /* else */                                    'secretRef';
         }
 
         /**
@@ -400,6 +432,11 @@
         function saveChanges(event) {
             if (angular.isUndefined(event) || $element.find(event.target).length === 0 ||
                 event.keyCode === EventHelperService.ENTER) {
+
+                ctrl.changeDataCallback({
+                    newData: ctrl.data,
+                    index: ctrl.itemIndex
+                });
 
                 $scope.$evalAsync(function () {
 
