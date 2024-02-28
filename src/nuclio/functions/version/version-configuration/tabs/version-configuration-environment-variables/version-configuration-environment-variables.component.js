@@ -26,6 +26,18 @@
                 pattern: validateUniqueness.bind(null, ['configMapRef.name', 'secretRef.name'])
             }
         ]);
+        var envVariableKeyValidationRule = ValidationService.getValidationRules('k8s.envVarName', [{
+            name: 'uniqueness',
+            label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+            pattern: validateUniqueness.bind(null, ['name'])
+        }]);
+        var envVariableConfigmapKeyValidationRule = ValidationService.getValidationRules('k8s.configMapKey', [
+            {
+                name: 'uniqueness',
+                label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                pattern: validateUniqueness.bind(null, ['valueFrom.configMapKeyRef.key'])
+            }
+        ]);
 
         ctrl.environmentVariablesForm = null;
         ctrl.igzScrollConfig = {
@@ -33,20 +45,10 @@
             childrenSelector: '.table-body'
         };
         ctrl.validationRules = {
-            key: ValidationService.getValidationRules('k8s.envVarName', [{
-                name: 'uniqueness',
-                label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
-                pattern: validateUniqueness.bind(null, ['name'])
-            }]),
+            key: envVariableKeyValidationRule,
             secretKey: ValidationService.getValidationRules('k8s.configMapKey'),
             secret: ValidationService.getValidationRules('k8s.secretName'),
-            configmapKey: ValidationService.getValidationRules('k8s.configMapKey', [
-                {
-                    name: 'uniqueness',
-                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
-                    pattern: validateUniqueness.bind(null, ['valueFrom.configMapKeyRef.key'])
-                }
-            ]),
+            configmapKey: envVariableConfigmapKeyValidationRule,
             configmapRef: envVariableFromValidationRules,
             secretRef: envVariableFromValidationRules
         };
@@ -86,8 +88,8 @@
         function onChanges(changes) {
             if (angular.isDefined(changes.version)) {
                 ctrl.variables =
-                  lodash.concat(lodash.get(ctrl.version, 'spec.env', []),
-                                lodash.get(ctrl.version, 'spec.envFrom', []))
+                  lodash.chain(lodash.get(ctrl.version, 'spec.env', []))
+                      .concat(lodash.get(ctrl.version, 'spec.envFrom', []))
                       .map(function (variable) {
                           variable.ui = {
                               editModeActive: false,
@@ -96,7 +98,8 @@
                           };
 
                           return variable;
-                      });
+                      })
+                      .value();
 
                 ctrl.isOnlyValueTypeInputs = !lodash.some(ctrl.variables, 'valueFrom');
 
@@ -238,6 +241,7 @@
          * Determines `uniqueness` validation for Environment Variables
          * @param {Array} paths
          * @param {string} value
+         * @returns {boolean} - Returns true if the value is unique across the specified paths, false otherwise.
          */
         function validateUniqueness(paths, value) {
             return lodash.filter(ctrl.variables, function (variable) {

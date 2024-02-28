@@ -1,3 +1,4 @@
+/* eslint max-statements: ["error", 60] */
 (function () {
     'use strict';
 
@@ -40,6 +41,32 @@
                                         DialogsService, EventHelperService) {
         var ctrl = this;
         var lng = i18next.language;
+
+        var VALUE_TYPE = 'value';
+        var CONFIGMAP_TYPE = 'configmap';
+        var SECRET_TYPE = 'secret';
+        var CONFIGMAP_REF_TYPE = 'configmapRef';
+        var SECRET_REF_TYPE = 'secretRef';
+
+        var VALUE_FROM = 'valueFrom';
+        var CONFIGMAP_KEY_REF = 'configMapKeyRef';
+        var SECRET_KEY_REF = 'secretKeyRef';
+
+        var KEY_PATH = 'key';
+        var NAME_PATH = 'name';
+        var VALUE_PATH = 'value';
+        var CONFIGMAP_PATH = VALUE_FROM + '.' + CONFIGMAP_KEY_REF;
+        var SECRET_PATH = VALUE_FROM + '.' + SECRET_KEY_REF;
+        var CONFIGMAP_REF_PATH = 'configMapRef';
+        var SECRET_REF_PATH = 'secretRef';
+
+        var typePathMap = {
+            [VALUE_TYPE]: VALUE_PATH,
+            [CONFIGMAP_TYPE]: CONFIGMAP_PATH,
+            [SECRET_TYPE]: SECRET_PATH,
+            [CONFIGMAP_REF_TYPE]: CONFIGMAP_REF_PATH,
+            [SECRET_REF_TYPE]: SECRET_REF_PATH
+        };
 
         ctrl.data = {};
         ctrl.keyValueInputForm = null;
@@ -103,7 +130,7 @@
          * Post linking method
          */
         function postLink() {
-            ctrl.onlyTypeNameInputs = ['secretRef', 'configmapRef'].includes(ctrl.getType());
+            ctrl.onlyTypeNameInputs = [SECRET_REF_TYPE, CONFIGMAP_REF_TYPE].includes(ctrl.getType());
 
             $document.on('click', saveChanges);
             $document.on('keypress', saveChanges);
@@ -148,16 +175,12 @@
          */
         function getInputValue() {
             if (ctrl.useType) {
-                var specificType = ctrl.getType() === 'value'        ? 'value'                     :
-                                   ctrl.getType() === 'configmap'    ? 'valueFrom.configMapKeyRef' :
-                                   ctrl.getType() === 'secret'       ? 'valueFrom.secretKeyRef'    :
-                                   ctrl.getType() === 'configmapRef' ? 'configMapRef'              :
-                                   /* else */                          'secretRef';
+                var specificType = typePathMap[ctrl.getType()];
                 var value = lodash.get(ctrl.data, specificType);
 
-                return specificType === 'value' ? value : value.name;
+                return specificType === VALUE_TYPE ? value : value[NAME_PATH];
             } else {
-                return ctrl.data.value;
+                return ctrl.data[VALUE_PATH];
             }
         }
 
@@ -166,12 +189,11 @@
          * @returns {?string}
          */
         function getInputKey() {
-            if (ctrl.useType && ctrl.getType() !== 'value') {
-                var specificType = ctrl.getType() === 'configmap' ? 'valueFrom.configMapKeyRef' :
-                                   /* else */                       'valueFrom.secretKeyRef';
+            if (ctrl.useType && ctrl.getType() !== VALUE_TYPE) {
+                var specificType = typePathMap[ctrl.getType()];
                 var value = lodash.get(ctrl.data, specificType);
 
-                return value.key;
+                return value[KEY_PATH];
             } else {
                 return null;
             }
@@ -182,7 +204,7 @@
          * @returns {Object}
          */
         function getSelectedItem() {
-            return lodash.get(ctrl.data, 'name') === '' ? lodash.find(ctrl.keyList, ['disabled', false]) : ctrl.data;
+            return lodash.get(ctrl.data, NAME_PATH) === '' ? lodash.find(ctrl.keyList, ['disabled', false]) : ctrl.data;
         }
 
         /**
@@ -190,11 +212,15 @@
          * @returns {string}
          */
         function getType() {
-            return !ctrl.useType || !lodash.isNil(ctrl.data.value)                ? 'value'       :
-                              lodash.get(ctrl.data, 'valueFrom.configMapKeyRef') ? 'configmap'    :
-                              lodash.get(ctrl.data, 'valueFrom.secretKeyRef')    ? 'secret'       :
-                              lodash.get(ctrl.data, 'configMapRef')              ? 'configmapRef' :
-                              /* else */                                           'secretRef';
+            if (!ctrl.useType || !lodash.isNil(ctrl.data[VALUE_PATH])) {
+                return VALUE_TYPE;
+            }
+
+            for (var typePathCollection of Object.entries(typePathMap)) {
+                if (lodash.get(ctrl.data, typePathCollection[1])) {
+                    return typePathCollection[0];
+                }
+            }
         }
 
         /**
@@ -212,10 +238,10 @@
          * @param {string} field
          */
         function inputValueCallback(newData, field) {
-            if (lodash.includes(field, 'value') && ctrl.getType() !== 'value') {
+            if (lodash.includes(field, VALUE_PATH) && ctrl.getType() !== VALUE_TYPE) {
 
                 lodash.assign(lodash.get(ctrl.data, getValueField()), {
-                    name: newData
+                    [NAME_PATH]: newData
                 });
 
             } else {
@@ -223,7 +249,7 @@
 
                 if (ctrl.keyList) {
                     var keyData = getSelectedItem();
-                    lodash.set(ctrl.data, 'name', keyData.name);
+                    lodash.set(ctrl.data, NAME_PATH, keyData[NAME_PATH]);
                 }
             }
 
@@ -238,7 +264,7 @@
          */
         function inputKeyCallback(newData) {
             lodash.assign(lodash.get(ctrl.data, getValueField()), {
-                key: newData
+                [KEY_PATH]: newData
             });
 
             if (ctrl.submitOnFly) {
@@ -275,8 +301,8 @@
          * @param {Object} newKey - type selected in dropdown
          */
         function onKeyChanged(newKey) {
-            ctrl.data = lodash.omit(ctrl.data, 'valueFrom');
-            lodash.set(ctrl.data, 'name', newKey.name);
+            ctrl.data = lodash.omit(ctrl.data, VALUE_FROM);
+            lodash.set(ctrl.data, NAME_PATH, newKey[NAME_PATH]);
 
             if (ctrl.submitOnFly) {
                 $timeout(saveChanges);
@@ -296,28 +322,28 @@
 
                 ctrl.onlyTypeNameInputs = false;
 
-                if (newType.id === 'secret' || newType.id === 'configmap') {
-                    specificType = newType.id === 'secret' ? 'secretKeyRef' : 'configMapKeyRef';
+                if (newType.id === SECRET_TYPE || newType.id === CONFIGMAP_TYPE) {
+                    specificType = newType.id === SECRET_TYPE ? SECRET_KEY_REF : CONFIGMAP_KEY_REF;
                     value = {
-                        key: '',
-                        name: ''
+                        [KEY_PATH]: '',
+                        [NAME_PATH]: ''
                     };
 
-                    ctrl.data = lodash.omit(ctrl.data, ['value', 'valueFrom', 'secretRef', 'configMapRef']);
-                    lodash.set(ctrl.data, 'valueFrom.' + specificType, value);
-                } else if (newType.id === 'secretRef' || newType.id === 'configmapRef') {
+                    ctrl.data = lodash.omit(ctrl.data, [VALUE_PATH, VALUE_FROM, SECRET_REF_PATH, CONFIGMAP_REF_PATH]);
+                    lodash.set(ctrl.data, [VALUE_FROM, specificType], value);
+                } else if (newType.id === SECRET_REF_TYPE || newType.id === CONFIGMAP_REF_TYPE) {
                     ctrl.onlyTypeNameInputs = true;
 
-                    specificType = newType.id === 'secretRef' ? 'secretRef' : 'configMapRef';
+                    specificType = newType.id === SECRET_REF_TYPE ? SECRET_REF_PATH : CONFIGMAP_REF_PATH;
                     value = {
-                        name: ''
+                        [NAME_PATH]: ''
                     };
 
-                    ctrl.data = lodash.omit(ctrl.data, ['value', 'valueFrom', 'secretRef', 'configMapRef', 'name']);
+                    ctrl.data = lodash.omit(ctrl.data, [VALUE_PATH, VALUE_FROM, SECRET_REF_PATH, CONFIGMAP_REF_PATH, NAME_PATH]);
                     lodash.set(ctrl.data, specificType, value);
                 } else {
-                    ctrl.data = lodash.omit(ctrl.data, ['valueFrom', 'secretRef', 'configMapRef']);
-                    lodash.set(ctrl.data, 'value', '');
+                    ctrl.data = lodash.omit(ctrl.data, [VALUE_FROM, SECRET_REF_PATH, CONFIGMAP_REF_PATH]);
+                    lodash.set(ctrl.data, VALUE_PATH, '');
                 }
 
                 if (angular.isFunction(ctrl.changeTypeCallback)) {
@@ -370,23 +396,23 @@
         function getTypesList() {
             return [
                 {
-                    id: 'value',
+                    id: VALUE_TYPE,
                     name: $i18next.t('common:VALUE', {lng: lng})
                 },
                 {
-                    id: 'secret',
+                    id: SECRET_TYPE,
                     name: $i18next.t('functions:SECRET', {lng: lng})
                 },
                 {
-                    id: 'secretRef',
+                    id: SECRET_REF_TYPE,
                     name: $i18next.t('functions:SECRET_KEY', {lng: lng})
                 },
                 {
-                    id: 'configmap',
+                    id: CONFIGMAP_TYPE,
                     name: $i18next.t('functions:CONFIGMAP', {lng: lng})
                 },
                 {
-                    id: 'configmapRef',
+                    id: CONFIGMAP_REF_TYPE,
                     name: $i18next.t('functions:CONFIGMAP_KEY', {lng: lng})
                 }
             ];
@@ -397,11 +423,7 @@
          * @returns {string}
          */
         function getValueField() {
-            return !ctrl.useType || ctrl.getType() === 'value' ? 'value'                     :
-                   ctrl.getType() === 'configmap'              ? 'valueFrom.configMapKeyRef' :
-                   ctrl.getType() === 'configmapRef'           ? 'configMapRef'    :
-                   ctrl.getType() === 'secret'                 ? 'valueFrom.secretKeyRef'    :
-                   /* else */                                    'secretRef';
+            return !ctrl.useType ? VALUE_TYPE : typePathMap[ctrl.getType()];
         }
 
         /**
