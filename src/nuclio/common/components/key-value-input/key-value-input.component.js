@@ -14,6 +14,7 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
+/* eslint max-statements: ["error", 60] */
 (function () {
     'use strict';
 
@@ -57,8 +58,35 @@ such restriction.
         var ctrl = this;
         var lng = i18next.language;
 
+        var VALUE_TYPE = 'value';
+        var CONFIGMAP_TYPE = 'configmap';
+        var SECRET_TYPE = 'secret';
+        var CONFIGMAP_REF_TYPE = 'configmapRef';
+        var SECRET_REF_TYPE = 'secretRef';
+
+        var VALUE_FROM = 'valueFrom';
+        var CONFIGMAP_KEY_REF = 'configMapKeyRef';
+        var SECRET_KEY_REF = 'secretKeyRef';
+
+        var KEY_PATH = 'key';
+        var NAME_PATH = 'name';
+        var VALUE_PATH = 'value';
+        var CONFIGMAP_PATH = VALUE_FROM + '.' + CONFIGMAP_KEY_REF;
+        var SECRET_PATH = VALUE_FROM + '.' + SECRET_KEY_REF;
+        var CONFIGMAP_REF_PATH = 'configMapRef';
+        var SECRET_REF_PATH = 'secretRef';
+
+        var typePathMap = {
+            [VALUE_TYPE]: VALUE_PATH,
+            [CONFIGMAP_TYPE]: CONFIGMAP_PATH,
+            [SECRET_TYPE]: SECRET_PATH,
+            [CONFIGMAP_REF_TYPE]: CONFIGMAP_REF_PATH,
+            [SECRET_REF_TYPE]: SECRET_REF_PATH
+        };
+
         ctrl.data = {};
         ctrl.keyValueInputForm = null;
+        ctrl.onlyTypeNameInputs = false;
         ctrl.typesList = [];
 
         ctrl.$onInit = onInit;
@@ -101,7 +129,7 @@ such restriction.
                 isDisabled: false,
                 submitOnFly: false,
                 useAdditionalValue: false,
-                valuePlaceholder: $i18next.t('functions:PLACEHOLDER.ENTER_VALUE', {lng: lng}),
+                valuePlaceholder: $i18next.t('functions:PLACEHOLDER.ENTER_VALUE', {lng: lng})
             });
 
             $scope.$on('action-checkbox_item-checked', function () {
@@ -118,6 +146,8 @@ such restriction.
          * Post linking method
          */
         function postLink() {
+            ctrl.onlyTypeNameInputs = [SECRET_REF_TYPE, CONFIGMAP_REF_TYPE].includes(ctrl.getType());
+
             $document.on('click', saveChanges);
             $document.on('keypress', saveChanges);
             ctrl.keyValueInputForm.$setPristine();
@@ -161,14 +191,12 @@ such restriction.
          */
         function getInputValue() {
             if (ctrl.useType) {
-                var specificType = ctrl.getType() === 'value'     ? 'value'                     :
-                                   ctrl.getType() === 'configmap' ? 'valueFrom.configMapKeyRef' :
-                                   /* else */                       'valueFrom.secretKeyRef';
+                var specificType = typePathMap[ctrl.getType()];
                 var value = lodash.get(ctrl.data, specificType);
 
-                return specificType === 'value' ? value : value.name;
+                return specificType === VALUE_TYPE ? value : value[NAME_PATH];
             } else {
-                return ctrl.data.value;
+                return ctrl.data[VALUE_PATH];
             }
         }
 
@@ -177,12 +205,11 @@ such restriction.
          * @returns {?string}
          */
         function getInputKey() {
-            if (ctrl.useType && ctrl.getType() !== 'value') {
-                var specificType = ctrl.getType() === 'configmap' ? 'valueFrom.configMapKeyRef' :
-                                   /* else */                       'valueFrom.secretKeyRef';
+            if (ctrl.useType && ctrl.getType() !== VALUE_TYPE) {
+                var specificType = typePathMap[ctrl.getType()];
                 var value = lodash.get(ctrl.data, specificType);
 
-                return value.key;
+                return value[KEY_PATH];
             } else {
                 return null;
             }
@@ -193,7 +220,7 @@ such restriction.
          * @returns {Object}
          */
         function getSelectedItem() {
-            return lodash.get(ctrl.data, 'name') === '' ? lodash.find(ctrl.keyList, ['disabled', false]) : ctrl.data;
+            return lodash.get(ctrl.data, NAME_PATH) === '' ? lodash.find(ctrl.keyList, ['disabled', false]) : ctrl.data;
         }
 
         /**
@@ -201,9 +228,15 @@ such restriction.
          * @returns {string}
          */
         function getType() {
-            return !ctrl.useType || lodash.isNil(ctrl.data.valueFrom) ? 'value'     :
-                   lodash.isNil(ctrl.data.valueFrom.secretKeyRef)     ? 'configmap' :
-                   /* else */                                           'secret';
+            if (!ctrl.useType || !lodash.isNil(ctrl.data[VALUE_PATH])) {
+                return VALUE_TYPE;
+            }
+
+            for (var typePathCollection of Object.entries(typePathMap)) {
+                if (lodash.get(ctrl.data, typePathCollection[1])) {
+                    return typePathCollection[0];
+                }
+            }
         }
 
         /**
@@ -221,10 +254,10 @@ such restriction.
          * @param {string} field
          */
         function inputValueCallback(newData, field) {
-            if (lodash.includes(field, 'value') && ctrl.getType() !== 'value') {
+            if (lodash.includes(field, VALUE_PATH) && ctrl.getType() !== VALUE_TYPE) {
 
                 lodash.assign(lodash.get(ctrl.data, getValueField()), {
-                    name: newData
+                    [NAME_PATH]: newData
                 });
 
             } else {
@@ -232,7 +265,7 @@ such restriction.
 
                 if (ctrl.keyList) {
                     var keyData = getSelectedItem();
-                    lodash.set(ctrl.data, 'name', keyData.name);
+                    lodash.set(ctrl.data, NAME_PATH, keyData[NAME_PATH]);
                 }
             }
 
@@ -247,7 +280,7 @@ such restriction.
          */
         function inputKeyCallback(newData) {
             lodash.assign(lodash.get(ctrl.data, getValueField()), {
-                key: newData
+                [KEY_PATH]: newData
             });
 
             if (ctrl.submitOnFly) {
@@ -284,8 +317,8 @@ such restriction.
          * @param {Object} newKey - type selected in dropdown
          */
         function onKeyChanged(newKey) {
-            ctrl.data = lodash.omit(ctrl.data, 'valueFrom');
-            lodash.set(ctrl.data, 'name', newKey.name);
+            ctrl.data = lodash.omit(ctrl.data, VALUE_FROM);
+            lodash.set(ctrl.data, NAME_PATH, newKey[NAME_PATH]);
 
             if (ctrl.submitOnFly) {
                 $timeout(saveChanges);
@@ -300,18 +333,33 @@ such restriction.
          */
         function onTypeChanged(newType, isItemChanged) {
             if (isItemChanged) {
-                if (newType.id === 'secret' || newType.id === 'configmap') {
-                    var specificType = newType.id === 'secret' ? 'secretKeyRef' : 'configMapKeyRef';
-                    var value = {
-                        key: '',
-                        name: ''
+                var specificType;
+                var value;
+
+                ctrl.onlyTypeNameInputs = false;
+
+                if (newType.id === SECRET_TYPE || newType.id === CONFIGMAP_TYPE) {
+                    specificType = newType.id === SECRET_TYPE ? SECRET_KEY_REF : CONFIGMAP_KEY_REF;
+                    value = {
+                        [KEY_PATH]: '',
+                        [NAME_PATH]: ''
                     };
 
-                    ctrl.data = lodash.omit(ctrl.data, ['value', 'valueFrom']);
-                    lodash.set(ctrl.data, 'valueFrom.' + specificType, value);
+                    ctrl.data = lodash.omit(ctrl.data, [VALUE_PATH, VALUE_FROM, SECRET_REF_PATH, CONFIGMAP_REF_PATH]);
+                    lodash.set(ctrl.data, [VALUE_FROM, specificType], value);
+                } else if (newType.id === SECRET_REF_TYPE || newType.id === CONFIGMAP_REF_TYPE) {
+                    ctrl.onlyTypeNameInputs = true;
+
+                    specificType = newType.id === SECRET_REF_TYPE ? SECRET_REF_PATH : CONFIGMAP_REF_PATH;
+                    value = {
+                        [NAME_PATH]: ''
+                    };
+
+                    ctrl.data = lodash.omit(ctrl.data, [VALUE_PATH, VALUE_FROM, SECRET_REF_PATH, CONFIGMAP_REF_PATH, NAME_PATH]);
+                    lodash.set(ctrl.data, specificType, value);
                 } else {
-                    ctrl.data = lodash.omit(ctrl.data, 'valueFrom');
-                    lodash.set(ctrl.data, 'value', '');
+                    ctrl.data = lodash.omit(ctrl.data, [VALUE_FROM, SECRET_REF_PATH, CONFIGMAP_REF_PATH]);
+                    lodash.set(ctrl.data, VALUE_PATH, '');
                 }
 
                 if (angular.isFunction(ctrl.changeTypeCallback)) {
@@ -364,16 +412,24 @@ such restriction.
         function getTypesList() {
             return [
                 {
-                    id: 'value',
+                    id: VALUE_TYPE,
                     name: $i18next.t('common:VALUE', {lng: lng})
                 },
                 {
-                    id: 'secret',
+                    id: SECRET_TYPE,
                     name: $i18next.t('functions:SECRET', {lng: lng})
                 },
                 {
-                    id: 'configmap',
+                    id: SECRET_REF_TYPE,
+                    name: $i18next.t('functions:SECRET_KEY', {lng: lng})
+                },
+                {
+                    id: CONFIGMAP_TYPE,
                     name: $i18next.t('functions:CONFIGMAP', {lng: lng})
+                },
+                {
+                    id: CONFIGMAP_REF_TYPE,
+                    name: $i18next.t('functions:CONFIGMAP_KEY', {lng: lng})
                 }
             ];
         }
@@ -383,9 +439,7 @@ such restriction.
          * @returns {string}
          */
         function getValueField() {
-            return !ctrl.useType || ctrl.getType() === 'value' ? 'value'                     :
-                   ctrl.getType() === 'configmap'              ? 'valueFrom.configMapKeyRef' :
-                   /* else */                                    'valueFrom.secretKeyRef';
+            return !ctrl.useType ? VALUE_TYPE : typePathMap[ctrl.getType()];
         }
 
         /**
@@ -416,6 +470,11 @@ such restriction.
         function saveChanges(event) {
             if (angular.isUndefined(event) || $element.find(event.target).length === 0 ||
                 event.keyCode === EventHelperService.ENTER) {
+
+                ctrl.changeDataCallback({
+                    newData: ctrl.data,
+                    index: ctrl.itemIndex
+                });
 
                 $scope.$evalAsync(function () {
 
