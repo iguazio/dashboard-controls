@@ -10,8 +10,30 @@
         <div class="inputs-container"
              data-ng-class="{'use-type': $ctrl.useType, 'use-checkbox': $ctrl.allowSelection}">
 
+            <div class="input-container input-type-wrapper"
+                 data-ng-if="$ctrl.useType"
+                 data-ng-class="{'use-type': $ctrl.useType,
+                                 'all-value-types': $ctrl.allValueTypes,
+                                 'type-name-table': $ctrl.isVariablesFrom}">
+                <label data-ng-if="$ctrl.useLabels" class="type-label">
+                    {{ 'common:TYPE' | i18next }}:
+                </label>
+                <igz-default-dropdown class="input-type"
+                                      data-form-object="$ctrl.keyValueInputForm"
+                                      data-select-property-only="id"
+                                      data-prevent-drop-up="true"
+                                      data-input-name="type"
+                                      data-is-disabled="$ctrl.isDisabled"
+                                      data-values-array="$ctrl.typesList"
+                                      data-selected-item="$ctrl.getType()"
+                                      data-placeholder="{{ 'common:PLACEHOLDER.SELECT_TYPE' | i18next }}"
+                                      data-item-select-callback="$ctrl.onTypeChanged(item, isItemChanged)"
+                                      data-enable-overlap="$ctrl.dropdownOverlap">
+                </igz-default-dropdown>
+            </div>
+
             <div class="input-container input-key-wrapper"
-                 data-ng-if="!$ctrl.onlyValueInput"
+                 data-ng-if="!$ctrl.onlyValueInput && !$ctrl.onlyTypeNameInputs"
                  data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
                 <label class="key-label asterisk" data-ng-if="$ctrl.useLabels">
                     {{ 'common:KEY' | i18next }}:
@@ -47,28 +69,8 @@
                 </igz-default-dropdown>
             </div>
 
-            <div class="input-container input-type-wrapper"
-                 data-ng-if="$ctrl.useType"
-                 data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
-                <label data-ng-if="$ctrl.useLabels" class="type-label">
-                    {{ 'common:TYPE' | i18next }}:
-                </label>
-                <igz-default-dropdown class="input-type"
-                                      data-form-object="$ctrl.keyValueInputForm"
-                                      data-select-property-only="id"
-                                      data-prevent-drop-up="true"
-                                      data-input-name="type"
-                                      data-is-disabled="$ctrl.isDisabled"
-                                      data-values-array="$ctrl.typesList"
-                                      data-selected-item="$ctrl.getType()"
-                                      data-placeholder="{{ 'common:PLACEHOLDER.SELECT_TYPE' | i18next }}"
-                                      data-item-select-callback="$ctrl.onTypeChanged(item, isItemChanged)"
-                                      data-enable-overlap="$ctrl.dropdownOverlap">
-                </igz-default-dropdown>
-            </div>
-
             <div class="input-container input-value-key-wrapper"
-                 data-ng-if="!$ctrl.isVisibleByType('value')"
+                 data-ng-if="!$ctrl.isVisibleByType('value') && !$ctrl.onlyTypeNameInputs"
                  data-ng-class="{'use-type': $ctrl.useType}">
                 <label data-ng-if="$ctrl.useLabels">
                     <span data-ng-if="$ctrl.isVisibleByType('secret')">
@@ -96,15 +98,16 @@
                  data-ng-class="{'use-type': $ctrl.useType,
                                  'only-value-input': $ctrl.onlyValueInput,
                                  'only-key-value-input': $ctrl.isVisibleByType('value'),
+                                 'type-name-table': $ctrl.onlyTypeNameInputs,
                                  'all-value-types': $ctrl.allValueTypes}">
                 <label data-ng-if="$ctrl.useLabels" class="asterisk">
                     <span data-ng-if="$ctrl.isVisibleByType('value')">
                         {{ 'common:VALUE' | i18next }}:
                     </span>
-                    <span data-ng-if="$ctrl.isVisibleByType('secret')">
+                    <span data-ng-if="$ctrl.isVisibleByType('secret') || $ctrl.isVisibleByType('secretRef')">
                         {{ 'functions:SECRET_NAME' | i18next }}:
                     </span>
-                    <span data-ng-if="$ctrl.isVisibleByType('configmap')">
+                    <span data-ng-if="$ctrl.isVisibleByType('configmap') || $ctrl.isVisibleByType('configmapRef')">
                         {{ 'functions:CONFIGMAP_NAME' | i18next }}:
                     </span>
                 </label>
