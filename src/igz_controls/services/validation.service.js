@@ -570,7 +570,7 @@
                         generateRule.length({ max: lengths.identity.user.username })
                     ],
                     usernameMembers: [
-                        generateRule.validCharacters('a-z A-Z 0-9 - _'),
+                        generateRule.validCharacters('a-z A-Z 0-9 - _ @ .'),
                         generateRule.length({ max: lengths.identity.user.username })
                     ],
                     email: commonRules.email.concat(generateRule.length({ max: lengths.identity.user.email })),
