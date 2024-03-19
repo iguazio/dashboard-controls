@@ -370,6 +370,7 @@
     "PLACEHOLDER": {
         "ADD_DESCRIPTION": "Click to add a description…",
         "AUTO_COMPLETE_DEFAULT": "Start typing to get suggestion list...",
+        "BY_NAME": "By name...",
         "CHIPS_INPUT_DEFAULT": "Start typing, or press space to select a value…",
         "COMMA_DELIMITED_LIST_OF_NUMBERS": "1,3-6,9-10,14,...",
         "COMMA_DELIMITED_LIST_OF_STRINGS": "value1,value2,value3,...",
