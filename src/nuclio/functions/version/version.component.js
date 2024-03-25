@@ -388,6 +388,7 @@
                     setVersion(aFunction);
                     setImageNamePrefixTemplate();
                     setIngressHost();
+                    updateStatusTabIndicator();
                 })
                 .catch(function (error) {
                     if (!GeneralDataService.isDisconnectionError(error.status)) {
