@@ -58,7 +58,6 @@
     "CREATE_FUNCTION_EVENT": "Create function event",
     "CREATE_NEW_API_GATEWAY": "Create a new API Gateway",
     "CREATE_NEW_BINDING": "Create a new binding",
-    "CREATE_NEW_ENVIRONMENT_VARIABLE": "Create a new environment variable",
     "CREATE_NEW_HEADER": "Create a new header",
     "CREATE_NEW_HOST": "Create a new host",
     "CREATE_NEW_RUNTIME_ATTRIBUTE": "Create a new runtime attribute",
