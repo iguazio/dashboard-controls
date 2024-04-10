@@ -38,14 +38,16 @@ such restriction.
          * @param {string} [dataServiceName] Name of DataService
          * @param {function} [onChangePageCallback] Additional code that should be executed after page changed
          * @param {boolean} [emptyOnPageChange=true] Set to `false` to prevent list from emptying before repopulating
+         * @param {Promise.<Object> | Object} [customErrors] List of custom errors messages
          */
-        function addPagination(controller, entitiesType, dataServiceName, onChangePageCallback, emptyOnPageChange) {
+        function addPagination(controller, entitiesType, dataServiceName, onChangePageCallback, emptyOnPageChange, customErrors) {
             $controller('PaginationController', {
                 entitiesType: entitiesType,
                 onChangePageCallback: onChangePageCallback,
                 dataServiceName: dataServiceName,
                 vm: controller,
-                emptyOnPageChange: emptyOnPageChange
+                emptyOnPageChange: emptyOnPageChange,
+                customErrors: customErrors
             });
         }
 
