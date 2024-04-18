@@ -22,7 +22,7 @@ such restriction.
     /*eslint no-shadow: 0*/
     function PaginationController($i18next, $injector , $location, $q, $rootScope, $stateParams, $timeout,
                                   i18next, lodash, ActionCheckboxAllService, GeneralDataService, PaginationService,
-                                  entitiesType, onChangePageCallback, dataServiceName, vm, emptyOnPageChange) {
+                                  entitiesType, onChangePageCallback, dataServiceName, vm, emptyOnPageChange, customErrors) {
 
         // entityId - id of nested entity
         var entityId = lodash.defaultTo($location.search().entityId, $stateParams.id);
@@ -151,11 +151,16 @@ such restriction.
                             '500': $i18next.t('common:ERROR_MSG.ERROR_ON_SERVER_SIDE', { lng: lng }),
                             'default': $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', { lng: lng })
                         };
-                        var message = lodash.get(errorMessages, String(error.status), errorMessages.default);
+                        var errorMessage = lodash.get(errorMessages, String(error.status), errorMessages.default) +
+                                           ' ' + $i18next.t('common:ERROR_MSG.YOU_CAN_TRY_TO_REFRESH_PAGE', { lng: lng });
 
-                        $rootScope.$broadcast('splash-screen_show-error', {
-                            alertText: message + ' ' + $i18next.t('common:ERROR_MSG.YOU_CAN_TRY_TO_REFRESH_PAGE', { lng: lng })
-                        });
+                        $q.when(customErrors).then(function (customErrorMessages) {
+                            var message = lodash.get(customErrorMessages, String(error.status), errorMessage);
+
+                            $rootScope.$broadcast('splash-screen_show-error', {
+                                alertText: message
+                            });
+                        })
                     }
                 });
         }
