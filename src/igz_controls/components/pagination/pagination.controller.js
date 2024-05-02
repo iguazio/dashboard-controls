@@ -152,7 +152,7 @@ such restriction.
                             'default': $i18next.t('common:ERROR_MSG.UNKNOWN_ERROR', { lng: lng })
                         };
                         var errorMessage = lodash.get(errorMessages, String(error.status), errorMessages.default) +
-                                           ' ' + $i18next.t('common:ERROR_MSG.YOU_CAN_TRY_TO_REFRESH_PAGE', { lng: lng });
+                                           ' ' + $i18next.t('common:ERROR_MSG.TRY_REFRESHING_THE_PAGE', { lng: lng });
 
                         $q.when(customErrors).then(function (customErrorMessages) {
                             var message = lodash.get(customErrorMessages, String(error.status), errorMessage);
