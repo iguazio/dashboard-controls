@@ -216,7 +216,7 @@
         "UPDATE_NETWORK": "Error updating network",
         "UPDATE_NODE": "Error while updating the node",
         "UPDATE_STORAGE_POOL": "Error while updating storage pool",
-        "YOU_CAN_TRY_TO_REFRESH_PAGE": "You can try to refresh the page"
+        "TRY_REFRESHING_THE_PAGE": "Try refreshing the page"
     },
     "ESC": "ESC",
     "ESCALATION": "Escalation",
