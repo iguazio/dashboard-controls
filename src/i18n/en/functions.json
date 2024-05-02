@@ -86,6 +86,7 @@
     "DEPLOYING": "Deploying...",
     "DISABLE_CACHE": "Disable cache",
     "DISABLED_FOR_IMAGE_CODE_ENTRY_TYPE": "Disabled for \"Image\" code entry type only",
+    "DO_NOT_CREATE_HTTP_TRIGGER_BY_DEFAULT": "Do not create http trigger by default",
     "DROP_FILE_HERE_OR": "Drop a file here or ",
     "DUPLICATE_FUNCTION": "Duplicate function",
     "DUPLICATE_FUNCTION_SUBTITLE": "Specify the following missing data for the function configuration.",
@@ -323,6 +324,7 @@
         "DEPLOY_IN_PROGRESS": "Deploy is already in-progress",
         "DISABLE_CACHE": "Build the function's Docker image from scratch without reusing any previously built Docker image layers",
         "DISABLED_FUNCTION": "Only running and scaled-to-zero functions can be tested",
+        "DO_NOT_CREATE_HTTP_TRIGGER_BY_DEFAULT": "When not checked, an http trigger will be created for the function by default",
         "GIT": {
             "BRANCH": "The Git repository branch from which to download the function code",
             "BRANCH_TAG_REFERENCE_DISABLED": "Exactly one of Branch, Tag, and Reference fields must be filled. When one is filled, the others are disabled.",
