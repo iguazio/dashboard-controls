@@ -86,7 +86,6 @@
     "DEPLOYING": "Deploying...",
     "DISABLE_CACHE": "Disable cache",
     "DISABLED_FOR_IMAGE_CODE_ENTRY_TYPE": "Disabled for \"Image\" code entry type only",
-    "DO_NOT_CREATE_HTTP_TRIGGER_BY_DEFAULT": "Do not create http trigger by default",
     "DROP_FILE_HERE_OR": "Drop a file here or ",
     "DUPLICATE_FUNCTION": "Duplicate function",
     "DUPLICATE_FUNCTION_SUBTITLE": "Specify the following missing data for the function configuration.",

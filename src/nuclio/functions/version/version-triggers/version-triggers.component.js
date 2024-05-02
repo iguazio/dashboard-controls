@@ -255,7 +255,7 @@ such restriction.
         }
 
          /**
-         * Tests whether the `Do not create http trigger by default` is shown
+         * Tests whether the `Do not create http trigger by default` checkbox is shown
          * @returns {boolean}
          */
         function isHttpTriggerCheckboxShown() {

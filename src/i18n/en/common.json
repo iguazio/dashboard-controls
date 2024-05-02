@@ -106,6 +106,7 @@
     "DO_NOT_SHOW_AGAIN": "Do not show again",
     "DOCS": "Docs",
     "DONE": "Done",
+    "DO_NOT_CREATE_HTTP_TRIGGER_BY_DEFAULT": "Do not create http trigger by default",
     "DONT_LEAVE": "Don't leave",
     "DONT_REFRESH": "Don't refresh",
     "DONT_SAVE": "Don't save",
