@@ -3,22 +3,6 @@
         <div class="content-message-pane"
              data-ng-if="$ctrl.isHttpTriggerMsgShown()" data-ng-i18next="[html]functions:HTTP_TRIGGER_MSG">
         </div>
-        <div class="http-trigger-checkbox" data-ng-if="$ctrl.isHttpTriggerCheckboxShown()">
-            <input type="checkbox"
-                   class="small"
-                   id="disable-default-http-trigger"
-                   name="disableDefaultHTTPTrigger"
-                   data-ng-model="$ctrl.version.spec.disableDefaultHTTPTrigger"
-                   data-ng-disabled="$ctrl.isFunctionDeploying()"
-                   >
-            <label for="disable-default-http-trigger"
-                   class="checkbox-inline">{{ 'common:DO_NOT_CREATE_HTTP_TRIGGER_BY_DEFAULT' | i18next }}</label>
-            <igz-more-info
-                    data-description="{{ 'functions:TOOLTIP.DO_NOT_CREATE_HTTP_TRIGGER_BY_DEFAULT' | i18next }}"
-                    data-trigger="click"
-                    data-default-tooltip-placement="right">
-            </igz-more-info>
-        </div>
         <div class="common-table-header header-row">
             <div class="common-table-cell header-name">
                 {{ 'common:NAME' | i18next }}
