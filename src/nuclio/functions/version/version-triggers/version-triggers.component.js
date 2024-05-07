@@ -83,7 +83,6 @@ such restriction.
         ctrl.editTriggerCallback = editTriggerCallback;
         ctrl.handleAction = handleAction;
         ctrl.isCreateNewTriggerEnabled = isCreateNewTriggerEnabled;
-        ctrl.isHttpTriggerCheckboxShown = isHttpTriggerCheckboxShown;
         ctrl.isHttpTriggerMsgShown = isHttpTriggerMsgShown;
 
         //
@@ -254,21 +253,14 @@ such restriction.
             });
         }
 
-         /**
-         * Tests whether the `Do not create http trigger by default` checkbox is shown
-         * @returns {boolean}
-         */
-        function isHttpTriggerCheckboxShown() {
-            return !lodash.get(ConfigService, 'nuclio.disableDefaultHttpTrigger', false) &&
-                   !lodash.some(ctrl.version.spec.triggers, ['kind', 'http']);
-        }
-
         /**
          * Tests whether the `HTTP trigger message` is shown
          * @returns {boolean} `true` in case "HTTP trigger message" is shown, or `false` otherwise.
          */
         function isHttpTriggerMsgShown() {
-            return isHttpTriggerCheckboxShown() && !ctrl.version.spec.disableDefaultHTTPTrigger;
+            const disableDefaultHttpTrigger = lodash.get(ConfigService, 'nuclio.disableDefaultHttpTrigger', false);
+
+            return !disableDefaultHttpTrigger && !lodash.some(ctrl.version.spec.triggers, ['kind', 'http']);
         }
 
         //
