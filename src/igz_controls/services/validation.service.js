@@ -200,9 +200,16 @@ such restriction.
             },
             notContainCharacters: function (chars) {
                 return {
-                    name: 'notContain',
+                    name: 'notContainCharacters',
                     label: $i18next.t('common:NOT_CONTAIN', { lng: lng }) + ': ' + convertToLabel(chars),
-                    pattern: new RegExp('^[^' + convertToLabel(chars) + ']+$')
+                    pattern: new RegExp('^[^' + convertToPattern(chars) + ']+$')
+                }
+            },
+            notContainString: function (string) {
+                return {
+                    name: 'notContainString',
+                    label: $i18next.t('common:NOT_CONTAIN', { lng: lng }) + ': ' + convertToLabel(string),
+                    pattern: new RegExp('^(?!.*' + convertToPattern(string) + ').+$')
                 }
             },
             maxLengthBetweenDelimiters: function (delimiter, maxLength, delimiterDescription) {
@@ -465,10 +472,9 @@ such restriction.
                 dockerRegistryUrl: [
                     {
                         name: 'beginNot',
-                        label: $i18next.t('common:BEGIN_NOT_WITH', { lng: lng }) + ': https://',
-                        pattern: /^(?!https:\/\/)/
-                    },
-                    generateRule.notContainCharacters('/ :')
+                        label: $i18next.t('common:BEGIN_NOT_WITH', { lng: lng }) + ': <schema>:/',
+                        pattern: /^(?![^:/]+:\/).*/
+                    }
                 ]
             },
             clusters: {
