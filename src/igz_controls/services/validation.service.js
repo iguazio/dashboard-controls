@@ -32,6 +32,7 @@ such restriction.
                 dns1123Subdomain: 253,
                 prefixedQualifiedName: 253,
                 qualifiedName: 63,
+                qualifiedValue: 63,
                 secretName: 253,
                 wildcardDns1123Subdomain: 253
             },
@@ -151,12 +152,12 @@ such restriction.
                     pattern: new RegExp('[^' + convertToPattern(chars) + ']$')
                 };
             },
-            beginEndWith: function (chars) {
+            beginEndWith: function (chars, labelPrefix = '') {
                 var convertedPattern = convertToPattern(chars);
 
                 return {
                     name: 'beginEnd',
-                    label: $i18next.t('common:BEGIN_END_WITH', { lng: lng }) + ': ' + convertToLabel(chars),
+                    label: labelPrefix + $i18next.t('common:BEGIN_END_WITH', { lng: lng }) + ': ' + convertToLabel(chars),
                     pattern: new RegExp('^([' + convertedPattern + '].*)?[' + convertedPattern + ']$')
                 };
             },
@@ -178,10 +179,10 @@ such restriction.
                     pattern: new RegExp('^([' + convertedPattern + '])?[^' + convertedPattern + ']+$')
                 };
             },
-            validCharacters: function (chars) {
+            validCharacters: function (chars, labelPrefix = '') {
                 return {
                     name: 'validCharacters',
-                    label: $i18next.t('common:VALID_CHARACTERS', { lng: lng }) + ': ' + convertToLabel(chars),
+                    label: labelPrefix + $i18next.t('common:VALID_CHARACTERS', { lng: lng }) + ': ' + convertToLabel(chars),
                     pattern: new RegExp('^[' + convertToPattern(chars) + ']+$')
                 };
             },
@@ -231,12 +232,12 @@ such restriction.
                     }
                 };
             },
-            length: function (options) {
+            length: function (options, labelPrefix = '') {
                 var min = Number.isSafeInteger(options.min) ? options.min : 0;
                 var max = Number.isSafeInteger(options.max) ? options.max : '';
 
                 if (min || max) {
-                    var label = $i18next.t('common:LENGTH', { lng: lng }) + ' – ' +
+                    var label = labelPrefix + $i18next.t('common:LENGTH', { lng: lng }) + ' – ' +
                         (min ? 'min: ' + options.min + '\xa0\xa0' : '') + (max ? 'max: ' + options.max : '');
 
                     return {
@@ -287,6 +288,17 @@ such restriction.
                 generateRule.validCharacters('a-z 0-9 -'),
                 generateRule.beginEndWith('a-z 0-9')
             ],
+            k8s: {
+                getValue: function (withPrefix = false) {
+                    var labelPrefix = withPrefix ? '[' + $i18next.t('common:VALUE', { lng: lng }) + '] ' : '';
+
+                    return [
+                        generateRule.beginEndWith('a-z A-Z 0-9', labelPrefix),
+                        generateRule.length({ max: lengths.k8s.qualifiedValue }, labelPrefix),
+                        generateRule.validCharacters('a-z A-Z 0-9 - _ .', labelPrefix)
+                    ]
+                }
+            },
             prefixedQualifiedName: [
                 {
                     name: 'nameValidCharacters',
@@ -480,26 +492,7 @@ such restriction.
                                 $i18next.t('common:NOT_START_WITH_FORBIDDEN_WORDS_K8S', { lng: lng }),
                             pattern: /^(?!kubernetes\.io\/)(?!k8s\.io\/)/
                         }),
-                    value: [
-                        {
-                            name: 'valueBeginEnd',
-                            label: '[' + $i18next.t('common:VALUE', { lng: lng }) + '] ' +
-                                $i18next.t('common:BEGIN_END_WITH', { lng: lng }) + ': a–z, A–Z, 0–9',
-                            pattern: /^([^/]+\/)?([A-Za-z0-9][^/]*)?[A-Za-z0-9]$/
-                        },
-                        {
-                            name: 'valueMaxLength',
-                            label: '[' + $i18next.t('common:VALUE', { lng: lng }) + '] ' +
-                                $i18next.t('common:MAX_LENGTH_CHARACTERS', { lng: lng, count: 63 }),
-                            pattern: /^([^/]+\/)?[^/]{1,63}$/
-                        },
-                        {
-                            name: 'valueValidCharacters',
-                            label: '[' + $i18next.t('common:VALUE', { lng: lng }) + '] ' +
-                                $i18next.t('common:VALID_CHARACTERS', { lng: lng }) + ': a–z, A–Z, 0–9, –, _, .',
-                            pattern: /^[a-zA-Z0-9\-_.]+$/
-                        }
-                    ]
+                    value: commonRules.k8s.getValue(true)
                 },
                 supportLogs: {
                     contextId: [
@@ -667,7 +660,11 @@ such restriction.
                 generateRule.beginWith('0-9 +'),
                 generateRule.endWith('0-9'),
                 generateRule.length({ min: 4, max: lengths.phone })
-            ]
+            ],
+            nodeSelectors: {
+                key: commonRules.prefixedQualifiedName,
+                value: commonRules.k8s.getValue(false)
+            }
         };
 
         return {
