@@ -83,6 +83,7 @@ such restriction.
         ctrl.editTriggerCallback = editTriggerCallback;
         ctrl.handleAction = handleAction;
         ctrl.isCreateNewTriggerEnabled = isCreateNewTriggerEnabled;
+        ctrl.isHttpTriggerCheckboxShown = isHttpTriggerCheckboxShown;
         ctrl.isHttpTriggerMsgShown = isHttpTriggerMsgShown;
 
         //
@@ -251,6 +252,15 @@ such restriction.
                     editModeActive: true
                 }
             });
+        }
+
+        /**
+         * Tests whether the `Do not create http trigger by default` checkbox is shown
+         * @returns {boolean}
+         */
+        function isHttpTriggerCheckboxShown() {
+            return !lodash.get(ConfigService, 'nuclio.disableDefaultHttpTrigger', false) &&
+              !lodash.some(ctrl.version.spec.triggers, ['kind', 'http']);
         }
 
         /**
