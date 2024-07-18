@@ -103,6 +103,7 @@
     "DISABLING": "Disabling",
     "DISCARD": "Discard",
     "DISCARD_ALL_PENDING_CHANGES_CONFIRM": "Discard all pending changes?",
+    "DO_NOT_CREATE_HTTP_TRIGGER_BY_DEFAULT": "Do not create http trigger by default",
     "DO_NOT_SHOW_AGAIN": "Do not show again",
     "DOCS": "Docs",
     "DONE": "Done",
