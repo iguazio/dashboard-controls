@@ -29,6 +29,7 @@ such restriction.
     function NclVersionMonitoringController($rootScope, $timeout, lodash, FunctionsService) {
         var ctrl = this;
 
+        ctrl.enrichedNodeSelectors = [];
         ctrl.scrollConfig = {
             advanced: {
                 updateOnContentResize: true
@@ -59,6 +60,8 @@ such restriction.
          */
         function onInit() {
             ctrl.isFunctionDeploying = lodash.partial(FunctionsService.isFunctionDeploying, ctrl.version);
+
+            initEnrichedNodeSelectors();
         }
 
         //
@@ -71,6 +74,21 @@ such restriction.
          */
         function checkIsErrorState() {
             return lodash.includes(['error', 'unhealthy'], lodash.get(ctrl.version.status, 'state'));
+        }
+
+        /**
+         * Generates a node selectors list
+         */
+        function initEnrichedNodeSelectors() {
+            ctrl.enrichedNodeSelectors = lodash.chain(ctrl.version)
+                .get('status.enrichedNodeSelector', {})
+                .map(function (key, value) {
+                    return {
+                        name: value,
+                        value: key
+                    };
+                })
+                .value();
         }
 
         /**
