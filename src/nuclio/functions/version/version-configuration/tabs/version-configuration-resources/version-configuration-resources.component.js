@@ -99,14 +99,14 @@ such restriction.
         ];
         ctrl.nodeSelectors = [];
         ctrl.nodeSelectorsValidationRules = {
-            key: [
+            key: ValidationService.getValidationRules('nodeSelectors.key').concat([
                 {
                     name: 'uniqueness',
                     label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
                     pattern: validateNodeSelectorUniqueness
                 }
-            ],
-            value: ValidationService.getValidationRules('k8s.qualifiedName')
+            ]),
+            value: ValidationService.getValidationRules('nodeSelectors.value')
         };
         ctrl.podsPriorityOptions = [
             {
