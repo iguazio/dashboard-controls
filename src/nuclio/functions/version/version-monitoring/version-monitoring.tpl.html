@@ -4,40 +4,61 @@
          data-ng-scrollbars-config="$ctrl.scrollConfig">
         <div class="ncl-version-monitoring-wrapper">
             <div class="row">
-                <div class="monitoring-block invocation-block">
-                    <div class="internal-invocation-urls">
-                        <span class="monitoring-block-title">{{ 'functions:INTERNAL_INVOCATION_URLS' | i18next }}: </span>
-                        <ul class="invocation-url-list" ng-if="!$ctrl.isFunctionDeploying()">
-                            <li class="monitoring-invocation-url-wrapper" data-ng-repeat="url in $ctrl.version.status.internalInvocationUrls">
-                                <span>{{url}}</span>
-                                <div class="igz-action-panel">
-                                    <div class="actions-list">
-                                        <igz-copy-to-clipboard data-value="url"></igz-copy-to-clipboard>
+                <div class="monitoring-block">
+                    <div class="invocation-block">
+                        <div class="internal-invocation-urls">
+                            <span class="title">{{ 'functions:INTERNAL_INVOCATION_URLS' | i18next }}: </span>
+                            <ul class="invocation-url-list" ng-if="!$ctrl.isFunctionDeploying()">
+                                <li class="monitoring-invocation-url-wrapper" data-ng-repeat="url in $ctrl.version.status.internalInvocationUrls">
+                                    <span>{{url}}</span>
+                                    <div class="igz-action-panel">
+                                        <div class="actions-list">
+                                            <igz-copy-to-clipboard data-value="url"></igz-copy-to-clipboard>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
-                        </ul>
-                        <p data-ng-if="!$ctrl.version.status.internalInvocationUrls.length || $ctrl.isFunctionDeploying()" data-ng-i18next="common:N_A"></p>
+                                </li>
+                            </ul>
+                            <p data-ng-if="!$ctrl.version.status.internalInvocationUrls.length || $ctrl.isFunctionDeploying()" data-ng-i18next="common:N_A"></p>
+                        </div>
+                        <div class="external-invocation-urls">
+                            <span class="title">{{ 'functions:EXTERNAL_INVOCATION_URLS' | i18next }}: </span>
+                            <igz-more-info
+                                    data-description="{{ 'functions:TOOLTIP.TO_MAKE_FUNCTION_ACCESSIBLE' | i18next:{functionId: $ctrl.version.metadata.name} }}"
+                                    data-trigger="click"
+                                    data-is-html-enabled="true">
+                            </igz-more-info>
+                            <ul class="invocation-url-list"
+                                data-ng-if="$ctrl.version.status.externalInvocationUrls.length > 0 && !$ctrl.isFunctionDeploying()">
+                                <li class="monitoring-invocation-url-wrapper" data-ng-repeat="url in $ctrl.version.status.externalInvocationUrls">
+                                    <span>{{url}}</span>
+                                    <div class="igz-action-panel">
+                                        <div class="actions-list">
+                                            <igz-copy-to-clipboard data-value="url"></igz-copy-to-clipboard>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <p data-ng-if="!$ctrl.version.status.externalInvocationUrls || $ctrl.version.status.externalInvocationUrls.length === 0 || $ctrl.isFunctionDeploying()" data-ng-i18next="common:N_A"></p>
+                        </div>
                     </div>
-                    <div class="external-invocation-urls">
-                        <span class="monitoring-block-title">{{ 'functions:EXTERNAL_INVOCATION_URLS' | i18next }}: </span>
+                    <div data-ng-if="$ctrl.enrichedNodeSelectors.length > 0" class="enriched-node-selectors">
+                        <span class="title">{{ 'functions:NODE_SELECTORS' | i18next }}: </span>
                         <igz-more-info
-                                data-description="{{ 'functions:TOOLTIP.TO_MAKE_FUNCTION_ACCESSIBLE' | i18next:{functionId: $ctrl.version.metadata.name} }}"
+                                data-description="{{ 'functions:TOOLTIP.ENRICHED_NODE_SELECTOR' | i18next }}"
                                 data-trigger="click"
                                 data-is-html-enabled="true">
                         </igz-more-info>
-                        <ul class="invocation-url-list"
-                            data-ng-if="$ctrl.version.status.externalInvocationUrls.length > 0 && !$ctrl.isFunctionDeploying()">
-                            <li class="monitoring-invocation-url-wrapper" data-ng-repeat="url in $ctrl.version.status.externalInvocationUrls">
-                                <span>{{url}}</span>
-                                <div class="igz-action-panel">
-                                    <div class="actions-list">
-                                        <igz-copy-to-clipboard data-value="url"></igz-copy-to-clipboard>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                        <p data-ng-if="!$ctrl.version.status.externalInvocationUrls || $ctrl.version.status.externalInvocationUrls.length === 0 || $ctrl.isFunctionDeploying()" data-ng-i18next="common:N_A"></p>
+                        <div class="table-body" data-ng-repeat="nodeSelector in $ctrl.enrichedNodeSelectors">
+                            <ncl-key-value-input class="enriched-node-selectors"
+                                                 data-is-read-only="true"
+                                                 data-key-tooltip="nodeSelector.name"
+                                                 data-value-tooltip="nodeSelector.value"
+                                                 data-item-index="$index"
+                                                 data-row-data="nodeSelector"
+                                                 data-use-labels="true"
+                                                 data-use-type="false">
+                            </ncl-key-value-input>
+                        </div>
                     </div>
                 </div>
             </div>

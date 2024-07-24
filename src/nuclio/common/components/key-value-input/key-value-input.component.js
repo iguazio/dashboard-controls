@@ -30,6 +30,7 @@ such restriction.
                 changeTypeCallback: '&?',
                 dropdownOverlap: '<?',
                 isDisabled: '<?',
+                isReadOnly: '<?',
                 itemIndex: '<',
                 keyList: '<?',
                 keyOptional: '<?',
@@ -127,6 +128,7 @@ such restriction.
                 keyPlaceholder: $i18next.t('functions:PLACEHOLDER.ENTER_KEY', {lng: lng}),
                 onlyValueInput: false,
                 isDisabled: false,
+                isReadOnly: false,
                 submitOnFly: false,
                 useAdditionalValue: false,
                 valuePlaceholder: $i18next.t('functions:PLACEHOLDER.ENTER_VALUE', {lng: lng})
