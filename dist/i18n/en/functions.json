@@ -346,6 +346,7 @@
         },
         "NEW_TEST": "New test",
         "NO_INTERNET_ACCESS": "Use local Docker images rather than pulling from remote",
+        "ENRICHED_NODE_SELECTOR": "The node selector of the function, enriched with the project’s and the service’s default node selectors",
         "POD_TOLERATIONS": {
             "ALLOW": "Allow function pods to run on spot nodes. Spot nodes might be tainted, using this option will make sure function pods tolerates those taints.",
             "CONSTRAIN": "Constrain function pods to spot nodes using label selectors.",
