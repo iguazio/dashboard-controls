@@ -602,8 +602,8 @@ such restriction.
                 address: [
                     {
                         name: 'begin',
-                        label: $i18next.t('common:BEGIN_WITH', { lng: lng }) + ': ldaps://, ldap://',
-                        pattern: /^ldaps?:\/\//
+                        label: $i18next.t('common:BEGIN_WITH', { lng: lng }) + ': ldap://',
+                        pattern: /^ldap?:\/\//
                     }
                 ]
             },
