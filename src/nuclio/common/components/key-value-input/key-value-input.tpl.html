@@ -24,6 +24,7 @@
                                       data-prevent-drop-up="true"
                                       data-input-name="type"
                                       data-is-disabled="$ctrl.isDisabled"
+                                      data-read-only="$ctrl.isReadOnly"
                                       data-values-array="$ctrl.typesList"
                                       data-selected-item="$ctrl.getType()"
                                       data-placeholder="{{ 'common:PLACEHOLDER.SELECT_TYPE' | i18next }}"
@@ -35,7 +36,7 @@
             <div class="input-container input-key-wrapper"
                  data-ng-if="!$ctrl.onlyValueInput && !$ctrl.onlyTypeNameInputs"
                  data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
-                <label class="key-label asterisk" data-ng-if="$ctrl.useLabels">
+                <label class="key-label" data-ng-class="{'asterisk': !$ctrl.isReadOnly}" data-ng-if="$ctrl.useLabels">
                     {{ 'common:KEY' | i18next }}:
                 </label>
                 <igz-validating-input-field class="input-key"
@@ -43,6 +44,7 @@
                                             data-field-type="input"
                                             data-input-name="key"
                                             data-is-disabled="$ctrl.isDisabled"
+                                            data-read-only="$ctrl.isReadOnly"
                                             data-input-value="$ctrl.data.name"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="name"
@@ -62,6 +64,7 @@
                                       data-prevent-drop-up="true"
                                       data-input-name="key"
                                       data-is-disabled="$ctrl.isDisabled"
+                                      data-read-only="$ctrl.isReadOnly"
                                       data-values-array="$ctrl.keyList"
                                       data-selected-item="$ctrl.getSelectedItem()"
                                       data-item-select-callback="$ctrl.onKeyChanged(item)"
@@ -87,6 +90,7 @@
                                             data-update-data-callback="$ctrl.inputKeyCallback(newData)"
                                             data-update-data-field="value-key"
                                             data-is-disabled="$ctrl.isDisabled"
+                                            data-read-only="$ctrl.isReadOnly"
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.valueOptional"
                                             data-validation-rules="$ctrl.validationRules[$ctrl.getType() + 'Key']"
@@ -100,7 +104,7 @@
                                  'only-key-value-input': $ctrl.isVisibleByType('value'),
                                  'type-name-table': $ctrl.onlyTypeNameInputs,
                                  'all-value-types': $ctrl.allValueTypes}">
-                <label data-ng-if="$ctrl.useLabels" class="asterisk">
+                <label data-ng-if="$ctrl.useLabels" data-ng-class="{'asterisk': !$ctrl.isReadOnly}">
                     <span data-ng-if="$ctrl.isVisibleByType('value')">
                         {{ 'common:VALUE' | i18next }}:
                     </span>
@@ -118,6 +122,7 @@
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="value"
                                             data-is-disabled="$ctrl.isDisabled"
+                                            data-read-only="$ctrl.isReadOnly"
                                             data-form-object="$ctrl.keyValueInputForm"
                                             data-validation-is-required="!$ctrl.valueOptional"
                                             data-validation-pattern="$ctrl.valueValidationPattern"
@@ -133,6 +138,7 @@
                                             data-field-type="input"
                                             data-input-name="additionalValue"
                                             data-is-disabled="$ctrl.isDisabled"
+                                            data-read-only="$ctrl.isReadOnly"
                                             data-input-value="$ctrl.data.additionalValue"
                                             data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
                                             data-update-data-field="additionalValue"
@@ -141,12 +147,12 @@
                 </igz-validating-input-field>
             </div>
         </div>
-        <div class="three-dot-menu" data-ng-if="$ctrl.actions.length > 1 && !$ctrl.isDisabled">
+        <div class="three-dot-menu" data-ng-if="$ctrl.actions.length > 1 && !$ctrl.isDisabled && !$ctrl.isReadOnly">
             <igz-action-menu data-actions="$ctrl.actions"
                              data-on-fire-action="$ctrl.onFireAction">
             </igz-action-menu>
         </div>
-        <div class="igz-action-panel" data-ng-if="$ctrl.actions.length === 1 && !$ctrl.isDisabled">
+        <div class="igz-action-panel" data-ng-if="$ctrl.actions.length === 1 && !$ctrl.isDisabled && !$ctrl.isReadOnly">
             <div class="actions-list">
                 <div class="igz-action-item"
                      data-ng-click="$ctrl.onClickAction($ctrl.actions[0])">
