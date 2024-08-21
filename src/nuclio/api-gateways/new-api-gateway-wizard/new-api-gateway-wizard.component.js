@@ -305,15 +305,9 @@ such restriction.
             suggestionsList = lodash.chain(functionsList)
                 .filter(function (aFunction) {
                     var functionName = lodash.get(aFunction, 'metadata.name');
-                    var functionApiGateways = lodash.chain(aFunction)
-                        .get('status.apiGateways', [])      // get the function's list of related API GWs
-                        .without(ctrl.apiGateway.spec.name) // remove current API GW name from list
-                        .value();
                     var functionAlreadyUsedInThisApiGateway = lodash.includes(upstreamsFunctionNames, functionName);
-                    var functionAlreadyUsedInAnotherApiGateway = !lodash.isEmpty(functionApiGateways);
 
                     return !functionAlreadyUsedInThisApiGateway &&
-                        !functionAlreadyUsedInAnotherApiGateway &&
                         (lodash.isEmpty(lodash.trim(newData)) || lodash.includes(functionName, newData));
                 })
                 .map(function (aFunction) {
