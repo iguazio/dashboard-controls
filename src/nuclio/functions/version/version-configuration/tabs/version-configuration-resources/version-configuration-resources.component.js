@@ -346,10 +346,11 @@ such restriction.
          */
         function handleRevertToDefaultsClick() {
             DialogsService.confirm($i18next.t('functions:REVERT_NODE_SELECTORS_TO_DEFAULTS_CONFIRM', {lng: lng}),
-                                   $i18next.t('functions:YES_REVERT_CONFIRM', {lng: lng}),
-                                   $i18next.t('common:CANCEL', {lng: lng})).then(function () {
-                setNodeSelectorsDefaultValue();
-            });
+                                   $i18next.t('functions:YES_REVERT_CONFIRM', {lng: lng}))
+                .then(function () {
+                    setNodeSelectorsDefaultValue();
+                    $rootScope.$broadcast('igzWatchWindowResize::resize');
+                });
         }
 
         /**
@@ -559,15 +560,14 @@ such restriction.
          * Checks whether the `Revert to defaults` button must be hidden
          */
         function checkNodeSelectorsIdentity() {
-            const nodeSelectors = lodash.map(ctrl.nodeSelectors, function (selector) {
-                return {
-                    key: selector.name,
-                    value: selector.value
-                }
-            });
+            var nodeSelectors = lodash.reduce(ctrl.nodeSelectors, function (acc, nodeSelector) {
+                acc[nodeSelector.name] = nodeSelector.value;
+
+                return acc;
+            }, {});
 
             ctrl.revertToDefaultsBtnIsHidden = lodash.isEqual(
-                lodash.get(ConfigService,'nuclio.defaultFunctionConfig.attributes.spec.nodeSelector', []), nodeSelectors);
+                lodash.get(ConfigService,'nuclio.defaultFunctionConfig.attributes.spec.nodeSelector', {}), nodeSelectors);
         }
 
         /**
@@ -798,6 +798,10 @@ such restriction.
                     };
                 })
                 .value();
+
+            $timeout(function () {
+                updateNodeSelectors();
+            }, 0);
         }
 
         /**
