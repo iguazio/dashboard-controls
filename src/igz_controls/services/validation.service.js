@@ -449,7 +449,11 @@ such restriction.
                 name: commonRules.dns1123Label.concat(
                     generateRule.mustNotBe('dashboard controller dlx scaler'),
                     generateRule.length({ max: lengths.apiGateway.name })
-                )
+                ),
+                path: [
+                    generateRule.validCharacters('a-z A-Z 0-9 \\ / - _'),
+                    generateRule.noConsecutiveCharacters('//'),
+                ]
             },
             service: {
                 name: commonRules.dns1035Label.concat(generateRule.length({ max: lengths.service.name })),
