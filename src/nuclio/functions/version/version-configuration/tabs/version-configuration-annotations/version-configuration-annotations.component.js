@@ -58,7 +58,7 @@ such restriction.
             key: ValidationService.getValidationRules('function.annotation.key', [
                 {
                     name: 'uniqueness',
-                    label: $i18next.t('functions:UNIQUENESS', { lng: lng }),
+                    label: $i18next.t('common:UNIQUENESS', { lng: lng }),
                     pattern: validateUniqueness
                 }
             ])

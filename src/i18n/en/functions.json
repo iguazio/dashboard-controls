@@ -387,7 +387,6 @@
     "TRIGGER_CRON_INTERVAL_NO_SCHEDULE": "Applicable only when \"Schedule\" is empty",
     "TRIGGER_SECRET_ACCESS_KEY": "\"{{triggerName}}\" trigger secret access key",
     "TRIGGERS_NOT_FOUND": "There are currently no triggers, you can create a trigger by clicking the ‘Create a new trigger’ button",
-    "UNIQUENESS": "Uniqueness",
     "UNSPECIFIED_FIELD_NAME": "Unspecified field name",
     "URL_NOT_EXPOSED": "URL not exposed",
     "V3IO": "V3IO",

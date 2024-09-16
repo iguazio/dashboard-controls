@@ -50,7 +50,7 @@ such restriction.
         ctrl.validationRules = {
             itemName: [],
             itemPath: ValidationService.getValidationRules('function.itemPath', [{
-                label: $i18next.t('functions:UNIQUENESS', { lng: lng }),
+                label: $i18next.t('common:UNIQUENESS', { lng: lng }),
                 pattern: validateUniqueness.bind(null, 'volumeMount.mountPath')
             }]),
             containerName: ValidationService.getValidationRules('container.name')

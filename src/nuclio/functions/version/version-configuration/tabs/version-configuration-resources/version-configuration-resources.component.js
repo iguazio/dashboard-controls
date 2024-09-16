@@ -102,7 +102,7 @@ such restriction.
             key: ValidationService.getValidationRules('nodeSelectors.key').concat([
                 {
                     name: 'uniqueness',
-                    label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                    label: $i18next.t('common:UNIQUENESS', {lng: lng}),
                     pattern: validateNodeSelectorUniqueness
                 }
             ]),

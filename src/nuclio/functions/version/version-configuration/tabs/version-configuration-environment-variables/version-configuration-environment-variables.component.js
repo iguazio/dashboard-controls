@@ -38,19 +38,19 @@ such restriction.
         var envVariableFromValidationRules = ValidationService.getValidationRules('k8s.configMapKey', [
             {
                 name: 'uniqueness',
-                label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                label: $i18next.t('common:UNIQUENESS', {lng: lng}),
                 pattern: validateUniqueness.bind(null, ['configMapRef.name', 'secretRef.name'])
             }
         ]);
         var envVariableKeyValidationRule = ValidationService.getValidationRules('k8s.envVarName', [{
             name: 'uniqueness',
-            label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+            label: $i18next.t('common:UNIQUENESS', {lng: lng}),
             pattern: validateUniqueness.bind(null, ['name'])
         }]);
         var envVariableConfigmapKeyValidationRule = ValidationService.getValidationRules('k8s.configMapKey', [
             {
                 name: 'uniqueness',
-                label: $i18next.t('functions:UNIQUENESS', {lng: lng}),
+                label: $i18next.t('common:UNIQUENESS', {lng: lng}),
                 pattern: validateUniqueness.bind(null, ['valueFrom.configMapKeyRef.key'])
             }
         ]);
