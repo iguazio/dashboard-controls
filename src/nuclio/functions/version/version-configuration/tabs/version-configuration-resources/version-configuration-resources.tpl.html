@@ -289,7 +289,13 @@
     </form>
     <form name="$ctrl.nodeSelectorsForm" novalidate>
         <div class="igz-row-flex">
-            <div class="title">{{ 'functions:NODE_SELECTORS' | i18next }}</div>
+            <div class="title">
+                <span>{{ 'functions:NODE_SELECTORS' | i18next }}</span>
+                <igz-more-info
+                        data-description="{{ 'functions:NODE_SELECTORS_MORE_INFO' | i18next }}"
+                        data-trigger="click">
+                </igz-more-info>
+            </div>
             <a class="link"
                data-ng-class="{ 'disabled': $ctrl.isFunctionDeploying() }"
                data-ng-click="$ctrl.handleRevertToDefaultsClick()"
@@ -308,7 +314,8 @@
                                          data-validation-rules="$ctrl.nodeSelectorsValidationRules"
                                          data-action-handler-callback="$ctrl.handleNodeSelectorsAction(actionType, index)"
                                          data-change-data-callback="$ctrl.onChangeNodeSelectorsData(newData, index)"
-                                         data-submit-on-fly="true">
+                                         data-submit-on-fly="true"
+                                         data-value-optional="true">
                     </ncl-key-value-input>
                 </div>
                 <div class="igz-create-button"
