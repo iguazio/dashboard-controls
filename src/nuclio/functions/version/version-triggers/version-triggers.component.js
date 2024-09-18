@@ -52,7 +52,7 @@ such restriction.
             },
             itemName: ValidationService.getValidationRules('function.triggerName', [{
                 name: 'uniqueness',
-                label: $i18next.t('functions:UNIQUENESS', { lng: lng }),
+                label: $i18next.t('common:UNIQUENESS', { lng: lng }),
                 pattern: function (value) {
                     return lodash.filter(ctrl.triggers, ['name', value]).length <= 1;
                 }
