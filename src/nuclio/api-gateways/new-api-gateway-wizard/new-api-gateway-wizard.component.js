@@ -84,7 +84,8 @@ such restriction.
         ctrl.usernameIsFocused = false;
         ctrl.validationRules = {
             apiGatewayName: ValidationService.getValidationRules('apiGateway.name'),
-            host: ValidationService.getValidationRules('k8s.dns1123Subdomain')
+            host: ValidationService.getValidationRules('k8s.dns1123Subdomain'),
+            path: ValidationService.getValidationRules('apiGateway.path')
         };
 
         ctrl.nuclioConfigData = ConfigService.nuclio;
