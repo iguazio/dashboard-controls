@@ -185,6 +185,7 @@
     "NO_INTERNET_ACCESS": "No internet access",
     "NO_LOGS_HAVE_BEEN_FOUND": "No logs have been found...",
     "NODE_SELECTORS": "Node selector",
+    "NODE_SELECTORS_MORE_INFO": "Node-selector values set in the global settings or project settings are not shown. Keep the “Key” and delete the “Value” to remove the global or project setting.",
     "NORMAL": "Normal",
     "NOT_START_WITH_FORBIDDEN_WORDS_LABEL": "Must not start with 'kubernetes.io', 'k8s.io' or 'nuclio.io'",
     "NOT_YET_DEPLOYED": "Not yet deployed",
