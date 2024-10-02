@@ -210,7 +210,7 @@ such restriction.
                 ctrl.maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
 
                 initScaleToZeroData();
-                initNodeSelectors(changes.version.isFirstChange());
+                initNodeSelectors();
 
                 $timeout(function () {
                     setFormValidity();
@@ -611,7 +611,7 @@ such restriction.
         /**
          * Initializes data for Node selectors section
          */
-        function initNodeSelectors(isFirstInit) {
+        function initNodeSelectors() {
             ctrl.nodeSelectors = lodash.chain(ctrl.version)
                 .get('spec.nodeSelector', {})
                 .map(function (value, key) {
@@ -627,7 +627,7 @@ such restriction.
                 })
                 .value();
 
-            if ($stateParams.isNewFunction && isFirstInit) {
+            if ($stateParams.isNewFunction && lodash.isEmpty(ctrl.nodeSelectors)) {
                 setNodeSelectorsDefaultValue();
             } else {
                 checkNodeSelectorsIdentity();
