@@ -169,7 +169,7 @@
         "LOGIN": {
             "COULD_NOT_FETCH_USER": "Server error: Could not fetch user pointed by session",
             "COULD_NOT_FETCH_USERNAME": "Could not fetch username of logged-in user",
-            "DEFAULT": "Oops: Unknown error occurred",
+            "DEFAULT": "An unknown error occurred",
             "DONT_HAVE_SCREEN_PERMISSIONS": "Oops: You do not have permissions to any screen",
             "GET_CAPABILITIES": "Oops: Could not fetch your permission list",
             "GET_ERROR": {
@@ -205,8 +205,8 @@
         "REGISTRATION_INAPPLICABLE": "Socket was not successfully created or authenticated. Registration inapplicable.",
         "SERVER_ERROR": "Server error",
         "STATISTICS_UNAVAILABLE": "Statistics are currently not available due to system state",
-        "UNKNOWN_ERROR": "Unknown error occurred.",
-        "UNKNOWN_ERROR_RETRY_LATER": "Unknown error occurred. Retry later",
+        "UNKNOWN_ERROR": "An unknown error occurred.",
+        "UNKNOWN_ERROR_RETRY_LATER": "An unknown error occurred. Retry later",
         "UPDATE_CLUSTER": "Error while updating the cluster",
         "UPDATE_CONTAINER": "Error while updating container",
         "UPDATE_ESCALATION_POLICY": "Error while updating escalation policy",
