@@ -1,0 +1,29 @@
+.control-panel-log-row {
+    .control-panel-log-table-row-color-set();
+
+    .log-entry {
+        .log-entry-time {
+            color: @log-entry-time-color;
+        }
+
+        .log-entry-level-debug {
+            color: @log-entry-level-debug-color;
+        }
+
+        .log-entry-level-info {
+            color: @log-entry-level-info-color;
+        }
+
+        .log-entry-level-warn, .log-entry-level-warning {
+            color: @log-entry-level-warn-color;
+        }
+
+        .log-entry-level-error {
+            color: @log-entry-level-error-color;
+        }
+
+        .log-entry-message {
+            font-weight: 600;
+        }
+    }
+}

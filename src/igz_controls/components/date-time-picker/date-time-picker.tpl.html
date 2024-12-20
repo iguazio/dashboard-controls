@@ -1,0 +1,90 @@
+<div class="date-time-picker" tabindex="0"
+     data-ng-class="{'disabled' : $ctrl.isDisabled}" igz-prevent-parent-scroll>
+    <input class="datetimepicker-input"
+           name="{{$ctrl.inputName}}"
+           placeholder="{{$ctrl.placeholder}}"
+           data-ng-model="$ctrl.displayText"
+           data-ng-disabled="$ctrl.isDisabled"
+           data-ng-required="$ctrl.isRequired === true"
+           data-ng-class="{'date-range': $ctrl.isDateRange, 'pick-time': $ctrl.pickTime}"
+           data-ng-click="!$ctrl.isDisabled && ($ctrl.isDateRange ? $ctrl.showOptionsList($event) : $ctrl.showDatepickerPopup($event))"
+           data-show-button-bar="false"
+           data-igz-input-blur-on-enter
+           readonly>
+    <button class="datetimepicker-open-button"
+            data-ng-class="{'active': $ctrl.isShowDatePicker || $ctrl.isShowOptionsList}"
+            data-ng-click="!$ctrl.isDisabled && ($ctrl.isDateRange ? $ctrl.showOptionsList($event) : $ctrl.showDatepickerPopup($event))">
+        <i class="igz-icon-dropdown"
+           data-ng-class="{'revert-icon': $ctrl.isReverted}"></i>
+    </button>
+    <div class="date-time-pickers"
+         data-ng-if="$ctrl.isShowDatePicker"
+         data-ng-class="{'visible': $ctrl.isPositionCalculated, 'date-range': $ctrl.isDateRange}">
+        <div class="datepicker-wrapper">
+            <div data-uib-datepicker
+                 class="datepicker-calendar"
+                 data-datepicker-options="::$ctrl.datepickerOptions.from"
+                 data-ng-model="$ctrl.date.from"
+                 data-ng-if="$ctrl.isShowDatePicker"
+                 data-ng-class="{separator: $ctrl.pickTime}"
+                 data-ng-change="$ctrl.onChangeDateTime()"></div>
+            <div data-uib-timepicker class="timepicker from"
+                 data-ng-if="$ctrl.pickTime"
+                 data-ng-model="$ctrl.date.from"
+                 data-ng-change="$ctrl.onChangeDateTime()"></div>
+        </div>
+        <div class="datepicker-wrapper"
+             data-ng-if="$ctrl.isDateRange">
+            <div data-uib-datepicker
+                 class="datepicker-calendar"
+                 data-ng-model="$ctrl.date.to"
+                 data-ng-if="$ctrl.isShowDatePicker"
+                 data-datepicker-options="::$ctrl.datepickerOptions.to"
+                 data-ng-class="{separator: $ctrl.pickTime}"
+                 data-ng-change="$ctrl.onChangeDateTime()"></div>
+            <div data-uib-timepicker class="timepicker to"
+                 data-ng-if="$ctrl.pickTime"
+                 data-ng-model="$ctrl.date.to"
+                 data-ng-change="$ctrl.onChangeDateTime()"></div>
+        </div>
+        <div class="buttons-block" data-ng-class="{'pick-time': $ctrl.pickTime}">
+            <button class="igz-button-just-text"
+                 data-ng-click="$ctrl.cancelChanges()">
+                {{ 'common:CANCEL' | i18next }}
+            </button>
+            <button class="igz-button-primary apply-button"
+                 data-uib-tooltip="{{$ctrl.getErrorMessage()}}"
+                 data-tooltip-placement="left"
+                 data-tooltip-append-to-body="true"
+                 data-tooltip-popup-delay="300"
+                 data-ng-class="{'disabled': $ctrl.getErrorMessage() !== ''}"
+                 data-ng-click="$ctrl.getErrorMessage() === '' && $ctrl.applyChanges()">
+                {{ 'common:APPLY' | i18next }}
+            </button>
+        </div>
+    </div>
+    <div class="options-dropdown"
+         data-ng-if="$ctrl.isDateRange"
+         data-ng-show="$ctrl.isShowOptionsList"
+         data-ng-class="{'visible': $ctrl.isDropdownPositionCalculated}">
+        <ul class="options-list">
+            <li data-ng-repeat="(key, value) in $ctrl.presets"
+                class="options-list-item"
+                data-ng-click="$ctrl.onChangeDateTime(key)">{{value.label}}
+                <span class="tick-icon igz-icon-tick"
+                      data-ng-if="$ctrl.isOptionSelected(key)">
+                </span>
+            </li>
+            <div class="separator"></div>
+            <li class="options-list-item"
+                data-ng-click="$ctrl.showDatepickerPopup($event)">
+                {{ 'common:SELECT_RANGE' | i18next }}
+            </li>
+            <li class="options-list-item"
+                data-ng-if="$ctrl.clearOption"
+                data-ng-click="$ctrl.clearSelectedDateTime()">
+                {{ 'common:CLEAR' | i18next }}
+            </li>
+        </ul>
+    </div>
+</div>

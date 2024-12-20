@@ -138,6 +138,7 @@
     "EXPORT_ALL_PROJECTS": "Export all projects",
     "EXPORT_FUNCTION": "Export function",
     "EXTERNAL_INVOCATION_URLS": "External invocation URLs",
+    "EXECUTION_LOG": "Execution log",
     "FAILED_TO_DEPLOY": "Failed to deploy",
     "FUNCTION_NAME_IS_USED_WARNING": "The specified function name is already used by a function in another project. To use it for a new function you must first delete the existing function.",
     "FUNCTIONS_NOT_FOUND": "There are currently no functions, you can create a function by clicking the ‘New Function’ button",

@@ -1,0 +1,99 @@
+.ncl-version-execution-log {
+  .control-panel-log-color-set();
+
+  min-width: 1200px;
+  padding: 24px 25px 22px 41px;
+
+  .ncl-version-execution-log-wrapper {
+    height: 95%;
+
+    .igz-info-page-actions-bar {
+      z-index: 990;
+    }
+
+    > .row {
+      position: relative;
+      padding: 16px 23px 16px;
+      background-color: @white;
+      border: solid 1px @pale-grey;
+      overflow: hidden;
+      margin-right: 16px;
+      margin-bottom: 16px;
+      transition: @igz-basic-transition;
+      height: 100%;
+
+      .logs-container {
+        padding-bottom: 50px;
+      }
+
+      &.filters-shown {
+        padding-right: 310px;
+      }
+
+      .info-page-filters {
+        width: 300px;
+
+        .info-page-filters-item {
+          &.search-input-item {
+            padding-top: 10px;
+          }
+        }
+
+        .filter-label {
+          font-weight: bold;
+          color: @log-filters-filter-label-color;
+        }
+
+        .filter-level-wrapper {
+          .filter-level-item {
+            margin: 5px 0;
+          }
+
+          .level-icon {
+            display: inline-block;
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
+
+            &::before {
+              font-size: 16px;
+              vertical-align: text-bottom;
+            }
+
+            &.ncl-icon-debug {
+              color: @log-filters-level-debug-icon-color;
+            }
+
+            &.igz-icon-info-round {
+              color: @log-filters-level-info-icon-color;
+            }
+
+            &.igz-icon-warning {
+              color: @log-filters-level-warn-icon-color;
+
+              &::before {
+                font-size: 15px;
+              }
+            }
+
+            &.igz-icon-cancel-path {
+              color: @log-filters-level-error-icon-color;
+            }
+          }
+        }
+
+        .checkboxes-dropdown-field {
+          height: 36px;
+          padding-left: 15px;
+          padding-right: 15px;
+        }
+      }
+    }
+
+    .igz-multiple-checkboxes {
+      .checkboxes-dropdown-container {
+        position: unset;
+      }
+    }
+  }
+}

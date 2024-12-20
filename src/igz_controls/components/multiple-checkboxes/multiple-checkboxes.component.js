@@ -171,7 +171,7 @@ such restriction.
             controller: IgzMultipleCheckboxes
         });
 
-    function IgzMultipleCheckboxes(lodash) {
+    function IgzMultipleCheckboxes($document, $element, $scope, lodash) {
         var ctrl = this;
 
         var LABEL_PATH_DEFAULT = 'label';
@@ -192,6 +192,8 @@ such restriction.
 
         ctrl.$onInit = onInit;
         ctrl.$onChanges = onChanges;
+        ctrl.$postLink = postLink;
+        ctrl.$onDestroy = onDestroy;
 
         ctrl.addItem = addItem;
         ctrl.onApply = onApply;
@@ -364,6 +366,19 @@ such restriction.
             }
         }
 
+        /**
+         * Post linking method
+         */
+        function postLink() {
+            $document.on('click', unselectDropdown);
+        }
+
+        /**
+         * Destructor method
+         */
+        function onDestroy() {
+            $document.off('click', unselectDropdown);
+        }
         //
         // Public methods
         //
@@ -447,10 +462,14 @@ such restriction.
          */
         function onSearchInputChange(searchData) {
             if (lodash.isEmpty(searchData) || lodash.isNil(searchData)) {
-                lodash.forEach(ctrl.optionList, function (group) {
-                    lodash.forEach(group.options, function (option) {
-                        lodash.set(option, 'filtered', false);
-                    });
+                lodash.forEach(ctrl.optionList, function (item) {
+                    if (ctrl.groups) {
+                        lodash.forEach(item.options, function (option) {
+                            lodash.set(option, 'filtered', false)
+                        });
+                    } else {
+                        lodash.set(item, 'filtered', false);
+                    }
                 });
             } else {
                 lodash.forEach(ctrl.optionList, function (item) {
@@ -558,6 +577,21 @@ such restriction.
             } else {
                 lodash.forEach(ctrl.optionList, function (option) {
                     option.checked = lodash.includes(ctrl.ngModelCtrl.$viewValue, option.value);
+                });
+                ctrl.isAllItemsChecked = ctrl.optionList.every(function (option) {
+                    return option.checked;
+                });
+            }
+        }
+
+        /**
+         * Handle click on the document and not on the dropdown field and close the dropdown
+         * @param {Object} e - event
+         */
+        function unselectDropdown(e) {
+            if ($element.find(e.target).length === 0) {
+                $scope.$evalAsync(function () {
+                    ctrl.isDropdownOpened = false;
                 });
             }
         }
