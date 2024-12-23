@@ -9,6 +9,7 @@
                                    data-change-state-callback="$ctrl.isFiltersShowed.changeValue(newVal)"
                                    data-toggle-method="$ctrl.toggleFilters()"
                                    data-apply-filters="$ctrl.applyFilters()"
+                                   data-apply-is-disabled="$ctrl.applyIsDisabled"
                                    data-watch-id="log-filter"
                                    data-reset-filters="$ctrl.resetFilters()">
                 <div class="info-page-filters-item search-input-item filter-message-wrapper">
@@ -40,7 +41,7 @@
                         <igz-date-time-picker data-pick-time="true"
                                               data-pick-future-dates="false"
                                               data-selected-preset="{{$ctrl.datePreset}}"
-                                              data-input-date-from="$ctrl.timeRange.frNom"
+                                              data-input-date-from="$ctrl.timeRange.from"
                                               data-input-date-to="$ctrl.timeRange.to"
                                               data-is-date-range="true"
                                               data-is-required="true"
@@ -91,7 +92,7 @@
                 </div>
 
                 <div class="info-page-filters-item all-padded replicas">
-                    <span class="filter-label">
+                    <span class="filter-label asterisk">
                         {{ 'common:REPLICAS' | i18next }}
                     </span>
                     <igz-multiple-checkboxes data-ng-model="$ctrl.selectedReplicas"

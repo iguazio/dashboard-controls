@@ -25,7 +25,7 @@
                     tabindex="0"
                     data-ng-click="$ctrl.onApplyFilters()"
                     data-ng-keydown="$ctrl.onApplyFilters($event)"
-                    data-ng-disabled="$ctrl.isDisabled"
+                    data-ng-disabled="$ctrl.isDisabled || $ctrl.applyIsDisabled"
                     data-ng-if="$ctrl.applyFilters">{{ 'common:APPLY' | i18next }}
             </button>
         </div>

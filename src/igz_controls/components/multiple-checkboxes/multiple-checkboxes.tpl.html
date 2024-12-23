@@ -68,7 +68,8 @@
                         </li>
                         <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in group.options track by $index">
                             <input class="multiple-checkboxes-option-input"
-                                   id="{{item.id}}" type="checkbox"
+                                   id="{{item.id}}"
+                                   type="checkbox"
                                    data-ng-model="item.checked"
                                    data-ng-change="$ctrl.updateViewValue()"
                                    data-ng-disabled="$ctrl.isDisabled(item)"
@@ -97,6 +98,7 @@
                                  'igz-icon-checkbox-checked-few': $ctrl.checkedItemsCount > 0 && !$ctrl.isAllItemsChecked,
                                  'igz-icon-checkbox-unchecked': $ctrl.checkedItemsCount === 0}"
                      data-ng-click="$ctrl.onCheckAllItems($event)">
+                    <span class="select-all-option">{{ 'common:SELECT_ALL' | i18next }}</span>
                 </div>
             </div>
             <ul data-ng-if="!$ctrl.groups"
@@ -191,7 +193,8 @@
                 class="checkboxes-list">
                 <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in group.options track by $index">
                     <input class="multiple-checkboxes-option-input"
-                           id="{{item.id}}" type="checkbox"
+                           id="{{item.id}}"
+                           type="checkbox"
                            data-ng-model="item.checked"
                            data-ng-change="$ctrl.updateViewValue()"
                            data-ng-disabled="$ctrl.isDisabled(item)">

@@ -20,6 +20,7 @@ such restriction.
     angular.module('iguazio.dashboard-controls')
         .component('igzInfoPageFilters', {
             bindings: {
+                applyIsDisabled: '<?',
                 isDisabled: '<?',
                 isFiltersShowed: '<',
                 changeStateCallback: '&',

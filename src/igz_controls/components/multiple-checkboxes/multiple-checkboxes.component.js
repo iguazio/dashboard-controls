@@ -453,6 +453,8 @@ such restriction.
                 lodash.forEach(ctrl.optionList, function (option) {
                     option.checked = ctrl.isAllItemsChecked;
                 });
+
+                updateViewValue();
             }
         }
 

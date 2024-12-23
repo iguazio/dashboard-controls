@@ -34,7 +34,10 @@ such restriction.
 
         var lng = i18next.language;
         var refreshInterval = null;
-        var initialTimeRange = null;
+        var initialTimeRange = {
+            from: null,
+            to: null
+        };
         var initialDatePreset = '7d';
         var initialReplicas = [];
         var defaultFilter = {
@@ -55,6 +58,7 @@ such restriction.
         ctrl.logs = {};
         ctrl.replicasList = [];
         ctrl.filter = {};
+        ctrl.applyIsDisabled = false;
         ctrl.scrollConfig = {
             axis: 'y',
             theme: 'light',
@@ -63,7 +67,7 @@ such restriction.
             }
         };
         ctrl.datePreset = initialDatePreset;
-        ctrl.timeRange = null;
+        ctrl.timeRange = initialTimeRange;
         ctrl.searchStates = {};
         ctrl.selectedReplicas = [];
         ctrl.isFiltersShowed = {
@@ -78,23 +82,23 @@ such restriction.
             value: '10',
             options: [
                 {
-                    name: '5 ' + $i18next.t('common:SECONDS', {lng: lng}),
+                    name: $i18next.t('common:EVERY', {lng: lng}) + ' 5 ' + $i18next.t('common:SECONDS', {lng: lng}),
                     value: '5'
                 },
                 {
-                    name: '10 ' + $i18next.t('common:SECONDS', {lng: lng}),
+                    name: $i18next.t('common:EVERY', {lng: lng}) + ' 10 ' + $i18next.t('common:SECONDS', {lng: lng}),
                     value: '10'
                 },
                 {
-                    name: '20 ' + $i18next.t('common:SECONDS', {lng: lng}),
+                    name: $i18next.t('common:EVERY', {lng: lng}) + ' 20 ' + $i18next.t('common:SECONDS', {lng: lng}),
                     value: '20'
                 },
                 {
-                    name: '30 ' + $i18next.t('common:SECONDS', {lng: lng}),
+                    name: $i18next.t('common:EVERY', {lng: lng}) + ' 30 ' + $i18next.t('common:SECONDS', {lng: lng}),
                     value: '30'
                 },
                 {
-                    name: '1 ' + $i18next.t('common:MINUTE', {lng: lng}),
+                    name: $i18next.t('common:EVERY', {lng: lng}) + ' 1 ' + $i18next.t('common:MINUTE', {lng: lng}),
                     value: '60'
                 },
                 {
@@ -235,9 +239,7 @@ such restriction.
          * Triggered when selected replicas list was changed
          */
         function onCheckboxChange() {
-            if (!ctrl.selectedReplicas) {
-                ctrl.selectedReplicas = angular.copy(initialReplicas);
-            }
+            ctrl.applyIsDisabled = !ctrl.selectedReplicas;
         }
 
         /**
@@ -287,11 +289,12 @@ such restriction.
          * Reset filters
          */
         function resetFilters() {
+            ctrl.applyIsDisabled = false;
             ctrl.timeRange = initialTimeRange;
+            ctrl.datePreset = initialDatePreset;
             ctrl.selectedReplicas = initialReplicas;
 
             lodash.merge(ctrl.filter, defaultFilter);
-
             $rootScope.$broadcast('search-input_reset');
 
             applyFilters();

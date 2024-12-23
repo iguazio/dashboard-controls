@@ -215,6 +215,12 @@ such restriction.
                     }
                 }
             }
+
+            if (angular.isDefined(changes.selectedPreset)) {
+                if (lodash.has(ctrl.presets, changes.selectedPreset.currentValue)) {
+                    ctrl.displayText = ctrl.presets[changes.selectedPreset.currentValue].label;
+                }
+            }
         }
 
         //

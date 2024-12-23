@@ -223,6 +223,7 @@
     "ESCALATION": "Escalation",
     "EVENT_LOG": "Event log",
     "EVENTS": "Events",
+    "EVERY": "Every",
     "EXPONENT_IS_INVALID": "Exponent is invalid",
     "EXPORT": "Export",
     "EXTERNAL": "External",
@@ -455,6 +456,7 @@
     "SCANNED_ITEMS": "Scanned Items",
     "SCHEDULE": "Schedule",
     "SECONDS": "Seconds",
+    "SELECT_ALL": "Select all",
     "SELECT_RANGE": "Select range",
     "SEND": "Send",
     "SERVER_UNREACHABLE_ALERT": "Server unreachable. Try refreshing the page.",
@@ -562,3 +564,4 @@
     "YES": "Yes",
     "YES_CHANGE": "Yes, change",
     "YES_DELETE": "Yes, delete"
+}
