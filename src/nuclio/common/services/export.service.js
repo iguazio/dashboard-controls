@@ -23,6 +23,7 @@ such restriction.
     function ExportService($i18next, $q, $timeout, $window, i18next, lodash, DialogsService, YamlService) {
         return {
             exportFunction: exportFunction,
+            exportLogs: exportLogs,
             getFunctionConfig: getFunctionConfig,
             exportProject: exportProject,
             exportProjects: exportProjects
@@ -41,6 +42,18 @@ such restriction.
             var blob = prepareBlobObject(functionToExport);
 
             downloadExportedFunction(blob, version.metadata.name);
+        }
+
+        /**
+         * Creates artificial link and starts downloading of exported file.
+         * Downloaded file will be saved in user's default folder for downloads.
+         * @param {Object} logs
+         * @param {string} name
+         */
+        function exportLogs(logs, name) {
+            var blob = prepareBlobObject(logs);
+
+            downloadExportedFile(blob, name, 'log');
         }
 
         /**
@@ -141,17 +154,18 @@ such restriction.
         //
 
         /**
-         * Creates artificial link and starts downloading of exported function.
-         * Downloaded .yaml file will be saved in user's default folder for downloads.
-         * @param {Blob} data - exported function config parsed to YAML
+         * Creates artificial link and starts downloading of exported file.
+         * Downloaded file will be saved in user's default folder for downloads.
+         * @param {Blob} data - exported file config parsed to YAML
          * @param {string} fileName - name of the file
+         * @param {string} extension - extension of the file
          */
-        function downloadExportedFunction(data, fileName) {
+        function downloadExportedFile(data, fileName, extension) {
             var url = $window.URL.createObjectURL(data);
             var link = document.createElement('a');
 
             link.href = url;
-            link.download = fileName + '.yaml';
+            link.download = fileName + '.' + extension;
             document.body.appendChild(link);
 
             $timeout(function () {
@@ -159,6 +173,15 @@ such restriction.
                 document.body.removeChild(link);
                 $window.URL.revokeObjectURL(url);
             });
+        }
+
+        /**
+         * Downloads function yaml
+         * @param {Blob} data - exported function config parsed to YAML
+         * @param {string} fileName - name of the file
+         */
+        function downloadExportedFunction(data, fileName) {
+            downloadExportedFile(data, fileName, 'yaml');
         }
 
         /**

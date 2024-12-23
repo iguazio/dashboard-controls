@@ -1,0 +1,418 @@
+.date-time-picker {
+    .date-time-picker-color-set();
+
+    outline: none;
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    position: relative;
+
+    &:after {
+        clear: both;
+    }
+
+    .datetimepicker-input, .datetimepicker-open-button {
+        background-color: @datetimepicker-input-bg-color;
+        border: @datetimepicker-input-border;
+        float: left;
+        height: 36px;
+        outline: none;
+    }
+
+    .datetimepicker-input {
+        font-size: 13px;
+        border-radius: 2px 0 0 2px;
+        width: 120px;
+        padding-left: 14px;
+
+        &[disabled] {
+            opacity: 1;
+        }
+
+        &:focus, &:active {
+            border: @datetimepicker-input-focus-active-border;
+        }
+
+        &.date-range {
+            min-width: 150px;
+
+            &.pick-time {
+                width: 285px;
+            }
+        }
+    }
+
+    .datetimepicker-open-button {
+        border-radius: 0 2px 2px 0;
+        width: 42px;
+        border-left: none;
+        vertical-align: top;
+
+        &:hover {
+            box-shadow: @datetimepicker-open-btn-hover-box-shadow;
+        }
+
+        &.active {
+            background-color: @datetimepicker-open-btn-active-bg-color;
+            box-shadow: @datetimepicker-open-btn-active-box-shadow;
+            border: @datetimepicker-open-btn-active-border;
+        }
+
+        .igz-icon-dropdown {
+            font-size: 11px;
+            line-height: 1.4;
+            vertical-align: bottom;
+        }
+
+        .revert-icon {
+            display: block;
+            transform: rotate(180deg);
+            line-height: 1;
+        }
+    }
+
+    .options-dropdown {
+        position: fixed;
+        width: 100%;
+        padding: 9px 0 0;
+        z-index: 5000;
+        font-family: @font-family-sans-serif;
+        font-size: 14px;
+        visibility: hidden;
+        font-weight: 500;
+        background-color: @options-dropdown-bg-color;
+        color: @options-dropdown-color;
+        border-radius: 2px;
+        box-shadow: @options-dropdown-box-shadow;
+
+        &.visible {
+            visibility: visible;
+        }
+
+        .options-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+
+            .options-list-item {
+                height: 32px;
+                line-height: 32px;
+                margin: 0;
+                padding: 0 15px;
+                float: none;
+
+                .tick-icon {
+                    position: absolute;
+                    right: 0;
+                    margin: 0 16px;
+                    font-size: 16px;
+                    color: @options-list-item-tick-icon-color;
+                }
+
+                &:hover {
+                    background-color: @options-list-item-hover-bg-color;
+                }
+
+                &:last-child {
+                    margin-bottom: 1px;
+                }
+            }
+
+            .separator {
+                border-bottom: @options-list-separator-border-bottom;
+                margin: 8px 0 7px;
+            }
+        }
+    }
+
+    &.disabled:after {
+        opacity: 0.5;
+    }
+
+    .date-time-pickers {
+        position: fixed;
+        z-index: 1000;
+        visibility: hidden;
+        width: 279px;
+        box-shadow: @date-time-pickers-box-shadow;
+        background-color: @date-time-pickers-bg-color;
+
+        &.date-range {
+            width: 538px;
+        }
+
+        &.visible {
+            visibility: visible;
+        }
+
+        .datepicker-wrapper {
+            width: 255px;
+            display: inline-block;
+            padding: 4px 0 0;
+
+            &:first-child {
+                padding-left: 20px;
+                margin-right: 23px;
+            }
+
+            .glyphicon {
+                &.glyphicon-chevron-up {
+                    top: 5px;
+                    .igz-icon-up;
+                }
+
+                &.glyphicon-chevron-down {
+                    top: -1px;
+                    .igz-icon-down;
+                }
+
+                &.glyphicon-chevron-left {
+                    left: -2px;
+                    .igz-icon-left;
+                }
+
+                &.glyphicon-chevron-right {
+                    .igz-icon-right;
+                }
+            }
+
+            .datepicker-calendar {
+                border-radius: 3px;
+                background-color: @datepicker-calendar-bg-color;
+                top: 0;
+                left: 0;
+                padding: 0 0 10px;
+                margin: 0;
+                width: 240px;
+
+                &.separator {
+                    border-bottom: @datepicker-calendar-separator-border-bottom;
+                }
+
+                .uib-daypicker {
+                    outline: none;
+                }
+
+                .btn {
+                    border: none;
+                    padding: 5px 0;
+                    outline: none;
+
+                    &:not(.active) {
+                        &[disabled] {
+                            opacity: 1;
+                            color: @datepicker-calendar-btn-disabled-color;
+
+                            .text-info {
+                                color: @datepicker-calendar-btn-text-info-disabled-color;
+                            }
+                        }
+
+                        &:not([disabled]) {
+                            .text-info {
+                                color: @datepicker-calendar-btn-text-info-color;
+                            }
+
+                            .text-muted {
+                                color: @datepicker-calendar-btn-text-muted-color;
+                            }
+                        }
+                    }
+                }
+
+                table {
+                    margin: 0;
+                    width: 240px;
+                    outline: none;
+
+                    thead tr {
+                        color: @datepicker-table-header-row-color;
+                        font-size: 13px;
+                        font-weight: 400;
+                        line-height: 2;
+
+                        &:first-child {
+                            height: 55px;
+
+                            button {
+                                height: 55px;
+                                min-width: 100% !important;
+                            }
+
+                            strong {
+                                color: @datepicker-table-header-row-color;
+                            }
+                        }
+
+                        th {
+                            button:hover {
+                                background-color: @datepicker-table-header-row-btn-bg-color;
+                            }
+
+                            small {
+                                font-size: 13px;
+                                font-weight: 100;
+                            }
+
+                            &:first-child, &:last-child {
+                                button {
+                                    font-size: 12px;
+
+                                    &:hover {
+                                        color: @datepicker-table-header-row-btn-hover-bg-color;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    tr {
+                        background-color: @datepicker-table-row-bg-color;
+
+                        td button, th button {
+                            font-family: @font-family-sans-serif;
+                            text-align: center;
+                            width: 28px;
+                            max-width: 28px;
+                            min-width: 28px !important;
+                            height: 28px;
+                            border: none;
+                            color: @datepicker-table-row-btn-color;
+                            background-color: @datepicker-table-row-btn-bg-color;
+                            box-shadow: none;
+                        }
+
+                        th button {
+                            color: @datepicker-table-header-row-btn-color;
+                            line-height: 35px;
+                            font-size: 16px;
+                            font-weight: 500 !important;
+                        }
+
+                        td button {
+                            background-color: @datepicker-table-header-row-btn-bg-color;
+                            border-radius: 50%;
+
+                            &:hover, &.active {
+                                background-color: @datepicker-table-header-row-btn-hover-active-bg-color;
+                            }
+
+                            &.btn-info.active {
+                                background-color: @datepicker-table-header-row-btn-info-active-bg-color;
+
+                                span {
+                                    color: @datepicker-table-header-row-btn-info-active-color;
+                                }
+                            }
+
+                            .text-muted {
+                                color: @datepicker-table-header-row-btn-text-muted-color;
+                            }
+
+                            .text-info {
+                                color: @datepicker-table-header-row-btn-text-info-color;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .timepicker {
+                background-color: @timepicker-bg-color;
+                box-shadow: @timepicker-box-shadow;
+
+                .uib-timepicker {
+                    margin: 0 auto;
+
+                    tbody {
+                        tr {
+                            background-color: @timepicker-table-row-bg-color;
+
+                            &:first-child, &:last-child {
+                                a {
+                                    font-size: 12px;
+                                    color: @timepicker-table-row-color;
+
+                                    &:hover {
+                                        color: @timepicker-table-row-hover-color;
+                                    }
+
+                                    &:focus, &:active {
+                                        outline: none;
+                                    }
+                                }
+                            }
+
+                            td {
+                                input, button {
+                                    height: 32px;
+                                    width: 36px !important;
+                                    font-size: 13px;
+                                    border-radius: 2px;
+                                    border: @timepicker-table-cell-border;
+                                    box-shadow: none;
+                                    margin: 0 2.5px;
+                                    padding: 0;
+                                }
+
+                                input {
+                                    color: @timepicker-table-cell-color;
+                                    font-weight: 400;
+
+                                    &:focus, &:active {
+                                        border: @timepicker-table-cell-focus-active-border;
+                                    }
+                                }
+
+                                &.has-error input, &.invalid input {
+                                    background-color: @timepicker-table-cell-has-error-bg-color;
+                                    border: @timepicker-table-cell-has-error-border;
+                                    box-shadow: none;
+                                    outline: none;
+                                }
+
+                                button {
+                                    color: @timepicker-table-cell-btn-color;
+                                    font-weight: 500;
+                                    margin-left: 6px;
+
+                                    &:hover {
+                                        box-shadow: @timepicker-table-cell-btn-hover-box-shadow;
+                                        background-color: @timepicker-table-cell-btn-hover-bg-color;
+                                        color: @timepicker-table-cell-btn-hover-color;
+                                    }
+
+                                    &:active, &:focus {
+                                        background-color: @timepicker-table-cell-btn-active-bg-color;
+                                        box-shadow: @timepicker-table-cell-btn-active-box-shadow;
+                                        border: @timepicker-table-cell-btn-active-border;
+                                        color: @timepicker-table-cell-btn-active-color;
+                                        outline: none;
+                                    }
+                                }
+
+                                a.disabled {
+                                    opacity: 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .buttons-block {
+            border-top: @buttons-block-border-top;
+            padding: 8px 24px;
+            text-align: right;
+
+            &.pick-time {
+                margin-top: -3px;
+            }
+
+            button:not(:first-child) {
+                margin-left: 8px;
+            }
+        }
+    }
+}

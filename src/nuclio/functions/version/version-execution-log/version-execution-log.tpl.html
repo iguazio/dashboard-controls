@@ -1,0 +1,177 @@
+<!--splash screen-->
+<igz-splash-screen data-is-splash-showed="$ctrl.isSplashShowed"></igz-splash-screen>
+
+<div class="ncl-version-execution-log ncl-version" data-igz-extend-background>
+    <div class="ncl-version-execution-log-wrapper">
+        <div class="row" data-ng-class="{'filters-shown': $ctrl.isFiltersShowed.value}">
+            <!--filters-->
+            <igz-info-page-filters data-is-filters-showed="$ctrl.isFiltersShowed.value"
+                                   data-change-state-callback="$ctrl.isFiltersShowed.changeValue(newVal)"
+                                   data-toggle-method="$ctrl.toggleFilters()"
+                                   data-apply-filters="$ctrl.applyFilters()"
+                                   data-watch-id="log-filter"
+                                   data-reset-filters="$ctrl.resetFilters()">
+                <div class="info-page-filters-item search-input-item filter-message-wrapper">
+                    <div class="filter-message align-items-center">
+                        <span class="filter-label">{{ 'common:MESSAGE' | i18next }}</span>
+                        <igz-more-info data-is-default-tooltip-enabled="true"
+                                       data-default-tooltip-placement="top"
+                                       data-is-html-enabled="true"
+                                       data-description="{{ 'common:TOOLTIP.LOGS_MESSAGE_DESCRIPTION' | i18next }}">
+                        </igz-more-info>
+                    </div>
+                    <igz-search-input class="igz-component"
+                                      data-data-set="$ctrl.logs"
+                                      data-search-keys="$ctrl.searchKeys"
+                                      data-placeholder="{{ 'common:PLACEHOLDER.SOME_LOG_MESSAGE' | i18next }}"
+                                      data-type="control"
+                                      data-rule-type="message"
+                                      data-search-states="$ctrl.searchStates"
+                                      data-search-callback="$ctrl.onQueryChanged(searchQuery, ruleType)"
+                                      data-on-search-submit="$ctrl.applyFilters()">
+                    </igz-search-input>
+                </div>
+
+                <div class="info-page-filters-item all-padded">
+                    <div class="browser-search-bar-wrapper">
+                        <span class="filter-label">
+                            {{ 'common:TIME_RANGE' | i18next }}
+                        </span>
+                        <igz-date-time-picker data-pick-time="true"
+                                              data-pick-future-dates="false"
+                                              data-selected-preset="{{$ctrl.datePreset}}"
+                                              data-input-date-from="$ctrl.timeRange.frNom"
+                                              data-input-date-to="$ctrl.timeRange.to"
+                                              data-is-date-range="true"
+                                              data-is-required="true"
+                                              data-custom-presets="$ctrl.customDatePresets"
+                                              data-on-change-model="$ctrl.onTimeRangeChange(newValue, selectedPreset)">
+                        </igz-date-time-picker>
+                    </div>
+                </div>
+
+                <div class="info-page-filters-item all-padded">
+                    <div class="filter-label">
+                        {{ 'common:LEVEL' | i18next }}
+                    </div>
+                    <div class="filter-level-wrapper align-items-center">
+                        <div class="igz-col-50">
+                            <div class="filter-level-item">
+                                <input type="checkbox" data-ng-model="$ctrl.filter.level.debug" id="level-debug">
+                                <label for="level-debug">
+                                    <span class="level-icon ncl-icon-debug"></span>
+                                    {{ 'common:DEBUG' | i18next }}
+                                </label>
+                            </div>
+                            <div class="filter-level-item">
+                                <input type="checkbox" data-ng-model="$ctrl.filter.level.warn" id="level-warning">
+                                <label for="level-warning">
+                                    <span class="level-icon igz-icon-warning"></span>
+                                    {{ 'common:WARNING' | i18next }}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="igz-col-50">
+                            <div class="filter-level-item">
+                                <input type="checkbox" data-ng-model="$ctrl.filter.level.info" id="level-info">
+                                <label for="level-info">
+                                    <span class="level-icon igz-icon-info-round"></span>
+                                    {{ 'common:INFO' | i18next }}
+                                </label>
+                            </div>
+                            <div class="filter-level-item">
+                                <input type="checkbox" data-ng-model="$ctrl.filter.level.error" id="level-error">
+                                <label for="level-error">
+                                    <span class="level-icon igz-icon-cancel-path"></span>
+                                    {{ 'common:ERROR' | i18next }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-page-filters-item all-padded replicas">
+                    <span class="filter-label">
+                        {{ 'common:REPLICAS' | i18next }}
+                    </span>
+                    <igz-multiple-checkboxes data-ng-model="$ctrl.selectedReplicas"
+                                             data-options="$ctrl.replicasList"
+                                             data-dropdown="true"
+                                             data-select-all-none="true"
+                                             data-ng-change="$ctrl.onCheckboxChange($event)"
+                                             data-ng-required="true"
+                                             data-base-id="select-replica_">
+                    </igz-multiple-checkboxes>
+                </div>
+            </igz-info-page-filters>
+
+            <!--actions bar-->
+            <igz-info-page-actions-bar>
+                <div class="igz-action-panel">
+                    <div class="actions-list">
+                        <div class="actions-bar-right">
+                            <div class="actions-bar-left actions-buttons-block actions-dropdown-block">
+                                <igz-default-dropdown data-values-array="$ctrl.refreshRate.options"
+                                                      data-selected-item="$ctrl.refreshRate.value"
+                                                      data-select-property-only="value"
+                                                      data-item-select-callback="$ctrl.onRefreshRateChange(item, isItemChanged, field)"
+                                                      data-item-select-field="refreshRate.value">
+                                </igz-default-dropdown>
+                            </div>
+                            <div class="actions-bar-left">
+                                <igz-action-item-refresh
+                                        data-is-disabled="$ctrl.isFunctionDeploying()"
+
+                                        data-refresh="$ctrl.searchWithParams($ctrl.page.number, $ctrl.page.size)">
+                                </igz-action-item-refresh>
+                            </div>
+<!--                            <div class="actions-bar-left">-->
+<!--                                <div class="igz-action-item"-->
+<!--                                     data-ng-click="$ctrl.downloadLogFiles()"-->
+<!--                                     data-uib-tooltip="{{ 'common:DOWNLOAD' | i18next }}"-->
+<!--                                     data-tooltip-placement="bottom"-->
+<!--                                     data-tooltip-popup-delay="300"-->
+<!--                                     data-tooltip-append-to-body="true">-->
+<!--                                    <div class="action-icon igz-icon-download"></div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <igz-actions-panes data-filters-toggle-method="$ctrl.toggleFilters()"
+                                               data-show-filter-icon="true"
+                                               data-filters-counter="$ctrl.activeFilters"
+                                               data-is-filters-opened="$ctrl.isFiltersShowed.value">
+                            </igz-actions-panes>
+                        </div>
+                    </div>
+                </div>
+            </igz-info-page-actions-bar>
+
+            <div class="igz-control-panel-log">
+                <div class="control-panel-log-table common-table">
+                    <div class="search-input-not-found"
+                         data-ng-if="$ctrl.logs.length === 0">
+                        {{ 'functions:NO_LOGS_HAVE_BEEN_FOUND' | i18next }}
+                    </div>
+
+                    <div data-igz-extend-background
+                         class="common-table-body">
+                        <div class="igz-scrollable-container logs-container"
+                             data-ng-scrollbars
+                             data-ng-scrollbars-config="$ctrl.scrollConfig"
+                             data-ng-hide="$ctrl.logs.length === 0">
+                            <div data-ng-repeat="log in $ctrl.logs">
+                                <igz-elastic-log-table-row data-entry-item="log"></igz-elastic-log-table-row>
+                            </div>
+
+                            <igz-pagination class="control-panel-log-pagination"
+                                            data-page-data="$ctrl.page"
+                                            data-pagination-callback="$ctrl.searchWithParams(page, size)"
+                                            data-ng-hide="$ctrl.logs.length === 0"
+                                            data-per-page-values="$ctrl.perPageValues">
+                            </igz-pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
