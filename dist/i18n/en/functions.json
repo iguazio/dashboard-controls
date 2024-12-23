@@ -325,6 +325,7 @@
         "DEPLOY_IN_PROGRESS": "Deploy is already in-progress.",
         "DISABLE_CACHE": "Build the function's Docker image from scratch without reusing any previously built Docker image layers.",
         "DISABLED_FUNCTION": "Only running and scaled-to-zero functions can be tested.",
+        "DO_NOT_CREATE_HTTP_TRIGGER_BY_DEFAULT": "When not checked, an http trigger will be created for the function by default.",
         "GIT": {
             "BRANCH": "The Git repository branch from which to download the function code.",
             "BRANCH_TAG_REFERENCE_DISABLED": "Exactly one of Branch, Tag, and Reference fields must be filled. When one is filled, the others are disabled.",
