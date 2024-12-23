@@ -18,28 +18,19 @@ such restriction.
     'use strict';
 
     angular.module('iguazio.dashboard-controls')
-        .component('nclDeployLog', {
+        .component('igzElasticLogTableRow', {
             bindings: {
-                logEntries: '<'
+                entryItem: '<'
             },
-            templateUrl: 'nuclio/common/components/deploy-log/deploy-log.tpl.html',
-            controller: NclDeployLogController
+            templateUrl: 'igz_controls/components/log-table-row/log-table-row.tpl.html',
+            controller: IgzElasticLogTableRowController
         });
 
-    function NclDeployLogController(lodash) {
+    function IgzElasticLogTableRowController(lodash) {
         var ctrl = this;
 
-        ctrl.scrollConfig = {
-            advanced: {
-                updateOnContentResize: true
-            },
-            theme: 'light-thin'
-        };
-
-        ctrl.lodash = lodash;
-
         ctrl.getLogLevel = getLogLevel;
-        ctrl.getLogParams = getLogParams;
+        ctrl.getLogName = getLogName;
 
         //
         // Public methods
@@ -47,24 +38,20 @@ such restriction.
 
         /**
          * Get log level display value
-         * @param {string} level - the level model value (one of: 'debug', 'info', 'warn', 'error')
          * @returns {string} the log level display value
          */
-        function getLogLevel(level) {
-            return lodash.first(level).toUpperCase();
+        function getLogLevel() {
+            return lodash.first(ctrl.entryItem.level).toUpperCase();
         }
 
         /**
-         * Get log parameters display value
-         * @param {string} logEntry - the log entry that includes the parameters
-         * @returns {string} the log level display value
+         * Get log name display value
+         * @returns {string} the log name display value
          */
-        function getLogParams(logEntry) {
-            var params = lodash.omit(logEntry, ['name', 'time', 'level', 'message', 'err']);
+        function getLogName() {
+            var name = lodash.get(ctrl.entryItem, 'name', '');
 
-            return lodash.isEmpty(params) ? '' : '[' + lodash.map(params, function (value, key) {
-                return key + ': ' + angular.toJson(value);
-            }).join(', ').replace(/\\n/g, '\n').replace(/\\"/g, '"') + ']';
+            return lodash.padEnd(name.substring(0, 15), 15);
         }
     }
 }());

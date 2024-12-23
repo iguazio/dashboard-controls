@@ -35,11 +35,13 @@ such restriction.
             controller: NclVersionController
         });
 
-    function NclVersionController($i18next, $interval, $rootScope, $scope, $state, $stateParams, $transitions, $timeout,
+    function NclVersionController($i18next, $interval, $injector, $rootScope, $scope, $state, $stateParams, $transitions, $timeout,
                                   i18next, lodash, ngDialog, ConfigService, DialogsService, ExportService,
-                                  FunctionsService, GeneralDataService, NuclioHeaderService, VersionHelperService) {
+                                  FunctionsService, GeneralDataService, NuclioHeaderService,
+                                  VersionHelperService) {
         var ctrl = this;
         var deregisterFunction = null;
+        var servicesService = null;
         var interval = null;
         var lng = i18next.language;
 
@@ -226,8 +228,13 @@ such restriction.
                 }
             });
 
+            if ($injector.has('ServicesService')) {
+                servicesService = $injector.get('ServicesService')
+            }
+
             setImageNamePrefixTemplate();
             setIngressHost();
+            initLogTabs();
         }
 
         //
@@ -673,6 +680,26 @@ such restriction.
             if (!lodash.isNil(interval)) {
                 $interval.cancel(interval);
                 interval = null;
+            }
+        }
+
+        /**
+         * Checks if the "Execution log" tab should be shown
+         */
+        function initLogTabs() {
+            if (lodash.get(ConfigService, 'url.elasticsearch.path', '') && servicesService) {
+                servicesService.getServices().then(function (result) {
+                    var services = result.services;
+                    var logForwarderService = lodash.find(services, ['spec.name', 'log-forwarder']);
+
+                    if (servicesService.isEnabled(logForwarderService)) {
+                        ctrl.navigationTabsConfig.push({
+                            tabName: $i18next.t('functions:EXECUTION_LOG', { lng: lng }),
+                            id: 'execution-log',
+                            uiRoute: 'app.project.function.edit.execution-log'
+                        });
+                    }
+                });
             }
         }
 

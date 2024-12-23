@@ -1,0 +1,16 @@
+<div class="control-panel-log-row">
+
+    <div class="log-entry">
+        <span class="log-entry-time">{{$ctrl.entryItem['@timestamp'] | date : 'yy-MM-dd HH:mm:ss.sss' }}</span>
+        <span class="log-entry-name"
+              data-uib-tooltip="{{$ctrl.entryItem.name}}"
+              data-tooltip-placement="top"
+              data-tooltip-popup-delay="200"
+              data-tooltip-append-to-body="true">&nbsp;{{$ctrl.getLogName()}}</span>
+        <span class="log-entry-level-{{$ctrl.entryItem.level.toLowerCase()}}"
+              data-ng-if="$ctrl.entryItem.level">&nbsp;({{$ctrl.getLogLevel()}})</span>
+        <span class="log-entry-message">&nbsp;{{$ctrl.entryItem.message}}</span>
+        <span class="log-entry-more">&nbsp;{{$ctrl.entryItem.more}}</span>
+    </div>
+
+</div>
