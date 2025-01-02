@@ -31,8 +31,9 @@ such restriction.
     function NclVersionExecutionLogController(lodash, $interval, i18next, $i18next, $rootScope, moment, ConfigService,
                                               ControlPanelLogsDataService, ExportService, LoginService,PaginationService) {
         var ctrl = this;
-
         var lng = i18next.language;
+        var MAX_DOWNLOAD_LOGS = 2000000;
+
         var refreshInterval = null;
         var initialTimeRange = {
             from: null,
@@ -51,6 +52,7 @@ such restriction.
             }
         };
 
+        ctrl.downloadButtonIsHidden = true;
         ctrl.isSplashShowed = {
             value: false
         };
@@ -67,6 +69,7 @@ such restriction.
             }
         };
         ctrl.datePreset = initialDatePreset;
+        ctrl.logsAreDownloading = false;
         ctrl.timeRange = initialTimeRange;
         ctrl.searchStates = {};
         ctrl.selectedReplicas = [];
@@ -164,7 +167,7 @@ such restriction.
         ctrl.$onDestroy = onDestroy;
 
         ctrl.applyFilters = applyFilters;
-        // ctrl.downloadLogFiles = downloadLogFiles;
+        ctrl.downloadLogFiles = downloadLogFiles;
         ctrl.onCheckboxChange = onCheckboxChange;
         ctrl.onRefreshRateChange = onRefreshRateChange;
         ctrl.onTimeRangeChange = onTimeRangeChange;
@@ -189,6 +192,12 @@ such restriction.
 
             ctrl.page.size = ctrl.perPageValues[0].id;
 
+            ControlPanelLogsDataService.logsPaginated(0, 100, { query: generateDefaultQuery(), trackTotalHits: true })
+                .then(function (logs) {
+                    if (logs.length > 0) {
+                        ctrl.downloadButtonIsHidden = logs.total_logs_count >= MAX_DOWNLOAD_LOGS;
+                    }
+                });
             applyFilters();
         }
 
@@ -213,18 +222,18 @@ such restriction.
             searchWithParams(0, ctrl.page.size);
         }
 
-        // /**
-        //  * Downloads log to the file
-        //  */
-        // function downloadLogFiles() {
-        //     ExportService.exportLogs(prepareLogs(), ctrl.version.metadata.name);
-        //
-        //     function prepareLogs() {
-        //         return ctrl.logs.map(function (log) {
-        //             return log['@timestamp'] + '  ' + log.name + '  (' + log.level + ')  ' + log.message + '  ' + log.more;
-        //         });
-        //     }
-        // }
+        /**
+         * Downloads log to the file
+         */
+        function downloadLogFiles() {
+            stopAutoUpdate();
+
+            return ControlPanelLogsDataService.collectLogs(generateDefaultQuery())
+                .then(function (response) {
+                    ExportService.exportLogs(response, ctrl.version.metadata.name);
+                    startAutoUpdate();
+                });
+        }
 
         /**
          * Triggered when search text was changed
@@ -277,7 +286,7 @@ such restriction.
         function refreshLogs() {
             startAutoUpdate();
 
-            ControlPanelLogsDataService.logsPaginated(ctrl.page.number, ctrl.page.size, queryParams(), true)
+            ControlPanelLogsDataService.logsPaginated(ctrl.page.number, ctrl.page.size, queryParams())
                 .then(function (logs) {
                     if (logs.length > 0) {
                         ctrl.logs = lodash.cloneDeep(logs);
@@ -330,13 +339,12 @@ such restriction.
                 return;
             }
 
-            ControlPanelLogsDataService.logsPaginated(ctrl.page.number, ctrl.page.size, queryParamsAutoUpdate(), true)
+            ControlPanelLogsDataService.logsPaginated(ctrl.page.number, ctrl.page.size, queryParamsAutoUpdate())
                 .then(function (logs) {
                     if (logs.length > 0) {
                         ctrl.logs = lodash.cloneDeep(logs);
                         ctrl.page.total = logs['total_pages'];
 
-                        // set lastItemTimeStamp and start autoupdate
                         onChangePageCallback();
                     }
                 });
@@ -413,11 +421,24 @@ such restriction.
         }
 
         /**
+         * Generates query string without additional filters
+         */
+        function generateDefaultQuery() {
+            var queries = ['system-id:"' + ConfigService.systemId + '"', '_exists_:nuclio'];
+
+            if (!lodash.isEmpty(ctrl.version.metadata.name)) {
+                queries.push('name:' + ctrl.version.metadata.name);
+            }
+            return lodash.join(queries, ' AND ');
+        }
+
+        /**
          * Generates query params for ordinary request, for example, when page was changed
          * @returns {Object}
          */
         function queryParams() {
             return {
+                trackTotalHits: true,
                 query: ctrl.filterQuery,
                 timeFrame: ctrl.datePreset,
                 customTimeFrame: ctrl.timeRange
