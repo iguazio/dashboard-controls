@@ -126,16 +126,17 @@
                                         data-refresh="$ctrl.searchWithParams($ctrl.page.number, $ctrl.page.size)">
                                 </igz-action-item-refresh>
                             </div>
-<!--                            <div class="actions-bar-left">-->
-<!--                                <div class="igz-action-item"-->
-<!--                                     data-ng-click="$ctrl.downloadLogFiles()"-->
-<!--                                     data-uib-tooltip="{{ 'common:DOWNLOAD' | i18next }}"-->
-<!--                                     data-tooltip-placement="bottom"-->
-<!--                                     data-tooltip-popup-delay="300"-->
-<!--                                     data-tooltip-append-to-body="true">-->
-<!--                                    <div class="action-icon igz-icon-download"></div>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <div class="actions-bar-left" data-ng-hide="$ctrl.downloadButtonIsHidden">
+                                <div class="igz-action-item"
+                                     data-ng-click="$ctrl.downloadLogFiles()"
+                                     data-ng-class="{'inactive': $ctrl.logsAreDownloading}"
+                                     data-uib-tooltip="{{ 'common:DOWNLOAD' | i18next }}"
+                                     data-tooltip-placement="bottom"
+                                     data-tooltip-popup-delay="300"
+                                     data-tooltip-append-to-body="true">
+                                    <div class="action-icon igz-icon-download"></div>
+                                </div>
+                            </div>
                             <igz-actions-panes data-filters-toggle-method="$ctrl.toggleFilters()"
                                                data-show-filter-icon="true"
                                                data-filters-counter="$ctrl.activeFilters"

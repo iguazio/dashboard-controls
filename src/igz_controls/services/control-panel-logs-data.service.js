@@ -4,8 +4,9 @@
     angular.module('iguazio.dashboard-controls')
         .factory('ControlPanelLogsDataService', ControlPanelLogsDataService);
 
-    function ControlPanelLogsDataService($q, lodash, ElasticsearchService) {
+    function ControlPanelLogsDataService($q, lodash, ElasticsearchService, ElasticSearchDataService) {
         return {
+            collectLogs: collectLogs,
             entriesPaginated: search,
             logsPaginated: logsWidthReplicas
         };
@@ -52,8 +53,8 @@
                 if (queryParams.timeFrame) {
                     searchFrom = 'now-' + queryParams.timeFrame;
                 } else {
-                    searchFrom = queryParams.customTimeFrame.from
-                    searchTo =  lodash.get(queryParams, 'customTimeFrame.to', 'now')
+                    searchFrom = lodash.get(queryParams, 'customTimeFrame.from', '1970-01-01T00:00:00Z');
+                    searchTo = lodash.get(queryParams, 'customTimeFrame.to', 'now');
                 }
             }
 
@@ -113,6 +114,10 @@
                 });
             }
 
+            if (queryParams.trackTotalHits) {
+                config.track_total_hits = true;
+            }
+
             return ElasticsearchService.search(config)
                 .then(function (response) {
                     // Saved log entry can be found in `_source` property
@@ -138,6 +143,51 @@
 
                     return $q.reject(err);
                 });
+        }
+
+        /**
+         * Collects all the logs using chunks, and saved them as an array of strings.
+         * @returns {Promise.<Array.<Object>>} a promise resolving to an array of logs.
+         */
+        function collectLogs(query) {
+            var keepAlive = '5m';
+            var size = 10000;
+            var downloadLogsData = [];
+            var createPitConfig = {
+                index: 'filebeat*',
+                keepAlive: keepAlive
+            };
+
+            return ElasticSearchDataService.createPit(createPitConfig).then(function (pitId) {
+                return getNextPitLogs(pitId, null);
+            });
+
+            function getNextPitLogs(pitId, searchAfter) {
+                return ElasticSearchDataService.getNextPitLogs(size, query, keepAlive, pitId, searchAfter).then(function (response) {
+                    var hits = response.hits.hits;
+
+                    if (hits.length > 0) {
+                        var lastHit = lodash.last(hits);
+
+                        downloadLogsData = downloadLogsData.concat(prepareLogs(hits));
+
+                        return getNextPitLogs(response.pit_id, lastHit.sort)
+                    } else {
+                        return downloadLogsData;
+                    }
+                }).catch(function (error) {
+                    throw error;
+                });
+            }
+
+            function prepareLogs(logs) {
+                return logs.map(function (logData) {
+                    var log = lodash.get(logData, '_source', {});
+
+                    return log['@timestamp'] + '  ' + log.name + '  (' + log.level + ')  ' +
+                        lodash.get(log, 'message', '') + '  ' + JSON.stringify(lodash.get(log, 'more', {}));
+                });
+            }
         }
 
         /**
@@ -195,7 +245,7 @@
                 logs.replicas = replicas;
             }
 
-            console.info(queryParams);
+            // console.info(queryParams);
 
             return $q.when(logs);
         }
