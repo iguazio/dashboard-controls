@@ -28,11 +28,10 @@ such restriction.
             controller: NclVersionExecutionLogController
         });
 
-    function NclVersionExecutionLogController(lodash, $interval, i18next, $i18next, $rootScope, moment, ConfigService,
-                                              ControlPanelLogsDataService, ExportService, LoginService,PaginationService) {
+    function NclVersionExecutionLogController(lodash, $interval, i18next, $i18next, $rootScope, moment, ControlPanelLogsDataService,
+                                              ConfigService, ExportService, LoginService, PaginationService) {
         var ctrl = this;
         var lng = i18next.language;
-        var MAX_DOWNLOAD_LOGS = 2000000;
 
         var refreshInterval = null;
         var initialTimeRange = {
@@ -52,7 +51,7 @@ such restriction.
             }
         };
 
-        ctrl.downloadButtonIsHidden = true;
+        ctrl.downloadButtonIsDisabled = false;
         ctrl.isSplashShowed = {
             value: false
         };
@@ -192,12 +191,6 @@ such restriction.
 
             ctrl.page.size = ctrl.perPageValues[0].id;
 
-            ControlPanelLogsDataService.logsPaginated(0, 100, { query: generateDefaultQuery(), trackTotalHits: true })
-                .then(function (logs) {
-                    if (logs.length > 0) {
-                        ctrl.downloadButtonIsHidden = logs.total_logs_count >= MAX_DOWNLOAD_LOGS;
-                    }
-                });
             applyFilters();
         }
 
@@ -228,10 +221,14 @@ such restriction.
         function downloadLogFiles() {
             stopAutoUpdate();
 
-            return ControlPanelLogsDataService.collectLogs(generateDefaultQuery())
+            ctrl.downloadButtonIsDisabled = true;
+            return ControlPanelLogsDataService.collectLogs(queryParams())
                 .then(function (response) {
                     ExportService.exportLogs(response, ctrl.version.metadata.name);
+                }).finally(function () {
                     startAutoUpdate();
+
+                    ctrl.downloadButtonIsDisabled = false;
                 });
         }
 
@@ -421,24 +418,11 @@ such restriction.
         }
 
         /**
-         * Generates query string without additional filters
-         */
-        function generateDefaultQuery() {
-            var queries = ['system-id:"' + ConfigService.systemId + '"', '_exists_:nuclio'];
-
-            if (!lodash.isEmpty(ctrl.version.metadata.name)) {
-                queries.push('name:' + ctrl.version.metadata.name);
-            }
-            return lodash.join(queries, ' AND ');
-        }
-
-        /**
          * Generates query params for ordinary request, for example, when page was changed
          * @returns {Object}
          */
         function queryParams() {
             return {
-                trackTotalHits: true,
                 query: ctrl.filterQuery,
                 timeFrame: ctrl.datePreset,
                 customTimeFrame: ctrl.timeRange

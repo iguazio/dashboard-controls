@@ -169,6 +169,7 @@
     "LOGGER_DESTINATION": "Logger destination",
     "LOGGER_LEVEL": "Logger level",
     "LOGGING": "Logging",
+    "LOGS_LINES_LIMITATION": "Only the latest 10000 lines are displayed. <br> To access the full log history, download the complete log file.",
     "MAX": "Max",
     "MAX_REPLICAS": "Maximum number of replicas (default: {{default}})",
     "MAX_WORKERS": "Max Workers",

@@ -53,7 +53,7 @@
                 if (queryParams.timeFrame) {
                     searchFrom = 'now-' + queryParams.timeFrame;
                 } else {
-                    searchFrom = lodash.get(queryParams, 'customTimeFrame.from', '1970-01-01T00:00:00Z');
+                    searchFrom = lodash.get(queryParams, 'customTimeFrame.from');
                     searchTo = lodash.get(queryParams, 'customTimeFrame.to', 'now');
                 }
             }
@@ -114,10 +114,6 @@
                 });
             }
 
-            if (queryParams.trackTotalHits) {
-                config.track_total_hits = true;
-            }
-
             return ElasticsearchService.search(config)
                 .then(function (response) {
                     // Saved log entry can be found in `_source` property
@@ -147,37 +143,39 @@
 
         /**
          * Collects all the logs using chunks, and saved them as an array of strings.
-         * @returns {Promise.<Array.<Object>>} a promise resolving to an array of logs.
+         * @param {Object} queryParams - additional parameters
+         * @param {string} queryParams.query - search query text
+         * @param {string} queryParams.timeFrame - selected time period to show results for
+         * @param {string} [queryParams.lastEntryTimestamp] - time stamp of the last item in a list, used with auto
+         * @returns {Promise.<Array>} a promise resolving to an array of logs.
          */
-        function collectLogs(query) {
+        function collectLogs(queryParams) {
             var keepAlive = '5m';
             var size = 10000;
             var downloadLogsData = [];
-            var createPitConfig = {
-                index: 'filebeat*',
-                keepAlive: keepAlive
-            };
+            var MAX_DOWNLOAD_LOGS = 100000;
 
-            return ElasticSearchDataService.createPit(createPitConfig).then(function (pitId) {
-                return getNextPitLogs(pitId, null);
+            return ElasticSearchDataService.createPit(keepAlive).then(function (pitId) {
+                return getNextChunk(pitId, null);
             });
 
-            function getNextPitLogs(pitId, searchAfter) {
-                return ElasticSearchDataService.getNextPitLogs(size, query, keepAlive, pitId, searchAfter).then(function (response) {
-                    var hits = response.hits.hits;
+            function getNextChunk(pit, searchAfter) {
+                return getNextPitLogs(size, queryParams, keepAlive, pit, searchAfter)
+                    .then(function (response) {
+                        var hits = response.hits.hits;
 
-                    if (hits.length > 0) {
-                        var lastHit = lodash.last(hits);
+                        if (hits.length > 0 && downloadLogsData.length < MAX_DOWNLOAD_LOGS - size) {
+                            var lastHit = lodash.last(hits);
 
-                        downloadLogsData = downloadLogsData.concat(prepareLogs(hits));
+                            downloadLogsData = downloadLogsData.concat(prepareLogs(hits));
 
-                        return getNextPitLogs(response.pit_id, lastHit.sort)
-                    } else {
-                        return downloadLogsData;
-                    }
-                }).catch(function (error) {
-                    throw error;
-                });
+                            return getNextChunk(response.pit_id, lastHit.sort);
+                        } else {
+                            return downloadLogsData;
+                        }
+                    }).catch(function (error) {
+                        throw error;
+                    });
             }
 
             function prepareLogs(logs) {
@@ -238,8 +236,8 @@
                 'nuclio-tutorial-normal-user-model-monitoring-controller-6c4gfcv'
             ];
 
-            logs.total_pages = 30000 / perPage;
-            logs.total_logs_count = 30000;
+            logs.total_pages = 10000 / perPage;
+            logs.total_logs_count = 10000;
 
             if (withReplicas) {
                 logs.replicas = replicas;
@@ -248,6 +246,72 @@
             // console.info(queryParams);
 
             return $q.when(logs);
+        }
+
+        /**
+         * Gets next part of the logs using Pit Id and search after parameters
+         * @param {number} size - size of the logs to be requested
+         * @param {Object} queryParams - additional parameters
+         * @param {string} queryParams.query - search query text
+         * @param {string} queryParams.timeFrame - selected time period to show results for
+         * @param {string} [queryParams.lastEntryTimestamp] - time stamp of the last item in a list, used with auto
+         * @param {boolean} keepAlive - determines how long the PIT ID should be alive
+         * @param {string} pitId - PIT ID that is needed to get next chunk of logs
+         * @param {Array} searchAfter - An array of identifiers that points to the last provided log
+         * @returns {Promise.<Object>} Elasticsearch logs data.
+         */
+        function getNextPitLogs(size, queryParams, keepAlive, pitId, searchAfter) {
+            var searchFrom = '';
+            var searchTo = 'now';
+
+            if (queryParams.timeFrame) {
+                searchFrom = 'now-' + queryParams.timeFrame;
+            } else {
+                searchFrom = lodash.get(queryParams, 'customTimeFrame.from');
+                searchTo = lodash.get(queryParams, 'customTimeFrame.to', 'now');
+            }
+
+            var config = {
+                size: size,
+                body: {
+                    pit: {
+                        id: pitId,
+                        keep_alive: keepAlive
+                    },
+                    query: {
+                        bool: {
+                            must: [
+                                {
+                                    range: {
+                                        '@timestamp': {
+                                            gte: searchFrom,
+                                            lte: searchTo
+                                        }
+                                    }
+                                },
+                                {
+                                    query_string: {
+                                        query: queryParams.query,
+                                        analyze_wildcard: true,
+                                        default_field: '*'
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    sort: [
+                        {
+                            '@timestamp': 'desc'
+                        }
+                    ]
+                }
+            };
+
+            if (searchAfter) {
+                config.body.search_after = searchAfter;
+            }
+
+            return ElasticsearchService.search(config);
         }
     }
 }());
