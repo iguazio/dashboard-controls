@@ -110,6 +110,9 @@
             <igz-info-page-actions-bar>
                 <div class="igz-action-panel">
                     <div class="actions-list">
+                        <div class="actions-bar-left">
+                            <span class="limitation-message" data-ng-i18next="[html]functions:LOGS_LINES_LIMITATION"></span>
+                        </div>
                         <div class="actions-bar-right">
                             <div class="actions-bar-left actions-buttons-block actions-dropdown-block">
                                 <igz-default-dropdown data-values-array="$ctrl.refreshRate.options"
@@ -126,10 +129,10 @@
                                         data-refresh="$ctrl.searchWithParams($ctrl.page.number, $ctrl.page.size)">
                                 </igz-action-item-refresh>
                             </div>
-                            <div class="actions-bar-left" data-ng-hide="$ctrl.downloadButtonIsHidden">
+                            <div class="actions-bar-left">
                                 <div class="igz-action-item"
                                      data-ng-click="$ctrl.downloadLogFiles()"
-                                     data-ng-class="{'inactive': $ctrl.logsAreDownloading}"
+                                     data-ng-class="{'inactive': $ctrl.logsAreDownloading || $ctrl.downloadButtonIsDisabled}"
                                      data-uib-tooltip="{{ 'common:DOWNLOAD' | i18next }}"
                                      data-tooltip-placement="bottom"
                                      data-tooltip-popup-delay="300"
