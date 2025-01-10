@@ -181,8 +181,9 @@
             function prepareLogs(logs) {
                 return logs.map(function (logData) {
                     var log = lodash.get(logData, '_source', {});
+                    var level = log.level ? '  (' + log.level + ')  ' : '';
 
-                    return log['@timestamp'] + '  ' + log.name + '  (' + log.level + ')  ' +
+                    return log['@timestamp'] + '  ' + log.name + level +
                         lodash.get(log, 'message', '') + '  ' + JSON.stringify(lodash.get(log, 'more', {}));
                 });
             }
