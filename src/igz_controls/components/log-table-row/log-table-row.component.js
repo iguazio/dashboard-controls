@@ -49,9 +49,9 @@ such restriction.
          * @returns {string} the log name display value
          */
         function getLogName() {
-            var name = lodash.get(ctrl.entryItem, 'name', '');
+            var name = lodash.get(ctrl.entryItem, 'kubernetes.pod.name', lodash.get(ctrl.entryItem, 'name', ''));
 
-            return lodash.padEnd(name.substring(0, 15), 15);
+            return lodash.padEnd(name.substring(0, 25), 25);
         }
     }
 }());
