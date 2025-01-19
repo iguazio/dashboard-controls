@@ -185,8 +185,9 @@
                 return logs.map(function (logData) {
                     var log = lodash.get(logData, '_source', {});
                     var level = log.level ? '  (' + log.level + ')  ' : '';
+                    var name = lodash.get(log, 'kubernetes.pod.name', lodash.get(log, 'name', ''));
 
-                    return log['@timestamp'] + '  ' + log.name + level +
+                    return log['@timestamp'] + '  ' + name + level +
                         lodash.get(log, 'message', '') + '  ' + JSON.stringify(lodash.get(log, 'more', {}));
                 });
             }
