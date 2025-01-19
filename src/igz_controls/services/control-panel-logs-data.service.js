@@ -4,7 +4,7 @@
     angular.module('iguazio.dashboard-controls')
         .factory('ControlPanelLogsDataService', ControlPanelLogsDataService);
 
-    function ControlPanelLogsDataService($q, lodash, ElasticsearchService, ElasticSearchDataService) {
+    function ControlPanelLogsDataService($q, lodash, ElasticsearchService) {
         return {
             collectLogs: collectLogs,
             entriesPaginated: search,
@@ -146,7 +146,6 @@
          * @param {Object} queryParams - additional parameters
          * @param {string} queryParams.query - search query text
          * @param {string} queryParams.timeFrame - selected time period to show results for
-         * @param {string} [queryParams.lastEntryTimestamp] - time stamp of the last item in a list, used with auto
          * @returns {Promise.<Array>} a promise resolving to an array of logs.
          */
         function collectLogs(queryParams) {
@@ -155,21 +154,25 @@
             var downloadLogsData = [];
             var MAX_DOWNLOAD_LOGS = 100000;
 
-            return ElasticSearchDataService.createPit(keepAlive).then(function (pitId) {
-                return getNextChunk(pitId, null);
+            return createSearch(size, keepAlive, queryParams).then(function (response) {
+                var hits = response.hits.hits;
+
+                if (hits.length > 0) {
+                    downloadLogsData = downloadLogsData.concat(prepareLogs(hits));
+
+                    return getNextChunk(response._scroll_id);
+                }
             });
 
-            function getNextChunk(pit, searchAfter) {
-                return getNextPitLogs(size, queryParams, keepAlive, pit, searchAfter)
+            function getNextChunk(scroll) {
+                return getNextScrollLogs(keepAlive, scroll)
                     .then(function (response) {
                         var hits = response.hits.hits;
 
                         if (hits.length > 0 && downloadLogsData.length < MAX_DOWNLOAD_LOGS - size) {
-                            var lastHit = lodash.last(hits);
-
                             downloadLogsData = downloadLogsData.concat(prepareLogs(hits));
 
-                            return getNextChunk(response.pit_id, lastHit.sort);
+                            return getNextChunk(response._scroll_id);
                         } else {
                             return downloadLogsData;
                         }
@@ -250,18 +253,15 @@
         }
 
         /**
-         * Gets next part of the logs using Pit Id and search after parameters
-         * @param {number} size - size of the logs to be requested
+         * Makes a request to elasticsearch to create search id
+         * @param {boolean} size - logs size
+         * @param {string} keepAlive - sets lifetime for scroll id
          * @param {Object} queryParams - additional parameters
          * @param {string} queryParams.query - search query text
-         * @param {string} queryParams.timeFrame - selected time period to show results for
          * @param {string} [queryParams.lastEntryTimestamp] - time stamp of the last item in a list, used with auto
-         * @param {boolean} keepAlive - determines how long the PIT ID should be alive
-         * @param {string} pitId - PIT ID that is needed to get next chunk of logs
-         * @param {Array} searchAfter - An array of identifiers that points to the last provided log
-         * @returns {Promise.<Object>} Elasticsearch logs data.
+         * @returns {Object}
          */
-        function getNextPitLogs(size, queryParams, keepAlive, pitId, searchAfter) {
+        function createSearch(size, keepAlive, queryParams) {
             var searchFrom = '';
             var searchTo = 'now';
 
@@ -274,11 +274,8 @@
 
             var config = {
                 size: size,
+                scroll: keepAlive,
                 body: {
-                    pit: {
-                        id: pitId,
-                        keep_alive: keepAlive
-                    },
                     query: {
                         bool: {
                             must: [
@@ -308,11 +305,22 @@
                 }
             };
 
-            if (searchAfter) {
-                config.body.search_after = searchAfter;
-            }
-
             return ElasticsearchService.search(config);
+        }
+
+        /**
+         * Gets next part of the logs using scroll id parameter
+         * @param {boolean} keepAlive - determines how long the scroll id should be alive
+         * @param {string} scrollId - scroll id that is needed to get next chunk of logs
+         * @returns {Promise.<Object>} Elasticsearch logs data.
+         */
+        function getNextScrollLogs(keepAlive, scrollId) {
+            return ElasticsearchService.scroll({
+                body: {
+                    scroll: keepAlive,
+                    scroll_id: scrollId
+                }
+            });
         }
     }
 }());
