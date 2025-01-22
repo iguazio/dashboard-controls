@@ -4573,6 +4573,235 @@ such restriction.
 (function () {
   'use strict';
 
+  IgzActionMenuController.$inject = ["$element", "$document", "$i18next", "$rootScope", "$scope", "$timeout", "$window", "i18next", "lodash", "ConfigService", "PreventDropdownCutOffService"];
+  angular.module('iguazio.dashboard-controls').component('igzActionMenu', {
+    bindings: {
+      actions: '<',
+      shortcuts: '<',
+      onFireAction: '<?',
+      onClickShortcut: '<?',
+      isMenuShown: '<?',
+      iconClass: '@?',
+      tooltipEnabled: '<?',
+      tooltipText: '@?'
+    },
+    templateUrl: 'igz_controls/components/action-menu/action-menu.tpl.html',
+    controller: IgzActionMenuController
+  });
+  function IgzActionMenuController($element, $document, $i18next, $rootScope, $scope, $timeout, $window, i18next, lodash, ConfigService, PreventDropdownCutOffService) {
+    var ctrl = this;
+    var lng = i18next.language;
+    ctrl.isMenuShown = false;
+    ctrl.preventDropdownCutOff = null;
+    ctrl.$onInit = onInit;
+    ctrl.$postLink = postLink;
+    ctrl.$onDestroy = onDestroy;
+    ctrl.$onChanges = onChanges;
+    ctrl.isDemoMode = ConfigService.isDemoMode;
+    ctrl.showDetails = showDetails;
+    ctrl.toggleMenu = toggleMenu;
+    ctrl.isVisible = isVisible;
+
+    //
+    // Hook methods
+    //
+
+    /**
+     * Initialize method
+     */
+    function onInit() {
+      ctrl.iconClass = lodash.defaultTo(ctrl.iconClass, 'igz-icon-context-menu');
+      $scope.$on('close-all-action-menus', closeActionMenu);
+    }
+
+    /**
+     * On changes hook method
+     * @param {Object} changes
+     */
+    function onChanges(changes) {
+      var actions = lodash.get(changes, 'actions.currentValue');
+      var shortcuts = lodash.get(changes, 'shortcuts.currentValue');
+      if (angular.isDefined(actions)) {
+        ctrl.actions = lodash.chain(actions).filter(function (action) {
+          return !lodash.has(action, 'visible') || action.visible;
+        }).map(function (action) {
+          if (!angular.isFunction(action.handler)) {
+            action.handler = defaultAction;
+            if (action.id === 'delete' && angular.isUndefined(action.confirm)) {
+              action.confirm = {
+                message: $i18next.t('common:DELETE_SELECTED_ITEM_CONFIRM', {
+                  lng: lng
+                }),
+                yesLabel: $i18next.t('common:YES_DELETE', {
+                  lng: lng
+                }),
+                noLabel: $i18next.t('common:CANCEL', {
+                  lng: lng
+                }),
+                type: 'critical_alert'
+              };
+            }
+          }
+          return action;
+        }).value();
+      }
+      if (angular.isDefined(shortcuts)) {
+        ctrl.shortcuts = lodash.filter(shortcuts, function (shortcut) {
+          return !lodash.has(shortcut, 'visible') || shortcut.visible;
+        });
+      }
+    }
+
+    /**
+     * Destructor
+     */
+    function onDestroy() {
+      detachDocumentEvent();
+    }
+
+    /**
+     * Post linking method
+     */
+    function postLink() {
+      // Bind DOM-related preventDropdownCutOff method to component's controller
+      PreventDropdownCutOffService.preventDropdownCutOff($element, '.menu-dropdown');
+      attachDocumentEvent();
+    }
+
+    //
+    // Public methods
+    //
+
+    /**
+     * Handles mouse click on  a shortcut
+     * @param {MouseEvent} event
+     * @param {string} state - absolute state name or relative state path
+     */
+    function showDetails(event, state) {
+      if (angular.isFunction(ctrl.onClickShortcut)) {
+        ctrl.onClickShortcut(event, state);
+      }
+    }
+
+    /**
+     * Handles mouse click on the button of menu
+     * @param {Object} event
+     * Show/hides the action dropdown
+     */
+    function toggleMenu(event) {
+      if (!ctrl.isMenuShown) {
+        $rootScope.$broadcast('close-all-action-menus');
+        ctrl.isMenuShown = true;
+        attachDocumentEvent();
+        showMenu();
+      } else {
+        detachDocumentEvent();
+        ctrl.isMenuShown = false;
+      }
+      event.stopPropagation();
+    }
+
+    /**
+     * Checks if action menu is visible (not empty)
+     */
+    function isVisible() {
+      return !lodash.isEmpty(ctrl.actions) || !lodash.isEmpty(ctrl.shortcuts);
+    }
+
+    //
+    // Private methods
+    //
+
+    /**
+     * Shows the dropdown. If there is not enough space from below,
+     * adds 'upward-menu' class to open the dropdown from above
+     */
+    function showMenu() {
+      $timeout(function () {
+        var windowHeight = $window.innerHeight;
+        var menu = $document.find('.menu-dropdown')[0];
+        var menuTotalHeight = menu.clientHeight;
+        var menuPosition = menu.getBoundingClientRect();
+        var menuHighestPoint = menuPosition.top;
+        var menuLowestPoint = menuPosition.bottom;
+        var menuWrapper = menu.closest('.igz-scrollable-container');
+        if (menuWrapper) {
+          windowHeight = menuWrapper.getBoundingClientRect().bottom;
+          menuHighestPoint -= menuWrapper.getBoundingClientRect().top;
+        }
+        if (windowHeight - menuLowestPoint < 0 && menuHighestPoint > menuTotalHeight) {
+          menu.classList.add('upward-menu');
+        }
+        angular.element('.menu-dropdown').css('visibility', 'visible');
+      });
+    }
+
+    /**
+     * Attaches on click event handler to the document
+     */
+    function attachDocumentEvent() {
+      $document.on('click', onDocumentClick);
+    }
+
+    /**
+     * Closes action menu
+     */
+    function closeActionMenu() {
+      ctrl.isMenuShown = false;
+      detachDocumentEvent();
+    }
+
+    /**
+     * Default action handler
+     * @param {Object} action
+     */
+    function defaultAction(action) {
+      if (angular.isFunction(ctrl.onFireAction)) {
+        ctrl.onFireAction(action.id);
+      }
+    }
+
+    /**
+     * Removes on click event handler attached to the document
+     */
+    function detachDocumentEvent() {
+      $document.off('click', onDocumentClick);
+    }
+
+    /**
+     * Closes action menu
+     * @param {MouseEvent} event
+     */
+    function onDocumentClick(event) {
+      $scope.$apply(function () {
+        if (event.target !== $element[0] && $element.find(event.target).length === 0) {
+          closeActionMenu();
+        }
+      });
+    }
+  }
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
+(function () {
+  'use strict';
+
   IgzActionItemSubtemplateController.$inject = ["$compile", "$element"];
   angular.module('iguazio.dashboard-controls').component('igzActionItemSubtemplate', {
     bindings: {
@@ -4784,235 +5013,6 @@ such restriction.
       } else {
         detachDocumentEvent();
       }
-    }
-  }
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  IgzActionMenuController.$inject = ["$element", "$document", "$i18next", "$rootScope", "$scope", "$timeout", "$window", "i18next", "lodash", "ConfigService", "PreventDropdownCutOffService"];
-  angular.module('iguazio.dashboard-controls').component('igzActionMenu', {
-    bindings: {
-      actions: '<',
-      shortcuts: '<',
-      onFireAction: '<?',
-      onClickShortcut: '<?',
-      isMenuShown: '<?',
-      iconClass: '@?',
-      tooltipEnabled: '<?',
-      tooltipText: '@?'
-    },
-    templateUrl: 'igz_controls/components/action-menu/action-menu.tpl.html',
-    controller: IgzActionMenuController
-  });
-  function IgzActionMenuController($element, $document, $i18next, $rootScope, $scope, $timeout, $window, i18next, lodash, ConfigService, PreventDropdownCutOffService) {
-    var ctrl = this;
-    var lng = i18next.language;
-    ctrl.isMenuShown = false;
-    ctrl.preventDropdownCutOff = null;
-    ctrl.$onInit = onInit;
-    ctrl.$postLink = postLink;
-    ctrl.$onDestroy = onDestroy;
-    ctrl.$onChanges = onChanges;
-    ctrl.isDemoMode = ConfigService.isDemoMode;
-    ctrl.showDetails = showDetails;
-    ctrl.toggleMenu = toggleMenu;
-    ctrl.isVisible = isVisible;
-
-    //
-    // Hook methods
-    //
-
-    /**
-     * Initialize method
-     */
-    function onInit() {
-      ctrl.iconClass = lodash.defaultTo(ctrl.iconClass, 'igz-icon-context-menu');
-      $scope.$on('close-all-action-menus', closeActionMenu);
-    }
-
-    /**
-     * On changes hook method
-     * @param {Object} changes
-     */
-    function onChanges(changes) {
-      var actions = lodash.get(changes, 'actions.currentValue');
-      var shortcuts = lodash.get(changes, 'shortcuts.currentValue');
-      if (angular.isDefined(actions)) {
-        ctrl.actions = lodash.chain(actions).filter(function (action) {
-          return !lodash.has(action, 'visible') || action.visible;
-        }).map(function (action) {
-          if (!angular.isFunction(action.handler)) {
-            action.handler = defaultAction;
-            if (action.id === 'delete' && angular.isUndefined(action.confirm)) {
-              action.confirm = {
-                message: $i18next.t('common:DELETE_SELECTED_ITEM_CONFIRM', {
-                  lng: lng
-                }),
-                yesLabel: $i18next.t('common:YES_DELETE', {
-                  lng: lng
-                }),
-                noLabel: $i18next.t('common:CANCEL', {
-                  lng: lng
-                }),
-                type: 'critical_alert'
-              };
-            }
-          }
-          return action;
-        }).value();
-      }
-      if (angular.isDefined(shortcuts)) {
-        ctrl.shortcuts = lodash.filter(shortcuts, function (shortcut) {
-          return !lodash.has(shortcut, 'visible') || shortcut.visible;
-        });
-      }
-    }
-
-    /**
-     * Destructor
-     */
-    function onDestroy() {
-      detachDocumentEvent();
-    }
-
-    /**
-     * Post linking method
-     */
-    function postLink() {
-      // Bind DOM-related preventDropdownCutOff method to component's controller
-      PreventDropdownCutOffService.preventDropdownCutOff($element, '.menu-dropdown');
-      attachDocumentEvent();
-    }
-
-    //
-    // Public methods
-    //
-
-    /**
-     * Handles mouse click on  a shortcut
-     * @param {MouseEvent} event
-     * @param {string} state - absolute state name or relative state path
-     */
-    function showDetails(event, state) {
-      if (angular.isFunction(ctrl.onClickShortcut)) {
-        ctrl.onClickShortcut(event, state);
-      }
-    }
-
-    /**
-     * Handles mouse click on the button of menu
-     * @param {Object} event
-     * Show/hides the action dropdown
-     */
-    function toggleMenu(event) {
-      if (!ctrl.isMenuShown) {
-        $rootScope.$broadcast('close-all-action-menus');
-        ctrl.isMenuShown = true;
-        attachDocumentEvent();
-        showMenu();
-      } else {
-        detachDocumentEvent();
-        ctrl.isMenuShown = false;
-      }
-      event.stopPropagation();
-    }
-
-    /**
-     * Checks if action menu is visible (not empty)
-     */
-    function isVisible() {
-      return !lodash.isEmpty(ctrl.actions) || !lodash.isEmpty(ctrl.shortcuts);
-    }
-
-    //
-    // Private methods
-    //
-
-    /**
-     * Shows the dropdown. If there is not enough space from below,
-     * adds 'upward-menu' class to open the dropdown from above
-     */
-    function showMenu() {
-      $timeout(function () {
-        var windowHeight = $window.innerHeight;
-        var menu = $document.find('.menu-dropdown')[0];
-        var menuTotalHeight = menu.clientHeight;
-        var menuPosition = menu.getBoundingClientRect();
-        var menuHighestPoint = menuPosition.top;
-        var menuLowestPoint = menuPosition.bottom;
-        var menuWrapper = menu.closest('.igz-scrollable-container');
-        if (menuWrapper) {
-          windowHeight = menuWrapper.getBoundingClientRect().bottom;
-          menuHighestPoint -= menuWrapper.getBoundingClientRect().top;
-        }
-        if (windowHeight - menuLowestPoint < 0 && menuHighestPoint > menuTotalHeight) {
-          menu.classList.add('upward-menu');
-        }
-        angular.element('.menu-dropdown').css('visibility', 'visible');
-      });
-    }
-
-    /**
-     * Attaches on click event handler to the document
-     */
-    function attachDocumentEvent() {
-      $document.on('click', onDocumentClick);
-    }
-
-    /**
-     * Closes action menu
-     */
-    function closeActionMenu() {
-      ctrl.isMenuShown = false;
-      detachDocumentEvent();
-    }
-
-    /**
-     * Default action handler
-     * @param {Object} action
-     */
-    function defaultAction(action) {
-      if (angular.isFunction(ctrl.onFireAction)) {
-        ctrl.onFireAction(action.id);
-      }
-    }
-
-    /**
-     * Removes on click event handler attached to the document
-     */
-    function detachDocumentEvent() {
-      $document.off('click', onDocumentClick);
-    }
-
-    /**
-     * Closes action menu
-     * @param {MouseEvent} event
-     */
-    function onDocumentClick(event) {
-      $scope.$apply(function () {
-        if (event.target !== $element[0] && $element.find(event.target).length === 0) {
-          closeActionMenu();
-        }
-      });
     }
   }
 })();
@@ -6720,6 +6720,524 @@ such restriction.
 (function () {
   'use strict';
 
+  IgzMoreInfoController.$inject = ["$compile", "$document", "$element", "$sce", "$scope", "$timeout", "lodash"];
+  angular.module('iguazio.dashboard-controls').component('igzMoreInfo', {
+    bindings: {
+      description: '@',
+      isDisabled: '<?',
+      trigger: '@?',
+      iconType: '@?',
+      isHtmlEnabled: '<?',
+      isDefaultTooltipEnabled: '<?',
+      isOpen: '<?',
+      defaultTooltipPlacement: '@?',
+      defaultTooltipPopupDelay: '@?'
+    },
+    templateUrl: 'igz_controls/components/more-info/more-info.tpl.html',
+    controller: IgzMoreInfoController
+  });
+  function IgzMoreInfoController($compile, $document, $element, $sce, $scope, $timeout, lodash) {
+    var ctrl = this;
+    ctrl.iconTypes = {
+      INFO: 'info',
+      WARN: 'warn'
+    };
+    ctrl.selectedIconType = ctrl.iconTypes.INFO;
+    ctrl.$onInit = onInit;
+    ctrl.$onChanges = onChanges;
+    ctrl.$onDestroy = onDestroy;
+    ctrl.handleQuestionMarkClick = handleQuestionMarkClick;
+    ctrl.isClickMode = isClickMode;
+
+    //
+    // Hook methods
+    //
+
+    /**
+     * Initialization method
+     */
+    function onInit() {
+      lodash.defaults(ctrl, {
+        defaultTooltipPlacement: ctrl.isDefaultTooltipEnabled ? 'auto' : 'right',
+        defaultTooltipPopupDelay: '0',
+        isDefaultTooltipEnabled: false,
+        isDisabled: false,
+        isHtmlEnabled: false
+      });
+
+      // Defaults trigger method to 'mouseenter'. Available 2 modes: `mouseenter` (hover) and `click`.
+      if (ctrl.trigger !== 'click') {
+        ctrl.trigger = 'mouseenter';
+      }
+    }
+
+    /**
+     * On changes hook method.
+     * @param {Object} changes
+     */
+    function onChanges(changes) {
+      if (lodash.has(changes, 'isOpen')) {
+        ctrl.isDescriptionVisible = changes.isOpen.currentValue;
+        if (isClickMode()) {
+          toggleClickListener();
+        }
+      }
+      if (lodash.has(changes, 'iconType')) {
+        var valueIsValid = lodash.includes(ctrl.iconTypes, changes.iconType.currentValue);
+        ctrl.selectedIconType = valueIsValid ? changes.iconType.currentValue : ctrl.iconTypes.INFO;
+      }
+      if (lodash.has(changes, 'description') && ctrl.isHtmlEnabled) {
+        var compiled = $compile('<span>' + ctrl.description + '</span>')($scope);
+        ctrl.compiledDescription = $sce.trustAsHtml(compiled[0].innerHTML);
+      }
+    }
+
+    /**
+     * Destructor method
+     */
+    function onDestroy() {
+      $document.off('click', hideTooltip);
+    }
+
+    //
+    // Public methods
+    //
+
+    /**
+     * Determine whether the trigger method is `click`
+     * @returns {boolean}
+     */
+    function isClickMode() {
+      return ctrl.trigger === 'click';
+    }
+
+    /**
+     * Handles click on question mark. Shows/hides tooltip. Works only for 'click' trigger.
+     * @param {Event} event
+     */
+    function handleQuestionMarkClick(event) {
+      event.stopPropagation();
+      if (ctrl.isClickMode()) {
+        ctrl.isDescriptionVisible = !ctrl.isDescriptionVisible;
+        toggleClickListener();
+      }
+    }
+
+    //
+    // Private methods
+    //
+
+    /**
+     * Hides tooltip by clicking anywhere outside of the tooltip or the question mark icon.
+     * @param {Event} event
+     */
+    function hideTooltip(event) {
+      if (!event.target.closest('.row-description') && $element.find('.question-mark')[0] !== event.target) {
+        ctrl.isDescriptionVisible = false;
+        $document.off('click', hideTooltip);
+      }
+    }
+
+    /**
+     * Adds or removes event listener for `click` event on the document for closing pop-over.
+     */
+    function toggleClickListener() {
+      $timeout(function () {
+        if (ctrl.isDescriptionVisible) {
+          $document.on('click', hideTooltip);
+        } else {
+          $document.off('click', hideTooltip);
+        }
+      });
+    }
+  }
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
+(function () {
+  'use strict';
+
+  angular.module('iguazio.dashboard-controls').component('igzNavigationTabs', {
+    bindings: {
+      tabItems: '<'
+    },
+    templateUrl: 'igz_controls/components/navigation-tabs/navigation-tabs.tpl.html'
+  });
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
+(function () {
+  'use strict';
+
+  NavigationTabsService.$inject = ["$timeout", "$i18next", "i18next", "lodash", "ConfigService", "FunctionsService"];
+  angular.module('iguazio.dashboard-controls').factory('NavigationTabsService', NavigationTabsService);
+  function NavigationTabsService($timeout, $i18next, i18next, lodash, ConfigService, FunctionsService) {
+    return {
+      getNavigationTabsConfig: getNavigationTabsConfig
+    };
+
+    //
+    // Public methods
+    //
+
+    /**
+     * Returns navigation tabs config depending on current state
+     * @param {string} state
+     * @returns {Array}
+     */
+    function getNavigationTabsConfig(state) {
+      var navigationTabsConfigs = {
+        'app.project': getProjectConfig(state),
+        'app.container': getContainersConfig(),
+        'app.cluster': getClusterConfig(),
+        'app.clusters': getClustersConfig(),
+        'app.app-cluster': getAppClustersConfig(),
+        'app.events': getEventsConfig(),
+        'app.storage-pool': getStoragePoolsConfig(),
+        'app.identity': getIdentityConfig(),
+        'app.control-panel': getControlPanelConfig(),
+        'app.tenant': getTenantConfig()
+      };
+      var stateTest = state.match(/^[^.]*.[^.]*/);
+      return lodash.get(navigationTabsConfigs, stateTest[0], []);
+    }
+
+    //
+    // Private methods
+    //
+
+    /**
+     * Returns project navigation tabs config
+     * @returns {Array.<Object>}
+     */
+    function getProjectConfig(state) {
+      var config = [];
+      var lng = i18next.language;
+      if (state === 'app.project.functions' || state === 'app.project.api-gateways') {
+        config = [{
+          tabName: $i18next.t('common:FUNCTIONS', {
+            lng: lng
+          }),
+          uiRoute: 'app.project.functions'
+        }];
+        $timeout(function () {
+          if (FunctionsService.isKubePlatform()) {
+            config.push({
+              tabName: $i18next.t('functions:API_GATEWAYS', {
+                lng: lng
+              }),
+              uiRoute: 'app.project.api-gateways'
+            });
+          }
+        });
+      }
+      return config;
+    }
+
+    /**
+     * Returns containers navigation tabs config
+     * @returns {Array.<Object>}
+     */
+    function getContainersConfig() {
+      var lng = i18next.language;
+      var config = [{
+        tabName: $i18next.t('common:BROWSE', {
+          lng: lng
+        }),
+        uiRoute: 'app.container.browser',
+        capability: 'containers.browse'
+      }, {
+        tabName: $i18next.t('common:OVERVIEW', {
+          lng: lng
+        }),
+        uiRoute: 'app.container.overview',
+        capability: 'containers.overview'
+      }, {
+        tabName: $i18next.t('common:DATA_ACCESS_POLICY', {
+          lng: lng
+        }),
+        uiRoute: 'app.container.data-access-policy',
+        capability: 'containers.dataPolicy'
+      }];
+      if (ConfigService.isDemoMode()) {
+        config.push({
+          tabName: $i18next.t('common:DATA_LIFECYCLE', {
+            lng: lng
+          }),
+          uiRoute: 'app.container.data-lifecycle',
+          capability: 'containers.dataLifecycle'
+        });
+        config.splice(1, 0, {
+          tabName: $i18next.t('common:ANALYTICS', {
+            lng: lng
+          }),
+          uiRoute: 'app.container.analytics',
+          capability: 'containers.analytics'
+        });
+      }
+      return config;
+    }
+
+    /**
+     * Returns cluster navigation tabs config
+     * @returns {Array.<Object>}
+     */
+    function getClusterConfig() {
+      var lng = i18next.language;
+      var config = [{
+        tabName: $i18next.t('common:NODES', {
+          lng: lng
+        }),
+        uiRoute: 'app.cluster.nodes',
+        capability: 'clusters.nodes'
+      }];
+      if (ConfigService.isStagingMode()) {
+        config.unshift({
+          tabName: $i18next.t('common:OVERVIEW', {
+            lng: lng
+          }),
+          uiRoute: 'app.cluster.overview',
+          capability: 'clusters.overview'
+        });
+      }
+      return config;
+    }
+
+    /**
+     * Returns clusters navigation tabs config
+     * @returns {Array.<Object>}
+     */
+    function getClustersConfig() {
+      var lng = i18next.language;
+      return [{
+        tabName: $i18next.t('common:DATA', {
+          lng: lng
+        }),
+        id: 'data',
+        uiRoute: 'app.clusters.data',
+        capability: 'clusters'
+      }, {
+        tabName: $i18next.t('common:APPLICATION', {
+          lng: lng
+        }),
+        id: 'app',
+        uiRoute: 'app.clusters.app',
+        capability: 'clusters'
+      }, {
+        tabName: $i18next.t('common:SUPPORT_LOGS', {
+          lng: lng
+        }),
+        id: 'support-logs',
+        uiRoute: 'app.clusters.support-logs',
+        capability: 'clusters.collectLogs'
+      }];
+    }
+
+    /**
+     * Returns app-clusters navigation tabs config
+     * @returns {Array.<Object>}
+     */
+    function getAppClustersConfig() {
+      var lng = i18next.language;
+      return [{
+        tabName: $i18next.t('common:NODES', {
+          lng: lng
+        }),
+        uiRoute: 'app.app-cluster.nodes',
+        capability: 'clusters.nodes'
+      }];
+    }
+
+    /**
+     * Returns storage pools navigation tabs config
+     * @returns {Array.<Object>}
+     */
+    function getStoragePoolsConfig() {
+      var lng = i18next.language;
+      var config = [{
+        tabName: $i18next.t('common:OVERVIEW', {
+          lng: lng
+        }),
+        uiRoute: 'app.storage-pool.overview',
+        capability: 'storagePools.overview'
+      }, {
+        tabName: $i18next.t('common:DEVICES', {
+          lng: lng
+        }),
+        uiRoute: 'app.storage-pool.devices',
+        capability: 'storagePools.listDevices'
+      }];
+      if (ConfigService.isDemoMode()) {
+        config.splice(1, 0, {
+          tabName: $i18next.t('common:CONTAINERS', {
+            lng: lng
+          }),
+          uiRoute: 'app.storage-pool.containers',
+          capability: 'storagePools.listContainers'
+        });
+      }
+      return config;
+    }
+
+    /**
+     * Returns control panel navigation tabs config
+     * @returns {Array.<Object>}
+     */
+    function getControlPanelConfig() {
+      var lng = i18next.language;
+      return [{
+        tabName: $i18next.t('common:LOGS', {
+          lng: lng
+        }),
+        uiRoute: 'app.control-panel.logs'
+      }];
+    }
+
+    /**
+     * Returns identity navigation tabs config
+     * @returns {Array.<Object>}
+     */
+    function getIdentityConfig() {
+      var lng = i18next.language;
+      var platformType = lodash.get(ConfigService.dashboard, 'platformType', '');
+      return [{
+        tabName: $i18next.t('common:USERS', {
+          lng: lng
+        }),
+        uiRoute: 'app.identity.users',
+        capability: 'identity.users'
+      }, {
+        tabName: $i18next.t('common:GROUPS', {
+          lng: lng
+        }),
+        uiRoute: 'app.identity.groups',
+        capability: 'identity.groups'
+      }, {
+        tabName: $i18next.t('common:IDP', {
+          lng: lng
+        }),
+        uiRoute: 'app.identity.idp',
+        capability: 'identity.idp'
+      }, {
+        tabName: $i18next.t('common:KEYLOACK_ADMIN_CONSOLE', {
+          lng: lng
+        }),
+        href: lodash.get(ConfigService.dashboard, ['authentication', 'sso', 'console_urls', platformType], ''),
+        hidden: !(lodash.get(ConfigService.dashboard, 'authentication.sso.mode') && platformType)
+      }];
+    }
+
+    /**
+     * Returns events navigation tabs config
+     * @returns {Array.<Object>}
+     */
+    function getEventsConfig() {
+      var lng = i18next.language;
+      var config = [{
+        tabName: $i18next.t('common:EVENT_LOG', {
+          lng: lng
+        }),
+        uiRoute: 'app.events.event-log',
+        capability: 'events.eventLog'
+      }, {
+        tabName: $i18next.t('common:ALERTS', {
+          lng: lng
+        }),
+        uiRoute: 'app.events.alerts',
+        capability: 'events.alerts'
+      }, {
+        tabName: $i18next.t('common:AUDIT', {
+          lng: lng
+        }),
+        uiRoute: 'app.events.audit',
+        capability: 'events.audit'
+      }, {
+        tabName: $i18next.t('common:COMMUNICATION', {
+          lng: lng
+        }),
+        uiRoute: 'app.events.communication',
+        capability: 'events.communication'
+      }];
+      if (ConfigService.isDemoMode()) {
+        config.push({
+          tabName: $i18next.t('common:ESCALATION', {
+            lng: lng
+          }),
+          uiRoute: 'app.events.escalation',
+          capability: 'events.escalations'
+        });
+      }
+      return config;
+    }
+
+    /**
+     * Returns tenants navigation tabs config
+     * @returns {Array.<Object>}
+     */
+    function getTenantConfig() {
+      var lng = i18next.language;
+      return [{
+        tabName: $i18next.t('common:OVERVIEW', {
+          lng: lng
+        }),
+        uiRoute: 'app.tenant.overview'
+      }];
+    }
+  }
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
+(function () {
+  'use strict';
+
   /**
    * @name igzMultipleCheckboxes
    * @description
@@ -7234,524 +7752,6 @@ such restriction.
           option.checked = lodash.includes(ctrl.ngModelCtrl.$viewValue, option.value);
         });
       }
-    }
-  }
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  IgzMoreInfoController.$inject = ["$compile", "$document", "$element", "$sce", "$scope", "$timeout", "lodash"];
-  angular.module('iguazio.dashboard-controls').component('igzMoreInfo', {
-    bindings: {
-      description: '@',
-      isDisabled: '<?',
-      trigger: '@?',
-      iconType: '@?',
-      isHtmlEnabled: '<?',
-      isDefaultTooltipEnabled: '<?',
-      isOpen: '<?',
-      defaultTooltipPlacement: '@?',
-      defaultTooltipPopupDelay: '@?'
-    },
-    templateUrl: 'igz_controls/components/more-info/more-info.tpl.html',
-    controller: IgzMoreInfoController
-  });
-  function IgzMoreInfoController($compile, $document, $element, $sce, $scope, $timeout, lodash) {
-    var ctrl = this;
-    ctrl.iconTypes = {
-      INFO: 'info',
-      WARN: 'warn'
-    };
-    ctrl.selectedIconType = ctrl.iconTypes.INFO;
-    ctrl.$onInit = onInit;
-    ctrl.$onChanges = onChanges;
-    ctrl.$onDestroy = onDestroy;
-    ctrl.handleQuestionMarkClick = handleQuestionMarkClick;
-    ctrl.isClickMode = isClickMode;
-
-    //
-    // Hook methods
-    //
-
-    /**
-     * Initialization method
-     */
-    function onInit() {
-      lodash.defaults(ctrl, {
-        defaultTooltipPlacement: ctrl.isDefaultTooltipEnabled ? 'auto' : 'right',
-        defaultTooltipPopupDelay: '0',
-        isDefaultTooltipEnabled: false,
-        isDisabled: false,
-        isHtmlEnabled: false
-      });
-
-      // Defaults trigger method to 'mouseenter'. Available 2 modes: `mouseenter` (hover) and `click`.
-      if (ctrl.trigger !== 'click') {
-        ctrl.trigger = 'mouseenter';
-      }
-    }
-
-    /**
-     * On changes hook method.
-     * @param {Object} changes
-     */
-    function onChanges(changes) {
-      if (lodash.has(changes, 'isOpen')) {
-        ctrl.isDescriptionVisible = changes.isOpen.currentValue;
-        if (isClickMode()) {
-          toggleClickListener();
-        }
-      }
-      if (lodash.has(changes, 'iconType')) {
-        var valueIsValid = lodash.includes(ctrl.iconTypes, changes.iconType.currentValue);
-        ctrl.selectedIconType = valueIsValid ? changes.iconType.currentValue : ctrl.iconTypes.INFO;
-      }
-      if (lodash.has(changes, 'description') && ctrl.isHtmlEnabled) {
-        var compiled = $compile('<span>' + ctrl.description + '</span>')($scope);
-        ctrl.compiledDescription = $sce.trustAsHtml(compiled[0].innerHTML);
-      }
-    }
-
-    /**
-     * Destructor method
-     */
-    function onDestroy() {
-      $document.off('click', hideTooltip);
-    }
-
-    //
-    // Public methods
-    //
-
-    /**
-     * Determine whether the trigger method is `click`
-     * @returns {boolean}
-     */
-    function isClickMode() {
-      return ctrl.trigger === 'click';
-    }
-
-    /**
-     * Handles click on question mark. Shows/hides tooltip. Works only for 'click' trigger.
-     * @param {Event} event
-     */
-    function handleQuestionMarkClick(event) {
-      event.stopPropagation();
-      if (ctrl.isClickMode()) {
-        ctrl.isDescriptionVisible = !ctrl.isDescriptionVisible;
-        toggleClickListener();
-      }
-    }
-
-    //
-    // Private methods
-    //
-
-    /**
-     * Hides tooltip by clicking anywhere outside of the tooltip or the question mark icon.
-     * @param {Event} event
-     */
-    function hideTooltip(event) {
-      if (!event.target.closest('.row-description') && $element.find('.question-mark')[0] !== event.target) {
-        ctrl.isDescriptionVisible = false;
-        $document.off('click', hideTooltip);
-      }
-    }
-
-    /**
-     * Adds or removes event listener for `click` event on the document for closing pop-over.
-     */
-    function toggleClickListener() {
-      $timeout(function () {
-        if (ctrl.isDescriptionVisible) {
-          $document.on('click', hideTooltip);
-        } else {
-          $document.off('click', hideTooltip);
-        }
-      });
-    }
-  }
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  angular.module('iguazio.dashboard-controls').component('igzNavigationTabs', {
-    bindings: {
-      tabItems: '<'
-    },
-    templateUrl: 'igz_controls/components/navigation-tabs/navigation-tabs.tpl.html'
-  });
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  NavigationTabsService.$inject = ["$timeout", "$i18next", "i18next", "lodash", "ConfigService", "FunctionsService"];
-  angular.module('iguazio.dashboard-controls').factory('NavigationTabsService', NavigationTabsService);
-  function NavigationTabsService($timeout, $i18next, i18next, lodash, ConfigService, FunctionsService) {
-    return {
-      getNavigationTabsConfig: getNavigationTabsConfig
-    };
-
-    //
-    // Public methods
-    //
-
-    /**
-     * Returns navigation tabs config depending on current state
-     * @param {string} state
-     * @returns {Array}
-     */
-    function getNavigationTabsConfig(state) {
-      var navigationTabsConfigs = {
-        'app.project': getProjectConfig(state),
-        'app.container': getContainersConfig(),
-        'app.cluster': getClusterConfig(),
-        'app.clusters': getClustersConfig(),
-        'app.app-cluster': getAppClustersConfig(),
-        'app.events': getEventsConfig(),
-        'app.storage-pool': getStoragePoolsConfig(),
-        'app.identity': getIdentityConfig(),
-        'app.control-panel': getControlPanelConfig(),
-        'app.tenant': getTenantConfig()
-      };
-      var stateTest = state.match(/^[^.]*.[^.]*/);
-      return lodash.get(navigationTabsConfigs, stateTest[0], []);
-    }
-
-    //
-    // Private methods
-    //
-
-    /**
-     * Returns project navigation tabs config
-     * @returns {Array.<Object>}
-     */
-    function getProjectConfig(state) {
-      var config = [];
-      var lng = i18next.language;
-      if (state === 'app.project.functions' || state === 'app.project.api-gateways') {
-        config = [{
-          tabName: $i18next.t('common:FUNCTIONS', {
-            lng: lng
-          }),
-          uiRoute: 'app.project.functions'
-        }];
-        $timeout(function () {
-          if (FunctionsService.isKubePlatform()) {
-            config.push({
-              tabName: $i18next.t('functions:API_GATEWAYS', {
-                lng: lng
-              }),
-              uiRoute: 'app.project.api-gateways'
-            });
-          }
-        });
-      }
-      return config;
-    }
-
-    /**
-     * Returns containers navigation tabs config
-     * @returns {Array.<Object>}
-     */
-    function getContainersConfig() {
-      var lng = i18next.language;
-      var config = [{
-        tabName: $i18next.t('common:BROWSE', {
-          lng: lng
-        }),
-        uiRoute: 'app.container.browser',
-        capability: 'containers.browse'
-      }, {
-        tabName: $i18next.t('common:OVERVIEW', {
-          lng: lng
-        }),
-        uiRoute: 'app.container.overview',
-        capability: 'containers.overview'
-      }, {
-        tabName: $i18next.t('common:DATA_ACCESS_POLICY', {
-          lng: lng
-        }),
-        uiRoute: 'app.container.data-access-policy',
-        capability: 'containers.dataPolicy'
-      }];
-      if (ConfigService.isDemoMode()) {
-        config.push({
-          tabName: $i18next.t('common:DATA_LIFECYCLE', {
-            lng: lng
-          }),
-          uiRoute: 'app.container.data-lifecycle',
-          capability: 'containers.dataLifecycle'
-        });
-        config.splice(1, 0, {
-          tabName: $i18next.t('common:ANALYTICS', {
-            lng: lng
-          }),
-          uiRoute: 'app.container.analytics',
-          capability: 'containers.analytics'
-        });
-      }
-      return config;
-    }
-
-    /**
-     * Returns cluster navigation tabs config
-     * @returns {Array.<Object>}
-     */
-    function getClusterConfig() {
-      var lng = i18next.language;
-      var config = [{
-        tabName: $i18next.t('common:NODES', {
-          lng: lng
-        }),
-        uiRoute: 'app.cluster.nodes',
-        capability: 'clusters.nodes'
-      }];
-      if (ConfigService.isStagingMode()) {
-        config.unshift({
-          tabName: $i18next.t('common:OVERVIEW', {
-            lng: lng
-          }),
-          uiRoute: 'app.cluster.overview',
-          capability: 'clusters.overview'
-        });
-      }
-      return config;
-    }
-
-    /**
-     * Returns clusters navigation tabs config
-     * @returns {Array.<Object>}
-     */
-    function getClustersConfig() {
-      var lng = i18next.language;
-      return [{
-        tabName: $i18next.t('common:DATA', {
-          lng: lng
-        }),
-        id: 'data',
-        uiRoute: 'app.clusters.data',
-        capability: 'clusters'
-      }, {
-        tabName: $i18next.t('common:APPLICATION', {
-          lng: lng
-        }),
-        id: 'app',
-        uiRoute: 'app.clusters.app',
-        capability: 'clusters'
-      }, {
-        tabName: $i18next.t('common:SUPPORT_LOGS', {
-          lng: lng
-        }),
-        id: 'support-logs',
-        uiRoute: 'app.clusters.support-logs',
-        capability: 'clusters.collectLogs'
-      }];
-    }
-
-    /**
-     * Returns app-clusters navigation tabs config
-     * @returns {Array.<Object>}
-     */
-    function getAppClustersConfig() {
-      var lng = i18next.language;
-      return [{
-        tabName: $i18next.t('common:NODES', {
-          lng: lng
-        }),
-        uiRoute: 'app.app-cluster.nodes',
-        capability: 'clusters.nodes'
-      }];
-    }
-
-    /**
-     * Returns storage pools navigation tabs config
-     * @returns {Array.<Object>}
-     */
-    function getStoragePoolsConfig() {
-      var lng = i18next.language;
-      var config = [{
-        tabName: $i18next.t('common:OVERVIEW', {
-          lng: lng
-        }),
-        uiRoute: 'app.storage-pool.overview',
-        capability: 'storagePools.overview'
-      }, {
-        tabName: $i18next.t('common:DEVICES', {
-          lng: lng
-        }),
-        uiRoute: 'app.storage-pool.devices',
-        capability: 'storagePools.listDevices'
-      }];
-      if (ConfigService.isDemoMode()) {
-        config.splice(1, 0, {
-          tabName: $i18next.t('common:CONTAINERS', {
-            lng: lng
-          }),
-          uiRoute: 'app.storage-pool.containers',
-          capability: 'storagePools.listContainers'
-        });
-      }
-      return config;
-    }
-
-    /**
-     * Returns control panel navigation tabs config
-     * @returns {Array.<Object>}
-     */
-    function getControlPanelConfig() {
-      var lng = i18next.language;
-      return [{
-        tabName: $i18next.t('common:LOGS', {
-          lng: lng
-        }),
-        uiRoute: 'app.control-panel.logs'
-      }];
-    }
-
-    /**
-     * Returns identity navigation tabs config
-     * @returns {Array.<Object>}
-     */
-    function getIdentityConfig() {
-      var lng = i18next.language;
-      var platformType = lodash.get(ConfigService.dashboard, 'platformType', '');
-      return [{
-        tabName: $i18next.t('common:USERS', {
-          lng: lng
-        }),
-        uiRoute: 'app.identity.users',
-        capability: 'identity.users'
-      }, {
-        tabName: $i18next.t('common:GROUPS', {
-          lng: lng
-        }),
-        uiRoute: 'app.identity.groups',
-        capability: 'identity.groups'
-      }, {
-        tabName: $i18next.t('common:IDP', {
-          lng: lng
-        }),
-        uiRoute: 'app.identity.idp',
-        capability: 'identity.idp'
-      }, {
-        tabName: $i18next.t('common:KEYLOACK_ADMIN_CONSOLE', {
-          lng: lng
-        }),
-        href: lodash.get(ConfigService.dashboard, ['authentication', 'sso', 'console_urls', platformType], ''),
-        hidden: !(lodash.get(ConfigService.dashboard, 'authentication.sso.mode') && platformType)
-      }];
-    }
-
-    /**
-     * Returns events navigation tabs config
-     * @returns {Array.<Object>}
-     */
-    function getEventsConfig() {
-      var lng = i18next.language;
-      var config = [{
-        tabName: $i18next.t('common:EVENT_LOG', {
-          lng: lng
-        }),
-        uiRoute: 'app.events.event-log',
-        capability: 'events.eventLog'
-      }, {
-        tabName: $i18next.t('common:ALERTS', {
-          lng: lng
-        }),
-        uiRoute: 'app.events.alerts',
-        capability: 'events.alerts'
-      }, {
-        tabName: $i18next.t('common:AUDIT', {
-          lng: lng
-        }),
-        uiRoute: 'app.events.audit',
-        capability: 'events.audit'
-      }, {
-        tabName: $i18next.t('common:COMMUNICATION', {
-          lng: lng
-        }),
-        uiRoute: 'app.events.communication',
-        capability: 'events.communication'
-      }];
-      if (ConfigService.isDemoMode()) {
-        config.push({
-          tabName: $i18next.t('common:ESCALATION', {
-            lng: lng
-          }),
-          uiRoute: 'app.events.escalation',
-          capability: 'events.escalations'
-        });
-      }
-      return config;
-    }
-
-    /**
-     * Returns tenants navigation tabs config
-     * @returns {Array.<Object>}
-     */
-    function getTenantConfig() {
-      var lng = i18next.language;
-      return [{
-        tabName: $i18next.t('common:OVERVIEW', {
-          lng: lng
-        }),
-        uiRoute: 'app.tenant.overview'
-      }];
     }
   }
 })();
@@ -9105,6 +9105,153 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
+(function () {
+  'use strict';
+
+  IgzSliderInputBlockController.$inject = ["$rootScope", "$scope", "$timeout", "lodash", "ConverterService"];
+  angular.module('iguazio.dashboard-controls').component('igzSliderInputBlock', {
+    bindings: {
+      allowFullRange: '<',
+      onChangeCallback: '<',
+      onSliderChanging: '<?',
+      sliderConfig: '<',
+      sliderBlockUpdatingBroadcast: '@',
+      measureUnits: '<?',
+      valueUnit: '<?',
+      updateSliderInput: '@?'
+    },
+    templateUrl: 'igz_controls/components/slider-input-block/slider-input-block.tpl.html',
+    controller: IgzSliderInputBlockController
+  });
+  function IgzSliderInputBlockController($rootScope, $scope, $timeout, lodash, ConverterService) {
+    var ctrl = this;
+    var defaultMeasureUnits = [{
+      pow: 1,
+      name: 'KB/s'
+    }, {
+      pow: 2,
+      name: 'MB/s'
+    }, {
+      pow: 3,
+      name: 'GB/s'
+    }];
+    ctrl.$onInit = onInit;
+    ctrl.changeTrafficUnit = changeTrafficUnit;
+
+    //
+    // Hook methods
+    //
+
+    /**
+     * Initialization method
+     */
+    function onInit() {
+      // Set default measureUnits if undefined
+      if (angular.isUndefined(ctrl.measureUnits)) {
+        ctrl.measureUnits = defaultMeasureUnits;
+      }
+      $scope.$on(ctrl.sliderBlockUpdatingBroadcast, setData);
+      $timeout(function () {
+        // Bind needed callbacks to configuration objects with updated `ctrl.selectedData` values (for rz-slider library usage)
+        ctrl.sliderConfig.options.onEnd = setValue;
+        ctrl.sliderConfig.options.onChange = checkIfUnlimited;
+      });
+      ctrl.selectedItem = lodash.find(ctrl.measureUnits, ['name', ctrl.sliderConfig.unitLabel]);
+
+      // Update data with values from external scope
+      fillRange();
+    }
+
+    //
+    // Public methods
+    //
+
+    /**
+     * Method changes measurement unit
+     * @param {Object} trafficUnit - selected measurement unit value
+     */
+    function changeTrafficUnit(trafficUnit) {
+      ctrl.sliderConfig.unitLabel = trafficUnit.name;
+      ctrl.sliderConfig.pow = trafficUnit.pow;
+      setValue();
+    }
+
+    //
+    // Private methods
+    //
+
+    /**
+     * Method checks current value in slider. If it's maximum available then 'U/L'(unlimited) sets in label which displays data.
+     * If it's not maximum - label sets with new value.
+     * Calls onSliderChanging method if it was defined
+     */
+    function checkIfUnlimited() {
+      ctrl.sliderConfig.valueLabel = ctrl.sliderConfig.value === ctrl.sliderConfig.options.ceil && !ctrl.allowFullRange ? 'U/L' : ctrl.sliderConfig.value;
+      if (angular.isFunction(ctrl.onSliderChanging) && ctrl.sliderConfig.value !== ctrl.sliderConfig.options.ceil) {
+        ctrl.onSliderChanging(ctrl.sliderConfig.value, ctrl.updateSliderInput);
+      }
+      $timeout(function () {
+        $rootScope.$broadcast('rzSliderForceRender');
+      });
+    }
+
+    /**
+     * Update slider data with values from external scope
+     */
+    function fillRange() {
+      if (ctrl.selectedData) {
+        var result = ConverterService.getConvertedBytes(ctrl.selectedData[ctrl.sliderConfig.options.id]);
+        ctrl.sliderConfig.value = result.value;
+        ctrl.sliderConfig.valueLabel = result.value;
+        ctrl.sliderConfig.unitLabel = result.label;
+        ctrl.sliderConfig.pow = result.pow;
+        ctrl.selectedItem = lodash.find(defaultMeasureUnits, ['name', ctrl.sliderConfig.unitLabel]);
+        checkIfUnlimited();
+      }
+    }
+
+    /**
+     * Set slider data with a value passed through broadcast.
+     * Set current selected rule to bind data properly.
+     * @param {Object} event - triggering event
+     * @param {Object} data - passed data
+     */
+    function setData(event, data) {
+      ctrl.selectedData = data.item.attr;
+      fillRange();
+    }
+
+    /**
+     * Method sets new value in bytes
+     */
+    function setValue() {
+      if (!lodash.isNil(ctrl.onChangeCallback)) {
+        ctrl.onChangeCallback(ctrl.sliderConfig.value === ctrl.sliderConfig.options.ceil ? null : ctrl.sliderConfig.value * Math.pow(1024, ctrl.sliderConfig.pow), ctrl.updateSliderInput);
+      }
+      if (!lodash.isNil(ctrl.selectedData)) {
+        ctrl.selectedData[ctrl.sliderConfig.options.id] = ctrl.sliderConfig.value === ctrl.sliderConfig.options.ceil ? 0 : ctrl.sliderConfig.value * Math.pow(1024, ctrl.sliderConfig.pow);
+      }
+    }
+  }
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
 /* eslint complexity: ["error", 15] */
 (function () {
   'use strict';
@@ -9616,153 +9763,6 @@ such restriction.
 (function () {
   'use strict';
 
-  IgzSliderInputBlockController.$inject = ["$rootScope", "$scope", "$timeout", "lodash", "ConverterService"];
-  angular.module('iguazio.dashboard-controls').component('igzSliderInputBlock', {
-    bindings: {
-      allowFullRange: '<',
-      onChangeCallback: '<',
-      onSliderChanging: '<?',
-      sliderConfig: '<',
-      sliderBlockUpdatingBroadcast: '@',
-      measureUnits: '<?',
-      valueUnit: '<?',
-      updateSliderInput: '@?'
-    },
-    templateUrl: 'igz_controls/components/slider-input-block/slider-input-block.tpl.html',
-    controller: IgzSliderInputBlockController
-  });
-  function IgzSliderInputBlockController($rootScope, $scope, $timeout, lodash, ConverterService) {
-    var ctrl = this;
-    var defaultMeasureUnits = [{
-      pow: 1,
-      name: 'KB/s'
-    }, {
-      pow: 2,
-      name: 'MB/s'
-    }, {
-      pow: 3,
-      name: 'GB/s'
-    }];
-    ctrl.$onInit = onInit;
-    ctrl.changeTrafficUnit = changeTrafficUnit;
-
-    //
-    // Hook methods
-    //
-
-    /**
-     * Initialization method
-     */
-    function onInit() {
-      // Set default measureUnits if undefined
-      if (angular.isUndefined(ctrl.measureUnits)) {
-        ctrl.measureUnits = defaultMeasureUnits;
-      }
-      $scope.$on(ctrl.sliderBlockUpdatingBroadcast, setData);
-      $timeout(function () {
-        // Bind needed callbacks to configuration objects with updated `ctrl.selectedData` values (for rz-slider library usage)
-        ctrl.sliderConfig.options.onEnd = setValue;
-        ctrl.sliderConfig.options.onChange = checkIfUnlimited;
-      });
-      ctrl.selectedItem = lodash.find(ctrl.measureUnits, ['name', ctrl.sliderConfig.unitLabel]);
-
-      // Update data with values from external scope
-      fillRange();
-    }
-
-    //
-    // Public methods
-    //
-
-    /**
-     * Method changes measurement unit
-     * @param {Object} trafficUnit - selected measurement unit value
-     */
-    function changeTrafficUnit(trafficUnit) {
-      ctrl.sliderConfig.unitLabel = trafficUnit.name;
-      ctrl.sliderConfig.pow = trafficUnit.pow;
-      setValue();
-    }
-
-    //
-    // Private methods
-    //
-
-    /**
-     * Method checks current value in slider. If it's maximum available then 'U/L'(unlimited) sets in label which displays data.
-     * If it's not maximum - label sets with new value.
-     * Calls onSliderChanging method if it was defined
-     */
-    function checkIfUnlimited() {
-      ctrl.sliderConfig.valueLabel = ctrl.sliderConfig.value === ctrl.sliderConfig.options.ceil && !ctrl.allowFullRange ? 'U/L' : ctrl.sliderConfig.value;
-      if (angular.isFunction(ctrl.onSliderChanging) && ctrl.sliderConfig.value !== ctrl.sliderConfig.options.ceil) {
-        ctrl.onSliderChanging(ctrl.sliderConfig.value, ctrl.updateSliderInput);
-      }
-      $timeout(function () {
-        $rootScope.$broadcast('rzSliderForceRender');
-      });
-    }
-
-    /**
-     * Update slider data with values from external scope
-     */
-    function fillRange() {
-      if (ctrl.selectedData) {
-        var result = ConverterService.getConvertedBytes(ctrl.selectedData[ctrl.sliderConfig.options.id]);
-        ctrl.sliderConfig.value = result.value;
-        ctrl.sliderConfig.valueLabel = result.value;
-        ctrl.sliderConfig.unitLabel = result.label;
-        ctrl.sliderConfig.pow = result.pow;
-        ctrl.selectedItem = lodash.find(defaultMeasureUnits, ['name', ctrl.sliderConfig.unitLabel]);
-        checkIfUnlimited();
-      }
-    }
-
-    /**
-     * Set slider data with a value passed through broadcast.
-     * Set current selected rule to bind data properly.
-     * @param {Object} event - triggering event
-     * @param {Object} data - passed data
-     */
-    function setData(event, data) {
-      ctrl.selectedData = data.item.attr;
-      fillRange();
-    }
-
-    /**
-     * Method sets new value in bytes
-     */
-    function setValue() {
-      if (!lodash.isNil(ctrl.onChangeCallback)) {
-        ctrl.onChangeCallback(ctrl.sliderConfig.value === ctrl.sliderConfig.options.ceil ? null : ctrl.sliderConfig.value * Math.pow(1024, ctrl.sliderConfig.pow), ctrl.updateSliderInput);
-      }
-      if (!lodash.isNil(ctrl.selectedData)) {
-        ctrl.selectedData[ctrl.sliderConfig.options.id] = ctrl.sliderConfig.value === ctrl.sliderConfig.options.ceil ? 0 : ctrl.sliderConfig.value * Math.pow(1024, ctrl.sliderConfig.pow);
-      }
-    }
-  }
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
   /**
    * An option on the dropdown.
    * @typedef {Object} SortOption
@@ -10006,6 +10006,114 @@ such restriction.
 (function () {
   'use strict';
 
+  IgzToastStatusPanelController.$inject = ["$element", "$rootScope", "$timeout", "$transclude", "lodash"];
+  angular.module('iguazio.dashboard-controls').component('igzToastStatusPanel', {
+    bindings: {
+      onClose: '&?',
+      panelMessages: '<',
+      panelState: '<',
+      permanent: '<?'
+    },
+    templateUrl: 'igz_controls/components/toast-status-panel/toast-status-panel.tpl.html',
+    controller: IgzToastStatusPanelController,
+    transclude: true
+  });
+  function IgzToastStatusPanelController($element, $rootScope, $timeout, $transclude, lodash) {
+    var ctrl = this;
+    var statusIcons = {
+      'succeeded': 'igz-icon-tick-round',
+      'in-progress': 'igz-icon-properties',
+      'failed': 'igz-icon-block'
+    };
+    ctrl.isToastPanelShown = false;
+    ctrl.isTranscludePassed = false;
+    ctrl.$onChanges = onChanges;
+    ctrl.closeToastPanel = closeToastPanel;
+    ctrl.getState = getState;
+    ctrl.getStateMessage = getStateMessage;
+
+    // checks if transclude template was passed
+    $transclude(function (transclude) {
+      ctrl.isTranscludePassed = transclude.length > 0 && !(
+      // a single text node with whitespace only, meaning there is nothing important between the opening
+      // tag `<igz-toast-status-panel>` and the closing tag `</igz-toast-status-panel>`
+      transclude.length === 1 && transclude[0].nodeType === 3 && transclude.text().trim() === '');
+    });
+
+    //
+    // Hook methods
+    //
+
+    /**
+     * On changes method
+     * @param {Object} changes
+     */
+    function onChanges(changes) {
+      if (lodash.has(changes, 'panelState')) {
+        ctrl.isToastPanelShown = !lodash.isNil(changes.panelState.currentValue);
+        $element.find('.panel-status-icon').removeClass(lodash.get(statusIcons, changes.panelState.previousValue)).addClass(lodash.get(statusIcons, changes.panelState.currentValue));
+        $element.find('.toast-status-panel').removeClass(changes.panelState.previousValue).addClass(changes.panelState.currentValue);
+        $element.find('.panel-status').removeClass(changes.panelState.previousValue).addClass(changes.panelState.currentValue);
+      }
+    }
+
+    //
+    // Public methods
+    //
+
+    /**
+     * Shows/hides toast panel
+     */
+    function closeToastPanel() {
+      ctrl.isToastPanelShown = false;
+      ctrl.panelState = null;
+      if (lodash.isFunction(ctrl.onClose)) {
+        ctrl.onClose();
+      }
+      $timeout(function () {
+        $rootScope.$broadcast('igzWatchWindowResize::resize');
+      });
+    }
+
+    /**
+     * Gets current state
+     * @returns {?string} (e.g. "in-progress", "succeeded", "failed")
+     */
+    function getState() {
+      return ctrl.panelState;
+    }
+
+    /**
+     * Gets status message of given state
+     * @param {string} state (e.g. "in-progress", "succeeded", "failed")
+     * @returns {string}
+     */
+    function getStateMessage(state) {
+      return lodash.get(ctrl, ['panelMessages', state]);
+    }
+  }
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
+(function () {
+  'use strict';
+
   /**
    * @name igzTextEdit
    * @description
@@ -10139,114 +10247,6 @@ such restriction.
       }), 'text-edit').then(function () {
         ctrl.closeDialog();
       });
-    }
-  }
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  IgzToastStatusPanelController.$inject = ["$element", "$rootScope", "$timeout", "$transclude", "lodash"];
-  angular.module('iguazio.dashboard-controls').component('igzToastStatusPanel', {
-    bindings: {
-      onClose: '&?',
-      panelMessages: '<',
-      panelState: '<',
-      permanent: '<?'
-    },
-    templateUrl: 'igz_controls/components/toast-status-panel/toast-status-panel.tpl.html',
-    controller: IgzToastStatusPanelController,
-    transclude: true
-  });
-  function IgzToastStatusPanelController($element, $rootScope, $timeout, $transclude, lodash) {
-    var ctrl = this;
-    var statusIcons = {
-      'succeeded': 'igz-icon-tick-round',
-      'in-progress': 'igz-icon-properties',
-      'failed': 'igz-icon-block'
-    };
-    ctrl.isToastPanelShown = false;
-    ctrl.isTranscludePassed = false;
-    ctrl.$onChanges = onChanges;
-    ctrl.closeToastPanel = closeToastPanel;
-    ctrl.getState = getState;
-    ctrl.getStateMessage = getStateMessage;
-
-    // checks if transclude template was passed
-    $transclude(function (transclude) {
-      ctrl.isTranscludePassed = transclude.length > 0 && !(
-      // a single text node with whitespace only, meaning there is nothing important between the opening
-      // tag `<igz-toast-status-panel>` and the closing tag `</igz-toast-status-panel>`
-      transclude.length === 1 && transclude[0].nodeType === 3 && transclude.text().trim() === '');
-    });
-
-    //
-    // Hook methods
-    //
-
-    /**
-     * On changes method
-     * @param {Object} changes
-     */
-    function onChanges(changes) {
-      if (lodash.has(changes, 'panelState')) {
-        ctrl.isToastPanelShown = !lodash.isNil(changes.panelState.currentValue);
-        $element.find('.panel-status-icon').removeClass(lodash.get(statusIcons, changes.panelState.previousValue)).addClass(lodash.get(statusIcons, changes.panelState.currentValue));
-        $element.find('.toast-status-panel').removeClass(changes.panelState.previousValue).addClass(changes.panelState.currentValue);
-        $element.find('.panel-status').removeClass(changes.panelState.previousValue).addClass(changes.panelState.currentValue);
-      }
-    }
-
-    //
-    // Public methods
-    //
-
-    /**
-     * Shows/hides toast panel
-     */
-    function closeToastPanel() {
-      ctrl.isToastPanelShown = false;
-      ctrl.panelState = null;
-      if (lodash.isFunction(ctrl.onClose)) {
-        ctrl.onClose();
-      }
-      $timeout(function () {
-        $rootScope.$broadcast('igzWatchWindowResize::resize');
-      });
-    }
-
-    /**
-     * Gets current state
-     * @returns {?string} (e.g. "in-progress", "succeeded", "failed")
-     */
-    function getState() {
-      return ctrl.panelState;
-    }
-
-    /**
-     * Gets status message of given state
-     * @param {string} state (e.g. "in-progress", "succeeded", "failed")
-     * @returns {string}
-     */
-    function getStateMessage(state) {
-      return lodash.get(ctrl, ['panelMessages', state]);
     }
   }
 })();
@@ -10808,6 +10808,35 @@ such restriction.
 (function () {
   'use strict';
 
+  angular.module('iguazio.dashboard-controls').component('igzActionItemRefresh', {
+    bindings: {
+      isDisabled: '<',
+      refresh: '&'
+    },
+    templateUrl: 'igz_controls/components/action-item/action-item-refresh/action-item-refresh.tpl.html'
+  });
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
+(function () {
+  'use strict';
+
   IgzActionItemMore.$inject = ["$element", "$document", "$scope"];
   angular.module('iguazio.dashboard-controls').component('igzActionItemMore', {
     bindings: {
@@ -10870,35 +10899,6 @@ such restriction.
       });
     }
   }
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  angular.module('iguazio.dashboard-controls').component('igzActionItemRefresh', {
-    bindings: {
-      isDisabled: '<',
-      refresh: '&'
-    },
-    templateUrl: 'igz_controls/components/action-item/action-item-refresh/action-item-refresh.tpl.html'
-  });
 })();
 "use strict";
 
@@ -11589,152 +11589,70 @@ such restriction.
 (function () {
   'use strict';
 
-  NclVersionConfigurationBasicSettingsController.$inject = ["$rootScope", "$timeout", "$i18next", "i18next", "lodash", "ConfigService", "DialogsService", "FunctionsService", "ValidationService"];
-  angular.module('iguazio.dashboard-controls').component('nclVersionConfigurationBasicSettings', {
+  NclTestEventsNavigationTabsController.$inject = ["$i18next", "i18next"];
+  angular.module('iguazio.dashboard-controls').component('nclTestEventsNavigationTabs', {
     bindings: {
-      version: '<',
-      onChangeCallback: '<',
-      isFunctionDeploying: '&'
+      activeTab: '<',
+      tabItems: '<',
+      selectedLogLevel: '<?',
+      onChangeActiveTab: '&',
+      onChangeLogLevel: '&?'
     },
-    templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-basic-settings/version-configuration-basic-settings.tpl.html',
-    controller: NclVersionConfigurationBasicSettingsController
+    templateUrl: 'nuclio/functions/version/version-code/function-event-pane/test-events-navigation-tabs/test-events-navigation-tabs.tpl.html',
+    controller: NclTestEventsNavigationTabsController
   });
-  function NclVersionConfigurationBasicSettingsController($rootScope, $timeout, $i18next, i18next, lodash, ConfigService, DialogsService, FunctionsService, ValidationService) {
+  function NclTestEventsNavigationTabsController($i18next, i18next) {
     var ctrl = this;
     var lng = i18next.language;
-    ctrl.enableFunction = false;
-    ctrl.enableTimeout = false;
-    ctrl.timeout = {
-      min: 0,
-      sec: 0
-    };
     ctrl.logLevelValues = [{
       id: 'error',
       name: $i18next.t('common:ERROR', {
         lng: lng
-      })
+      }),
+      visible: true
     }, {
       id: 'warn',
       name: $i18next.t('common:WARNING', {
         lng: lng
-      })
+      }),
+      visible: true
     }, {
       id: 'info',
       name: $i18next.t('common:INFO', {
         lng: lng
-      })
+      }),
+      visible: true
     }, {
       id: 'debug',
       name: $i18next.t('common:DEBUG', {
         lng: lng
-      })
+      }),
+      visible: true
     }];
-    ctrl.$onInit = onInit;
-    ctrl.$onChanges = onChanges;
-    ctrl.isDemoMode = ConfigService.isDemoMode;
-    ctrl.lodash = lodash;
-    ctrl.validationRules = {
-      integer: ValidationService.getValidationRules('integer')
-    };
-    ctrl.inputValueCallback = inputValueCallback;
-    ctrl.setPriority = setPriority;
-    ctrl.updateEnableStatus = updateEnableStatus;
-
-    //
-    // Hook methods
-    //
-
-    /**
-     * Initialization method
-     */
-    function onInit() {
-      ctrl.platformIsKube = FunctionsService.isKubePlatform();
-    }
-
-    /**
-     * On changes hook method.
-     * @param {Object} changes
-     */
-    function onChanges(changes) {
-      if (angular.isDefined(changes.version)) {
-        if (ctrl.isDemoMode()) {
-          var timeoutSeconds = lodash.get(ctrl.version, 'spec.timeoutSeconds');
-          if (lodash.isNumber(timeoutSeconds)) {
-            ctrl.timeout.min = Math.floor(timeoutSeconds / 60);
-            ctrl.timeout.sec = Math.floor(timeoutSeconds % 60);
-          }
-        }
-        lodash.defaultsDeep(ctrl.version, {
-          spec: {
-            loggerSinks: [{
-              level: 'debug'
-            }]
-          }
-        });
-        ctrl.enableFunction = !lodash.get(ctrl.version, 'spec.disable', false);
-        $timeout(function () {
-          if (ctrl.basicSettingsForm.$invalid) {
-            ctrl.basicSettingsForm.$setSubmitted();
-          }
-        });
-      }
-    }
+    ctrl.changeActiveTab = changeActiveTab;
+    ctrl.isActiveTab = isActiveTab;
 
     //
     // Public methods
     //
 
     /**
-     * Update data callback
-     * @param {string} newData
-     * @param {string} field
+     * Changes active nav tab
+     * @param {Object} item - current status
      */
-    function inputValueCallback(newData, field) {
-      lodash.set(ctrl, field, lodash.includes(field, 'timeout') ? Number(newData) : newData);
-      if (lodash.includes(field, 'timeout')) {
-        lodash.set(ctrl.version, 'spec.timeoutSeconds', ctrl.timeout.min * 60 + ctrl.timeout.sec);
-      } else if (lodash.startsWith(field, 'spec.securityContext.') && newData === '') {
-        lodash.unset(ctrl.version, field);
-      } else {
-        lodash.set(ctrl.version, field, newData);
-      }
-      ctrl.basicSettingsForm.$setSubmitted();
-      ctrl.onChangeCallback();
-      $timeout(function () {
-        $rootScope.$broadcast('change-state-deploy-button', {
-          component: 'settings',
-          isDisabled: !ctrl.basicSettingsForm.$valid
-        });
+    function changeActiveTab(item) {
+      ctrl.activeTab = item;
+      ctrl.onChangeActiveTab({
+        activeTab: item
       });
     }
 
     /**
-     * Sets logger level
-     * @param {Object} item
+     * Checks if it is an active tab
+     * @param {Object} item - current tab
      */
-    function setPriority(item) {
-      lodash.set(ctrl.version, 'spec.loggerSinks[0].level', item.id);
-      ctrl.onChangeCallback();
-    }
-
-    /**
-     * Switches enable/disable function status
-     */
-    function updateEnableStatus() {
-      var apiGateways = lodash.get(ctrl.version, 'status.apiGateways', []);
-      var originallyDisabled = lodash.get(ctrl.version, 'ui.deployedVersion.spec.disable', false);
-      if (!lodash.isEmpty(apiGateways) && !ctrl.enableFunction && !originallyDisabled) {
-        DialogsService.alert($i18next.t('functions:ERROR_MSG.DISABLE_API_GW_FUNCTION', {
-          lng: lng,
-          apiGatewayName: apiGateways[0]
-        }));
-
-        // return checkbox to enabled state
-        ctrl.enableFunction = true;
-      } else {
-        lodash.set(ctrl.version, 'spec.disable', !ctrl.enableFunction);
-        ctrl.onChangeCallback();
-      }
+    function isActiveTab(item) {
+      return ctrl.activeTab.id === item.id;
     }
   }
 })();
@@ -11759,110 +11677,34 @@ such restriction.
 (function () {
   'use strict';
 
-  NclVersionConfigurationBuildController.$inject = ["$rootScope", "$scope", "$timeout", "$i18next", "i18next", "lodash", "ngDialog", "Upload", "ConfigService", "FunctionsService", "ValidationService"];
-  angular.module('iguazio.dashboard-controls').component('nclVersionConfigurationBuild', {
+  NclTestEventsLogsController.$inject = ["lodash"];
+  angular.module('iguazio.dashboard-controls').component('nclTestEventsLogs', {
     bindings: {
-      version: '<',
-      onChangeCallback: '<',
-      isFunctionDeploying: '&'
+      logs: '<'
     },
-    templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-build/version-configuration-build.tpl.html',
-    controller: NclVersionConfigurationBuildController
+    templateUrl: 'nuclio/functions/version/version-code/function-event-pane/test-events-logs/test-events-logs.tpl.html',
+    controller: NclTestEventsLogsController
   });
-  function NclVersionConfigurationBuildController($rootScope, $scope, $timeout, $i18next, i18next, lodash, ngDialog, Upload, ConfigService, FunctionsService, ValidationService) {
+  function NclTestEventsLogsController(lodash) {
     var ctrl = this;
-    var lng = i18next.language;
-    var uploadType = '';
-    ctrl.actions = initActions();
-    ctrl.build = {
-      runtimeAttributes: {}
-    };
-    ctrl.script = {
-      uploading: false,
-      uploaded: false,
-      progress: '0%',
-      icon: 'ncl-icon-script',
-      name: ''
-    };
-    ctrl.file = {
-      uploading: false,
-      uploaded: false,
-      progress: '0%',
-      icon: 'ncl-icon-file',
-      name: ''
-    };
-    ctrl.disabled = true;
-    ctrl.platformKindIsKube = false;
-    ctrl.onBuildImageDescription = '';
-    ctrl.defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
-    ctrl.imageNameValidationPattern = ValidationService.dockerReference;
-    ctrl.maxLengths = {
-      imageName: ValidationService.getMaxLength('function.imageName')
-    };
-    ctrl.imageName = '';
+    var REQUIRED_PARAMETERS = ['level', 'name', 'time', 'err', 'message', 'ui'];
     ctrl.$onInit = onInit;
-    ctrl.$onChanges = onChanges;
-    ctrl.$onDestroy = onDestroy;
-    ctrl.deleteFile = deleteFile;
-    ctrl.getFileConfig = getFileConfig;
-    ctrl.inputValueCallback = inputValueCallback;
-    ctrl.isDemoMode = ConfigService.isDemoMode;
-    ctrl.onFireAction = onFireAction;
-    ctrl.uploadFile = uploadFile;
+    ctrl.collapseRow = collapseRow;
+    ctrl.expandAllRows = expandAllRows;
+    ctrl.getLevelIconClass = getLevelIconClass;
+    ctrl.getParameters = getParameters;
+    ctrl.hasAdditionalParameters = hasAdditionalParameters;
 
     //
-    // Hook methods
+    // Hook method
     //
 
     /**
      * Initialization method
      */
     function onInit() {
-      ctrl.onBuildImageDescription = $i18next.t('functions:ONBUILD_IMAGE_DESCRIPTION', {
-        interpolation: {
-          prefix: '__',
-          suffix: '__'
-        },
-        lng: lng
-      });
-      ctrl.platformKindIsKube = FunctionsService.isKubePlatform();
-    }
-
-    /**
-     * On changes hook method.
-     * @param {Object} changes
-     */
-    function onChanges(changes) {
-      if (angular.isDefined(changes.version)) {
-        ctrl.disabled = lodash.get(ctrl.version, 'spec.build.codeEntryType') === 'image';
-        ctrl.build.commands = lodash.get(ctrl.version, 'spec.build.commands', []);
-        ctrl.build.commands = ctrl.build.commands.join('\n').replace(/''/g, '\'');
-        ctrl.build.dependencies = lodash.get(ctrl.version, 'spec.build.dependencies', []).join('\n');
-        ctrl.build.runtimeAttributes.repositories = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories', []).join('\n');
-        ctrl.imageName = lodash.get(ctrl.version, 'spec.build.image');
-        var imageNamePrefix = ctrl.version.ui.imageNamePrefix;
-        if (!lodash.isEmpty(imageNamePrefix) && lodash.startsWith(ctrl.imageName, imageNamePrefix)) {
-          ctrl.imageName = ctrl.imageName.replace(imageNamePrefix, '');
-        }
-        $timeout(function () {
-          if (ctrl.buildForm.$invalid) {
-            ctrl.buildForm.$setSubmitted();
-            $rootScope.$broadcast('change-state-deploy-button', {
-              component: 'build',
-              isDisabled: true
-            });
-          }
-        });
-      }
-    }
-
-    /**
-     * Destructor method
-     */
-    function onDestroy() {
-      $rootScope.$broadcast('change-state-deploy-button', {
-        component: 'build',
-        isDisabled: lodash.get(ctrl.buildForm, '$invalid', false)
+      lodash.forEach(ctrl.logs, function (log) {
+        lodash.set(log, 'ui.collapsed', true);
       });
     }
 
@@ -11871,147 +11713,49 @@ such restriction.
     //
 
     /**
-     * Update spec.buildCommands value
-     * @param {string} newData
-     * @param {string} field
+     * Collapse/expand row depending on `collapse` value
+     * @param {Object} log
+     * @param {boolean} collapse
      */
-    function inputValueCallback(newData, field) {
-      if (lodash.includes(['commands', 'dependencies', 'runtimeAttributes.repositories'], field)) {
-        if (lodash.isEmpty(newData)) {
-          lodash.unset(ctrl.build, field);
-          lodash.unset(ctrl.version, 'spec.build.' + field);
-        } else {
-          var commands = newData.replace(/\r/g, '\n').split(/\n+/);
-          lodash.set(ctrl.build, field, newData);
-          lodash.set(ctrl.version, 'spec.build.' + field, commands);
-        }
-      } else if (field === 'imageName') {
-        var imageNamePrefix = ctrl.version.ui.imageNamePrefix;
-        var prefix = lodash.isEmpty(imageNamePrefix) ? '' : imageNamePrefix;
-        lodash.set(ctrl.version, 'spec.build.image', prefix + newData);
-        ctrl.imageName = newData;
-      } else {
-        if (field === 'readinessTimeoutSeconds' && newData === '') {
-          lodash.unset(ctrl.version, field);
-        } else {
-          lodash.set(ctrl.version, field, newData);
-        }
-      }
-      $timeout(function () {
-        $rootScope.$broadcast('change-state-deploy-button', {
-          component: 'build',
-          isDisabled: lodash.get(ctrl.buildForm, '$invalid', false)
-        });
-      });
-      ctrl.onChangeCallback();
+    function collapseRow(log, collapse) {
+      lodash.set(log, 'ui.collapsed', collapse);
     }
 
     /**
-     * Returns uploading file config object
+     * Collapse/expand all rows depending on `expand` value
+     * @param {boolean} expand
+     */
+    function expandAllRows(expand) {
+      lodash.forEach(ctrl.logs, function (log) {
+        lodash.set(log, 'ui.collapsed', !expand);
+      });
+    }
+
+    /**
+     * Gets css class depending on log.level
+     * @param {Object} log
+     * @returns {string}
+     */
+    function getLevelIconClass(log) {
+      return log.level === 'debug' ? 'ncl-icon-debug' : log.level === 'info' ? 'igz-icon-info-round' : log.level === 'warn' ? 'igz-icon-warning' : log.level === 'error' ? 'igz-icon-cancel-path' : '';
+    }
+
+    /**
+     * Gets additional parameters
+     * @param {Object} log
      * @returns {Object}
      */
-    function getFileConfig() {
-      return ctrl[uploadType];
+    function getParameters(log) {
+      return lodash.omit(log, REQUIRED_PARAMETERS);
     }
 
     /**
-     * According to given action name calls proper action handler
-     * @param {string} fileType - a type of uploading file
-     * @returns {boolean} if file of this fileType already uploaded
+     * Checks if log has additional parameters
+     * @param {Object} log
+     * @returns {boolean}
      */
-    function onFireAction(fileType) {
-      // this if is a temporary solution as at the moment we don't know the maximum quantity of the uploading files
-      if (fileType === 'file' && ctrl.file.uploaded || fileType === 'script' && ctrl.script.uploaded) {
-        return false;
-      }
-      uploadType = fileType;
-      ngDialog.open({
-        template: '<ncl-version-configuration-build-dialog data-close-dialog="closeThisDialog(file)"></ncl-version-configuration-build-dialog>',
-        plain: true,
-        scope: $scope,
-        className: 'ngdialog-theme-nuclio version-configuration-build-dialog-wrapper'
-      }).closePromise.then(function (data) {
-        if (!lodash.isNil(data.value)) {
-          ctrl.uploadFile(data.value);
-        }
-      });
-    }
-
-    /**
-     * Upload selected file on server
-     * @param {Object} file - selected file
-     */
-    function uploadFile(file) {
-      var uploadingData = getFileConfig();
-      Upload.upload({
-        url: '',
-        // TODO
-        data: {
-          file: file
-        }
-      }).then(function (response) {
-        // on success
-        if (!uploadingData.uploaded && !lodash.isNil(response.config.data.file)) {
-          uploadingData.uploading = false;
-          uploadingData.uploaded = true;
-          uploadingData.name = response.config.data.file.name;
-          uploadingData.progress = '100%';
-        }
-      }, function (response) {
-        // on error
-        uploadingData.uploading = false;
-        uploadingData.uploaded = false;
-      }, function (load) {
-        // on progress
-        if (!lodash.isNil(load.config.data.file)) {
-          var progressPercentage = parseInt(100.0 * load.loaded / load.total);
-          uploadingData.uploading = true;
-          uploadingData.progress = progressPercentage + '%';
-          uploadingData.name = load.config.data.file.name;
-        }
-      });
-      uploadingData.uploading = false;
-    }
-
-    /**
-     * Delete file button handler
-     * @param {string} type - type of file
-     */
-    function deleteFile(type) {
-      ctrl[type] = {
-        uploading: false,
-        uploaded: false,
-        progress: '0%',
-        icon: 'ncl-icon-' + type,
-        name: ''
-      };
-      ctrl.onChangeCallback();
-    }
-
-    //
-    // Private methods
-    //
-
-    /**
-     * Initializes actions
-     * @returns {Object[]} - list of actions
-     */
-    function initActions() {
-      return [{
-        id: 'script',
-        label: $i18next.t('functions:SCRIPT', {
-          lng: lng
-        }),
-        icon: 'ncl-icon-script',
-        active: true
-      }, {
-        id: 'file',
-        label: $i18next.t('common:FILE', {
-          lng: lng
-        }),
-        icon: 'ncl-icon-file',
-        active: true
-      }];
+    function hasAdditionalParameters(log) {
+      return !lodash.isEmpty(getParameters(log));
     }
   }
 })();
@@ -12485,6 +12229,502 @@ such restriction.
 (function () {
   'use strict';
 
+  NclVersionConfigurationBuildController.$inject = ["$rootScope", "$scope", "$timeout", "$i18next", "i18next", "lodash", "ngDialog", "Upload", "ConfigService", "FunctionsService", "ValidationService"];
+  angular.module('iguazio.dashboard-controls').component('nclVersionConfigurationBuild', {
+    bindings: {
+      version: '<',
+      onChangeCallback: '<',
+      isFunctionDeploying: '&'
+    },
+    templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-build/version-configuration-build.tpl.html',
+    controller: NclVersionConfigurationBuildController
+  });
+  function NclVersionConfigurationBuildController($rootScope, $scope, $timeout, $i18next, i18next, lodash, ngDialog, Upload, ConfigService, FunctionsService, ValidationService) {
+    var ctrl = this;
+    var lng = i18next.language;
+    var uploadType = '';
+    ctrl.actions = initActions();
+    ctrl.build = {
+      runtimeAttributes: {}
+    };
+    ctrl.script = {
+      uploading: false,
+      uploaded: false,
+      progress: '0%',
+      icon: 'ncl-icon-script',
+      name: ''
+    };
+    ctrl.file = {
+      uploading: false,
+      uploaded: false,
+      progress: '0%',
+      icon: 'ncl-icon-file',
+      name: ''
+    };
+    ctrl.disabled = true;
+    ctrl.platformKindIsKube = false;
+    ctrl.onBuildImageDescription = '';
+    ctrl.defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
+    ctrl.imageNameValidationPattern = ValidationService.dockerReference;
+    ctrl.maxLengths = {
+      imageName: ValidationService.getMaxLength('function.imageName')
+    };
+    ctrl.imageName = '';
+    ctrl.$onInit = onInit;
+    ctrl.$onChanges = onChanges;
+    ctrl.$onDestroy = onDestroy;
+    ctrl.deleteFile = deleteFile;
+    ctrl.getFileConfig = getFileConfig;
+    ctrl.inputValueCallback = inputValueCallback;
+    ctrl.isDemoMode = ConfigService.isDemoMode;
+    ctrl.onFireAction = onFireAction;
+    ctrl.uploadFile = uploadFile;
+
+    //
+    // Hook methods
+    //
+
+    /**
+     * Initialization method
+     */
+    function onInit() {
+      ctrl.onBuildImageDescription = $i18next.t('functions:ONBUILD_IMAGE_DESCRIPTION', {
+        interpolation: {
+          prefix: '__',
+          suffix: '__'
+        },
+        lng: lng
+      });
+      ctrl.platformKindIsKube = FunctionsService.isKubePlatform();
+    }
+
+    /**
+     * On changes hook method.
+     * @param {Object} changes
+     */
+    function onChanges(changes) {
+      if (angular.isDefined(changes.version)) {
+        ctrl.disabled = lodash.get(ctrl.version, 'spec.build.codeEntryType') === 'image';
+        ctrl.build.commands = lodash.get(ctrl.version, 'spec.build.commands', []);
+        ctrl.build.commands = ctrl.build.commands.join('\n').replace(/''/g, '\'');
+        ctrl.build.dependencies = lodash.get(ctrl.version, 'spec.build.dependencies', []).join('\n');
+        ctrl.build.runtimeAttributes.repositories = lodash.get(ctrl.version, 'spec.build.runtimeAttributes.repositories', []).join('\n');
+        ctrl.imageName = lodash.get(ctrl.version, 'spec.build.image');
+        var imageNamePrefix = ctrl.version.ui.imageNamePrefix;
+        if (!lodash.isEmpty(imageNamePrefix) && lodash.startsWith(ctrl.imageName, imageNamePrefix)) {
+          ctrl.imageName = ctrl.imageName.replace(imageNamePrefix, '');
+        }
+        $timeout(function () {
+          if (ctrl.buildForm.$invalid) {
+            ctrl.buildForm.$setSubmitted();
+            $rootScope.$broadcast('change-state-deploy-button', {
+              component: 'build',
+              isDisabled: true
+            });
+          }
+        });
+      }
+    }
+
+    /**
+     * Destructor method
+     */
+    function onDestroy() {
+      $rootScope.$broadcast('change-state-deploy-button', {
+        component: 'build',
+        isDisabled: lodash.get(ctrl.buildForm, '$invalid', false)
+      });
+    }
+
+    //
+    // Public methods
+    //
+
+    /**
+     * Update spec.buildCommands value
+     * @param {string} newData
+     * @param {string} field
+     */
+    function inputValueCallback(newData, field) {
+      if (lodash.includes(['commands', 'dependencies', 'runtimeAttributes.repositories'], field)) {
+        if (lodash.isEmpty(newData)) {
+          lodash.unset(ctrl.build, field);
+          lodash.unset(ctrl.version, 'spec.build.' + field);
+        } else {
+          var commands = newData.replace(/\r/g, '\n').split(/\n+/);
+          lodash.set(ctrl.build, field, newData);
+          lodash.set(ctrl.version, 'spec.build.' + field, commands);
+        }
+      } else if (field === 'imageName') {
+        var imageNamePrefix = ctrl.version.ui.imageNamePrefix;
+        var prefix = lodash.isEmpty(imageNamePrefix) ? '' : imageNamePrefix;
+        lodash.set(ctrl.version, 'spec.build.image', prefix + newData);
+        ctrl.imageName = newData;
+      } else {
+        if (field === 'readinessTimeoutSeconds' && newData === '') {
+          lodash.unset(ctrl.version, field);
+        } else {
+          lodash.set(ctrl.version, field, newData);
+        }
+      }
+      $timeout(function () {
+        $rootScope.$broadcast('change-state-deploy-button', {
+          component: 'build',
+          isDisabled: lodash.get(ctrl.buildForm, '$invalid', false)
+        });
+      });
+      ctrl.onChangeCallback();
+    }
+
+    /**
+     * Returns uploading file config object
+     * @returns {Object}
+     */
+    function getFileConfig() {
+      return ctrl[uploadType];
+    }
+
+    /**
+     * According to given action name calls proper action handler
+     * @param {string} fileType - a type of uploading file
+     * @returns {boolean} if file of this fileType already uploaded
+     */
+    function onFireAction(fileType) {
+      // this if is a temporary solution as at the moment we don't know the maximum quantity of the uploading files
+      if (fileType === 'file' && ctrl.file.uploaded || fileType === 'script' && ctrl.script.uploaded) {
+        return false;
+      }
+      uploadType = fileType;
+      ngDialog.open({
+        template: '<ncl-version-configuration-build-dialog data-close-dialog="closeThisDialog(file)"></ncl-version-configuration-build-dialog>',
+        plain: true,
+        scope: $scope,
+        className: 'ngdialog-theme-nuclio version-configuration-build-dialog-wrapper'
+      }).closePromise.then(function (data) {
+        if (!lodash.isNil(data.value)) {
+          ctrl.uploadFile(data.value);
+        }
+      });
+    }
+
+    /**
+     * Upload selected file on server
+     * @param {Object} file - selected file
+     */
+    function uploadFile(file) {
+      var uploadingData = getFileConfig();
+      Upload.upload({
+        url: '',
+        // TODO
+        data: {
+          file: file
+        }
+      }).then(function (response) {
+        // on success
+        if (!uploadingData.uploaded && !lodash.isNil(response.config.data.file)) {
+          uploadingData.uploading = false;
+          uploadingData.uploaded = true;
+          uploadingData.name = response.config.data.file.name;
+          uploadingData.progress = '100%';
+        }
+      }, function (response) {
+        // on error
+        uploadingData.uploading = false;
+        uploadingData.uploaded = false;
+      }, function (load) {
+        // on progress
+        if (!lodash.isNil(load.config.data.file)) {
+          var progressPercentage = parseInt(100.0 * load.loaded / load.total);
+          uploadingData.uploading = true;
+          uploadingData.progress = progressPercentage + '%';
+          uploadingData.name = load.config.data.file.name;
+        }
+      });
+      uploadingData.uploading = false;
+    }
+
+    /**
+     * Delete file button handler
+     * @param {string} type - type of file
+     */
+    function deleteFile(type) {
+      ctrl[type] = {
+        uploading: false,
+        uploaded: false,
+        progress: '0%',
+        icon: 'ncl-icon-' + type,
+        name: ''
+      };
+      ctrl.onChangeCallback();
+    }
+
+    //
+    // Private methods
+    //
+
+    /**
+     * Initializes actions
+     * @returns {Object[]} - list of actions
+     */
+    function initActions() {
+      return [{
+        id: 'script',
+        label: $i18next.t('functions:SCRIPT', {
+          lng: lng
+        }),
+        icon: 'ncl-icon-script',
+        active: true
+      }, {
+        id: 'file',
+        label: $i18next.t('common:FILE', {
+          lng: lng
+        }),
+        icon: 'ncl-icon-file',
+        active: true
+      }];
+    }
+  }
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
+(function () {
+  'use strict';
+
+  NclVersionConfigurationBasicSettingsController.$inject = ["$rootScope", "$timeout", "$i18next", "i18next", "lodash", "ConfigService", "DialogsService", "FunctionsService", "ValidationService"];
+  angular.module('iguazio.dashboard-controls').component('nclVersionConfigurationBasicSettings', {
+    bindings: {
+      version: '<',
+      onChangeCallback: '<',
+      isFunctionDeploying: '&'
+    },
+    templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-basic-settings/version-configuration-basic-settings.tpl.html',
+    controller: NclVersionConfigurationBasicSettingsController
+  });
+  function NclVersionConfigurationBasicSettingsController($rootScope, $timeout, $i18next, i18next, lodash, ConfigService, DialogsService, FunctionsService, ValidationService) {
+    var ctrl = this;
+    var lng = i18next.language;
+    ctrl.enableFunction = false;
+    ctrl.enableTimeout = false;
+    ctrl.timeout = {
+      min: 0,
+      sec: 0
+    };
+    ctrl.logLevelValues = [{
+      id: 'error',
+      name: $i18next.t('common:ERROR', {
+        lng: lng
+      })
+    }, {
+      id: 'warn',
+      name: $i18next.t('common:WARNING', {
+        lng: lng
+      })
+    }, {
+      id: 'info',
+      name: $i18next.t('common:INFO', {
+        lng: lng
+      })
+    }, {
+      id: 'debug',
+      name: $i18next.t('common:DEBUG', {
+        lng: lng
+      })
+    }];
+    ctrl.$onInit = onInit;
+    ctrl.$onChanges = onChanges;
+    ctrl.isDemoMode = ConfigService.isDemoMode;
+    ctrl.lodash = lodash;
+    ctrl.validationRules = {
+      integer: ValidationService.getValidationRules('integer')
+    };
+    ctrl.inputValueCallback = inputValueCallback;
+    ctrl.setPriority = setPriority;
+    ctrl.updateEnableStatus = updateEnableStatus;
+
+    //
+    // Hook methods
+    //
+
+    /**
+     * Initialization method
+     */
+    function onInit() {
+      ctrl.platformIsKube = FunctionsService.isKubePlatform();
+    }
+
+    /**
+     * On changes hook method.
+     * @param {Object} changes
+     */
+    function onChanges(changes) {
+      if (angular.isDefined(changes.version)) {
+        if (ctrl.isDemoMode()) {
+          var timeoutSeconds = lodash.get(ctrl.version, 'spec.timeoutSeconds');
+          if (lodash.isNumber(timeoutSeconds)) {
+            ctrl.timeout.min = Math.floor(timeoutSeconds / 60);
+            ctrl.timeout.sec = Math.floor(timeoutSeconds % 60);
+          }
+        }
+        lodash.defaultsDeep(ctrl.version, {
+          spec: {
+            loggerSinks: [{
+              level: 'debug'
+            }]
+          }
+        });
+        ctrl.enableFunction = !lodash.get(ctrl.version, 'spec.disable', false);
+        $timeout(function () {
+          if (ctrl.basicSettingsForm.$invalid) {
+            ctrl.basicSettingsForm.$setSubmitted();
+          }
+        });
+      }
+    }
+
+    //
+    // Public methods
+    //
+
+    /**
+     * Update data callback
+     * @param {string} newData
+     * @param {string} field
+     */
+    function inputValueCallback(newData, field) {
+      lodash.set(ctrl, field, lodash.includes(field, 'timeout') ? Number(newData) : newData);
+      if (lodash.includes(field, 'timeout')) {
+        lodash.set(ctrl.version, 'spec.timeoutSeconds', ctrl.timeout.min * 60 + ctrl.timeout.sec);
+      } else if (lodash.startsWith(field, 'spec.securityContext.') && newData === '') {
+        lodash.unset(ctrl.version, field);
+      } else {
+        lodash.set(ctrl.version, field, newData);
+      }
+      ctrl.basicSettingsForm.$setSubmitted();
+      ctrl.onChangeCallback();
+      $timeout(function () {
+        $rootScope.$broadcast('change-state-deploy-button', {
+          component: 'settings',
+          isDisabled: !ctrl.basicSettingsForm.$valid
+        });
+      });
+    }
+
+    /**
+     * Sets logger level
+     * @param {Object} item
+     */
+    function setPriority(item) {
+      lodash.set(ctrl.version, 'spec.loggerSinks[0].level', item.id);
+      ctrl.onChangeCallback();
+    }
+
+    /**
+     * Switches enable/disable function status
+     */
+    function updateEnableStatus() {
+      var apiGateways = lodash.get(ctrl.version, 'status.apiGateways', []);
+      var originallyDisabled = lodash.get(ctrl.version, 'ui.deployedVersion.spec.disable', false);
+      if (!lodash.isEmpty(apiGateways) && !ctrl.enableFunction && !originallyDisabled) {
+        DialogsService.alert($i18next.t('functions:ERROR_MSG.DISABLE_API_GW_FUNCTION', {
+          lng: lng,
+          apiGatewayName: apiGateways[0]
+        }));
+
+        // return checkbox to enabled state
+        ctrl.enableFunction = true;
+      } else {
+        lodash.set(ctrl.version, 'spec.disable', !ctrl.enableFunction);
+        ctrl.onChangeCallback();
+      }
+    }
+  }
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
+(function () {
+  'use strict';
+
+  NclVersionConfigurationLoggingController.$inject = ["lodash"];
+  angular.module('iguazio.dashboard-controls').component('nclVersionConfigurationLogging', {
+    bindings: {
+      version: '<',
+      onChangeCallback: '<'
+    },
+    templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-logging/version-configuration-logging.tpl.html',
+    controller: NclVersionConfigurationLoggingController
+  });
+  function NclVersionConfigurationLoggingController(lodash) {
+    var ctrl = this;
+    ctrl.inputValueCallback = inputValueCallback;
+
+    //
+    // Public methods
+    //
+
+    /**
+     * Update data callback
+     * @param {string} newData
+     * @param {string} field
+     */
+    function inputValueCallback(newData, field) {
+      lodash.set(ctrl.version, field, newData);
+      ctrl.onChangeCallback();
+    }
+  }
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
+(function () {
+  'use strict';
+
   NclVersionConfigurationLabelsController.$inject = ["$element", "$i18next", "$rootScope", "$timeout", "i18next", "lodash", "FormValidationService", "FunctionsService", "PreventDropdownCutOffService", "ValidationService", "VersionHelperService"];
   angular.module('iguazio.dashboard-controls').component('nclVersionConfigurationLabels', {
     bindings: {
@@ -12685,55 +12925,6 @@ such restriction.
      */
     function validateUniqueness(value) {
       return lodash.filter(ctrl.labels, ['name', value]).length === 1;
-    }
-  }
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  NclVersionConfigurationLoggingController.$inject = ["lodash"];
-  angular.module('iguazio.dashboard-controls').component('nclVersionConfigurationLogging', {
-    bindings: {
-      version: '<',
-      onChangeCallback: '<'
-    },
-    templateUrl: 'nuclio/functions/version/version-configuration/tabs/version-configuration-logging/version-configuration-logging.tpl.html',
-    controller: NclVersionConfigurationLoggingController
-  });
-  function NclVersionConfigurationLoggingController(lodash) {
-    var ctrl = this;
-    ctrl.inputValueCallback = inputValueCallback;
-
-    //
-    // Public methods
-    //
-
-    /**
-     * Update data callback
-     * @param {string} newData
-     * @param {string} field
-     */
-    function inputValueCallback(newData, field) {
-      lodash.set(ctrl.version, field, newData);
-      ctrl.onChangeCallback();
     }
   }
 })();
@@ -14085,197 +14276,6 @@ such restriction.
      */
     function validateUniqueness(path, value) {
       return lodash.filter(ctrl.volumes, [path, value]).length === 1;
-    }
-  }
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  NclTestEventsLogsController.$inject = ["lodash"];
-  angular.module('iguazio.dashboard-controls').component('nclTestEventsLogs', {
-    bindings: {
-      logs: '<'
-    },
-    templateUrl: 'nuclio/functions/version/version-code/function-event-pane/test-events-logs/test-events-logs.tpl.html',
-    controller: NclTestEventsLogsController
-  });
-  function NclTestEventsLogsController(lodash) {
-    var ctrl = this;
-    var REQUIRED_PARAMETERS = ['level', 'name', 'time', 'err', 'message', 'ui'];
-    ctrl.$onInit = onInit;
-    ctrl.collapseRow = collapseRow;
-    ctrl.expandAllRows = expandAllRows;
-    ctrl.getLevelIconClass = getLevelIconClass;
-    ctrl.getParameters = getParameters;
-    ctrl.hasAdditionalParameters = hasAdditionalParameters;
-
-    //
-    // Hook method
-    //
-
-    /**
-     * Initialization method
-     */
-    function onInit() {
-      lodash.forEach(ctrl.logs, function (log) {
-        lodash.set(log, 'ui.collapsed', true);
-      });
-    }
-
-    //
-    // Public methods
-    //
-
-    /**
-     * Collapse/expand row depending on `collapse` value
-     * @param {Object} log
-     * @param {boolean} collapse
-     */
-    function collapseRow(log, collapse) {
-      lodash.set(log, 'ui.collapsed', collapse);
-    }
-
-    /**
-     * Collapse/expand all rows depending on `expand` value
-     * @param {boolean} expand
-     */
-    function expandAllRows(expand) {
-      lodash.forEach(ctrl.logs, function (log) {
-        lodash.set(log, 'ui.collapsed', !expand);
-      });
-    }
-
-    /**
-     * Gets css class depending on log.level
-     * @param {Object} log
-     * @returns {string}
-     */
-    function getLevelIconClass(log) {
-      return log.level === 'debug' ? 'ncl-icon-debug' : log.level === 'info' ? 'igz-icon-info-round' : log.level === 'warn' ? 'igz-icon-warning' : log.level === 'error' ? 'igz-icon-cancel-path' : '';
-    }
-
-    /**
-     * Gets additional parameters
-     * @param {Object} log
-     * @returns {Object}
-     */
-    function getParameters(log) {
-      return lodash.omit(log, REQUIRED_PARAMETERS);
-    }
-
-    /**
-     * Checks if log has additional parameters
-     * @param {Object} log
-     * @returns {boolean}
-     */
-    function hasAdditionalParameters(log) {
-      return !lodash.isEmpty(getParameters(log));
-    }
-  }
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  NclTestEventsNavigationTabsController.$inject = ["$i18next", "i18next"];
-  angular.module('iguazio.dashboard-controls').component('nclTestEventsNavigationTabs', {
-    bindings: {
-      activeTab: '<',
-      tabItems: '<',
-      selectedLogLevel: '<?',
-      onChangeActiveTab: '&',
-      onChangeLogLevel: '&?'
-    },
-    templateUrl: 'nuclio/functions/version/version-code/function-event-pane/test-events-navigation-tabs/test-events-navigation-tabs.tpl.html',
-    controller: NclTestEventsNavigationTabsController
-  });
-  function NclTestEventsNavigationTabsController($i18next, i18next) {
-    var ctrl = this;
-    var lng = i18next.language;
-    ctrl.logLevelValues = [{
-      id: 'error',
-      name: $i18next.t('common:ERROR', {
-        lng: lng
-      }),
-      visible: true
-    }, {
-      id: 'warn',
-      name: $i18next.t('common:WARNING', {
-        lng: lng
-      }),
-      visible: true
-    }, {
-      id: 'info',
-      name: $i18next.t('common:INFO', {
-        lng: lng
-      }),
-      visible: true
-    }, {
-      id: 'debug',
-      name: $i18next.t('common:DEBUG', {
-        lng: lng
-      }),
-      visible: true
-    }];
-    ctrl.changeActiveTab = changeActiveTab;
-    ctrl.isActiveTab = isActiveTab;
-
-    //
-    // Public methods
-    //
-
-    /**
-     * Changes active nav tab
-     * @param {Object} item - current status
-     */
-    function changeActiveTab(item) {
-      ctrl.activeTab = item;
-      ctrl.onChangeActiveTab({
-        activeTab: item
-      });
-    }
-
-    /**
-     * Checks if it is an active tab
-     * @param {Object} item - current tab
-     */
-    function isActiveTab(item) {
-      return ctrl.activeTab.id === item.id;
     }
   }
 })();
@@ -18116,6 +18116,36 @@ such restriction.
 })();
 "use strict";
 
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
+(function () {
+  'use strict';
+
+  angular.module('iguazio.dashboard-controls').component('nclFunction', {
+    bindings: {},
+    templateUrl: 'nuclio/functions/function/ncl-function.tpl.html',
+    controller: NclFunctionController
+  });
+  function NclFunctionController() {
+    var ctrl = this;
+  }
+})();
+"use strict";
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -18370,36 +18400,6 @@ such restriction.
         }
       }
     }
-  }
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  angular.module('iguazio.dashboard-controls').component('nclFunction', {
-    bindings: {},
-    templateUrl: 'nuclio/functions/function/ncl-function.tpl.html',
-    controller: NclFunctionController
-  });
-  function NclFunctionController() {
-    var ctrl = this;
   }
 })();
 "use strict";
@@ -19673,6 +19673,169 @@ such restriction.
 (function () {
   'use strict';
 
+  require.config({
+    paths: {
+      'vs': '/assets/monaco-editor/min/vs'
+    }
+  });
+  angular.module('iguazio.dashboard-controls').directive('igzMonacoEditor', ["lodash", function (lodash) {
+    function link(scope, element, attrs) {
+      var editorElement = element[0];
+      require(['vs/editor/editor.main'], function () {
+        var editorContext = {
+          scope: scope,
+          element: element,
+          attrs: attrs,
+          onThemeChanged: function onThemeChanged(newValue, oldValue) {
+            window.monaco.editor.setTheme(lodash.defaultTo(newValue, 'vs-dark'));
+          },
+          onFileLanguageChanged: function onFileLanguageChanged(newValue) {
+            // update the language model (and set `insertSpaces`)
+            var newModel = window.monaco.editor.createModel('', newValue.language);
+            newModel.updateOptions({
+              insertSpaces: lodash.defaultTo(newValue.useSpaces, true)
+            });
+            this.editor.setModel(newModel);
+
+            // update the code
+            this.editor.setValue(scope.codeFile.code);
+          },
+          onCodeFileChanged: function onCodeFileChanged() {
+            if (!lodash.isEqual(this.editor.getValue(), scope.codeFile.code)) {
+              this.editor.setValue(scope.codeFile.code);
+            }
+          },
+          onReadOnlyCodeFileChanged: function onReadOnlyCodeFileChanged() {
+            this.editor.setValue(scope.codeFile.code);
+          },
+          onWrapStateChanged: function onWrapStateChanged(newState) {
+            this.editor.updateOptions({
+              wordWrap: newState ? 'on' : 'off'
+            });
+          },
+          onFontSizeChanged: function onFontSizeChanged(newFontSize) {
+            this.editor.updateOptions({
+              fontSize: newFontSize
+            });
+          },
+          onReadOnlyChanged: function onReadOnlyChanged(newReadOnly) {
+            this.editor.updateOptions({
+              readOnly: newReadOnly
+            });
+          }
+        };
+        editorContext.editor = window.monaco.editor.defineTheme('custom-vs', {
+          base: 'vs',
+          inherit: true,
+          rules: [{
+            token: '',
+            foreground: '474056',
+            background: 'ffffff'
+          }, {
+            token: 'number',
+            foreground: '474056'
+          }, {
+            token: 'delimiter',
+            foreground: '474056'
+          }, {
+            token: 'string',
+            foreground: '21d4ac'
+          }],
+          colors: {
+            'editor.foreground': '#474056',
+            'editor.background': '#ffffff',
+            'editorLineNumber.foreground': '#474056',
+            'editorGutter.background': '#e1e0e5',
+            'textBlockQuote.border': '#ffffff',
+            'editorCursor.foreground': '#8B0000',
+            'editor.lineHighlightBackground': '#e1e0e5',
+            'editorMarkerNavigation.background': '#000000',
+            'editor.selectionBackground': '#239bca',
+            'editorIndentGuide.background': '#e1e0e5'
+          }
+        });
+        editorContext.editor = window.monaco.editor.create(editorElement, {
+          value: scope.codeFile.code,
+          language: scope.fileLanguage.language,
+          theme: 'vs',
+          automaticLayout: true,
+          dragAndDrop: true,
+          lineNumbersMinChars: scope.miniMonaco ? 2 : 5,
+          lineNumbers: scope.miniMonaco && !scope.showLineNumbers ? 'off' : 'on',
+          // hide line number if it's a mini-monaco
+          minimap: {
+            enabled: !scope.miniMonaco // hide mini-map if it's a mini-monaco
+          },
+          readOnly: scope.readOnly,
+          wordWrap: scope.wordWrap ? 'on' : 'off'
+        });
+
+        // change content callback
+        editorContext.editor.onDidChangeModelContent(function () {
+          // call callback from upper scope (monaco component) with new changed code
+          scope.onCodeChange(editorContext.editor.getValue());
+        });
+
+        // set up watch for codeFile changes to reflect updates
+        scope.$watch('fileLanguage', editorContext.onFileLanguageChanged.bind(editorContext));
+        scope.$watch('editorTheme', editorContext.onThemeChanged.bind(editorContext));
+        scope.$watch('wordWrap', editorContext.onWrapStateChanged.bind(editorContext));
+        scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
+        scope.$watch('fontSize', editorContext.onFontSizeChanged.bind(editorContext));
+        scope.$watch('readOnly', editorContext.onReadOnlyChanged.bind(editorContext));
+        scope.$on('function-import-source-code', editorContext.onReadOnlyCodeFileChanged.bind(editorContext));
+      });
+    }
+    return {
+      link: link,
+      scope: {
+        codeFile: '=codeFile',
+        editorTheme: '=editorTheme',
+        fontSize: '=fontSize',
+        fileLanguage: '=fileLanguage',
+        miniMonaco: '=miniMonaco',
+        showLineNumbers: '=showLineNumbers',
+        onCodeChange: '=onCodeChange',
+        readOnly: '=readOnly',
+        wordWrap: '=wordWrap'
+      }
+    };
+  }]);
+  require(['vs/editor/editor.main'], function () {
+    window.monaco.languages.registerCompletionItemProvider('python', {
+      provideCompletionItems: function provideCompletionItems() {
+        return [{
+          label: 'def',
+          kind: window.monaco.languages.CompletionItemKind.Keyword,
+          insertText: {
+            value: 'def ${1:name}():\r\t$0'
+          }
+        }];
+      }
+    });
+  });
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
+(function () {
+  'use strict';
+
   NclBreadcrumbsController.$inject = ["$scope", "$state", "$stateParams", "$transitions", "lodash"];
   angular.module('iguazio.dashboard-controls').component('nclBreadcrumbs', {
     bindings: {
@@ -19774,189 +19937,6 @@ such restriction.
         ctrl.mainHeaderTitle = {
           title: toState.data.mainHeaderTitle
         };
-      }
-    }
-  }
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  NclBreadcrumbsDropdown.$inject = ["$document", "$element", "$scope", "$state", "$i18next", "i18next", "lodash", "DialogsService"];
-  angular.module('iguazio.dashboard-controls').component('nclBreadcrumbsDropdown', {
-    bindings: {
-      state: '<',
-      title: '<',
-      project: '<',
-      type: '@',
-      getFunctions: '&',
-      getProjects: '&'
-    },
-    templateUrl: 'nuclio/common/components/breadcrumbs-dropdown/breadcrumbs-dropdown.tpl.html',
-    controller: NclBreadcrumbsDropdown
-  });
-  function NclBreadcrumbsDropdown($document, $element, $scope, $state, $i18next, i18next, lodash, DialogsService) {
-    var ctrl = this;
-    var lng = i18next.language;
-    ctrl.itemsList = [];
-    ctrl.showDropdownList = false;
-    ctrl.placeholder = $i18next.t('common:PLACEHOLDER.SEARCH', {
-      lng: lng
-    });
-    ctrl.$onInit = onInit;
-    ctrl.showDropdown = showDropdown;
-    ctrl.showDetails = showDetails;
-
-    //
-    // Hook methods
-    //
-
-    /**
-     * Initialization method
-     */
-    function onInit() {
-      if (ctrl.type === 'projects') {
-        ctrl.getProjects().then(setNuclioItemsList)["catch"](function (error) {
-          var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_PROJECTS', {
-            lng: lng
-          });
-          DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
-        });
-      } else if (ctrl.type === 'functions') {
-        ctrl.getFunctions({
-          id: ctrl.project.metadata.name,
-          enrichApiGateways: false
-        }).then(setNuclioItemsList)["catch"](function (error) {
-          var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {
-            lng: lng
-          });
-          DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
-        });
-      }
-      $document.on('click', unselectDropdown);
-    }
-
-    //
-    // Public method
-    //
-
-    /**
-     * Opens/closes dropdown
-     */
-    function showDropdown() {
-      $document.on('click', unselectDropdown);
-      if (!ctrl.showDropdownList) {
-        $element.find('.breadcrumb-arrow').css('background-color', '#c9c9cd');
-      }
-      ctrl.showDropdownList = !ctrl.showDropdownList;
-      if (!ctrl.showDropdownList) {
-        ctrl.searchText = '';
-        $element.find('.breadcrumb-arrow').css('background-color', '');
-        $document.off('click', unselectDropdown);
-      }
-    }
-
-    /**
-     * Handles mouse click on a item's name
-     * Navigates to selected page
-     * @param {Event} event
-     * @param {Object} item
-     */
-    function showDetails(event, item) {
-      var params = {};
-      ctrl.showDropdownList = !ctrl.showDropdownList;
-      ctrl.searchText = '';
-      $document.off('click', unselectDropdown);
-      $element.find('.breadcrumb-arrow').css('background-color', '');
-      if (ctrl.type === 'projects') {
-        params.projectId = item.id;
-        $state.go('app.project.functions', params);
-      } else if (ctrl.type === 'functions') {
-        params = {
-          isNewFunction: false,
-          id: ctrl.project.metadata.name,
-          functionId: item.id,
-          projectNamespace: ctrl.project.metadata.namespace
-        };
-        $state.go('app.project.function.edit.code', params);
-      }
-    }
-
-    //
-    // Private method
-    //
-
-    /**
-     * Handles promise
-     * Sets projects list for dropdown in Nuclio breadcrumbs
-     * @param {Object} data
-     */
-    function setProjectsItemList(data) {
-      ctrl.itemsList = lodash.map(data, function (item) {
-        return {
-          id: item.metadata.name,
-          name: item.metadata.name,
-          isNuclioState: true
-        };
-      });
-    }
-
-    /**
-     * Handles promise
-     * Sets functions list for dropdown in Nuclio breadcrumbs
-     * @param {Object} data
-     */
-    function setFunctionsItemList(data) {
-      ctrl.itemsList = lodash.map(data, function (item) {
-        return {
-          id: item.metadata.name,
-          name: item.metadata.name,
-          isNuclioState: true
-        };
-      });
-    }
-
-    /**
-     * Checks what item list need to set for dropdown in Nuclio breadcrumbs
-     * @param {Object} data
-     */
-    function setNuclioItemsList(data) {
-      if (ctrl.type === 'projects') {
-        setProjectsItemList(data);
-      } else if (ctrl.type === 'functions') {
-        setFunctionsItemList(lodash.defaultTo(data.data, data));
-      }
-    }
-
-    /**
-     * Handle click on the document and not on the dropdown field and close the dropdown
-     * @param {Object} e - event
-     */
-    function unselectDropdown(e) {
-      if ($element.find(e.target).length === 0) {
-        $scope.$evalAsync(function () {
-          ctrl.showDropdownList = false;
-          ctrl.searchText = '';
-          $document.off('click', unselectDropdown);
-          $element.find('.breadcrumb-arrow').css('background-color', '');
-        });
       }
     }
   }
@@ -20173,6 +20153,189 @@ such restriction.
           type: 'nuclio_alert'
         }
       }];
+    }
+  }
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
+(function () {
+  'use strict';
+
+  NclBreadcrumbsDropdown.$inject = ["$document", "$element", "$scope", "$state", "$i18next", "i18next", "lodash", "DialogsService"];
+  angular.module('iguazio.dashboard-controls').component('nclBreadcrumbsDropdown', {
+    bindings: {
+      state: '<',
+      title: '<',
+      project: '<',
+      type: '@',
+      getFunctions: '&',
+      getProjects: '&'
+    },
+    templateUrl: 'nuclio/common/components/breadcrumbs-dropdown/breadcrumbs-dropdown.tpl.html',
+    controller: NclBreadcrumbsDropdown
+  });
+  function NclBreadcrumbsDropdown($document, $element, $scope, $state, $i18next, i18next, lodash, DialogsService) {
+    var ctrl = this;
+    var lng = i18next.language;
+    ctrl.itemsList = [];
+    ctrl.showDropdownList = false;
+    ctrl.placeholder = $i18next.t('common:PLACEHOLDER.SEARCH', {
+      lng: lng
+    });
+    ctrl.$onInit = onInit;
+    ctrl.showDropdown = showDropdown;
+    ctrl.showDetails = showDetails;
+
+    //
+    // Hook methods
+    //
+
+    /**
+     * Initialization method
+     */
+    function onInit() {
+      if (ctrl.type === 'projects') {
+        ctrl.getProjects().then(setNuclioItemsList)["catch"](function (error) {
+          var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_PROJECTS', {
+            lng: lng
+          });
+          DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+        });
+      } else if (ctrl.type === 'functions') {
+        ctrl.getFunctions({
+          id: ctrl.project.metadata.name,
+          enrichApiGateways: false
+        }).then(setNuclioItemsList)["catch"](function (error) {
+          var defaultMsg = $i18next.t('functions:ERROR_MSG.GET_FUNCTIONS', {
+            lng: lng
+          });
+          DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+        });
+      }
+      $document.on('click', unselectDropdown);
+    }
+
+    //
+    // Public method
+    //
+
+    /**
+     * Opens/closes dropdown
+     */
+    function showDropdown() {
+      $document.on('click', unselectDropdown);
+      if (!ctrl.showDropdownList) {
+        $element.find('.breadcrumb-arrow').css('background-color', '#c9c9cd');
+      }
+      ctrl.showDropdownList = !ctrl.showDropdownList;
+      if (!ctrl.showDropdownList) {
+        ctrl.searchText = '';
+        $element.find('.breadcrumb-arrow').css('background-color', '');
+        $document.off('click', unselectDropdown);
+      }
+    }
+
+    /**
+     * Handles mouse click on a item's name
+     * Navigates to selected page
+     * @param {Event} event
+     * @param {Object} item
+     */
+    function showDetails(event, item) {
+      var params = {};
+      ctrl.showDropdownList = !ctrl.showDropdownList;
+      ctrl.searchText = '';
+      $document.off('click', unselectDropdown);
+      $element.find('.breadcrumb-arrow').css('background-color', '');
+      if (ctrl.type === 'projects') {
+        params.projectId = item.id;
+        $state.go('app.project.functions', params);
+      } else if (ctrl.type === 'functions') {
+        params = {
+          isNewFunction: false,
+          id: ctrl.project.metadata.name,
+          functionId: item.id,
+          projectNamespace: ctrl.project.metadata.namespace
+        };
+        $state.go('app.project.function.edit.code', params);
+      }
+    }
+
+    //
+    // Private method
+    //
+
+    /**
+     * Handles promise
+     * Sets projects list for dropdown in Nuclio breadcrumbs
+     * @param {Object} data
+     */
+    function setProjectsItemList(data) {
+      ctrl.itemsList = lodash.map(data, function (item) {
+        return {
+          id: item.metadata.name,
+          name: item.metadata.name,
+          isNuclioState: true
+        };
+      });
+    }
+
+    /**
+     * Handles promise
+     * Sets functions list for dropdown in Nuclio breadcrumbs
+     * @param {Object} data
+     */
+    function setFunctionsItemList(data) {
+      ctrl.itemsList = lodash.map(data, function (item) {
+        return {
+          id: item.metadata.name,
+          name: item.metadata.name,
+          isNuclioState: true
+        };
+      });
+    }
+
+    /**
+     * Checks what item list need to set for dropdown in Nuclio breadcrumbs
+     * @param {Object} data
+     */
+    function setNuclioItemsList(data) {
+      if (ctrl.type === 'projects') {
+        setProjectsItemList(data);
+      } else if (ctrl.type === 'functions') {
+        setFunctionsItemList(lodash.defaultTo(data.data, data));
+      }
+    }
+
+    /**
+     * Handle click on the document and not on the dropdown field and close the dropdown
+     * @param {Object} e - event
+     */
+    function unselectDropdown(e) {
+      if ($element.find(e.target).length === 0) {
+        $scope.$evalAsync(function () {
+          ctrl.showDropdownList = false;
+          ctrl.searchText = '';
+          $document.off('click', unselectDropdown);
+          $element.find('.breadcrumb-arrow').css('background-color', '');
+        });
+      }
     }
   }
 })();
@@ -21348,114 +21511,6 @@ such restriction.
 })();
 "use strict";
 
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  NclMonacoController.$inject = ["$scope", "lodash"];
-  angular.module('iguazio.dashboard-controls').component('nclMonaco', {
-    bindings: {
-      language: '<',
-      functionSourceCode: '<',
-      onChangeSourceCodeCallback: '&',
-      selectedTheme: '<',
-      miniMonaco: '<?',
-      noTopPadding: '<?',
-      showLineNumbers: '<?',
-      showTextSizeDropdown: '<?',
-      readOnly: '<?',
-      wordWrap: '<?',
-      name: '@?'
-    },
-    templateUrl: 'nuclio/common/components/monaco/monaco.tpl.html',
-    controller: NclMonacoController
-  });
-  function NclMonacoController($scope, lodash) {
-    var ctrl = this;
-    ctrl.$onInit = onInit;
-    ctrl.$onChanges = onChanges;
-    ctrl.onCodeChange = onCodeChange;
-    ctrl.onTextSizeChange = onTextSizeChange;
-
-    //
-    // Hook methods
-    //
-
-    /**
-     * Initialization method
-     */
-    function onInit() {
-      ctrl.noTopPadding = lodash.defaultTo(ctrl.noTopPadding, ctrl.showTextSizeDropdown);
-      $scope.selectedCodeFile = {
-        code: ctrl.functionSourceCode
-      };
-      $scope.selectedFileLanguage = {
-        language: ctrl.language
-      };
-    }
-
-    /**
-     * On changes method
-     * @param {Object} changes
-     */
-    function onChanges(changes) {
-      if (angular.isDefined(changes.language) && !changes.language.isFirstChange()) {
-        $scope.selectedCodeFile = {
-          code: $scope.selectedCodeFile.code
-        };
-        $scope.selectedFileLanguage = {
-          language: changes.language.currentValue
-        };
-      }
-      if (angular.isDefined(changes.functionSourceCode) && !changes.functionSourceCode.isFirstChange()) {
-        $scope.selectedCodeFile = {
-          code: changes.functionSourceCode.currentValue
-        };
-      }
-    }
-
-    /**
-     * On code change callback.
-     * igz-monaco-editor directive calls this callback with new changed content
-     * @param {string} newCode - changed code
-     */
-    function onCodeChange(newCode) {
-      if (angular.isFunction(ctrl.onChangeSourceCodeCallback)) {
-        ctrl.onChangeSourceCodeCallback({
-          sourceCode: newCode,
-          language: $scope.selectedCodeFile.language
-        });
-      }
-    }
-
-    /**
-     * On text size dropdown change
-     * @param {string} newTextSize
-     */
-    function onTextSizeChange(newTextSize) {
-      if (!lodash.isNil(newTextSize)) {
-        ctrl.selectedTextSize = newTextSize;
-      }
-    }
-  }
-})();
-"use strict";
-
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
@@ -22045,259 +22100,92 @@ such restriction.
 (function () {
   'use strict';
 
-  SearchInputController.$inject = ["$scope", "$timeout"];
-  angular.module('iguazio.dashboard-controls').component('nclSearchInput', {
+  NclMonacoController.$inject = ["$scope", "lodash"];
+  angular.module('iguazio.dashboard-controls').component('nclMonaco', {
     bindings: {
-      dataSet: '<',
-      searchKeys: '<',
-      searchStates: '<',
-      searchCallback: '&?',
-      isSearchHierarchically: '@?',
-      placeholder: '@',
-      type: '@?',
-      ruleType: '@?',
-      searchType: '@?'
+      language: '<',
+      functionSourceCode: '<',
+      onChangeSourceCodeCallback: '&',
+      selectedTheme: '<',
+      miniMonaco: '<?',
+      noTopPadding: '<?',
+      showLineNumbers: '<?',
+      showTextSizeDropdown: '<?',
+      readOnly: '<?',
+      wordWrap: '<?',
+      name: '@?'
     },
-    templateUrl: 'nuclio/common/components/nuclio-search-input/search-input.tpl.html',
-    controller: SearchInputController
+    templateUrl: 'nuclio/common/components/monaco/monaco.tpl.html',
+    controller: NclMonacoController
   });
-  function SearchInputController($scope, $timeout) {
+  function NclMonacoController($scope, lodash) {
     var ctrl = this;
-    ctrl.searchQuery = '';
     ctrl.$onInit = onInit;
-    ctrl.onPressEnter = onPressEnter;
-    ctrl.clearInputField = clearInputField;
+    ctrl.$onChanges = onChanges;
+    ctrl.onCodeChange = onCodeChange;
+    ctrl.onTextSizeChange = onTextSizeChange;
 
     //
-    // Hook method
+    // Hook methods
     //
 
     /**
      * Initialization method
      */
     function onInit() {
-      $scope.$watch('$ctrl.searchQuery', onChangeSearchQuery);
+      ctrl.noTopPadding = lodash.defaultTo(ctrl.noTopPadding, ctrl.showTextSizeDropdown);
+      $scope.selectedCodeFile = {
+        code: ctrl.functionSourceCode
+      };
+      $scope.selectedFileLanguage = {
+        language: ctrl.language
+      };
     }
 
-    //
-    // Public methods
-    //
-
     /**
-     * Initializes search on press enter
-     * @param {Event} e
+     * On changes method
+     * @param {Object} changes
      */
-    function onPressEnter(e) {
-      if (e.keyCode === 13) {
-        makeSearch();
+    function onChanges(changes) {
+      if (angular.isDefined(changes.language) && !changes.language.isFirstChange()) {
+        $scope.selectedCodeFile = {
+          code: $scope.selectedCodeFile.code
+        };
+        $scope.selectedFileLanguage = {
+          language: changes.language.currentValue
+        };
+      }
+      if (angular.isDefined(changes.functionSourceCode) && !changes.functionSourceCode.isFirstChange()) {
+        $scope.selectedCodeFile = {
+          code: changes.functionSourceCode.currentValue
+        };
       }
     }
 
     /**
-     * Clear search input field
+     * On code change callback.
+     * igz-monaco-editor directive calls this callback with new changed content
+     * @param {string} newCode - changed code
      */
-    function clearInputField() {
-      ctrl.searchQuery = '';
-    }
-
-    //
-    // Private methods
-    //
-
-    /**
-     * Calls service method for search
-     */
-    function makeSearch() {
-      // TODO
-    }
-
-    /**
-     * Tracks input changing and initializes search
-     */
-    function onChangeSearchQuery(newValue, oldValue) {
-      if (angular.isDefined(newValue) && newValue !== oldValue) {
-        makeSearch();
+    function onCodeChange(newCode) {
+      if (angular.isFunction(ctrl.onChangeSourceCodeCallback)) {
+        ctrl.onChangeSourceCodeCallback({
+          sourceCode: newCode,
+          language: $scope.selectedCodeFile.language
+        });
       }
     }
 
     /**
-     * Initializes search when all html has been rendered
+     * On text size dropdown change
+     * @param {string} newTextSize
      */
-    function onDataChanged() {
-      $timeout(makeSearch);
-    }
-
-    /**
-     * Resets search query and initializes search
-     */
-    function resetSearch() {
-      ctrl.searchQuery = '';
-      $timeout(makeSearch);
+    function onTextSizeChange(newTextSize) {
+      if (!lodash.isNil(newTextSize)) {
+        ctrl.selectedTextSize = newTextSize;
+      }
     }
   }
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  require.config({
-    paths: {
-      'vs': '/assets/monaco-editor/min/vs'
-    }
-  });
-  angular.module('iguazio.dashboard-controls').directive('igzMonacoEditor', ["lodash", function (lodash) {
-    function link(scope, element, attrs) {
-      var editorElement = element[0];
-      require(['vs/editor/editor.main'], function () {
-        var editorContext = {
-          scope: scope,
-          element: element,
-          attrs: attrs,
-          onThemeChanged: function onThemeChanged(newValue, oldValue) {
-            window.monaco.editor.setTheme(lodash.defaultTo(newValue, 'vs-dark'));
-          },
-          onFileLanguageChanged: function onFileLanguageChanged(newValue) {
-            // update the language model (and set `insertSpaces`)
-            var newModel = window.monaco.editor.createModel('', newValue.language);
-            newModel.updateOptions({
-              insertSpaces: lodash.defaultTo(newValue.useSpaces, true)
-            });
-            this.editor.setModel(newModel);
-
-            // update the code
-            this.editor.setValue(scope.codeFile.code);
-          },
-          onCodeFileChanged: function onCodeFileChanged() {
-            if (!lodash.isEqual(this.editor.getValue(), scope.codeFile.code)) {
-              this.editor.setValue(scope.codeFile.code);
-            }
-          },
-          onReadOnlyCodeFileChanged: function onReadOnlyCodeFileChanged() {
-            this.editor.setValue(scope.codeFile.code);
-          },
-          onWrapStateChanged: function onWrapStateChanged(newState) {
-            this.editor.updateOptions({
-              wordWrap: newState ? 'on' : 'off'
-            });
-          },
-          onFontSizeChanged: function onFontSizeChanged(newFontSize) {
-            this.editor.updateOptions({
-              fontSize: newFontSize
-            });
-          },
-          onReadOnlyChanged: function onReadOnlyChanged(newReadOnly) {
-            this.editor.updateOptions({
-              readOnly: newReadOnly
-            });
-          }
-        };
-        editorContext.editor = window.monaco.editor.defineTheme('custom-vs', {
-          base: 'vs',
-          inherit: true,
-          rules: [{
-            token: '',
-            foreground: '474056',
-            background: 'ffffff'
-          }, {
-            token: 'number',
-            foreground: '474056'
-          }, {
-            token: 'delimiter',
-            foreground: '474056'
-          }, {
-            token: 'string',
-            foreground: '21d4ac'
-          }],
-          colors: {
-            'editor.foreground': '#474056',
-            'editor.background': '#ffffff',
-            'editorLineNumber.foreground': '#474056',
-            'editorGutter.background': '#e1e0e5',
-            'textBlockQuote.border': '#ffffff',
-            'editorCursor.foreground': '#8B0000',
-            'editor.lineHighlightBackground': '#e1e0e5',
-            'editorMarkerNavigation.background': '#000000',
-            'editor.selectionBackground': '#239bca',
-            'editorIndentGuide.background': '#e1e0e5'
-          }
-        });
-        editorContext.editor = window.monaco.editor.create(editorElement, {
-          value: scope.codeFile.code,
-          language: scope.fileLanguage.language,
-          theme: 'vs',
-          automaticLayout: true,
-          dragAndDrop: true,
-          lineNumbersMinChars: scope.miniMonaco ? 2 : 5,
-          lineNumbers: scope.miniMonaco && !scope.showLineNumbers ? 'off' : 'on',
-          // hide line number if it's a mini-monaco
-          minimap: {
-            enabled: !scope.miniMonaco // hide mini-map if it's a mini-monaco
-          },
-          readOnly: scope.readOnly,
-          wordWrap: scope.wordWrap ? 'on' : 'off'
-        });
-
-        // change content callback
-        editorContext.editor.onDidChangeModelContent(function () {
-          // call callback from upper scope (monaco component) with new changed code
-          scope.onCodeChange(editorContext.editor.getValue());
-        });
-
-        // set up watch for codeFile changes to reflect updates
-        scope.$watch('fileLanguage', editorContext.onFileLanguageChanged.bind(editorContext));
-        scope.$watch('editorTheme', editorContext.onThemeChanged.bind(editorContext));
-        scope.$watch('wordWrap', editorContext.onWrapStateChanged.bind(editorContext));
-        scope.$watch('codeFile', editorContext.onCodeFileChanged.bind(editorContext));
-        scope.$watch('fontSize', editorContext.onFontSizeChanged.bind(editorContext));
-        scope.$watch('readOnly', editorContext.onReadOnlyChanged.bind(editorContext));
-        scope.$on('function-import-source-code', editorContext.onReadOnlyCodeFileChanged.bind(editorContext));
-      });
-    }
-    return {
-      link: link,
-      scope: {
-        codeFile: '=codeFile',
-        editorTheme: '=editorTheme',
-        fontSize: '=fontSize',
-        fileLanguage: '=fileLanguage',
-        miniMonaco: '=miniMonaco',
-        showLineNumbers: '=showLineNumbers',
-        onCodeChange: '=onCodeChange',
-        readOnly: '=readOnly',
-        wordWrap: '=wordWrap'
-      }
-    };
-  }]);
-  require(['vs/editor/editor.main'], function () {
-    window.monaco.languages.registerCompletionItemProvider('python', {
-      provideCompletionItems: function provideCompletionItems() {
-        return [{
-          label: 'def',
-          kind: window.monaco.languages.CompletionItemKind.Keyword,
-          insertText: {
-            value: 'def ${1:name}():\r\t$0'
-          }
-        }];
-      }
-    });
-  });
 })();
 "use strict";
 
@@ -22519,6 +22407,118 @@ such restriction.
         var elementsPerLine = Math.floor(parseInt(templatesWrapper.css('width')) / templateWidth);
         templatesWrapper.css('width', templateWidth * elementsPerLine + 'px');
       }
+    }
+  }
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
+(function () {
+  'use strict';
+
+  SearchInputController.$inject = ["$scope", "$timeout"];
+  angular.module('iguazio.dashboard-controls').component('nclSearchInput', {
+    bindings: {
+      dataSet: '<',
+      searchKeys: '<',
+      searchStates: '<',
+      searchCallback: '&?',
+      isSearchHierarchically: '@?',
+      placeholder: '@',
+      type: '@?',
+      ruleType: '@?',
+      searchType: '@?'
+    },
+    templateUrl: 'nuclio/common/components/nuclio-search-input/search-input.tpl.html',
+    controller: SearchInputController
+  });
+  function SearchInputController($scope, $timeout) {
+    var ctrl = this;
+    ctrl.searchQuery = '';
+    ctrl.$onInit = onInit;
+    ctrl.onPressEnter = onPressEnter;
+    ctrl.clearInputField = clearInputField;
+
+    //
+    // Hook method
+    //
+
+    /**
+     * Initialization method
+     */
+    function onInit() {
+      $scope.$watch('$ctrl.searchQuery', onChangeSearchQuery);
+    }
+
+    //
+    // Public methods
+    //
+
+    /**
+     * Initializes search on press enter
+     * @param {Event} e
+     */
+    function onPressEnter(e) {
+      if (e.keyCode === 13) {
+        makeSearch();
+      }
+    }
+
+    /**
+     * Clear search input field
+     */
+    function clearInputField() {
+      ctrl.searchQuery = '';
+    }
+
+    //
+    // Private methods
+    //
+
+    /**
+     * Calls service method for search
+     */
+    function makeSearch() {
+      // TODO
+    }
+
+    /**
+     * Tracks input changing and initializes search
+     */
+    function onChangeSearchQuery(newValue, oldValue) {
+      if (angular.isDefined(newValue) && newValue !== oldValue) {
+        makeSearch();
+      }
+    }
+
+    /**
+     * Initializes search when all html has been rendered
+     */
+    function onDataChanged() {
+      $timeout(makeSearch);
+    }
+
+    /**
+     * Resets search query and initializes search
+     */
+    function resetSearch() {
+      ctrl.searchQuery = '';
+      $timeout(makeSearch);
     }
   }
 })();
@@ -22971,69 +22971,6 @@ such restriction.
       $timeout(function () {
         ctrl.isFormChanged = !lodash.isEqual(ctrl.workingCopy, ctrl.selectedEvent) && lodash.isEmpty(ctrl.functionEventForm.$error);
       });
-    }
-  }
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  NclVersionConfigurationController.$inject = ["lodash", "ConfigService", "VersionHelperService"];
-  angular.module('iguazio.dashboard-controls').component('nclVersionConfiguration', {
-    bindings: {
-      version: '<',
-      isFunctionDeploying: '&'
-    },
-    templateUrl: 'nuclio/functions/version/version-configuration/version-configuration.tpl.html',
-    controller: NclVersionConfigurationController
-  });
-  function NclVersionConfigurationController(lodash, ConfigService, VersionHelperService) {
-    var ctrl = this;
-    ctrl.scrollConfig = {
-      axis: 'y',
-      advanced: {
-        autoScrollOnFocus: false,
-        updateOnContentResize: true
-      }
-    };
-    ctrl.isDemoMode = ConfigService.isDemoMode;
-    ctrl.isRuntimeBlockVisible = isRuntimeBlockVisible;
-    ctrl.onConfigurationChangeCallback = onConfigurationChangeCallback;
-
-    //
-    // Public methods
-    //
-
-    /**
-     * Checks if `Runtime Attributes` block is visible
-     * @returns {boolean}
-     */
-    function isRuntimeBlockVisible() {
-      return lodash.includes(['shell', 'java'], lodash.get(ctrl.version, 'spec.runtime'));
-    }
-
-    /**
-     * Checks if version's configuration was changed
-     */
-    function onConfigurationChangeCallback() {
-      VersionHelperService.updateIsVersionChanged(ctrl.version);
     }
   }
 })();
@@ -23644,6 +23581,69 @@ such restriction.
         angular.element(angular.element('.ui-splitbar')[0]).css('display', 'block');
       }
       resizeScrollBar(null, 300);
+    }
+  }
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
+(function () {
+  'use strict';
+
+  NclVersionConfigurationController.$inject = ["lodash", "ConfigService", "VersionHelperService"];
+  angular.module('iguazio.dashboard-controls').component('nclVersionConfiguration', {
+    bindings: {
+      version: '<',
+      isFunctionDeploying: '&'
+    },
+    templateUrl: 'nuclio/functions/version/version-configuration/version-configuration.tpl.html',
+    controller: NclVersionConfigurationController
+  });
+  function NclVersionConfigurationController(lodash, ConfigService, VersionHelperService) {
+    var ctrl = this;
+    ctrl.scrollConfig = {
+      axis: 'y',
+      advanced: {
+        autoScrollOnFocus: false,
+        updateOnContentResize: true
+      }
+    };
+    ctrl.isDemoMode = ConfigService.isDemoMode;
+    ctrl.isRuntimeBlockVisible = isRuntimeBlockVisible;
+    ctrl.onConfigurationChangeCallback = onConfigurationChangeCallback;
+
+    //
+    // Public methods
+    //
+
+    /**
+     * Checks if `Runtime Attributes` block is visible
+     * @returns {boolean}
+     */
+    function isRuntimeBlockVisible() {
+      return lodash.includes(['shell', 'java'], lodash.get(ctrl.version, 'spec.runtime'));
+    }
+
+    /**
+     * Checks if version's configuration was changed
+     */
+    function onConfigurationChangeCallback() {
+      VersionHelperService.updateIsVersionChanged(ctrl.version);
     }
   }
 })();
@@ -24729,6 +24729,224 @@ illegal under applicable law, and the grant of the foregoing license
 under the Apache 2.0 license is conditioned upon your compliance with
 such restriction.
 */
+(function () {
+  'use strict';
+
+  FunctionImportController.$inject = ["$document", "$rootScope", "$scope", "$state", "$timeout", "$i18next", "i18next", "YAML", "lodash", "DialogsService", "EventHelperService", "FunctionsService", "MaskService", "YamlService"];
+  angular.module('iguazio.dashboard-controls').component('nclFunctionImport', {
+    bindings: {
+      project: '<',
+      projects: '<',
+      getFunction: '&',
+      toggleSplashScreen: '&',
+      createNewProject: '<',
+      selectedProject: '<'
+    },
+    templateUrl: 'nuclio/common/screens/create-function/function-import/function-import.tpl.html',
+    controller: FunctionImportController
+  });
+  function FunctionImportController($document, $rootScope, $scope, $state, $timeout, $i18next, i18next, YAML, lodash, DialogsService, EventHelperService, FunctionsService, MaskService, YamlService) {
+    var ctrl = this;
+    var importedFunction = null;
+    var file = null;
+    var lng = i18next.language;
+    ctrl.functionImportForm = {};
+    ctrl.sourceCode = null;
+    ctrl.$onInit = onInit;
+    ctrl.$onChanges = onChanges;
+    ctrl.$onDestroy = onDestroy;
+    ctrl.createFunction = createFunction;
+    ctrl.importFunction = importFunction;
+    ctrl.isCreateFunctionAllowed = isCreateFunctionAllowed;
+    ctrl.isProjectsDropDownVisible = isProjectsDropDownVisible;
+    ctrl.onProjectChange = onProjectChange;
+
+    //
+    // Hook methods
+    //
+
+    /**
+     * Initialization function
+     * Adds event listener on file input and when some file is loaded call importFunction()
+     */
+    function onInit() {
+      $document.on('keypress', createFunction);
+      $document.find('.function-import-input').on('change', importFunction);
+    }
+
+    /**
+     * Bindings changes hook
+     * @param {Object} changes - changed bindings
+     */
+    function onChanges(changes) {
+      if (angular.isDefined(changes.projects)) {
+        prepareProjects();
+      }
+    }
+
+    /**
+     * Destructor method
+     */
+    function onDestroy() {
+      $document.off('keypress', createFunction);
+    }
+
+    //
+    // Public methods
+    //
+
+    /**
+     * Callback handler for 'create function' button
+     * Creates function with imported data.
+     */
+    function createFunction(event) {
+      $timeout(function () {
+        if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) && ctrl.isCreateFunctionAllowed()) {
+          // create function only when imported file is .yml
+          if (isYamlFile(file.name)) {
+            ctrl.toggleSplashScreen({
+              value: true
+            });
+            ctrl.getFunction({
+              metadata: {
+                name: importedFunction.metadata.name
+              }
+            }).then(function (existingFunction) {
+              ctrl.toggleSplashScreen({
+                value: false
+              });
+              FunctionsService.openFunctionConflictDialog(ctrl.project, importedFunction, existingFunction);
+            })["catch"](function (error) {
+              if (error.status === 404) {
+                ctrl.toggleSplashScreen({
+                  value: true
+                });
+                lodash.defaults(importedFunction, {
+                  metadata: {}
+                });
+                if (lodash.isEmpty(ctrl.project) && ctrl.selectedProject.id !== 'new_project') {
+                  ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
+                }
+                $state.go('app.project.function.edit.code', {
+                  isNewFunction: true,
+                  id: ctrl.project.metadata.name,
+                  projectId: ctrl.project.metadata.name,
+                  projectNamespace: ctrl.project.metadata.namespace,
+                  functionId: importedFunction.metadata.name,
+                  functionData: importedFunction
+                });
+              }
+            });
+          }
+        }
+      }, 100);
+    }
+
+    /**
+     * Checks permissibility creation of new function.
+     * Checks if source code of function exists into ctrl.sourceCode, and if function import form is valid
+     * @returns {boolean}
+     */
+    function isCreateFunctionAllowed() {
+      return !lodash.isNil(ctrl.sourceCode) && lodash.isEmpty(ctrl.functionImportForm.$error);
+    }
+
+    /**
+     * Import of selected YAML file from file system and parse it to JS object
+     * @param event
+     */
+    function importFunction(event) {
+      file = event.target.files[0];
+      var reader = new FileReader();
+      reader.onload = function () {
+        try {
+          importedFunction = YAML.parse(reader.result);
+          if (lodash.has(importedFunction, 'metadata.name')) {
+            ctrl.sourceCode = YamlService.prepareYamlObject(MaskService.getObjectWithMask(importedFunction));
+            $scope.$apply();
+            $rootScope.$broadcast('function-import-source-code', ctrl.sourceCode);
+          } else {
+            throw new Error('invalid yaml');
+          }
+        } catch (error) {
+          DialogsService.alert($i18next.t('common:ERROR_MSG.IMPORT_YAML_FILE', {
+            lng: lng
+          }));
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    /**
+     * Projects drop-down callback.
+     * Sets selected project to function.
+     * @param {Object} item - new selected project
+     */
+    function onProjectChange(item) {
+      ctrl.project = lodash.find(ctrl.projects, ['metadata.name', item.id]);
+    }
+
+    /**
+     * Hides or shows projects drop-down.
+     * Show drop-down if 'Create Function' screen was reached from 'Projects' screen. Otherwise - hide drop-down
+     * @returns {boolean}
+     */
+    function isProjectsDropDownVisible() {
+      return $state.current.name === 'app.create-function';
+    }
+
+    //
+    // Private methods
+    //
+
+    /**
+     * Checks if file imported from file system is YAML extension.
+     * Example: 'filename.yml'
+     * @returns {boolean}
+     */
+    function isYamlFile(filename) {
+      return lodash.includes(filename, '.yml') || lodash.includes(filename, '.yaml');
+    }
+
+    /**
+     * Converts projects for project drop-down.
+     */
+    function prepareProjects() {
+      var newProject = {
+        id: 'new_project',
+        name: $i18next.t('functions:NEW_PROJECT', {
+          lng: lng
+        })
+      };
+      ctrl.selectedProject = lodash.isNil(ctrl.selectedProject) ? newProject : ctrl.selectedProject;
+      ctrl.projectsList = lodash.chain(ctrl.projects).map(function (project) {
+        return {
+          id: project.metadata.name,
+          name: project.metadata.name
+        };
+      }).sortBy(['name']).value();
+      ctrl.selectedProject = lodash.isEmpty(ctrl.projectsList) ? newProject : ctrl.selectedProject.id !== 'new_project' ? ctrl.selectedProject : /* else */lodash.first(ctrl.projectsList);
+    }
+  }
+})();
+"use strict";
+
+/*
+Copyright 2018 Iguazio Systems Ltd.
+Licensed under the Apache License, Version 2.0 (the "License") with
+an addition restriction as set forth herein. You may not use this
+file except in compliance with the License. You may obtain a copy of
+the License at http://www.apache.org/licenses/LICENSE-2.0.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.
+In addition, you may not use the software for any purposes that are
+illegal under applicable law, and the grant of the foregoing license
+under the Apache 2.0 license is conditioned upon your compliance with
+such restriction.
+*/
 /* eslint max-statements: ["error", 100] */
 (function () {
   'use strict';
@@ -25208,224 +25426,6 @@ such restriction.
         var templateElement = lodash.find(templatesElements, ['innerHTML', description]);
         lodash.set(template, 'ui.readMore', templateElement.scrollHeight > angular.element(templateElement).height());
       });
-    }
-  }
-})();
-"use strict";
-
-/*
-Copyright 2018 Iguazio Systems Ltd.
-Licensed under the Apache License, Version 2.0 (the "License") with
-an addition restriction as set forth herein. You may not use this
-file except in compliance with the License. You may obtain a copy of
-the License at http://www.apache.org/licenses/LICENSE-2.0.
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied. See the License for the specific language governing
-permissions and limitations under the License.
-In addition, you may not use the software for any purposes that are
-illegal under applicable law, and the grant of the foregoing license
-under the Apache 2.0 license is conditioned upon your compliance with
-such restriction.
-*/
-(function () {
-  'use strict';
-
-  FunctionImportController.$inject = ["$document", "$rootScope", "$scope", "$state", "$timeout", "$i18next", "i18next", "YAML", "lodash", "DialogsService", "EventHelperService", "FunctionsService", "MaskService", "YamlService"];
-  angular.module('iguazio.dashboard-controls').component('nclFunctionImport', {
-    bindings: {
-      project: '<',
-      projects: '<',
-      getFunction: '&',
-      toggleSplashScreen: '&',
-      createNewProject: '<',
-      selectedProject: '<'
-    },
-    templateUrl: 'nuclio/common/screens/create-function/function-import/function-import.tpl.html',
-    controller: FunctionImportController
-  });
-  function FunctionImportController($document, $rootScope, $scope, $state, $timeout, $i18next, i18next, YAML, lodash, DialogsService, EventHelperService, FunctionsService, MaskService, YamlService) {
-    var ctrl = this;
-    var importedFunction = null;
-    var file = null;
-    var lng = i18next.language;
-    ctrl.functionImportForm = {};
-    ctrl.sourceCode = null;
-    ctrl.$onInit = onInit;
-    ctrl.$onChanges = onChanges;
-    ctrl.$onDestroy = onDestroy;
-    ctrl.createFunction = createFunction;
-    ctrl.importFunction = importFunction;
-    ctrl.isCreateFunctionAllowed = isCreateFunctionAllowed;
-    ctrl.isProjectsDropDownVisible = isProjectsDropDownVisible;
-    ctrl.onProjectChange = onProjectChange;
-
-    //
-    // Hook methods
-    //
-
-    /**
-     * Initialization function
-     * Adds event listener on file input and when some file is loaded call importFunction()
-     */
-    function onInit() {
-      $document.on('keypress', createFunction);
-      $document.find('.function-import-input').on('change', importFunction);
-    }
-
-    /**
-     * Bindings changes hook
-     * @param {Object} changes - changed bindings
-     */
-    function onChanges(changes) {
-      if (angular.isDefined(changes.projects)) {
-        prepareProjects();
-      }
-    }
-
-    /**
-     * Destructor method
-     */
-    function onDestroy() {
-      $document.off('keypress', createFunction);
-    }
-
-    //
-    // Public methods
-    //
-
-    /**
-     * Callback handler for 'create function' button
-     * Creates function with imported data.
-     */
-    function createFunction(event) {
-      $timeout(function () {
-        if ((angular.isUndefined(event) || event.keyCode === EventHelperService.ENTER) && ctrl.isCreateFunctionAllowed()) {
-          // create function only when imported file is .yml
-          if (isYamlFile(file.name)) {
-            ctrl.toggleSplashScreen({
-              value: true
-            });
-            ctrl.getFunction({
-              metadata: {
-                name: importedFunction.metadata.name
-              }
-            }).then(function (existingFunction) {
-              ctrl.toggleSplashScreen({
-                value: false
-              });
-              FunctionsService.openFunctionConflictDialog(ctrl.project, importedFunction, existingFunction);
-            })["catch"](function (error) {
-              if (error.status === 404) {
-                ctrl.toggleSplashScreen({
-                  value: true
-                });
-                lodash.defaults(importedFunction, {
-                  metadata: {}
-                });
-                if (lodash.isEmpty(ctrl.project) && ctrl.selectedProject.id !== 'new_project') {
-                  ctrl.project = lodash.find(ctrl.projects, ['metadata.name', ctrl.selectedProject.id]);
-                }
-                $state.go('app.project.function.edit.code', {
-                  isNewFunction: true,
-                  id: ctrl.project.metadata.name,
-                  projectId: ctrl.project.metadata.name,
-                  projectNamespace: ctrl.project.metadata.namespace,
-                  functionId: importedFunction.metadata.name,
-                  functionData: importedFunction
-                });
-              }
-            });
-          }
-        }
-      }, 100);
-    }
-
-    /**
-     * Checks permissibility creation of new function.
-     * Checks if source code of function exists into ctrl.sourceCode, and if function import form is valid
-     * @returns {boolean}
-     */
-    function isCreateFunctionAllowed() {
-      return !lodash.isNil(ctrl.sourceCode) && lodash.isEmpty(ctrl.functionImportForm.$error);
-    }
-
-    /**
-     * Import of selected YAML file from file system and parse it to JS object
-     * @param event
-     */
-    function importFunction(event) {
-      file = event.target.files[0];
-      var reader = new FileReader();
-      reader.onload = function () {
-        try {
-          importedFunction = YAML.parse(reader.result);
-          if (lodash.has(importedFunction, 'metadata.name')) {
-            ctrl.sourceCode = YamlService.prepareYamlObject(MaskService.getObjectWithMask(importedFunction));
-            $scope.$apply();
-            $rootScope.$broadcast('function-import-source-code', ctrl.sourceCode);
-          } else {
-            throw new Error('invalid yaml');
-          }
-        } catch (error) {
-          DialogsService.alert($i18next.t('common:ERROR_MSG.IMPORT_YAML_FILE', {
-            lng: lng
-          }));
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    /**
-     * Projects drop-down callback.
-     * Sets selected project to function.
-     * @param {Object} item - new selected project
-     */
-    function onProjectChange(item) {
-      ctrl.project = lodash.find(ctrl.projects, ['metadata.name', item.id]);
-    }
-
-    /**
-     * Hides or shows projects drop-down.
-     * Show drop-down if 'Create Function' screen was reached from 'Projects' screen. Otherwise - hide drop-down
-     * @returns {boolean}
-     */
-    function isProjectsDropDownVisible() {
-      return $state.current.name === 'app.create-function';
-    }
-
-    //
-    // Private methods
-    //
-
-    /**
-     * Checks if file imported from file system is YAML extension.
-     * Example: 'filename.yml'
-     * @returns {boolean}
-     */
-    function isYamlFile(filename) {
-      return lodash.includes(filename, '.yml') || lodash.includes(filename, '.yaml');
-    }
-
-    /**
-     * Converts projects for project drop-down.
-     */
-    function prepareProjects() {
-      var newProject = {
-        id: 'new_project',
-        name: $i18next.t('functions:NEW_PROJECT', {
-          lng: lng
-        })
-      };
-      ctrl.selectedProject = lodash.isNil(ctrl.selectedProject) ? newProject : ctrl.selectedProject;
-      ctrl.projectsList = lodash.chain(ctrl.projects).map(function (project) {
-        return {
-          id: project.metadata.name,
-          name: project.metadata.name
-        };
-      }).sortBy(['name']).value();
-      ctrl.selectedProject = lodash.isEmpty(ctrl.projectsList) ? newProject : ctrl.selectedProject.id !== 'new_project' ? ctrl.selectedProject : /* else */lodash.first(ctrl.projectsList);
     }
   }
 })();
@@ -26445,11 +26445,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/action-item/action-item.tpl.html',
-    '<div class="igz-action-item" data-ng-class="{\'inactive\': !$ctrl.action.active,\n' +
-    '     \'subtemplate-show\': $ctrl.action.subTemplateProps.isShown,\n' +
-    '     \'ng-hide\': !$ctrl.isItemVisible($ctrl.action),\n' +
-    '     \'divider\': $ctrl.action.id === \'divider\'}" data-ng-click="$ctrl.onClickAction($event)" data-ng-if="$ctrl.template !== \'additional\'" data-test-id="{{$ctrl.action.testId}}" data-uib-tooltip="{{$ctrl.getTooltipText()}}" data-tooltip-popup-delay="1000" data-tooltip-placement="bottom" data-tooltip-append-to-body="true"> <div data-ng-if="$ctrl.action.id === \'upload\'" class="upload-action" data-ngf-select data-ngf-multiple="true" data-ngf-change="$ctrl.onFilesDropped($files)"> <div class="action-icon {{$ctrl.action.icon}}"></div> <div class="action-label">{{$ctrl.action.label}}</div> </div> <div data-ng-if="$ctrl.action.id !== \'upload\'"> <div class="action-icon {{$ctrl.getIconClass()}}" data-ng-style="$ctrl.action.iconColor && {\'color\': $ctrl.action.iconColor}"></div> <div class="action-label">{{$ctrl.action.label}}</div> <igz-action-item-subtemplate class="action-subtemplate igz-component" data-ng-if="$ctrl.action.template" data-ng-show="$ctrl.action.subTemplateProps.isShown" action="$ctrl.action" data-ng-click="$event.stopPropagation()"> </igz-action-item-subtemplate> </div> </div> <li data-ng-if="$ctrl.template === \'additional\'" data-ng-click="$ctrl.onClickAction($event)"> <div class="action-icon {{$ctrl.getIconClass()}}" data-ng-style="$ctrl.action.iconColor && {\'color\': $ctrl.action.iconColor}"></div> <div class="action-label">{{$ctrl.action.label}}</div> <igz-action-item-subtemplate class="action-subtemplate igz-component" data-ng-if="$ctrl.action.template" data-ng-show="$ctrl.action.subTemplateProps.isShown" action="$ctrl.action" data-ng-click="$event.stopPropagation()"> </igz-action-item-subtemplate> </li> ');
+  $templateCache.put('igz_controls/components/action-menu/action-menu.tpl.html',
+    '<div class="igz-action-menu" data-ng-if="$ctrl.isVisible()"> <div class="menu-button {{$ctrl.iconClass}}" data-ng-class="{active: $ctrl.isMenuShown}" data-ng-click="$ctrl.toggleMenu($event)" data-uib-tooltip="{{ $ctrl.tooltipText }}" data-tooltip-enable="$ctrl.tooltipEnabled" data-tooltip-placement="top" data-tooltip-popup-delay="300" data-tooltip-append-to-body="true"> </div> <div class="menu-dropdown" data-ng-if="$ctrl.isMenuShown"> <div class="actions-list" data-ng-click="$ctrl.toggleMenu($event)"> <igz-action-item data-ng-repeat="action in $ctrl.actions track by action.id" data-action="action" data-actions="$ctrl.actions"> </igz-action-item> </div> <div class="shortcuts-list" data-ng-if="$ctrl.shortcuts && $ctrl.shortcuts.length > 0" data-ng-class="{\'first-block\': $ctrl.actions.length === 0}"> <div class="shortcuts-header">{{ \'common:SHORTCUTS\' | i18next }}</div> <div class="shortcuts-item" data-ng-repeat="shortcut in $ctrl.shortcuts" data-ng-click="$ctrl.showDetails($event, shortcut.state)"> {{shortcut.label}} </div> </div> </div> </div> ');
 }]);
 })();
 
@@ -26460,8 +26457,11 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/action-menu/action-menu.tpl.html',
-    '<div class="igz-action-menu" data-ng-if="$ctrl.isVisible()"> <div class="menu-button {{$ctrl.iconClass}}" data-ng-class="{active: $ctrl.isMenuShown}" data-ng-click="$ctrl.toggleMenu($event)" data-uib-tooltip="{{ $ctrl.tooltipText }}" data-tooltip-enable="$ctrl.tooltipEnabled" data-tooltip-placement="top" data-tooltip-popup-delay="300" data-tooltip-append-to-body="true"> </div> <div class="menu-dropdown" data-ng-if="$ctrl.isMenuShown"> <div class="actions-list" data-ng-click="$ctrl.toggleMenu($event)"> <igz-action-item data-ng-repeat="action in $ctrl.actions track by action.id" data-action="action" data-actions="$ctrl.actions"> </igz-action-item> </div> <div class="shortcuts-list" data-ng-if="$ctrl.shortcuts && $ctrl.shortcuts.length > 0" data-ng-class="{\'first-block\': $ctrl.actions.length === 0}"> <div class="shortcuts-header">{{ \'common:SHORTCUTS\' | i18next }}</div> <div class="shortcuts-item" data-ng-repeat="shortcut in $ctrl.shortcuts" data-ng-click="$ctrl.showDetails($event, shortcut.state)"> {{shortcut.label}} </div> </div> </div> </div> ');
+  $templateCache.put('igz_controls/components/action-item/action-item.tpl.html',
+    '<div class="igz-action-item" data-ng-class="{\'inactive\': !$ctrl.action.active,\n' +
+    '     \'subtemplate-show\': $ctrl.action.subTemplateProps.isShown,\n' +
+    '     \'ng-hide\': !$ctrl.isItemVisible($ctrl.action),\n' +
+    '     \'divider\': $ctrl.action.id === \'divider\'}" data-ng-click="$ctrl.onClickAction($event)" data-ng-if="$ctrl.template !== \'additional\'" data-test-id="{{$ctrl.action.testId}}" data-uib-tooltip="{{$ctrl.getTooltipText()}}" data-tooltip-popup-delay="1000" data-tooltip-placement="bottom" data-tooltip-append-to-body="true"> <div data-ng-if="$ctrl.action.id === \'upload\'" class="upload-action" data-ngf-select data-ngf-multiple="true" data-ngf-change="$ctrl.onFilesDropped($files)"> <div class="action-icon {{$ctrl.action.icon}}"></div> <div class="action-label">{{$ctrl.action.label}}</div> </div> <div data-ng-if="$ctrl.action.id !== \'upload\'"> <div class="action-icon {{$ctrl.getIconClass()}}" data-ng-style="$ctrl.action.iconColor && {\'color\': $ctrl.action.iconColor}"></div> <div class="action-label">{{$ctrl.action.label}}</div> <igz-action-item-subtemplate class="action-subtemplate igz-component" data-ng-if="$ctrl.action.template" data-ng-show="$ctrl.action.subTemplateProps.isShown" action="$ctrl.action" data-ng-click="$event.stopPropagation()"> </igz-action-item-subtemplate> </div> </div> <li data-ng-if="$ctrl.template === \'additional\'" data-ng-click="$ctrl.onClickAction($event)"> <div class="action-icon {{$ctrl.getIconClass()}}" data-ng-style="$ctrl.action.iconColor && {\'color\': $ctrl.action.iconColor}"></div> <div class="action-label">{{$ctrl.action.label}}</div> <igz-action-item-subtemplate class="action-subtemplate igz-component" data-ng-if="$ctrl.action.template" data-ng-show="$ctrl.action.subTemplateProps.isShown" action="$ctrl.action" data-ng-click="$event.stopPropagation()"> </igz-action-item-subtemplate> </li> ');
 }]);
 })();
 
@@ -26562,26 +26562,6 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/multiple-checkboxes/multiple-checkboxes.tpl.html',
-    '<div class="igz-multiple-checkboxes"> <div class="checkboxes-dropdown-field" tabindex="0" data-ng-if="$ctrl.dropdown" data-ng-click="$ctrl.toggleDropdown($event)" data-ng-class="{\'opened\': $ctrl.isDropdownOpened}"> <div class="checkboxes-dropdown-title"> {{$ctrl.title}} </div> <div class="checkboxes-dropdown-arrow"> <span class="igz-icon-dropdown" data-ng-class="{\'rotate-arrow\': $ctrl.isDropUp}"></span> </div> </div> <div class="checkboxes-dropdown-container" data-ng-if="$ctrl.dropdown && $ctrl.isDropdownOpened"> <div class="checkboxes-dropdown-scrollbar-container" data-ng-scrollbars> <div class="search-input-wrapper"> <igz-validating-input-field class="checkboxes-search-input" data-field-type="input" data-input-icon="igz-icon-search" data-is-focused="false" data-ng-class="{\'active\': $ctrl.isSearchInputFocused}" data-item-blur-callback="$ctrl.toggleSearchInputFocus()" data-item-focus-callback="$ctrl.toggleSearchInputFocus()" data-update-data-callback="$ctrl.onSearchInputChange(newData)" data-placeholder-text="{{ \'common:PLACEHOLDER.SEARCH\' | i18next }}"> </igz-validating-input-field> </div> <div data-ng-if="$ctrl.groups" class="checkboxes-groups-wrapper"> <div data-ng-repeat="(name, group) in $ctrl.optionList" class="checkboxes-groups"> <div data-ng-if="$ctrl.selectAllNone && group.visible" class="group-title"> <div class="master-checkbox" data-ng-class="{\'igz-icon-checkbox-checked\': group.allItemsChecked,\n' +
-    '                                         \'igz-icon-checkbox-checked-few\': group.itemsChecked > 0 && !group.allItemsChecked,\n' +
-    '                                         \'igz-icon-checkbox-unchecked\': group.itemsChecked === 0}" data-ng-click="$ctrl.onCheckAllItems($event, name)"> </div> <div class="checkboxes-group-name">{{group.name}}</div> <div data-ng-if="group.addingEnabled" class="checkboxes-add-item"> <button class="checkboxes-add-item-button igz-icon-add" data-ng-click="$ctrl.toggleAddItemField(group, name)" data-uib-tooltip="{{ \'common:TOOLTIP.ADD_NEW\' | i18next }}" data-tooltip-enable="true" data-tooltip-placement="top" data-tooltip-popup-delay="200" data-tooltip-append-to-body="true"></button> </div> </div> <ul data-ng-if="group.visible" class="checkboxes-list"> <li data-ng-if="group.addingEnabled && group.addItemInputVisible" class="checkboxes-add-item"> <igz-validating-input-field class="add-item-input" data-field-type="input" data-is-focused="true" data-ng-class="{\'active\': $ctrl.isSearchInputFocused}" data-item-blur-callback="$ctrl.addItem(inputValue, group, name)"> </igz-validating-input-field> </li> <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in group.options track by $index"> <input class="multiple-checkboxes-option-input" id="{{item.id}}" type="checkbox" data-ng-model="item.checked" data-ng-change="$ctrl.updateViewValue()" data-ng-disabled="$ctrl.isDisabled(item)" data-ng-show="!item.filtered"> <label class="multiple-checkboxes-option-label" for="{{item.id}}" data-ng-class="{\'disabled\': $ctrl.isDisabled(item)}" data-ng-show="!item.filtered" data-tooltip-enable="{{item.enableTooltip}}" data-uib-tooltip="{{item.tooltipText}}" data-tooltip-placement="left" data-tooltip-popup-delay="200" data-tooltip-append-to-body="true"> {{item.label}} </label> </li> </ul> </div> </div> <div data-ng-if="!$ctrl.groups && $ctrl.selectAllNone" class="checkboxes-header"> <div class="master-checkbox" data-ng-class="{\'igz-icon-checkbox-checked\': $ctrl.isAllItemsChecked,\n' +
-    '                                 \'igz-icon-checkbox-checked-few\': $ctrl.checkedItemsCount > 0 && !$ctrl.isAllItemsChecked,\n' +
-    '                                 \'igz-icon-checkbox-unchecked\': $ctrl.checkedItemsCount === 0}" data-ng-click="$ctrl.onCheckAllItems($event)"> </div> </div> <ul data-ng-if="!$ctrl.groups" class="checkboxes-list checkboxes-regular-list"> <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in $ctrl.optionList track by $index"> <input class="multiple-checkboxes-option-input" id="{{item.id}}" type="checkbox" data-ng-model="item.checked" data-ng-show="!item.filtered" data-ng-change="$ctrl.updateViewValue()" data-ng-disabled="$ctrl.isDisabled(item)"> <label class="multiple-checkboxes-option-label" for="{{item.id}}" data-ng-class="{\'disabled\': $ctrl.isDisabled(item)}" data-tooltip-enable="{{item.enableTooltip}}" data-uib-tooltip="{{item.tooltipText}}" data-ng-show="!item.filtered" data-tooltip-placement="left" data-tooltip-popup-delay="200" data-tooltip-append-to-body="true"> {{item.label}} </label> </li> </ul> </div> <div data-ng-if="$ctrl.dropdownApply" class="checkboxes-bottom-bar"> <button class="igz-button-just-text small" data-ng-click="$ctrl.onCancel($event)"> {{ \'common:CANCEL\' | i18next }} </button> <button class="igz-button-primary small" data-ng-click="$ctrl.onApply($event)" data-ng-disabled="$ctrl.isApplyButtonDisabled"> {{ \'common:APPLY\' | i18next }} </button> </div> </div> <div data-ng-if="!$ctrl.dropdown && !$ctrl.groups && $ctrl.selectAllNone" class="checkboxes-header"> <div class="master-checkbox" data-ng-class="{\'igz-icon-checkbox-checked\': $ctrl.isAllItemsChecked,\n' +
-    '                             \'igz-icon-checkbox-checked-few\': $ctrl.checkedItemsCount > 0 && !$ctrl.isAllItemsChecked,\n' +
-    '                             \'igz-icon-checkbox-unchecked\': $ctrl.checkedItemsCount === 0}" data-ng-click="$ctrl.onCheckAllItems($event)"> </div> </div> <ul class="igz-multiple-checkboxes-list" data-ng-if="!$ctrl.dropdown && !$ctrl.groups"> <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in $ctrl.optionList track by $index"> <input class="multiple-checkboxes-option-input" id="{{item.id}}" type="checkbox" data-ng-model="item.checked" data-ng-change="$ctrl.updateViewValue()" data-ng-disabled="$ctrl.isDisabled(item)"> <label class="multiple-checkboxes-option-label" for="{{item.id}}" data-ng-class="{\'disabled\': $ctrl.isDisabled(item)}" data-tooltip-enable="{{item.enableTooltip}}" data-uib-tooltip="{{item.tooltipText}}" data-tooltip-placement="left" data-tooltip-popup-delay="200" data-tooltip-append-to-body="true"> {{item.label}} </label> <igz-more-info data-ng-if="item.moreInfo" data-description="{{item.moreInfo}}" data-default-tooltip-placement="top"> </igz-more-info> </li> </ul> <div data-ng-if="$ctrl.groups && !$ctrl.dropdown" class="checkboxes-groups-wrapper"> <div data-ng-repeat="(name, group) in $ctrl.optionList" class="checkboxes-groups"> <div data-ng-if="$ctrl.selectAllNone && group.visible" class="group-title"> <div class="master-checkbox" data-ng-class="{\'igz-icon-checkbox-checked\': group.allItemsChecked,\n' +
-    '                                     \'igz-icon-checkbox-checked-few\': group.itemsChecked > 0 && !group.allItemsChecked,\n' +
-    '                                     \'igz-icon-checkbox-unchecked\': group.itemsChecked === 0}" data-ng-click="$ctrl.onCheckAllItems($event, name)"> </div> <div class="checkboxes-group-name">{{group.name}}</div> </div> <ul data-ng-if="group.visible" class="checkboxes-list"> <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in group.options track by $index"> <input class="multiple-checkboxes-option-input" id="{{item.id}}" type="checkbox" data-ng-model="item.checked" data-ng-change="$ctrl.updateViewValue()" data-ng-disabled="$ctrl.isDisabled(item)"> <label class="multiple-checkboxes-option-label" for="{{item.id}}" data-ng-class="{\'disabled\': $ctrl.isDisabled(item)}" data-tooltip-enable="{{item.enableTooltip}}" data-uib-tooltip="{{item.tooltipText}}" data-tooltip-placement="left" data-tooltip-popup-delay="200" data-tooltip-append-to-body="true"> {{item.label}} </label> </li> </ul> </div> </div> </div> ');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('iguazio.dashboard-controls.templates');
-} catch (e) {
-  module = angular.module('iguazio.dashboard-controls.templates', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('igz_controls/components/more-info/more-info.tpl.html',
     '<div class="more-info-wrapper"> <div data-ng-if="!$ctrl.isDefaultTooltipEnabled"> <div data-ng-class="{\n' +
     '                 \'click-trigger\': $ctrl.isClickMode(),\n' +
@@ -26602,6 +26582,26 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('igz_controls/components/navigation-tabs/navigation-tabs.tpl.html',
     '<div class="igz-navigation-tabs clearfix"> <div data-ng-repeat="item in $ctrl.tabItems" data-ng-if="!item.hidden"> <div class="navigation-tab" data-ng-if="item.uiRoute" data-ui-sref="{{item.uiRoute}}" data-ui-sref-active="active" data-igz-capability-enforcer="{{item.capability}}"> {{item.tabName | uppercase}} </div> <a class="navigation-tab" data-ng-if="item.href" data-ng-href="{{item.href}}" target="_blank" data-ui-sref-active="active"> {{item.tabName | uppercase}} </a> </div> </div> ');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('iguazio.dashboard-controls.templates');
+} catch (e) {
+  module = angular.module('iguazio.dashboard-controls.templates', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('igz_controls/components/multiple-checkboxes/multiple-checkboxes.tpl.html',
+    '<div class="igz-multiple-checkboxes"> <div class="checkboxes-dropdown-field" tabindex="0" data-ng-if="$ctrl.dropdown" data-ng-click="$ctrl.toggleDropdown($event)" data-ng-class="{\'opened\': $ctrl.isDropdownOpened}"> <div class="checkboxes-dropdown-title"> {{$ctrl.title}} </div> <div class="checkboxes-dropdown-arrow"> <span class="igz-icon-dropdown" data-ng-class="{\'rotate-arrow\': $ctrl.isDropUp}"></span> </div> </div> <div class="checkboxes-dropdown-container" data-ng-if="$ctrl.dropdown && $ctrl.isDropdownOpened"> <div class="checkboxes-dropdown-scrollbar-container" data-ng-scrollbars> <div class="search-input-wrapper"> <igz-validating-input-field class="checkboxes-search-input" data-field-type="input" data-input-icon="igz-icon-search" data-is-focused="false" data-ng-class="{\'active\': $ctrl.isSearchInputFocused}" data-item-blur-callback="$ctrl.toggleSearchInputFocus()" data-item-focus-callback="$ctrl.toggleSearchInputFocus()" data-update-data-callback="$ctrl.onSearchInputChange(newData)" data-placeholder-text="{{ \'common:PLACEHOLDER.SEARCH\' | i18next }}"> </igz-validating-input-field> </div> <div data-ng-if="$ctrl.groups" class="checkboxes-groups-wrapper"> <div data-ng-repeat="(name, group) in $ctrl.optionList" class="checkboxes-groups"> <div data-ng-if="$ctrl.selectAllNone && group.visible" class="group-title"> <div class="master-checkbox" data-ng-class="{\'igz-icon-checkbox-checked\': group.allItemsChecked,\n' +
+    '                                         \'igz-icon-checkbox-checked-few\': group.itemsChecked > 0 && !group.allItemsChecked,\n' +
+    '                                         \'igz-icon-checkbox-unchecked\': group.itemsChecked === 0}" data-ng-click="$ctrl.onCheckAllItems($event, name)"> </div> <div class="checkboxes-group-name">{{group.name}}</div> <div data-ng-if="group.addingEnabled" class="checkboxes-add-item"> <button class="checkboxes-add-item-button igz-icon-add" data-ng-click="$ctrl.toggleAddItemField(group, name)" data-uib-tooltip="{{ \'common:TOOLTIP.ADD_NEW\' | i18next }}" data-tooltip-enable="true" data-tooltip-placement="top" data-tooltip-popup-delay="200" data-tooltip-append-to-body="true"></button> </div> </div> <ul data-ng-if="group.visible" class="checkboxes-list"> <li data-ng-if="group.addingEnabled && group.addItemInputVisible" class="checkboxes-add-item"> <igz-validating-input-field class="add-item-input" data-field-type="input" data-is-focused="true" data-ng-class="{\'active\': $ctrl.isSearchInputFocused}" data-item-blur-callback="$ctrl.addItem(inputValue, group, name)"> </igz-validating-input-field> </li> <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in group.options track by $index"> <input class="multiple-checkboxes-option-input" id="{{item.id}}" type="checkbox" data-ng-model="item.checked" data-ng-change="$ctrl.updateViewValue()" data-ng-disabled="$ctrl.isDisabled(item)" data-ng-show="!item.filtered"> <label class="multiple-checkboxes-option-label" for="{{item.id}}" data-ng-class="{\'disabled\': $ctrl.isDisabled(item)}" data-ng-show="!item.filtered" data-tooltip-enable="{{item.enableTooltip}}" data-uib-tooltip="{{item.tooltipText}}" data-tooltip-placement="left" data-tooltip-popup-delay="200" data-tooltip-append-to-body="true"> {{item.label}} </label> </li> </ul> </div> </div> <div data-ng-if="!$ctrl.groups && $ctrl.selectAllNone" class="checkboxes-header"> <div class="master-checkbox" data-ng-class="{\'igz-icon-checkbox-checked\': $ctrl.isAllItemsChecked,\n' +
+    '                                 \'igz-icon-checkbox-checked-few\': $ctrl.checkedItemsCount > 0 && !$ctrl.isAllItemsChecked,\n' +
+    '                                 \'igz-icon-checkbox-unchecked\': $ctrl.checkedItemsCount === 0}" data-ng-click="$ctrl.onCheckAllItems($event)"> </div> </div> <ul data-ng-if="!$ctrl.groups" class="checkboxes-list checkboxes-regular-list"> <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in $ctrl.optionList track by $index"> <input class="multiple-checkboxes-option-input" id="{{item.id}}" type="checkbox" data-ng-model="item.checked" data-ng-show="!item.filtered" data-ng-change="$ctrl.updateViewValue()" data-ng-disabled="$ctrl.isDisabled(item)"> <label class="multiple-checkboxes-option-label" for="{{item.id}}" data-ng-class="{\'disabled\': $ctrl.isDisabled(item)}" data-tooltip-enable="{{item.enableTooltip}}" data-uib-tooltip="{{item.tooltipText}}" data-ng-show="!item.filtered" data-tooltip-placement="left" data-tooltip-popup-delay="200" data-tooltip-append-to-body="true"> {{item.label}} </label> </li> </ul> </div> <div data-ng-if="$ctrl.dropdownApply" class="checkboxes-bottom-bar"> <button class="igz-button-just-text small" data-ng-click="$ctrl.onCancel($event)"> {{ \'common:CANCEL\' | i18next }} </button> <button class="igz-button-primary small" data-ng-click="$ctrl.onApply($event)" data-ng-disabled="$ctrl.isApplyButtonDisabled"> {{ \'common:APPLY\' | i18next }} </button> </div> </div> <div data-ng-if="!$ctrl.dropdown && !$ctrl.groups && $ctrl.selectAllNone" class="checkboxes-header"> <div class="master-checkbox" data-ng-class="{\'igz-icon-checkbox-checked\': $ctrl.isAllItemsChecked,\n' +
+    '                             \'igz-icon-checkbox-checked-few\': $ctrl.checkedItemsCount > 0 && !$ctrl.isAllItemsChecked,\n' +
+    '                             \'igz-icon-checkbox-unchecked\': $ctrl.checkedItemsCount === 0}" data-ng-click="$ctrl.onCheckAllItems($event)"> </div> </div> <ul class="igz-multiple-checkboxes-list" data-ng-if="!$ctrl.dropdown && !$ctrl.groups"> <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in $ctrl.optionList track by $index"> <input class="multiple-checkboxes-option-input" id="{{item.id}}" type="checkbox" data-ng-model="item.checked" data-ng-change="$ctrl.updateViewValue()" data-ng-disabled="$ctrl.isDisabled(item)"> <label class="multiple-checkboxes-option-label" for="{{item.id}}" data-ng-class="{\'disabled\': $ctrl.isDisabled(item)}" data-tooltip-enable="{{item.enableTooltip}}" data-uib-tooltip="{{item.tooltipText}}" data-tooltip-placement="left" data-tooltip-popup-delay="200" data-tooltip-append-to-body="true"> {{item.label}} </label> <igz-more-info data-ng-if="item.moreInfo" data-description="{{item.moreInfo}}" data-default-tooltip-placement="top"> </igz-more-info> </li> </ul> <div data-ng-if="$ctrl.groups && !$ctrl.dropdown" class="checkboxes-groups-wrapper"> <div data-ng-repeat="(name, group) in $ctrl.optionList" class="checkboxes-groups"> <div data-ng-if="$ctrl.selectAllNone && group.visible" class="group-title"> <div class="master-checkbox" data-ng-class="{\'igz-icon-checkbox-checked\': group.allItemsChecked,\n' +
+    '                                     \'igz-icon-checkbox-checked-few\': group.itemsChecked > 0 && !group.allItemsChecked,\n' +
+    '                                     \'igz-icon-checkbox-unchecked\': group.itemsChecked === 0}" data-ng-click="$ctrl.onCheckAllItems($event, name)"> </div> <div class="checkboxes-group-name">{{group.name}}</div> </div> <ul data-ng-if="group.visible" class="checkboxes-list"> <li class="multiple-checkboxes-option" data-ng-if="item.visibility" data-ng-repeat="item in group.options track by $index"> <input class="multiple-checkboxes-option-input" id="{{item.id}}" type="checkbox" data-ng-model="item.checked" data-ng-change="$ctrl.updateViewValue()" data-ng-disabled="$ctrl.isDisabled(item)"> <label class="multiple-checkboxes-option-label" for="{{item.id}}" data-ng-class="{\'disabled\': $ctrl.isDisabled(item)}" data-tooltip-enable="{{item.enableTooltip}}" data-uib-tooltip="{{item.tooltipText}}" data-tooltip-placement="left" data-tooltip-popup-delay="200" data-tooltip-append-to-body="true"> {{item.label}} </label> </li> </ul> </div> </div> </div> ');
 }]);
 })();
 
@@ -26654,8 +26654,9 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/size/size.tpl.html',
-    '<div class="igz-size"> <div data-ng-if="$ctrl.justDisplayValue" class="size-value text-ellipsis" data-ng-class="$ctrl.displayValueClasses"> {{$ctrl.getDisplayValue()}} </div> <div data-ng-if="$ctrl.displayValueWithTooltip" class="size-value text-ellipsis"> <span data-uib-tooltip="{{$ctrl.getDisplayValue()}}" data-tooltip-append-to-body="true"> {{$ctrl.getDisplayValue()}} </span> </div> <div data-ng-if="$ctrl.type === \'storage-pools\'" class="size-value text-ellipsis"> <span data-uib-tooltip="{{$ctrl.getDisplayValue()}}" data-tooltip-append-to-body="true"> {{$ctrl.getDisplayValue()}} </span> <div data-ng-if="$ctrl.outOf !== \'\'" class="size-reserved text-ellipsis"> {{ \'common:OF\' | i18next }} {{$ctrl.outOf}} </div> </div> <div data-ng-if="$ctrl.type === \'storage-pools_containers\'" class="size-value"> <div class="text-centered text-ellipsis"> <span data-uib-tooltip="{{$ctrl.getDisplayValue()}}" data-tooltip-append-to-body="true"> {{$ctrl.getDisplayValue()}} </span> <div data-ng-if="$ctrl.type === \'storage-pools_containers\'" class="size-reserved text-ellipsis"> <span data-uib-tooltip="{{$ctrl.reserved}}" data-tooltip-append-to-body="true"> {{$ctrl.reserved}} </span> <span data-ng-if="$ctrl.quota === -1" class="size-quota icon-font-arrow-right"> </span> <span data-ng-if="$ctrl.quota === -1" class="size-quota icon-font-infinity" data-uib-tooltip="{{ \'common:TOOLTIP.INFINITY\' | i18next }}" data-tooltip-append-to-body="true"> </span> <span data-ng-if="$ctrl.quota !== -1" class="size-quota icon-font-arrow-right text-ellipsis" data-uib-tooltip="{{$ctrl.quota}}" data-tooltip-append-to-body="true"> {{$ctrl.quota}} </span> </div> </div> </div> <div class="size-chart" id="size-chart-{{$ctrl.entity.id}}" data-ng-show="$ctrl.defaultTo($ctrl.showChart, true)"> <highchart data-config="$ctrl.entity.ui.lineChartOptions[$ctrl.type]" class="igz-highcharts-wrapper" data-uib-tooltip="{{$ctrl.tooltip}}" data-tooltip-append-to-body="true" data-tooltip-placement="bottom" data-tooltip-popup-delay="500"> </highchart> </div> </div> ');
+  $templateCache.put('igz_controls/components/slider-input-block/slider-input-block.tpl.html',
+    '<div class="igz-slider-input-block clearfix"> <div class="igz-slider-input-title igz-col-50"> <div class="igz-slider-input-title-text"> <i data-ng-if="$ctrl.sliderConfig.iconType" data-ng-class="($ctrl.sliderConfig.iconType | lowercase)"></i> {{$ctrl.sliderConfig.name}}&nbsp; <i data-ng-if="$ctrl.sliderConfig.labelHelpIcon" class="igz-icon-help-round"></i> </div> </div> <div class="igz-col-16"></div> <div class="igz-slider-input-current-value igz-col-34" data-ng-class="{\'with-value-unit\': $ctrl.valueUnit,\n' +
+    '                         \'with-measure-units\': $ctrl.measureUnits}"> <div class="igz-slider-input-current-value-text">{{$ctrl.sliderConfig.valueLabel}}</div> </div> <div class="igz-slider-input-unit-label" data-ng-if="!$ctrl.measureUnits"> <div class="igz-slider-input-current-value-text">{{$ctrl.valueUnit}}</div> </div> <div class="igz-slider-input-units-dropdown igz-col-16" data-ng-if="$ctrl.measureUnits"> <igz-default-dropdown data-values-array="$ctrl.measureUnits" data-selected-item="$ctrl.selectedItem" data-item-select-callback="$ctrl.changeTrafficUnit(item)"> </igz-default-dropdown> </div> <div class="igz-slider-input-rz-slider igz-col-100"> <rzslider class="rzslider" data-rz-slider-model="$ctrl.sliderConfig.value" data-rz-slider-options="$ctrl.sliderConfig.options"> </rzslider> </div> </div> ');
 }]);
 })();
 
@@ -26666,9 +26667,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/slider-input-block/slider-input-block.tpl.html',
-    '<div class="igz-slider-input-block clearfix"> <div class="igz-slider-input-title igz-col-50"> <div class="igz-slider-input-title-text"> <i data-ng-if="$ctrl.sliderConfig.iconType" data-ng-class="($ctrl.sliderConfig.iconType | lowercase)"></i> {{$ctrl.sliderConfig.name}}&nbsp; <i data-ng-if="$ctrl.sliderConfig.labelHelpIcon" class="igz-icon-help-round"></i> </div> </div> <div class="igz-col-16"></div> <div class="igz-slider-input-current-value igz-col-34" data-ng-class="{\'with-value-unit\': $ctrl.valueUnit,\n' +
-    '                         \'with-measure-units\': $ctrl.measureUnits}"> <div class="igz-slider-input-current-value-text">{{$ctrl.sliderConfig.valueLabel}}</div> </div> <div class="igz-slider-input-unit-label" data-ng-if="!$ctrl.measureUnits"> <div class="igz-slider-input-current-value-text">{{$ctrl.valueUnit}}</div> </div> <div class="igz-slider-input-units-dropdown igz-col-16" data-ng-if="$ctrl.measureUnits"> <igz-default-dropdown data-values-array="$ctrl.measureUnits" data-selected-item="$ctrl.selectedItem" data-item-select-callback="$ctrl.changeTrafficUnit(item)"> </igz-default-dropdown> </div> <div class="igz-slider-input-rz-slider igz-col-100"> <rzslider class="rzslider" data-rz-slider-model="$ctrl.sliderConfig.value" data-rz-slider-options="$ctrl.sliderConfig.options"> </rzslider> </div> </div> ');
+  $templateCache.put('igz_controls/components/size/size.tpl.html',
+    '<div class="igz-size"> <div data-ng-if="$ctrl.justDisplayValue" class="size-value text-ellipsis" data-ng-class="$ctrl.displayValueClasses"> {{$ctrl.getDisplayValue()}} </div> <div data-ng-if="$ctrl.displayValueWithTooltip" class="size-value text-ellipsis"> <span data-uib-tooltip="{{$ctrl.getDisplayValue()}}" data-tooltip-append-to-body="true"> {{$ctrl.getDisplayValue()}} </span> </div> <div data-ng-if="$ctrl.type === \'storage-pools\'" class="size-value text-ellipsis"> <span data-uib-tooltip="{{$ctrl.getDisplayValue()}}" data-tooltip-append-to-body="true"> {{$ctrl.getDisplayValue()}} </span> <div data-ng-if="$ctrl.outOf !== \'\'" class="size-reserved text-ellipsis"> {{ \'common:OF\' | i18next }} {{$ctrl.outOf}} </div> </div> <div data-ng-if="$ctrl.type === \'storage-pools_containers\'" class="size-value"> <div class="text-centered text-ellipsis"> <span data-uib-tooltip="{{$ctrl.getDisplayValue()}}" data-tooltip-append-to-body="true"> {{$ctrl.getDisplayValue()}} </span> <div data-ng-if="$ctrl.type === \'storage-pools_containers\'" class="size-reserved text-ellipsis"> <span data-uib-tooltip="{{$ctrl.reserved}}" data-tooltip-append-to-body="true"> {{$ctrl.reserved}} </span> <span data-ng-if="$ctrl.quota === -1" class="size-quota icon-font-arrow-right"> </span> <span data-ng-if="$ctrl.quota === -1" class="size-quota icon-font-infinity" data-uib-tooltip="{{ \'common:TOOLTIP.INFINITY\' | i18next }}" data-tooltip-append-to-body="true"> </span> <span data-ng-if="$ctrl.quota !== -1" class="size-quota icon-font-arrow-right text-ellipsis" data-uib-tooltip="{{$ctrl.quota}}" data-tooltip-append-to-body="true"> {{$ctrl.quota}} </span> </div> </div> </div> <div class="size-chart" id="size-chart-{{$ctrl.entity.id}}" data-ng-show="$ctrl.defaultTo($ctrl.showChart, true)"> <highchart data-config="$ctrl.entity.ui.lineChartOptions[$ctrl.type]" class="igz-highcharts-wrapper" data-uib-tooltip="{{$ctrl.tooltip}}" data-tooltip-append-to-body="true" data-tooltip-placement="bottom" data-tooltip-popup-delay="500"> </highchart> </div> </div> ');
 }]);
 })();
 
@@ -26703,8 +26703,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/text-edit/text-edit.tpl.html',
-    '<div class="text-preview-directive-wrapper"> <div class="title text-ellipsis" tooltip="{{::$ctrl.label}}" data-tooltip-append-to-body="true" data-tooltip-popup-delay="400" data-tooltip-placement="bottom-left"> {{::$ctrl.label}} </div> <div class="text-preview-wrapper"> <div class="word-wrap-checkbox-wrapper"> <div class="word-wrap-checkbox col-50 col-checkbox"> <input id="wrap-checkbox" type="checkbox" data-ng-model="$ctrl.enableWordWrap"> <label for="wrap-checkbox">{{ \'common:WRAP\' | i18next }}</label> </div> </div> <ncl-monaco class="monaco-code-editor" data-function-source-code="$ctrl.content" data-selected-theme="\'vs-light\'" data-language="$ctrl.language" data-on-change-source-code-callback="$ctrl.onChangeText(sourceCode)" data-word-wrap="$ctrl.enableWordWrap"> </ncl-monaco> </div> <div class="close-button igz-icon-close" data-ng-click="$ctrl.onClose()"></div> <div class="buttons"> <button class="igz-button-just-text" tabindex="0" data-ng-hide="$ctrl.isLoadingState" data-ng-click="$ctrl.onClose()" data-ng-keydown="$ctrl.onClose($event)" data-test-id="general.text-edit_close.button"> {{::$ctrl.closeButtonText}} </button> <button class="igz-button-primary" tabindex="0" data-ng-hide="$ctrl.isLoadingState" data-ng-class="{\'disabled\': !$ctrl.fileChanged}" data-ng-click="$ctrl.onSubmit()" data-test-id="general.text-edit_save.button"> {{::$ctrl.submitButtonText}} </button> <button class="igz-button-primary" data-ng-show="$ctrl.isLoadingState"> {{ \'common:LOADING_CAPITALIZE_ELLIPSIS\' | i18next }} </button> <button class="error-text text-centered error-relative" data-ng-hide="$ctrl.serverError === \'\'"> {{ \'common:ERROR_COLON\' | i18next }} {{$ctrl.serverError}} </button> </div> </div> ');
+  $templateCache.put('igz_controls/components/toast-status-panel/toast-status-panel.tpl.html',
+    '<div class="toast-status-panel" data-ng-show="$ctrl.isToastPanelShown"> <div class="btn-close igz-icon-close" data-ng-if="!$ctrl.permanent && $ctrl.panelState !== \'in-progress\'" data-ng-click="$ctrl.closeToastPanel()"> </div> <div class="panel-status"> <span class="panel-status-icon"></span> <div class="igz-scrollable-container msg-scrollable-container" data-ng-scrollbars> <div class="panel-status-msg" data-ng-if="$ctrl.isTranscludePassed" data-ng-transclude></div> <div class="panel-status-msg" data-ng-if="!$ctrl.isTranscludePassed"> {{$ctrl.getStateMessage($ctrl.panelState)}} </div> </div> </div> </div> ');
 }]);
 })();
 
@@ -26715,8 +26715,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/toast-status-panel/toast-status-panel.tpl.html',
-    '<div class="toast-status-panel" data-ng-show="$ctrl.isToastPanelShown"> <div class="btn-close igz-icon-close" data-ng-if="!$ctrl.permanent && $ctrl.panelState !== \'in-progress\'" data-ng-click="$ctrl.closeToastPanel()"> </div> <div class="panel-status"> <span class="panel-status-icon"></span> <div class="igz-scrollable-container msg-scrollable-container" data-ng-scrollbars> <div class="panel-status-msg" data-ng-if="$ctrl.isTranscludePassed" data-ng-transclude></div> <div class="panel-status-msg" data-ng-if="!$ctrl.isTranscludePassed"> {{$ctrl.getStateMessage($ctrl.panelState)}} </div> </div> </div> </div> ');
+  $templateCache.put('igz_controls/components/text-edit/text-edit.tpl.html',
+    '<div class="text-preview-directive-wrapper"> <div class="title text-ellipsis" tooltip="{{::$ctrl.label}}" data-tooltip-append-to-body="true" data-tooltip-popup-delay="400" data-tooltip-placement="bottom-left"> {{::$ctrl.label}} </div> <div class="text-preview-wrapper"> <div class="word-wrap-checkbox-wrapper"> <div class="word-wrap-checkbox col-50 col-checkbox"> <input id="wrap-checkbox" type="checkbox" data-ng-model="$ctrl.enableWordWrap"> <label for="wrap-checkbox">{{ \'common:WRAP\' | i18next }}</label> </div> </div> <ncl-monaco class="monaco-code-editor" data-function-source-code="$ctrl.content" data-selected-theme="\'vs-light\'" data-language="$ctrl.language" data-on-change-source-code-callback="$ctrl.onChangeText(sourceCode)" data-word-wrap="$ctrl.enableWordWrap"> </ncl-monaco> </div> <div class="close-button igz-icon-close" data-ng-click="$ctrl.onClose()"></div> <div class="buttons"> <button class="igz-button-just-text" tabindex="0" data-ng-hide="$ctrl.isLoadingState" data-ng-click="$ctrl.onClose()" data-ng-keydown="$ctrl.onClose($event)" data-test-id="general.text-edit_close.button"> {{::$ctrl.closeButtonText}} </button> <button class="igz-button-primary" tabindex="0" data-ng-hide="$ctrl.isLoadingState" data-ng-class="{\'disabled\': !$ctrl.fileChanged}" data-ng-click="$ctrl.onSubmit()" data-test-id="general.text-edit_save.button"> {{::$ctrl.submitButtonText}} </button> <button class="igz-button-primary" data-ng-show="$ctrl.isLoadingState"> {{ \'common:LOADING_CAPITALIZE_ELLIPSIS\' | i18next }} </button> <button class="error-text text-centered error-relative" data-ng-hide="$ctrl.serverError === \'\'"> {{ \'common:ERROR_COLON\' | i18next }} {{$ctrl.serverError}} </button> </div> </div> ');
 }]);
 })();
 
@@ -26801,8 +26801,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/functions/duplicate-function-dialog/duplicate-function-dialog.tpl.html',
-    '<div class="close-button igz-icon-close" data-ng-click="$ctrl.onClose()"></div> <div class="title"> {{ \'functions:DUPLICATE_FUNCTION\' | i18next }} </div> <div class="main-content"> <form name="$ctrl.duplicateFunctionForm" novalidate data-ng-keydown="$ctrl.duplicateFunction($event)"> <div class="field-group function-name-group"> <div class="field-label function-name-label"> {{ \'common:FUNCTION_NAME\' | i18next }} </div> <div class="field-input function-name-input"> <igz-validating-input-field data-field-type="input" data-input-name="name" data-input-value="$ctrl.newFunctionName" data-is-focused="true" data-form-object="$ctrl.duplicateFunctionForm" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-validation-is-required="true" data-validation-rules="$ctrl.validationRules.functionName" data-validation-max-length="{{$ctrl.maxLengths.functionName}}" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_FUNCTION_NAME\' | i18next }}"> </igz-validating-input-field> </div> </div> <div class="subtitle" data-ng-if="$ctrl.duplicateInputFieldsData.length > 0"> {{ \'functions:DUPLICATE_FUNCTION_SUBTITLE\' | i18next }} </div> <div class="field-group" data-ng-repeat="inputFieldData in $ctrl.duplicateInputFieldsData track by inputFieldData.path"> <div class="field-label function-configuration-label"> {{inputFieldData.title}} <igz-more-info data-ng-if="inputFieldData.moreInfoData" data-description="{{inputFieldData.moreInfoData}}" data-default-tooltip-placement="top"> </igz-more-info> </div> <div class="field-label function-configuration-path"> {{ \'common:PATH\' | i18next }}: {{inputFieldData.path}} </div> <div class="field-input function-configuration-input"> <igz-validating-input-field data-field-type="input" data-input-name="{{inputFieldData.path}}" data-form-object="$ctrl.duplicateFunctionForm" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-validation-is-required="true" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_VALUE\' | i18next }}"> </igz-validating-input-field> </div> </div> </form> </div> <div class="buttons"> <button class="ncl-secondary-button igz-button-just-text" data-test-id="functions.duplicate_function_cancel.button" tabindex="0" data-ng-click="$ctrl.onClose()" data-ng-keydown="$ctrl.onClose($event)"> {{ \'common:CANCEL\' | i18next }} </button> <button class="ncl-primary-button igz-button-primary" data-test-id="functions.duplicate_function_duplicate.button" tabindex="0" data-ng-click="$ctrl.duplicateFunction()" data-ng-keydown="$ctrl.duplicateFunction($event)" data-ng-hide="$ctrl.isLoadingState"> {{ \'common:DUPLICATE\' | i18next }} </button> <button class="ncl-primary-button igz-button-primary" data-ng-show="$ctrl.isLoadingState"> {{ \'common:LOADING_CAPITALIZE_ELLIPSIS\' | i18next }} </button> </div> ');
+  $templateCache.put('nuclio/functions/function/ncl-function.tpl.html',
+    '<section data-ui-view="function"></section>');
 }]);
 })();
 
@@ -26813,8 +26813,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/functions/function/ncl-function.tpl.html',
-    '<section data-ui-view="function"></section>');
+  $templateCache.put('nuclio/functions/duplicate-function-dialog/duplicate-function-dialog.tpl.html',
+    '<div class="close-button igz-icon-close" data-ng-click="$ctrl.onClose()"></div> <div class="title"> {{ \'functions:DUPLICATE_FUNCTION\' | i18next }} </div> <div class="main-content"> <form name="$ctrl.duplicateFunctionForm" novalidate data-ng-keydown="$ctrl.duplicateFunction($event)"> <div class="field-group function-name-group"> <div class="field-label function-name-label"> {{ \'common:FUNCTION_NAME\' | i18next }} </div> <div class="field-input function-name-input"> <igz-validating-input-field data-field-type="input" data-input-name="name" data-input-value="$ctrl.newFunctionName" data-is-focused="true" data-form-object="$ctrl.duplicateFunctionForm" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-validation-is-required="true" data-validation-rules="$ctrl.validationRules.functionName" data-validation-max-length="{{$ctrl.maxLengths.functionName}}" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_FUNCTION_NAME\' | i18next }}"> </igz-validating-input-field> </div> </div> <div class="subtitle" data-ng-if="$ctrl.duplicateInputFieldsData.length > 0"> {{ \'functions:DUPLICATE_FUNCTION_SUBTITLE\' | i18next }} </div> <div class="field-group" data-ng-repeat="inputFieldData in $ctrl.duplicateInputFieldsData track by inputFieldData.path"> <div class="field-label function-configuration-label"> {{inputFieldData.title}} <igz-more-info data-ng-if="inputFieldData.moreInfoData" data-description="{{inputFieldData.moreInfoData}}" data-default-tooltip-placement="top"> </igz-more-info> </div> <div class="field-label function-configuration-path"> {{ \'common:PATH\' | i18next }}: {{inputFieldData.path}} </div> <div class="field-input function-configuration-input"> <igz-validating-input-field data-field-type="input" data-input-name="{{inputFieldData.path}}" data-form-object="$ctrl.duplicateFunctionForm" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-validation-is-required="true" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_VALUE\' | i18next }}"> </igz-validating-input-field> </div> </div> </form> </div> <div class="buttons"> <button class="ncl-secondary-button igz-button-just-text" data-test-id="functions.duplicate_function_cancel.button" tabindex="0" data-ng-click="$ctrl.onClose()" data-ng-keydown="$ctrl.onClose($event)"> {{ \'common:CANCEL\' | i18next }} </button> <button class="ncl-primary-button igz-button-primary" data-test-id="functions.duplicate_function_duplicate.button" tabindex="0" data-ng-click="$ctrl.duplicateFunction()" data-ng-keydown="$ctrl.duplicateFunction($event)" data-ng-hide="$ctrl.isLoadingState"> {{ \'common:DUPLICATE\' | i18next }} </button> <button class="ncl-primary-button igz-button-primary" data-ng-show="$ctrl.isLoadingState"> {{ \'common:LOADING_CAPITALIZE_ELLIPSIS\' | i18next }} </button> </div> ');
 }]);
 })();
 
@@ -26867,8 +26867,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/action-item/action-item-more/action-item-more.tpl.html',
-    '<div class="igz-action-item" data-ng-class="{\'subtemplate-show\': $ctrl.isDropdownShown}" data-ng-click="$ctrl.toggleTemplate()"> <div data-uib-tooltip="{{ \'common:MORE_OPTIONS\' | i18next }}" data-tooltip-popup-delay="1000" data-tooltip-placement="bottom"> <div class="action-icon igz-icon-context-menu"></div> </div> <div class="item-dropdown-menu igz-component" data-ng-show="$ctrl.isDropdownShown"> <ul class="item-dropdown-menu-list"> <igz-action-item data-ng-repeat="action in $ctrl.actions" data-action="action" data-on-files-dropped="$ctrl.onFilesDropped" data-template="additional" data-ng-click="action.template ? \'\' : $ctrl.toggleTemplate()"> </igz-action-item> </ul> <div class="transclude-container" data-ng-transclude></div> </div> </div> ');
+  $templateCache.put('igz_controls/components/action-item/action-item-refresh/action-item-refresh.tpl.html',
+    '<div class="igz-action-item" data-ng-class="{\'inactive\': $ctrl.isDisabled}" data-uib-tooltip="{{ \'common:REFRESH\' | i18next }}" data-tooltip-append-to-body="true" data-tooltip-placement="bottom" data-tooltip-popup-delay="1000" data-ng-click="$ctrl.refresh()"> <div class="action-icon igz-icon-refresh"></div> </div> ');
 }]);
 })();
 
@@ -26879,8 +26879,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('igz_controls/components/action-item/action-item-refresh/action-item-refresh.tpl.html',
-    '<div class="igz-action-item" data-ng-class="{\'inactive\': $ctrl.isDisabled}" data-uib-tooltip="{{ \'common:REFRESH\' | i18next }}" data-tooltip-append-to-body="true" data-tooltip-placement="bottom" data-tooltip-popup-delay="1000" data-ng-click="$ctrl.refresh()"> <div class="action-icon igz-icon-refresh"></div> </div> ');
+  $templateCache.put('igz_controls/components/action-item/action-item-more/action-item-more.tpl.html',
+    '<div class="igz-action-item" data-ng-class="{\'subtemplate-show\': $ctrl.isDropdownShown}" data-ng-click="$ctrl.toggleTemplate()"> <div data-uib-tooltip="{{ \'common:MORE_OPTIONS\' | i18next }}" data-tooltip-popup-delay="1000" data-tooltip-placement="bottom"> <div class="action-icon igz-icon-context-menu"></div> </div> <div class="item-dropdown-menu igz-component" data-ng-show="$ctrl.isDropdownShown"> <ul class="item-dropdown-menu-list"> <igz-action-item data-ng-repeat="action in $ctrl.actions" data-action="action" data-on-files-dropped="$ctrl.onFilesDropped" data-template="additional" data-ng-click="action.template ? \'\' : $ctrl.toggleTemplate()"> </igz-action-item> </ul> <div class="transclude-container" data-ng-transclude></div> </div> </div> ');
 }]);
 })();
 
@@ -26939,8 +26939,9 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/common/components/breadcrumbs-dropdown/breadcrumbs-dropdown.tpl.html',
-    '<div class="ncl-breadcrumbs-dropdown dropdown" data-ng-class="{\'open\': $ctrl.showDropdownList}"> <span class="breadcrumb-toggle" data-ng-click="$ctrl.showDropdown()"> <span class="breadcrumb-arrow" data-ng-class="{\'ncl-dropdown-expanded\': $ctrl.showDropdownList}"> <span class="igz-icon-right"></span> </span> </span> <div class="dropdown-menu"> <div class="search-input"> <input type="text" placeholder="{{$ctrl.placeholder}}" data-ng-model="$ctrl.searchText"> <span class="igz-icon-search"></span> </div> <ul class="dropdown-list" data-ng-scrollbars> <li data-ng-repeat="item in $ctrl.itemsList | filter: $ctrl.searchText"> <a class="item-name" data-ng-click="$ctrl.showDetails($event, item)" data-uib-tooltip="{{item.name}}" data-tooltip-popup-delay="200" data-tooltip-append-to-body="true" data-tooltip-placement="top"> {{item.name}} </a> <span class="igz-icon-tick" data-ng-show="$ctrl.title === item.name"></span> </li> </ul> </div> </div> ');
+  $templateCache.put('nuclio/common/components/collapsing-row/collapsing-row.tpl.html',
+    '<div class="ncl-collapsing-row"> <div class="title-block common-table-row" data-ng-class="{\'collapsed\': !$ctrl.item.ui.editModeActive}"> <div class="common-table-cell row-collapse"> <span class="collapse-icon" data-ng-click="$ctrl.onCollapse($event)" data-ng-class="{\'collapsed igz-icon-right\': !$ctrl.item.ui.editModeActive,\n' +
+    '                                  \'igz-icon-down\': $ctrl.item.ui.editModeActive}"> </span> </div> <div data-ng-show="!$ctrl.item.ui.editModeActive" class="igz-row common-table-cells-container item-row"> <div class="item-name" data-ng-if="!$ctrl.isNil($ctrl.item.name)"> <div class="text-ellipsis"> {{$ctrl.item.name}} </div> <igz-more-info data-ng-if="$ctrl.item.ui.moreInfoMsg.name" data-trigger="click" data-is-html-enabled="true" data-is-open="$ctrl.item.ui.moreInfoMsg.name.isOpen" data-icon-type="{{$ctrl.item.ui.moreInfoMsg.name.type}}" data-description="{{$ctrl.item.ui.moreInfoMsg.name.description}}"> </igz-more-info> </div> <div class="text-ellipsis item-name" data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.name)"> {{ $ctrl.item.volumeMount.name }} </div> <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.ui.selectedClass)"> {{$ctrl.item.ui.selectedClass.name}} </div> <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)"> {{ \'common:HOST_PATH\' | i18next }} </div> <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume)"> {{ \'functions:V3IO\' | i18next }} </div> <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.secret.secretName)"> {{ \'functions:SECRET\' | i18next }} </div> <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.configMap.name)"> {{ \'functions:CONFIG_MAP\' | i18next }} </div> <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.persistentVolumeClaim.claimName)"> {{ \'functions:PVC\' | i18next }} </div> <div class="igz-col-70 item-info"> <div data-ng-hide="$ctrl.item.ui.editModeActive" class="collapsed-item-info-block"> <span data-ng-if="!$ctrl.isNil($ctrl.item.url)"> <span class="field-label">{{ \'common:URL\' | i18next }}</span>:&nbsp;{{ $ctrl.item.url }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.maxWorkers)"> <span class="field-label">{{ \'functions:MAX_WORKERS\' | i18next }}</span>:&nbsp;{{ $ctrl.item.maxWorkers }};&nbsp; </span> <span data-ng-if="$ctrl.isNumber($ctrl.item.workerAvailabilityTimeoutMilliseconds)"> <span class="field-label">{{ \'functions:WORKER_AVAILABILITY_TIMEOUT\' | i18next }}</span>:&nbsp;{{ $ctrl.item.workerAvailabilityTimeoutMilliseconds }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.secret)"> <span class="field-label">{{ \'functions:SECRET\' | i18next }}</span>:&nbsp;{{ $ctrl.getMask($ctrl.item.secret) }};&nbsp; </span> <span data-ng-repeat="(key, value) in $ctrl.item.attributes" data-ng-if="$ctrl.displayedAttributesFields.includes(key)"> <span class="field-label">{{ key }}</span>:&nbsp;{{ $ctrl.getAttributeValue(key, value) }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.annotations)"> <span class="field-label">{{ \'functions:ANNOTATIONS\' | i18next }}</span>:&nbsp;{{ $ctrl.item.annotations }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.username)"> <span class="field-label">{{ \'common:USERNAME\' | i18next }}</span>:&nbsp;{{ $ctrl.item.username }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.password)"> <span class="field-label">{{ \'common:PASSWORD\' | i18next }}</span>:&nbsp;{{ $ctrl.getMask($ctrl.item.password) }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.mountPath)"> <span class="field-label">{{ \'functions:MOUNT_PATH\' | i18next }}</span>:&nbsp;{{ $ctrl.item.volumeMount.mountPath }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)"> <span class="field-label">{{ \'common:HOST_PATH\' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.hostPath.path }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.readOnly)"> <span class="field-label">{{ \'common:READ_ONLY\' | i18next }}</span>:&nbsp;{{ $ctrl.item.volumeMount.readOnly }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.container)"> <span class="field-label">{{ \'functions:CONTAINER_NAME\' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.container }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.subPath)"> <span class="field-label">{{ \'functions:SUB_PATH\' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.subPath }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.configMap.name)"> <span class="field-label">{{ \'functions:CONFIG_MAP_NAME\' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.configMap.name }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.persistentVolumeClaim.claimName)"> <span class="field-label">{{ \'functions:PERSISTENT_VOLUME_CLAIM_NAME\' | i18next }}</span>:&nbsp; {{ $ctrl.item.volume.persistentVolumeClaim.claimName }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.workerAllocatorName)"> <span class="field-label">{{ \'functions:WORKER_ALLOCATOR_NAME\' | i18next }}</span>:&nbsp;{{ $ctrl.item.workerAllocatorName }};&nbsp; </span> </div> </div> </div> <div data-ng-transclude class="igz-col-100" data-ng-if="$ctrl.item.ui.editModeActive"></div> <div class="common-table-cell actions-menu" data-ng-hide="$ctrl.readOnly" data-ng-if="::$ctrl.showDotMenu()"> <igz-action-menu data-actions="$ctrl.actions" data-on-fire-action="$ctrl.onFireAction"> </igz-action-menu> </div> <div class="common-table-cell single-action" data-ng-hide="$ctrl.readOnly" data-ng-if="::!$ctrl.showDotMenu()"> <div class="igz-action-panel"> <div class="actions-list"> <div class="igz-action-item" data-test-id="{{$ctrl.deleteTestId}}" data-ng-click="$ctrl.onClickAction($ctrl.actions[0])" data-uib-tooltip="{{$ctrl.actions[0].label}}" data-tooltip-popup-delay="1000" data-tooltip-placement="bottom" data-tooltip-append-to-body="true"> <span class="action-icon" data-ng-class="$ctrl.actions[0].icon"> </span> </div> </div> </div> </div> </div> </div> ');
 }]);
 })();
 
@@ -26951,9 +26952,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/common/components/collapsing-row/collapsing-row.tpl.html',
-    '<div class="ncl-collapsing-row"> <div class="title-block common-table-row" data-ng-class="{\'collapsed\': !$ctrl.item.ui.editModeActive}"> <div class="common-table-cell row-collapse"> <span class="collapse-icon" data-ng-click="$ctrl.onCollapse($event)" data-ng-class="{\'collapsed igz-icon-right\': !$ctrl.item.ui.editModeActive,\n' +
-    '                                  \'igz-icon-down\': $ctrl.item.ui.editModeActive}"> </span> </div> <div data-ng-show="!$ctrl.item.ui.editModeActive" class="igz-row common-table-cells-container item-row"> <div class="item-name" data-ng-if="!$ctrl.isNil($ctrl.item.name)"> <div class="text-ellipsis"> {{$ctrl.item.name}} </div> <igz-more-info data-ng-if="$ctrl.item.ui.moreInfoMsg.name" data-trigger="click" data-is-html-enabled="true" data-is-open="$ctrl.item.ui.moreInfoMsg.name.isOpen" data-icon-type="{{$ctrl.item.ui.moreInfoMsg.name.type}}" data-description="{{$ctrl.item.ui.moreInfoMsg.name.description}}"> </igz-more-info> </div> <div class="text-ellipsis item-name" data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.name)"> {{ $ctrl.item.volumeMount.name }} </div> <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.ui.selectedClass)"> {{$ctrl.item.ui.selectedClass.name}} </div> <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)"> {{ \'common:HOST_PATH\' | i18next }} </div> <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume)"> {{ \'functions:V3IO\' | i18next }} </div> <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.secret.secretName)"> {{ \'functions:SECRET\' | i18next }} </div> <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.configMap.name)"> {{ \'functions:CONFIG_MAP\' | i18next }} </div> <div class="item-class" data-ng-if="!$ctrl.isNil($ctrl.item.volume.persistentVolumeClaim.claimName)"> {{ \'functions:PVC\' | i18next }} </div> <div class="igz-col-70 item-info"> <div data-ng-hide="$ctrl.item.ui.editModeActive" class="collapsed-item-info-block"> <span data-ng-if="!$ctrl.isNil($ctrl.item.url)"> <span class="field-label">{{ \'common:URL\' | i18next }}</span>:&nbsp;{{ $ctrl.item.url }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.maxWorkers)"> <span class="field-label">{{ \'functions:MAX_WORKERS\' | i18next }}</span>:&nbsp;{{ $ctrl.item.maxWorkers }};&nbsp; </span> <span data-ng-if="$ctrl.isNumber($ctrl.item.workerAvailabilityTimeoutMilliseconds)"> <span class="field-label">{{ \'functions:WORKER_AVAILABILITY_TIMEOUT\' | i18next }}</span>:&nbsp;{{ $ctrl.item.workerAvailabilityTimeoutMilliseconds }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.secret)"> <span class="field-label">{{ \'functions:SECRET\' | i18next }}</span>:&nbsp;{{ $ctrl.getMask($ctrl.item.secret) }};&nbsp; </span> <span data-ng-repeat="(key, value) in $ctrl.item.attributes" data-ng-if="$ctrl.displayedAttributesFields.includes(key)"> <span class="field-label">{{ key }}</span>:&nbsp;{{ $ctrl.getAttributeValue(key, value) }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.annotations)"> <span class="field-label">{{ \'functions:ANNOTATIONS\' | i18next }}</span>:&nbsp;{{ $ctrl.item.annotations }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.username)"> <span class="field-label">{{ \'common:USERNAME\' | i18next }}</span>:&nbsp;{{ $ctrl.item.username }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.password)"> <span class="field-label">{{ \'common:PASSWORD\' | i18next }}</span>:&nbsp;{{ $ctrl.getMask($ctrl.item.password) }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.mountPath)"> <span class="field-label">{{ \'functions:MOUNT_PATH\' | i18next }}</span>:&nbsp;{{ $ctrl.item.volumeMount.mountPath }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.hostPath)"> <span class="field-label">{{ \'common:HOST_PATH\' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.hostPath.path }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.volumeMount.readOnly)"> <span class="field-label">{{ \'common:READ_ONLY\' | i18next }}</span>:&nbsp;{{ $ctrl.item.volumeMount.readOnly }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.container)"> <span class="field-label">{{ \'functions:CONTAINER_NAME\' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.container }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.flexVolume.options.subPath)"> <span class="field-label">{{ \'functions:SUB_PATH\' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.flexVolume.options.subPath }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.configMap.name)"> <span class="field-label">{{ \'functions:CONFIG_MAP_NAME\' | i18next }}</span>:&nbsp;{{ $ctrl.item.volume.configMap.name }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.volume.persistentVolumeClaim.claimName)"> <span class="field-label">{{ \'functions:PERSISTENT_VOLUME_CLAIM_NAME\' | i18next }}</span>:&nbsp; {{ $ctrl.item.volume.persistentVolumeClaim.claimName }};&nbsp; </span> <span data-ng-if="!$ctrl.isNil($ctrl.item.workerAllocatorName)"> <span class="field-label">{{ \'functions:WORKER_ALLOCATOR_NAME\' | i18next }}</span>:&nbsp;{{ $ctrl.item.workerAllocatorName }};&nbsp; </span> </div> </div> </div> <div data-ng-transclude class="igz-col-100" data-ng-if="$ctrl.item.ui.editModeActive"></div> <div class="common-table-cell actions-menu" data-ng-hide="$ctrl.readOnly" data-ng-if="::$ctrl.showDotMenu()"> <igz-action-menu data-actions="$ctrl.actions" data-on-fire-action="$ctrl.onFireAction"> </igz-action-menu> </div> <div class="common-table-cell single-action" data-ng-hide="$ctrl.readOnly" data-ng-if="::!$ctrl.showDotMenu()"> <div class="igz-action-panel"> <div class="actions-list"> <div class="igz-action-item" data-test-id="{{$ctrl.deleteTestId}}" data-ng-click="$ctrl.onClickAction($ctrl.actions[0])" data-uib-tooltip="{{$ctrl.actions[0].label}}" data-tooltip-popup-delay="1000" data-tooltip-placement="bottom" data-tooltip-append-to-body="true"> <span class="action-icon" data-ng-class="$ctrl.actions[0].icon"> </span> </div> </div> </div> </div> </div> </div> ');
+  $templateCache.put('nuclio/common/components/breadcrumbs-dropdown/breadcrumbs-dropdown.tpl.html',
+    '<div class="ncl-breadcrumbs-dropdown dropdown" data-ng-class="{\'open\': $ctrl.showDropdownList}"> <span class="breadcrumb-toggle" data-ng-click="$ctrl.showDropdown()"> <span class="breadcrumb-arrow" data-ng-class="{\'ncl-dropdown-expanded\': $ctrl.showDropdownList}"> <span class="igz-icon-right"></span> </span> </span> <div class="dropdown-menu"> <div class="search-input"> <input type="text" placeholder="{{$ctrl.placeholder}}" data-ng-model="$ctrl.searchText"> <span class="igz-icon-search"></span> </div> <ul class="dropdown-list" data-ng-scrollbars> <li data-ng-repeat="item in $ctrl.itemsList | filter: $ctrl.searchText"> <a class="item-name" data-ng-click="$ctrl.showDetails($event, item)" data-uib-tooltip="{{item.name}}" data-tooltip-popup-delay="200" data-tooltip-append-to-body="true" data-tooltip-placement="top"> {{item.name}} </a> <span class="igz-icon-tick" data-ng-show="$ctrl.title === item.name"></span> </li> </ul> </div> </div> ');
 }]);
 })();
 
@@ -27001,19 +27001,6 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/common/components/monaco/monaco.tpl.html',
-    '<div class="ncl-monaco"> <div class="ncl-monaco-wrapper" data-ng-class="{\'ncl-monaco-dark\': $ctrl.selectedTheme === \'vs-dark\',\n' +
-    '                         \'no-top-padding\': $ctrl.noTopPadding}"> <div data-ng-if="$ctrl.showTextSizeDropdown" class="ncl-monaco-top-row"> <ncl-text-size-dropdown data-update-data-callback="$ctrl.onTextSizeChange(newTextSize)"> </ncl-text-size-dropdown> </div> <div class="ncl-monaco-editor" igz-monaco-editor data-font-size="$ctrl.selectedTextSize" data-code-file="selectedCodeFile" data-editor-theme="$ctrl.selectedTheme" data-file-language="selectedFileLanguage" data-mini-monaco="$ctrl.miniMonaco" data-show-line-numbers="$ctrl.showLineNumbers" data-read-only="$ctrl.readOnly" data-on-code-change="$ctrl.onCodeChange" data-word-wrap="$ctrl.wordWrap"> </div> </div> </div> ');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('iguazio.dashboard-controls.templates');
-} catch (e) {
-  module = angular.module('iguazio.dashboard-controls.templates', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('nuclio/common/components/key-value-input/key-value-input.tpl.html',
     '<div class="ncl-key-value-input"> <form name="$ctrl.keyValueInputForm" class="input-wrapper" data-ng-mousedown="$ctrl.onEditInput()" novalidate> <div class="check-row" data-ng-if="$ctrl.allowSelection"> <igz-action-checkbox data-item="$ctrl.data"></igz-action-checkbox> </div> <div class="inputs-container" data-ng-class="{\'use-type\': $ctrl.useType, \'use-checkbox\': $ctrl.allowSelection}"> <div class="input-container input-type-wrapper" data-ng-if="$ctrl.useType" data-ng-class="{\'use-type\': $ctrl.useType,\n' +
     '                                 \'all-value-types\': $ctrl.allValueTypes,\n' +
@@ -27044,8 +27031,9 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/common/components/nuclio-search-input/search-input.tpl.html',
-    '<div class="ncl-search-input"> <input type="text" class="container-search-input" placeholder="{{$ctrl.placeholder}}" data-ng-keydown="$ctrl.onPressEnter($event)" data-igz-input-blur-on-enter data-ng-model="$ctrl.searchQuery" data-ng-model-options="{ debounce: { \'default\': 500, \'blur\': 0 } }"> <span class="igz-icon-search"></span> </div> ');
+  $templateCache.put('nuclio/common/components/monaco/monaco.tpl.html',
+    '<div class="ncl-monaco"> <div class="ncl-monaco-wrapper" data-ng-class="{\'ncl-monaco-dark\': $ctrl.selectedTheme === \'vs-dark\',\n' +
+    '                         \'no-top-padding\': $ctrl.noTopPadding}"> <div data-ng-if="$ctrl.showTextSizeDropdown" class="ncl-monaco-top-row"> <ncl-text-size-dropdown data-update-data-callback="$ctrl.onTextSizeChange(newTextSize)"> </ncl-text-size-dropdown> </div> <div class="ncl-monaco-editor" igz-monaco-editor data-font-size="$ctrl.selectedTextSize" data-code-file="selectedCodeFile" data-editor-theme="$ctrl.selectedTheme" data-file-language="selectedFileLanguage" data-mini-monaco="$ctrl.miniMonaco" data-show-line-numbers="$ctrl.showLineNumbers" data-read-only="$ctrl.readOnly" data-on-code-change="$ctrl.onCodeChange" data-word-wrap="$ctrl.wordWrap"> </div> </div> </div> ');
 }]);
 })();
 
@@ -27058,6 +27046,18 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('nuclio/common/screens/create-function/create-function.tpl.html',
     '<igz-splash-screen data-is-splash-showed="$ctrl.isSplashShowed"></igz-splash-screen> <div class="igz-scrollable-container" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"> <div class="new-function-wrapper"> <div class="igz-scrollable-container" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.horizontalScrollConfig"> <div class="new-function-header"> <div class="title-wrapper"> <div class="title">{{ \'functions:START_NEW_FUNCTION\' | i18next }}</div> <div class="igz-icon-close" data-ng-click="$ctrl.cancelCreating($event)"></div> </div> <div class="new-function-types"> <div class="type-wrapper"> <div class="type-template function-from-template" data-ng-click="$ctrl.selectFunctionType(\'from_template\')" data-ng-class="{\'selected\': $ctrl.isTypeSelected(\'from_template\')}"> <div class="function-type-icon"> <ng-include src="\'/assets/images/background-circle.svg\'"></ng-include> <span class="ncl-icon-template icon"></span> </div> <div class="function-type-info"> <div class="type-title"> {{ \'functions:TEMPLATES\' | i18next }} </div> <div class="type-description"> {{ \'functions:CREATE_FUNCTION_DESCRIPTION\' | i18next }} </div> </div> </div> </div> <div class="type-wrapper"> <div class="type-template" data-ng-click="$ctrl.selectFunctionType(\'from_scratch\')" data-ng-class="{\'selected\': $ctrl.isTypeSelected(\'from_scratch\')}"> <div class="function-type-icon"> <ng-include src="\'/assets/images/background-circle.svg\'"></ng-include> <span class="ncl-icon-add icon"></span> </div> <div class="function-type-info"> <div class="type-title"> {{ \'functions:START_FROM_SCRATCH\' | i18next }} </div> <div class="type-description"> {{ \'functions:START_FROM_SCRATCH_DESCRIPTION\' | i18next }} </div> </div> </div> </div> <div class="type-wrapper"> <div class="type-template" data-ng-click="$ctrl.selectFunctionType(\'import\')" data-ng-class="{\'selected\': $ctrl.isTypeSelected(\'import\')}"> <div class="function-type-icon"> <ng-include src="\'/assets/images/background-circle.svg\'"></ng-include> <span class="ncl-icon-import icon"></span> </div> <div class="function-type-info function-import"> <div class="type-title"> {{ \'functions:IMPORT\' | i18next }} </div> <div class="type-description"> {{ \'functions:IMPORT_FUNCTION_DESCRIPTION\' | i18next }} </div> </div> </div> </div> </div> </div> </div> </div> <div class="function-type-content-wrapper"> <div class="new-function-type-content"> <ncl-function-from-scratch data-ng-if="$ctrl.isTypeSelected(\'from_scratch\')" data-toggle-splash-screen="$ctrl.toggleSplashScreen(value)" data-project="$ctrl.project" data-get-function="$ctrl.getFunction({metadata: metadata})" data-create-new-project="$ctrl.createNewProject" data-selected-project="$ctrl.selectedProject" data-projects="$ctrl.projects"> </ncl-function-from-scratch> <ncl-function-from-template data-ng-if="$ctrl.isTypeSelected(\'from_template\')" data-get-function="$ctrl.getFunction({metadata: metadata})" data-get-function-templates="$ctrl.getTemplates()" data-templates="$ctrl.templates" data-toggle-splash-screen="$ctrl.toggleSplashScreen(value)" data-project="$ctrl.project" data-create-new-project="$ctrl.createNewProject" data-render-template="$ctrl.renderTemplate({template: template})" data-selected-project="$ctrl.selectedProject" data-projects="$ctrl.projects"> </ncl-function-from-template> <ncl-function-import data-ng-if="$ctrl.isTypeSelected(\'import\')" data-toggle-splash-screen="$ctrl.toggleSplashScreen(value)" data-project="$ctrl.project" data-get-function="$ctrl.getFunction({metadata: metadata})" data-selected-project="$ctrl.selectedProject" data-create-new-project="$ctrl.createNewProject" data-projects="$ctrl.projects"> </ncl-function-import> </div> </div> </div> ');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('iguazio.dashboard-controls.templates');
+} catch (e) {
+  module = angular.module('iguazio.dashboard-controls.templates', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('nuclio/common/components/nuclio-search-input/search-input.tpl.html',
+    '<div class="ncl-search-input"> <input type="text" class="container-search-input" placeholder="{{$ctrl.placeholder}}" data-ng-keydown="$ctrl.onPressEnter($event)" data-igz-input-blur-on-enter data-ng-model="$ctrl.searchQuery" data-ng-model-options="{ debounce: { \'default\': 500, \'blur\': 0 } }"> <span class="igz-icon-search"></span> </div> ');
 }]);
 })();
 
@@ -27095,18 +27095,6 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/functions/version/version-configuration/version-configuration.tpl.html',
-    '<div class="ncl-version-configuration ncl-version" data-igz-extend-background> <div class="igz-scrollable-container" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"> <div class="ncl-version-configuration-wrapper"> <div class="row"> <ncl-version-configuration-basic-settings class="configuration-block" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-basic-settings> <ncl-version-configuration-resources class="configuration-block" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-resources> </div> <div class="row"> <ncl-version-configuration-environment-variables class="configuration-block" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-environment-variables> </div> <div class="row"> <ncl-version-configuration-labels class="configuration-block" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-labels> <ncl-version-configuration-annotations class="configuration-block" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-annotations> </div> <div class="row"> <ncl-version-configuration-volumes class="configuration-block" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback()"> </ncl-version-configuration-volumes> <ncl-version-configuration-build class="configuration-block" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-build> </div> <div class="row"> <ncl-version-configuration-logging data-ng-if="false" class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-logging> <ncl-version-configuration-runtime-attributes data-ng-if="$ctrl.isRuntimeBlockVisible()" class="configuration-block runtime-attributes" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-runtime-attributes> <div data-ng-if="$ctrl.isRuntimeBlockVisible()" class="configuration-block invisible"></div> </div> </div> </div> </div> ');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('iguazio.dashboard-controls.templates');
-} catch (e) {
-  module = angular.module('iguazio.dashboard-controls.templates', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('nuclio/functions/version/version-code/version-code.tpl.html',
     '<div data-igz-extend-background data-ui-layout="{ flow : \'column\', dividerSize: 3 }" ui-layout-loaded class="ncl-edit-version-code ncl-version"> <div ui-layout-container="central" class="code-section"> <form name="$ctrl.versionCodeForm" class="code-wrapper-block" novalidate> <div data-ng-if="$ctrl.selectedEntryType.id === \'sourceCode\'" class="igz-scrollable-container code-scrollable-container" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfigHorizontal"> <div class="ncl-edit-version-code-wrapper"> <div class="section-wrapper code-entry-section"> <div class="code-entry-row"> <div class="code-entry-col code-entry-type-col"> <div class="col-label code-entry-type">{{ \'functions:CODE_ENTRY_TYPE\' | i18next }}</div> <igz-default-dropdown data-values-array="$ctrl.codeEntryTypeArray" data-item-select-callback="$ctrl.selectEntryTypeValue(item, isItemChanged, field)" data-read-only="$ctrl.isFunctionDeploying()" data-selected-item="$ctrl.selectedEntryType"> </igz-default-dropdown> </div> <div class="code-entry-col code-entry-runtime-col"> <div class="col-label runtime">{{ \'functions:RUNTIME\' | i18next }}</div> <igz-default-dropdown data-values-array="$ctrl.runtimeArray" data-item-select-callback="$ctrl.selectRuntimeValue(item, isItemChanged, field)" data-selected-item="$ctrl.selectedRuntime" data-is-disabled="true"> </igz-default-dropdown> </div> <div class="code-entry-col code-entry-handler-col"> <div class="col-label handler">{{ \'functions:HANDLER\' | i18next }}</div> <igz-validating-input-field data-field-type="input" data-input-name="handler" data-input-value="$ctrl.version.spec.handler" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.handler" data-form-object="$ctrl.versionCodeForm" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'functions:HANDLER\' | i18next }}"> </igz-validating-input-field> </div> <div class="code-entry-col code-entry-theme-col" data-ng-if="$ctrl.isDemoMode()"> <div class="col-label runtime">{{ \'functions:THEME\' | i18next }}</div> <igz-default-dropdown data-values-array="$ctrl.themesArray" data-item-select-callback="$ctrl.selectThemeValue(item, isItemChanged, field)" data-selected-item="$ctrl.selectedTheme" data-read-only="$ctrl.isFunctionDeploying()" data-on-close-dropdown="$ctrl.onCloseDropdown()"> </igz-default-dropdown> </div> </div> </div> <div class="code-edit-section"> <div class="field-label asterisk">{{ \'functions:SOURCE_CODE\' | i18next }}</div> <div class="code-editor-drop-zone"></div> <ncl-monaco class="monaco-code-editor" igz-extend-background data-function-source-code="$ctrl.sourceCode" data-mini-monaco="false" data-selected-theme="$ctrl.selectedTheme.id" data-show-text-size-dropdown="true" data-language="$ctrl.editorLanguage" data-on-change-source-code-callback="$ctrl.onChangeSourceCode(sourceCode, language)" data-read-only="$ctrl.isFunctionDeploying()"> </ncl-monaco> </div> </div> </div> <div data-ng-if="$ctrl.selectedEntryType.id !== \'sourceCode\'" class="igz-scrollable-container code-scrollable-container" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"> <div class="ncl-edit-version-code-wrapper"> <div class="section-wrapper code-entry-section"> <div class="code-entry-row"> <div class="code-entry-col code-entry-type-col"> <div class="col-label code-entry-type">{{ \'functions:CODE_ENTRY_TYPE\' | i18next }}</div> <igz-default-dropdown data-values-array="$ctrl.codeEntryTypeArray" data-item-select-callback="$ctrl.selectEntryTypeValue(item, isItemChanged, field)" data-read-only="$ctrl.isFunctionDeploying()" data-selected-item="$ctrl.selectedEntryType"> </igz-default-dropdown> </div> <div class="code-entry-col code-entry-runtime-col"> <div class="col-label runtime">{{ \'functions:RUNTIME\' | i18next }}</div> <igz-default-dropdown data-values-array="$ctrl.runtimeArray" data-item-select-callback="$ctrl.selectRuntimeValue(item, isItemChanged, field)" data-selected-item="$ctrl.selectedRuntime" data-is-disabled="true"> </igz-default-dropdown> </div> <div class="code-entry-col code-entry-handler-col"> <div class="col-label handler">{{ \'functions:HANDLER\' | i18next }}</div> <igz-validating-input-field data-field-type="input" data-input-name="handler" data-input-value="$ctrl.version.spec.handler" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.handler" data-form-object="$ctrl.versionCodeForm" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'functions:HANDLER\' | i18next }}"> </igz-validating-input-field> </div> </div> <div class="code-entry-row" data-ng-i18next="[html]functions:CODE_ENTRY_TYPE_NOTE"></div> </div> <div data-ng-if="$ctrl.selectedEntryType.id === \'image\'" class="ncl-code-entry-url"> <div class="field-label"> <span class="asterisk">{{ \'functions:IMAGE_NAME\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:TOOLTIP.IMAGE_NAME\' | i18next }}"></igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="image" data-input-value="$ctrl.version.spec.image" data-is-focused="true" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="true" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'common:FOR_EXAMPLE\' | i18next }}: mydockeruser/my-func:latest" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.image"> </igz-validating-input-field> </div> <div data-ng-if="$ctrl.selectedEntryType.id === \'archive\' || $ctrl.selectedEntryType.id === \'jar\'" class="ncl-code-entry-url"> <div class="field-label"> <span class="asterisk">{{ \'common:URL\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:TOOLTIP.URL\' | i18next }}"></igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="archive" data-input-value="$ctrl.version.spec.build.path" data-is-focused="true" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="true" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'common:FOR_EXAMPLE\' | i18next }}: https://v3io-webapi/users/iguazio/myfunction.zip" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.path"> </igz-validating-input-field> </div> <div data-ng-if="$ctrl.selectedEntryType.id === \'archive\'" class="ncl-code-entry-url"> <div class="field-label"> <span>{{ \'functions:ACCESS_KEY_V3IO_ONLY\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:TOOLTIP.V3IO_ACCESS_KEY\' | i18next }}"></igz-more-info> </div> <igz-validating-input-field data-field-type="password" data-input-name="sessionKey" data-input-value="$ctrl.version.spec.build.codeEntryAttributes.headers[\'X-V3io-Session-Key\']" data-is-focused="false" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="false" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_ACCESS_KEY\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.codeEntryAttributes.headers[\'X-V3io-Session-Key\']"> </igz-validating-input-field> <div class="field-label"> <span>{{ \'functions:WORK_DIRECTORY\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:TOOLTIP.WORK_DIR\' | i18next }}"></igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="archiveWorkDir" data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir" data-is-focused="false" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="false" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'common:FOR_EXAMPLE\' | i18next }}: /nuclio-functions/myfunc" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.codeEntryAttributes.workDir"> </igz-validating-input-field> </div> <div data-ng-if="$ctrl.selectedEntryType.id === \'github\' || $ctrl.selectedEntryType.id === \'git\'" class="ncl-code-entry-url"> <div class="field-label"> <span class="asterisk">{{ \'common:URL\' | i18next }}</span> <igz-more-info data-description="{{ $ctrl.selectedEntryType.id === \'git\' ? \'functions:TOOLTIP.GIT.URL\' : \'functions:TOOLTIP.GITHUB.URL\' | i18next }}"></igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="githubUrl" data-input-value="$ctrl.version.spec.build.path" data-is-focused="true" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="true" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'common:FOR_EXAMPLE\' | i18next }}: https://github.com/my-organization/my-repository" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.path"> </igz-validating-input-field> </div> <div data-ng-if="$ctrl.selectedEntryType.id === \'github\' || $ctrl.selectedEntryType.id === \'git\'" class="ncl-code-entry-url"> <div class="field-label"> <span data-ng-class="{ asterisk: $ctrl.selectedEntryType.id === \'github\' }">{{ \'functions:BRANCH\' | i18next }}</span> <igz-more-info data-description="{{ $ctrl.selectedEntryType.id === \'git\' ? \'functions:TOOLTIP.GIT.BRANCH\' : \'functions:TOOLTIP.GITHUB.BRANCH\' | i18next }}"></igz-more-info> </div> <div data-uib-tooltip="{{\n' +
     '                            $ctrl.version.spec.build.codeEntryAttributes.tag ||\n' +
@@ -27121,6 +27109,18 @@ module.run(['$templateCache', function($templateCache) {
     '                            $ctrl.version.spec.build.codeEntryAttributes.tag\n' +
     '                                ? (\'functions:TOOLTIP.GIT.BRANCH_TAG_REFERENCE_DISABLED\' | i18next)\n' +
     '                                : \'\'}}" data-tooltip-placement="top" data-tooltip-popup-delay="200" data-tooltip-append-to-body="true"> <igz-validating-input-field data-field-type="input" data-input-name="gitReference" data-input-value="$ctrl.version.spec.build.codeEntryAttributes.reference" data-is-focused="false" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="false" data-read-only="$ctrl.isFunctionDeploying()" data-is-disabled="$ctrl.version.spec.build.codeEntryAttributes.branch || $ctrl.version.spec.build.codeEntryAttributes.tag" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_REFERENCE\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.codeEntryAttributes.reference"> </igz-validating-input-field> </div> </div> <div data-ng-if="$ctrl.selectedEntryType.id === \'git\'" class="ncl-code-entry-url"> <div class="field-label"> <span>{{ \'common:USERNAME\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:TOOLTIP.GIT.USERNAME\' | i18next }}"></igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="gitUsername" data-input-value="$ctrl.version.spec.build.codeEntryAttributes.username" data-is-focused="false" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="false" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'common:PLACEHOLDER.ENTER_USERNAME\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.codeEntryAttributes.username"> </igz-validating-input-field> </div> <div data-ng-if="$ctrl.selectedEntryType.id === \'git\'" class="ncl-code-entry-url"> <div class="field-label"> <span>{{ \'common:PASSWORD\' | i18next }}</span> </div> <igz-validating-input-field data-auto-complete="new-password" data-field-type="password" data-input-name="gitPassword" data-input-value="$ctrl.version.spec.build.codeEntryAttributes.password" data-is-focused="false" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="false" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{\'common:PLACEHOLDER.ENTER_PASSWORD\' | i18next}}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.codeEntryAttributes.password"> </igz-validating-input-field> </div> <div data-ng-if="$ctrl.selectedEntryType.id === \'github\' || $ctrl.selectedEntryType.id === \'git\'" class="ncl-code-entry-url"> <div class="field-label"> <span>{{ \'functions:WORK_DIRECTORY\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:TOOLTIP.GITHUB.WORK_DIR\' | i18next }}"></igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="githubWorkDir" data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir" data-is-focused="false" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="false" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'common:FOR_EXAMPLE\' | i18next }}: /nuclio-functions/myfunc" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.codeEntryAttributes.workDir"> </igz-validating-input-field> </div> <div data-ng-if="$ctrl.selectedEntryType.id === \'s3\'" class="ncl-code-entry-s3"> <div class="field-label"> <span class="asterisk">{{ \'functions:BUCKET\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:TOOLTIP.S3.BUCKET\' | i18next }}"></igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="s3Bucket" data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3Bucket" data-is-focused="false" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="true" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'common:FOR_EXAMPLE\' | i18next }}: my-s3-bucket" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.codeEntryAttributes.s3Bucket"> </igz-validating-input-field> <div class="field-label"> <span class="asterisk">{{ \'functions:ITEM_KEY\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:TOOLTIP.S3.ITEM_KEY\' | i18next }}"></igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="s3ItemKey" data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3ItemKey" data-is-focused="false" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="true" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'common:FOR_EXAMPLE\' | i18next }}: my-dir/nuclio_funcs.zip" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.codeEntryAttributes.s3ItemKey"> </igz-validating-input-field> <div class="field-label"> <span>{{ \'functions:ACCESS_KEY_ID\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:TOOLTIP.S3.ACCESS_KEY_ID\' | i18next }}"></igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="s3AccessKeyID" data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3AccessKeyId" data-is-focused="false" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="false" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_ACCESS_KEY_ID\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.codeEntryAttributes.s3AccessKeyId"> </igz-validating-input-field> <div class="field-label"> <span>{{ \'functions:SECRET_ACCESS_KEY\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:TOOLTIP.S3.SECRET_ACCESS_KEY\' | i18next }}"></igz-more-info> </div> <igz-validating-input-field data-field-type="password" data-input-name="s3SecretAccessKey" data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3SecretAccessKey" data-is-focused="false" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="false" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_SECRET_ACCESS_KEY\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.codeEntryAttributes.s3SecretAccessKey"> </igz-validating-input-field> <div class="field-label"> <span>{{ \'functions:SESSION_TOKEN\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:TOOLTIP.S3.SESSION_TOKEN\' | i18next }}"></igz-more-info> </div> <igz-validating-input-field data-field-type="password" data-input-name="s3SessionToken" data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3SessionToken" data-is-focused="false" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="false" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_SESSION_TOKEN\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.codeEntryAttributes.s3SessionToken"> </igz-validating-input-field> <div class="field-label"> <span>{{ \'functions:REGION\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:TOOLTIP.S3.REGION\' | i18next }}"></igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="s3Region" data-input-value="$ctrl.version.spec.build.codeEntryAttributes.s3Region" data-is-focused="false" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="false" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'common:FOR_EXAMPLE\' | i18next }}: us-east-1" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.codeEntryAttributes.s3Region"> </igz-validating-input-field> <div class="field-label"> <span>{{ \'functions:WORK_DIRECTORY\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:TOOLTIP.S3.WORK_DIR\' | i18next }}"></igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="workDir" data-input-value="$ctrl.version.spec.build.codeEntryAttributes.workDir" data-is-focused="false" data-form-object="$ctrl.versionCodeForm" data-validation-is-required="false" data-read-only="$ctrl.isFunctionDeploying()" data-placeholder-text="{{ \'common:FOR_EXAMPLE\' | i18next }}: /nuclio-functions/myfunc" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.codeEntryAttributes.workDir"> </igz-validating-input-field> </div> </div> </div> </form> </div> <div ui-layout-container size="650px" min-size="{{$ctrl.layout.collapsed ? null : \'300px\'}}" max-size="80%" collapsed="$ctrl.layout.collapsed" class="event-pane-section"> <function-events-data-wrapper data-version="$ctrl.version"></function-events-data-wrapper> </div> </div> ');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('iguazio.dashboard-controls.templates');
+} catch (e) {
+  module = angular.module('iguazio.dashboard-controls.templates', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('nuclio/functions/version/version-configuration/version-configuration.tpl.html',
+    '<div class="ncl-version-configuration ncl-version" data-igz-extend-background> <div class="igz-scrollable-container" data-ng-scrollbars data-ng-scrollbars-config="$ctrl.scrollConfig"> <div class="ncl-version-configuration-wrapper"> <div class="row"> <ncl-version-configuration-basic-settings class="configuration-block" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-basic-settings> <ncl-version-configuration-resources class="configuration-block" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-resources> </div> <div class="row"> <ncl-version-configuration-environment-variables class="configuration-block" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-environment-variables> </div> <div class="row"> <ncl-version-configuration-labels class="configuration-block" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-labels> <ncl-version-configuration-annotations class="configuration-block" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-annotations> </div> <div class="row"> <ncl-version-configuration-volumes class="configuration-block" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback()"> </ncl-version-configuration-volumes> <ncl-version-configuration-build class="configuration-block" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-build> </div> <div class="row"> <ncl-version-configuration-logging data-ng-if="false" class="configuration-block" data-version="$ctrl.version" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-logging> <ncl-version-configuration-runtime-attributes data-ng-if="$ctrl.isRuntimeBlockVisible()" class="configuration-block runtime-attributes" data-version="$ctrl.version" data-is-function-deploying="$ctrl.isFunctionDeploying()" data-on-change-callback="$ctrl.onConfigurationChangeCallback"> </ncl-version-configuration-runtime-attributes> <div data-ng-if="$ctrl.isRuntimeBlockVisible()" class="configuration-block invisible"></div> </div> </div> </div> </div> ');
 }]);
 })();
 
@@ -27191,8 +27191,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/common/screens/create-function/function-from-template/function-from-template.tpl.html',
-    '<div class="function-from-template-content"> <div class="templates-wrapper"> <span class="title"> {{ \'functions:CHOOSE_TEMPLATE\' | i18next }} </span> <div class="templates-controls"> <div class="templates-search-input"> <div class="igz-icon-search search-icon"></div> <input class="input-field field" tabindex="0" data-ng-model="$ctrl.searchQuery" data-ng-change="$ctrl.onChangeSearchQuery()" placeholder="{{ \'functions:PLACEHOLDER.SEARCH_TEMPLATE\' | i18next }}" data-igz-input-blur-on-enter> </div> <div class="templates-runtime-drop-down"> <span class="input-label"> {{ \'functions:RUNTIME\' | i18next }} </span> <igz-default-dropdown data-values-array="$ctrl.runtimeFilters" data-selected-item="$ctrl.selectedRuntimeFilter" data-item-select-callback="$ctrl.onRuntimeFilterChange(item, isItemChanged)"> </igz-default-dropdown> </div> <div class="templates-pagination"> <igz-pagination data-page-data="$ctrl.page" data-is-per-page-visible="true" data-pagination-callback="$ctrl.paginationCallback(page)"> </igz-pagination> </div> </div> <div class="function-templates"> <form name="$ctrl.functionFromTemplateForm" class="function-templates-form" novalidate> <div class="function-template-wrapper" data-ng-repeat="(key, value) in $ctrl.templatesWorkingCopy track by $index" data-ng-class="{\'selected\': $ctrl.isTemplateSelected(key)}" data-ng-click="$ctrl.selectTemplate(key)"> <div class="function-template"> <div data-ng-show="!$ctrl.isTemplateSelected(key)" class="function-template-content"> <div class="template-title">{{key}}</div> <div class="template-description">{{value.rendered.spec.description}}</div> <div data-ng-if="value.ui.readMore" class="template-read-more"> {{ \'common:READ_MORE\' | i18next }}... </div> </div> <div data-ng-show="$ctrl.isTemplateSelected(key)" class="function-template-content"> <ng-form name="templateForm{{$index}}"> <div data-ng-if="$ctrl.isProjectsDropDownVisible()" class="projects-drop-down"> <span class="input-label asterisk"> {{ \'common:PROJECT\' | i18next }} </span> <igz-default-dropdown data-is-required="true" data-values-array="$ctrl.projectsList" data-selected-item="$ctrl.selectedProject" data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)" data-form-object="$ctrl.functionFromTemplateForm[\'templateForm\' + $index]" data-input-name="project"> <div class="transcluded-item" data-ng-click="$ctrl.createNewProject()"> {{ \'functions:NEW_PROJECT\' | i18next }} </div> </igz-default-dropdown> </div> <div class="function-name"> <span class="input-label asterisk"> {{ \'common:NAME\' | i18next }} </span> <igz-validating-input-field data-field-type="input" data-input-name="function-name-{{$index}}" data-input-value="$ctrl.functionName" data-form-object="$ctrl.functionFromTemplateForm[\'templateForm\' + $index]" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-validation-is-required="true" data-validation-rules="$ctrl.validationRules.functionName" data-validation-max-length="{{$ctrl.maxLengths.functionName}}" data-input-model-options="$ctrl.inputModelOptions" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_FUNCTION_NAME\' | i18next }}..."> </igz-validating-input-field> </div> <div class="buttons-wrapper"> <button class="ncl-secondary-button igz-button-just-text" data-ng-click="$ctrl.unselectTemplate($event)"> {{ \'common:CANCEL\' | i18next }} </button> <button class="ncl-primary-button igz-button-primary" data-ng-click="$ctrl.createFunction()" data-ng-class="{\'disabled\': !$ctrl.isCreateFunctionAllowed()}"> {{ \'common:CREATE\' | i18next }} </button> </div> </ng-form> </div> </div> </div> </form> </div> </div> </div> ');
+  $templateCache.put('nuclio/common/screens/create-function/function-import/function-import.tpl.html',
+    '<div class="function-import-wrapper-content"> <form name="$ctrl.functionImportForm" class="function-import-form" novalidate> <div class="projects-drop-down" data-ng-if="$ctrl.isProjectsDropDownVisible()"> <span class="input-label"> {{ \'functions:PROJECT\' | i18next }}* </span> <igz-default-dropdown data-is-required="true" data-values-array="$ctrl.projectsList" data-selected-item="$ctrl.selectedProject" data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)" data-form-object="$ctrl.functionImportForm" data-input-name="project"> <div class="transcluded-item" data-ng-click="$ctrl.createNewProject()"> {{ \'functions:NEW_PROJECT\' | i18next }} </div> </igz-default-dropdown> </div> <div class="function-import-actions-bar"> <div class="function-import-file-picker"> <label class="file-picker-wrapper ncl-primary-button igz-button-secondary" for="function-import"> <span class="igz-icon-upload"></span> {{ \'functions:IMPORT\' | i18next }} </label> <input class="function-import-input" type="file" id="function-import" accept=".yml, .yaml"> </div> <button class="ncl-primary-button igz-button-primary" data-ng-click="$ctrl.createFunction()" data-ng-disabled="!$ctrl.isCreateFunctionAllowed()" data-ng-class="{\'disabled\': !$ctrl.isCreateFunctionAllowed()}"> {{ \'common:CREATE\' | i18next }} </button> </div> </form> <div class="function-import-monaco"> <ncl-monaco class="monaco-code-editor" data-function-source-code="$ctrl.sourceCode" data-mini-monaco="false" data-selected-theme="\'vs-light\'" data-language="\'yaml\'" data-read-only="true"> </ncl-monaco> </div> </div> ');
 }]);
 })();
 
@@ -27203,8 +27203,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/common/screens/create-function/function-import/function-import.tpl.html',
-    '<div class="function-import-wrapper-content"> <form name="$ctrl.functionImportForm" class="function-import-form" novalidate> <div class="projects-drop-down" data-ng-if="$ctrl.isProjectsDropDownVisible()"> <span class="input-label"> {{ \'functions:PROJECT\' | i18next }}* </span> <igz-default-dropdown data-is-required="true" data-values-array="$ctrl.projectsList" data-selected-item="$ctrl.selectedProject" data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)" data-form-object="$ctrl.functionImportForm" data-input-name="project"> <div class="transcluded-item" data-ng-click="$ctrl.createNewProject()"> {{ \'functions:NEW_PROJECT\' | i18next }} </div> </igz-default-dropdown> </div> <div class="function-import-actions-bar"> <div class="function-import-file-picker"> <label class="file-picker-wrapper ncl-primary-button igz-button-secondary" for="function-import"> <span class="igz-icon-upload"></span> {{ \'functions:IMPORT\' | i18next }} </label> <input class="function-import-input" type="file" id="function-import" accept=".yml, .yaml"> </div> <button class="ncl-primary-button igz-button-primary" data-ng-click="$ctrl.createFunction()" data-ng-disabled="!$ctrl.isCreateFunctionAllowed()" data-ng-class="{\'disabled\': !$ctrl.isCreateFunctionAllowed()}"> {{ \'common:CREATE\' | i18next }} </button> </div> </form> <div class="function-import-monaco"> <ncl-monaco class="monaco-code-editor" data-function-source-code="$ctrl.sourceCode" data-mini-monaco="false" data-selected-theme="\'vs-light\'" data-language="\'yaml\'" data-read-only="true"> </ncl-monaco> </div> </div> ');
+  $templateCache.put('nuclio/common/screens/create-function/function-from-template/function-from-template.tpl.html',
+    '<div class="function-from-template-content"> <div class="templates-wrapper"> <span class="title"> {{ \'functions:CHOOSE_TEMPLATE\' | i18next }} </span> <div class="templates-controls"> <div class="templates-search-input"> <div class="igz-icon-search search-icon"></div> <input class="input-field field" tabindex="0" data-ng-model="$ctrl.searchQuery" data-ng-change="$ctrl.onChangeSearchQuery()" placeholder="{{ \'functions:PLACEHOLDER.SEARCH_TEMPLATE\' | i18next }}" data-igz-input-blur-on-enter> </div> <div class="templates-runtime-drop-down"> <span class="input-label"> {{ \'functions:RUNTIME\' | i18next }} </span> <igz-default-dropdown data-values-array="$ctrl.runtimeFilters" data-selected-item="$ctrl.selectedRuntimeFilter" data-item-select-callback="$ctrl.onRuntimeFilterChange(item, isItemChanged)"> </igz-default-dropdown> </div> <div class="templates-pagination"> <igz-pagination data-page-data="$ctrl.page" data-is-per-page-visible="true" data-pagination-callback="$ctrl.paginationCallback(page)"> </igz-pagination> </div> </div> <div class="function-templates"> <form name="$ctrl.functionFromTemplateForm" class="function-templates-form" novalidate> <div class="function-template-wrapper" data-ng-repeat="(key, value) in $ctrl.templatesWorkingCopy track by $index" data-ng-class="{\'selected\': $ctrl.isTemplateSelected(key)}" data-ng-click="$ctrl.selectTemplate(key)"> <div class="function-template"> <div data-ng-show="!$ctrl.isTemplateSelected(key)" class="function-template-content"> <div class="template-title">{{key}}</div> <div class="template-description">{{value.rendered.spec.description}}</div> <div data-ng-if="value.ui.readMore" class="template-read-more"> {{ \'common:READ_MORE\' | i18next }}... </div> </div> <div data-ng-show="$ctrl.isTemplateSelected(key)" class="function-template-content"> <ng-form name="templateForm{{$index}}"> <div data-ng-if="$ctrl.isProjectsDropDownVisible()" class="projects-drop-down"> <span class="input-label asterisk"> {{ \'common:PROJECT\' | i18next }} </span> <igz-default-dropdown data-is-required="true" data-values-array="$ctrl.projectsList" data-selected-item="$ctrl.selectedProject" data-item-select-callback="$ctrl.onProjectChange(item, isItemChanged)" data-form-object="$ctrl.functionFromTemplateForm[\'templateForm\' + $index]" data-input-name="project"> <div class="transcluded-item" data-ng-click="$ctrl.createNewProject()"> {{ \'functions:NEW_PROJECT\' | i18next }} </div> </igz-default-dropdown> </div> <div class="function-name"> <span class="input-label asterisk"> {{ \'common:NAME\' | i18next }} </span> <igz-validating-input-field data-field-type="input" data-input-name="function-name-{{$index}}" data-input-value="$ctrl.functionName" data-form-object="$ctrl.functionFromTemplateForm[\'templateForm\' + $index]" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-validation-is-required="true" data-validation-rules="$ctrl.validationRules.functionName" data-validation-max-length="{{$ctrl.maxLengths.functionName}}" data-input-model-options="$ctrl.inputModelOptions" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_FUNCTION_NAME\' | i18next }}..."> </igz-validating-input-field> </div> <div class="buttons-wrapper"> <button class="ncl-secondary-button igz-button-just-text" data-ng-click="$ctrl.unselectTemplate($event)"> {{ \'common:CANCEL\' | i18next }} </button> <button class="ncl-primary-button igz-button-primary" data-ng-click="$ctrl.createFunction()" data-ng-class="{\'disabled\': !$ctrl.isCreateFunctionAllowed()}"> {{ \'common:CREATE\' | i18next }} </button> </div> </ng-form> </div> </div> </div> </form> </div> </div> </div> ');
 }]);
 })();
 
@@ -27242,8 +27242,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/functions/version/version-configuration/tabs/version-configuration-basic-settings/version-configuration-basic-settings.tpl.html',
-    '<div class="ncl-version-configuration-basic-settings"> <div class="title">{{ \'common:BASIC_SETTINGS\' | i18next }}</div> <form name="$ctrl.basicSettingsForm" class="basic-settings-wrapper" novalidate> <div class="row enable-checkbox"> <input type="checkbox" class="small" id="enable" data-ng-disabled="$ctrl.isFunctionDeploying()" data-ng-model="$ctrl.enableFunction" data-ng-change="$ctrl.updateEnableStatus()"> <label for="enable" class="checkbox-inline">{{ \'common:ENABLED\' | i18next }}</label> </div> <div class="row" data-ng-if="$ctrl.isDemoMode()"> <div class="timeout-block"> <div class="label"> <div class="timeout-checkbox"> <input type="checkbox" class="small" id="timeout" data-ng-disabled="$ctrl.isFunctionDeploying()" data-ng-model="$ctrl.enableTimeout"> <label for="timeout" class="checkbox-inline">{{ \'functions:TIMEOUT\' | i18next }}</label> </div> </div> <div class="timeout-values"> <div class="inputs"> <igz-validating-input-field data-field-type="input" data-input-name="min" data-input-value="$ctrl.timeout.min" data-is-focused="false" data-is-disabled="!$ctrl.enableTimeout" data-read-only="$ctrl.isFunctionDeploying()" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="timeout.min" data-form-object="$ctrl.basicSettingsForm" data-validation-is-required="true" data-validation-rules="$ctrl.validationRules.integer" data-placeholder-text="{{ \'common:MIN\' | i18next }}..."> </igz-validating-input-field> <div class="values-label">{{ \'common:MIN\' | i18next }}</div> <igz-validating-input-field data-field-type="input" data-input-name="sec" data-input-value="$ctrl.timeout.sec" data-is-focused="false" data-is-disabled="!$ctrl.enableTimeout" data-read-only="$ctrl.isFunctionDeploying()" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="timeout.sec" data-form-object="$ctrl.basicSettingsForm" data-validation-is-required="true" data-validation-rules="$ctrl.validationRules.integer" data-placeholder-text="{{ \'functions:SEC\' | i18next }}..."> </igz-validating-input-field> <div class="values-label">{{ \'functions:SEC\' | i18next }}</div> </div> </div> </div> </div> <div class="row"> <div class="description-block"> <div class="label">{{ \'common:DESCRIPTION\' | i18next }}</div> <igz-validating-input-field data-field-type="input" data-input-name="description" data-input-value="$ctrl.version.spec.description" data-is-focused="false" data-read-only="$ctrl.isFunctionDeploying()" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.description" data-form-object="$ctrl.basicSettingsForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_DESCRIPTION\' | i18next }}"> </igz-validating-input-field> </div> </div> <div class="row"> <div class="account-block"> <div class="label">{{ \'functions:SERVICE_ACCOUNT\' | i18next }}</div> <igz-validating-input-field data-field-type="input" data-input-name="serviceAccount" data-read-only="$ctrl.isFunctionDeploying()" data-input-value="$ctrl.version.spec.serviceAccount" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.serviceAccount" data-form-object="$ctrl.basicSettingsForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.MY_SERVICE_ACCOUNT\' | i18next }}"> </igz-validating-input-field> </div> </div> <div class="row"> <div class="run-as-user-block"> <div class="label" data-ng-class="{asterisk: $ctrl.version.spec.securityContext.runAsGroup}"> {{ \'common:RUN_AS_USER\' | i18next }} </div> <igz-number-input data-allow-empty-field="true" data-validation-is-required="$ctrl.lodash.isNumber($ctrl.version.spec.securityContext.runAsGroup)" data-value-step="1" data-min-value="0" data-max-value="2147483647" data-is-disabled="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.basicSettingsForm" data-input-name="run_as_user" data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)" data-update-number-input-field="spec.securityContext.runAsUser" data-current-value="$ctrl.version.spec.securityContext.runAsUser"> </igz-number-input> </div> <div class="run-as-group-block"> <div class="label">{{ \'common:RUN_AS_GROUP\' | i18next }}</div> <igz-number-input data-allow-empty-field="true" data-value-step="1" data-min-value="0" data-max-value="2147483647" data-is-disabled="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.basicSettingsForm" data-input-name="run_as_group" data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)" data-update-number-input-field="spec.securityContext.runAsGroup" data-current-value="$ctrl.version.spec.securityContext.runAsGroup"> </igz-number-input> </div> <div class="fs-group-block" data-ng-if="!$ctrl.platformIsKube"> <div class="label">{{ \'common:FS_GROUP\' | i18next }}</div> <igz-number-input data-allow-empty-field="true" data-value-step="1" data-min-value="0" data-max-value="2147483647" data-is-disabled="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.basicSettingsForm" data-input-name="fs_group" data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)" data-update-number-input-field="spec.securityContext.fsGroup" data-current-value="$ctrl.version.spec.securityContext.fsGroup"> </igz-number-input> </div> </div> <div class="row"> <div class="logger-block"> <div class="logger-dropdown"> <span class="label">{{ \'functions:LOGGER_LEVEL\' | i18next }}</span> <igz-default-dropdown data-selected-item="$ctrl.version.spec.loggerSinks[0].level" data-select-property-only="id" data-values-array="$ctrl.logLevelValues" data-item-select-callback="$ctrl.setPriority(item)" data-read-only="$ctrl.isFunctionDeploying()" data-enable-overlap="true" data-prevent-drop-up="true"> </igz-default-dropdown> </div> <div class="logger-input" data-ng-if="$ctrl.isDemoMode()"> <span class="label">{{ \'functions:LOGGER_DESTINATION\' | i18next }}</span> <igz-validating-input-field data-field-type="input" data-input-name="arguments" data-read-only="$ctrl.isFunctionDeploying()" data-input-value="$ctrl.version.spec.loggerSinks[0].sink" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.loggerSinks[0].sink" data-form-object="$ctrl.basicSettingsForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_DESTINATION\' | i18next }}"> </igz-validating-input-field> </div> </div> </div> </form> </div> ');
+  $templateCache.put('nuclio/functions/version/version-code/function-event-pane/test-events-navigation-tabs/test-events-navigation-tabs.tpl.html',
+    '<div class="ncl-test-events-navigation-tabs"> <div class="test-events-navigation-tab" data-ng-repeat="item in $ctrl.tabItems" data-ng-click="$ctrl.changeActiveTab(item)" data-ng-class="{\'active\': $ctrl.isActiveTab(item)}"> {{item.tabName | uppercase}} <span class="badge" data-ng-if="item.badge">{{item.badge}}</span> </div> <igz-default-dropdown data-ng-if="$ctrl.selectedLogLevel" data-values-array="$ctrl.logLevelValues" data-select-property-only="id" data-selected-item="$ctrl.selectedLogLevel" data-item-select-callback="$ctrl.onChangeLogLevel({selectedLogLevel: item})" data-enable-overlap="true"> </igz-default-dropdown> </div> ');
 }]);
 })();
 
@@ -27254,8 +27254,8 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/functions/version/version-configuration/tabs/version-configuration-build/version-configuration-build.tpl.html',
-    '<div class="ncl-version-configuration-build" data-ng-class="{ disabled: $ctrl.disabled }"> <div class="configuration-build-title-wrapper"> <div class="title pull-left">{{ \'functions:BUILD\' | i18next }}</div> <igz-action-menu data-ng-if="$ctrl.isDemoMode() && !$ctrl.disabled && !$ctrl.isFunctionDeploying()" data-actions="$ctrl.actions" data-icon-class="ncl-icon-paperclip" data-on-fire-action="$ctrl.onFireAction"> </igz-action-menu> <small class="pull-right" data-ng-if="$ctrl.disabled">{{ \'functions:DISABLED_FOR_IMAGE_CODE_ENTRY_TYPE\' | i18next }}</small> </div> <form name="$ctrl.buildForm" class="build-wrapper" novalidate> <div class="igz-row"> <div class="igz-col-100 build-field build-image-field"> <div class="field-label"> <span>{{ \'functions:IMAGE_NAME\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:IMAGE_NAME_DESCRIPTION\' | i18next:{defaultImageName: $ctrl.version.ui.defaultImageName} }}" data-is-html-enabled="true" data-trigger="click"> </igz-more-info> </div> <div class="align-items-baseline"> <span class="flex-none">{{ $ctrl.version.ui.imageNamePrefix }}</span> <igz-validating-input-field data-field-type="input" data-input-name="imageName" data-input-value="$ctrl.imageName" data-is-focused="false" data-read-only="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.buildForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_IMAGE_NAME\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-validation-max-length="{{$ctrl.maxLengths.imageName}}" data-validation-pattern="$ctrl.imageNameValidationPattern" data-is-disabled="$ctrl.disabled" class="flex-auto"> </igz-validating-input-field> </div> </div> <div class="igz-col-50 build-field build-base-image-field"> <div class="field-label label-with-tooltip align-items-center"> <span>{{ \'functions:BASE_IMAGE\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:BASE_IMAGE_DESCRIPTION\' | i18next }}" data-trigger="click"> </igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="baseImage" data-input-value="$ctrl.version.spec.build.baseImage" data-is-focused="false" data-read-only="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.buildForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_BASE_IMAGE\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.baseImage" data-is-disabled="$ctrl.disabled"> </igz-validating-input-field> </div> <div class="igz-col-50 build-field build-onbuild-image-field"> <div class="field-label label-with-tooltip align-items-center"> <span>{{ \'functions:ONBUILD_IMAGE\' | i18next }}</span> <igz-more-info data-description="{{$ctrl.onBuildImageDescription}}" data-default-tooltip-placement="left" data-trigger="click"> </igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="onbuildImage" data-input-value="$ctrl.version.spec.build.onbuildImage" data-is-focused="false" data-read-only="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.buildForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_ONBUILD_IMAGE\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.onbuildImage" data-is-disabled="$ctrl.disabled"> </igz-validating-input-field> </div> <div class="igz-col-100 build-field"> <div class="field-label"> <span>{{ \'functions:BUILD_COMMANDS\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:BUILD_COMMANDS_DESCRIPTION\' | i18next }}" data-trigger="click"> </igz-more-info> </div> <igz-validating-input-field data-field-type="textarea" data-input-name="commands" data-input-value="$ctrl.build.commands" data-is-focused="false" data-read-only="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.buildForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_COMMAND_ON_EACH_LINE\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="commands" data-is-disabled="$ctrl.disabled" class="build-textarea-input build-commands-input"> </igz-validating-input-field> </div> <div class="igz-col-100 build-field"> <div class="field-label label-with-tooltip align-items-center"> <span>{{ \'functions:READINESS_TIMEOUT_SECONDS\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:READINESS_TIMEOUT_SECONDS_DESCRIPTION\' | i18next:{default: $ctrl.defaultFunctionConfig.spec.readinessTimeoutSeconds} }}" data-trigger="click"> </igz-more-info> </div> <igz-number-input data-form-object="$ctrl.buildForm" data-input-name="readinessTimeoutSeconds" data-current-value="$ctrl.version.spec.readinessTimeoutSeconds" data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)" data-update-number-input-field="spec.readinessTimeoutSeconds" data-allow-empty-field="true" data-value-step="1" data-validation-is-required="false" data-min-value="1" data-is-disabled="$ctrl.disabled || $ctrl.isFunctionDeploying()"> </igz-number-input> </div> <div class="igz-col-100 build-field" data-ng-if="$ctrl.version.spec.runtime === \'java\'"> <div class="field-label">{{ \'functions:REPOSITORIES\' | i18next }}</div> <igz-validating-input-field data-field-type="textarea" data-input-name="repositories" data-input-value="$ctrl.build.runtimeAttributes.repositories" data-is-focused="false" data-read-only="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.buildForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_REPOSITORY_ON_EACH_LINE\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="runtimeAttributes.repositories" class="build-textarea-input" data-is-disabled="$ctrl.disabled"> </igz-validating-input-field> </div> <div class="igz-col-100 build-field" data-ng-if="$ctrl.version.spec.runtime === \'java\'"> <div class="field-label">{{ \'functions:DEPENDENCIES\' | i18next }}</div> <igz-validating-input-field data-field-type="textarea" data-input-name="dependencies" data-input-value="$ctrl.build.dependencies" data-is-focused="false" data-read-only="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.buildForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_DEPENDENCY_ON_EACH_LINE\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="dependencies" class="build-textarea-input" data-is-disabled="$ctrl.disabled"> </igz-validating-input-field> </div> <div class="igz-col-100 build-field build-checkboxes"> <div class="checkbox-block"> <input type="checkbox" class="small" id="noCache" data-ng-model="$ctrl.version.spec.build.noCache" data-ng-disabled="$ctrl.disabled || $ctrl.isFunctionDeploying()"> <label for="noCache" class="checkbox-inline">{{ \'functions:DISABLE_CACHE\' | i18next }}</label> <igz-more-info data-description="{{ \'functions:TOOLTIP.DISABLE_CACHE\' | i18next }}" data-trigger="click" data-default-tooltip-placement="top"> </igz-more-info> </div> <div class="checkbox-block" data-ng-if="$ctrl.platformKindIsKube"> <input type="checkbox" class="small" id="wait-readiness-timeout-before-failure" data-ng-model="$ctrl.version.spec.waitReadinessTimeoutBeforeFailure" data-ng-disabled="$ctrl.disabled || $ctrl.isFunctionDeploying()"> <label for="wait-readiness-timeout-before-failure" class="checkbox-inline">{{ \'functions:ALWAYS_WAIT_FOR_READINESS_TIMEOUT_EXPIRATION\' | i18next }}</label> <igz-more-info data-description="{{ \'functions:TOOLTIP.ALWAYS_WAIT_FOR_READINESS_TIMEOUT_EXPIRATION\' | i18next }}" data-trigger="click" data-default-tooltip-placement="top-left"> </igz-more-info> </div> </div> <div class="igz-col-100 build-field files-field"> <div class="uploading-files"> <div class="uploading-proccess-wrapper" data-ng-class="{\'one-file-uploaded\': $ctrl.file.uploaded || $ctrl.script.uploaded}" data-ng-if="$ctrl.getFileConfig().uploading && $ctrl.getFileConfig().name"> <div class="file-block uploading text-ellipsis" data-ng-class="{\'uploading-file\': $ctrl.file.uploading}"> <span class="{{$ctrl.getFileConfig().icon}}"></span> <button class="build-close-button"> <span class="ncl-icon-close"></span> </button> <span class="file-name"> {{$ctrl.getFileConfig().name}} </span> <div class="progress"> <div class="progress-bar" role="uib-progressbar" aria-valuemin="0" aria-valuemax="100" data-ng-style="{\'width\': $ctrl.getFileConfig().progress}"> </div> </div> </div> </div> <div class="uploaded-wrapper" data-ng-if="$ctrl.file.uploaded|| $ctrl.script.uploaded"> <div class="file-block uploaded text-ellipsis" data-ng-if="$ctrl.script.uploaded" data-ng-class="{\'one-file-uploaded\': $ctrl.file.uploaded}"> <span class="ncl-icon-script"></span> <span class="file-name"> {{$ctrl.script.name}} <span class="uploaded-file-directory">(/usr/bin/mybinary)</span> </span> <button class="build-close-button" data-ng-click="$ctrl.deleteFile(\'script\')"> <span class="ncl-icon-close"></span> </button> </div> <div class="file-block uploaded text-ellipsis uploaded-file" data-ng-if="$ctrl.file.uploaded"> <span class="ncl-icon-file"></span> <span class="file-name"> {{$ctrl.file.name}} <span class="uploaded-file-directory">(/usr/bin/mybinary)</span> </span> <button class="build-close-button" data-ng-click="$ctrl.deleteFile(\'file\')"> <span class="ncl-icon-close"></span> </button> </div> </div> </div> </div> </div> </form> </div> ');
+  $templateCache.put('nuclio/functions/version/version-code/function-event-pane/test-events-logs/test-events-logs.tpl.html',
+    '<div class="ncl-test-events-logs"> <div class="functional-buttons" data-ng-if="$ctrl.logs.length > 0"> <div class="ncl-icon-expand-all" data-ng-click="$ctrl.expandAllRows(true)" data-uib-tooltip="{{ \'functions:EXPAND_ALL\' | i18next }}" data-tooltip-popup-delay="300" data-tooltip-placement="left" data-tooltip-append-to-body="true"> </div> <div class="ncl-icon-collapse-all" data-ng-click="$ctrl.expandAllRows(false)" data-uib-tooltip="{{ \'functions:COLLAPSE_ALL\' | i18next }}" data-tooltip-popup-delay="300" data-tooltip-placement="left" data-tooltip-append-to-body="true"> </div> </div> <div data-ng-repeat="log in $ctrl.logs track by $index"> <div class="collapsed-row text-ellipsis" data-ng-if="log.ui.collapsed"> <span class="igz-icon-right" data-ng-click="$ctrl.collapseRow(log, false)"></span> <div class="level-icon {{$ctrl.getLevelIconClass(log)}}"></div> <span class="date">{{log.time | date: "EEE, MMM d, yyyy, HH:mm:ss\'GMT\'" : "+0000"}}</span> <div class="message text-ellipsis">{{log.message}}</div> <div class="ncl-icon-parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"></div> </div> <div class="expanded-row" data-ng-if="!log.ui.collapsed"> <div class="header"> <span class="igz-icon-down" data-ng-click="$ctrl.collapseRow(log, true)"></span> <div class="level-icon {{$ctrl.getLevelIconClass(log)}}"></div> <span class="date">{{log.time | date: "EEE, MMM d, yyyy, HH:mm:ss\'GMT\'" : "+0000"}}</span> <div class="ncl-icon-parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"></div> </div> <div class="expanded-body"> <div class="message">{{log.message}}</div> <div class="error" data-ng-if="log.err">{{log.err}}</div> <div class="parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"> <span class="parameters-header"> {{ \'common:PARAMETERS\' | i18next }} </span> <div data-ng-repeat="(key, value) in $ctrl.getParameters(log)"> <div class="text-ellipsis labels">{{key}}:</div> <div class="text-ellipsis values">{{value}}</div> </div> </div> </div> </div> </div> <div class="no-logs" data-ng-if="$ctrl.logs.length === 0"> {{ \'functions:NO_LOGS_HAVE_BEEN_FOUND\' | i18next }} </div> </div> ');
 }]);
 })();
 
@@ -27290,8 +27290,20 @@ try {
   module = angular.module('iguazio.dashboard-controls.templates', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/functions/version/version-configuration/tabs/version-configuration-labels/version-configuration-labels.tpl.html',
-    '<div class="ncl-version-configuration-labels"> <div class="title"> <span>{{ \'common:LABELS\' | i18next }}</span> <igz-more-info data-description="{{$ctrl.tooltip}}" data-trigger="click" data-is-html-enabled="true"> </igz-more-info> </div> <form name="$ctrl.labelsForm" class="labels-wrapper" novalidate> <div data-ng-if="$ctrl.labels.length > 0" class="table-headers"> <div class="key-header"> {{ \'common:KEY\' | i18next }} <igz-more-info data-description="{{$ctrl.keyTooltip}}" data-trigger="click" data-is-html-enabled="true"> </igz-more-info> </div> <div class="value-header"> {{ \'common:VALUE\' | i18next }} </div> </div> <div class="igz-scrollable-container scrollable-labels" data-ng-scrollbars data-igz-ng-scrollbars-config="{{$ctrl.igzScrollConfig}}" data-ng-scrollbars-config="$ctrl.scrollConfig"> <div class="table-body" data-ng-repeat="label in $ctrl.labels"> <ncl-key-value-input class="new-label-input" data-row-data="label" data-item-index="$index" data-use-type="false" data-validation-rules="$ctrl.validationRules" data-is-disabled="$ctrl.isLabelsDisabled() || $ctrl.isFunctionDeploying()" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)" data-submit-on-fly="true" data-key-tooltip="$ctrl.isLabelsDisabled() ? $ctrl.addNewLabelTooltip : \'\'" data-value-tooltip="$ctrl.isLabelsDisabled() ? $ctrl.addNewLabelTooltip : \'\'"> </ncl-key-value-input> </div> </div> <div class="igz-create-button create-label-button" data-ng-class="{\'disabled\': $ctrl.isLabelsDisabled() || $ctrl.isFunctionDeploying()}" data-ng-click="$ctrl.addNewLabel($event)" data-uib-tooltip="{{$ctrl.isLabelsDisabled() ? $ctrl.addNewLabelTooltip : \'\'}}" data-tooltip-append-to-body="true" data-tooltip-placement="right" data-tooltip-popup-delay="100"> <span class="igz-icon-add-round"></span> {{ \'functions:ADD_LABEL\' | i18next }} </div> </form> </div> ');
+  $templateCache.put('nuclio/functions/version/version-configuration/tabs/version-configuration-build/version-configuration-build.tpl.html',
+    '<div class="ncl-version-configuration-build" data-ng-class="{ disabled: $ctrl.disabled }"> <div class="configuration-build-title-wrapper"> <div class="title pull-left">{{ \'functions:BUILD\' | i18next }}</div> <igz-action-menu data-ng-if="$ctrl.isDemoMode() && !$ctrl.disabled && !$ctrl.isFunctionDeploying()" data-actions="$ctrl.actions" data-icon-class="ncl-icon-paperclip" data-on-fire-action="$ctrl.onFireAction"> </igz-action-menu> <small class="pull-right" data-ng-if="$ctrl.disabled">{{ \'functions:DISABLED_FOR_IMAGE_CODE_ENTRY_TYPE\' | i18next }}</small> </div> <form name="$ctrl.buildForm" class="build-wrapper" novalidate> <div class="igz-row"> <div class="igz-col-100 build-field build-image-field"> <div class="field-label"> <span>{{ \'functions:IMAGE_NAME\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:IMAGE_NAME_DESCRIPTION\' | i18next:{defaultImageName: $ctrl.version.ui.defaultImageName} }}" data-is-html-enabled="true" data-trigger="click"> </igz-more-info> </div> <div class="align-items-baseline"> <span class="flex-none">{{ $ctrl.version.ui.imageNamePrefix }}</span> <igz-validating-input-field data-field-type="input" data-input-name="imageName" data-input-value="$ctrl.imageName" data-is-focused="false" data-read-only="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.buildForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_IMAGE_NAME\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-validation-max-length="{{$ctrl.maxLengths.imageName}}" data-validation-pattern="$ctrl.imageNameValidationPattern" data-is-disabled="$ctrl.disabled" class="flex-auto"> </igz-validating-input-field> </div> </div> <div class="igz-col-50 build-field build-base-image-field"> <div class="field-label label-with-tooltip align-items-center"> <span>{{ \'functions:BASE_IMAGE\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:BASE_IMAGE_DESCRIPTION\' | i18next }}" data-trigger="click"> </igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="baseImage" data-input-value="$ctrl.version.spec.build.baseImage" data-is-focused="false" data-read-only="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.buildForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_BASE_IMAGE\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.baseImage" data-is-disabled="$ctrl.disabled"> </igz-validating-input-field> </div> <div class="igz-col-50 build-field build-onbuild-image-field"> <div class="field-label label-with-tooltip align-items-center"> <span>{{ \'functions:ONBUILD_IMAGE\' | i18next }}</span> <igz-more-info data-description="{{$ctrl.onBuildImageDescription}}" data-default-tooltip-placement="left" data-trigger="click"> </igz-more-info> </div> <igz-validating-input-field data-field-type="input" data-input-name="onbuildImage" data-input-value="$ctrl.version.spec.build.onbuildImage" data-is-focused="false" data-read-only="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.buildForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_ONBUILD_IMAGE\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.build.onbuildImage" data-is-disabled="$ctrl.disabled"> </igz-validating-input-field> </div> <div class="igz-col-100 build-field"> <div class="field-label"> <span>{{ \'functions:BUILD_COMMANDS\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:BUILD_COMMANDS_DESCRIPTION\' | i18next }}" data-trigger="click"> </igz-more-info> </div> <igz-validating-input-field data-field-type="textarea" data-input-name="commands" data-input-value="$ctrl.build.commands" data-is-focused="false" data-read-only="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.buildForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_COMMAND_ON_EACH_LINE\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="commands" data-is-disabled="$ctrl.disabled" class="build-textarea-input build-commands-input"> </igz-validating-input-field> </div> <div class="igz-col-100 build-field"> <div class="field-label label-with-tooltip align-items-center"> <span>{{ \'functions:READINESS_TIMEOUT_SECONDS\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:READINESS_TIMEOUT_SECONDS_DESCRIPTION\' | i18next:{default: $ctrl.defaultFunctionConfig.spec.readinessTimeoutSeconds} }}" data-trigger="click"> </igz-more-info> </div> <igz-number-input data-form-object="$ctrl.buildForm" data-input-name="readinessTimeoutSeconds" data-current-value="$ctrl.version.spec.readinessTimeoutSeconds" data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)" data-update-number-input-field="spec.readinessTimeoutSeconds" data-allow-empty-field="true" data-value-step="1" data-validation-is-required="false" data-min-value="1" data-is-disabled="$ctrl.disabled || $ctrl.isFunctionDeploying()"> </igz-number-input> </div> <div class="igz-col-100 build-field" data-ng-if="$ctrl.version.spec.runtime === \'java\'"> <div class="field-label">{{ \'functions:REPOSITORIES\' | i18next }}</div> <igz-validating-input-field data-field-type="textarea" data-input-name="repositories" data-input-value="$ctrl.build.runtimeAttributes.repositories" data-is-focused="false" data-read-only="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.buildForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_REPOSITORY_ON_EACH_LINE\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="runtimeAttributes.repositories" class="build-textarea-input" data-is-disabled="$ctrl.disabled"> </igz-validating-input-field> </div> <div class="igz-col-100 build-field" data-ng-if="$ctrl.version.spec.runtime === \'java\'"> <div class="field-label">{{ \'functions:DEPENDENCIES\' | i18next }}</div> <igz-validating-input-field data-field-type="textarea" data-input-name="dependencies" data-input-value="$ctrl.build.dependencies" data-is-focused="false" data-read-only="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.buildForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_DEPENDENCY_ON_EACH_LINE\' | i18next }}" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="dependencies" class="build-textarea-input" data-is-disabled="$ctrl.disabled"> </igz-validating-input-field> </div> <div class="igz-col-100 build-field build-checkboxes"> <div class="checkbox-block"> <input type="checkbox" class="small" id="noCache" data-ng-model="$ctrl.version.spec.build.noCache" data-ng-disabled="$ctrl.disabled || $ctrl.isFunctionDeploying()"> <label for="noCache" class="checkbox-inline">{{ \'functions:DISABLE_CACHE\' | i18next }}</label> <igz-more-info data-description="{{ \'functions:TOOLTIP.DISABLE_CACHE\' | i18next }}" data-trigger="click" data-default-tooltip-placement="top"> </igz-more-info> </div> <div class="checkbox-block" data-ng-if="$ctrl.platformKindIsKube"> <input type="checkbox" class="small" id="wait-readiness-timeout-before-failure" data-ng-model="$ctrl.version.spec.waitReadinessTimeoutBeforeFailure" data-ng-disabled="$ctrl.disabled || $ctrl.isFunctionDeploying()"> <label for="wait-readiness-timeout-before-failure" class="checkbox-inline">{{ \'functions:ALWAYS_WAIT_FOR_READINESS_TIMEOUT_EXPIRATION\' | i18next }}</label> <igz-more-info data-description="{{ \'functions:TOOLTIP.ALWAYS_WAIT_FOR_READINESS_TIMEOUT_EXPIRATION\' | i18next }}" data-trigger="click" data-default-tooltip-placement="top-left"> </igz-more-info> </div> </div> <div class="igz-col-100 build-field files-field"> <div class="uploading-files"> <div class="uploading-proccess-wrapper" data-ng-class="{\'one-file-uploaded\': $ctrl.file.uploaded || $ctrl.script.uploaded}" data-ng-if="$ctrl.getFileConfig().uploading && $ctrl.getFileConfig().name"> <div class="file-block uploading text-ellipsis" data-ng-class="{\'uploading-file\': $ctrl.file.uploading}"> <span class="{{$ctrl.getFileConfig().icon}}"></span> <button class="build-close-button"> <span class="ncl-icon-close"></span> </button> <span class="file-name"> {{$ctrl.getFileConfig().name}} </span> <div class="progress"> <div class="progress-bar" role="uib-progressbar" aria-valuemin="0" aria-valuemax="100" data-ng-style="{\'width\': $ctrl.getFileConfig().progress}"> </div> </div> </div> </div> <div class="uploaded-wrapper" data-ng-if="$ctrl.file.uploaded|| $ctrl.script.uploaded"> <div class="file-block uploaded text-ellipsis" data-ng-if="$ctrl.script.uploaded" data-ng-class="{\'one-file-uploaded\': $ctrl.file.uploaded}"> <span class="ncl-icon-script"></span> <span class="file-name"> {{$ctrl.script.name}} <span class="uploaded-file-directory">(/usr/bin/mybinary)</span> </span> <button class="build-close-button" data-ng-click="$ctrl.deleteFile(\'script\')"> <span class="ncl-icon-close"></span> </button> </div> <div class="file-block uploaded text-ellipsis uploaded-file" data-ng-if="$ctrl.file.uploaded"> <span class="ncl-icon-file"></span> <span class="file-name"> {{$ctrl.file.name}} <span class="uploaded-file-directory">(/usr/bin/mybinary)</span> </span> <button class="build-close-button" data-ng-click="$ctrl.deleteFile(\'file\')"> <span class="ncl-icon-close"></span> </button> </div> </div> </div> </div> </div> </form> </div> ');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('iguazio.dashboard-controls.templates');
+} catch (e) {
+  module = angular.module('iguazio.dashboard-controls.templates', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('nuclio/functions/version/version-configuration/tabs/version-configuration-basic-settings/version-configuration-basic-settings.tpl.html',
+    '<div class="ncl-version-configuration-basic-settings"> <div class="title">{{ \'common:BASIC_SETTINGS\' | i18next }}</div> <form name="$ctrl.basicSettingsForm" class="basic-settings-wrapper" novalidate> <div class="row enable-checkbox"> <input type="checkbox" class="small" id="enable" data-ng-disabled="$ctrl.isFunctionDeploying()" data-ng-model="$ctrl.enableFunction" data-ng-change="$ctrl.updateEnableStatus()"> <label for="enable" class="checkbox-inline">{{ \'common:ENABLED\' | i18next }}</label> </div> <div class="row" data-ng-if="$ctrl.isDemoMode()"> <div class="timeout-block"> <div class="label"> <div class="timeout-checkbox"> <input type="checkbox" class="small" id="timeout" data-ng-disabled="$ctrl.isFunctionDeploying()" data-ng-model="$ctrl.enableTimeout"> <label for="timeout" class="checkbox-inline">{{ \'functions:TIMEOUT\' | i18next }}</label> </div> </div> <div class="timeout-values"> <div class="inputs"> <igz-validating-input-field data-field-type="input" data-input-name="min" data-input-value="$ctrl.timeout.min" data-is-focused="false" data-is-disabled="!$ctrl.enableTimeout" data-read-only="$ctrl.isFunctionDeploying()" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="timeout.min" data-form-object="$ctrl.basicSettingsForm" data-validation-is-required="true" data-validation-rules="$ctrl.validationRules.integer" data-placeholder-text="{{ \'common:MIN\' | i18next }}..."> </igz-validating-input-field> <div class="values-label">{{ \'common:MIN\' | i18next }}</div> <igz-validating-input-field data-field-type="input" data-input-name="sec" data-input-value="$ctrl.timeout.sec" data-is-focused="false" data-is-disabled="!$ctrl.enableTimeout" data-read-only="$ctrl.isFunctionDeploying()" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="timeout.sec" data-form-object="$ctrl.basicSettingsForm" data-validation-is-required="true" data-validation-rules="$ctrl.validationRules.integer" data-placeholder-text="{{ \'functions:SEC\' | i18next }}..."> </igz-validating-input-field> <div class="values-label">{{ \'functions:SEC\' | i18next }}</div> </div> </div> </div> </div> <div class="row"> <div class="description-block"> <div class="label">{{ \'common:DESCRIPTION\' | i18next }}</div> <igz-validating-input-field data-field-type="input" data-input-name="description" data-input-value="$ctrl.version.spec.description" data-is-focused="false" data-read-only="$ctrl.isFunctionDeploying()" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.description" data-form-object="$ctrl.basicSettingsForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_DESCRIPTION\' | i18next }}"> </igz-validating-input-field> </div> </div> <div class="row"> <div class="account-block"> <div class="label">{{ \'functions:SERVICE_ACCOUNT\' | i18next }}</div> <igz-validating-input-field data-field-type="input" data-input-name="serviceAccount" data-read-only="$ctrl.isFunctionDeploying()" data-input-value="$ctrl.version.spec.serviceAccount" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.serviceAccount" data-form-object="$ctrl.basicSettingsForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.MY_SERVICE_ACCOUNT\' | i18next }}"> </igz-validating-input-field> </div> </div> <div class="row"> <div class="run-as-user-block"> <div class="label" data-ng-class="{asterisk: $ctrl.version.spec.securityContext.runAsGroup}"> {{ \'common:RUN_AS_USER\' | i18next }} </div> <igz-number-input data-allow-empty-field="true" data-validation-is-required="$ctrl.lodash.isNumber($ctrl.version.spec.securityContext.runAsGroup)" data-value-step="1" data-min-value="0" data-max-value="2147483647" data-is-disabled="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.basicSettingsForm" data-input-name="run_as_user" data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)" data-update-number-input-field="spec.securityContext.runAsUser" data-current-value="$ctrl.version.spec.securityContext.runAsUser"> </igz-number-input> </div> <div class="run-as-group-block"> <div class="label">{{ \'common:RUN_AS_GROUP\' | i18next }}</div> <igz-number-input data-allow-empty-field="true" data-value-step="1" data-min-value="0" data-max-value="2147483647" data-is-disabled="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.basicSettingsForm" data-input-name="run_as_group" data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)" data-update-number-input-field="spec.securityContext.runAsGroup" data-current-value="$ctrl.version.spec.securityContext.runAsGroup"> </igz-number-input> </div> <div class="fs-group-block" data-ng-if="!$ctrl.platformIsKube"> <div class="label">{{ \'common:FS_GROUP\' | i18next }}</div> <igz-number-input data-allow-empty-field="true" data-value-step="1" data-min-value="0" data-max-value="2147483647" data-is-disabled="$ctrl.isFunctionDeploying()" data-form-object="$ctrl.basicSettingsForm" data-input-name="fs_group" data-update-number-input-callback="$ctrl.inputValueCallback(newData, field)" data-update-number-input-field="spec.securityContext.fsGroup" data-current-value="$ctrl.version.spec.securityContext.fsGroup"> </igz-number-input> </div> </div> <div class="row"> <div class="logger-block"> <div class="logger-dropdown"> <span class="label">{{ \'functions:LOGGER_LEVEL\' | i18next }}</span> <igz-default-dropdown data-selected-item="$ctrl.version.spec.loggerSinks[0].level" data-select-property-only="id" data-values-array="$ctrl.logLevelValues" data-item-select-callback="$ctrl.setPriority(item)" data-read-only="$ctrl.isFunctionDeploying()" data-enable-overlap="true" data-prevent-drop-up="true"> </igz-default-dropdown> </div> <div class="logger-input" data-ng-if="$ctrl.isDemoMode()"> <span class="label">{{ \'functions:LOGGER_DESTINATION\' | i18next }}</span> <igz-validating-input-field data-field-type="input" data-input-name="arguments" data-read-only="$ctrl.isFunctionDeploying()" data-input-value="$ctrl.version.spec.loggerSinks[0].sink" data-update-data-callback="$ctrl.inputValueCallback(newData, field)" data-update-data-field="spec.loggerSinks[0].sink" data-form-object="$ctrl.basicSettingsForm" data-placeholder-text="{{ \'functions:PLACEHOLDER.ENTER_DESTINATION\' | i18next }}"> </igz-validating-input-field> </div> </div> </div> </form> </div> ');
 }]);
 })();
 
@@ -27304,6 +27316,18 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('nuclio/functions/version/version-configuration/tabs/version-configuration-logging/version-configuration-logging.tpl.html',
     '<div class="ncl-version-configuration-logging"> <div class="title">{{ \'functions:LOGGING\' | i18next }}</div> <div class="row"> <form name="$ctrl.loggingForm" class="logging-wrapper" novalidate></form> </div> </div> ');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('iguazio.dashboard-controls.templates');
+} catch (e) {
+  module = angular.module('iguazio.dashboard-controls.templates', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('nuclio/functions/version/version-configuration/tabs/version-configuration-labels/version-configuration-labels.tpl.html',
+    '<div class="ncl-version-configuration-labels"> <div class="title"> <span>{{ \'common:LABELS\' | i18next }}</span> <igz-more-info data-description="{{$ctrl.tooltip}}" data-trigger="click" data-is-html-enabled="true"> </igz-more-info> </div> <form name="$ctrl.labelsForm" class="labels-wrapper" novalidate> <div data-ng-if="$ctrl.labels.length > 0" class="table-headers"> <div class="key-header"> {{ \'common:KEY\' | i18next }} <igz-more-info data-description="{{$ctrl.keyTooltip}}" data-trigger="click" data-is-html-enabled="true"> </igz-more-info> </div> <div class="value-header"> {{ \'common:VALUE\' | i18next }} </div> </div> <div class="igz-scrollable-container scrollable-labels" data-ng-scrollbars data-igz-ng-scrollbars-config="{{$ctrl.igzScrollConfig}}" data-ng-scrollbars-config="$ctrl.scrollConfig"> <div class="table-body" data-ng-repeat="label in $ctrl.labels"> <ncl-key-value-input class="new-label-input" data-row-data="label" data-item-index="$index" data-use-type="false" data-validation-rules="$ctrl.validationRules" data-is-disabled="$ctrl.isLabelsDisabled() || $ctrl.isFunctionDeploying()" data-action-handler-callback="$ctrl.handleAction(actionType, index)" data-change-data-callback="$ctrl.onChangeData(newData, index)" data-submit-on-fly="true" data-key-tooltip="$ctrl.isLabelsDisabled() ? $ctrl.addNewLabelTooltip : \'\'" data-value-tooltip="$ctrl.isLabelsDisabled() ? $ctrl.addNewLabelTooltip : \'\'"> </ncl-key-value-input> </div> </div> <div class="igz-create-button create-label-button" data-ng-class="{\'disabled\': $ctrl.isLabelsDisabled() || $ctrl.isFunctionDeploying()}" data-ng-click="$ctrl.addNewLabel($event)" data-uib-tooltip="{{$ctrl.isLabelsDisabled() ? $ctrl.addNewLabelTooltip : \'\'}}" data-tooltip-append-to-body="true" data-tooltip-placement="right" data-tooltip-popup-delay="100"> <span class="igz-icon-add-round"></span> {{ \'functions:ADD_LABEL\' | i18next }} </div> </form> </div> ');
 }]);
 })();
 
@@ -27340,30 +27364,6 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('nuclio/functions/version/version-configuration/tabs/version-configuration-volumes/version-configuration-volumes.tpl.html',
     '<div class="ncl-version-configuration-volumes"> <div class="title"> <span>{{ \'functions:VOLUMES\' | i18next }}</span> <igz-more-info data-description="{{ \'functions:TOOLTIP.VOLUMES\' | i18next }}" data-trigger="click"> </igz-more-info> </div> <form name="$ctrl.volumesForm" class="volumes-wrapper" novalidate> <div class="ncl-version-volume"> <div class="common-table"> <div data-ng-if="$ctrl.volumes.length > 0" class="common-table-header item-header"> <div class="common-table-cell item-name"> {{ \'common:NAME\' | i18next }} </div> <div class="common-table-cell item-class"> {{ \'common:TYPE\' | i18next }} </div> <div class="common-table-cell item-info"> {{ \'functions:MOUNT_PATH_PARAMS\' | i18next }} </div> </div> <div class="common-table-body"> <div class="igz-scrollable-container scrollable-volumes" data-ng-scrollbars data-igz-ng-scrollbars-config="{{$ctrl.igzScrollConfig}}" data-ng-scrollbars-config="$ctrl.scrollConfig"> <ncl-collapsing-row data-ng-repeat="volume in $ctrl.volumes" data-item="volume" data-item-index="$index" data-type="volume" data-read-only="$ctrl.isFunctionDeploying()" data-action-handler-callback="$ctrl.handleAction(actionType, selectedItem, index)"> <ncl-edit-item class="common-table-cells-container edit-volume-row" data-item="volume" data-class-list="$ctrl.classList" data-class-placeholder="{{ \'functions:PLACEHOLDER.SELECT_TYPE\' | i18next }}" data-type="volume" data-read-only="$ctrl.isFunctionDeploying()" data-validation-rules="$ctrl.validationRules" data-max-lengths="$ctrl.maxLengths" data-on-submit-callback="$ctrl.editVolumeCallback(item)"> </ncl-edit-item> </ncl-collapsing-row> </div> </div> </div> </div> <div class="igz-create-button create-volume-button" data-ng-class="{\'disabled\': $ctrl.isFunctionDeploying()}" data-ng-click="$ctrl.createVolume($event)"> <span class="igz-icon-add-round"></span> {{ \'functions:ADD_VOLUME\' | i18next }} </div> </form> </div> ');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('iguazio.dashboard-controls.templates');
-} catch (e) {
-  module = angular.module('iguazio.dashboard-controls.templates', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/functions/version/version-code/function-event-pane/test-events-logs/test-events-logs.tpl.html',
-    '<div class="ncl-test-events-logs"> <div class="functional-buttons" data-ng-if="$ctrl.logs.length > 0"> <div class="ncl-icon-expand-all" data-ng-click="$ctrl.expandAllRows(true)" data-uib-tooltip="{{ \'functions:EXPAND_ALL\' | i18next }}" data-tooltip-popup-delay="300" data-tooltip-placement="left" data-tooltip-append-to-body="true"> </div> <div class="ncl-icon-collapse-all" data-ng-click="$ctrl.expandAllRows(false)" data-uib-tooltip="{{ \'functions:COLLAPSE_ALL\' | i18next }}" data-tooltip-popup-delay="300" data-tooltip-placement="left" data-tooltip-append-to-body="true"> </div> </div> <div data-ng-repeat="log in $ctrl.logs track by $index"> <div class="collapsed-row text-ellipsis" data-ng-if="log.ui.collapsed"> <span class="igz-icon-right" data-ng-click="$ctrl.collapseRow(log, false)"></span> <div class="level-icon {{$ctrl.getLevelIconClass(log)}}"></div> <span class="date">{{log.time | date: "EEE, MMM d, yyyy, HH:mm:ss\'GMT\'" : "+0000"}}</span> <div class="message text-ellipsis">{{log.message}}</div> <div class="ncl-icon-parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"></div> </div> <div class="expanded-row" data-ng-if="!log.ui.collapsed"> <div class="header"> <span class="igz-icon-down" data-ng-click="$ctrl.collapseRow(log, true)"></span> <div class="level-icon {{$ctrl.getLevelIconClass(log)}}"></div> <span class="date">{{log.time | date: "EEE, MMM d, yyyy, HH:mm:ss\'GMT\'" : "+0000"}}</span> <div class="ncl-icon-parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"></div> </div> <div class="expanded-body"> <div class="message">{{log.message}}</div> <div class="error" data-ng-if="log.err">{{log.err}}</div> <div class="parameters" data-ng-if="$ctrl.hasAdditionalParameters(log)"> <span class="parameters-header"> {{ \'common:PARAMETERS\' | i18next }} </span> <div data-ng-repeat="(key, value) in $ctrl.getParameters(log)"> <div class="text-ellipsis labels">{{key}}:</div> <div class="text-ellipsis values">{{value}}</div> </div> </div> </div> </div> </div> <div class="no-logs" data-ng-if="$ctrl.logs.length === 0"> {{ \'functions:NO_LOGS_HAVE_BEEN_FOUND\' | i18next }} </div> </div> ');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('iguazio.dashboard-controls.templates');
-} catch (e) {
-  module = angular.module('iguazio.dashboard-controls.templates', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('nuclio/functions/version/version-code/function-event-pane/test-events-navigation-tabs/test-events-navigation-tabs.tpl.html',
-    '<div class="ncl-test-events-navigation-tabs"> <div class="test-events-navigation-tab" data-ng-repeat="item in $ctrl.tabItems" data-ng-click="$ctrl.changeActiveTab(item)" data-ng-class="{\'active\': $ctrl.isActiveTab(item)}"> {{item.tabName | uppercase}} <span class="badge" data-ng-if="item.badge">{{item.badge}}</span> </div> <igz-default-dropdown data-ng-if="$ctrl.selectedLogLevel" data-values-array="$ctrl.logLevelValues" data-select-property-only="id" data-selected-item="$ctrl.selectedLogLevel" data-item-select-callback="$ctrl.onChangeLogLevel({selectedLogLevel: item})" data-enable-overlap="true"> </igz-default-dropdown> </div> ');
 }]);
 })();
 
