@@ -391,7 +391,8 @@ such restriction.
          */
         function generateFilterQuery() {
             var levels = lodash.chain(ctrl.filter.level).pickBy().keys().join(' OR ').value();
-            var queries = ['system-id:"' + ConfigService.systemId + '"', '_exists_:nuclio'];
+            var projectName = lodash.get(ctrl.version, ['metadata', 'labels', 'nuclio.io/project-name']);
+            var queries = ['system-id:"' + ConfigService.systemId + '"', '_exists_:nuclio', 'nuclio.project_name.keyword:' + projectName];
 
             if (!lodash.isEmpty(ctrl.version.metadata.name)) {
                 queries.push('name:' + ctrl.version.metadata.name);

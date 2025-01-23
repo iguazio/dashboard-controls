@@ -31,6 +31,7 @@ such restriction.
 
         ctrl.getLogLevel = getLogLevel;
         ctrl.getLogName = getLogName;
+        ctrl.getLogTrimmedName = getLogTrimmedName;
 
         //
         // Public methods
@@ -45,13 +46,19 @@ such restriction.
         }
 
         /**
-         * Get log name display value
-         * @returns {string} the log name display value
+         * Get log full name
+         * @returns {string} the log name
          */
         function getLogName() {
-            var name = lodash.get(ctrl.entryItem, 'kubernetes.pod.name', lodash.get(ctrl.entryItem, 'name', ''));
+            return lodash.get(ctrl.entryItem, 'kubernetes.pod.name', lodash.get(ctrl.entryItem, 'name', ''));
+        }
 
-            return lodash.padEnd(name.substring(0, 25), 25);
+        /**
+         * Get log trimmed name display value
+         * @returns {string} the log name display value
+         */
+        function getLogTrimmedName() {
+            return lodash.padEnd(getLogName().substring(0, 25), 25);
         }
     }
 }());
