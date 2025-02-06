@@ -368,8 +368,7 @@ such restriction.
             if (ctrl.logs.length > 0) {
                 ctrl.lastEntryTimestamp = ctrl.logs[0].time;
 
-                if (ctrl.logs.replicas && (lodash.isEmpty(initialReplicas) ||
-                    initialReplicas.length !== ctrl.replicasList.length)) {
+                if (ctrl.logs.replicas) {
                     ctrl.replicasList = ctrl.logs.replicas.map(function (replica) {
                         return {
                             label: replica,
@@ -392,10 +391,11 @@ such restriction.
         function generateFilterQuery() {
             var levels = lodash.chain(ctrl.filter.level).pickBy().keys().join(' OR ').value();
             var projectName = lodash.get(ctrl.version, ['metadata', 'labels', 'nuclio.io/project-name']);
-            var queries = ['system-id:"' + ConfigService.systemId + '"', '_exists_:nuclio', 'nuclio.project_name.keyword:' + projectName];
+            var projectFilter = '(nuclio.project_name.keyword:' + projectName + ' OR nuclio.project_name:' + projectName + ')'
+            var queries = ['system-id:"' + ConfigService.systemId + '"', '_exists_:nuclio', projectFilter];
 
             if (!lodash.isEmpty(ctrl.version.metadata.name)) {
-                queries.push('name:' + ctrl.version.metadata.name);
+                queries.push('(name.keyword:' + ctrl.version.metadata.name + ' OR name:' + ctrl.version.metadata.name + ')');
             }
 
             if (ctrl.selectedReplicas.length && ctrl.selectedReplicas.length !== initialReplicas.length) {
