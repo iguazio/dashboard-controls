@@ -37,6 +37,7 @@
          * @param {Object} queryParams - additional parameters
          * @param {string} queryParams.query - search query text
          * @param {string} queryParams.timeFrame - selected time period to show results for
+         * @param {string} queryParams.filterName - selected function name
          * @param {string} [queryParams.lastEntryTimestamp] - time stamp of the last item in a list, used with auto
          * @param {boolean} withReplicas - determines if replicas should be requested
          *     update
@@ -92,6 +93,14 @@
                         }
                     }
                 };
+            }
+
+            if (queryParams.filterName) {
+                config.body.query.bool.should = [
+                    { term: { name: queryParams.filterName } },
+                    { term: { 'name.keyword': queryParams.filterName } }
+                ];
+                config.body.query.bool.minimum_should_match = 1;
             }
 
             // If query text was set, add proper items to config
@@ -305,6 +314,14 @@
                     ]
                 }
             };
+
+            if (queryParams.filterName) {
+                config.body.query.bool.should = [
+                    { term: { name: queryParams.filterName } },
+                    { term: { 'name.keyword': queryParams.filterName } }
+                ];
+                config.body.query.bool.minimum_should_match = 1;
+            }
 
             return ElasticsearchService.search(config);
         }
