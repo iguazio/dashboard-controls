@@ -47,6 +47,7 @@ such restriction.
         };
 
         ctrl.$onInit = onInit;
+        ctrl.$onChanges = onChanges;
 
         ctrl.checkIsErrorState = checkIsErrorState;
         ctrl.onRowCollapse = onRowCollapse;
@@ -62,6 +63,16 @@ such restriction.
             ctrl.isFunctionDeploying = lodash.partial(FunctionsService.isFunctionDeploying, ctrl.version);
 
             initEnrichedNodeSelectors();
+        }
+
+        /**
+         * On changes hook method
+         * @param {Object} changes
+         */
+        function onChanges(changes) {
+            if (lodash.has(changes, 'version')) {
+                initEnrichedNodeSelectors();
+            }
         }
 
         //
