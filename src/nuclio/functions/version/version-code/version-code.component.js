@@ -225,7 +225,8 @@ such restriction.
         function onChanges(changes) {
             if (angular.isDefined(changes.version)) {
                 ctrl.runtimeArray = getRuntimes();
-                ctrl.selectedRuntime = lodash.find(ctrl.runtimeArray, ['id', ctrl.version.spec.runtime]);
+                ctrl.selectedRuntime = lodash.defaultTo(lodash.find(ctrl.runtimeArray, ['id', ctrl.version.spec.runtime]),
+                                                        lodash.find(ctrl.runtimeArray, ['id', 'python']));
                 ctrl.editorLanguage = ctrl.selectedRuntime.language;
 
                 var sourceCode = lodash.get(ctrl.version, 'spec.build.functionSourceCode', '');
@@ -492,6 +493,12 @@ such restriction.
                 {
                     id: 'python:3.11',
                     name: 'Python 3.11',
+                    sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
+                    visible: true
+                },
+                {
+                    id: 'python:3.12',
+                    name: 'Python 3.12',
                     sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
                     visible: true
                 },
