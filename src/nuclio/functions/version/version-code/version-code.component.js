@@ -225,8 +225,22 @@ such restriction.
         function onChanges(changes) {
             if (angular.isDefined(changes.version)) {
                 ctrl.runtimeArray = getRuntimes();
-                ctrl.selectedRuntime = lodash.defaultTo(lodash.find(ctrl.runtimeArray, ['id', ctrl.version.spec.runtime]),
-                                                        lodash.find(ctrl.runtimeArray, ['id', 'python']));
+                ctrl.selectedRuntime = lodash.find(ctrl.runtimeArray, ['id', ctrl.version.spec.runtime]);
+
+                if (!ctrl.selectedRuntime) {
+                    var customRuntime = {
+                        id: ctrl.version.spec.runtime,
+                        ext: 'py',
+                        name: lodash.capitalize(ctrl.version.spec.runtime),
+                        language: 'python',
+                        sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
+                        visible: true
+                    };
+
+                    ctrl.runtimeArray.push(customRuntime);
+                    ctrl.selectedRuntime = customRuntime;
+                }
+
                 ctrl.editorLanguage = ctrl.selectedRuntime.language;
 
                 var sourceCode = lodash.get(ctrl.version, 'spec.build.functionSourceCode', '');
