@@ -404,12 +404,6 @@ such restriction.
                     visible: true
                 },
                 {
-                    id: 'python:3.12',
-                    name: 'Python 3.12',
-                    sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
-                    visible: true
-                },
-                {
                     id: 'dotnetcore',
                     name: '.NET Core ' + $i18next.t('functions:TECH_PREVIEW_LABEL', {lng: lng}),
                     visible: true
