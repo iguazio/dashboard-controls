@@ -51,7 +51,7 @@
         "gulp-rev-collector": "^1.0.2",
         "gulp-uglify": "^3.0.2",
         "i18next": "^21.6.14",
-        "jquery": "*",
+        "jquery": ">=3.7.1",
         "jquery-ui": "1.13.2",
         "js-base64": "^2.4.8",
         "lodash": "^4.17.21",
