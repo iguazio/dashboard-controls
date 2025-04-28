@@ -140,7 +140,7 @@
     "EXTERNAL_INVOCATION_URLS": "External invocation URLs",
     "EXECUTION_LOG": "Execution log",
     "FAILED_TO_DEPLOY": "Failed to deploy",
-    "FUNCTION_NAME_IS_USED_WARNING": "The specified function name is already used by a function in another project. To use it for a new function you must first delete the existing function.",
+    "FUNCTION_NAME_IS_USED_WARNING": "The function name you specified is already in use. Function names must be unique across projects. Choose a different name.",
     "FUNCTIONS_NOT_FOUND": "There are currently no functions, you can create a function by pressing ‘New Function’",
     "GET_STARTED_WITH_YOUR_PROJECT": "Get started with your project.",
     "GO_TO_EXISTING_FUNCTION": "Go to existing function",
