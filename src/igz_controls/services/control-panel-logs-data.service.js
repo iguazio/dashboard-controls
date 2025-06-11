@@ -6,7 +6,6 @@
 
     function ControlPanelLogsDataService($q, lodash, ElasticsearchService) {
         return {
-            collectLogs: collectLogs,
             entriesPaginated: search,
             logsPaginated: logsWidthReplicas
         };
@@ -148,58 +147,6 @@
 
                     return $q.reject(err);
                 });
-        }
-
-        /**
-         * Collects all the logs using chunks, and saved them as an array of strings.
-         * @param {Object} queryParams - additional parameters
-         * @param {string} queryParams.query - search query text
-         * @param {string} queryParams.timeFrame - selected time period to show results for
-         * @returns {Promise.<Array>} a promise resolving to an array of logs.
-         */
-        function collectLogs(queryParams) {
-            var keepAlive = '5m';
-            var size = 10000;
-            var downloadLogsData = [];
-            var MAX_DOWNLOAD_LOGS = 100000;
-
-            return createSearch(size, keepAlive, queryParams).then(function (response) {
-                var hits = response.hits.hits;
-
-                if (hits.length > 0) {
-                    downloadLogsData = downloadLogsData.concat(prepareLogs(hits));
-
-                    return getNextChunk(response._scroll_id);
-                }
-            });
-
-            function getNextChunk(scroll) {
-                return getNextScrollLogs(keepAlive, scroll)
-                    .then(function (response) {
-                        var hits = response.hits.hits;
-
-                        if (hits.length > 0 && downloadLogsData.length < MAX_DOWNLOAD_LOGS - size) {
-                            downloadLogsData = downloadLogsData.concat(prepareLogs(hits));
-
-                            return getNextChunk(response._scroll_id);
-                        } else {
-                            return downloadLogsData;
-                        }
-                    }).catch(function (error) {
-                        throw error;
-                    });
-            }
-
-            function prepareLogs(logs) {
-                return logs.map(function (logData) {
-                    var log = lodash.get(logData, '_source', {});
-                    var level = log.level ? '  (' + log.level + ')  ' : '';
-                    var name = lodash.get(log, 'kubernetes.pod.name', lodash.get(log, 'name', ''));
-
-                    return log['@timestamp'] + '  ' + name + level +
-                        lodash.get(log, 'message', '') + '  ' + JSON.stringify(lodash.get(log, 'more', {}));
-                });
-            }
         }
 
         /**

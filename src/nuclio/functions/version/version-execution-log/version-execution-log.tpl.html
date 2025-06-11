@@ -28,8 +28,7 @@
                                       data-type="control"
                                       data-rule-type="message"
                                       data-search-states="$ctrl.searchStates"
-                                      data-search-callback="$ctrl.onQueryChanged(searchQuery, ruleType)"
-                                      data-on-search-submit="$ctrl.applyFilters()">
+                                      data-search-callback="$ctrl.onQueryChanged(searchQuery, ruleType)">
                     </igz-search-input>
                 </div>
 
@@ -125,8 +124,7 @@
                             <div class="actions-bar-left">
                                 <igz-action-item-refresh
                                         data-is-disabled="$ctrl.isFunctionDeploying()"
-
-                                        data-refresh="$ctrl.searchWithParams($ctrl.page.number, $ctrl.page.size)">
+                                        data-refresh="$ctrl.refreshLogs()">
                                 </igz-action-item-refresh>
                             </div>
                             <div class="actions-bar-left">

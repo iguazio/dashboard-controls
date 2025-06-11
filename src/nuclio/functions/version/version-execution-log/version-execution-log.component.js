@@ -28,16 +28,12 @@ such restriction.
             controller: NclVersionExecutionLogController
         });
 
-    function NclVersionExecutionLogController(lodash, $interval, i18next, $i18next, $rootScope, moment, ControlPanelLogsDataService,
-                                              ConfigService, ExportService, LoginService, PaginationService) {
+    function NclVersionExecutionLogController(lodash, moment, $interval, i18next, $i18next, $rootScope, ExecutionLogsDataService,
+                                              ExportService, LoginService, PaginationService) {
         var ctrl = this;
         var lng = i18next.language;
 
         var refreshInterval = null;
-        var initialTimeRange = {
-            from: null,
-            to: null
-        };
         var initialDatePreset = '7d';
         var initialReplicas = [];
         var defaultFilter = {
@@ -50,12 +46,12 @@ such restriction.
                 error: false
             }
         };
+        var projectName = '';
 
         ctrl.downloadButtonIsDisabled = false;
         ctrl.isSplashShowed = {
             value: false
         };
-        ctrl.lastEntryTimestamp = null;
         ctrl.logs = {};
         ctrl.replicasList = [];
         ctrl.filter = {};
@@ -69,7 +65,11 @@ such restriction.
         };
         ctrl.datePreset = initialDatePreset;
         ctrl.logsAreDownloading = false;
-        ctrl.timeRange = initialTimeRange;
+        ctrl.timeRange = {
+            from: null,
+            to: null,
+            sort: 'desc'
+        };
         ctrl.searchStates = {};
         ctrl.selectedReplicas = [];
         ctrl.isFiltersShowed = {
@@ -187,11 +187,27 @@ such restriction.
             defaultFilter.name = ctrl.version.metadata.name;
             ctrl.filter = lodash.cloneDeep(defaultFilter);
 
-            PaginationService.addPagination(ctrl, 'logs', 'ControlPanelLogsDataService', onChangePageCallback, true);
+            projectName = lodash.get(ctrl.version, ['metadata', 'labels', 'nuclio.io/project-name']);
 
-            ctrl.page.size = ctrl.perPageValues[0].id;
+            PaginationService.addPagination(ctrl, 'logs', 'ExecutionLogsDataService', onChangePageCallback, true);
 
-            applyFilters();
+            ctrl.timeRange = getInitialTimeRange();
+
+            ctrl.isSplashShowed.value = true;
+            ExecutionLogsDataService.getReplicasList(projectName, ctrl.version.metadata.name, {timeFilter: ctrl.timeRange}).then(function (replicas) {
+                ctrl.replicasList = replicas.map(function (replica) {
+                    return {
+                        label: replica,
+                        id: replica,
+                        value: replica,
+                        checked: true
+                    }
+                });
+                ctrl.selectedReplicas = angular.copy(replicas);
+                initialReplicas = replicas;
+
+                applyFilters();
+            });
         }
 
         /**
@@ -211,7 +227,6 @@ such restriction.
         function applyFilters() {
             stopAutoUpdate();
             calcActiveFilters();
-            generateFilterQuery();
             searchWithParams(0, ctrl.page.size);
         }
 
@@ -222,7 +237,8 @@ such restriction.
             stopAutoUpdate();
 
             ctrl.downloadButtonIsDisabled = true;
-            return ControlPanelLogsDataService.collectLogs(queryParams())
+
+            return ExecutionLogsDataService.collectLogs(queryParams())
                 .then(function (response) {
                     ExportService.exportLogs(response, ctrl.version.metadata.name);
                 }).finally(function () {
@@ -273,8 +289,7 @@ such restriction.
             ctrl.timeRange = lodash.mapValues(dateTimeRange, function (range) {
                 return new Date(range).toISOString();
             });
-
-            ctrl.lastEntryTimestamp = null;
+            ctrl.timeRange.sort = 'desc';
         }
 
         /**
@@ -283,11 +298,30 @@ such restriction.
         function refreshLogs() {
             startAutoUpdate();
 
-            ControlPanelLogsDataService.logsPaginated(ctrl.page.number, ctrl.page.size, queryParams())
-                .then(function (logs) {
-                    if (logs.length > 0) {
-                        ctrl.logs = lodash.cloneDeep(logs);
-                    }
+            ctrl.isSplashShowed.value = true
+
+            ExecutionLogsDataService.getReplicasList(projectName, ctrl.version.metadata.name, {timeFilter: ctrl.timeRange})
+                .then(function (replicas) {
+                    ctrl.replicasList = replicas.map(function (replica) {
+                        return {
+                            label: replica,
+                            id: replica,
+                            value: replica,
+                            checked: true
+                        }
+                    });
+
+                    initialReplicas = replicas;
+
+                    return ExecutionLogsDataService.logsPaginated(ctrl.page.number, ctrl.page.size, queryParams())
+                        .then(function (logs) {
+                            if (logs.length > 0) {
+                                ctrl.logs = lodash.cloneDeep(logs);
+                            }
+                        });
+                })
+                .finally(function () {
+                    ctrl.isSplashShowed.value = false;
                 });
         }
 
@@ -296,7 +330,7 @@ such restriction.
          */
         function resetFilters() {
             ctrl.applyIsDisabled = false;
-            ctrl.timeRange = initialTimeRange;
+            ctrl.timeRange = getInitialTimeRange();
             ctrl.datePreset = initialDatePreset;
             ctrl.selectedReplicas = initialReplicas;
 
@@ -336,7 +370,7 @@ such restriction.
                 return;
             }
 
-            ControlPanelLogsDataService.logsPaginated(ctrl.page.number, ctrl.page.size, queryParamsAutoUpdate())
+            ExecutionLogsDataService.logsPaginated(ctrl.page.number, ctrl.page.size, queryParams())
                 .then(function (logs) {
                     if (logs.length > 0) {
                         ctrl.logs = lodash.cloneDeep(logs);
@@ -365,54 +399,7 @@ such restriction.
          * Updates latest timestamp when new data received and generates replicas list
          */
         function onChangePageCallback() {
-            if (ctrl.logs.length > 0) {
-                ctrl.lastEntryTimestamp = ctrl.logs[0].time;
-
-                if (ctrl.logs.replicas) {
-                    ctrl.replicasList = ctrl.logs.replicas.map(function (replica) {
-                        return {
-                            label: replica,
-                            id: replica,
-                            value: replica,
-                            checked: true
-                        }
-                    });
-                    ctrl.selectedReplicas = angular.copy(ctrl.logs.replicas);
-                    initialReplicas = ctrl.logs.replicas;
-                }
-            }
-
             startAutoUpdate();
-        }
-
-        /**
-         * Generates query string from all filters
-         */
-        function generateFilterQuery() {
-            var levels = lodash.chain(ctrl.filter.level).pickBy().keys().join(' OR ').value();
-            var projectName = lodash.get(ctrl.version, ['metadata', 'labels', 'nuclio.io/project-name']);
-            var projectFilter = '(nuclio.project_name.keyword:' + projectName + ' OR nuclio.project_name:' + projectName + ')';
-            var queries = ['system-id:"' + ConfigService.systemId + '"', '_exists_:nuclio', projectFilter];
-
-            if (ctrl.selectedReplicas.length && ctrl.selectedReplicas.length !== initialReplicas.length) {
-                var replicas = ctrl.selectedReplicas.join(' OR ');
-
-                queries.push('kubernetes.pod.name:(' + replicas + ')');
-            }
-
-            if (!lodash.isEmpty(ctrl.filter.message)) {
-                // Escape reserved characters: + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /
-                var escapedMessage = ctrl.filter.message.replace(/[+\-=&|!(){}[\]^"~*?:\\/]/g, '\\$&')
-                    .replace(/<|>/g, '');
-                queries.push('(message:' + escapedMessage + ' OR more:' + escapedMessage + ')');
-            }
-
-            if (!lodash.isEmpty(levels)) {
-                queries.push('level:(' + levels + ')');
-            }
-
-            ctrl.filterQuery = lodash.join(queries, ' AND ');
-            ctrl.filterName = ctrl.version.metadata.name;
         }
 
         /**
@@ -421,21 +408,16 @@ such restriction.
          */
         function queryParams() {
             return {
-                query: ctrl.filterQuery,
-                filterName: ctrl.filterName,
-                timeFrame: ctrl.datePreset,
-                customTimeFrame: ctrl.timeRange
+                functionName: ctrl.version.metadata.name,
+                projectName,
+                filters: {
+                    substring: ctrl.filter.message.replace(/[+\-=&|!(){}[\]^"~*?:\\/]/g, '\\$&')
+                        .replace(/<|>/g, ''),
+                    logLevels: lodash.chain(ctrl.filter.level).pickBy().keys().value(),
+                    replicaNames: ctrl.selectedReplicas,
+                    timeFilter: ctrl.timeRange
+                }
             };
-        }
-
-        /**
-         * Generates query params for auto update request
-         * @returns {Object}
-         */
-        function queryParamsAutoUpdate() {
-            return lodash.defaults(queryParams(), {
-                lastEntryTimestamp: ctrl.lastEntryTimestamp
-            });
         }
 
         /**
@@ -465,6 +447,18 @@ such restriction.
                 $interval.cancel(refreshInterval);
                 refreshInterval = null;
             }
+        }
+
+        /**
+         * Provides initial time range
+         */
+        function getInitialTimeRange() {
+            var weekDate = ctrl.customDatePresets['7d'].getRange();
+
+            return {
+                from: weekDate.from.toISOString(),
+                sort: 'desc'
+            };
         }
     }
 }());
