@@ -108,7 +108,7 @@
                 'Content-Type': 'application/json',
                 'x-nuclio-project-name': projectId
             };
-            var requestParams = Object.assign(queryParams, {includeOffline: true});
+            var requestParams = Object.assign(queryParams, {includeOffline: queryParams.includeOffline});
 
             if (queryParams.timeFilter) {
                 queryParams.timeFilter = {
@@ -122,7 +122,7 @@
                 .one('replicas')
                 .get(requestParams, headers)
                 .then(function (response) {
-                    return response.replicas.names.concat(response.offlineReplicas.names);
+                    return response.plain();
                 })
                 .catch(function (error) {
                     var errorMessages = {
