@@ -33,6 +33,7 @@ such restriction.
         var ctrl = this;
         var lng = i18next.language;
 
+        var allReplicas = [];
         var refreshInterval = null;
         var initialDatePreset = '7d';
         var initialReplicas = [];
@@ -47,7 +48,10 @@ such restriction.
             }
         };
         var projectName = '';
+        var groupedReplicas = {};
 
+        ctrl.excludeOffline = false;
+        ctrl.excludeOfflineIsDisabled = false;
         ctrl.downloadButtonIsDisabled = false;
         ctrl.isSplashShowed = {
             value: false
@@ -168,6 +172,7 @@ such restriction.
         ctrl.applyFilters = applyFilters;
         ctrl.downloadLogFiles = downloadLogFiles;
         ctrl.onCheckboxChange = onCheckboxChange;
+        ctrl.onExcludeOfflineChange = onExcludeOfflineChange;
         ctrl.onRefreshRateChange = onRefreshRateChange;
         ctrl.onTimeRangeChange = onTimeRangeChange;
         ctrl.onQueryChanged = onQueryChanged;
@@ -194,8 +199,16 @@ such restriction.
             ctrl.timeRange = getInitialTimeRange();
 
             ctrl.isSplashShowed.value = true;
-            ExecutionLogsDataService.getReplicasList(projectName, ctrl.version.metadata.name, {timeFilter: ctrl.timeRange}).then(function (replicas) {
-                ctrl.replicasList = replicas.map(function (replica) {
+            ExecutionLogsDataService.getReplicasList(projectName, ctrl.version.metadata.name, {
+                timeFilter: ctrl.timeRange,
+                includeOffline: true
+            }).then(function (replicas) {
+                groupedReplicas = replicas;
+                allReplicas = lodash.get(groupedReplicas, 'replicas.names') ?
+                    groupedReplicas.replicas.names.concat(replicas.offlineReplicas.names) :
+                    lodash.get(groupedReplicas, 'names', []);
+                ctrl.excludeOfflineIsDisabled = lodash.get(groupedReplicas, 'offlineReplicas.names', []).length === 0;
+                ctrl.replicasList = allReplicas.map(function (replica) {
                     return {
                         label: replica,
                         id: replica,
@@ -203,8 +216,8 @@ such restriction.
                         checked: true
                     }
                 });
-                ctrl.selectedReplicas = angular.copy(replicas);
-                initialReplicas = replicas;
+                initialReplicas = allReplicas;
+                ctrl.selectedReplicas = angular.copy(allReplicas);
 
                 applyFilters();
             });
@@ -265,6 +278,33 @@ such restriction.
         }
 
         /**
+         * Triggered when exclude offline checkbox was changed
+         */
+        function onExcludeOfflineChange() {
+            if (ctrl.excludeOffline) {
+                ctrl.replicasList = groupedReplicas.replicas.names.map(function (replica) {
+                    return {
+                        label: replica,
+                        id: replica,
+                        value: replica,
+                        checked: true
+                    }
+                });
+                ctrl.selectedReplicas = angular.copy(groupedReplicas.replicas.names);
+            } else {
+                ctrl.replicasList = allReplicas.map(function (replica) {
+                    return {
+                        label: replica,
+                        id: replica,
+                        value: replica,
+                        checked: true
+                    }
+                });
+                ctrl.selectedReplicas = angular.copy(allReplicas);
+            }
+        }
+
+        /**
          * Handles Refresh Rate dropdown change
          * @param {Object} item - new item
          * @param {boolean} isItemChanged - was value changed or not
@@ -302,7 +342,12 @@ such restriction.
 
             ExecutionLogsDataService.getReplicasList(projectName, ctrl.version.metadata.name, {timeFilter: ctrl.timeRange})
                 .then(function (replicas) {
-                    ctrl.replicasList = replicas.map(function (replica) {
+                    groupedReplicas = replicas;
+                    allReplicas = lodash.get(groupedReplicas, 'replicas.names') ?
+                        groupedReplicas.replicas.names.concat(replicas.offlineReplicas.names) :
+                        lodash.get(groupedReplicas, 'names', []);
+                    ctrl.excludeOfflineIsDisabled = lodash.get(groupedReplicas, 'offlineReplicas.names', []).length === 0;
+                    ctrl.replicasList = allReplicas.map(function (replica) {
                         return {
                             label: replica,
                             id: replica,
@@ -310,8 +355,7 @@ such restriction.
                             checked: true
                         }
                     });
-
-                    initialReplicas = replicas;
+                    initialReplicas = allReplicas;
 
                     return ExecutionLogsDataService.logsPaginated(ctrl.page.number, ctrl.page.size, queryParams())
                         .then(function (logs) {
@@ -333,6 +377,7 @@ such restriction.
             ctrl.timeRange = getInitialTimeRange();
             ctrl.datePreset = initialDatePreset;
             ctrl.selectedReplicas = initialReplicas;
+            ctrl.excludeOffline = false;
 
             lodash.merge(ctrl.filter, defaultFilter);
             $rootScope.$broadcast('search-input_reset');
@@ -415,7 +460,8 @@ such restriction.
                         .replace(/<|>/g, ''),
                     logLevels: lodash.chain(ctrl.filter.level).pickBy().keys().value(),
                     replicaNames: ctrl.selectedReplicas,
-                    timeFilter: ctrl.timeRange
+                    timeFilter: ctrl.timeRange,
+                    includeOffline: !ctrl.excludeOffline
                 }
             };
         }

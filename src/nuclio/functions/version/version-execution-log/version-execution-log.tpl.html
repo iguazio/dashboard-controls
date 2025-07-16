@@ -94,9 +94,20 @@
                     <span class="filter-label asterisk">
                         {{ 'common:REPLICAS' | i18next }}
                     </span>
+                    <div class="online-replicas__checkbox">
+                        <input type="checkbox"
+                               id="onlineOnly"
+                               data-ng-change="$ctrl.onExcludeOfflineChange()"
+                               data-ng-disabled="$ctrl.excludeOfflineIsDisabled"
+                               data-ng-model="$ctrl.excludeOffline">
+                        <label for="onlineOnly" data-uib-tooltip="{{ $ctrl.excludeOfflineIsDisabled ? 'functions:TOOLTIP.NO_OFFLINE_REPLICAS' : '' | i18next }}">
+                            {{ 'functions:SHOWN_ONLINE_ONLY' | i18next }}
+                        </label>
+                    </div>
                     <igz-multiple-checkboxes data-ng-model="$ctrl.selectedReplicas"
                                              data-options="$ctrl.replicasList"
                                              data-dropdown="true"
+                                             data-title="{{ 'functions:PLACEHOLDER.SELECT_REPLICA' | i18next }}"
                                              data-select-all-none="true"
                                              data-ng-change="$ctrl.onCheckboxChange($event)"
                                              data-ng-required="true"
@@ -152,7 +163,7 @@
                 <div class="control-panel-log-table common-table">
                     <div class="search-input-not-found"
                          data-ng-if="$ctrl.logs.length === 0">
-                        {{ 'functions:NO_LOGS_HAVE_BEEN_FOUND' | i18next }}
+                        {{ 'functions:NO_LOGS_WERE_FOUND' | i18next }}
                     </div>
 
                     <div data-igz-extend-background
