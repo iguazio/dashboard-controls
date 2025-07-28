@@ -30,6 +30,7 @@ such restriction.
         var ctrl = this;
 
         ctrl.enrichedNodeSelectors = [];
+        ctrl.enrichedServiceAccount = '';
         ctrl.scrollConfig = {
             advanced: {
                 updateOnContentResize: true
@@ -62,7 +63,7 @@ such restriction.
         function onInit() {
             ctrl.isFunctionDeploying = lodash.partial(FunctionsService.isFunctionDeploying, ctrl.version);
 
-            initEnrichedNodeSelectors();
+            initEnrichedData();
         }
 
         /**
@@ -71,7 +72,7 @@ such restriction.
          */
         function onChanges(changes) {
             if (lodash.has(changes, 'version')) {
-                initEnrichedNodeSelectors();
+                initEnrichedData();
             }
         }
 
@@ -88,9 +89,10 @@ such restriction.
         }
 
         /**
-         * Generates a node selectors list
+         * Generates enriched content
          */
-        function initEnrichedNodeSelectors() {
+        function initEnrichedData() {
+            ctrl.enrichedServiceAccount = lodash.get(ctrl.version, 'status.enrichedServiceAccount', '');
             ctrl.enrichedNodeSelectors = lodash.chain(ctrl.version)
                 .get('status.enrichedNodeSelector', {})
                 .map(function (key, value) {
