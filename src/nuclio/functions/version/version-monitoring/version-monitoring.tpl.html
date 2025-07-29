@@ -60,6 +60,15 @@
                             </ncl-key-value-input>
                         </div>
                     </div>
+                    <div data-ng-if="$ctrl.enrichedServiceAccount">
+                        <span class="title">{{ 'functions:ENRICHED_SERVICE_ACCOUNT' | i18next }}: </span>
+                        <igz-more-info
+                                data-description="{{ 'functions:TOOLTIP.ENRICHED_SERVICE_ACCOUNT' | i18next }}"
+                                data-trigger="click"
+                                data-is-html-enabled="true">
+                        </igz-more-info>
+                        <p>{{$ctrl.enrichedServiceAccount}}</p>
+                    </div>
                 </div>
             </div>
             <div class="row">
