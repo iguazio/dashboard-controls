@@ -433,10 +433,11 @@ such restriction.
          * ```
          */
         function extractFileName(path, includeExtension, onlyExtension) {
-            var start = path.lastIndexOf(lodash.defaultTo(onlyExtension, false) ? '.' : '/') + 1;
-            var end = lodash.defaultTo(includeExtension, true) ? path.length : path.lastIndexOf('.');
+            var pathReplaced = lodash.defaultTo(path, '').replaceAll('\\', '/')
+            var start = pathReplaced.lastIndexOf(lodash.defaultTo(onlyExtension, false) ? '.' : '/') + 1;
+            var end = lodash.defaultTo(includeExtension, true) ? pathReplaced.length : pathReplaced.lastIndexOf('.');
 
-            return lodash.defaultTo(path, '').replace('\\', '/').substring(start, end);
+            return pathReplaced.substring(start, end);
         }
 
         /**
