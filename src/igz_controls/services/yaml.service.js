@@ -81,14 +81,14 @@ such restriction.
          * @returns {string}
          */
         function getValidYaml(data) {
-            // function replacer(match, captureGroup1, captureGroup2) {
-            //     return captureGroup1 + captureGroup2.replace(/"/g, '\\"');
-            // }
+            function replacer(match, captureGroup1, captureGroup2) {
+                return captureGroup1 + captureGroup2.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+            }
 
             return data.replace(/(\s*-)\s*\n\s+/g, '$1 ')
                 .replace(/(:\s)"(.+)"$/g, '$1\'$2\'')
                 .replace(/(:\s)"{2}/g, '$1\'\'')
-                .replace(/([^\\"])("+)/g, (_, g1, g2) => g1 + g2.replace(/"/g, '\\"'))
+                .replace(/([^\\"])("+)/g, replacer)
                 .replace(/'(.+)'(:)/g, '"$1"$2')
                 .replace(/(:\s)'(.+)'/g, '$1"$2"')
                 .replace(/(:\s)'{2}/g, '$1""')

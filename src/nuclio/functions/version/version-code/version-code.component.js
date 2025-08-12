@@ -433,7 +433,7 @@ such restriction.
          * ```
          */
         function extractFileName(path, includeExtension, onlyExtension) {
-            var pathReplaced = lodash.defaultTo(path, '').replaceAll('\\', '/')
+            var pathReplaced = lodash.defaultTo(path, '').replace(/\\/g, '/')
             var start = pathReplaced.lastIndexOf(lodash.defaultTo(onlyExtension, false) ? '.' : '/') + 1;
             var end = lodash.defaultTo(includeExtension, true) ? pathReplaced.length : pathReplaced.lastIndexOf('.');
 
