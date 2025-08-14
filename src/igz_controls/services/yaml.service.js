@@ -82,7 +82,7 @@ such restriction.
          */
         function getValidYaml(data) {
             function replacer(match, captureGroup1, captureGroup2) {
-                return captureGroup1 + captureGroup2.replace(/"/g, '\\"');
+                return captureGroup1 + captureGroup2.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
             }
 
             return data.replace(/(\s*-)\s*\n\s+/g, '$1 ')

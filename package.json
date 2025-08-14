@@ -33,7 +33,7 @@
         "bootstrap": "~3.4.1",
         "del": "^6.1.1",
         "eslint-plugin-angular": "^4.0.1",
-        "express": "4.19.2",
+        "express": "4.20.0",
         "gulp": "^4.0.2",
         "gulp-babel": "^8.0.0",
         "gulp-concat": "^2.6.1",
