@@ -37,13 +37,21 @@ describe('igzElasticLogTableRow component: ', function () {
     });
 
     describe('getLogName():', function () {
-        it('should return the log name display value with free space in the end', function () {
-            expect(ctrl.getLogName()).toBe('cron           ');
+        it('should return the full log name display value', function () {
+            ctrl.entryItem.name = '012345678901234567890123456789';
+            expect(ctrl.getLogName()).toBe('012345678901234567890123456789');
+        });
+    });
+
+    describe('getLogTrimmedName():', function () {
+
+        it('should return the log name display value with free space in the end, 25 symbols in total', function () {
+            expect(ctrl.getLogTrimmedName()).toBe('cron                     ');
         });
 
-        it('should return the cropped log name display value', function () {
-            ctrl.entryItem.name = '012345678901234567890123456789';
-            expect(ctrl.getLogName()).toBe('012345678901234');
+        it('should return the cropped log name display value to 25 symbols', function () {
+            ctrl.entryItem.name = '012345678901234567890123456789123456789';
+            expect(ctrl.getLogTrimmedName()).toBe('0123456789012345678901234');
         });
     });
 });
