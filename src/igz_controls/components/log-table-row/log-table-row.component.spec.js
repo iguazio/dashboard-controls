@@ -41,10 +41,25 @@ describe('igzElasticLogTableRow component: ', function () {
             ctrl.entryItem.name = '012345678901234567890123456789';
             expect(ctrl.getLogName()).toBe('012345678901234567890123456789');
         });
+
+        it('should return the kubernetes pod name', function () {
+            ctrl.entryItem.kubernetes = { pod: { name: 'kubName' } }
+            expect(ctrl.getLogName()).toBe('kubName');
+        });
+
+        it('should return the empty string', function () {
+            ctrl.entryItem.name = undefined
+            expect(ctrl.getLogName()).toBe('');
+        });
+
+        it('should return the empty sting', function () {
+            ctrl.entryItem.kubernetes = { pod: {} }
+            ctrl.entryItem.name = undefined
+            expect(ctrl.getLogName()).toBe('');
+        });
     });
 
     describe('getLogTrimmedName():', function () {
-
         it('should return the log name display value with free space in the end, 25 symbols in total', function () {
             expect(ctrl.getLogTrimmedName()).toBe('cron                     ');
         });
