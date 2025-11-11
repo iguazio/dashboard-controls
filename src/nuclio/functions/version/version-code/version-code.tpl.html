@@ -148,22 +148,23 @@
 
                     <div data-ng-if="$ctrl.selectedEntryType.id === 'archive'"
                          class="ncl-code-entry-url">
-                        <div class="field-label">
-                            <span>{{ 'functions:ACCESS_KEY_V3IO_ONLY' | i18next }}</span>
-                            <igz-more-info data-description="{{ 'functions:TOOLTIP.V3IO_ACCESS_KEY' | i18next }}"></igz-more-info>
+                        <div data-ng-if="$ctrl.isEnterpriseVersion">
+                            <div class="field-label">
+                                <span>{{ 'functions:ACCESS_KEY_V3IO_ONLY' | i18next }}</span>
+                                <igz-more-info data-description="{{ 'functions:TOOLTIP.V3IO_ACCESS_KEY' | i18next }}"></igz-more-info>
+                            </div>
+                            <igz-validating-input-field data-field-type="password"
+                                                        data-input-name="sessionKey"
+                                                        data-input-value="$ctrl.version.spec.build.codeEntryAttributes.headers['X-V3io-Session-Key']"
+                                                        data-is-focused="false"
+                                                        data-form-object="$ctrl.versionCodeForm"
+                                                        data-validation-is-required="false"
+                                                        data-read-only="$ctrl.isFunctionDeploying()"
+                                                        data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_ACCESS_KEY' | i18next }}"
+                                                        data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
+                                                        data-update-data-field="spec.build.codeEntryAttributes.headers['X-V3io-Session-Key']">
+                            </igz-validating-input-field>
                         </div>
-                        <igz-validating-input-field data-field-type="password"
-                                                    data-input-name="sessionKey"
-                                                    data-input-value="$ctrl.version.spec.build.codeEntryAttributes.headers['X-V3io-Session-Key']"
-                                                    data-is-focused="false"
-                                                    data-form-object="$ctrl.versionCodeForm"
-                                                    data-validation-is-required="false"
-                                                    data-read-only="$ctrl.isFunctionDeploying()"
-                                                    data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_ACCESS_KEY' | i18next }}"
-                                                    data-update-data-callback="$ctrl.inputValueCallback(newData, field)"
-                                                    data-update-data-field="spec.build.codeEntryAttributes.headers['X-V3io-Session-Key']">
-                        </igz-validating-input-field>
-
                         <div class="field-label">
                             <span>{{ 'functions:WORK_DIRECTORY' | i18next }}</span>
                             <igz-more-info data-description="{{ 'functions:TOOLTIP.WORK_DIR' | i18next }}"></igz-more-info>

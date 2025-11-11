@@ -44,6 +44,7 @@ such restriction.
                 autoScrollOnFocus: false
             }
         };
+        ctrl.isEnterpriseVersion = false;
         ctrl.scrollConfigHorizontal = {
             axis: 'x',
             advanced: {
@@ -209,6 +210,8 @@ such restriction.
             $scope.$on('ui.layout.loaded', resizeScrollBar);
 
             angular.element($window).bind('resize', resizeScrollBar);
+
+            ctrl.isEnterpriseVersion = ConfigService.nuclio.isEnterpriseVersion;
         }
 
         /**
