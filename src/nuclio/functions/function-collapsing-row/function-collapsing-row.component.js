@@ -277,17 +277,36 @@ such restriction.
 
         /**
          * Deletes function from functions list
-         * @param {Object} [functionItem]
+         * @param {Object} [functionElement]
          * @param {Boolean} [ignoreValidation] - determines whether to forcibly remove the function
          * @returns {Promise}
          */
-        function deleteFunction(functionItem, ignoreValidation) {
+        function deleteFunction(functionElement, ignoreValidation) {
             if (lodash.isEmpty(apiGateways)) {
+                return deleteFunctionHandler()
+            } else {
+                var confirmMessage = $i18next.t('functions:DELETE_BOTH_FUNCTION_AND_API_GW', {
+                    lng: lng,
+                    apiGatewayName: apiGateways[0]
+                });
+
+                DialogsService.confirm(
+                    confirmMessage,
+                    $i18next.t('common:YES_DELETE', { lng: lng }),
+                    $i18next.t('common:CANCEL', { lng: lng })
+                )
+                    .then(function () {
+                        return deleteFunctionHandler(true)
+                    })
+            }
+
+            function deleteFunctionHandler(deleteApiGateway) {
                 ctrl.isSplashShowed.value = true;
 
                 return ctrl.handleDeleteFunction({
-                    functionData: lodash.defaultTo(functionItem, ctrl.function).metadata,
-                    ignoreValidation: ignoreValidation
+                    functionData: lodash.defaultTo(functionElement, ctrl.function).metadata,
+                    ignoreValidation: ignoreValidation,
+                    deleteApiGateway: deleteApiGateway
                 })
                     .then(function () {
                         lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
@@ -299,7 +318,7 @@ such restriction.
                         if (error.status === 409) {
                             FunctionsService.openVersionDeleteDialog()
                                 .then(function () {
-                                    deleteFunction(lodash.omit(ctrl.function, ['metadata.resourceVersion']));
+                                    deleteFunction(lodash.omit(ctrl.function, ['metadata.resourceVersion']), false, deleteApiGateway);
                                 });
                         } else if (
                             error.status === 412 &&
@@ -307,7 +326,7 @@ such restriction.
                         ) {
                             FunctionsService.openVersionDeleteDialog(true)
                                 .then(function () {
-                                    deleteFunction(lodash.omit(ctrl.function, ['metadata.resourceVersion']), true);
+                                    deleteFunction(lodash.omit(ctrl.function, ['metadata.resourceVersion']), true, deleteApiGateway);
                                 });
                         } else {
                             DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
@@ -316,11 +335,6 @@ such restriction.
                     .finally(function () {
                         ctrl.isSplashShowed.value = false;
                     });
-            } else {
-                DialogsService.alert($i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION', {
-                    lng: lng,
-                    apiGatewayName: apiGateways[0]
-                }));
             }
         }
 
