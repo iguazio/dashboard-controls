@@ -39,7 +39,7 @@ describe('igzToastStatusPanel component:', function () {
             panelStatus: null
         };
 
-        ctrl = $componentController('igzToastStatusPanel', {$element: element}, bindings);
+        ctrl = $componentController('igzToastStatusPanel', {$element: element, $transclude: angular.noop}, bindings);
     });
 
     afterEach(function () {

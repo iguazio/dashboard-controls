@@ -47,20 +47,6 @@ describe('nclFunctionFromScratch Component:', function () {
                 visible: true
             },
             {
-                id: 'python:3.7',
-                name: 'Python 3.7 ' + $i18next.t('functions:DEPRECATED_SOON_LABEL', {lng: lng}),
-                sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
-                nameTemplate: 'Python 3.7 ' + '<b>' + $i18next.t('functions:DEPRECATED_SOON_LABEL', {lng: lng}) + '</b>',
-                visible: true
-            },
-            {
-                id: 'python:3.8',
-                name: 'Python 3.8 ' + $i18next.t('functions:DEPRECATED_SOON_LABEL', {lng: lng}),
-                sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
-                nameTemplate: 'Python 3.8 ' + '<b>' + $i18next.t('functions:DEPRECATED_SOON_LABEL', {lng: lng}) + '</b>',
-                visible: true
-            },
-            {
                 id: 'python:3.9',
                 name: 'Python 3.9',
                 sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
@@ -75,6 +61,12 @@ describe('nclFunctionFromScratch Component:', function () {
             {
                 id: 'python:3.11',
                 name: 'Python 3.11',
+                sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
+                visible: true
+            },
+            {
+                id: 'python:3.12',
+                name: 'Python 3.12',
                 sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
                 visible: true
             },
