@@ -718,8 +718,9 @@ such restriction.
             var projectName = '{project_name="' + ctrl.project.metadata.name + '"}';
             var gpuUtilizationMetric = ' * on (pod) group_left(function_name)(nuclio_function_pod_labels{project_name="' +
                 ctrl.project.metadata.name + '"})';
+            var invocationMetricQuery = 'increase(' + ctrl.functionEventsMetric + functionEventsProjectName + '[24h])';
             var args = {
-                metric: ctrl.functionEventsMetric + functionEventsProjectName,
+                metric: invocationMetricQuery,
                 from: from,
                 until: until,
                 interval: '5m'
