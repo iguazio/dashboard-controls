@@ -501,19 +501,25 @@ such restriction.
                 },
                 {
                     id: 'python:3.10',
+                    ext: 'py',
                     name: 'Python 3.10',
+                    language: 'python',
                     sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
                     visible: true
                 },
                 {
                     id: 'python:3.11',
+                    ext: 'py',
                     name: 'Python 3.11',
+                    language: 'python',
                     sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
                     visible: true
                 },
                 {
                     id: 'python:3.12',
+                    ext: 'py',
                     name: 'Python 3.12',
+                    language: 'python',
                     sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
                     visible: true
                 },
