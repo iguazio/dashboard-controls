@@ -53,9 +53,10 @@ such restriction.
          * Returns classes list by type.
          * @param {string} type - Determines which class list to return (e.g. `'volume'`, `'trigger'`).
          * @param {Object} [additionalData] - May include additional data for populating the list.
+         * @param {boolean} isEnterpriseVersion - Determines if Nuclio is part of dashboard
          * @returns {Object[]} - array of classes
          */
-        function getClassesList(type, additionalData) {
+        function getClassesList(type, additionalData, isEnterpriseVersion) {
             var lng = i18next.language;
             var defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
             var classesList = {
@@ -527,6 +528,7 @@ such restriction.
                     },
                     {
                         id: 'v3ioStream',
+                        visible: lodash.defaultTo(isEnterpriseVersion, false),
                         name: 'V3IO stream',
                         tooltip: 'V3IO stream',
                         tooltipOriginal: 'V3IO stream',

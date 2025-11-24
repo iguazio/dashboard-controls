@@ -95,6 +95,7 @@ such restriction.
          */
         function onInit() {
             var additionalData = {};
+            var isEnterpriseVersion = ConfigService.nuclio.isEnterpriseVersion;
             if (lodash.isArray(ctrl.containers) && !lodash.isEmpty(ctrl.containers)) {
                 additionalData.containers = lodash.chain(ctrl.containers)
                     .cloneDeep()
@@ -102,7 +103,7 @@ such restriction.
                     .value();
             }
 
-            ctrl.classList = FunctionsService.getClassesList('trigger', additionalData);
+            ctrl.classList = FunctionsService.getClassesList('trigger', additionalData, isEnterpriseVersion);
 
             $scope.$on('edit-item-has-been-changed', updateTriggersChangesState);
 
