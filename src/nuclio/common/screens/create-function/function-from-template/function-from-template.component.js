@@ -386,12 +386,6 @@ such restriction.
                     visible: true
                 },
                 {
-                    id: 'python:3.9',
-                    name: 'Python 3.9',
-                    sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
-                    visible: true
-                },
-                {
                     id: 'python:3.10',
                     name: 'Python 3.10',
                     sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpOg0KICAgIHJldHVybiAiIg==', // source code in base64
