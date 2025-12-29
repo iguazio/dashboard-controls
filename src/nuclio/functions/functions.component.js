@@ -718,9 +718,8 @@ such restriction.
             var projectName = '{project_name="' + ctrl.project.metadata.name + '"}';
             var gpuUtilizationMetric = ' * on (pod) group_left(function_name)(nuclio_function_pod_labels{project_name="' +
                 ctrl.project.metadata.name + '"})';
-            var invocationMetricQuery = 'increase(' + ctrl.functionEventsMetric + functionEventsProjectName + '[24h])';
             var args = {
-                metric: invocationMetricQuery,
+                metric: ctrl.functionEventsMetric + functionEventsProjectName,
                 from: from,
                 until: until,
                 interval: '5m'
@@ -782,9 +781,25 @@ such restriction.
                     });
 
                     if (lodash.isObject(funcStats)) {
-                        var latestValue = lodash.sum(lodash.map(funcStats, function (stat) {
-                            return Number(lodash.last(stat.values)[1]);
-                        }));
+                        var latestValue
+
+                        if ([ctrl.functionCPUMetric, ctrl.functionMemoryMetric, ctrl.functionGPUMetric].includes(type)) {
+                            latestValue = lodash.sum(lodash.map(funcStats, function (stat) {
+                                return Number(lodash.last(stat.values)[1]);
+                            }));
+                        } else {
+                            latestValue = lodash.sum(lodash.map(funcStats, function (stat) {
+                                if (!stat.values || stat.values.length === 0) {
+                                    return 0;
+                                }
+
+                                var first = lodash.head(stat.values);
+                                var last = lodash.last(stat.values);
+
+                                return Number(last[1]) - Number(first[1]);
+                            }));
+                        }
+
 
                         // calculating of invocation per second regarding last timestamps
                         var invocationPerSec = lodash.chain(funcStats)
