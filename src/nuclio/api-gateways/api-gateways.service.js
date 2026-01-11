@@ -40,11 +40,6 @@ such restriction.
                 id: 'oauth2',
                 name: $i18next.t('functions:OAUTH2', { lng: lng }),
                 tooltip: $i18next.t('functions:OAUTH2', { lng: lng })
-            },
-            {
-                id: 'iguazio',
-                name: $i18next.t('functions:IGUAZIO', { lng: lng }),
-                tooltip: $i18next.t('functions:IGUAZIO', { lng: lng })
             }
         ];
 
