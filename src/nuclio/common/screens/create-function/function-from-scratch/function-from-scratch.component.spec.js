@@ -102,12 +102,6 @@ describe('nclFunctionFromScratch Component:', function () {
                 name: 'Shell ' + $i18next.t('functions:TECH_PREVIEW_LABEL', { lng: lng }),
                 sourceCode: 'ZWNobyAiSGVsbG8gZnJvbSBOdWNsaW8i',
                 visible: true
-            },
-            {
-                id: 'ruby',
-                name: 'Ruby ' + $i18next.t('functions:TECH_PREVIEW_LABEL', { lng: lng }),
-                sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpDQplbmQ=', // source code in base64
-                visible: true
             }
         ];
 
