@@ -1,4 +1,4 @@
-<div class="field-label">
+<div class="field-label" data-ng-if="$ctrl.field.type !== 'checkbox'">
     <span data-ng-class="{ asterisk: $ctrl.field.allowEmpty === false }">
         {{$ctrl.field.label || $ctrl.convertFromCamelCase($ctrl.field.name)}}
     </span>
@@ -74,3 +74,17 @@
         data-min-value="$ctrl.field.min"
         data-max-value="$ctrl.field.max">
 </igz-number-input>
+<div class="checkbox-field-wrapper item-checkbox-wrapper" 
+     data-ng-if="$ctrl.field.type === 'checkbox'">
+        <input type="checkbox"
+           class="small"
+           id="item_{{$ctrl.field.name}}"
+           data-ng-init="$ctrl.checkboxModel = ($ctrl.getFieldValue() || $ctrl.getFieldValue())"
+           data-ng-model="$ctrl.checkboxModel"
+           data-ng-change="$ctrl.onSelectDropdownValue({item: {id: $ctrl.checkboxModel}, field: $ctrl.field.path || $ctrl.field.name})"
+           data-ng-disabled="$ctrl.readOnly">
+           
+    <label for="item_{{$ctrl.field.name}}" class="checkbox-inline" style="margin: 0;">
+        {{$ctrl.field.label || $ctrl.convertFromCamelCase($ctrl.field.name)}}
+    </label>
+</div>

@@ -112,23 +112,14 @@ such restriction.
                                 type: 'input',
                                 fieldType: 'input',
                                 path: 'attributes.consumerGroup',
-                                placeholder:
-                                    $i18next.t('functions:PLACEHOLDER.ENTER_CONSUMER_GROUP_NAME', { lng: lng }),
+                                placeholder: $i18next.t('functions:PLACEHOLDER.ENTER_CONSUMER_GROUP_NAME', { lng: lng }),
                                 allowEmpty: false
                             },
                             {
                                 name: 'initialOffset',
                                 values: [
-                                    {
-                                        id: 'earliest',
-                                        name: 'Earliest',
-                                        visible: true
-                                    },
-                                    {
-                                        id: 'latest',
-                                        name: 'Latest',
-                                        visible: true
-                                    }
+                                    { id: 'earliest', name: 'Earliest', visible: true },
+                                    { id: 'latest', name: 'Latest', visible: true }
                                 ],
                                 defaultValue: 'latest',
                                 path: 'attributes.initialOffset',
@@ -137,16 +128,8 @@ such restriction.
                             {
                                 name: 'workerAllocationMode',
                                 values: [
-                                    {
-                                        id: 'pool',
-                                        name: 'Pool',
-                                        visible: true
-                                    },
-                                    {
-                                        id: 'static',
-                                        name: 'Static',
-                                        visible: true
-                                    }
+                                    { id: 'pool', name: 'Pool', visible: true },
+                                    { id: 'static', name: 'Static', visible: true }
                                 ],
                                 isAdvanced: true,
                                 defaultValue: 'pool',
@@ -192,7 +175,7 @@ such restriction.
                                 allowEmpty: true,
                                 unit: $i18next.t('common:BYTES', { lng: lng }),
                                 min: 1,
-                                max: 67108864, // 64 * 1024 * 1024 bytes = 64 MiB
+                                max: 67108864,
                                 defaultValue: 1048576
                             },
                             {
@@ -225,6 +208,167 @@ such restriction.
                                 fieldType: 'input',
                                 isAdvanced: true,
                                 allowEmpty: true
+                            },
+                            {
+                                name: 'saslEnable',
+                                label: $i18next.t('functions:ENABLE_SASL', { lng: lng }),
+                                type: 'checkbox',
+                                path: 'attributes.sasl.enable',
+                                isAdvanced: true,
+                                defaultValue: false,
+                                breakRow: true
+                            },
+                            {
+                                name: 'saslHandshake',
+                                label: $i18next.t('functions:SASL_HANDSHAKE', { lng: lng }),
+                                type: 'checkbox',
+                                path: 'attributes.sasl.handshake',
+                                isAdvanced: true,
+                                defaultValue: true,
+                                visible: function (item) {
+                                    return lodash.get(item, 'attributes.sasl.enable');
+                                }
+                            },
+                            {
+                                name: 'saslMechanism',
+                                label: $i18next.t('functions:SASL_MECHANISM', { lng: lng }),
+                                type: 'dropdown',
+                                path: 'attributes.sasl.mechanism',
+                                isAdvanced: true,
+                                defaultValue: 'plain',
+                                values: [
+                                    { id: 'plain', name: 'Plain', visible: true },
+                                    { id: 'oauthbearer', name: 'OAuthBearer', visible: true }
+                                ],
+                                visible: function (item) {
+                                    return lodash.get(item, 'attributes.sasl.enable');
+                                }
+                            },
+                            {
+                                name: 'saslOauthClientID',
+                                label: $i18next.t('functions:OAUTH_CLIENT_ID', { lng: lng }),
+                                type: 'input',
+                                fieldType: 'input',
+                                path: 'attributes.sasl.oauth.clientID',
+                                isAdvanced: true,
+                                allowEmpty: true,
+                                visible: function (item) {
+                                    return lodash.get(item, 'attributes.sasl.enable') &&
+                                           lodash.get(item, 'attributes.sasl.mechanism') === 'oauthbearer';
+                                }
+                            },
+                            {
+                                name: 'saslOauthClientSecret',
+                                label: $i18next.t('functions:OAUTH_CLIENT_SECRET', { lng: lng }),
+                                type: 'input',
+                                fieldType: 'password',
+                                path: 'attributes.sasl.oauth.clientSecret',
+                                isAdvanced: true,
+                                allowEmpty: true,
+                                autocomplete: 'new-password',
+                                visible: function (item) {
+                                    return lodash.get(item, 'attributes.sasl.enable') &&
+                                           lodash.get(item, 'attributes.sasl.mechanism') === 'oauthbearer';
+                                }
+                            },
+                            {
+                                name: 'saslOauthTokenURL',
+                                label: $i18next.t('functions:OAUTH_TOKEN_URL', { lng: lng }),
+                                type: 'input',
+                                fieldType: 'input',
+                                path: 'attributes.sasl.oauth.tokenURL',
+                                isAdvanced: true,
+                                allowEmpty: true,
+                                visible: function (item) {
+                                    return lodash.get(item, 'attributes.sasl.enable') &&
+                                           lodash.get(item, 'attributes.sasl.mechanism') === 'oauthbearer';
+                                }
+                            },
+                            {
+                                name: 'saslOauthScopes',
+                                label: $i18next.t('functions:OAUTH_SCOPES', { lng: lng }),
+                                type: 'input',
+                                fieldType: 'input',
+                                path: 'attributes.sasl.oauth.scopes',
+                                isAdvanced: true,
+                                allowEmpty: true,
+                                visible: function (item) {
+                                    return lodash.get(item, 'attributes.sasl.enable') &&
+                                           lodash.get(item, 'attributes.sasl.mechanism') === 'oauthbearer';
+                                }
+                            },
+                            {
+                                name: 'tlsEnable',
+                                label: $i18next.t('functions:ENABLE_TLS', { lng: lng }),
+                                type: 'checkbox',
+                                path: 'attributes.tls.enable',
+                                isAdvanced: true,
+                                defaultValue: false,
+                                breakRow: true
+                            },
+                            {
+                                name: 'tlsInsecureSkipVerify',
+                                label: $i18next.t('functions:TLS_INSECURE_SKIP_VERIFY', { lng: lng }),
+                                type: 'checkbox',
+                                path: 'attributes.tls.insecureSkipVerify',
+                                isAdvanced: true,
+                                defaultValue: false,
+                                visible: function (item) {
+                                    return lodash.get(item, 'attributes.tls.enable');
+                                }
+                            },
+                            {
+                                name: 'tlsMinimumVersion',
+                                label: $i18next.t('functions:TLS_MINIMUM_VERSION', { lng: lng }),
+                                type: 'dropdown',
+                                path: 'attributes.tls.minimumVersion',
+                                isAdvanced: true,
+                                defaultValue: '1.2',
+                                values: [
+                                    { id: '1.0', name: '1.0', visible: true },
+                                    { id: '1.1', name: '1.1', visible: true },
+                                    { id: '1.2', name: '1.2', visible: true },
+                                    { id: '1.3', name: '1.3', visible: true }
+                                ],
+                                visible: function (item) {
+                                    return lodash.get(item, 'attributes.tls.enable');
+                                }
+                            },
+                            {
+                                name: 'tlsCaCert',
+                                label: $i18next.t('functions:CA_CERTIFICATE', { lng: lng }),
+                                type: 'input',
+                                fieldType: 'input',
+                                path: 'attributes.tls.caCert',
+                                isAdvanced: true,
+                                allowEmpty: true,
+                                visible: function (item) {
+                                    return lodash.get(item, 'attributes.tls.enable');
+                                }
+                            },
+                            {
+                                name: 'tlsAccessKey',
+                                label: $i18next.t('functions:TLS_ACCESS_KEY', { lng: lng }),
+                                type: 'input',
+                                fieldType: 'input',
+                                path: 'attributes.tls.accessKey',
+                                isAdvanced: true,
+                                allowEmpty: true,
+                                visible: function (item) {
+                                    return lodash.get(item, 'attributes.tls.enable');
+                                }
+                            },
+                            {
+                                name: 'tlsAccessCertificate',
+                                label: $i18next.t('functions:TLS_ACCESS_CERTIFICATE', { lng: lng }),
+                                type: 'input',
+                                fieldType: 'input',
+                                path: 'attributes.tls.accessCertificate',
+                                isAdvanced: true,
+                                allowEmpty: true,
+                                visible: function (item) {
+                                    return lodash.get(item, 'attributes.tls.enable');
+                                }
                             }
                         ]
                     },
