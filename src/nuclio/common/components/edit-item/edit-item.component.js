@@ -177,8 +177,6 @@ such restriction.
                         password: ''
                     }
                 });
-                ctrl.item.attributes.sasl.enable = !lodash.isEmpty(ctrl.item.attributes.sasl.user) &&
-                    !lodash.isEmpty(ctrl.item.attributes.sasl.password);
 
                 ctrl.topics = lodash.chain(ctrl.item.attributes.topics)
                     .defaultTo([])
@@ -603,16 +601,13 @@ such restriction.
          * @returns {Function} filter expression
          */
         function isFieldVisible(showAdvanced) {
-            /**
-             * Filter expression
-             * @param {Object} field - The field to test.
-             * @param {string} field.type - The type of the field.
-             * @param {boolean} field.visible - The visibility of the field.
-             * @returns {boolean} `true` in case the field should be displayed, or `false` otherwise.
-             */
             return function (field) {
-                return lodash.defaultTo(field.visible, true) &&
-                    lodash.includes(['input', 'dropdown', 'number-input', 'arrayInt'], field.type) &&
+                var isVisible = angular.isFunction(field.visible) ?
+                    field.visible(ctrl.item) :
+                    lodash.defaultTo(field.visible, true);
+
+                return isVisible &&
+                    lodash.includes(['input', 'dropdown', 'number-input', 'arrayInt', 'checkbox'], field.type) &&
                     (showAdvanced ? field.isAdvanced : !field.isAdvanced);
             };
         }
@@ -1173,7 +1168,7 @@ such restriction.
         /**
          * Validate interval and schedule fields
          */
-        /* eslint complexity: ["error", 11] */
+        /* eslint complexity: ["error", 15] */
         function validateValues() {
             if (ctrl.item.kind === 'cron') {
                 var scheduleField = lodash.find(ctrl.selectedClass.fields, {name: 'schedule'});
@@ -1206,8 +1201,25 @@ such restriction.
                 ctrl.editItemForm.item_queueName.$setValidity('text', queueName.allowEmpty || queueNameIsFilled);
                 ctrl.editItemForm.item_topics.$setValidity('text', topics.allowEmpty || topicsIsFilled);
             } else if (ctrl.item.kind === 'kafka-cluster') {
-                ctrl.item.attributes.sasl.enable = !lodash.isEmpty(ctrl.item.attributes.sasl.user) &&
-                    !lodash.isEmpty(ctrl.item.attributes.sasl.password);
+                var isSaslEnabled = lodash.get(ctrl.item, 'attributes.sasl.enable');
+
+                if (!isSaslEnabled) {
+                    lodash.unset(ctrl.item, 'attributes.sasl.handshake');
+                    lodash.unset(ctrl.item, 'attributes.sasl.mechanism');
+                    lodash.unset(ctrl.item, 'attributes.sasl.oauth');
+                } else if (lodash.get(ctrl.item, 'attributes.sasl.mechanism') !== 'oauthbearer') {
+                    lodash.unset(ctrl.item, 'attributes.sasl.oauth');
+                }
+
+                var isTlsEnabled = lodash.get(ctrl.item, 'attributes.tls.enable');
+
+                if (!isTlsEnabled) {
+                    lodash.unset(ctrl.item, 'attributes.tls.insecureSkipVerify');
+                    lodash.unset(ctrl.item, 'attributes.tls.minimumVersion');
+                    lodash.unset(ctrl.item, 'attributes.tls.caCert');
+                    lodash.unset(ctrl.item, 'attributes.tls.accessKey');
+                    lodash.unset(ctrl.item, 'attributes.tls.accessCertificate');
+                }
             }
         }
     }

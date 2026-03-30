@@ -414,7 +414,8 @@
 
                 <div class="collapsed-block-content-wrapper" data-uib-collapse="$ctrl.isAdvancedCollapsed">
                     <div class="igz-col-{{field.fieldType === 'schedule' ? '91' : '45'}} attribute-field"
-                         data-ng-repeat="field in $ctrl.selectedClass.fields | filter:$ctrl.isFieldVisible(true) track by field.name">
+                         data-ng-repeat="field in $ctrl.selectedClass.fields | filter:$ctrl.isFieldVisible(true) track by field.name"
+                         data-ng-style="field.breakRow ? {'clear': 'both'} : {}">
                         <ncl-edit-item-field data-edit-item-form="$ctrl.editItemForm"
                                              data-field="field"
                                              data-item="$ctrl.item"
