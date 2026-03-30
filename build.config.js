@@ -30,9 +30,9 @@ module.exports = {
     assets_dir: 'dist',
 
     /**
-     * Cache file
+     * Babel filesystem cache directory (used by gulp-babel)
      */
-    cache_file: '.babelCache',
+    cache_file: '.babel-cache',
 
     /**
      * App files and configs
