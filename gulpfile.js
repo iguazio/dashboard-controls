@@ -34,6 +34,7 @@ var minifyHtml = require('gulp-htmlmin');
 var ngHtml2Js = require('gulp-ng-html2js');
 var merge2 = require('merge2');
 var imagemin = require('gulp-imagemin');
+var imageminSvgo = require('imagemin-svgo');
 var del = require('del');
 var vinylPaths = require('vinyl-paths');
 var exec = require('child_process').exec;
@@ -130,17 +131,13 @@ function fonts() {
 }
 
 /**
- * Optimize all images and copy them to the build directory
+ * Optimize all images and copy them to the build directory (SVGO for SVG; raster formats unchanged — avoids native imagemin plugins).
  */
 function images() {
     var distFolder = config.assets_dir + '/images';
 
     return gulp.src(config.source_dir + '/igz_controls/images/**/*', { allowEmpty: true })
-        .pipe(imagemin({
-            optimizationLevel: 3,
-            progressive: true,
-            interlaced: true
-        }))
+        .pipe(imagemin([imageminSvgo()]))
         .pipe(gulp.dest(distFolder));
 }
 
