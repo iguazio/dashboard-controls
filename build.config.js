@@ -100,7 +100,7 @@ module.exports = {
                 'node_modules/ng-file-upload/dist/FileAPI.js',
                 'node_modules/i18next/i18next.js',
                 'node_modules/ng-i18next/dist/ng-i18next.js',
-                'node_modules/bootstrap/js/dropdown.js',
+                'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
                 'node_modules/ng-dialog/js/ngDialog.js',
                 'node_modules/lodash/lodash.js',
                 'node_modules/restangular/src/restangular.js',

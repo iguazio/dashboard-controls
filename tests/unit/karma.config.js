@@ -34,6 +34,11 @@ module.exports = function (config) {
             }
         },
 
+        // Map app paths used by Monaco loader (see monaco-editor.directive.js) to node_modules for unit tests
+        proxies: {
+            '/assets/monaco-editor/': '/base/node_modules/monaco-editor/'
+        },
+
         // web server port
         port: 8080,
 
