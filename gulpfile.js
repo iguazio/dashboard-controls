@@ -71,7 +71,7 @@ gulp.task('test-unit', testUnit);
  * Clean build directory
  */
 function clean() {
-    return gulp.src([config.build_dir, config.cache_file], { allowEmpty: true })
+    return gulp.src([config.build_dir, config.cache_file], {allowEmpty: true})
         .pipe(vinylPaths(del));
 }
 
@@ -82,7 +82,7 @@ function appLess() {
     var distFolder = config.assets_dir + '/less';
 
     var task = gulp
-        .src(config.app_files.less_files, { allowEmpty: true })
+        .src(config.app_files.less_files, {allowEmpty: true})
         .pipe(concat(config.output_files.app.less))
         .pipe(gulp.dest(distFolder));
 
@@ -100,7 +100,7 @@ function appJs() {
         sourceFiles = config.test_files.unit.js_for_tests;
     }
 
-    var js = gulp.src(sourceFiles, { allowEmpty: true })
+    var js = gulp.src(sourceFiles, {allowEmpty: true})
         .pipe(cache({
             path: config.cache_file,
             transformStreams: [
@@ -108,7 +108,7 @@ function appJs() {
             ]
         }));
 
-    var templates = gulp.src(config.app_files.templates, { allowEmpty: true })
+    var templates = gulp.src(config.app_files.templates, {allowEmpty: true})
         .pipe(minifyHtml({
             removeComments: true,
             collapseWhitespace: true,
@@ -132,7 +132,7 @@ function appJs() {
 function fonts() {
     var distFolder = config.assets_dir + '/fonts';
 
-    return gulp.src(config.source_dir + '/igz_controls/fonts/**/*', { allowEmpty: true })
+    return gulp.src(config.source_dir + '/igz_controls/fonts/**/*', {allowEmpty: true})
         .pipe(gulp.dest(distFolder));
 }
 
@@ -142,7 +142,7 @@ function fonts() {
 function images() {
     var distFolder = config.assets_dir + '/images';
 
-    return gulp.src(config.source_dir + '/igz_controls/images/**/*', { allowEmpty: true })
+    return gulp.src(config.source_dir + '/igz_controls/images/**/*', {allowEmpty: true})
         .pipe(imagemin({
             optimizationLevel: 3,
             progressive: true,
@@ -154,8 +154,8 @@ function images() {
 /**
  * Lint source code
  */
-function lint() {
-    return gulp.src(config.app_files.js, { allowEmpty: true })
+ function lint() {
+    return gulp.src(config.app_files.js, {allowEmpty: true})
         .pipe(eslint())
         .pipe(eslint.format('compact'))
         .pipe(eslint.failAfterError());
@@ -164,7 +164,7 @@ function lint() {
 function i18n() {
     var distFolder = config.assets_dir + '/i18n';
 
-    return gulp.src(config.app_files.i18n, { allowEmpty: true })
+    return gulp.src(config.app_files.i18n, {allowEmpty: true})
         .pipe(gulp.dest(distFolder));
 }
 
@@ -202,7 +202,7 @@ function testUnitRun(done) {
 function vendorLess() {
     var distFolder = config.assets_dir + '/less';
 
-    return gulp.src(config.vendor_files.less, { allowEmpty: true })
+    return gulp.src(config.vendor_files.less, {allowEmpty: true})
         .pipe(concat(config.output_files.vendor.less))
         .pipe(gulp.dest(distFolder));
 }
@@ -213,7 +213,7 @@ function vendorLess() {
 function vendorJs() {
     var distFolder = config.assets_dir + '/js';
 
-    return gulp.src(config.vendor_files.js, { allowEmpty: true })
+    return gulp.src(config.vendor_files.js, {allowEmpty: true})
         .pipe(concat(config.output_files.vendor.js))
         .pipe(gulp.dest(distFolder));
 }
@@ -233,10 +233,5 @@ function testUnit(next) {
  * Base build task
  */
 function build(next) {
-    gulp.series(lint, clean, injectVersion, vendorLess, vendorJs, gulp.parallel(appLess, appJs, fonts, images, i18n), function (next) {
-        gulp.src(config.build_dir + '/**/*')
-            .pipe(gulp.dest('../nuclio/pkg/dashboard/ui/node_modules/iguazio.dashboard-controls/dist'))
-            .pipe(gulp.dest('../dashboard/node_modules/iguazio.dashboard-controls/dist'));
-        next();
-    })(next);
+    gulp.series(lint, clean, injectVersion, vendorLess, vendorJs, gulp.parallel(appLess, appJs, fonts, images, i18n))(next);
 }
