@@ -54,36 +54,122 @@ such restriction.
             controller: NclKeyValueInputController
         });
 
+    var VALUE_TYPE = 'value';
+    var CONFIGMAP_TYPE = 'configmap';
+    var SECRET_TYPE = 'secret';
+    var CONFIGMAP_REF_TYPE = 'configmapRef';
+    var SECRET_REF_TYPE = 'secretRef';
+    var FIELD_REF_TYPE = 'fieldRef';
+
+    var VALUE_FROM = 'valueFrom';
+    var CONFIGMAP_KEY_REF = 'configMapKeyRef';
+    var SECRET_KEY_REF = 'secretKeyRef';
+    var FIELD_REF = 'fieldRef';
+
+    var KEY_PATH = 'key';
+    var NAME_PATH = 'name';
+    var VALUE_PATH = 'value';
+    var FIELD_PATH = 'fieldPath';
+    var CONFIGMAP_PATH = VALUE_FROM + '.' + CONFIGMAP_KEY_REF;
+    var SECRET_PATH = VALUE_FROM + '.' + SECRET_KEY_REF;
+    var FIELD_REF_PATH = VALUE_FROM + '.' + FIELD_REF;
+    var CONFIGMAP_REF_PATH = 'configMapRef';
+    var SECRET_REF_PATH = 'secretRef';
+
+    var typePathMap = {
+        [VALUE_TYPE]: VALUE_PATH,
+        [FIELD_REF_TYPE]: FIELD_REF_PATH,
+        [CONFIGMAP_TYPE]: CONFIGMAP_PATH,
+        [SECRET_TYPE]: SECRET_PATH,
+        [CONFIGMAP_REF_TYPE]: CONFIGMAP_REF_PATH,
+        [SECRET_REF_TYPE]: SECRET_REF_PATH
+    };
+
+    /**
+     * Gets types list
+     * @param {Object} $i18next
+     * @param {string} lng
+     * @returns {Array.<Object>}
+     */
+    function getTypesList($i18next, lng) {
+        return [
+            {
+                id: VALUE_TYPE,
+                name: $i18next.t('common:VALUE', { lng: lng })
+            },
+            {
+                id: FIELD_REF_TYPE,
+                name: $i18next.t('functions:FIELD_REF', { lng: lng })
+            },
+            {
+                id: SECRET_TYPE,
+                name: $i18next.t('functions:SECRET', { lng: lng })
+            },
+            {
+                id: SECRET_REF_TYPE,
+                name: $i18next.t('functions:SECRET_KEY', { lng: lng })
+            },
+            {
+                id: CONFIGMAP_TYPE,
+                name: $i18next.t('functions:CONFIGMAP', { lng: lng })
+            },
+            {
+                id: CONFIGMAP_REF_TYPE,
+                name: $i18next.t('functions:CONFIGMAP_KEY', { lng: lng })
+            }
+        ];
+    }
+
+    /**
+     * Applies type change to row data
+     * @param {Object} data
+     * @param {string} typeId
+     * @param {Object} lodashLib
+     * @returns {{data: Object, onlyTypeNameInputs: boolean}}
+     */
+    function applyTypeChange(data, typeId, lodashLib) {
+        var specificType;
+        var value;
+        var onlyTypeNameInputs = false;
+        var omitPaths = [VALUE_PATH, VALUE_FROM, SECRET_REF_PATH, CONFIGMAP_REF_PATH];
+
+        if (typeId === SECRET_TYPE || typeId === CONFIGMAP_TYPE) {
+            specificType = typeId === SECRET_TYPE ? SECRET_KEY_REF : CONFIGMAP_KEY_REF;
+            value = {
+                [KEY_PATH]: '',
+                [NAME_PATH]: ''
+            };
+
+            data = lodashLib.omit(data, omitPaths);
+            lodashLib.set(data, [VALUE_FROM, specificType], value);
+        } else if (typeId === SECRET_REF_TYPE || typeId === CONFIGMAP_REF_TYPE) {
+            onlyTypeNameInputs = true;
+
+            specificType = typeId === SECRET_REF_TYPE ? SECRET_REF_PATH : CONFIGMAP_REF_PATH;
+            value = {
+                [NAME_PATH]: ''
+            };
+
+            data = lodashLib.omit(data, omitPaths.concat(NAME_PATH));
+            lodashLib.set(data, specificType, value);
+        } else if (typeId === FIELD_REF_TYPE) {
+            data = lodashLib.omit(data, omitPaths);
+            lodashLib.set(data, [VALUE_FROM, FIELD_REF], { [FIELD_PATH]: '' });
+        } else {
+            data = lodashLib.omit(data, [VALUE_FROM, SECRET_REF_PATH, CONFIGMAP_REF_PATH]);
+            lodashLib.set(data, VALUE_PATH, '');
+        }
+
+        return {
+            data: data,
+            onlyTypeNameInputs: onlyTypeNameInputs
+        };
+    }
+
     function NclKeyValueInputController($document, $element, $i18next, $rootScope, $scope, $timeout, i18next, lodash,
                                         DialogsService, EventHelperService) {
         var ctrl = this;
         var lng = i18next.language;
-
-        var VALUE_TYPE = 'value';
-        var CONFIGMAP_TYPE = 'configmap';
-        var SECRET_TYPE = 'secret';
-        var CONFIGMAP_REF_TYPE = 'configmapRef';
-        var SECRET_REF_TYPE = 'secretRef';
-
-        var VALUE_FROM = 'valueFrom';
-        var CONFIGMAP_KEY_REF = 'configMapKeyRef';
-        var SECRET_KEY_REF = 'secretKeyRef';
-
-        var KEY_PATH = 'key';
-        var NAME_PATH = 'name';
-        var VALUE_PATH = 'value';
-        var CONFIGMAP_PATH = VALUE_FROM + '.' + CONFIGMAP_KEY_REF;
-        var SECRET_PATH = VALUE_FROM + '.' + SECRET_KEY_REF;
-        var CONFIGMAP_REF_PATH = 'configMapRef';
-        var SECRET_REF_PATH = 'secretRef';
-
-        var typePathMap = {
-            [VALUE_TYPE]: VALUE_PATH,
-            [CONFIGMAP_TYPE]: CONFIGMAP_PATH,
-            [SECRET_TYPE]: SECRET_PATH,
-            [CONFIGMAP_REF_TYPE]: CONFIGMAP_REF_PATH,
-            [SECRET_REF_TYPE]: SECRET_REF_PATH
-        };
 
         ctrl.data = {};
         ctrl.keyValueInputForm = null;
@@ -100,6 +186,7 @@ such restriction.
         ctrl.getInputKey = getInputKey;
         ctrl.getSelectedItem = getSelectedItem;
         ctrl.getType = getType;
+        ctrl.getValuePlaceholder = getValuePlaceholder;
         ctrl.isVisibleByType = isVisibleByType;
         ctrl.inputValueCallback = inputValueCallback;
         ctrl.inputKeyCallback = inputKeyCallback;
@@ -119,19 +206,19 @@ such restriction.
             ctrl.actions = initActions();
             ctrl.data = lodash.cloneDeep(ctrl.rowData);
             ctrl.editMode = lodash.get(ctrl.data, 'ui.editModeActive', false);
-            ctrl.typesList = getTypesList();
+            ctrl.typesList = getTypesList($i18next, lng);
 
             lodash.defaults(ctrl, {
                 allowSelection: false,
                 dropdownOverlap: false,
                 keyOptional: false,
-                keyPlaceholder: $i18next.t('functions:PLACEHOLDER.ENTER_KEY', {lng: lng}),
+                keyPlaceholder: $i18next.t('functions:PLACEHOLDER.ENTER_KEY', { lng: lng }),
                 onlyValueInput: false,
                 isDisabled: false,
                 isReadOnly: false,
                 submitOnFly: false,
                 useAdditionalValue: false,
-                valuePlaceholder: $i18next.t('functions:PLACEHOLDER.ENTER_VALUE', {lng: lng})
+                valuePlaceholder: $i18next.t('functions:PLACEHOLDER.ENTER_VALUE', { lng: lng })
             });
 
             $scope.$on('action-checkbox_item-checked', function () {
@@ -196,7 +283,15 @@ such restriction.
                 var specificType = typePathMap[ctrl.getType()];
                 var value = lodash.get(ctrl.data, specificType);
 
-                return specificType === VALUE_TYPE ? value : value[NAME_PATH];
+                if (specificType === VALUE_TYPE) {
+                    return value;
+                }
+
+                if (ctrl.getType() === FIELD_REF_TYPE) {
+                    return lodash.get(value, FIELD_PATH);
+                }
+
+                return value[NAME_PATH];
             } else {
                 return ctrl.data[VALUE_PATH];
             }
@@ -207,7 +302,7 @@ such restriction.
          * @returns {?string}
          */
         function getInputKey() {
-            if (ctrl.useType && ctrl.getType() !== VALUE_TYPE) {
+            if (ctrl.useType && ctrl.getType() !== VALUE_TYPE && ctrl.getType() !== FIELD_REF_TYPE) {
                 var specificType = typePathMap[ctrl.getType()];
                 var value = lodash.get(ctrl.data, specificType);
 
@@ -257,9 +352,10 @@ such restriction.
          */
         function inputValueCallback(newData, field) {
             if (lodash.includes(field, VALUE_PATH) && ctrl.getType() !== VALUE_TYPE) {
+                var valueField = ctrl.getType() === FIELD_REF_TYPE ? FIELD_PATH : NAME_PATH;
 
                 lodash.assign(lodash.get(ctrl.data, getValueField()), {
-                    [NAME_PATH]: newData
+                    [valueField]: newData
                 });
 
             } else {
@@ -335,34 +431,10 @@ such restriction.
          */
         function onTypeChanged(newType, isItemChanged) {
             if (isItemChanged) {
-                var specificType;
-                var value;
+                var typeChange = applyTypeChange(ctrl.data, newType.id, lodash);
 
-                ctrl.onlyTypeNameInputs = false;
-
-                if (newType.id === SECRET_TYPE || newType.id === CONFIGMAP_TYPE) {
-                    specificType = newType.id === SECRET_TYPE ? SECRET_KEY_REF : CONFIGMAP_KEY_REF;
-                    value = {
-                        [KEY_PATH]: '',
-                        [NAME_PATH]: ''
-                    };
-
-                    ctrl.data = lodash.omit(ctrl.data, [VALUE_PATH, VALUE_FROM, SECRET_REF_PATH, CONFIGMAP_REF_PATH]);
-                    lodash.set(ctrl.data, [VALUE_FROM, specificType], value);
-                } else if (newType.id === SECRET_REF_TYPE || newType.id === CONFIGMAP_REF_TYPE) {
-                    ctrl.onlyTypeNameInputs = true;
-
-                    specificType = newType.id === SECRET_REF_TYPE ? SECRET_REF_PATH : CONFIGMAP_REF_PATH;
-                    value = {
-                        [NAME_PATH]: ''
-                    };
-
-                    ctrl.data = lodash.omit(ctrl.data, [VALUE_PATH, VALUE_FROM, SECRET_REF_PATH, CONFIGMAP_REF_PATH, NAME_PATH]);
-                    lodash.set(ctrl.data, specificType, value);
-                } else {
-                    ctrl.data = lodash.omit(ctrl.data, [VALUE_FROM, SECRET_REF_PATH, CONFIGMAP_REF_PATH]);
-                    lodash.set(ctrl.data, VALUE_PATH, '');
-                }
+                ctrl.data = typeChange.data;
+                ctrl.onlyTypeNameInputs = typeChange.onlyTypeNameInputs;
 
                 if (angular.isFunction(ctrl.changeTypeCallback)) {
                     ctrl.changeTypeCallback({
@@ -408,32 +480,13 @@ such restriction.
         }
 
         /**
-         * Gets types list
-         * @returns {Array.<Object>}
+         * Gets placeholder text for value input based on selected type
+         * @returns {string}
          */
-        function getTypesList() {
-            return [
-                {
-                    id: VALUE_TYPE,
-                    name: $i18next.t('common:VALUE', {lng: lng})
-                },
-                {
-                    id: SECRET_TYPE,
-                    name: $i18next.t('functions:SECRET', {lng: lng})
-                },
-                {
-                    id: SECRET_REF_TYPE,
-                    name: $i18next.t('functions:SECRET_KEY', {lng: lng})
-                },
-                {
-                    id: CONFIGMAP_TYPE,
-                    name: $i18next.t('functions:CONFIGMAP', {lng: lng})
-                },
-                {
-                    id: CONFIGMAP_REF_TYPE,
-                    name: $i18next.t('functions:CONFIGMAP_KEY', {lng: lng})
-                }
-            ];
+        function getValuePlaceholder() {
+            return ctrl.getType() === FIELD_REF_TYPE ?
+                $i18next.t('functions:PLACEHOLDER.ENTER_FIELD_PATH', { lng: lng }) :
+                ctrl.valuePlaceholder;
         }
 
         /**
@@ -451,14 +504,14 @@ such restriction.
         function initActions() {
             return ctrl.noDelete ? [] : [
                 {
-                    label: $i18next.t('common:DELETE', {lng: lng}),
+                    label: $i18next.t('common:DELETE', { lng: lng }),
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
                     confirm: {
-                        message: $i18next.t('common:DELETE_SELECTED_ITEM_CONFIRM', {lng: lng}),
-                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
-                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
+                        message: $i18next.t('common:DELETE_SELECTED_ITEM_CONFIRM', { lng: lng }),
+                        yesLabel: $i18next.t('common:YES_DELETE', { lng: lng }),
+                        noLabel: $i18next.t('common:CANCEL', { lng: lng }),
                         type: 'critical_alert'
                     }
                 }
