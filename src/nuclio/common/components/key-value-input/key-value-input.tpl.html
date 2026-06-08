@@ -15,7 +15,8 @@
                  data-ng-class="{'use-type': $ctrl.useType,
                                  'all-value-types': $ctrl.allValueTypes,
                                  'type-name-table': $ctrl.isVariablesFrom}">
-                <label data-ng-if="$ctrl.useLabels" class="type-label">
+                <label data-ng-if="$ctrl.useLabels"
+                       class="type-label">
                     {{ 'common:TYPE' | i18next }}:
                 </label>
                 <igz-default-dropdown class="input-type"
@@ -36,7 +37,9 @@
             <div class="input-container input-key-wrapper"
                  data-ng-if="!$ctrl.onlyValueInput && !$ctrl.onlyTypeNameInputs"
                  data-ng-class="{'use-type': $ctrl.useType, 'all-value-types': $ctrl.allValueTypes}">
-                <label class="key-label" data-ng-class="{'asterisk': !$ctrl.isReadOnly}" data-ng-if="$ctrl.useLabels">
+                <label class="key-label"
+                       data-ng-class="{'asterisk': !$ctrl.isReadOnly}"
+                       data-ng-if="$ctrl.useLabels">
                     {{ 'common:KEY' | i18next }}:
                 </label>
                 <igz-validating-input-field class="input-key"
@@ -73,7 +76,7 @@
             </div>
 
             <div class="input-container input-value-key-wrapper"
-                 data-ng-if="!$ctrl.isVisibleByType('value') && !$ctrl.onlyTypeNameInputs"
+                 data-ng-if="!$ctrl.isVisibleByType('value') && !$ctrl.isVisibleByType('fieldRef') && !$ctrl.onlyTypeNameInputs"
                  data-ng-class="{'use-type': $ctrl.useType}">
                 <label data-ng-if="$ctrl.useLabels">
                     <span data-ng-if="$ctrl.isVisibleByType('secret')">
@@ -101,10 +104,11 @@
             <div class="input-container input-value-wrapper"
                  data-ng-class="{'use-type': $ctrl.useType,
                                  'only-value-input': $ctrl.onlyValueInput,
-                                 'only-key-value-input': $ctrl.isVisibleByType('value'),
+                                 'only-key-value-input': $ctrl.isVisibleByType('value') || $ctrl.isVisibleByType('fieldRef'),
                                  'type-name-table': $ctrl.onlyTypeNameInputs,
                                  'all-value-types': $ctrl.allValueTypes}">
-                <label data-ng-if="$ctrl.useLabels" data-ng-class="{'asterisk': !$ctrl.isReadOnly}">
+                <label data-ng-if="$ctrl.useLabels"
+                       data-ng-class="{'asterisk': !$ctrl.isReadOnly}">
                     <span data-ng-if="$ctrl.isVisibleByType('value')">
                         {{ 'common:VALUE' | i18next }}:
                     </span>
@@ -113,6 +117,9 @@
                     </span>
                     <span data-ng-if="$ctrl.isVisibleByType('configmap') || $ctrl.isVisibleByType('configmapRef')">
                         {{ 'functions:CONFIGMAP_NAME' | i18next }}:
+                    </span>
+                    <span data-ng-if="$ctrl.isVisibleByType('fieldRef')">
+                        {{ 'functions:FIELD_PATH' | i18next }}:
                     </span>
                 </label>
                 <igz-validating-input-field class="input-value"
@@ -127,7 +134,7 @@
                                             data-validation-is-required="!$ctrl.valueOptional"
                                             data-validation-pattern="$ctrl.valueValidationPattern"
                                             data-validation-rules="$ctrl.validationRules[$ctrl.getType()]"
-                                            data-placeholder-text="{{$ctrl.valuePlaceholder}}"
+                                            data-placeholder-text="{{$ctrl.getValuePlaceholder()}}"
                                             data-uib-tooltip="{{$ctrl.valueTooltip}}"
                                             data-tooltip-append-to-body="true"
                                             data-tooltip-placement="bottom"
@@ -147,12 +154,14 @@
                 </igz-validating-input-field>
             </div>
         </div>
-        <div class="three-dot-menu" data-ng-if="$ctrl.actions.length > 1 && !$ctrl.isDisabled && !$ctrl.isReadOnly">
+        <div class="three-dot-menu"
+             data-ng-if="$ctrl.actions.length > 1 && !$ctrl.isDisabled && !$ctrl.isReadOnly">
             <igz-action-menu data-actions="$ctrl.actions"
                              data-on-fire-action="$ctrl.onFireAction">
             </igz-action-menu>
         </div>
-        <div class="igz-action-panel" data-ng-if="$ctrl.actions.length === 1 && !$ctrl.isDisabled && !$ctrl.isReadOnly">
+        <div class="igz-action-panel"
+             data-ng-if="$ctrl.actions.length === 1 && !$ctrl.isDisabled && !$ctrl.isReadOnly">
             <div class="actions-list">
                 <div class="igz-action-item"
                      data-ng-click="$ctrl.onClickAction($ctrl.actions[0])">

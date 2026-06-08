@@ -38,19 +38,19 @@ such restriction.
         var envVariableFromValidationRules = ValidationService.getValidationRules('k8s.configMapKey', [
             {
                 name: 'uniqueness',
-                label: $i18next.t('common:UNIQUENESS', {lng: lng}),
+                label: $i18next.t('common:UNIQUENESS', { lng: lng }),
                 pattern: validateUniqueness.bind(null, ['configMapRef.name', 'secretRef.name'])
             }
         ]);
         var envVariableKeyValidationRule = ValidationService.getValidationRules('k8s.envVarName', [{
             name: 'uniqueness',
-            label: $i18next.t('common:UNIQUENESS', {lng: lng}),
+            label: $i18next.t('common:UNIQUENESS', { lng: lng }),
             pattern: validateUniqueness.bind(null, ['name'])
         }]);
         var envVariableConfigmapKeyValidationRule = ValidationService.getValidationRules('k8s.configMapKey', [
             {
                 name: 'uniqueness',
-                label: $i18next.t('common:UNIQUENESS', {lng: lng}),
+                label: $i18next.t('common:UNIQUENESS', { lng: lng }),
                 pattern: validateUniqueness.bind(null, ['valueFrom.configMapKeyRef.key'])
             }
         ]);
@@ -66,7 +66,8 @@ such restriction.
             secret: ValidationService.getValidationRules('k8s.secretName'),
             configmapKey: envVariableConfigmapKeyValidationRule,
             configmapRef: envVariableFromValidationRules,
-            secretRef: envVariableFromValidationRules
+            secretRef: envVariableFromValidationRules,
+            fieldRef: []
         };
         ctrl.variables = [];
         ctrl.scrollConfig = {
@@ -104,25 +105,25 @@ such restriction.
         function onChanges(changes) {
             if (angular.isDefined(changes.version)) {
                 ctrl.variables =
-                  lodash.chain(lodash.get(ctrl.version, 'spec.env', []))
-                      .concat(lodash.get(ctrl.version, 'spec.envFrom', []))
-                      .map(function (variable) {
-                          variable.ui = {
-                              editModeActive: false,
-                              isFormValid: false,
-                              name: 'variable'
-                          };
+                    lodash.chain(lodash.get(ctrl.version, 'spec.env', []))
+                        .concat(lodash.get(ctrl.version, 'spec.envFrom', []))
+                        .map(function (variable) {
+                            variable.ui = {
+                                editModeActive: false,
+                                isFormValid: false,
+                                name: 'variable'
+                            };
 
-                          return variable;
-                      })
-                      .value();
+                            return variable;
+                        })
+                        .value();
 
                 ctrl.isOnlyValueTypeInputs = !lodash.some(ctrl.variables, 'valueFrom');
 
                 $timeout(function () {
                     if (ctrl.environmentVariablesForm.$invalid) {
                         ctrl.environmentVariablesForm.$setSubmitted();
-                        $rootScope.$broadcast('change-state-deploy-button', {component: 'variable', isDisabled: true});
+                        $rootScope.$broadcast('change-state-deploy-button', { component: 'variable', isDisabled: true });
                     }
                 });
             }
@@ -197,7 +198,7 @@ such restriction.
         function onChangeType(newType, index) {
             var variablesCopy = angular.copy(ctrl.variables);
 
-            variablesCopy[index] = newType.id === 'value' ? {} : {valueFrom: {}};
+            variablesCopy[index] = newType.id === 'value' ? {} : { valueFrom: {} };
             ctrl.isOnlyValueTypeInputs = !lodash.some(variablesCopy, 'valueFrom');
 
             if (newType.id === 'secret') {
@@ -230,7 +231,7 @@ such restriction.
                 })
                 .reduce(function (acc, variable) {
                     var envType = !lodash.get(variable, 'configMapRef.name', false) &&
-                               !lodash.get(variable, 'secretRef.name', false) ? 'env' : 'envFrom';
+                        !lodash.get(variable, 'secretRef.name', false) ? 'env' : 'envFrom';
 
                     acc[envType] = acc[envType] ? lodash.concat(acc[envType], variable) : [variable];
 
