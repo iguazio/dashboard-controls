@@ -39,7 +39,7 @@
         "gulp-concat": "^2.6.1",
         "gulp-eslint": "^6.0.0",
         "gulp-file-transform-cache": "^2.0.0",
-        "gulp-htmlmin": "^5.0.1",
+        "gulp-html-minifier-terser": "^7.1.0",
         "gulp-if": "^3.0.0",
         "gulp-imagemin": "^7.1.0",
         "gulp-less": "^5.0.0",
@@ -87,7 +87,8 @@
         "tmp": ">=0.2.6",
         "got": ">=11.8.5",
         "uuid": ">=11.1.1",
-        "fast-xml-parser": ">=5.7.0"
+        "fast-xml-parser": ">=5.7.0",
+        "html-minifier": "npm:html-minifier-terser@^7.2.0"
     },
     "autoupdate": {
         "source": "git",
