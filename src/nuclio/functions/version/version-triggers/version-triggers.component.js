@@ -390,6 +390,10 @@ such restriction.
             }
 
             if (angular.isDefined(triggerItem.attributes)) {
+                if (selectedItem.kind === 'rabbit-mq' && lodash.isEmpty(triggerItem.attributes.topics)) {
+                    delete triggerItem.attributes.exchangeName;
+                }
+
                 triggerItem.attributes = lodash.omitBy(triggerItem.attributes, function (attribute) {
                     return !lodash.isNumber(attribute) && lodash.isEmpty(attribute) && !lodash.isBoolean(attribute);
                 });
