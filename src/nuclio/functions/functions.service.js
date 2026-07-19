@@ -392,7 +392,7 @@ such restriction.
                                 type: 'input',
                                 fieldType: 'input',
                                 path: 'attributes.exchangeName',
-                                allowEmpty: false
+                                allowEmpty: true
                             },
                             {
                                 name: 'queueName',

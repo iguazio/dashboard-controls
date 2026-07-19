@@ -1175,7 +1175,6 @@ such restriction.
                 var intervalInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_interval.$viewValue);
                 var scheduleInputIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_schedule.$viewValue);
                 var bothFilled = intervalInputIsFilled && scheduleInputIsFilled;
-
                 scheduleField.allowEmpty = intervalInputIsFilled;
                 lodash.assign(scheduleField, {
                     moreInfoIconType: bothFilled ? 'warn' : 'info',
@@ -1188,6 +1187,7 @@ such restriction.
             } else if (ctrl.item.kind === 'rabbit-mq') {
                 var queueName = lodash.find(ctrl.selectedClass.fields, {name: 'queueName'});
                 var topics = lodash.find(ctrl.selectedClass.fields, {name: 'topics'});
+                var exchangeName = lodash.find(ctrl.selectedClass.fields, {name: 'exchangeName'});
                 var queueNameIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_queueName.$viewValue);
                 var topicsIsFilled = !lodash.isEmpty(ctrl.editItemForm.item_topics.$viewValue);
 
@@ -1196,10 +1196,17 @@ such restriction.
                 // if one of them is filled, the other is allowed to be empty
                 queueName.allowEmpty = topicsIsFilled;
                 topics.allowEmpty = queueNameIsFilled;
+                // Exchange Name is only relevant when Topics is filled
+                exchangeName.allowEmpty = !topicsIsFilled;
+
+                var exchangeNameIsFilled = !lodash.isEmpty(lodash.get(ctrl.item, 'attributes.exchangeName'));
 
                 // update validity: if empty is not allowed and value is currently empty - mark invalid, otherwise valid
                 ctrl.editItemForm.item_queueName.$setValidity('text', queueName.allowEmpty || queueNameIsFilled);
                 ctrl.editItemForm.item_topics.$setValidity('text', topics.allowEmpty || topicsIsFilled);
+                if (ctrl.editItemForm.item_exchangeName) {
+                    ctrl.editItemForm.item_exchangeName.$setValidity('text', exchangeName.allowEmpty || exchangeNameIsFilled);
+                }
             } else if (ctrl.item.kind === 'kafka-cluster') {
                 var isSaslEnabled = lodash.get(ctrl.item, 'attributes.sasl.enable');
 
