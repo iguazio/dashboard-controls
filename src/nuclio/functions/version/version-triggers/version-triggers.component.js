@@ -389,6 +389,18 @@ such restriction.
                 }
             }
 
+            if (angular.isDefined(lodash.get(triggerItem, 'attributes.authenticationMode'))) {
+                var functionAuthenticationEnabled =
+                    lodash.get(ConfigService, 'nuclio.functionAuthenticationEnabled', false);
+
+                if (!functionAuthenticationEnabled || triggerItem.attributes.authenticationMode !== 'basicAuth') {
+                    delete triggerItem.attributes.authentication;
+                }
+                if (!functionAuthenticationEnabled) {
+                    delete triggerItem.attributes.authenticationMode;
+                }
+            }
+
             if (angular.isDefined(triggerItem.attributes)) {
                 if (selectedItem.kind === 'rabbit-mq' && lodash.isEmpty(triggerItem.attributes.topics)) {
                     delete triggerItem.attributes.exchangeName;

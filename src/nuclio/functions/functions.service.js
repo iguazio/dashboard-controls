@@ -59,8 +59,127 @@ such restriction.
         function getClassesList(type, additionalData, isEnterpriseVersion) {
             var lng = i18next.language;
             var defaultFunctionConfig = lodash.get(ConfigService, 'nuclio.defaultFunctionConfig.attributes', {});
+            var httpTriggerAuthModes = lodash.filter([
+                { id: 'none', name: $i18next.t('common:NONE', { lng: lng }) },
+                { id: 'api', name: $i18next.t('functions:API', { lng: lng }) },
+                { id: 'browser', name: $i18next.t('functions:BROWSER', { lng: lng }) },
+                { id: 'basicAuth', name: $i18next.t('functions:BASIC', { lng: lng }) }
+            ], function (mode) {
+                return lodash.includes(lodash.get(ConfigService, 'nuclio.allowedAuthenticationModes', []), mode.id);
+            });
             var classesList = {
                 trigger: [
+                    {
+                        id: 'http',
+                        name: 'HTTP',
+                        tooltip: 'HTTP',
+                        tooltipOriginal: 'HTTP',
+                        tooltipPlacement: 'right',
+                        fields: [
+                            {
+                                name: 'maxWorkers',
+                                type: 'number-input',
+                                allowEmpty: true,
+                                min: 1,
+                                max: 100000,
+                                defaultValue: 1
+                            },
+                            {
+                                name: 'workerAvailabilityTimeoutMilliseconds',
+                                type: 'number-input',
+                                allowEmpty: true,
+                                min: 1,
+                                placeholder: $i18next.t('common:DEFAULT', { lng: lng }),
+                                moreInfoDescription:
+                                    $i18next.t('functions:WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION', {
+                                        lng: lng,
+                                        default: lodash.get(defaultFunctionConfig,
+                                                            'spec.triggers.http.workerAvailabilityTimeoutMilliseconds',
+                                                            '')
+                                    })
+                            },
+                            {
+                                name: 'port',
+                                pattern: 'number',
+                                type: 'input',
+                                fieldType: 'input',
+                                path: 'attributes.port',
+                                allowEmpty: true
+                            },
+                            {
+                                name: 'ingresses',
+                                type: 'key-value',
+                                path: 'attributes.ingresses'
+                            },
+                            {
+                                name: 'authenticationMode',
+                                label: $i18next.t('functions:AUTHENTICATION', { lng: lng }),
+                                type: 'dropdown',
+                                path: 'attributes.authenticationMode',
+                                values: httpTriggerAuthModes,
+                                defaultValue: 'none',
+                                newLine: true,
+                                visible: lodash.get(ConfigService, 'nuclio.functionAuthenticationEnabled', false)
+                            },
+                            {
+                                name: 'authenticationUsername',
+                                label: $i18next.t('common:USERNAME', { lng: lng }),
+                                type: 'input',
+                                fieldType: 'input',
+                                path: 'attributes.authentication.basicAuth.username',
+                                allowEmpty: false,
+                                newLine: true,
+                                visible: function (item) {
+                                    return lodash.get(ConfigService, 'nuclio.functionAuthenticationEnabled', false) &&
+                                        lodash.get(item, 'attributes.authenticationMode') === 'basicAuth';
+                                }
+                            },
+                            {
+                                name: 'authenticationPassword',
+                                label: $i18next.t('common:PASSWORD', { lng: lng }),
+                                type: 'input',
+                                fieldType: 'password',
+                                path: 'attributes.authentication.basicAuth.password',
+                                allowEmpty: false,
+                                autocomplete: 'new-password',
+                                visible: function (item) {
+                                    return lodash.get(ConfigService, 'nuclio.functionAuthenticationEnabled', false) &&
+                                        lodash.get(item, 'attributes.authenticationMode') === 'basicAuth';
+                                }
+                            },
+                            {
+                                name: 'workerAllocatorName',
+                                type: 'input',
+                                fieldType: 'input',
+                                isAdvanced: true,
+                                allowEmpty: true
+                            },
+                            {
+                                name: 'serviceType',
+                                values: [
+                                    {
+                                        id: 'ClusterIP',
+                                        name: 'Cluster IP',
+                                        visible: true
+                                    },
+                                    {
+                                        id: 'NodePort',
+                                        name: 'Node Port',
+                                        visible: true
+                                    }
+                                ],
+                                path: 'attributes.serviceType',
+                                type: 'dropdown',
+                                allowEmpty: true,
+                                isAdvanced: true,
+                                visible: self.isKubePlatform()
+                            },
+                            {
+                                name: 'annotations',
+                                type: 'key-value'
+                            }
+                        ]
+                    },
                     {
                         id: 'kafka-cluster',
                         name: 'Kafka',
@@ -592,81 +711,6 @@ such restriction.
                                 fieldType: 'input',
                                 isAdvanced: true,
                                 allowEmpty: true
-                            }
-                        ]
-                    },
-                    {
-                        id: 'http',
-                        name: 'HTTP',
-                        tooltip: 'HTTP',
-                        tooltipOriginal: 'HTTP',
-                        tooltipPlacement: 'right',
-                        fields: [
-                            {
-                                name: 'maxWorkers',
-                                type: 'number-input',
-                                allowEmpty: true,
-                                min: 1,
-                                max: 100000,
-                                defaultValue: 1
-                            },
-                            {
-                                name: 'workerAvailabilityTimeoutMilliseconds',
-                                type: 'number-input',
-                                allowEmpty: true,
-                                min: 1,
-                                placeholder: $i18next.t('common:DEFAULT', { lng: lng }),
-                                moreInfoDescription:
-                                    $i18next.t('functions:WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION', {
-                                        lng: lng,
-                                        default: lodash.get(defaultFunctionConfig,
-                                                            'spec.triggers.http.workerAvailabilityTimeoutMilliseconds',
-                                                            '')
-                                    })
-                            },
-                            {
-                                name: 'port',
-                                pattern: 'number',
-                                type: 'input',
-                                fieldType: 'input',
-                                path: 'attributes.port',
-                                allowEmpty: true
-                            },
-                            {
-                                name: 'ingresses',
-                                type: 'key-value',
-                                path: 'attributes.ingresses'
-                            },
-                            {
-                                name: 'workerAllocatorName',
-                                type: 'input',
-                                fieldType: 'input',
-                                isAdvanced: true,
-                                allowEmpty: true
-                            },
-                            {
-                                name: 'serviceType',
-                                values: [
-                                    {
-                                        id: 'ClusterIP',
-                                        name: 'Cluster IP',
-                                        visible: true
-                                    },
-                                    {
-                                        id: 'NodePort',
-                                        name: 'Node Port',
-                                        visible: true
-                                    }
-                                ],
-                                path: 'attributes.serviceType',
-                                type: 'dropdown',
-                                allowEmpty: true,
-                                isAdvanced: true,
-                                visible: self.isKubePlatform()
-                            },
-                            {
-                                name: 'annotations',
-                                type: 'key-value'
                             }
                         ]
                     },
