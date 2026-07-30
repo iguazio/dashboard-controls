@@ -920,7 +920,7 @@ such restriction.
                 })
                 .value();
 
-            return external.concat(internal);
+            return internal.concat(external);
         }
 
         /**
