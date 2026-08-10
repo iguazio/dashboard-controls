@@ -874,6 +874,10 @@ such restriction.
                                            '');
             }
 
+            if (field === 'attributes.authenticationMode' && item.id !== 'basicAuth') {
+                lodash.unset(ctrl.item, 'attributes.authentication');
+            }
+
             validateValues();
             updateChangesState();
         }
