@@ -1,0 +1,20 @@
+# Source and tests (only the built dist/ is published)
+src/
+tests/
+
+# Build tooling and configuration
+gulpfile.js
+build.config.js
+.babelrc
+.babelCache
+.eslintrc.json
+.eslintignore
+release.sh
+
+# CI
+.github/
+
+# Misc
+.idea/
+*.md
+!README.md
