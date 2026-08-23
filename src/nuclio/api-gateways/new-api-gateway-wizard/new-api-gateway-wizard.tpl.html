@@ -13,11 +13,13 @@
             </igz-toast-status-panel>
             <form name="$ctrl.apiGatewayForm" class="api-gateway-form" novalidate
                   data-ng-submit="$ctrl.saveApiGateway($event)">
-                <div class="content-body">
+                <div class="content-body"
+                     data-ng-class="{'no-authentication': $ctrl.nuclioConfigData.functionAuthenticationEnabled}">
                     <div class="api-gateway-globe"></div>
                     <div class="connector"></div>
 
-                    <div class="api-gateway-block api-gateway-authentication">
+                    <div class="api-gateway-block api-gateway-authentication"
+                         data-ng-if="!$ctrl.nuclioConfigData.functionAuthenticationEnabled">
                         <div class="block-title">{{ 'functions:AUTHENTICATION' | i18next }}</div>
 
                         <div class="fields-wrapper"
@@ -98,7 +100,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="connector"></div>
+                    <div class="connector" data-ng-if="!$ctrl.nuclioConfigData.functionAuthenticationEnabled"></div>
                     <div class="api-gateway-block api-gateway-basic-settings">
 
                         <div class="block-title">{{ 'common:BASIC_SETTINGS' | i18next }}</div>

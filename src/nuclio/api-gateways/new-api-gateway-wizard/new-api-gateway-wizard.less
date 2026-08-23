@@ -10,12 +10,26 @@
 
             .api-gateway-form {
                 .content-body {
+                    position: relative;
                     margin: 0 auto;
                     height: 400px;
                     display: flex;
                     flex-flow: row nowrap;
                     justify-content: center;
                     align-items: center;
+
+                    // when the authentication block is hidden, the remaining connectors merge into a single
+                    // line running from the globe to the function circles, and the basic settings block is
+                    // taken out of the flex flow so it can be positioned dead-center over that line
+                    &.no-authentication {
+                        .api-gateway-basic-settings {
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            z-index: 1;
+                            transform: translate(-50%, -50%);
+                        }
+                    }
 
                     .api-gateway-block {
                         flex: none;

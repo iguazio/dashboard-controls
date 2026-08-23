@@ -270,6 +270,11 @@ such restriction.
             if (ctrl.apiGatewayForm.$valid && ctrl.isChangesHaveBeenMade()) {
                 ctrl.apiGatewayForm.$setSubmitted();
                 var apiGateway = lodash.omit(ctrl.apiGateway, 'ui');
+
+                if (lodash.get(ConfigService, 'nuclio.functionAuthenticationEnabled', false)) {
+                    apiGateway.spec = lodash.omit(apiGateway.spec, ['authenticationMode', 'authentication']);
+                }
+
                 lodash.update(apiGateway, 'spec.path', function (path) {
                     return lodash.trimStart(path, '/');
                 });
@@ -384,14 +389,18 @@ such restriction.
             // start by copying `ctrl.apiGateway` so it does not change the parent component's copy
             ctrl.apiGateway = angular.copy(ctrl.apiGateway);
 
+            var specDefaults = {
+                name: '',
+                description: '',
+                path: '',
+                upstreams: []
+            };
+            if (!lodash.get(ConfigService, 'nuclio.functionAuthenticationEnabled', false)) {
+                specDefaults.authenticationMode = 'none';
+            }
+
             lodash.defaultsDeep(ctrl.apiGateway, {
-                spec: {
-                    name: '',
-                    description: '',
-                    path: '',
-                    authenticationMode: 'none',
-                    upstreams: []
-                },
+                spec: specDefaults,
                 metadata: {
                     labels: {
                         'nuclio.io/project-name': ctrl.project.metadata.name
