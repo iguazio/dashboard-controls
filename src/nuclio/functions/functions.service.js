@@ -354,10 +354,10 @@ such restriction.
                                 type: 'dropdown',
                                 path: 'attributes.sasl.mechanism',
                                 isAdvanced: true,
-                                defaultValue: 'plain',
+                                defaultValue: 'PLAIN',
                                 values: [
-                                    { id: 'plain', name: 'Plain', visible: true },
-                                    { id: 'oauthbearer', name: 'OAuthBearer', visible: true }
+                                    { id: 'PLAIN', name: 'Plain', visible: true },
+                                    { id: 'OAUTHBEARER', name: 'OAuthBearer', visible: true }
                                 ],
                                 visible: function (item) {
                                     return lodash.get(item, 'attributes.sasl.enable');
@@ -373,7 +373,7 @@ such restriction.
                                 allowEmpty: true,
                                 visible: function (item) {
                                     return lodash.get(item, 'attributes.sasl.enable') &&
-                                           lodash.get(item, 'attributes.sasl.mechanism') === 'oauthbearer';
+                                           lodash.get(item, 'attributes.sasl.mechanism') === 'OAUTHBEARER';
                                 }
                             },
                             {
@@ -387,7 +387,7 @@ such restriction.
                                 autocomplete: 'new-password',
                                 visible: function (item) {
                                     return lodash.get(item, 'attributes.sasl.enable') &&
-                                           lodash.get(item, 'attributes.sasl.mechanism') === 'oauthbearer';
+                                           lodash.get(item, 'attributes.sasl.mechanism') === 'OAUTHBEARER';
                                 }
                             },
                             {
@@ -400,7 +400,7 @@ such restriction.
                                 allowEmpty: true,
                                 visible: function (item) {
                                     return lodash.get(item, 'attributes.sasl.enable') &&
-                                           lodash.get(item, 'attributes.sasl.mechanism') === 'oauthbearer';
+                                           lodash.get(item, 'attributes.sasl.mechanism') === 'OAUTHBEARER';
                                 }
                             },
                             {
@@ -413,7 +413,7 @@ such restriction.
                                 allowEmpty: true,
                                 visible: function (item) {
                                     return lodash.get(item, 'attributes.sasl.enable') &&
-                                           lodash.get(item, 'attributes.sasl.mechanism') === 'oauthbearer';
+                                           lodash.get(item, 'attributes.sasl.mechanism') === 'OAUTHBEARER';
                                 }
                             },
                             {
