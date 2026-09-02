@@ -41,7 +41,6 @@
         "gulp-file-transform-cache": "^2.0.0",
         "gulp-htmlmin": "^5.0.1",
         "gulp-if": "^3.0.0",
-        "gulp-imagemin": "^7.1.0",
         "gulp-less": "^5.0.0",
         "gulp-less-import": "^1.0.0",
         "gulp-ng-html2js": "^0.2.0",
@@ -64,6 +63,8 @@
         "ng-i18next": "^1.0.7",
         "nodejs-fs-utils": "~1.0.26",
         "restangular": "^1.6.1",
+        "sharp": "^0.35.4",
+        "svgo": "^4.1.0",
         "vinyl-paths": "^3.0.1",
         "yargs": "^17.7.2"
     },
