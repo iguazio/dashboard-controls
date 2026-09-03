@@ -653,20 +653,11 @@ such restriction.
                             });
                         }
                     } else if (isApiGatewayFunction) {
-                        var message = $i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTIONS', { lng: lng });
-
-                        if (checkedRowsCount === 1) {
-                            var apiGatewayName = lodash.get(checkedRows[0], 'status.apiGateways[0]', '');
-
-                            message = $i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION', {
-                                lng: lng,
-                                apiGatewayName: apiGatewayName
-                            });
-                        }
-
                         deleteAction.confirm = {};
-                        deleteAction.handler = function () {
-                            DialogsService.alert(message);
+                        deleteAction.handler = function (action) {
+                            $rootScope.$broadcast('action-panel_fire-action', {
+                                action: action.id
+                            });
                         };
                     }
                 }
