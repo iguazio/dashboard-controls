@@ -1218,7 +1218,7 @@ such restriction.
                     lodash.unset(ctrl.item, 'attributes.sasl.handshake');
                     lodash.unset(ctrl.item, 'attributes.sasl.mechanism');
                     lodash.unset(ctrl.item, 'attributes.sasl.oauth');
-                } else if (lodash.get(ctrl.item, 'attributes.sasl.mechanism') !== 'oauthbearer') {
+                } else if (lodash.get(ctrl.item, 'attributes.sasl.mechanism') !== 'OAUTHBEARER') {
                     lodash.unset(ctrl.item, 'attributes.sasl.oauth');
                 }
 
