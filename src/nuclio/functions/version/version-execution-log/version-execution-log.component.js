@@ -28,7 +28,7 @@ such restriction.
             controller: NclVersionExecutionLogController
         });
 
-    function NclVersionExecutionLogController(lodash, moment, $interval, i18next, $i18next, $rootScope, ExecutionLogsDataService,
+    function NclVersionExecutionLogController(lodash, moment, $interval, i18next, $i18next, $rootScope, ConfigService, ExecutionLogsDataService,
                                               ExportService, LoginService, PaginationService) {
         var ctrl = this;
         var lng = i18next.language;
@@ -50,7 +50,8 @@ such restriction.
         var projectName = '';
         var groupedReplicas = {};
 
-        ctrl.excludeOffline = false;
+        ctrl.isNuclioOpenSource = ConfigService.isNuclioOpenSource();
+        ctrl.excludeOffline = ctrl.isNuclioOpenSource;
         ctrl.excludeOfflineIsDisabled = false;
         ctrl.downloadButtonIsDisabled = false;
         ctrl.isSplashShowed = {
@@ -166,6 +167,29 @@ such restriction.
             }
         ];
 
+        if (ctrl.isNuclioOpenSource) {
+            ctrl.perPageValues = lodash.reject(ctrl.perPageValues, {id: 500});
+
+            ctrl.customDatePresets = lodash.assign({
+                '15m': {
+                    label: $i18next.t('common:LAST', {lng: lng}) + ' 15 ' + $i18next.t('common:MINUTES', {lng: lng}),
+                    getRange: function () {
+                        return {
+                            from: moment().subtract(15, 'minutes')
+                        };
+                    }
+                },
+                '1h': {
+                    label: $i18next.t('common:LAST', {lng: lng}) + ' 1 ' + $i18next.t('common:HOUR', {lng: lng}),
+                    getRange: function () {
+                        return {
+                            from: moment().subtract(1, 'hours')
+                        };
+                    }
+                }
+            }, ctrl.customDatePresets);
+        }
+
         ctrl.$onInit = onInit;
         ctrl.$onDestroy = onDestroy;
 
@@ -196,6 +220,10 @@ such restriction.
 
             PaginationService.addPagination(ctrl, 'logs', 'ExecutionLogsDataService', onChangePageCallback, true);
 
+            if (!lodash.some(ctrl.perPageValues, {id: ctrl.page.size})) {
+                ctrl.page.size = ctrl.perPageValues[0].id;
+            }
+
             ctrl.timeRange = getInitialTimeRange();
 
             ctrl.isSplashShowed.value = true;
@@ -204,9 +232,7 @@ such restriction.
                 includeOffline: true
             }).then(function (replicas) {
                 groupedReplicas = replicas;
-                allReplicas = lodash.get(groupedReplicas, 'replicas.names') ?
-                    groupedReplicas.replicas.names.concat(replicas.offlineReplicas.names) :
-                    lodash.get(groupedReplicas, 'names', []);
+                allReplicas = getReplicasNames(groupedReplicas);
                 ctrl.excludeOfflineIsDisabled = lodash.get(groupedReplicas, 'offlineReplicas.names', []).length === 0;
                 ctrl.replicasList = allReplicas.map(function (replica) {
                     return {
@@ -343,9 +369,7 @@ such restriction.
             ExecutionLogsDataService.getReplicasList(projectName, ctrl.version.metadata.name, {timeFilter: ctrl.timeRange})
                 .then(function (replicas) {
                     groupedReplicas = replicas;
-                    allReplicas = lodash.get(groupedReplicas, 'replicas.names') ?
-                        groupedReplicas.replicas.names.concat(replicas.offlineReplicas.names) :
-                        lodash.get(groupedReplicas, 'names', []);
+                    allReplicas = getReplicasNames(groupedReplicas);
                     ctrl.excludeOfflineIsDisabled = lodash.get(groupedReplicas, 'offlineReplicas.names', []).length === 0;
                     ctrl.replicasList = allReplicas.map(function (replica) {
                         return {
@@ -377,7 +401,7 @@ such restriction.
             ctrl.timeRange = getInitialTimeRange();
             ctrl.datePreset = initialDatePreset;
             ctrl.selectedReplicas = initialReplicas;
-            ctrl.excludeOffline = false;
+            ctrl.excludeOffline = ctrl.isNuclioOpenSource;
 
             lodash.merge(ctrl.filter, defaultFilter);
             $rootScope.$broadcast('search-input_reset');
@@ -405,6 +429,21 @@ such restriction.
         //
         // Private methods
         //
+
+        /**
+         * Gets the names of the replicas to show in the replicas list
+         * @param {Object} replicas - grouped (online/offline) or flat replicas response
+         * @returns {Array.<string>}
+         */
+        function getReplicasNames(replicas) {
+            if (ctrl.isNuclioOpenSource) {
+                return lodash.get(replicas, 'replicas.names') || lodash.get(replicas, 'names') || [];
+            }
+
+            return lodash.get(replicas, 'replicas.names') ?
+                replicas.replicas.names.concat(replicas.offlineReplicas.names) :
+                lodash.get(replicas, 'names', []);
+        }
 
         /**
          * Perform auto updating request and extends current data set with new items

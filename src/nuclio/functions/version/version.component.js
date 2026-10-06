@@ -683,11 +683,18 @@ such restriction.
          */
         function initLogTabs() {
             if (lodash.get(ConfigService, 'nuclio.defaultProxyLogsSource', '') === 'elasticsearch') {
-                ctrl.navigationTabsConfig.push({
+                var executionLogTab = {
                     tabName: $i18next.t('functions:EXECUTION_LOG', { lng: lng }),
                     id: 'execution-log',
                     uiRoute: 'app.project.function.edit.execution-log'
-                });
+                };
+                var statusTabIndex = lodash.findIndex(ctrl.navigationTabsConfig, { id: 'status' });
+
+                if (!ConfigService.isNuclioOpenSource() || statusTabIndex === -1) {
+                    ctrl.navigationTabsConfig.push(executionLogTab);
+                } else {
+                    ctrl.navigationTabsConfig.splice(statusTabIndex, 0, executionLogTab);
+                }
             }
         }
 
