@@ -1,7 +1,7 @@
 <!--splash screen-->
 <igz-splash-screen data-is-splash-showed="$ctrl.isSplashShowed"></igz-splash-screen>
 
-<div class="ncl-version-execution-log ncl-version" data-igz-extend-background>
+<div class="ncl-version-execution-log ncl-version" data-ng-class="{'nuclio-open-source': $ctrl.isNuclioOpenSource}" data-igz-extend-background>
     <div class="ncl-version-execution-log-wrapper">
         <div class="row" data-ng-class="{'filters-shown': $ctrl.isFiltersShowed.value}">
             <!--filters-->
@@ -94,7 +94,7 @@
                     <span class="filter-label asterisk">
                         {{ 'common:REPLICAS' | i18next }}
                     </span>
-                    <div class="online-replicas__checkbox">
+                    <div class="online-replicas__checkbox" data-ng-if="!$ctrl.isNuclioOpenSource">
                         <input type="checkbox"
                                id="onlineOnly"
                                data-ng-change="$ctrl.onExcludeOfflineChange()"

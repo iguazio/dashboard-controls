@@ -39,6 +39,9 @@ such restriction.
         isDemoMode: function () {
             return defaultConfig.mode === 'demo';
         },
+        isNuclioOpenSource: function () {
+            return window._.get(defaultConfig, 'nuclio.isOpenSource', false) === true;
+        },
         isStagingMode: function (strict) {
             return defaultConfig.mode === 'staging' || !strict && defaultConfig.mode === 'demo';
         },

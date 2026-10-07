@@ -601,7 +601,7 @@ such restriction.
             var datePickerDropdownElement = ctrl.isShowDatePicker  ? angular.element($element.find('.date-time-pickers')) :
                                             ctrl.isShowOptionsList ? angular.element($element.find('.options-dropdown'))  : null;
             var datePickerDropdownParent = angular.element($element.find('.date-time-picker'));
-            var headerElement = angular.element('.igz-main-header');
+            var headerElement = angular.element('.igz-main-header, .ncl-main-header');
 
             if (!lodash.isEmpty(datePickerDropdownElement) && !lodash.isEmpty(datePickerDropdownParent)) {
                 var elementHeight = datePickerDropdownElement[0].clientHeight;

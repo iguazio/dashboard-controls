@@ -68,7 +68,7 @@ such restriction.
                 ctrl.perPageValues = PaginationService.perPageDefaults();
             }
 
-            ctrl.perPage = lodash.some(ctrl.perPageValues, 'id', ctrl.pageData.size) ? ctrl.pageData.size : ctrl.perPageValues[0].id;
+            ctrl.perPage = lodash.some(ctrl.perPageValues, {id: ctrl.pageData.size}) ? ctrl.pageData.size : ctrl.perPageValues[0].id;
 
             $scope.$watch('$ctrl.pageData.total', initValues);
             $scope.$watch('$ctrl.pageData.number', updatePage);
