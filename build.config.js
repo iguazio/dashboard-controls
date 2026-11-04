@@ -30,11 +30,6 @@ module.exports = {
     assets_dir: 'dist',
 
     /**
-     * Cache file
-     */
-    cache_file: '.babelCache',
-
-    /**
      * App files and configs
      */
     app_files: {

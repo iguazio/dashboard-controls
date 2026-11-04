@@ -26,12 +26,11 @@ such restriction.
 
 var babel = require('gulp-babel');
 var config = require('./build.config');
-var cache = require('gulp-file-transform-cache');
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var eslint = require('gulp-eslint');
 var argv = require('yargs').argv;
-var minifyHtml = require('gulp-htmlmin');
+var htmlMinifier = require('html-minifier-terser');
 var ngHtml2Js = require('gulp-ng-html2js');
 var merge2 = require('merge2');
 var sharp = require('sharp');
@@ -73,7 +72,7 @@ gulp.task('test-unit', testUnit);
  * Clean build directory
  */
 function clean() {
-    return gulp.src([config.build_dir, config.cache_file], {allowEmpty: true})
+    return gulp.src([config.build_dir], {allowEmpty: true})
         .pipe(vinylPaths(del));
 }
 
@@ -103,12 +102,7 @@ function appJs() {
     }
 
     var js = gulp.src(sourceFiles, {allowEmpty: true})
-        .pipe(cache({
-            path: config.cache_file,
-            transformStreams: [
-                babel()
-            ]
-        }));
+        .pipe(babel());
 
     var templates = gulp.src(config.app_files.templates, {allowEmpty: true})
         .pipe(minifyHtml({
@@ -126,6 +120,35 @@ function appJs() {
         .pipe(gulp.dest(distFolder));
 
     return task;
+}
+
+/**
+ * Minify HTML templates
+ * @param {Object} options - html-minifier-terser options
+ */
+function minifyHtml(options) {
+    return new Transform({
+        objectMode: true,
+        transform: function (file, encoding, callback) {
+            if (file.isNull()) {
+                return callback(null, file);
+            }
+
+            if (file.isStream()) {
+                return callback(new Error('minifyHtml: streams are not supported (' + file.path + ')'));
+            }
+
+            htmlMinifier.minify(file.contents.toString(), options)
+                .then(function (html) {
+                    file.contents = Buffer.from(html);
+                    callback(null, file);
+                })
+                .catch(function (error) {
+                    error.message = file.path + ': ' + error.message;
+                    callback(error);
+                });
+        }
+    });
 }
 
 /**
