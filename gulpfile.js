@@ -130,8 +130,12 @@ function minifyHtml(options) {
     return new Transform({
         objectMode: true,
         transform: function (file, encoding, callback) {
-            if (file.isNull() || file.isStream()) {
+            if (file.isNull()) {
                 return callback(null, file);
+            }
+
+            if (file.isStream()) {
+                return callback(new Error('minifyHtml: streams are not supported (' + file.path + ')'));
             }
 
             htmlMinifier.minify(file.contents.toString(), options)
@@ -139,7 +143,10 @@ function minifyHtml(options) {
                     file.contents = Buffer.from(html);
                     callback(null, file);
                 })
-                .catch(callback);
+                .catch(function (error) {
+                    error.message = file.path + ': ' + error.message;
+                    callback(error);
+                });
         }
     });
 }
