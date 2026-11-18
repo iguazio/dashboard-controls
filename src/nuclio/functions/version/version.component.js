@@ -362,8 +362,19 @@ such restriction.
                             deleteFunction();
                         });
                 } else {
-                    DialogsService.alert($i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION',
-                                                    { lng: lng, apiGatewayName: apiGateways[0] }));
+                    var confirmMessage = $i18next.t('functions:DELETE_BOTH_FUNCTION_AND_API_GW', {
+                        lng: lng,
+                        apiGatewayName: apiGateways[0]
+                    });
+
+                    DialogsService.confirm(
+                        confirmMessage,
+                        $i18next.t('common:YES_DELETE', { lng: lng }),
+                        $i18next.t('common:CANCEL', { lng: lng })
+                    )
+                        .then(function () {
+                            deleteFunction(ctrl.version, false, true);
+                        });
                 }
             } else if (item.id === 'exportFunction') {
                 ExportService.exportFunction(ctrl.version);
@@ -475,13 +486,15 @@ such restriction.
          * Deletes function item
          * @param {Object} [version]
          * @param {Boolean} [ignoreValidation] - determines whether to forcibly remove the function
+         * @param {Boolean} deleteApiGateway - determines whether to delete API Gateway
          */
-        function deleteFunction(version, ignoreValidation) {
+        function deleteFunction(version, ignoreValidation, deleteApiGateway) {
             ctrl.isSplashShowed.value = true;
 
             ctrl.deleteFunction({
                 functionData: lodash.defaultTo(version, ctrl.version).metadata,
-                ignoreValidation: ignoreValidation
+                ignoreValidation: ignoreValidation,
+                deleteApiGateway: deleteApiGateway
             })
                 .then(function () {
                     $state.go('app.project.functions');
