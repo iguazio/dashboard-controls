@@ -1,0 +1,91 @@
+#    Copyright 2026 Iguazio Systems Ltd.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License") with
+#    an addition restriction as set forth herein. You may not use this
+#    file except in compliance with the License. You may obtain a copy of
+#    the License at http://www.apache.org/licenses/LICENSE-2.0.
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+#    implied. See the License for the specific language governing
+#    permissions and limitations under the License.
+#    In addition, you may not use the software for any purposes that are
+#    illegal under applicable law, and the grant of the foregoing license
+#    under the Apache 2.0 license is conditioned upon your compliance with
+#    such restriction.
+#
+name: Dependabot Auto-Merge
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions: {}
+
+jobs:
+  merge:
+    name: Approve and merge
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.actor.login == 'dependabot[bot]' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.pull_requests[0].base.ref == 'development' &&
+      (
+        startsWith(github.event.workflow_run.head_branch, 'dependabot/github_actions/auto-merge-actions-patch-') ||
+        startsWith(github.event.workflow_run.head_branch, 'dependabot/npm_and_yarn/auto-merge-npm-patch-')
+      )
+    env:
+      PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+      TESTED_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Verify the PR is the single signed Dependabot commit that CI tested
+        uses: actions/github-script@v9.0.0
+        with:
+          script: |
+            const pull = { ...context.repo, pull_number: process.env.PR_NUMBER }
+            const { data: pr } = await github.rest.pulls.get(pull)
+            const { data: commits } = await github.rest.pulls.listCommits(pull)
+            const [commit] = commits
+
+            const checks = {
+              'open': pr.state === 'open',
+              'targeting development': pr.base.ref === 'development',
+              'a single commit': commits.length === 1,
+              'the commit tested by CI': pr.head.sha === process.env.TESTED_SHA,
+              'authored by Dependabot': commit?.author?.login === 'dependabot[bot]',
+              'with a verified signature': commit?.commit.verification.verified === true,
+            }
+
+            const failed = Object.keys(checks).filter((check) => !checks[check])
+            if (failed.length > 0) {
+              core.setFailed(`Refusing to merge PR #${process.env.PR_NUMBER}, it is not: ${failed.join(', ')}`)
+            }
+
+      - name: Approve
+        uses: actions/github-script@v9.0.0
+        with:
+          script: |
+            await github.rest.pulls.createReview({
+              ...context.repo,
+              pull_number: process.env.PR_NUMBER,
+              commit_id: process.env.TESTED_SHA,
+              event: 'APPROVE',
+            })
+
+      - name: Squash and merge the tested commit
+        uses: actions/github-script@v9.0.0
+        with:
+          script: |
+            await github.rest.pulls.merge({
+              ...context.repo,
+              pull_number: process.env.PR_NUMBER,
+              sha: process.env.TESTED_SHA,
+              merge_method: 'squash',
+            })
