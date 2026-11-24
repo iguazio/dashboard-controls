@@ -45,9 +45,17 @@ module.exports = function (config) {
         // - Safari (only Mac)
         // - PhantomJS
         // - IE (only Windows)
+        // CI (e.g. GitHub Actions sets CI=true) has no display, so it runs headless without the sandbox
         browsers: [
-            'Chrome'
+            process.env.CI ? 'ChromeHeadlessCI' : 'Chrome'
         ],
+
+        customLaunchers: {
+            ChromeHeadlessCI: {
+                base: 'ChromeHeadless',
+                flags: ['--no-sandbox']
+            }
+        },
 
         // Which plugins to enable
         plugins: [
