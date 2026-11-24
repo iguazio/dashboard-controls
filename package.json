@@ -41,7 +41,7 @@
         "html-minifier-terser": "^7.2.0",
         "i18next": "^21.6.14",
         "jquery": "^3.7.1",
-        "jquery-ui": "1.13.2",
+        "jquery-ui": "1.14.2",
         "js-base64": "^2.4.8",
         "lodash": "^4.18.0",
         "merge2": "^0.3.6",
